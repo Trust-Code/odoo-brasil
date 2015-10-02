@@ -30,10 +30,10 @@
         'crm',
     ],
     'data': [
-        'crm_lead_view.xml',
-        'crm_opportunity_view.xml',
+        'views/crm_lead_view.xml',
+        'views/crm_opportunity_view.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': True,
 }
