@@ -30,10 +30,7 @@
 			<field name="name">l10n_br_base.partner.form</field>
 			<field name="model">res.partner</field>
 			<field name="inherit_id" ref="base.view_partner_form" />
-			<field name="arch" type="xml">
-				<field name="is_company" position="replace">
-					<field name="is_company" class="oe_inline" />
-				</field>
+			<field name="arch" type="xml">				
 				<field name="parent_id" position="before">
 					<group colspan="4">
 						<div class="oe_edit_only">
