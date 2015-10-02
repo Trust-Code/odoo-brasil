@@ -27,12 +27,11 @@
         'l10n_br_base',
     ],
     'data': [
-        'res.bank.csv',
-        'l10n_br_base_data.xml',
+        'data/res.bank.csv',
+        'data/l10n_br_base_data.xml',
     ],
     'demo': [],
-    'category': 'Localisation',
-    'active': False,
-    'installable': False,
+    'category': 'Localisation',    
+    'installable': True,
     'auto_install': True,
 }
