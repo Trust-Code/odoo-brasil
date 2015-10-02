@@ -23,7 +23,7 @@
 import re
 
 from openerp import models, fields, api, _
-from .tools import fiscal
+from ..tools import fiscal
 from openerp.exceptions import Warning
 
 
@@ -189,23 +189,16 @@ class ResPartner(models.Model):
         return list(address_fields + ['l10n_br_city_id', 'number', 'district'])
 
 
-class ResPartnerBank(models.Model):
-    """ Adiciona campos necessários para o cadastramentos de contas
-    bancárias no Brasil."""
-    _inherit = 'res.partner.bank'
-
-    acc_number = fields.Char('Account Number', size=64, required=False)
-    bank = fields.Many2one('res.bank', 'Bank', required=False)
-    acc_number_dig = fields.Char(u'Digito Conta', size=8)
-    bra_number = fields.Char(u'Agência', size=8)
-    bra_number_dig = fields.Char(u'Dígito Agência', size=8)
+class ResBank(models.Model):
+    _inherit = 'res.bank'
+    
     number = fields.Char(u'Número', size=10)
     street2 = fields.Char('Street2', size=128)
     district = fields.Char('Bairro', size=32)
     l10n_br_city_id = fields.Many2one(comodel_name='l10n_br_base.city',
                                       string='Municipio',
                                       domain="[('state_id','=',state_id)]")
-
+    
     @api.onchange('l10n_br_city_id')
     def onchange_l10n_br_city_id(self):
         """ Ao alterar o campo l10n_br_city_id que é um campo relacional
@@ -221,6 +214,18 @@ class ResPartnerBank(models.Model):
         if self.l10n_br_city_id:
             self.city = self.l10n_br_city_id.name
             self.l10n_br_city_id = self.l10n_br_city_id
+
+class ResPartnerBank(models.Model):
+    """ Adiciona campos necessários para o cadastramentos de contas
+    bancárias no Brasil."""
+    _inherit = 'res.partner.bank'
+
+    acc_number = fields.Char('Account Number', size=64, required=False)
+    bank = fields.Many2one('res.bank', 'Bank', required=False)
+    acc_number_dig = fields.Char(u'Digito Conta', size=8)
+    bra_number = fields.Char(u'Agência', size=8)
+    bra_number_dig = fields.Char(u'Dígito Agência', size=8)
+
 
     # TODO: [new api] Depends of odoo/openerp/base/res/res_bank.py
     def onchange_partner_id(self, cr, uid, id, partner_id, context=None):
