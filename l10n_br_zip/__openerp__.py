@@ -35,5 +35,5 @@
     ],
     'test': ['test/zip_demo.yml'],
     'category': 'Localization',
-    'installable': False,
+    'installable': True,
 }
