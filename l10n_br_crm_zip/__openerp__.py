@@ -34,6 +34,6 @@
         'views/crm_opportunity_view.xml',
     ],
     'test': ['test/crm_zip_test.yml'],
-    'installable': False,
+    'installable': True,
     'auto_install': True,
 }
