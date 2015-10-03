@@ -7,8 +7,8 @@
 			<field name="model">res.company</field>
 			<field name="inherit_id" ref="base.view_company_form" />
 			<field name="arch" type="xml">
-				<notebook>
-					<page position="inside" string="Fiscal">
+				<xpath expr="//form/sheet/notebook" position="inside">
+					<page name="fiscal" string="Fiscal">
 						<notebook>
 							<page string="Dados Fiscais">
 								<group>
@@ -35,7 +35,7 @@
 							</page>
 						</notebook>
 					</page>
-				</notebook>
+				</xpath>
 			</field>
 		</record>
 

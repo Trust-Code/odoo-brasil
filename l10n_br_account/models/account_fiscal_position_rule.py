@@ -23,41 +23,6 @@ from openerp import api, models, fields, api, _
 import openerp.addons.decimal_precision as dp
 from .res_company import COMPANY_FISCAL_TYPE, COMPANY_FISCAL_TYPE_DEFAULT
 
-# FISCAL_RULE_COLUMNS = {
-#     'partner_fiscal_type_id': fields.many2one(
-#         'l10n_br_account.partner.fiscal.type', 'Tipo Fiscal do Parceiro'),
-#     'fiscal_category_id': fields.many2one(
-#         'l10n_br_account.fiscal.category', 'Categoria'),
-#     'fiscal_type': fields.selection(COMPANY_FISCAL_TYPE,
-#         u'Regime Tributário', required=True),
-#     'revenue_start': fields.float(
-#         'Faturamento Inicial', digits_compute=dp.get_precision('Account'),
-#         help="Faixa inicial de faturamento bruto"),
-#     'revenue_end': fields.float(
-#         'Faturamento Final', digits_compute=dp.get_precision('Account'),
-#         help="Faixa inicial de faturamento bruto")
-# }
-#
-# OTHERS_FISCAL_RULE_COLUMNS_TEMPLATE = {
-#     'parent_id': fields.many2one(
-#             'account.fiscal.position.rule.template', 'Regra Pai'),
-#     'child_ids': fields.one2many(
-#             'account.fiscal.position.rule.template',
-#             'parent_id', 'Regras Filhas'),
-# }
-#
-# OTHERS_FISCAL_RULE_COLUMNS = {
-#     'parent_id': fields.many2one(
-#             'account.fiscal.position.rule', 'Regra Pai'),
-#     'child_ids': fields.one2many(
-#             'account.fiscal.position.rule', 'parent_id', 'Regras Filhas'),
-# }
-
-# FISCAL_RULE_DEFAULTS = {
-#     'fiscal_type': COMPANY_FISCAL_TYPE_DEFAULT,
-#     'revenue_start': 0.00,
-#     'revenue_end': 0.00
-# }
 
 
 class AccountFiscalPositionRuleTemplate(models.Model):

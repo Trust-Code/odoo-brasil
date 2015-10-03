@@ -17,11 +17,6 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-import l10n_br_account
-import sped
-import res_company
-import res_partner
-import account
-import account_invoice
-import product
-import account_fiscal_position_rule
+
+from . import models
+from . import sped

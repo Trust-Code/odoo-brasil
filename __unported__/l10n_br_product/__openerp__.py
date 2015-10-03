@@ -37,7 +37,6 @@
         'l10n_br_product_demo.xml',
     ],
     'test': [],
-    'installable': False,
-    'active': False,
+    'installable': True,    
     'auto_install': True,
 }

@@ -132,10 +132,11 @@ class AccountFiscalPositionTaxTemplate(models.Model):
     _inherit = 'account.fiscal.position.tax.template'
 
     tax_src_id = fields.Many2one('account.tax.template', string='Tax Source')
-    tax_code_src_id = fields.Many2one('account.tax.code.template',
+    tax_code_src_id = fields.Many2one('account.tax.group',
                                         string=u'Código Taxa Origem')
-    tax_src_domain = fields.Char(related='tax_src_id.domain')
-    tax_code_dest_id = fields.Many2one('account.tax.code.template',
+    #TODO FIXME
+    #tax_src_domain = fields.Char(related='tax_src_id.domain')
+    tax_code_dest_id = fields.Many2one('account.tax.group',
                                         string='Replacement Tax Code')
 
     def _tax_domain(self, cr, uid, ids, tax_src_id=False,
@@ -326,10 +327,11 @@ class AccountFiscalPositionTax(models.Model):
 
     tax_src_id = fields.Many2one('account.tax', string='Tax Source')
     tax_code_src_id = fields.Many2one(
-        'account.tax.code', string=u'Código Taxa Origem')
-    tax_src_domain = fields.Char(related='tax_src_id.domain')
+        'account.tax.group', string=u'Código Taxa Origem')
+    #TODO FIXME
+    #tax_src_domain = fields.Char(related='tax_src_id.domain')
     tax_code_dest_id = fields.Many2one(
-        'account.tax.code', string='Replacement Tax Code')
+        'account.tax.group', string='Replacement Tax Code')
 
     def _tax_domain(self, cr, uid, ids, tax_src_id=False,
                     tax_code_src_id=False, context=None):

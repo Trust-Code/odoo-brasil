@@ -419,8 +419,8 @@
 					<sheet>
 						<group>
 							<field name="tax_id" on_change="onchange_tax_id(tax_id)" select="1" />
-							<field name="tax_domain" invisible="1"/>
-							<field name="tax_code_id" select="1" />
+<!-- 							<field name="tax_domain" invisible="1"/> -->
+<!-- 							<field name="tax_code_id" select="1" /> -->
 						</group>
 					</sheet>
 				</form>
@@ -433,8 +433,8 @@
 			<field name="arch" type="xml">
 				<tree string="Tax Definition">
 					<field name="tax_id" select="1"/>
-					<field name="tax_domain" invisible="1"/>
-					<field name="tax_code_id" on_change="onchange_tax_id(tax_id)" domain="[('domain', '=', tax_domain)]" select="1" />
+<!-- 					<field name="tax_domain" invisible="1"/> -->
+<!-- 					<field name="tax_code_id" on_change="onchange_tax_id(tax_id)" domain="[('domain', '=', tax_domain)]" select="1" /> -->
 				</tree>
 			</field>
 		</record>

@@ -418,9 +418,10 @@ class L10n_brTaxDefinitionTemplate(models.Model):
 
     tax_id = fields.Many2one(
         'account.tax.template', 'Imposto', required=True)
-    tax_domain = fields.Char(related='tax_id.domain')
+    #TODO FIXME
+    #tax_domain = fields.Char(related='tax_id.domain')
     tax_code_id = fields.Many2one(
-        'account.tax.code.template', u'Código de Imposto')
+        'account.tax.group', u'Código de Imposto')
 
     def onchange_tax_id(self, cr, uid, ids, tax_id=False, context=None):
         tax_domain = False
@@ -434,9 +435,10 @@ class L10n_brTaxDefinition(models.Model):
     _name = 'l10n_br_tax.definition'
 
     tax_id = fields.Many2one('account.tax', 'Imposto', required=True)
-    tax_domain = fields.Char(related='tax_id.domain')
+    #TODO FIXME
+    #tax_domain = fields.Char(related='tax_id.domain')
     tax_code_id = fields.Many2one(
-        'account.tax.code', u'Código de Imposto')
+        'account.tax.group', u'Código de Imposto')
     company_id = fields.Many2one(
         related='tax_id.company_id', readonly=True,
         store=True, string='Empresa')

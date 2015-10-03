@@ -11,15 +11,11 @@
 					<field name="fiscal_type" invisible="1"/>
 					<field name="fiscal_document_electronic" invisible="1"/>
 				</field>
-				<!-- Remove fields in inherited view -->
-				<field position="replace" name="internal_number">
-				</field>
-				<page string="Payments" position="before">
+				<xpath expr="//form/sheet/notebook/page" position="after">
 					<page string="Vencimentos">
 						<field colspan="4" nolabel="1" name="move_line_receivable_id">
                             <tree string="Vencimentos">
-                                <field name="journal_id"/>
-                                <field name="period_id"/>
+                                <field name="journal_id"/>                                
                                 <field name="date"/>
                                 <field name="date_maturity"/>
                                 <field name="name"/>
@@ -27,18 +23,17 @@
                                 <field name="partner_id"/>
                                 <field name="move_id"/>
                                 <field name="debit"/>
-                                <field name="credit"/>
-                                <field name="reconcile_ref"/>
+                                <field name="credit"/>                                
                             </tree>
                         </field>
 					</page>
-				</page>
+				</xpath>
 				<field position="attributes" name="journal_id">
 					<attribute name="on_change">onchange_journal_id(journal_id, context)</attribute>
 				</field>
-				<field position="replace" name="fiscal_position">
+				<field position="replace" name="fiscal_position_id">
 					<field name="fiscal_category_id" on_change="onchange_fiscal_category_id(partner_id, partner_id, company_id, fiscal_category_id)" domain="[('journal_type','in',('sale',)),('fiscal_type','=','service')]" required="1" />
-					<field name="fiscal_position" required="1" domain="[('fiscal_category_id', '=', fiscal_category_id)]" groups="base.group_extended,base.group_user" />
+					<field name="fiscal_position_id" required="1" domain="[('fiscal_category_id', '=', fiscal_category_id)]" groups="base.group_extended,base.group_user" />
 				</field>
 				<field name="partner_id" position="attributes">
 					<attribute name="context_br">{'fiscal_category_id': fiscal_category_id}</attribute>
@@ -53,13 +48,13 @@
 					<field name="fiscal_document_id" required="1" on_change="onchange_fiscal_document_id(fiscal_document_id, company_id, issuer, fiscal_type)"/>
 					<field name="issuer" attrs="{'invisible': [('type', '=', 'out_invoice')]}" />
 				</field>
-				<xpath expr="//tree[@string='Invoice Lines']" position="attributes">
+				<xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
 					<attribute name="editable"></attribute>
 				</xpath>
-				<xpath expr="//field[@name='invoice_line']/tree/field[@name='price_subtotal']" position="replace">
+				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="replace">
 					<field name="price_total" />
 				</xpath>
-				<xpath expr="//field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position="attributes">
+				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
 			</field>
@@ -89,13 +84,13 @@
 			<field name="domain">[('type', '=', 'in_invoice'), ('fiscal_type', '=', 'service')]</field>
 		</record>
 
-		<record id="account.action_invoice_tree3" model="ir.actions.act_window">
-			<field name="domain">[('type', '=', 'out_refund'), ('fiscal_type', '=', 'service')]</field>
-		</record>
+<!-- 		<record id="account.action_invoice_tree3" model="ir.actions.act_window"> -->
+<!-- 			<field name="domain">[('type', '=', 'out_refund'), ('fiscal_type', '=', 'service')]</field> -->
+<!-- 		</record> -->
 
-		<record id="account.action_invoice_tree4" model="ir.actions.act_window">
-			<field name="domain">[('type', '=', 'in_refund'), ('fiscal_type', '=', 'service')]</field>
-		</record>
+<!-- 		<record id="account.action_invoice_tree4" model="ir.actions.act_window"> -->
+<!-- 			<field name="domain">[('type', '=', 'in_refund'), ('fiscal_type', '=', 'service')]</field> -->
+<!-- 		</record> -->
 
 		<record id="account.action_invoice_tree_pending_invoice" model="ir.actions.act_window">
 			<field name="domain">[('type', '=', 'out_invoice'), ('fiscal_type', '=', 'service')]</field>
@@ -107,12 +102,11 @@
 			<field name="model">account.invoice</field>
 			<field name="inherit_id" ref="account.invoice_supplier_form" />
 			<field name="arch" type="xml">
-				<page string="Payments" position="before">
+				<xpath expr="//form/sheet/notebook/page" position="after">
 					<page string="Vencimentos">
 						<field colspan="4" nolabel="1" name="move_line_receivable_id">
                             <tree string="Vencimentos">
-                                <field name="journal_id"/>
-                                <field name="period_id"/>
+                                <field name="journal_id"/>                                
                                 <field name="date"/>
                                 <field name="date_maturity"/>
                                 <field name="name"/>
@@ -120,19 +114,16 @@
                                 <field name="partner_id"/>
                                 <field name="move_id"/>
                                 <field name="debit"/>
-                                <field name="credit"/>
-                                <field name="reconcile_ref"/>
+                                <field name="credit"/>                                
                             </tree>
                         </field>
 					</page>
-				</page>
+				</xpath>
 				<field position="attributes" name="journal_id">
 					<attribute name="on_change">onchange_journal_id(journal_id, context)</attribute>
 				</field>
 				<field name="partner_id" position="attributes">
 					<attribute name="context_br">{'fiscal_category_id': fiscal_category_id}</attribute>
-				</field>
-				<field position="replace" name="internal_number">
 				</field>
 				<field position="attributes" name="company_id">
 					<attribute name="on_changes">onchange_company_id(company_id, partner_id, type, invoice_line, currency_id, fiscal_category_id)</attribute>
@@ -144,19 +135,19 @@
 					<field name="fiscal_document_id" required="1" on_change="onchange_fiscal_document_id(fiscal_document_id, company_id, issuer, fiscal_type)"/>
 					<field name="issuer" attrs="{'invisible': [('type', '=', 'out_invoice')]}" />
 				</field>
-				<field position="replace" name="fiscal_position">
+				<field position="replace" name="fiscal_position_id">
 					<field name="fiscal_category_id" on_change="onchange_fiscal_category_id(partner_id, partner_id, company_id, fiscal_category_id)" domain="[('journal_type','in',('purchase',)),('fiscal_type','=','service')]" required="1" />
-					<field name="fiscal_position" required="1" domain="[('fiscal_category_id', '=', fiscal_category_id)]" groups="base.group_extended,base.group_user" />
+					<field name="fiscal_position_id" required="1" domain="[('fiscal_category_id', '=', fiscal_category_id)]" groups="base.group_extended,base.group_user" />
 					<field name="fiscal_type" invisible="1"/>
 					<field name="fiscal_document_electronic" invisible="1"/>
 				</field>
-				<xpath expr="//tree[@string='Invoice lines']" position="attributes">
+				<xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
 					<attribute name="editable"></attribute>
 				</xpath>
-				<xpath expr="//field[@name='invoice_line']/tree/field[@name='price_subtotal']" position="replace">
+				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="replace">
 					<field name="price_total" />
 				</xpath>
-				<xpath expr="//field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position="attributes">
+				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
 			</field>

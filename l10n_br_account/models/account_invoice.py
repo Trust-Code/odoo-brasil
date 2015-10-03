@@ -44,22 +44,22 @@ JOURNAL_TYPE = {
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-
-    @api.one
-    @api.depends(
-        'move_id.line_id'
-    )
-    def _get_receivable_lines(self):
-        if self.move_id:
-            data_lines = [x for x in self.move_id.line_id if (
-                x.account_id.id == self.account_id.id
-                and x.account_id.type in ('receivable', 'payable')
-                and self.journal_id.revenue_expense)]
-            New_ids = []
-            for line in data_lines:
-                New_ids.append(line.id)
-                New_ids.sort()
-            self.move_line_receivable_id = New_ids
+    #TODO FIXME
+    #@api.one
+    #@api.depends(
+    #    'move_id.line_id'
+    #)
+    #def _get_receivable_lines(self):
+    #    if self.move_id:
+    #        data_lines = [x for x in self.move_id.line_id if (
+    #           x.account_id.id == self.account_id.id
+    #            and x.account_id.type in ('receivable', 'payable')
+    #            and self.journal_id.revenue_expense)]
+    #        New_ids = []
+    #        for line in data_lines:
+    #            New_ids.append(line.id)
+    #            New_ids.sort()
+    #        self.move_line_receivable_id = New_ids
 
     def _default_fiscal_document(self):
         fiscal_document = self.env.user.company_id.service_invoice_id
@@ -412,12 +412,12 @@ class AccountInvoiceLine(models.Model):
 
 
     @api.one
-    @api.depends('price_unit', 'discount', 'invoice_line_tax_id', 'quantity',
+    @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
                  'product_id', 'invoice_id.partner_id',
                  'invoice_id.currency_id', 'fiscal_position')
     def _compute_price(self):
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
-        taxes = self.invoice_line_tax_id.compute_all(
+        taxes = self.invoice_line_tax_ids.compute_all(
             price, self.quantity, product=self.product_id, partner=self.invoice_id.partner_id,
             fiscal_position=self.fiscal_position)
         self.price_subtotal = taxes['total'] - taxes['total_tax_discount']
@@ -503,7 +503,7 @@ class AccountInvoiceLine(models.Model):
                                 kwargs.get('account_id',
                                            False)).tax_ids or False)
                 tax_ids = obj_fp.map_tax(taxes).ids
-                result_rule['value']['invoice_line_tax_id'] = tax_ids
+                result_rule['value']['invoice_line_tax_ids'] = tax_ids
                 result['value'].update(
                     self._get_tax_codes(kwargs.get('product_id'), obj_fp,
                                         tax_ids, kwargs.get('company_id')))
@@ -547,7 +547,7 @@ class AccountInvoiceLine(models.Model):
             'quantity': qty,
             'price_unit': price_unit,
             'fiscal_position': result['value'].get('fiscal_position'),
-            'invoice_line_tax_id': [[6, 0, result['value'].get('invoice_line_tax_id')]],
+            'invoice_line_tax_ids': [[6, 0, result['value'].get('invoice_line_tax_ids')]],
         }
         result['value'].update(self._validate_taxes(values))
         return result
