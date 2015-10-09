@@ -49,17 +49,17 @@ class AccountInvoice(models.Model):
     #@api.depends(
     #    'move_id.line_id'
     #)
-    #def _get_receivable_lines(self):
-    #    if self.move_id:
-    #        data_lines = [x for x in self.move_id.line_id if (
-    #           x.account_id.id == self.account_id.id
-    #            and x.account_id.type in ('receivable', 'payable')
-    #            and self.journal_id.revenue_expense)]
-    #        New_ids = []
-    #        for line in data_lines:
-    #            New_ids.append(line.id)
-    #            New_ids.sort()
-    #        self.move_line_receivable_id = New_ids
+    def _get_receivable_lines(self):
+        if self.move_id:
+            data_lines = [x for x in self.move_id.line_id if (
+               x.account_id.id == self.account_id.id
+                and x.account_id.type in ('receivable', 'payable')
+                and self.journal_id.revenue_expense)]
+            New_ids = []
+            for line in data_lines:
+                New_ids.append(line.id)
+                New_ids.sort()
+            self.move_line_receivable_id = New_ids
 
     def _default_fiscal_document(self):
         fiscal_document = self.env.user.company_id.service_invoice_id
