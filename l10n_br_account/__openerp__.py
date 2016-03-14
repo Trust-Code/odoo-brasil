@@ -27,9 +27,7 @@
     'version': '8.0',
     'depends': [
         'l10n_br',
-        'l10n_br_base',        
-        'account_fiscal_position_rule',
-        'web_context_tunnel',
+        'l10n_br_base',
     ],
     'data': [
         'workflow/l10n_br_account_workflow.xml',
@@ -37,7 +35,6 @@
         'data/l10n_br_account.fiscal.document.csv',
         'data/l10n_br_account_data.xml',
         'views/account_view.xml',
-        'views/account_fiscal_position_rule_view.xml',
         'views/account_invoice_view.xml',
         'views/l10n_br_account_view.xml',
         'views/res_partner_view.xml',

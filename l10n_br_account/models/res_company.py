@@ -59,6 +59,3 @@ class ResCompany(models.Model):
         'company_id', 'cnae_id', u'CNAE Segundários')
     ecnpj_a1_file = fields.Binary('Arquivo e-CNPJ A1')
     ecnpj_a1_password = fields.Char('Senha e-CNPJ A1', size=64)
-    fiscal_rule_parent_id = fields.Many2one(
-        'account.fiscal.position.rule', u'Conjunto de Regras Fiscais',
-        domain="[('parent_id', '=', False)]")

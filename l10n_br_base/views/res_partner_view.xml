@@ -77,9 +77,9 @@
 				<field name="zip" position="attributes">
 					<attribute name="style">width: 50%</attribute>
 				</field>
-				<notebook>
-					<page position="inside">
-						<group string="Dados Fiscais">
+				<notebook position="inside">
+					<page string="Dados Fiscais">
+						<group>
 							<group>
 								<div>
 									<label for="inscr_est" string="Inscr. Estadual"
@@ -109,7 +109,7 @@
 				<xpath
 					expr="//form/sheet/group/group/div/field[@name='state_id']"
 					position="after">
-					<field name="l10n_br_city_id" placeholder="Cidade" style="width: 40%%" />
+					<field name="l10n_br_city_id" placeholder="Cidade" style="width: 40%" />
 				</xpath>
 				<xpath
 					expr="//form/sheet/group/group/div/field[@name='city']"
