@@ -25,3 +25,10 @@ def punctuation_rm(string_value):
     tmp_value = (re.sub('[%s]' % re.escape(string.punctuation), '',
                         string_value or ''))
     return tmp_value
+
+
+def calc_price_ratio(price_gross, amount_calc, amount_total):
+    if amount_total:
+        return price_gross * amount_calc / amount_total
+    else:
+        return 0.0
