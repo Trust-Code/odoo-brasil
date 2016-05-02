@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="l10n_br_account_position_form" model="ir.ui.view">
+			<field name="name">l10n_br_account.fiscal.position.form</field>
+			<field name="model">account.fiscal.position</field>
+			<field name="inherit_id" ref="account.view_account_position_form"/>
+			<field name="arch" type="xml">
+				<field name="auto_apply" position="before">
+                    <field name="fiscal_category_fiscal_type" select="1"/>
+                    <field name="type" required="1" />
+                </field>
+                <page name="tax_mapping" position="before">
+                    <page name="fiscal" string="Fiscal">
+                        <group>
+                            <field name="inv_copy_note" colspan="4"/>
+                            <field name="note" colspan="4" nolabel="1"/>
+                        </group>
+                    </page>
+                </page>
+			</field>
+		</record>
+
+    </data>
+</openerp>

@@ -1,0 +1,13 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"l10n_br_account_fiscal_document","l10n_br_account.fiscal.document","model_l10n_br_account_fiscal_document","account.group_account_manager",1,1,1,1
+"l10n_br_account_document_serie","l10n_br_account.document.serie","model_l10n_br_account_document_serie","account.group_account_manager",1,1,1,1
+"l10n_br_account_cnae","l10n_br_account.cnae","model_l10n_br_account_cnae","account.group_account_manager",1,1,1,1
+"l10n_br_account_service_type","l10n_br_account.service.type","model_l10n_br_account_service_type","account.group_account_manager",1,1,1,1
+"l10n_br_account_fiscal_document_user","l10n_br_account.fiscal.document","model_l10n_br_account_fiscal_document","account.group_account_user",1,0,0,0
+"l10n_br_account_document_serie_user","l10n_br_account.document.serie","model_l10n_br_account_document_serie","account.group_account_user",1,0,0,0
+"l10n_br_account_cnae_user","l10n_br_account.cnae","model_l10n_br_account_cnae","account.group_account_user",1,0,0,0
+"l10n_br_account_service_type_user","l10n_br_account.service.type","model_l10n_br_account_service_type","account.group_account_user",1,0,0,0
+"l10n_br_account_fiscal_document_invoice","l10n_br_account.fiscal.document","model_l10n_br_account_fiscal_document","account.group_account_invoice",1,0,0,0
+"l10n_br_account_document_serie_invoice","l10n_br_account.document.serie","model_l10n_br_account_document_serie","account.group_account_invoice",1,0,0,0
+"l10n_br_account_cnae_invoice","l10n_br_account.cnae","model_l10n_br_account_cnae","account.group_account_invoice",1,0,0,0
+"l10n_br_account_service_type_invoice","l10n_br_account.service.type","model_l10n_br_account_service_type","account.group_account_invoice",1,0,0,0

@@ -125,39 +125,28 @@ class SaleOrder(models.Model):
             for sale_line in sale_order.order_line:
                 sale_line.discount = sale_order.discount_rate
 
-    @api.model
-    def _fiscal_comment(self, order):
+    def _fiscal_comment(self):
         fp_comment = []
         fp_ids = []
 
-        for line in order.order_line:
-            if line.fiscal_position and \
-                    line.fiscal_position.inv_copy_note and \
-                    line.fiscal_position.note:
-                if line.fiscal_position.id not in fp_ids:
-                    fp_comment.append(line.fiscal_position.note)
-                    fp_ids.append(line.fiscal_position.id)
+        for line in self.order_line:
+            if line.fiscal_position_id and \
+                    line.fiscal_position_id.inv_copy_note and \
+                    line.fiscal_position_id.note:
+                if line.fiscal_position_id.id not in fp_ids:
+                    fp_comment.append(line.fiscal_position_id.note)
+                    fp_ids.append(line.fiscal_position_id.id)
 
         return fp_comment
 
-    @api.model
-    def _prepare_invoice(self, order, lines):
-        """Prepare the dict of values to create the new invoice for a
-           sale order. This method may be overridden to implement custom
-           invoice generation (making sure to call super() to establish
-           a clean extension chain).
-
-           :param browse_record order: sale.order record to invoice
-           :param list(int) line: list of invoice line IDs that must be
-                                  attached to the invoice
-           :return: dict of value to create() the invoice
-        """
-        result = super(SaleOrder, self)._prepare_invoice(order, lines)
+    @api.multi
+    def _prepare_invoice(self):
+        result = super(SaleOrder, self)._prepare_invoice()
         comment = []
-        if order.note and order.copy_note:
-            comment.append(order.note)
+        if self.note and self.copy_note:
+            comment.append(self.note)
 
-        fiscal_comment = self._fiscal_comment(order)
+        fiscal_comment = self._fiscal_comment()
         result['comment'] = " - ".join(comment)
         result['fiscal_comment'] = " - ".join(fiscal_comment)
         return result
