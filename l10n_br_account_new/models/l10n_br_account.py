@@ -105,3 +105,14 @@ class L10nBrAccountCNAE(models.Model):
                 name = record['code'] + ' - ' + name
             result.append((record['id'], name))
         return result
+
+
+class L10nBrTaxDefinition(object):
+    _name = 'l10n_br_tax.definition'
+
+    tax_id = fields.Many2one('account.tax', string='Imposto', required=True)
+    tax_domain = fields.Char('Tax Domain', store=True)
+    tax_cst = fields.Char(u'Código de Imposto')
+    company_id = fields.Many2one('res.company', string='Company',
+                                 related='tax_id.company_id',
+                                 store=True, readonly=True)
