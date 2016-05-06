@@ -14,6 +14,9 @@
                     <field name="issuer" attrs="{'invisible': [('type', '=', 'out_invoice')]}" />
                     <field name="vendor_serie" attrs="{'invisible': [('issuer', '=', '0')], 'required': [('issuer', '=', '1')]}" />
                 </field>
+				<field name="invoice_line_ids" position="attributes">
+					<attribute name="editable"/>
+				</field>
 			</field>
 		</record>
 

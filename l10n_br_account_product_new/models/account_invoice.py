@@ -50,13 +50,12 @@ class AccountInvoice(models.Model):
         self.amount_untaxed = sum(
             line.price_total for line in self.invoice_line_ids)
         self.amount_tax = sum(tax.amount
-                              for tax in self.tax_line_ids
-                              if not tax.tax_code_id.tax_discount)
+                              for tax in self.tax_line_ids)
         self.amount_total = self.amount_tax + self.amount_untaxed + \
             self.amount_costs + self.amount_insurance + self.amount_freight
 
         for line in self.invoice_line_ids:
-            if line.icms_cst_id.code not in (
+            if line.icms_cst not in (
                     '101', '102', '201', '202', '300', '500'):
                 self.icms_base += line.icms_base
                 self.icms_base_other += line.icms_base_other
@@ -71,7 +70,7 @@ class AccountInvoice(models.Model):
     @api.model
     def _default_fiscal_document(self):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.product_invoice_id
+        return company.fiscal_document_for_product_id
 
     @api.model
     def _default_fiscal_document_serie(self):
@@ -89,7 +88,7 @@ class AccountInvoice(models.Model):
     @api.one
     @api.depends('invoice_line_ids.cfop_id')
     def _compute_cfops(self):
-        lines = self.env['l10n_br_account_product_new.cfop']
+        lines = self.env['l10n_br_account_product.cfop']
         for line in self.invoice_line_ids:
             if line.cfop_id:
                 lines |= line.cfop_id
@@ -298,6 +297,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_date_assign(self):
+        import ipdb; ipdb.set_trace()
         for invoice in self:
             if invoice.date_hour_invoice:
                 aux = datetime.datetime.strptime(
@@ -364,25 +364,12 @@ class AccountInvoiceLine(models.Model):
     def _compute_price(self):
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = self.invoice_line_tax_ids.compute_all(
-            price, self.quantity, product=self.product_id,
-            partner=self.invoice_id.partner_id,
-            fiscal_position_id=self.fiscal_position_id,
-            insurance_value=self.insurance_value,
-            freight_value=self.freight_value,
-            other_costs_value=self.other_costs_value)
-        self.price_subtotal = 0.0
-        self.price_total = 0.0
-        self.price_gross = 0.0
+            price, self.currency_id, self.quantity, product=self.product_id,
+            partner=self.invoice_id.partner_id)
+        self.price_subtotal = taxes['total_excluded']
+        self.price_total = taxes['total_included']
+        self.price_gross = taxes['base']
         self.discount_value = 0.0
-        if self.invoice_id:
-            self.price_subtotal = self.invoice_id.currency_id.round(
-                taxes['total'] - taxes['total_tax_discount'])
-            self.price_total = self.invoice_id.currency_id.round(
-                taxes['total'])
-            self.price_gross = self.invoice_id.currency_id.round(
-                self.price_unit * self.quantity)
-            self.discount_value = self.invoice_id.currency_id.round(
-                self.price_gross - taxes['total'])
 
     date_invoice = fields.Datetime(
         'Invoice Date', readonly=True, states={'draft': [('readonly', False)]},
@@ -755,11 +742,8 @@ class AccountInvoiceLine(models.Model):
             result['icms_origin'] = product.origin
 
         taxes_calculed = taxes.compute_all(
-            price, quantity, product, partner,
-            fiscal_position_id=fiscal_position_id,
-            insurance_value=insurance_value,
-            freight_value=freight_value,
-            other_costs_value=other_costs_value)
+            price, currency=None, quantity=quantity, product=product,
+            partner=partner)
 
         result['total_taxes'] = taxes_calculed['total_taxes']
 

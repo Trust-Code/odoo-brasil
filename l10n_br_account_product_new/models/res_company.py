@@ -32,6 +32,8 @@ class ResCompany(models.Model):
     product_tax_ids = fields.Many2many(
         'account.tax', string='Product Taxes', compute='_compute_taxes',
         store=True)
+    fiscal_document_for_product_id = fields.Many2one(
+        'l10n_br_account.fiscal.document', "Documento Fiscal para produto")
 
 
 class L10nBrTaxDefinitionCompanyProduct(L10nBrTaxDefinition, models.Model):
