@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="invoice_eletronic_item_form" model="ir.ui.view">
+            <field name="name">invoice.eletronic.item.form</field>
+            <field name="model">invoice.eletronic.item</field>
+            <field name="arch" type="xml">
+                <form string="Item Documento">
+                    <group>
+                        <group>
+                            <field name="product_id" />
+                            <field name="uom_id" />
+                            <field name="quantity" />
+                            <field name="unit_price" />
+                            <field name="gross_total" />
+                            <field name="discount" />
+                            <field name="insurance_value" />
+                            <field name="freight_value" />
+                            <field name="other_expenses" />
+                            <field name="total" />
+                        </group>
+                        <group>
+                            <field name="cfop" />
+                            <field name="tax_icms_id" />
+                            <field name="tax_ipi_id" />
+                            <field name="tax_pis_id" />
+                            <field name="tax_cofins_id" />
+                            <field name="tax_issqn_id" />
+                            <field name="tax_csll_id" />
+                            <field name="tax_inss_id" />
+                            <field name="tax_ii_id" />
+                            <field name="tax_irrf_id" />
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="sped_base_eletronic_doc_form" model="ir.ui.view">
+            <field name="name">sped.base.eletronic.doc.form</field>
+            <field name="model">invoice.eletronic</field>
+            <field name="arch" type="xml">
+                <form string="Documento Eletrônico">
+                    <header>
+                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet string="Documento Eletronico">
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="invoice_partner_id"/>
+                                <field name="shipping_partner_id"/>
+                            </group>
+                            <group>
+                                <field name="payment_id"/>
+                                <field name="fiscal_position_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id"/>
+                                <field name="model"/>
+                                <field name="serie"/>
+                                <field name="numero"/>
+                                <field name="numero_controle"/>
+                            </group>
+                            <group>
+                                <field name="data_emissao"/>
+                                <field name="data_fatura"/>
+                                <field name="data_autorizacao"/>
+                                <field name="ambiente"/>
+                                <field name="finalidade_emissao"/>
+                                <field name="consumidor_final"/>
+                            </group>
+                        </group>
+                        <field name="eletronic_item_ids">
+                            <tree name="eletronic_items">
+                                <field name="product_id" />
+                                <field name="uom_id" />
+                                <field name="cfop" />
+                                <field name="quantity" />
+                                <field name="unit_price" />
+                                <field name="total" />
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sped_base_eletronic_doc_tree" model="ir.ui.view">
+            <field name="name">sped.eletronic.doc.form</field>
+            <field name="model">invoice.eletronic</field>
+            <field name="arch" type="xml">
+                <tree string="Documentos Eletrônicos">
+                    <field name="model"/>
+                    <field name="numero"/>
+                    <field name="partner_id"/>
+                    <field name="valor_final"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="action_sped_base_eletronic_doc" model="ir.actions.act_window">
+            <field name="name">Documentos Eletrônicos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.eletronic</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sped_base_eletronic_doc_tree"/>
+        </record>
+
+        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="l10n_br_account_new.menu_l10n_br_account"
+                  action="action_sped_base_eletronic_doc" sequence="5"/>
+
+    </data>
+</openerp>
