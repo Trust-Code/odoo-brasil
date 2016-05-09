@@ -23,7 +23,7 @@
 import re
 
 from openerp import models, fields, api, _
-from ..tools import fiscal
+from openerp.addons.l10n_br_base.tools import fiscal
 from openerp.exceptions import Warning
 
 
@@ -191,14 +191,14 @@ class ResPartner(models.Model):
 
 class ResBank(models.Model):
     _inherit = 'res.bank'
-    
+
     number = fields.Char(u'Número', size=10)
     street2 = fields.Char('Street2', size=128)
     district = fields.Char('Bairro', size=32)
     l10n_br_city_id = fields.Many2one(comodel_name='l10n_br_base.city',
                                       string='Municipio',
                                       domain="[('state_id','=',state_id)]")
-    
+
     @api.onchange('l10n_br_city_id')
     def onchange_l10n_br_city_id(self):
         """ Ao alterar o campo l10n_br_city_id que é um campo relacional

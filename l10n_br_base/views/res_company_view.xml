@@ -17,7 +17,7 @@
 					<field name="number" placeholder="número"/>
 					<field name="street2" placeholder="complemento"/>
 					<field name="district" placeholder="bairro"/>
-				</field>				
+				</field>
 				<field name="state_id" position="attributes">
 					<attribute name="domain">[('country_id','=',country_id)]</attribute>
                     <attribute name="style">width: 100%</attribute>
@@ -25,7 +25,7 @@
 				<field name="parent_id" position="before">
 					<field name="legal_name" placeholder="Razão Social"/>
 				</field>
-				 <field name="country_id" position="replace"/>
+				<field name="country_id" position="replace"/>
         		<field name="state_id" position="before">
                     <field name="country_id" placeholder="Pais"/>
         		</field>

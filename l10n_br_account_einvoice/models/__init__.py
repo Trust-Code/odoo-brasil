@@ -21,4 +21,5 @@
 
 
 from . import invoice_eletronic
+from . import res_company
 from . import sped_tax
