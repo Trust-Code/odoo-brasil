@@ -47,8 +47,9 @@ class ResPartner(models.Model):
          u'Já existe um parceiro cadastrado com este CPF/CNPJ!')
     ]
 
-    @api.model
-    def _display_address(self, address, without_company=False):
+    @api.multi
+    def _display_address(self, without_company=False):
+        address = self
 
         if address.country_id and address.country_id.code != 'BR':
             # this ensure other localizations could do what they want
