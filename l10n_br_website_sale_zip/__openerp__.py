@@ -3,9 +3,9 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Website Sale Checkout Fields for Brazil',
-    'summary': """Adds fields to e-commerce checkout""",
-    'version': '10.0.1.0.0',
+    'name': 'Website Sale Checkout Zip Search for Brazil',
+    'summary': """Adds zip search to e-commerce checkout""",
+    'version': '1.0',
     'category': 'Website',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -14,7 +14,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'l10n_br_base', 'website_sale'
+        'l10n_br_zip', 'l10n_br_website_sale'
     ],
     'data': [
         'views/website_sale_view.xml',
