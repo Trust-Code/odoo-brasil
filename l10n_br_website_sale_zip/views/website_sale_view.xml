@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop BR Zip">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/l10n_br_website_sale_zip/static/src/css/website_sale.css" type="text/css" />
+                <script type="text/javascript" src="/l10n_br_website_sale_zip/static/src/js/website_sale.js"></script>
+            </xpath>
+        </template>
+
+        <template id="l10n_br_website_sale_zip_checkout" inherit_id="website_sale.checkout"
+            name="Website Sale Checkout BR ZIP">
+
+            <xpath expr="//label[@for='zip']/parent::div" position="after">
+                <div class="form-group col-lg-1 zip-search">
+                    <a id="btn_search_zip" class="btn btn-primary">
+                        <span class="fa fa-search" />
+                    </a>
+                </div>
+            </xpath>
+
+            <xpath expr="//label[@for='shipping_zip']/parent::div" position="after">
+                <div class="form-group col-lg-1 zip-search">
+                    <a id="btn_search_zip_shipping" class="btn btn-primary">
+                        <span class="fa fa-search" />
+                    </a>
+                </div>
+            </xpath>
+
+        </template>
+    </data>
+</openerp>
