@@ -30,6 +30,13 @@ class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
     @api.multi
+    def _validate_eletronic_invoice(self):
+        errors = []
+        
+        if len(errors) > 0:
+            raise Warning('Validação não passou')
+
+    @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
         prod = {
             'cProd': 22,
@@ -211,6 +218,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
+        self._validate_eletronic_invoice()
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(1, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
@@ -220,6 +228,9 @@ class InvoiceEletronic(models.Model):
             cert_pfx, self.company_id.nfe_a1_password)
 
         autorizacao = NfeAutorizacao(cert, key)
-        xml = autorizacao.autorizar_nfe(
+        resposta = autorizacao.autorizar_nfe(
             lote, 'NFe43160502261542000143550010000003391162550863')
-        print xml
+
+        self.codigo_retorno = resposta['object'].retEnviNFe.cStat
+        self.mensagem_retorno = resposta['object'].retEnviNFe.xMotivo
+        

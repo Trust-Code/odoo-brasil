@@ -27,9 +27,9 @@
     'version': '10.0.1.0.0',
     'depends': [
         'base',
+        'sales_team',
     ],
     'data': [
-        'data/res.country.state.csv',
         'data/l10n_br_base.city.csv',
         'data/l10n_br_base_data.xml',
         'views/l10n_br_base_view.xml',

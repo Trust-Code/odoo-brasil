@@ -47,14 +47,13 @@ class ResPartner(models.Model):
          u'Já existe um parceiro cadastrado com este CPF/CNPJ!')
     ]
 
-    @api.multi
-    def _display_address(self, without_company=False):
+    @api.v8
+    def _display_address(self, without_company=False):    
         address = self
 
         if address.country_id and address.country_id.code != 'BR':
             # this ensure other localizations could do what they want
             return super(ResPartner, self)._display_address(
-                address,
                 without_company=False)
         else:
             address_format = (
@@ -99,7 +98,7 @@ class ResPartner(models.Model):
     def _validate_ie_param(self, uf, inscr_est):
         try:
             mod = __import__(
-                'tools.fiscal', globals(), locals(), 'fiscal')
+                'openerp.addons.l10n_br_base.tools.fiscal', globals(), locals(), 'fiscal')
 
             validate = getattr(mod, 'validate_ie_%s' % uf)
             if not validate(inscr_est):

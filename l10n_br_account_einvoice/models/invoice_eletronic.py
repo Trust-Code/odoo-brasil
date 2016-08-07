@@ -95,6 +95,9 @@ class InvoiceEletronic(models.Model):
 
     informacoes_legais = fields.Text(u'Informações legais')
     informacoes_complementar = fields.Text(u'Informações complementares')
+    
+    codigo_retorno = fields.Char(string=u'Código Retorno')
+    mensagem_retorno = fields.Char(string=u'Mensagem Retorno')
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):

@@ -59,6 +59,10 @@
                             </group>
                         </group>
                         <group>
+                        	<field name="codigo_retorno" />
+                        	<field name="mensagem_retorno" />
+                        </group>
+                        <group>
                             <group>
                                 <field name="code"/>
                                 <field name="name"/>

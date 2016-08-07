@@ -3,7 +3,7 @@
 
     <data noupdate="True">
 
-        <function eval="('default',False,'country_id', [('res.partner', False)], ref('base.br'), True, False, False, False, True)" id="country_br_set" model="ir.values" name="set"/>
+        <!-- <function eval="('default',False,'country_id', [('res.partner', False)], ref('base.br'), True, False, False, False, True)" id="country_br_set" model="ir.values" name="set"/> -->
 
         <!-- Default bank account description 
         <record id="fund" model="res.partner.bank.type">
