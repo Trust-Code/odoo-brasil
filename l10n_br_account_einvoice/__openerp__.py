@@ -31,6 +31,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
+        'document',
         'l10n_br_base',
         'l10n_br_account_new',
         'l10n_br_account_product_new',

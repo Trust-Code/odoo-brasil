@@ -1,41 +1,20 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#                                                                             #
-# Copyright (C) 2016 TrustCode - www.trustcode.com.br                         #
-#              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
-#                                                                             #
-# This program is free software: you can redistribute it and/or modify        #
-# it under the terms of the GNU Affero General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or           #
-# (at your option) any later version.                                         #
-#                                                                             #
-# This program is distributed in the hope that it will be useful,             #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU General Public License for more details.                                #
-#                                                                             #
-# You should have received a copy of the GNU General Public License           #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
-#                                                                             #
-###############################################################################
+# © 2016 Danimar Ribeiro, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
 import base64
+from uuid import uuid4
+from datetime import datetime
 from openerp import api, models
-from pytrustnfe.servicos.nfe_autorizacao import NfeAutorizacao
-from pytrustnfe.servicos.assinatura import extract_cert_and_key_from_pfx
+from pytrustnfe.nfe import NFe
+from pytrustnfe.certificado import extract_cert_and_key_from_pfx
 
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
-    @api.multi
-    def _validate_eletronic_invoice(self):
-        errors = []
-        
-        if len(errors) > 0:
-            raise Warning('Validação não passou')
-
+    
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
         prod = {
@@ -119,15 +98,16 @@ class InvoiceEletronic(models.Model):
             'procEmi': 0
         }
         emit = {
-            'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+            'tipo': self.company_id.partner_id.company_type,
+            'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),            
             'xNome': self.company_id.legal_name,
             'xFant': self.company_id.name,
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
                 'xBairro': self.company_id.district,
-                'cMun': '4321667',
-                # self.company_id.l10n_br_city_id.ibge_code,
+                'cMun': '%s%s' % (self.company_id.partner_id.state_id.ibge_code,
+                                  self.company_id.partner_id.l10n_br_city_id.ibge_code),
                 'xMun': self.company_id.l10n_br_city_id.name,
                 'UF': self.company_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.company_id.zip),
@@ -135,19 +115,20 @@ class InvoiceEletronic(models.Model):
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
-            'IE': self.company_id.inscr_est or '3220014803',
+            'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': '3'
         }
         dest = {
-            'CPF': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf),
+            'tipo': self.partner_id.company_type,
+            'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf),
             'xNome': self.partner_id.legal_name,
             'xFant': self.partner_id.name,
             'enderDest': {
                 'xLgr': self.partner_id.street,
                 'nro': self.partner_id.number,
                 'xBairro': self.partner_id.district,
-                'cMun': '4321667',
-                # self.partner_id.l10n_br_city_id.ibge_code,
+                'cMun': '%s%s'  % (self.partner_id.state_id.ibge_code,
+                                   self.partner_id.l10n_br_city_id.ibge_code),
                 'xMun': self.partner_id.l10n_br_city_id.name,
                 'UF': self.partner_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.partner_id.zip),
@@ -156,7 +137,7 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
             },
             'indIEDest': 9,
-            'IE': self.partner_id.inscr_est or '',
+            'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
         }
         eletronic_items = []
         for item in self.eletronic_item_ids:
@@ -216,9 +197,22 @@ class InvoiceEletronic(models.Model):
             }]
         }
 
+    def _create_attachment(self, event, data):
+        file_name = 'nfe-%s.xml' % datetime.now().strftime('%Y-%m-%d-%H-%M')
+        self.env['ir.attachment'].create(
+            {
+                'name': file_name,
+                'datas': base64.b64encode(data),
+                'datas_fname': file_name,
+                'description': u'',
+                'res_model': 'invoice.eletronic',
+                'res_id': event.id
+            })
+
     @api.multi
     def action_send_eletronic_invoice(self):
-        self._validate_eletronic_invoice()
+        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+        
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(1, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
@@ -227,10 +221,21 @@ class InvoiceEletronic(models.Model):
         cert, key = extract_cert_and_key_from_pfx(
             cert_pfx, self.company_id.nfe_a1_password)
 
-        autorizacao = NfeAutorizacao(cert, key)
+        autorizacao = NFe(cert, key)
         resposta = autorizacao.autorizar_nfe(
             lote, 'NFe43160502261542000143550010000003391162550863')
 
-        self.codigo_retorno = resposta['object'].retEnviNFe.cStat
-        self.mensagem_retorno = resposta['object'].retEnviNFe.xMotivo
+        if resposta['object'].retEnviNFe.cStat != 104:
+            self.codigo_retorno = resposta['object'].retEnviNFe.cStat
+            self.mensagem_retorno = resposta['object'].retEnviNFe.xMotivo
+        else:
+            self.codigo_retorno = resposta['object'].retEnviNFe.protNFe.infProt.cStat
+            self.mensagem_retorno = resposta['object'].retEnviNFe.protNFe.infProt.xMotivo
         
+        event = self.env['invoice.eletronic.event'].create({
+            'code': self.codigo_retorno,
+            'name': self.mensagem_retorno,
+            'invoice_eletronic_id': self.id,
+        })
+        self._create_attachment(self, resposta['sent_xml'])
+        self._create_attachment(self, resposta['received_xml'])

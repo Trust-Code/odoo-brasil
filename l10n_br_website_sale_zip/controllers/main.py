@@ -8,7 +8,7 @@ from openerp.http import request
 import openerp.addons.website_sale.controllers.main as main
 
 
-class L10nBrWebsiteSaleZip(main.website_sale):
+class L10nBrWebsiteSaleZip(main.WebsiteSale):
 
     @http.route(['/shop/zip_search'], type='json', auth="public",
                 methods=['POST'], website=True)

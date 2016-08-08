@@ -81,17 +81,33 @@
                                 <field name="consumidor_final"/>
                             </group>
                         </group>
-                        <field name="eletronic_item_ids">
-                            <tree name="eletronic_items">
-                                <field name="product_id" />
-                                <field name="uom_id" />
-                                <field name="cfop" />
-                                <field name="quantity" />
-                                <field name="unit_price" />
-                                <field name="total" />
-                            </tree>
-                        </field>
+                        <group string="Itens">
+	                        <field name="eletronic_item_ids" nolabel="1">
+	                            <tree name="eletronic_items">
+	                                <field name="product_id" />
+	                                <field name="uom_id" />
+	                                <field name="cfop" />
+	                                <field name="quantity" />
+	                                <field name="unit_price" />
+	                                <field name="total" />
+	                            </tree>
+	                        </field>
+	                    </group>
+	                    <group string="Eventos">
+	                    	<field name="eletronic_event_ids" nolabel="1">
+	                            <tree name="Eventos">
+	                                <field name="code" />
+	                                <field name="name" />
+	                                <field name="create_date" />
+	                                <field name="create_uid" />
+	                            </tree>
+	                        </field>
+	                   	</group>
                     </sheet>
+                    <div class="oe_chatter">
+	                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+	                    <field name="message_ids" widget="mail_thread"/>
+	                </div>
                 </form>
             </field>
         </record>

@@ -19,15 +19,17 @@
 #                                                                             #
 ###############################################################################
 
-
-from openerp import api, fields, models
+from odoo.exceptions import UserError
+from odoo import api, fields, models
 
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
+    
+    _inherit = ['mail.thread']
 
-    code = fields.Char(u'Código', size=100)
-    name = fields.Char(u'Name', size=100)
+    code = fields.Char(u'Código', size=100, required=True)
+    name = fields.Char(u'Name', size=100, required=True)
     company_id = fields.Many2one('res.company', u'Company', select=True)
     state = fields.Selection([('draft', 'Draft'), ('done', 'Done')],
                              string=u'State', default='draft')
@@ -67,6 +69,10 @@ class InvoiceEletronic(models.Model):
     eletronic_item_ids = fields.One2many('invoice.eletronic.item',
                                          'invoice_eletronic_id',
                                          string=u"Linhas")
+    
+    eletronic_event_ids = fields.One2many('invoice.eletronic.event',
+                                          'invoice_eletronic_id',
+                                          string=u"Eventos")
 
     total_tax_icms_id = fields.Many2one('sped.tax.icms', string=u'Total ICMS')
     total_tax_ipi_id = fields.Many2one('sped.tax.ipi', string=u'Total IPI')
@@ -100,12 +106,154 @@ class InvoiceEletronic(models.Model):
     mensagem_retorno = fields.Char(string=u'Mensagem Retorno')
 
     @api.multi
+    def _hook_validation(self):
+        """
+            Override this method to implement the validations specific
+            for the city you need
+            @returns list<string> errors
+        """
+        errors = []
+        if not self.serie:
+            errors.append('Nota Fiscal - Série da nota fiscal')
+        if not self.serie.fiscal_document_id:
+            errors.append(u'Nota Fiscal - Tipo de documento fiscal')
+        if not self.serie.internal_sequence_id:
+            errors.append(u'Nota Fiscal - Número da nota fiscal, \
+                          a série deve ter uma sequencia interna')
+
+        # Emitente
+        if not self.company_id.partner_id.legal_name:
+            errors.append(u'Emitente - Razão Social')
+        if not self.company_id.partner_id.name:
+            errors.append(u'Emitente - Fantasia')
+        if not self.company_id.partner_id.cnpj_cpf:
+            errors.append(u'Emitente - CNPJ/CPF')
+        if not self.company_id.partner_id.street:
+            errors.append(u'Emitente / Endereço - Logradouro')
+        if not self.company_id.partner_id.number:
+            errors.append(u'Emitente / Endereço - Número')
+        if not self.company_id.partner_id.zip:
+            errors.append(u'Emitente / Endereço - CEP')
+        if not self.company_id.partner_id.inscr_est:
+            errors.append(u'Emitente / Inscrição Estadual')
+        if not self.company_id.partner_id.state_id:
+            errors.append(u'Emitente / Endereço - Estado')
+        else:
+            if not self.company_id.partner_id.state_id.ibge_code:
+                errors.append(u'Emitente / Endereço - Cód. do IBGE do estado')
+            if not self.company_id.partner_id.state_id.name:
+                errors.append(u'Emitente / Endereço - Nome do estado')
+
+        if not self.company_id.partner_id.l10n_br_city_id:
+            errors.append(u'Emitente / Endereço - município')
+        else:
+            if not self.company_id.partner_id.l10n_br_city_id.name:
+                errors.append(u'Emitente / Endereço - Nome do município')
+            if not self.company_id.partner_id.l10n_br_city_id.ibge_code:
+                errors.append(u'Emitente/Endereço - Cód. do IBGE do município')
+
+        if not self.company_id.partner_id.country_id:
+            errors.append(u'Emitente / Endereço - país')
+        else:
+            if not self.company_id.partner_id.country_id.name:
+                errors.append(u'Emitente / Endereço - Nome do país')
+            if not self.company_id.partner_id.country_id.bc_code:
+                errors.append(u'Emitente / Endereço - Código do BC do país')
+
+        partner = self.partner_id
+        company = self.company_id
+        # Destinatário
+        if partner.is_company and not partner.legal_name:
+            errors.append(u'Destinatário - Razão Social')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.cnpj_cpf:
+                errors.append(u'Destinatário - CNPJ/CPF')
+
+        if not partner.street:
+            errors.append(u'Destinatário / Endereço - Logradouro')
+
+        if not partner.number:
+            errors.append(u'Destinatário / Endereço - Número')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.zip:
+                errors.append(u'Destinatário / Endereço - CEP')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.state_id:
+                errors.append(u'Destinatário / Endereço - Estado')
+            else:
+                if not partner.state_id.ibge_code:
+                    errors.append(u'Destinatário / Endereço - Código do IBGE \
+                                  do estado')
+                if not partner.state_id.name:
+                    errors.append(u'Destinatário / Endereço - Nome do estado')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.l10n_br_city_id:
+                errors.append(u'Destinatário / Endereço - Município')
+            else:
+                if not partner.l10n_br_city_id.name:
+                    errors.append(u'Destinatário / Endereço - Nome do \
+                                  município')
+                if not partner.l10n_br_city_id.ibge_code:
+                    errors.append(u'Destinatário / Endereço - Código do IBGE \
+                                  do município')
+
+        if not partner.country_id:
+            errors.append(u'Destinatário / Endereço - País')
+        else:
+            if not partner.country_id.name:
+                errors.append(u'Destinatário / Endereço - Nome do país')
+            if not partner.country_id.bc_code:
+                errors.append(u'Destinatário / Endereço - Cód. do BC do país')
+
+        # produtos
+        for inv_line in self.eletronic_item_ids:
+            if inv_line.product_id:
+                if not inv_line.product_id.default_code:
+                    errors.append(
+                        u'Prod: %s - Código do produto' % (
+                            inv_line.product_id.name))
+                prod = "Produto: %s - %s" % (inv_line.product_id.default_code,
+                                             inv_line.product_id.name)
+                if not inv_line.product_id.name:
+                    errors.append(u'%s - Nome do produto' % prod)
+                if not inv_line.quantity:
+                    errors.append(u'%s - Quantidade' % prod)
+                if not inv_line.unit_price:
+                    errors.append(u'%s - Preco unitario' % prod)
+        return errors
+
+    @api.multi
+    def validate_invoice(self):
+        self.ensure_one()
+        errors = self._hook_validation()
+        if len(errors) > 0:
+            msg = u"\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            raise UserError(msg)
+
+    @api.multi
     def _prepare_eletronic_invoice_values(self):
         return {}
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        pass
+        self.validate_invoice()
+
+
+class InvoiceEletronicEvent(models.Model):
+    _name = 'invoice.eletronic.event'
+    _order = 'id desc'
+    
+    code = fields.Char(string=u'Código', readonly=True)
+    name = fields.Char(string=u'Mensagem', readonly=True)
+    invoice_eletronic_id = fields.Many2one('invoice.eletronic',
+                                           string=u"Fatura Eletrônica")
+
+
 
 class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
@@ -117,7 +265,7 @@ class InvoiceEletronicItem(models.Model):
     product_id = fields.Many2one('product.product', string=u'Produto')
     cfop = fields.Char(u'CFOP', size=5)
 
-    uom_id = fields.Many2one('produt.uom', u'Unidade de medida')
+    uom_id = fields.Many2one('product.uom', u'Unidade de medida')
     quantity = fields.Float(u'Quantidade')
     unit_price = fields.Float(u'Preço Unitário')
 

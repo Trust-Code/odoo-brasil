@@ -7,7 +7,7 @@ from openerp.http import request
 import openerp.addons.website_sale.controllers.main as main
 
 
-class L10nBrWebsiteSale(main.website_sale):
+class L10nBrWebsiteSale(main.WebsiteSale):
 
     mandatory_billing_fields = ["name", "phone", "email", "cnpj_cpf", "zip",
                                 "street", "number", "district", "country_id",
