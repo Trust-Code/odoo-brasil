@@ -40,7 +40,4 @@
         'demo/account_tax_demo.xml',
         'demo/product_demo.xml',
     ],
-    'test': [],
-    'installable': False,
-    'auto_install': False,
 }

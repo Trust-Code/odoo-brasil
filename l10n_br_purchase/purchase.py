@@ -62,16 +62,8 @@ class PurchaseOrder(models.Model):
             result[line.order_id.id] = True
         return list(result.keys())
 
-    def _default_fiscal_category(self, cr, uid, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-        return user.company_id.purchase_fiscal_category_id and \
-        user.company_id.purchase_fiscal_category_id.id or False
 
     _columns = {
-        'fiscal_category_id': fields.many2one(
-            'l10n_br_account.fiscal.category', 'Categoria Fiscal',
-            domain="""[('type', '=', 'input'), ('state', '=', 'approved'),
-                ('journal_type', '=', 'purchase')]"""),
         'amount_untaxed': fields.function(
             _amount_all, method=True,
             digits_compute=dp.get_precision('Purchase Price'),
@@ -89,22 +81,7 @@ class PurchaseOrder(models.Model):
             store={'purchase.order.line': (_get_order, None, 10)},
             multi="sums", help="The total amount")}
 
-    _defaults = {
-        'fiscal_category_id': _default_fiscal_category}
 
-    # @api.multi
-    # def onchange_partner_id(self, partner_id=False,
-    #                         company_id=False, context=None, **kwargs):
-    #     context = dict(self._context)
-    #     # TODO try to upstream web_context_tunnel in fiscal-rules
-    #     # to avoid having to change this signature
-    #     fiscal_category_id = context.get('fiscal_category_id', False)
-    #     if not company_id:
-    #         company_id = self.env['res.users'].browse(
-    #             self._uid).with_context(context).company_id.id
-    #     return super(PurchaseOrder, self).onchange_partner_id(
-    #         partner_id, company_id, fiscal_category_id=fiscal_category_id,
-    #         **kwargs)
 
     @api.multi
     def onchange_partner_id(self, partner_id=False,
@@ -141,29 +118,7 @@ class PurchaseOrder(models.Model):
             cr, uid, ids, partner_id, dest_address_id, company_id, context,
             fiscal_category_id=fiscal_category_id, **kwargs)
 
-    @api.multi
-    def onchange_fiscal_category_id(self, partner_id=False,
-                                    dest_address_id=False, company_id=False,
-                                    context=None, fiscal_category_id=False,
-                                    **kwargs):
-        if not context:
-            context = {}
-
-        result = {'value': {'fiscal_position': False}}
-
-        if not partner_id or not company_id:
-            return result
-
-        kwargs.update({
-            'company_id': company_id,
-            'partner_id': partner_id,
-            'partner_invoice_id': partner_id,
-            'fiscal_category_id': fiscal_category_id,
-            'partner_shipping_id': dest_address_id,
-            'context': context,
-        })
-        return self._fiscal_position_map(result, **kwargs)
-
+   
     def _prepare_inv_line(self, cr, uid, account_id, order_line, context=None):
 
         result = super(PurchaseOrder, self)._prepare_inv_line(
@@ -254,11 +209,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
     _columns = {
-        'fiscal_category_id': fields.many2one(
-            'l10n_br_account.fiscal.category', 'Categoria Fiscal',
-            domain="[('type', '=', 'input'), \
-            ('journal_type', '=', 'purchase')]"),
-        'fiscal_position': fields.many2one(
+        'fiscal_position_id': fields.many2one(
             'account.fiscal.position', u'Posição Fiscal',
             domain="[('fiscal_category_id', '=', fiscal_category_id)]")
     }
@@ -366,7 +317,6 @@ class PurchaseOrderLine(models.Model):
             'product_id': product_id,
             'partner_id': partner_id,
             'partner_invoice_id': partner_id,
-            'fiscal_category_id': fiscal_category_id,
             'context': context,
         })
 

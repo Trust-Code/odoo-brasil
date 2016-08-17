@@ -19,6 +19,8 @@
 
 from openerp import models
 
+#TODO Remover
+
 class StockInvoiceOnShipping(models.TransientModel):
     _inherit = 'stock.invoice.onshipping'
 

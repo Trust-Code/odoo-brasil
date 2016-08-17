@@ -20,7 +20,7 @@
 from openerp.exceptions import except_orm
 from openerp import models, fields, api
 
-
+#TODO Remover
 class StockInvoiceOnShipping(models.TransientModel):
     _inherit = 'stock.invoice.onshipping'
 

@@ -20,11 +20,10 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from odoo import models
 
 
-class SaleAdvancePaymentInvoice(orm.Model):
-
+class SaleAdvancePaymentInvoice(models.TransientModel):
     _inherit = 'sale.advance.payment.inv'
 
     def _get_line_qty(self, cr, uid, line, context=None):

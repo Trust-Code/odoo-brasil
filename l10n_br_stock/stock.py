@@ -27,11 +27,11 @@ class StockIncoterms(models.Model):
     _inherit = 'stock.incoterms'
 
     freight_responsibility = fields.Selection(
-        selection=[('0', 'Emitente'),
+        selection=[('0', u'Emitente'),
                    ('1', u'Destinatário'),
-                   ('2', 'Terceiros'),
-                   ('9', 'Sem Frete')],
-        string='Frete por Conta',
+                   ('2', u'Terceiros'),
+                   ('9', u'Sem Frete')],
+        string=u'Frete por Conta',
         required=True,
         default='0')
 
@@ -45,19 +45,9 @@ class StockPicking(models.Model):
             dict(self._context))
         return user.company_id.stock_fiscal_category_id 
 
-    fiscal_category_id = fields.Many2one(
-        comodel_name='l10n_br_account.fiscal.category',
-        string=u'Categoria Fiscal',
-        readonly=True,
-        domain="[('state', '=', 'approved')]",
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_category
-    )
-
-    fiscal_position = fields.Many2one(
+    fiscal_position_id = fields.Many2one(
         comodel_name='account.fiscal.position',
         string=u'Posição Fiscal',
-        domain="[('fiscal_category_id','=',fiscal_category_id)]",
         readonly=True,
         states={'draft': [('readonly', False)]}
     )
@@ -172,17 +162,9 @@ class StockMove(models.Model):
 
     _inherit = "stock.move"
 
-    fiscal_category_id = fields.Many2one(
-        comodel_name='l10n_br_account.fiscal.category',
-        string=u'Categoria Fiscal',
-        domain="[('type', '=', 'output'), ('journal_type', '=', 'sale')]",
-        readonly=True,
-        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
-
-    fiscal_position = fields.Many2one(
+    fiscal_position_id = fields.Many2one(
         comodel_name='account.fiscal.position',
         string='Fiscal Position',
-        domain="[('fiscal_category_id','=',fiscal_category_id)]",
         readonly=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
 

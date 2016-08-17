@@ -25,7 +25,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_account_product',
+        'l10n_br_account_product_new',
         'l10n_br_data_account',
     ],
     'data': [
@@ -37,7 +37,5 @@
         'l10n_br_data_account_product_demo.xml',
     ],
     'category': 'Localisation',
-    'active': False,
-    'installable': False,
     'auto_install': True,
 }

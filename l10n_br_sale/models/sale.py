@@ -113,7 +113,7 @@ class SaleOrder(models.Model):
         string='Seguro', default=0.00, digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)]})
     amount_discount = fields.Float(
-        compute='_amount_all_wrapper', string='Desconto (-)',
+        string='Desconto (-)',
         digits=dp.get_precision('Account'), store=True,
         help="The discount amount.")
     discount_rate = fields.Float(

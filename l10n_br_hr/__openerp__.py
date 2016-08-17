@@ -37,9 +37,6 @@ Brazilian Localization HR with informations refered to the national context of H
              'view/hr_employee_view.xml',
              'view/hr_job_view.xml',
              ],
-    'test': [],
     'installable': True,
-    'images': [],
-    'auto_install': False,
     'license': 'AGPL-3',
 }

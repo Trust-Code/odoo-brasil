@@ -121,6 +121,9 @@ class ResCompany(models.Model):
     number = fields.Char(
         compute=_get_address_data, inverse='_set_l10n_br_number', size=10,
         string=u"Número", multi='address')
+    
+    nfe_a1_file = fields.Binary('Arquivo NFe A1')
+    nfe_a1_password = fields.Char('Senha NFe A1', size=64)
 
     @api.onchange('cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):

@@ -28,19 +28,16 @@
     'version': '7.0',
     'depends': [
         'sale_stock',
-        'l10n_br_sale_product',
         'l10n_br_stock',
     ],
     'data': [
-        'l10n_br_sale_stock_data.xml',
         'sale_stock_view.xml',
     ],
     'demo': [
-        'l10n_br_sale_stock_demo.xml'
+        # 'l10n_br_sale_stock_demo.xml'
     ],
     'test': [
         'test/sale_order_demo.yml'
     ],
-    'installable': False,
     'auto_install': True,
 }

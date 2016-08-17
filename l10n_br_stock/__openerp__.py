@@ -26,17 +26,13 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_account_product',
-        'account_fiscal_position_rule_stock',
+        'l10n_br_account_product_new',
     ],
     'data': [
         'l10n_br_stock_data.xml',
         'stock_view.xml',
-        'res_company_view.xml',
-        'wizard/stock_invoice_onshipping_view.xml',
+        # 'wizard/stock_invoice_onshipping_view.xml',
         'security/ir.model.access.csv',
     ],
-    'demo': [],
-    'installable': False,
     'auto_install': True,
 }

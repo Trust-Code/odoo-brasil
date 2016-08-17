@@ -35,8 +35,5 @@
         'l10n_br_delivery_view.xml',
         'security/ir.model.access.csv',
     ],
-    'demo': [],
     'category': 'Localisation',
-    'active': True,
-    'installable': False
 }

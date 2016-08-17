@@ -26,19 +26,16 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_stock',
-        'account_fiscal_position_rule_purchase',
+        'purchase',
+        'l10n_br_stock',        
     ],
     'data': [
-        'l10n_br_purchase_data.xml',
         'purchase_view.xml',
         'res_company_view.xml',
         'security/ir.model.access.csv',
-        'security/l10n_br_purchase_security.xml',
     ],
     'test': [
         'test/purchase_order_demo.yml'
     ],
-    'installable': False,
     'auto_install': False,
 }

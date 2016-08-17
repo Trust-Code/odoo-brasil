@@ -32,9 +32,5 @@
     'data': [
         'res_company_view.xml',
     ],
-    'demo': [
-    ],
-    'test': [],
-    'installable': False,
     'auto_install': True,
 }
