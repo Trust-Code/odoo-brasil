@@ -3,7 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import datetime
+from datetime import datetime
 
 from openerp import models, fields, api, _
 from openerp.addons import decimal_precision as dp
@@ -297,17 +297,15 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_date_assign(self):
-        import ipdb; ipdb.set_trace()
+        res = super(AccountInvoice, self).action_date_assign()
         for invoice in self:
-            if invoice.date_hour_invoice:
-                aux = datetime.datetime.strptime(
-                    invoice.date_hour_invoice, '%Y-%m-%d %H:%M:%S').date()
-                invoice.date_invoice = str(aux)
-            result = invoice.onchange_payment_term_date_invoice(
-                invoice.payment_term.id, invoice.date_invoice)
-            if result and result.get('value'):
-                invoice.write(result['value'])
-        return True
+            if not invoice.date_hour_invoice:
+                invoice.write({
+                    'date_hour_invoice': datetime.now(),
+                    'date_invoice': datetime.now().date()    
+                })
+        return res
+
 
     @api.multi
     def button_reset_taxes(self):
@@ -357,7 +355,7 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     @api.one
-    @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
+    @api.depends('price_unit', 'discount', 'quantity',
                  'product_id', 'invoice_id.partner_id', 'freight_value',
                  'insurance_value', 'other_costs_value',
                  'invoice_id.currency_id')
@@ -374,9 +372,6 @@ class AccountInvoiceLine(models.Model):
     date_invoice = fields.Datetime(
         'Invoice Date', readonly=True, states={'draft': [('readonly', False)]},
         select=True, help="Keep empty to use the current date")
-    fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', u'Posição Fiscal',
-        domain="[('fiscal_category_id','=',fiscal_category_id)]")
     cfop_id = fields.Many2one('l10n_br_account_product.cfop', 'CFOP')
     # fiscal_classification_id = fields.Many2one(
     #    'account.product.fiscal.classification', 'Classificação Fiscal')
@@ -402,6 +397,8 @@ class AccountInvoiceLine(models.Model):
     total_taxes = fields.Float(
         string='Total de Tributos', requeried=True, default=0.00,
         digits=dp.get_precision('Account'))
+    tax_icms_id = fields.Many2one('account.tax', string="ICMS",
+                                  domain=[('domain', '=', 'icms')])
     icms_manual = fields.Boolean('ICMS Manual?', default=False)
     icms_origin = fields.Selection(PRODUCT_ORIGIN, 'Origem', default='0')
     icms_base_type = fields.Selection(
@@ -447,6 +444,8 @@ class AccountInvoiceLine(models.Model):
         'Base ICMS ST Outras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_cst = fields.Char('CST ICMS', size=10)
+    tax_issqn_id = fields.Many2one('account.tax', string="ISSQN",
+                                  domain=[('domain', '=', 'issqn')])
     issqn_manual = fields.Boolean('ISSQN Manual?', default=False)
     issqn_type = fields.Selection(
         [('N', 'Normal'), ('R', 'Retida'),
@@ -463,6 +462,8 @@ class AccountInvoiceLine(models.Model):
     issqn_value = fields.Float(
         'Valor ISSQN', required=True, digits=dp.get_precision('Account'),
         default=0.00)
+    tax_ipi_id = fields.Many2one('account.tax', string="IPI",
+                                  domain=[('domain', '=', 'ipi')])
     ipi_manual = fields.Boolean('IPI Manual?', default=False)
     ipi_type = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
@@ -480,6 +481,8 @@ class AccountInvoiceLine(models.Model):
         'Perc IPI', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
     ipi_cst = fields.Char('CST IPI', size=10)
+    tax_pis_id = fields.Many2one('account.tax', string="PIS",
+                                  domain=[('domain', '=', 'pis')])
     pis_manual = fields.Boolean('PIS Manual?', default=False)
     pis_type = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
@@ -508,6 +511,8 @@ class AccountInvoiceLine(models.Model):
     pis_st_value = fields.Float(
         'Valor PIS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
+    tax_cofins_id = fields.Many2one('account.tax', string="COFINS",
+                                  domain=[('domain', '=', 'cofins')])
     cofins_manual = fields.Boolean('COFINS Manual?', default=False)
     cofins_type = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
@@ -539,6 +544,8 @@ class AccountInvoiceLine(models.Model):
     cofins_st_value = fields.Float(
         'Valor COFINS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
+    tax_ii_id = fields.Many2one('account.tax', string="II",
+                                  domain=[('domain', '=', 'ii')])
     ii_base = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
         default=0.00)
@@ -558,6 +565,41 @@ class AccountInvoiceLine(models.Model):
     freight_value = fields.Float(
         'Frete', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
+    
+    @api.multi
+    def write(self, vals):
+        
+        res = super(AccountInvoiceLine, self).write(vals)
+        #for item in self:
+        #    item.invoice_line_tax_ids = item.tax_icms_id | item.tax_pis_id | item.tax_cofins_id | item.tax_ipi_id
+        return res
+        
+    
+    @api.onchange('tax_icms_id')
+    def _onchange_tax_icms_id(self):
+        if self.tax_icms_id:
+            self.icms_percent = self.tax_icms_id.amount
+            self.icms_percent_reduction = self.tax_icms_id.base_reduction
+            self.icms_cst = self.tax_ipi_id.cst
+            
+    @api.onchange('tax_pis_id')
+    def _onchange_tax_pis_id(self):
+        if self.tax_pis_id:
+            self.pis_percent = self.tax_pis_id.amount
+            self.pis_cst = self.tax_ipi_id.cst
+
+    @api.onchange('tax_cofins_id')
+    def _onchange_tax_cofins_id(self):
+        if self.tax_cofins_id:
+            self.cofins_percent = self.tax_cofins_id.amount
+            self.cofins_cst = self.tax_ipi_id.cst
+            
+    @api.onchange('tax_ipi_id')
+    def _onchange_tax_ipi_id(self):
+        if self.tax_ipi_id:
+            self.ipi_percent = self.tax_ipi_id.amount
+            self.ipi_cst = self.tax_ipi_id.cst
+
 
     def _amount_tax_icms(self, tax=None):
         result = {

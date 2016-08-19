@@ -29,8 +29,8 @@
         'l10n_br_data_account',
     ],
     'data': [
-        'account.product.fiscal.classification.template.csv',
-        'l10n_br_data_account_product_data.xml',
+        # 'account.product.fiscal.classification.template.csv',
+        # 'l10n_br_data_account_product_data.xml',
         #'account_fiscal_position_rule_data.xml',
     ],
     'demo': [

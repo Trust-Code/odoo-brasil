@@ -130,5 +130,4 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', u'Posição Fiscal',
-        domain="[('fiscal_category_id', '=', fiscal_category_id)]")
+        'account.fiscal.position', u'Posição Fiscal')

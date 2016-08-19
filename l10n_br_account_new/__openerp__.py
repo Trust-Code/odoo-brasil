@@ -22,6 +22,7 @@
         'views/l10n_br_account_view.xml',
         'views/product_view.xml',
         'views/res_company_view.xml',
+        'views/account_tax.xml',
         'security/ir.model.access.csv',
     ],
 }

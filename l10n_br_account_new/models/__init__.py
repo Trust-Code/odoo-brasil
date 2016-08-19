@@ -7,3 +7,4 @@ from . import product
 from . import res_company
 from . import account_fiscal_position
 from . import account_invoice
+from . import account_tax

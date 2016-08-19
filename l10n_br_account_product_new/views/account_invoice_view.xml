@@ -52,22 +52,6 @@
 					<field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
 					<field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 				</field>
-				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
-					<field name="price_gross" />
-				</xpath>
-				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']" position="after">
-					<field name="discount_value"/>
-				</xpath>
-				<button name="invoice_cancel" position="attributes">
-					<attribute name="statusbar_visible">draft,proforma2,sale,sefaz_export,sefaz_exception,open</attribute>
-				</button>
-				<button name="invoice_open" position="replace">
-					<button name="invoice_validate" states="draft" string="Confirmar" class="oe_highlight" />
-					<button name="invoice_open" states="sefaz_export,proforma2" string="Validate" class="oe_highlight" />
-				</button>
-				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="after">
-					<field name="cfop_id" />
-				</xpath>
                 <xpath expr="//field[@name='fiscal_position_id']" position="after">
                     <field name="ind_final" string="Operação com Consumidor final" />
                     <field name="ind_pres" string="Tipo de operação" />
@@ -82,7 +66,7 @@
 			<field name="inherit_id" ref="account.invoice_supplier_form" />
 			<field name="arch" type="xml">
 				<field name="date_invoice" position="after">
-					<field name="document_serie_id" domain="[('fiscal_type','=','service'),('fiscal_document_id','=',fiscal_document_id),('company_id','=',company_id)]" attrs="{'invisible': [('issuer', '=', '1')], 'required': [('issuer', '=', '0')]}" />
+					<field name="document_serie_id" />
 					<field name="fiscal_document_id" required="1"/>
 					<field name="date_hour_invoice" string="Data Emissão"/>
 					<field name="fiscal_document_electronic" invisible="1"/>
@@ -124,16 +108,6 @@
                         </group>
                     </page>
 				</notebook>
-				<button name="invoice_cancel" position="attributes">
-					<attribute name="statusbar_visible">draft,proforma2,sale,sefaz_export,sefaz_exception,open</attribute>
-				</button>
-				<button name="invoice_open" position="replace">
-					<button name="invoice_validate" states="draft" string="Confirmar" class="oe_highlight" />
-					<button name="invoice_open" states="sefaz_export,proforma2" string="Validate" class="oe_highlight" />
-				</button>
-				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="after">
-					<field name="cfop_id" />
-				</xpath>
 			</field>
 		</record>
 
@@ -177,12 +151,12 @@
 									<group>
 										<field name="product_type" attrs="{'readonly': [('product_id','!=', False)]}"/>
 										<field name="fci" attrs="{'readonly': [('product_id','!=', False)]}"/>
-										<field name="fiscal_position_id" required="1" domain="[('fiscal_category_id', '=', fiscal_category_id)]" on_change="onchange_fiscal_position(parent.partner_id, parent.company_id, product_id, fiscal_category_id, account_id, quantity, price_unit, discount, insurance_value, freight_value, other_costs_value, context)"/>
+										<field name="fiscal_position_id" required="1"/>
 										<field name="cfop_id"/>
-										<field domain="[('journal_id', '=', parent.journal_id), ('type', '&lt;&gt;', 'view')]" name="account_id" on_change="onchange_account_id(product_id, parent.partner_id, parent.type, parent.fiscal_position_id,account_id, context)" groups="account.group_account_user"/>
-										<field name="invoice_line_tax_ids" context="{'type':parent.type}" domain="[('parent_id','=',False),('company_id', '=', parent.company_id)]" on_change="onchange_invoice_line_tax_id(product_id, parent.partner_id, invoice_line_tax_ids, quantity, price_unit, discount, fiscal_position_id, insurance_value, freight_value, other_costs_value, context)" widget="many2many_tags"/>
+										<field domain="[('journal_id', '=', parent.journal_id), ('type', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
 										<field domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
 										<field name="company_id" groups="base.group_multi_company" readonly="1"/>
+										<field name="invoice_line_tax_ids" widget="many2many_tags" />
 									</group>
 								</group>
 								<label for="name"/>
@@ -191,6 +165,7 @@
 							<page string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
 								<group string="Detalhes do ICMS">
 									<group>
+										<field name="tax_icms_id" />
 										<field name="icms_manual" invisible="True"/>
 										<field name="icms_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
 										<field name="icms_origin"/>
@@ -220,6 +195,7 @@
 							</page>
 							<page string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
 								<group>
+									<field name="tax_issqn_id" />
 									<field name="issqn_manual" invisible="True"/>
 									<field name="issqn_type"/>
 									<field name="issqn_base"/>
@@ -231,6 +207,7 @@
 							<page string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
 								<group string="Detalhes do IPI">
 									<group>
+										<field name="tax_ipi_id" />
 										<field name="ipi_manual" invisible="True"/>
 										<field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
 										<field name="ipi_type"/>
@@ -246,6 +223,7 @@
 							<page string="PIS">
 								<group string="Detalhes do PIS">
 									<group>
+										<field name="tax_pis_id" />
 										<field name="pis_manual" invisible="True"/>
 										<field name="pis_cst" attrs="{'required': [('product_type','in', ('product', 'service'))]}"/>
 										<field name="pis_type"/>
@@ -270,6 +248,7 @@
 							<page string="COFINS">
 								<group string="Detalhes do COFINS">
 									<group>
+										<field name="tax_cofins_id" />
 										<field name="cofins_manual" invisible="True"/>
 										<field name="cofins_cst" attrs="{'required': [('product_type','in', ('product', 'service'))]}"/>
 										<field name="cofins_type"/>
@@ -293,6 +272,7 @@
 							</page>
 							<page string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
 								<group string="Detalhes do Imposto de Importação">
+									<field name="tax_ii_id" />
 									<field name="ii_base"/>
 									<field name="ii_customhouse_charges"/>
 									<field name="ii_iof"/>

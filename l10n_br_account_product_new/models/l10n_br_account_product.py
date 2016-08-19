@@ -46,13 +46,9 @@ class L10nbrAccountCFOP(models.Model):
             recs = self.search([('name', operator, name)] + args, limit=limit)
         return recs.name_get()
 
-    # TODO migrate
-    def name_get(self, cr, uid, ids, context=None):
-        if not len(ids):
-            return []
-        if isinstance(ids, int):
-            ids = [ids]
-        reads = self.read(cr, uid, ids, ['name', 'code'], context,
-                          load='_classic_write')
-        return [(x['id'], (x['code'] and x['code'] or '') +
-                 (x['name'] and ' - ' + x['name'] or '')) for x in reads]
+    @api.multi
+    def name_get(self):
+        result = []
+        for rec in self:
+            result.append((rec.id, "%s - %s" % (rec.code, rec.name or '')))
+        return result
