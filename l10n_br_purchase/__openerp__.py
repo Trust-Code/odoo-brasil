@@ -30,8 +30,7 @@
         'l10n_br_stock',        
     ],
     'data': [
-        'purchase_view.xml',
-        'res_company_view.xml',
+        'views/purchase.xml',
         'security/ir.model.access.csv',
     ],
     'test': [

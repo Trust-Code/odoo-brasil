@@ -47,18 +47,6 @@ class ResCompany(orm.Model):
         'service_tax_ids': fields.function(
             _get_taxes, method=True, type='many2many',
             relation='account.tax', string='Product Taxes', multi='all'),
-        'in_invoice_service_fiscal_category_id': fields.many2one(
-            'l10n_br_account.fiscal.category',
-            'Categoria Fiscal Padrão de Aquisição de Serviço',
-            domain="[('journal_type','=','purchase'), "
-            " ('fiscal_type','=','service'), ('type','=','input'),"
-            " ('state', '=', 'approved')]"),
-        'out_invoice_service_fiscal_category_id': fields.many2one(
-            'l10n_br_account.fiscal.category',
-            'Categoria Fiscal Padrão de Prestação de Serviço',
-            domain="""[('journal_type','=','sale'),
-            ('fiscal_type','=','service'), ('type','=','output'),
-            ('state', '=', 'approved')]"""),
     }
     _defaults = {
         'nfse_version': '100',

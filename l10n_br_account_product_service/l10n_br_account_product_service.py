@@ -26,16 +26,6 @@ PRODUCT_FISCAL_TYPE = [
 
 PRODUCT_FISCAL_TYPE_DEFAULT = PRODUCT_FISCAL_TYPE[0][0]
 
-
-class L10n_brAccountFiscalCategory(orm.Model):
-    _inherit = 'l10n_br_account.fiscal.category'
-    _columns = {
-        'fiscal_type': fields.selection(
-            PRODUCT_FISCAL_TYPE, 'Tipo Fiscal', required=True),
-    }
-    _defaults = {
-        'fiscal_type': PRODUCT_FISCAL_TYPE_DEFAULT,
-    }
     
     
 class L10n_brAccountDocumentSerie(orm.Model):

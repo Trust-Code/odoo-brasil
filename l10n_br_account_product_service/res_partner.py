@@ -21,8 +21,6 @@ from openerp.osv import orm, fields
 from openerp import api
 
 FISCAL_POSITION_COLUMNS = {
-    'fiscal_category_id': fields.many2one('l10n_br_account.fiscal.category',
-        'Categoria Fiscal'),
     'type': fields.selection([('input', 'Entrada'), ('output', 'Saida')],
         'Tipo'),
     'type_tax_use': fields.selection([('sale', 'Sale'),
@@ -40,13 +38,6 @@ class AccountFiscalPositionTemplate(orm.Model):
         return {'value': {'type_tax_use': type_tax.get(type, 'all'),
                           'tax_ids': False}}
 
-    def onchange_fiscal_category_id(self, cr, uid, ids,
-                                    fiscal_category_id=False, context=None):
-        if fiscal_category_id:
-            fc_fields = self.pool.get('l10n_br_account.fiscal.category').read(
-                    cr, uid, fiscal_category_id,
-                    ['fiscal_type', 'journal_type'], context=context)
-            return {'value': {'fiscal_category_fiscal_type': fc_fields['fiscal_type']}}
 
     def generate_fiscal_position(self, cr, uid, chart_temp_id,
                                  tax_template_ref, acc_template_ref,
@@ -159,13 +150,6 @@ class AccountFiscalPosition(orm.Model):
         return {'value': {'type_tax_use': type_tax.get(type, 'all'),
                           'tax_ids': False}}
 
-    def onchange_fiscal_category_id(self, cr, uid, ids,
-                                    fiscal_category_id=False, context=None):
-        if fiscal_category_id:
-            fc_fields = self.pool.get('l10n_br_account.fiscal.category').read(
-                cr, uid, fiscal_category_id, ['fiscal_type', 'journal_type'],
-                context=context)
-            return {'value': {'fiscal_category_fiscal_type': fc_fields['fiscal_type']}}
 
     def map_tax_code(self, cr, uid, product_id, fiscal_position,
                      company_id=False, tax_ids=False, context=None):
