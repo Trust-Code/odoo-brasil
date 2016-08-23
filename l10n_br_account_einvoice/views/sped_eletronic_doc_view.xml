@@ -49,12 +49,12 @@
                     <sheet string="Documento Eletronico">
                         <group>
                             <group>
+                            	<field name="invoice_id"/>
                                 <field name="partner_id"/>
-                                <field name="invoice_partner_id"/>
-                                <field name="shipping_partner_id"/>
+                                <field name="partner_shipping_id"/>
                             </group>
                             <group>
-                                <field name="payment_id"/>
+                                <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
                             </group>
                         </group>

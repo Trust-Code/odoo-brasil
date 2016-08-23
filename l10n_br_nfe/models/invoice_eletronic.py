@@ -7,6 +7,7 @@ import base64
 from uuid import uuid4
 from datetime import datetime
 from openerp import api, models
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from pytrustnfe.nfe import NFe
 from pytrustnfe.certificado import extract_cert_and_key_from_pfx
 
@@ -14,21 +15,29 @@ from pytrustnfe.certificado import extract_cert_and_key_from_pfx
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    @api.one
+    def _id_dest(self):
+        id_dest = '1'
+        if self.company_id.state_id != self.partner_id.state_id:
+            id_dest = '2'
+        if self.company_id.country_id != self.partner_id.country_id:
+            id_dest = '3'
+        return id_dest
     
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
         prod = {
-            'cProd': 22,
-            'cEAN': '00000011111115',
+            'cProd': item.product_id.default_code,
+            'cEAN': item.product_id.barcode or '',
             'xProd': item.product_id.name,
             'NCM': '39259090',
             'CFOP': item.cfop,
-            'uCom': 'un',
+            'uCom': item.uom_id.name,
             'qCom': item.quantity,
             'vUnCom': item.unit_price,
-            'vProd': "100.00",
-            'cEANTrib': '00000011111115',
-            'uTrib': 'un',
+            'vProd':  item.unit_price,
+            'cEANTrib': item.product_id.barcode or '',
+            'uTrib': item.uom_id.name,
             'qTrib': item.quantity,
             'vUnTrib': item.unit_price,
             'indTot': 1
@@ -77,17 +86,18 @@ class InvoiceEletronic(models.Model):
     def _prepare_eletronic_invoice_values(self):
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
-            'cNF': '16255086',
+            'cNF': self.numero_controle,
             'natOp': self.fiscal_position_id.name,
             'indPag': 1,
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': '2016-05-05T11:28:14-03:00',
-            'dhSaiEnt': '2016-05-05T11:28:14-03:00',
+            'dhEmi': datetime.strptime(self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+            'dhSaiEnt': datetime.strptime(self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'tpNF': self.finalidade_emissao,
-            'idDest': 2,
-            'cMunFG': 4321667,
+            'idDest': self._id_dest()[0],
+            'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
+                                self.company_id.l10n_br_city_id.ibge_code),
             'tpImp': 1,
             'tpEmis': 1,
             'cDV': 3,

@@ -24,8 +24,8 @@ class AccountInvoice(models.Model):
     issuer = fields.Selection(
         [('0', u'Emissão própria'), ('1', 'Terceiros')], 'Emitente',
         default='0', readonly=True, states={'draft': [('readonly', False)]})
-    internal_number = fields.Char(
-        'Invoice Number', size=32, readonly=True,
+    internal_number = fields.Integer(
+        'Invoice Number', readonly=True,
         states={'draft': [('readonly', False)]},
         help="""Unique number of the invoice, computed
             automatically when the invoice is created.""")
@@ -52,20 +52,20 @@ class AccountInvoice(models.Model):
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
     @api.one
-    @api.constrains('number')
+    @api.constrains('internal_number')
     def _check_invoice_number(self):
         domain = []
-        if self.number:
+        if self.internal_number:
             fiscal_document = self.fiscal_document_id and\
                 self.fiscal_document_id.id or False
-            domain.extend([('internal_number', '=', self.number),
+            domain.extend([('internal_number', '=', self.internal_number),
                            ('fiscal_type', '=', self.fiscal_type),
                            ('fiscal_document_id', '=', fiscal_document)
                            ])
             if self.issuer == '0':
                 domain.extend([
                     ('company_id', '=', self.company_id.id),
-                    ('internal_number', '=', self.number),
+                    ('internal_number', '=', self.internal_number),
                     ('fiscal_document_id', '=', self.fiscal_document_id.id),
                     ('issuer', '=', '0')])
             else:
@@ -87,12 +87,12 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         for invoice in self:
-            if invoice.issuer == '0':
-                sequence_obj = self.env['ir.sequence']
-                seq_number = sequence_obj.get_id(
-                    invoice.document_serie_id.internal_sequence_id.id)
-                self.write(
-                    {'internal_number': seq_number, 'number': seq_number})
+            sequence_obj = self.env['ir.sequence']
+            seq_number = sequence_obj.get_id(
+                invoice.document_serie_id.internal_sequence_id.id)
+            
+            self.write(
+                {'internal_number': seq_number})
         return True
 
     @api.multi

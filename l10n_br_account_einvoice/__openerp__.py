@@ -41,6 +41,7 @@
         'views/sped_base_view.xml',
         'views/sped_tax_view.xml',
         'views/sped_eletronic_doc_view.xml',
+        'views/account_invoice.xml',
     ],
     'instalable': True
 }

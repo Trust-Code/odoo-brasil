@@ -55,10 +55,10 @@ class InvoiceEletronic(models.Model):
                                          ('1', 'Consumidor')],
                                         u'Indicador de Consumidor Final')
 
+    invoice_id = fields.Many2one('account.invoice', u'Fatura')
     partner_id = fields.Many2one('res.partner', u'Parceiro')
-    invoice_partner_id = fields.Many2one('res.partner', u'Faturamento')
-    shipping_partner_id = fields.Many2one('res.partner', u'Entrega')
-    payment_id = fields.Many2one('account.payment.term',
+    partner_shipping_id = fields.Many2one('res.partner', u'Entrega')
+    payment_term_id = fields.Many2one('account.payment.term',
                                  string=u'Forma pagamento')
     fiscal_position_id = fields.Many2one('account.fiscal.position',
                                          string=u'Posição Fiscal')
