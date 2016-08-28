@@ -17,6 +17,21 @@
                 <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
 					<attribute name="editable"/>
 				</xpath>
+				<page name="other_info" position="before">
+					<page name="vencimentos" string="Vencimentos">
+						<field nolabel="1" name="receivable_move_line_ids">
+                            <tree name="vencimentos" string="Vencimentos">
+                                <field name="date_maturity"/>
+                                <field name="name"/>
+                                <field name="ref"/>
+                                <field name="debit"/>
+                                <field name="credit"/>
+                                <button name="%(account.action_account_invoice_payment)d" type="action" string="Register Payment"
+                                	groups="account.group_account_invoice" class="oe_highlight" context="{'default_amount': credit}"/>
+                            </tree>
+                        </field>
+                    </page>
+                 </page>
 			</field>
 		</record>
 

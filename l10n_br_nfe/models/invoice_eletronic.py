@@ -8,8 +8,10 @@ from uuid import uuid4
 from datetime import datetime
 from openerp import api, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
-from pytrustnfe.nfe import NFe
-from pytrustnfe.certificado import extract_cert_and_key_from_pfx
+from pytrustnfe.nfe import autorizar_nfe
+from pytrustnfe.utils import gerar_chave
+from pytrustnfe.certificado import Certificado
+
 
 
 class InvoiceEletronic(models.Model):
@@ -185,7 +187,7 @@ class InvoiceEletronic(models.Model):
             'infCpl': 'Agora vai'
         }
         vals = {
-            'Id': 'NFe43160502261542000143550010000003391162550863',
+            'Id': '',
             'ide': ide,
             'emit': emit,
             'dest': dest,
@@ -202,6 +204,7 @@ class InvoiceEletronic(models.Model):
         return {
             'idLote': lote,
             'indSinc': 1,
+            'estado': self.company_id.partner_id.state_id.ibge_code,
             'NFes': [{
                 'infNFe': nfe_values
             }]
@@ -228,12 +231,9 @@ class InvoiceEletronic(models.Model):
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
-        cert, key = extract_cert_and_key_from_pfx(
-            cert_pfx, self.company_id.nfe_a1_password)
-
-        autorizacao = NFe(cert, key)
-        resposta = autorizacao.autorizar_nfe(
-            lote, 'NFe43160502261542000143550010000003391162550863')
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        
+        resposta = autorizar_nfe(certificado, **lote)
 
         if resposta['object'].retEnviNFe.cStat != 104:
             self.codigo_retorno = resposta['object'].retEnviNFe.cStat

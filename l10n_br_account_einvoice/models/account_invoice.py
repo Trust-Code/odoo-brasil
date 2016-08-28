@@ -5,6 +5,7 @@
 
 from odoo import api, fields, models
 from datetime import datetime
+from errno import ECOMM
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'

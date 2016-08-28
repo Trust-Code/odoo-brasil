@@ -11,6 +11,14 @@ from openerp.exceptions import Warning as UserError
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    @api.one
+    @api.depends('move_id.line_ids')
+    def _compute_receivables(self):
+        receivable_lines = []
+        for line in self.move_id.line_ids:
+            receivable_lines.append(line.id)
+        self.receivable_move_line_ids = self.env['account.move.line'].browse(list(set(payment_lines)))
+
     @api.model
     def _default_fiscal_document(self):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
@@ -20,6 +28,10 @@ class AccountInvoice(models.Model):
     def _default_fiscal_document_serie(self):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.document_serie_service_id
+
+    receivable_move_line_ids = fields.Many2many(
+        'account.move.line', string='Receivable Move Lines',
+        compute='_compute_receivables', store=True)
 
     issuer = fields.Selection(
         [('0', u'Emissão própria'), ('1', 'Terceiros')], 'Emitente',

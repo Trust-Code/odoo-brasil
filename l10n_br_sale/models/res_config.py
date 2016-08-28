@@ -29,11 +29,12 @@ class SaleConfiguration(orm.TransientModel):
     }
 
     def _get_default_copy_note(self, cr, uid, ids, context=None):
-        ir_values = self.pool.get('ir.values')
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
-        result = ir_values.get_default(
-            cr, uid, 'sale.order', 'copy_note', company_id=user.company_id.id)
-        return result
+        #ir_values = self.pool.get('ir.values')
+        #user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        #result = ir_values.get_default(
+        #    cr, uid, 'sale.order', 'copy_note', company_id=user.company_id.id)
+        #return result
+        return False
 
     _defaults = {
         'copy_note': _get_default_copy_note,
