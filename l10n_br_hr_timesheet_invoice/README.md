@@ -1,2 +1,0 @@
-Faturamento por Timesheets
-==========================
