@@ -25,7 +25,7 @@ from odoo import api, fields, models
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
-    
+
     _inherit = ['mail.thread']
 
     code = fields.Char(u'Código', size=100, required=True)
@@ -59,7 +59,7 @@ class InvoiceEletronic(models.Model):
     partner_id = fields.Many2one('res.partner', u'Parceiro')
     partner_shipping_id = fields.Many2one('res.partner', u'Entrega')
     payment_term_id = fields.Many2one('account.payment.term',
-                                 string=u'Forma pagamento')
+                                      string=u'Forma pagamento')
     fiscal_position_id = fields.Many2one('account.fiscal.position',
                                          string=u'Posição Fiscal')
 
@@ -69,7 +69,7 @@ class InvoiceEletronic(models.Model):
     eletronic_item_ids = fields.One2many('invoice.eletronic.item',
                                          'invoice_eletronic_id',
                                          string=u"Linhas")
-    
+
     eletronic_event_ids = fields.One2many('invoice.eletronic.event',
                                           'invoice_eletronic_id',
                                           string=u"Eventos")
@@ -101,7 +101,7 @@ class InvoiceEletronic(models.Model):
 
     informacoes_legais = fields.Text(u'Informações legais')
     informacoes_complementar = fields.Text(u'Informações complementares')
-    
+
     codigo_retorno = fields.Char(string=u'Código Retorno')
     mensagem_retorno = fields.Char(string=u'Mensagem Retorno')
 
@@ -232,7 +232,7 @@ class InvoiceEletronic(models.Model):
         errors = self._hook_validation()
         if len(errors) > 0:
             msg = u"\n".join(
-                ["Por favor corrija os erros antes de prosseguir"] + errors)
+                [u"Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
 
     @api.multi
@@ -247,12 +247,11 @@ class InvoiceEletronic(models.Model):
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
     _order = 'id desc'
-    
+
     code = fields.Char(string=u'Código', readonly=True)
     name = fields.Char(string=u'Mensagem', readonly=True)
     invoice_eletronic_id = fields.Many2one('invoice.eletronic',
                                            string=u"Fatura Eletrônica")
-
 
 
 class InvoiceEletronicItem(models.Model):
