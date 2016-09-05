@@ -26,15 +26,11 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_account',
+        'l10n_br_account_new',
     ],
     'data': [
-        'data/l10n_br_account_service_data.xml',
-        'product_view.xml',
-        'l10n_br_account_view.xml',
         'res_company_view.xml',
         'account_invoice_view.xml',
-        'security/ir.model.access.csv',
     ],
     'demo': [
         'demo/account_tax_demo.xml',

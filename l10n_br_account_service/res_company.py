@@ -17,12 +17,11 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm, fields
 
-from openerp.addons.l10n_br_account.res_company import SQL_CONSTRAINTS
+from odoo import fields, models
 
 
-class ResCompany(orm.Model):
+class ResCompany(models.Model):
     _inherit = 'res.company'
 
     def _get_taxes(self, cr, uid, ids, name, arg, context=None):
@@ -35,29 +34,16 @@ class ResCompany(orm.Model):
             result[company.id]['service_tax_ids'] = service_tax_ids
         return result
 
-    _columns = {
-        'nfse_version': fields.selection([('100', '1.00')], 'Versão NFse',
-                                         required=True),
-        'nfse_import_folder': fields.char('Pasta de Origem', size=254),
-        'nfse_export_folder': fields.char('Pasta de Destino', size=254),
-        'nfse_backup_folder': fields.char('Pasta de Backup', size=254),
-        'service_tax_definition_line': fields.one2many(
-            'l10n_br_tax.definition.company.service',
-            'company_id', 'Taxes Definitions'),
-        'service_tax_ids': fields.function(
-            _get_taxes, method=True, type='many2many',
-            relation='account.tax', string='Product Taxes', multi='all'),
-    }
-    _defaults = {
-        'nfse_version': '100',
-        'annual_revenue': 0.0
-    }
+    #service_tax_definition_line = fields.One2many(
+    #    'l10n_br_tax.definition.company.service',
+    #    'company_id', 'Taxes Definitions')
+    service_tax_ids = fields.Many2many(
+        compute=_get_taxes, method=True,
+        relation='account.tax', string='Product Taxes', multi='all')
 
 
-class L10n_brTaxDefinitionCompanyService(orm.Model):
-    _name = 'l10n_br_tax.definition.company.service'
-    _inherit = 'l10n_br_tax.definition'
-    _columns = {
-        'company_id': fields.many2one('res.company', 'Company', select=True),
-    }
-    _sql_constraints = SQL_CONSTRAINTS
+#class L10n_brTaxDefinitionCompanyService(models.Model):
+#    _name = 'l10n_br_tax.definition.company.service'
+#    _inherit = 'l10n_br_tax.definition'
+
+#    company_id = fields.Many2one('res.company', 'Company', select=True)

@@ -16,3 +16,17 @@
 #You should have received a copy of the GNU Affero General Public License     #
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
+
+from odoo import fields, models
+
+from .l10n_br_account_product_service import (
+    PRODUCT_FISCAL_TYPE,
+    PRODUCT_FISCAL_TYPE_DEFAULT)
+
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    fiscal_type = fields.Selection(
+        PRODUCT_FISCAL_TYPE, 'Tipo Fiscal', required=True,
+        default=PRODUCT_FISCAL_TYPE_DEFAULT)
