@@ -20,13 +20,10 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from tools.translate import _
+from odoo import fields, models
 
-class HrJob(orm.Model):
-    
+
+class HrJob(models.Model):
     _inherit = 'hr.job'
 
-    _columns = {
-            'cbo_id' : fields.many2one('l10n_br_hr.cbo', 'CBO'),
-    }
+    cbo_id = fields.Many2one('l10n_br_hr.cbo', 'CBO')

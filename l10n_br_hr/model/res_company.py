@@ -4,7 +4,7 @@
 #    Brazillian Human Resources Payroll module for OpenERP
 #    Copyright (C) 2014 KMEE (http://www.kmee.com.br)
 #    @author Rafael da Silva Lima <rafael.lima@kmee.com.br>
-#            
+#
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,11 +20,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import orm, fields
 
-class ResCompany(orm.Model):
+from odoo import fields, models
+
+
+class ResCompany(models.Model):
     _inherit = 'res.company'
-  
-    _columns = {
-        'check_benefits': fields.boolean('Valley Food and Meal Valley simultaneous', required=False),
-       }
+
+    check_benefits = fields.Boolean(
+        'Valley Food and Meal Valley simultaneous', required=False)

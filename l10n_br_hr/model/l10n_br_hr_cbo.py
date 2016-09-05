@@ -20,14 +20,13 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from tools.translate import _
 
-class L10nBrHrCbo(orm.Model):
+from odoo import fields, models
 
-	_name = "l10n_br_hr.cbo"
-	_description = "Brazilian Classification of Occupation"
-	_columns = {
-		'code': fields.integer('Code', required=True),
-		'name': fields.char('Name', size=255, required=True, translate=True),
-	}
+
+class L10nBrHrCbo(models.Model):
+    _name = "l10n_br_hr.cbo"
+    _description = "Brazilian Classification of Occupation"
+
+    code = fields.Integer(string='Code', required=True)
+    name = fields.Char('Name', size=255, required=True, translate=True)

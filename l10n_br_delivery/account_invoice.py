@@ -17,26 +17,26 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm, fields
+from odoo import fields, models
+from odoo.exceptions import UserError
 from openerp.tools.translate import _
 
 
-class AccountInvoice(orm.Model):
+class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
-    _columns = {
-        'carrier_id': fields.many2one(
-            'delivery.carrier', 'Transportadora', readonly=True,
-            states={'draft': [('readonly', False)]}),
-        'vehicle_id': fields.many2one(
-            'l10n_br_delivery.carrier.vehicle', u'Veículo', readonly=True,
-            states={'draft': [('readonly', False)]}),
-        'incoterm': fields.many2one(
-            'stock.incoterms', 'Tipo do Frete', readonly=True,
-            states={'draft': [('readonly', False)]},
-            help="Incoterm which stands for 'International Commercial terms' "
-            "implies its a series of sales terms which are used in the "
-            "commercial transaction."),
-    }
+
+    carrier_id = fields.Many2one(
+        'delivery.carrier', 'Transportadora', readonly=True,
+        states={'draft': [('readonly', False)]})
+    vehicle_id = fields.Many2one(
+        'l10n_br_delivery.carrier.vehicle', u'Veículo', readonly=True,
+        states={'draft': [('readonly', False)]})
+    incoterm = fields.Many2one(
+        'stock.incoterms', 'Tipo do Frete', readonly=True,
+        states={'draft': [('readonly', False)]},
+        help="Incoterm which stands for 'International Commercial terms' "
+        "implies its a series of sales terms which are used in the "
+        "commercial transaction.")
 
     def nfe_check(self, cr, uid, ids, context=None):
         result = super(AccountInvoice, self).nfe_check(cr, uid, ids, context)
@@ -65,8 +65,7 @@ class AccountInvoice(orm.Model):
                     strErro = u'Transportadora / Veículo - RNTC\n'
 
         if strErro:
-            raise orm.except_orm(
-                _('Error!'),
+            raise UserError(
                 _(u"Validação da Nota fiscal:\n '%s'") % (strErro))
 
         return result

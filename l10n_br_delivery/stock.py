@@ -17,23 +17,23 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm, fields
+from odoo import fields, models
 
 
-class StockPicking(orm.Model):
+class StockPicking(models.Model):
     _inherit = 'stock.picking'
-    _columns = {
-        'vehicle_id': fields.many2one(
-            'l10n_br_delivery.carrier.vehicle', u'Veículo'),
-        'incoterm': fields.many2one(
-            'stock.incoterms', 'Tipo do Frete',
+
+    vehicle_id = fields.Many2one(
+        'l10n_br_delivery.carrier.vehicle', u'Veículo')
+    incoterm = fields.Many2one(
+        'stock.incoterms', 'Tipo do Frete',
         help="Incoterm which stands for 'International Commercial terms"
         "implies its a series of sales terms which are used in the "
-        "commercial transaction.")}
+        "commercial transaction.")
 
     def _prepare_shipping_invoice_line(self, cr, uid, picking,
                                     invoice, context=None):
-        #TODO: Calcular o valor correto em caso de alteração da quantidade
+        # TODO: Calcular o valor correto em caso de alteração da quantidade
         return False
 
     def _prepare_invoice_line(self, cr, uid, group, picking, move_line,
@@ -41,17 +41,16 @@ class StockPicking(orm.Model):
         result = super(StockPicking, self)._prepare_invoice_line(
             cr, uid, group, picking, move_line, invoice_id, invoice_vals,
             context)
-        #TODO: Calcular o valor correto em caso de alteração da quantidade
+        # TODO: Calcular o valor correto em caso de alteração da quantidade
         if move_line.sale_line_id:
             result['insurance_value'] = move_line.sale_line_id.insurance_value
-            result['other_costs_value'] = move_line.sale_line_id.other_costs_value
+            result['other_costs_value'] = \
+                move_line.sale_line_id.other_costs_value
             result['freight_value'] = move_line.sale_line_id.freight_value
         return result
 
     def _invoice_hook(self, cr, uid, picking, invoice_id):
         """Call after the creation of the invoice."""
-        context = {}
-
         self.pool.get('account.invoice').write(
             cr, uid, invoice_id, {
                 'partner_shipping_id': picking.partner_id.id,
@@ -64,6 +63,3 @@ class StockPicking(orm.Model):
 
         return super(StockPicking, self)._invoice_hook(
             cr, uid, picking, invoice_id)
-
-
-
