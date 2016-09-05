@@ -28,6 +28,7 @@
     ],
     'data': [
         'data/res.bank.csv',
+        'data/res.country.csv',
         'data/res.country.state.csv',
         'data/l10n_br_base_data.xml',
     ],

@@ -13,7 +13,6 @@ from pytrustnfe.utils import gerar_chave
 from pytrustnfe.certificado import Certificado
 
 
-
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
@@ -25,7 +24,7 @@ class InvoiceEletronic(models.Model):
         if self.company_id.country_id != self.partner_id.country_id:
             id_dest = '3'
         return id_dest
-    
+
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
         prod = {
@@ -37,7 +36,7 @@ class InvoiceEletronic(models.Model):
             'uCom': item.uom_id.name,
             'qCom': item.quantity,
             'vUnCom': item.unit_price,
-            'vProd':  item.unit_price,
+            'vProd':  '{:.2f}'.format(item.unit_price),
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': item.uom_id.name,
             'qTrib': item.quantity,
@@ -88,14 +87,16 @@ class InvoiceEletronic(models.Model):
     def _prepare_eletronic_invoice_values(self):
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
-            'cNF': self.numero_controle,
+            'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
             'indPag': 1,
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': datetime.strptime(self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
-            'dhSaiEnt': datetime.strptime(self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+            'dhEmi': datetime.strptime(
+                self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+            'dhSaiEnt': datetime.strptime(
+                self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'tpNF': self.finalidade_emissao,
             'idDest': self._id_dest()[0],
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -111,15 +112,16 @@ class InvoiceEletronic(models.Model):
         }
         emit = {
             'tipo': self.company_id.partner_id.company_type,
-            'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),            
+            'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'xNome': self.company_id.legal_name,
             'xFant': self.company_id.name,
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
                 'xBairro': self.company_id.district,
-                'cMun': '%s%s' % (self.company_id.partner_id.state_id.ibge_code,
-                                  self.company_id.partner_id.l10n_br_city_id.ibge_code),
+                'cMun': '%s%s' % (
+                    self.company_id.partner_id.state_id.ibge_code,
+                    self.company_id.partner_id.l10n_br_city_id.ibge_code),
                 'xMun': self.company_id.l10n_br_city_id.name,
                 'UF': self.company_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.company_id.zip),
@@ -139,8 +141,8 @@ class InvoiceEletronic(models.Model):
                 'xLgr': self.partner_id.street,
                 'nro': self.partner_id.number,
                 'xBairro': self.partner_id.district,
-                'cMun': '%s%s'  % (self.partner_id.state_id.ibge_code,
-                                   self.partner_id.l10n_br_city_id.ibge_code),
+                'cMun': '%s%s' % (self.partner_id.state_id.ibge_code,
+                                  self.partner_id.l10n_br_city_id.ibge_code),
                 'xMun': self.partner_id.l10n_br_city_id.name,
                 'UF': self.partner_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.partner_id.zip),
@@ -225,27 +227,32 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        
+
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(1, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
-        
+
         resposta = autorizar_nfe(certificado, **lote)
 
-        if resposta['object'].retEnviNFe.cStat != 104:
-            self.codigo_retorno = resposta['object'].retEnviNFe.cStat
-            self.mensagem_retorno = resposta['object'].retEnviNFe.xMotivo
+        if resposta['object'].Body.nfeAutorizacaoLoteResult.\
+                retEnviNFe.cStat != 104:
+            self.codigo_retorno = resposta['object'].Body.\
+                nfeAutorizacaoLoteResult.retEnviNFe.cStat
+            self.mensagem_retorno = resposta['object'].Body.\
+                nfeAutorizacaoLoteResult.retEnviNFe.xMotivo
         else:
-            self.codigo_retorno = resposta['object'].retEnviNFe.protNFe.infProt.cStat
-            self.mensagem_retorno = resposta['object'].retEnviNFe.protNFe.infProt.xMotivo
-        
+            self.codigo_retorno = resposta['object'].Body.\
+                nfeAutorizacaoLoteResultretEnviNFe.protNFe.infProt.cStat
+            self.mensagem_retorno = resposta['object'].Body.\
+                nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.xMotivo
+
         event = self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
         self._create_attachment(self, resposta['sent_xml'])
-        self._create_attachment(self, resposta['received_xml'])
+        # self._create_attachment(self, resposta['received_xml'])
