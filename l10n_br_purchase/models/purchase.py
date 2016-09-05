@@ -18,8 +18,7 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp import models, api, _
-from openerp.osv import fields
+from odoo import api, fields, models, _
 from openerp.exceptions import except_orm
 from openerp.addons import decimal_precision as dp
 
@@ -62,26 +61,15 @@ class PurchaseOrder(models.Model):
             result[line.order_id.id] = True
         return list(result.keys())
 
-
-    _columns = {
-        'amount_untaxed': fields.function(
-            _amount_all, method=True,
-            digits_compute=dp.get_precision('Purchase Price'),
-            string='Untaxed Amount',
-            store={'purchase.order.line': (_get_order, None, 10)},
-            multi="sums", help="The amount without tax"),
-        'amount_tax': fields.function(
-            _amount_all, method=True,
-            digits_compute=dp.get_precision('Purchase Price'), string='Taxes',
-            store={'purchase.order.line': (_get_order, None, 10)},
-            multi="sums", help="The tax amount"),
-        'amount_total': fields.function(
-            _amount_all, method=True,
-            digits_compute=dp.get_precision('Purchase Price'), string='Total',
-            store={'purchase.order.line': (_get_order, None, 10)},
-            multi="sums", help="The total amount")}
-
-
+    amount_untaxed = fields.Float(
+        compute='_compute_amount', digits=dp.get_precision('Purchase Price'),
+        string='Untaxed Amount', store=True, help="The amount without tax")
+    amount_tax = fields.Float(
+        compute='_compute_amount', digits=dp.get_precision('Purchase Price'),
+        string='Taxes', store=True, help="The tax amount")
+    amount_total = fields.Float(
+        compute='_compute_amount', digits=dp.get_precision('Purchase Price'),
+        string='Total', store=True, help="The total amount")
 
     @api.multi
     def onchange_partner_id(self, partner_id=False,
@@ -92,7 +80,6 @@ class PurchaseOrder(models.Model):
         if not company_id:
             company_id = self.env['res.users'].browse(
                 self._uid).with_context(context).company_id.id
-
 
         return super(PurchaseOrder, self).onchange_partner_id(
             partner_id, **kwargs)
@@ -118,7 +105,7 @@ class PurchaseOrder(models.Model):
             cr, uid, ids, partner_id, dest_address_id, company_id, context,
             fiscal_category_id=fiscal_category_id, **kwargs)
 
-   
+
     def _prepare_inv_line(self, cr, uid, account_id, order_line, context=None):
 
         result = super(PurchaseOrder, self)._prepare_inv_line(
@@ -206,13 +193,12 @@ class PurchaseOrder(models.Model):
                 order_line.fiscal_position.id
         return result
 
+
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
-    _columns = {
-        'fiscal_position_id': fields.many2one(
-            'account.fiscal.position', u'Posição Fiscal',
-            domain="[('fiscal_category_id', '=', fiscal_category_id)]")
-    }
+
+    fiscal_position = fields.Many2one(
+        'account.fiscal.position', u'Posição Fiscal')
 
     @api.model
     def _fiscal_position_map(self, result, **kwargs):
@@ -240,7 +226,7 @@ class PurchaseOrderLine(models.Model):
                             fiscal_position_id=False, date_planned=False,
                             name=False, price_unit=False, state='draft', context=None):
         context = dict(context or {})
-        
+
         company_id = context.get('company_id')
         parent_fiscal_position_id = context.get('parent_fiscal_position_id')
         parent_fiscal_category_id = context.get('parent_fiscal_category_id')

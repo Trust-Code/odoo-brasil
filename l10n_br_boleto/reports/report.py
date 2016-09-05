@@ -21,9 +21,10 @@
 ##############################################################################
 
 from __future__ import with_statement
-from openerp.report.render import render
-from openerp.report.interface import report_int
-from openerp import pooler
+
+import odoo
+from odoo.report.render import render
+from odoo.report.interface import report_int
 
 
 class external_pdf(render):
@@ -42,18 +43,17 @@ class ReportCustom(report_int):
     """
 
     def create(self, cr, uid, ids, datas, context=False):
-        if not context:
-            context = {}
+        env = odoo.api.Environment(cr, uid, context or {})
+
         active_ids = context.get('active_ids')
         active_model = context.get('active_model')
-        pool = pooler.get_pool(cr.dbname)
-        ids_move_lines = []
 
-        aml_obj = pool.get('account.move.line')
+        ids_move_lines = []
+        aml_obj = env['account.move.line']
 
         if active_model == 'account.invoice':
-            ai_obj = pool.get('account.invoice')
-            for account_invoice in ai_obj.browse(cr, uid, active_ids):
+            ai_obj = env['account.invoice']
+            for account_invoice in ai_obj.browse(active_ids):
                 for move_line in account_invoice.receivable_move_line_ids:
                     ids_move_lines.append(move_line.id)
         elif active_model == 'account.move.line':
@@ -61,7 +61,7 @@ class ReportCustom(report_int):
         else:
             return False
 
-        boleto_list = aml_obj.action_register_boleto(cr, uid, ids_move_lines)
+        boleto_list = aml_obj.action_register_boleto(ids_move_lines)
         if not boleto_list:
             raise osv.except_osv(
                 'Error !', ('Não é possível gerar os boletos\n'
