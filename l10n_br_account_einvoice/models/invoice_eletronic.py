@@ -114,7 +114,7 @@ class InvoiceEletronic(models.Model):
         """
         errors = []
         if not self.serie:
-            errors.append('Nota Fiscal - Série da nota fiscal')
+            errors.append(u'Nota Fiscal - Série da nota fiscal')
         if not self.serie.fiscal_document_id:
             errors.append(u'Nota Fiscal - Tipo de documento fiscal')
         if not self.serie.internal_sequence_id:
@@ -216,8 +216,8 @@ class InvoiceEletronic(models.Model):
                     errors.append(
                         u'Prod: %s - Código do produto' % (
                             inv_line.product_id.name))
-                prod = "Produto: %s - %s" % (inv_line.product_id.default_code,
-                                             inv_line.product_id.name)
+                prod = u"Produto: %s - %s" % (inv_line.product_id.default_code,
+                                              inv_line.product_id.name)
                 if not inv_line.product_id.name:
                     errors.append(u'%s - Nome do produto' % prod)
                 if not inv_line.quantity:
@@ -231,6 +231,7 @@ class InvoiceEletronic(models.Model):
         self.ensure_one()
         errors = self._hook_validation()
         if len(errors) > 0:
+            print errors
             msg = u"\n".join(
                 [u"Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
