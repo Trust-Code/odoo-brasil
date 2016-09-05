@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data noupdate="0">
+<odoo>
+    <menuitem id="account_reports_br_statements_menu" name="Brazilian Statements" parent="account.menu_finance_reports" sequence="3" groups="account.group_account_user"/>
+
+    <record id="transfer_account_id" model="account.account.template">
+        <field name="name">transferência de Conta</field>
+        <field name="code">1.01.01.12.00</field>
+        <field name="reconcile" eval="True"/>
+        <field ref="account.data_account_type_current_assets" name="user_type_id"/>
+    </record>
+
+    <record id="l10n_br_account_chart_template" model="account.chart.template">
+        <field name="name">Planilha de Contas Brasileira</field>
+
+        <field name="currency_id" ref="base.BRL"/>
+        <field name="transfer_account_id" ref="transfer_account_id"/>
+    </record>
+
+    <record id="transfer_account_id" model="account.account.template">
+        <field name="chart_template_id" ref="l10n_br_account_chart_template"/>
+    </record>
+
 
         <record id="ecd_chart_template" model="account.chart.template">
             <field name="name">Brasil - Planilha de Contas</field>
-            <field name="account_root_id" ref="id_0" />
-            <field name="bank_account_view_id" ref="id_1_1_1_02" />
+            <field name="code_digits">6</field>
+            <field name="bank_account_code_prefix">1.01.01.02.00</field>
+            <field name="cash_account_code_prefix">1.01.01.01.00</field>
 <!--            <field name="property_account_income" ref="ECD3010101010400" />
             <field name="property_account_expense" ref="ECD3010103050000" /> -->
-            <field name="property_account_receivable" ref="id_1_1_2_01_001" />
-            <field name="property_account_payable" ref="id_2_1_2_01_001" />
-            <field name="property_account_income_categ" ref="id_3_1_1_03_001" />
-            <field name="property_account_expense_categ" ref="id_5_1_1_01_001" />
 <!--            <field name="property_account_income_opening" ref="ECD3010101010400" />
             <field name="property_account_expense_opening" ref="ECD4010302040100" /> -->
             <field name="currency_id" ref="base.BRL" />
         </record>
 
-    </data>
-</openerp>
+</odoo>

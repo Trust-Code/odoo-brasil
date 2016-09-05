@@ -27,7 +27,7 @@
     'version': '7.0',
     'depends': [
         'purchase',
-        'l10n_br_stock',        
+        'l10n_br_stock',
     ],
     'data': [
         'views/purchase.xml',

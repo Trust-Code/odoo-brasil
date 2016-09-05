@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-	<data>
-
-		<record id="view_l10n_br_account_company_form" model="ir.ui.view">
-			<field name="name">l10n_br_account.company</field>
-			<field name="model">res.company</field>
-			<field name="inherit_id" ref="base.view_company_form" />
-			<field name="arch" type="xml">
-				<page name="configuration" position="after">
-                    <page name="fiscal" string="Fiscal">
-                        <notebook>
-        					<page string="Dados Fiscais">
-                                <group>
-                                    <field name="fiscal_type" />
-                                </group>
-        						<group string="CNAE">
-        							<field name="cnae_main_id"/>
-        						</group>
-        						<separator colspan="4" string="CNAE Secundários"/>
-        						<field colspan="4" nolabel="1" name="cnae_secondary_ids"/>
-        					</page>
-        					<page name="regime_normal" string="Regime Normal" attrs="{'invisible': [('fiscal_type', '!=', '3')]}">
-        					</page>
-        					<page name="simples" string="Simples Nacional" attrs="{'invisible': [('fiscal_type', '=', '3')]}">
-        						<separator colspan="4" string="Faturamento dos ultimos 12 meses" />
-        						<field colspan="4" name="annual_revenue" />
-        					</page>
-                        </notebook>
+<odoo>
+    <data>
+        <record id="view_l10n_br_account_company_form" model="ir.ui.view">
+            <field name="name">l10n_br_account.company</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page name="fiscal" string="Dados Fiscais">
+                        <group name="regime_fiscal">
+                            <field name="fiscal_type" />
+                            <group name="simples_nacional" string="Simples Nacional" attrs="{'invisible': [('fiscal_type', '!=', '1')]}">
+                                <field name="annual_revenue" string="Faturamento dos últimos 12 meses" />
+                            </group>
+                            <group name="regime_normal" string="Regime Normal" attrs="{'invisible': [('fiscal_type', '!=', '3')]}">
+                            </group>
+                        </group>
+                        <group name="cnae" string="CNAE">
+                            <field name="cnae_main_id"/>
+                        </group>
+                        <separator colspan="4" string="CNAE Secundários"/>
+                        <field colspan="4" nolabel="1" name="cnae_secondary_ids"/>
                     </page>
-				</page>
-			</field>
-		</record>
-
-	</data>
-</openerp>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>

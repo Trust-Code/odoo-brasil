@@ -26,7 +26,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_account_product_new',
+        'l10n_br_account_product_new', 'stock',
     ],
     'data': [
         'l10n_br_stock_data.xml',
