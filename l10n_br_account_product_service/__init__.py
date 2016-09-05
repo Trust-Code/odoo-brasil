@@ -17,8 +17,4 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-import l10n_br_account_product_service
-import product
-import res_company
-import res_partner
-import account_invoice
+from . import models

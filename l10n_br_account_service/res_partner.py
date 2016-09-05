@@ -18,10 +18,10 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm
+from odoo import models
 
 
-class AccountFiscalPosition(orm.Model):
+class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
     def map_tax_code(self, cr, uid, product_id, fiscal_position,

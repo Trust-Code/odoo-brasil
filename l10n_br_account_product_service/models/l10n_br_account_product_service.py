@@ -17,10 +17,19 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm, fields
+from odoo import fields, models
 
 PRODUCT_FISCAL_TYPE = [
-    ('service', u'Serviço')
+    ('service', u'Serviço'),
+    ('product', 'Produto'),
 ]
 
 PRODUCT_FISCAL_TYPE_DEFAULT = PRODUCT_FISCAL_TYPE[0][0]
+
+
+class L10n_brAccountDocumentSerie(models.Model):
+    _inherit = 'l10n_br_account.document.serie'
+
+    fiscal_type = fields.Selection(
+        PRODUCT_FISCAL_TYPE, 'Tipo Fiscal', required=True,
+        default=PRODUCT_FISCAL_TYPE_DEFAULT)
