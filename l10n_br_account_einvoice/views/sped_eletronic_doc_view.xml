@@ -81,6 +81,17 @@
                                 <field name="consumidor_final"/>
                             </group>
                         </group>
+                        <group name="totais" string="Totais">
+                            <group>
+                                <field name="valor_bruto" />
+                                <field name="valor_frete" />
+                                <field name="valor_seguro" />
+                                <field name="valor_desconto" />
+                                <field name="valor_despesas" />
+                                <field name="valor_retencoes" />
+                                <field name="valor_final" />
+                            </group>
+                        </group>
                         <group string="Itens">
 	                        <field name="eletronic_item_ids" nolabel="1">
 	                            <tree name="eletronic_items">

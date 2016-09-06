@@ -7,17 +7,19 @@ from odoo import api, fields, models
 from datetime import datetime
 from errno import ECOMM
 
+
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
-    
+
     @api.multi
     def _compute_total_edocs(self):
         for item in self:
             item.total_edocs = self.env['invoice.eletronic'].search_count(
                 [('invoice_id', '=', item.id)])
-    
-    total_edocs = fields.Integer(string="Total NFe", compute=_compute_total_edocs)
-    
+
+    total_edocs = fields.Integer(string="Total NFe",
+                                 compute=_compute_total_edocs)
+
     def _prepare_edoc_item_vals(self, invoice_line):
         vals = {
             'name': invoice_line.name,
@@ -33,9 +35,9 @@ class AccountInvoice(models.Model):
             'gross_total': invoice_line.price_subtotal,
             'total': invoice_line.price_subtotal
         }
-        
+
         return vals
-    
+
     def _prepare_edoc_vals(self, invoice):
         vals = {
             'invoice_id': invoice.id,
@@ -58,23 +60,24 @@ class AccountInvoice(models.Model):
             'payment_term_id': invoice.payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
         }
-        
+
         eletronic_items = []
         for inv_line in invoice.invoice_line_ids:
-            eletronic_items.append((0, 0, self._prepare_edoc_item_vals(inv_line)))
-        
+            eletronic_items.append((0, 0,
+                                    self._prepare_edoc_item_vals(inv_line)))
+
         vals['eletronic_item_ids'] = eletronic_items
         return vals
-    
+
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
         self.action_number()
-        for item in self:            
+        for item in self:
             edoc_vals = self._prepare_edoc_vals(item)
-            self.env['invoice.eletronic'].create(edoc_vals)        
+            self.env['invoice.eletronic'].create(edoc_vals)
         return res
-    
+
     @api.multi
     def action_cancel(self):
         res = super(AccountInvoice, self).action_cancel()
@@ -82,6 +85,5 @@ class AccountInvoice(models.Model):
             edocs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', item.id)])
             edocs.unlink()
-        
+
         return res
-        

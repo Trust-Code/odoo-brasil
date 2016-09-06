@@ -36,9 +36,22 @@ class SpedTaxIcms(models.Model):
     origem = fields.Selection([('0', 'Nacional'),
                                ('1', 'Estrangeira adquirida no Brasil')],
                               u'Origem da mercadoria')
-    cst = fields.Selection([('00', 'Tributada Integralmente'),
-                            ('01', 'Tributada com ICMS ST')],
-                           u'Situação tributária do ICMS')
+    cst = fields.Selection(
+     [
+      ('00', '00 - Tributada Integralmente'),
+      ('10', '10 - Tributada com ICMS ST'),
+      ('20', '20 - Com redução de base de cálculo'),
+      ('30', '30 - Isenta ou não tributada e com cobrança do ICMS por \
+substituição tributária'),
+      ('40', '40 - Isenta'),
+      ('41', '41 - Não tributada'),
+      ('50', '50 - Suspensão'),
+      ('51', '51 - Diferimento'),
+      ('60', '60 - ICMS cobrado anteriormente por substituição tributária'),
+      ('70', '70 - Com redução de base de cálculo e cobrança do ICMS por \
+substituição tributária'),
+      ('90', '90 - Outros')],
+     u'Situação tributária do ICMS')
     aliquota = fields.Float(u'Alíquota')
     base_calculo = fields.Float(u'Base de cálculo')
     percentual_reducao_bc = fields.Float(u'% Redução Base')

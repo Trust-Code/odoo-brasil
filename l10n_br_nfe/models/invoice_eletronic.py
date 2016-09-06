@@ -36,7 +36,7 @@ class InvoiceEletronic(models.Model):
             'uCom': item.uom_id.name,
             'qCom': item.quantity,
             'vUnCom': item.unit_price,
-            'vProd':  '{:.2f}'.format(item.unit_price),
+            'vProd':  "%.02f" % item.total,
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': item.uom_id.name,
             'qTrib': item.quantity,
@@ -158,22 +158,23 @@ class InvoiceEletronic(models.Model):
             eletronic_items.append(
                 self._prepare_eletronic_invoice_item(item, self))
         total = {
-            'vBC': '100.00',
-            'vICMS': '12.00',
+            'vBC': "%.02f" % self.valor_bruto,
+            'vICMS': '0.00',
             'vICMSDeson': '0.00',
             'vBCST': '0.00',
             'vST': '0.00',
-            'vProd': '100.00',
-            'vFrete': '0.00',
-            'vSeg': '0.00',
+            'vProd': "%.02f" % self.valor_bruto,
+            'vFrete': "%.02f" % self.valor_frete,
+            'vSeg': "%.02f" % self.valor_seguro,
+            'vServ': '0.00',
             'vDesc': '0.00',
             'vII': '0.00',
-            'vIPI': '5.00',
-            'vPIS': '0.65',
-            'vCOFINS': '3.00',
-            'vOutro': '0.00',
-            'vNF': '100.00',
-            'vTotTrib': '12.00'
+            'vIPI': '0.00',
+            'vPIS': '0.00',
+            'vCOFINS': '0.00',
+            'vOutro': "%.02f" % self.valor_despesas,
+            'vNF': "%.02f" % self.valor_final,
+            'vTotTrib': '0.00'
         }
         transp = {
             'modFrete': 9
@@ -245,7 +246,7 @@ class InvoiceEletronic(models.Model):
                 nfeAutorizacaoLoteResult.retEnviNFe.xMotivo
         else:
             self.codigo_retorno = resposta['object'].Body.\
-                nfeAutorizacaoLoteResultretEnviNFe.protNFe.infProt.cStat
+                nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.cStat
             self.mensagem_retorno = resposta['object'].Body.\
                 nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.xMotivo
 
