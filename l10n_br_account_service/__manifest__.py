@@ -29,8 +29,8 @@
         'l10n_br_account_new',
     ],
     'data': [
-        'res_company_view.xml',
-        'account_invoice_view.xml',
+        'views/res_company_view.xml',
+        'views/account_invoice_view.xml',
     ],
     'demo': [
         'demo/account_tax_demo.xml',

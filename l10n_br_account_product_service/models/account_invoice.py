@@ -33,7 +33,7 @@ class AccountInvoice(models.Model):
         default=_get_fiscal_type)
 
 
-    def _default_fiscal_document(self, cr, uid, context):
+    def _default_fiscal_document(self):
         invoice_fiscal_type = context.get('fiscal_type', 'product')
         fiscal_invoice_id = invoice_fiscal_type + '_invoice_id'
 
@@ -44,7 +44,7 @@ class AccountInvoice(models.Model):
 
         return fiscal_document and fiscal_document[0] or False
 
-    def _default_fiscal_document_serie(self, cr, uid, context):
+    def _default_fiscal_document_serie(self):
         invoice_fiscal_type = context.get('fiscal_type', 'product')
         fiscal_document_serie = False
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)

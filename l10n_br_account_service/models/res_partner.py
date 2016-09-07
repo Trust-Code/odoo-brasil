@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2013  Raphaël Valyi - Akretion                                #
 # Copyright (C) 2013  Renato Lima - Akretion                                  #
 #                                                                             #
 #This program is free software: you can redistribute it and/or modify         #
@@ -18,26 +18,17 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-{
-    'name': 'Brazilian Localization Sales and Warehouse',
-    'description': 'Brazilian Localization for sale_stock_module',
-    'category': 'Localisation',
-    'license': 'AGPL-3',
-    'author': 'Akretion, OpenERPBrasil.org',
-    'website': 'http://openerpbrasil.org',
-    'version': '7.0',
-    'depends': [
-        'sale_stock',
-        'l10n_br_stock',
-    ],
-    'data': [
-        'sale_stock_view.xml',
-    ],
-    'demo': [
-        # 'l10n_br_sale_stock_demo.xml'
-    ],
-    'test': [
-        'test/sale_order_demo.yml'
-    ],
-    'auto_install': True,
-}
+from odoo import api, models
+
+
+class AccountFiscalPosition(models.Model):
+    _inherit = 'account.fiscal.position'
+
+    @api.model     # noqa
+    def map_tax(self, taxes, product=None, partner=None):
+        result = super(AccountFiscalPosition, self).map_tax(
+            taxes, product=product, partner=partner)
+
+        if tax_taxes:
+            pass # TODO Antes mapeava os impostos da empresa aqui
+        return result

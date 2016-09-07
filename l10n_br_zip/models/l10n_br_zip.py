@@ -5,8 +5,8 @@
 
 import re
 
-from openerp import models, fields
-from openerp.exceptions import except_orm
+from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class L10n_brZip(models.Model):
@@ -39,8 +39,7 @@ class L10n_brZip(models.Model):
         else:
             if not state_id or not l10n_br_city_id or \
                     len(street or '') == 0:
-                raise except_orm(
-                    u'Parametros insuficientes',
+                raise UserError(
                     u'Necessário informar Estado, município e logradouro')
 
             if country_id:
@@ -87,8 +86,8 @@ class L10n_brZip(models.Model):
             zip_code=zip_code)
         return self.search(domain)
 
-    def zip_search(self, cr, uid, ids, context,
-                   country_id=False, state_id=False,
+    @api.multi
+    def zip_search(self, country_id=False, state_id=False,
                    l10n_br_city_id=False, district=False,
                    street=False, zip_code=False):
         result = self.set_result(cr, uid, ids, context)
@@ -98,7 +97,7 @@ class L10n_brZip(models.Model):
             l10n_br_city_id, district,
             street, zip_code)
         if len(zip_id) == 1:
-            result = self.set_result(cr, uid, ids, context, zip_id[0])
+            result = self.set_result(zip_id[0])
             return result
         else:
             return False

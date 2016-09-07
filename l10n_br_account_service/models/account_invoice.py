@@ -18,55 +18,21 @@
 ###############################################################################
 
 from lxml import etree
-
-from openerp.osv import orm
-from openerp.addons.l10n_br_account.account_invoice import OPERATION_TYPE
+from odoo import api, fields, models
 
 
-class AccountInvoice(orm.Model):
-    _inherit = 'account.invoice'
-
-    def _default_fiscal_category(self, cr, uid, context=None):
-
-        DEFAULT_FCATEGORY_SERVICE = {
-            'in_invoice': 'in_invoice_service_fiscal_category_id',
-            'out_invoice': 'out_invoice_service_fiscal_category_id'
-        }
-
-        default_fo_category = {
-           'service': DEFAULT_FCATEGORY_SERVICE
-        }
-
-        invoice_type = context.get('type', 'out_invoice')
-        invoice_fiscal_type = context.get('fiscal_type', 'product')
-
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-        fcategory = self.pool.get('res.company').read(
-            cr, uid, user.company_id.id,
-            [default_fo_category[invoice_fiscal_type][invoice_type]],
-            context=context)[default_fo_category[invoice_fiscal_type][
-                invoice_type]]
-
-        return fcategory and fcategory[0] or False
-
-    _defaults = {
-        'fiscal_category_id': _default_fiscal_category,
-    }
-
-
-class AccountInvoiceLine(orm.Model):
+class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
-    def fields_view_get(self, cr, uid, view_id=None, view_type=False,
-                        context=None, toolbar=False, submenu=False):
+    @api.model
+    def fields_view_get(self, view_id=None, view_type=False,
+                        toolbar=False, submenu=False):
 
         result = super(AccountInvoiceLine, self).fields_view_get(
-            cr, uid, view_id=view_id, view_type=view_type, context=context,
+            view_id=view_id, view_type=view_type,
             toolbar=toolbar, submenu=submenu)
 
-        if context is None:
-            context = {}
-
+        context = self._context
         if view_type == 'form':
             eview = etree.fromstring(result['arch'])
 

@@ -37,47 +37,47 @@ class PurchaseOrder(models.Model):
         string='Total', store=True, help="The total amount")
 
 
-    # TODO ask OpenERP SA for a _prepare_invoice method!
-    def action_invoice_create(self, cr, uid, ids, *args):
-        inv_id = super(PurchaseOrder, self).action_invoice_create(cr, uid,
-                                                                   ids, *args)
-        for order in self.browse(cr, uid, ids):
+    # TODO Não existe mais invoice_create no purchase
+    #def action_invoice_create(self, cr, uid, ids, *args):
+    #    inv_id = super(PurchaseOrder, self).action_invoice_create(cr, uid,
+    #                                                               ids, *args)
+    #    for order in self.browse(cr, uid, ids):
             # REMARK: super method is ugly as it assumes only one invoice
             # for possibly several purchase orders.
-            if inv_id:
-                company_id = order.company_id
-                if not company_id.document_serie_product_ids:
-                    raise except_orm(
-                        _('No fiscal document serie found!'),
-                        _("No fiscal document serie found for selected \
-                        company %s") % (order.company_id.name))
+    #        if inv_id:
+    #            company_id = order.company_id
+    #            if not company_id.document_serie_product_ids:
+    #                raise except_orm(
+    #                    _('No fiscal document serie found!'),
+    #                    _("No fiscal document serie found for selected \
+    #                    company %s") % (order.company_id.name))
 
-                journal_id = order.fiscal_category_id and \
-                order.fiscal_category_id.property_journal.id or False
+    #            journal_id = order.fiscal_category_id and \
+    #            order.fiscal_category_id.property_journal.id or False
 
-                if not journal_id:
-                    raise except_orm(
-                        _(u'Nenhuma Diário!'),
-                        _(u"Categoria de operação fisca: '%s', não tem um \
-                        diário contábil para a empresa %s") % (
-                            order.fiscal_category_id.name,
-                            order.company_id.name))
+    #            if not journal_id:
+    #                raise except_orm(
+    #                    _(u'Nenhuma Diário!'),
+    #                    _(u"Categoria de operação fisca: '%s', não tem um \
+    #                    diário contábil para a empresa %s") % (
+    #                        order.fiscal_category_id.name,
+    #                       order.company_id.name))
 
-                comment = ''
-                if order.fiscal_position.inv_copy_note:
-                    comment = order.fiscal_position.note or ''
-                if order.notes:
-                    comment += ' - ' + order.notes
+    #            comment = ''
+    #            if order.fiscal_position.inv_copy_note:
+    #                comment = order.fiscal_position.note or ''
+    #            if order.notes:
+    #                comment += ' - ' + order.notes
 
-                self.pool.get('account.invoice').write(cr, uid, inv_id, {
-                     'fiscal_category_id': order.fiscal_category_id and
-                     order.fiscal_category_id.id,
-                     'fiscal_position': order.fiscal_position and
-                     order.fiscal_position.id,
-                     'issuer': '1',
-                     'comment': comment,
-                     'journal_id': journal_id})
-        return inv_id
+    #            self.pool.get('account.invoice').write(cr, uid, inv_id, {
+    #                 'fiscal_category_id': order.fiscal_category_id and
+    #                 order.fiscal_category_id.id,
+    #                 'fiscal_position': order.fiscal_position and
+    #                 order.fiscal_position.id,
+    #                 'issuer': '1',
+    #                 'comment': comment,
+    #                 'journal_id': journal_id})
+    #    return inv_id
 
 
 

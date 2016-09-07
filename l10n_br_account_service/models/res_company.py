@@ -24,22 +24,18 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    def _get_taxes(self, cr, uid, ids, name, arg, context=None):
-        result = {}
-        for company in self.browse(cr, uid, ids, context=context):
-            result[company.id] = {'service_tax_ids': []}
+    def _get_taxes(self):
+        for company in self:
             service_tax_ids = [tax.tax_id.id for tax in
                                company.service_tax_definition_line]
             service_tax_ids.sort()
-            result[company.id]['service_tax_ids'] = service_tax_ids
-        return result
+            company.service_tax_ids = service_tax_ids
 
     #service_tax_definition_line = fields.One2many(
     #    'l10n_br_tax.definition.company.service',
     #    'company_id', 'Taxes Definitions')
-    service_tax_ids = fields.Many2many(
-        compute=_get_taxes, method=True,
-        relation='account.tax', string='Product Taxes', multi='all')
+    service_tax_ids = fields.Many2many('account.tax', compute=_get_taxes,
+                                       string='Service Taxes')
 
 
 #class L10n_brTaxDefinitionCompanyService(models.Model):
