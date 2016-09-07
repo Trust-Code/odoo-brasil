@@ -17,54 +17,21 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm, fields
+from odoo import fields, models
 
 from .l10n_br_account_product_service import PRODUCT_FISCAL_TYPE
 
 
-class AccountInvoice(orm.Model):
+class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    def _get_fiscal_type(self, cr, uid, context=None):
-        if context is None:
-            context = {}
-        return context.get('fiscal_type', 'product')
+    def _get_fiscal_type(self):
+        return self.env.context.get('fiscal_type', 'product')
 
-    _columns = {
-        'fiscal_type': fields.selection(
-            PRODUCT_FISCAL_TYPE, 'Tipo Fiscal', required=True),
-    }
+    fiscal_type = fields.Selection(
+        PRODUCT_FISCAL_TYPE, 'Tipo Fiscal', required=True,
+        default=_get_fiscal_type)
 
-    def _default_fiscal_category(self, cr, uid, context=None):
-
-        DEFAULT_FCATEGORY_PRODUCT = {
-            'in_invoice': 'in_invoice_fiscal_category_id',
-            'out_invoice': 'out_invoice_fiscal_category_id',
-            'in_refund': 'in_refund_fiscal_category_id',
-            'out_refund': 'out_refund_fiscal_category_id'
-        }
-
-        DEFAULT_FCATEGORY_SERVICE = {
-            'in_invoice': 'in_invoice_service_fiscal_category_id',
-            'out_invoice': 'out_invoice_service_fiscal_category_id'
-        }
-
-        default_fo_category = {
-           'product': DEFAULT_FCATEGORY_PRODUCT,
-           'service': DEFAULT_FCATEGORY_SERVICE
-        }
-
-        invoice_type = context.get('type', 'out_invoice')
-        invoice_fiscal_type = context.get('fiscal_type', 'product')
-
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-        fcategory = self.pool.get('res.company').read(
-            cr, uid, user.company_id.id,
-            [default_fo_category[invoice_fiscal_type][invoice_type]],
-            context=context)[default_fo_category[invoice_fiscal_type][
-                invoice_type]]
-
-        return fcategory and fcategory[0] or False
 
     def _default_fiscal_document(self, cr, uid, context):
         invoice_fiscal_type = context.get('fiscal_type', 'product')
@@ -98,9 +65,8 @@ class AccountInvoice(orm.Model):
 
         return fiscal_document_serie
 
-    _defaults = {
-        'fiscal_type': _get_fiscal_type,
-        'fiscal_category_id': _default_fiscal_category,
-        'fiscal_document_id': _default_fiscal_document,
-        'document_serie_id': _default_fiscal_document_serie
-    }
+    #_defaults = {
+    #    'fiscal_type': _get_fiscal_type,
+    #    'fiscal_document_id': _default_fiscal_document,
+    #    'document_serie_id': _default_fiscal_document_serie
+    #}

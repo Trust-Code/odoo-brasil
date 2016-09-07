@@ -7,7 +7,7 @@
     'name': 'Plano de Contas Simplificado Brasil',
     'summary': """Plano de contas simplificado""",
     'version': '8.0',
-    'category': 'Localization/Account Charts',
+    'category': 'Localization',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',

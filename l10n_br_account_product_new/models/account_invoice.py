@@ -15,57 +15,58 @@ from .product import PRODUCT_ORIGIN
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.one
-    @api.depends('invoice_line_ids', 'tax_line_ids.amount')
-    def _compute_amount(self):
-        self.icms_base = 0.0
-        self.icms_base_other = 0.0
-        self.icms_value = 0.0
-        self.icms_st_base = 0.0
-        self.icms_st_value = 0.0
-        self.ipi_base = sum(line.ipi_base for line in self.invoice_line_ids)
-        self.ipi_base_other = sum(
-            line.ipi_base_other for line in self.invoice_line_ids)
-        self.ipi_value = sum(line.ipi_value for line in self.invoice_line_ids)
-        self.pis_base = sum(line.pis_base for line in self.invoice_line_ids)
-        self.pis_value = sum(line.pis_value for line in self.invoice_line_ids)
-        self.cofins_base = sum(
-            line.cofins_base for line in self.invoice_line_ids)
-        self.cofins_value = sum(
-            line.cofins_value for line in self.invoice_line_ids)
-        self.ii_value = sum(line.ii_value for line in self.invoice_line_ids)
-        self.amount_discount = sum(
-            line.discount_value for line in self.invoice_line_ids)
-        self.amount_insurance = sum(
-            line.insurance_value for line in self.invoice_line_ids)
-        self.amount_costs = sum(
-            line.other_costs_value for line in self.invoice_line_ids)
-        self.amount_freight = sum(
-            line.freight_value for line in self.invoice_line_ids)
-        self.amount_total_taxes = sum(
-            line.total_taxes for line in self.invoice_line_ids)
-        self.amount_gross = sum(
-            line.price_gross for line in self.invoice_line_ids)
-        self.amount_tax_discount = 0.0
-        self.amount_untaxed = sum(
-            line.price_total for line in self.invoice_line_ids)
-        self.amount_tax = sum(tax.amount
-                              for tax in self.tax_line_ids)
-        self.amount_total = self.amount_tax + self.amount_untaxed + \
-            self.amount_costs + self.amount_insurance + self.amount_freight
+    #TODO aqui vai ser complicado
+    #@api.one
+    #@api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'currency_id', 'company_id')
+    #def _compute_amount(self):
+        #self.icms_base = 0.0
+        #self.icms_base_other = 0.0
+        #self.icms_value = 0.0
+        #self.icms_st_base = 0.0
+        #self.icms_st_value = 0.0
+        #self.ipi_base = sum(line.ipi_base for line in self.invoice_line_ids)
+        #self.ipi_base_other = sum(
+        #    line.ipi_base_other for line in self.invoice_line_ids)
+        #self.ipi_value = sum(line.ipi_value for line in self.invoice_line_ids)
+        #self.pis_base = sum(line.pis_base for line in self.invoice_line_ids)
+        #self.pis_value = sum(line.pis_value for line in self.invoice_line_ids)
+        #self.cofins_base = sum(
+            #line.cofins_base for line in self.invoice_line_ids)
+        #self.cofins_value = sum(
+        #    line.cofins_value for line in self.invoice_line_ids)
+        #self.ii_value = sum(line.ii_value for line in self.invoice_line_ids)
+        #self.amount_discount = sum(
+            #line.discount_value for line in self.invoice_line_ids)
+        #self.amount_insurance = sum(
+            #line.insurance_value for line in self.invoice_line_ids)
+        #self.amount_costs = sum(
+            #line.other_costs_value for line in self.invoice_line_ids)
+        #self.amount_freight = sum(
+            #line.freight_value for line in self.invoice_line_ids)
+        #self.amount_total_taxes = sum(
+            #line.total_taxes for line in self.invoice_line_ids)
+        #self.amount_gross = sum(
+            #line.price_gross for line in self.invoice_line_ids)
+        #self.amount_tax_discount = 0.0
+        #self.amount_untaxed = sum(
+            #line.price_total for line in self.invoice_line_ids)
+        #self.amount_tax = sum(tax.amount
+        #                      for tax in self.tax_line_ids)
+        #self.amount_total = self.amount_tax + self.amount_untaxed + \
+            #self.amount_costs + self.amount_insurance + self.amount_freight
 
-        for line in self.invoice_line_ids:
-            if line.icms_cst not in (
-                    '101', '102', '201', '202', '300', '500'):
-                self.icms_base += line.icms_base
-                self.icms_base_other += line.icms_base_other
-                self.icms_value += line.icms_value
-            else:
-                self.icms_base += 0.00
-                self.icms_base_other += 0.00
-                self.icms_value += 0.00
-            self.icms_st_base += line.icms_st_base
-            self.icms_st_value += line.icms_st_value
+        #for line in self.invoice_line_ids:
+            #if line.icms_cst not in (
+             #       '101', '102', '201', '202', '300', '500'):
+              #  self.icms_base += line.icms_base
+                #self.icms_base_other += line.icms_base_other
+                #self.icms_value += line.icms_value
+            #else:
+                #self.icms_base += 0.00
+                #self.icms_base_other += 0.00
+                #self.icms_value += 0.00
+            #self.icms_st_base += line.icms_st_base
+            #self.icms_st_value += line.icms_st_value
 
     @api.model
     def _default_fiscal_document(self):

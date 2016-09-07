@@ -1,30 +1,20 @@
-# -*- encoding: utf-8 -*-
-###############################################################################
-#                                                                             #
-# Copyright (C) 2009 Gabriel C. Stabel                                        #
-# Copyright (C) 2009 Renato Lima (Akretion)                                   #
-# Copyright (C) 2012 Raphaël Valyi (Akretion)                                 #
-# Copyright (C) 2015  Michell Stuttgart (KMEE)                                #
-#                                                                             #
-# This program is free software: you can redistribute it and/or modify        #
-# it under the terms of the GNU Affero General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or           #
-# (at your option) any later version.                                         #
-#                                                                             #
-# This program is distributed in the hope that it will be useful,             #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU Affero General Public License for more details.                         #
-#                                                                             #
-# You should have received a copy of the GNU Affero General Public License    #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
-###############################################################################
+# -*- coding: utf-8 -*-
+# © 2009 Gabriel C. Stabel
+# © 2009 Renato Lima (Akretion)
+# © 2012 Raphaël Valyi (Akretion)
+# © 2015  Michell Stuttgart (KMEE)
+# © 2016 Danimar Ribeiro, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 
 import re
+import base64
 
-from openerp import models, fields, api, _
-from openerp.addons.l10n_br_base.tools import fiscal
-from openerp.exceptions import Warning
+from odoo import models, fields, api, _
+from odoo.addons.l10n_br_base.tools import fiscal
+from odoo.exceptions import UserError
+from pytrustnfe.nfe import consulta_cadastro
+from pytrustnfe.certificado import Certificado
 
 
 class ResPartner(models.Model):
@@ -90,9 +80,9 @@ class ResPartner(models.Model):
         if self.cnpj_cpf and country_code.upper() == 'BR':
             if self.is_company:
                 if not fiscal.validate_cnpj(self.cnpj_cpf):
-                    raise Warning(_(u'CNPJ inválido!'))
+                    raise UserError(_(u'CNPJ inválido!'))
             elif not fiscal.validate_cpf(self.cnpj_cpf):
-                raise Warning(_(u'CPF inválido!'))
+                raise UserError(_(u'CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
@@ -122,7 +112,7 @@ class ResPartner(models.Model):
               self.state_id.code.lower() or '')
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
-            raise Warning(_(u'Inscrição Estadual inválida!'))
+            raise UserError(_(u'Inscrição Estadual inválida!'))
         return True
 
     @api.one
@@ -136,7 +126,7 @@ class ResPartner(models.Model):
             ['&', ('inscr_est', '=', self.inscr_est), ('id', '!=', self.id)])
 
         if len(partner_ids) > 0:
-            raise Warning(_(u'Já existe um parceiro cadastrado com'
+            raise UserError(_(u'Já existe um parceiro cadastrado com'
                             u'esta Inscrição Estadual/RG!'))
         return True
 
@@ -154,10 +144,10 @@ class ResPartner(models.Model):
                     % (val[0:3], val[3:6], val[6:9], val[9:11])
                 self.cnpj_cpf = cnpj_cpf
             else:
-                raise Warning(_(u'Verifique o CNPJ/CPF'))
+                raise UserError(_(u'Verifique o CNPJ/CPF'))
 
     @api.onchange('l10n_br_city_id')
-    def onchange_l10n_br_city_id(self):
+    def _onchange_l10n_br_city_id(self):
         """ Ao alterar o campo l10n_br_city_id que é um campo relacional
         com o l10n_br_base.city que são os municípios do IBGE, copia o nome
         do município para o campo city que é o campo nativo do módulo base
@@ -170,7 +160,6 @@ class ResPartner(models.Model):
         """
         if self.l10n_br_city_id:
             self.city = self.l10n_br_city_id.name
-            self.l10n_br_city_id = self.l10n_br_city_id
 
     @api.onchange('zip')
     def onchange_mask_zip(self):
@@ -187,6 +176,23 @@ class ResPartner(models.Model):
         Extenção para os novos campos do endereço """
         address_fields = super(ResPartner, self)._address_fields()
         return list(address_fields + ['l10n_br_city_id', 'number', 'district'])
+    
+    @api.one
+    def action_check_sefaz(self):
+        if self.cnpj_cpf and self.state_id:
+            company = self.env.user.company_id
+            if not company.nfe_a1_file and not company.nfe_a1_password:
+                raise UserError(u'Configure o certificado e senha na empresa')
+            cert = company.with_context({'bin_size': False}).nfe_a1_file
+            cert_pfx = base64.decodestring(cert)
+            certificado = Certificado(cert_pfx, company.nfe_a1_password)
+            
+            obj = {'cnpj': self.cnpj_cpf, 'estado': self.state_id.ibge_code}
+            resposta = consulta_cadastro(certificado, obj=obj)
+            print resposta
+        else:
+            raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
+        
 
 
 class ResBank(models.Model):
@@ -225,16 +231,3 @@ class ResPartnerBank(models.Model):
     acc_number_dig = fields.Char(u'Digito Conta', size=8)
     bra_number = fields.Char(u'Agência', size=8)
     bra_number_dig = fields.Char(u'Dígito Agência', size=8)
-
-
-    # TODO: [new api] Depends of odoo/openerp/base/res/res_bank.py
-    def onchange_partner_id(self, cr, uid, id, partner_id, context=None):
-        result = super(ResPartnerBank, self).onchange_partner_id(
-            cr, uid, id, partner_id, context)
-        if partner_id:
-            partner = self.pool.get('res.partner').browse(
-                cr, uid, partner_id, context=context)
-            result['value']['number'] = partner.number
-            result['value']['district'] = partner.district
-            result['value']['l10n_br_city_id'] = partner.l10n_br_city_id.id
-        return result

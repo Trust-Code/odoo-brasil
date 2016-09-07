@@ -20,6 +20,8 @@ class PaymentMode(models.Model):
         default=lambda self: self.env['res.company']._company_default_get(
             'account.payment.mode'))
     active = fields.Boolean(string='Active', default=True)
+    bank_account_id = fields.Many2one(
+        'res.partner.bank',string="Bank Account", ondelete='restrict')
     late_payment_fee = fields.Float(string=u"Percentual Multa",
                                     digits=dp.get_precision('Account'))
     late_payment_interest = fields.Float(string=u"Juros de Mora ao Mês",

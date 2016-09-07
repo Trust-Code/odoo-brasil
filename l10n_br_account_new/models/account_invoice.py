@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
         receivable_lines = []
         for line in self.move_id.line_ids:
             receivable_lines.append(line.id)
-        self.receivable_move_line_ids = self.env['account.move.line'].browse(list(set(payment_lines)))
+        self.receivable_move_line_ids = self.env['account.move.line'].browse(list(set(receivable_lines)))
 
     @api.model
     def _default_fiscal_document(self):
@@ -99,6 +99,8 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         for invoice in self:
+            if not invoice.document_serie_id.internal_sequence_id.id:
+                raise UserError(u'Configure corretamente a sequência para a numeração da nota')
             sequence_obj = self.env['ir.sequence']
             seq_number = sequence_obj.get_id(
                 invoice.document_serie_id.internal_sequence_id.id)

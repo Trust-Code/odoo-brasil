@@ -17,32 +17,26 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from openerp.osv import orm, fields
+from odoo import api, fields, models
 
 
-class ResCompany(orm.Model):
+class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    def _get_taxes(self, cr, uid, ids, name, arg, context=None):
-        result = {}
-        for company in self.browse(cr, uid, ids, context=context):
-            result[company.id] = {'product_tax_ids': [],
-                                  'service_tax_ids': []}
+    @api.multi
+    def _get_taxes(self):
+        for company in self:        
             product_tax_ids = [tax.tax_id.id for tax in
                                company.product_tax_definition_line]
             service_tax_ids = [tax.tax_id.id for tax in
                                company.service_tax_definition_line]
             product_tax_ids.sort()
             service_tax_ids.sort()
-            result[company.id]['product_tax_ids'] = product_tax_ids
-            result[company.id]['service_tax_ids'] = service_tax_ids
-        return result
+            company.product_tax_ids = product_tax_ids
+            company.service_tax_ids = service_tax_ids
 
-    _columns = {
-        'product_tax_ids': fields.function(
-            _get_taxes, method=True, type='many2many',
-            relation='account.tax', string='Product Taxes', multi='all'),
-        'service_tax_ids': fields.function(
-            _get_taxes, method=True, type='many2many',
-            relation='account.tax', string='Product Taxes', multi='all'),
-    }
+    product_tax_ids = fields.Many2many('account.tax', compute=_get_taxes,
+                                       string='Product Taxes')
+    service_tax_ids = fields.Many2many('account.tax', compute=_get_taxes,
+                                       string='Service Taxes')
+    

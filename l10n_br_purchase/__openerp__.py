@@ -24,7 +24,7 @@
     'category': 'Localisation',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
-    'version': '7.0',
+    'version': '10.0.1.0.0',
     'depends': [
         'purchase',
         'l10n_br_stock',
