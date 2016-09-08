@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="trust_base assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/l10n_br_base/static/src/css/br_base.css"/>
+        </xpath>
+    </template>
+    <template id="trust_login_layout" name="Login Layout" inherit_id="web.login_layout">
+          <t t-set="head">
+              <link href="/l10n_br_base/static/src/css/br_base.css" rel="stylesheet"/>
+          </t>
+     </template>
+     <template id="trust_menu_secondary" name="" inherit_id="web.menu_secondary">
+         <xpath expr="div[@class='o_sub_menu_footer']" position="inside">
+             <div class="oe_footer" style="float:left;width:100%;">
+                 Suporte via <a href="http://www.trustcode.com.br" target="_blank"><span style="color:#5F9EA0">Trustcode</span></a>
+             </div>
+         </xpath>
+     </template>
+</odoo>

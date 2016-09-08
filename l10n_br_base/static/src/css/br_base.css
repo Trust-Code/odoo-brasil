@@ -1,0 +1,13 @@
+body.container {
+	background: #EEE url("/l10n_br_base/static/src/img/fundo_1.jpg") repeat scroll 0% 0%;
+	height: 100%;
+	background-size:cover;
+}
+
+body.container div.o_database_list {
+    background-color: white;
+    padding: 40px;
+    margin-top: 200px;
+    border-radius: 10px;
+    box-shadow: 4px 10px 18px -1px rgba(0,0,0,0.75);
+}

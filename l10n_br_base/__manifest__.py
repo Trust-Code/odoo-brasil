@@ -31,6 +31,8 @@
     ],
     'data': [
         'data/l10n_br_base_data.xml',
+        'views/br_base.xml',
+        'views/ir_module.xml',
         'views/l10n_br_base_view.xml',
         'views/res_country_view.xml',
         'views/res_partner_view.xml',
