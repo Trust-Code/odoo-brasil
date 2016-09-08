@@ -43,11 +43,13 @@ class InvoiceEletronic(models.Model):
             'vUnTrib': item.unit_price,
             'indTot': 1
         }
+        icms_name = 'ICMS%s' % item.tax_icms_id.cst
         imposto = {
-            'vTotTrib': '12.00',
+            'vTotTrib': 0,
             'ICMS': {
+                'tipo': icms_name,
                 'ICMS00': {
-                    'orig': 0,
+                    'orig':  item.tax_icms_id.origem,
                     'CST': '00',
                     'modBC': 0,
                     'vBC': '100.00',
