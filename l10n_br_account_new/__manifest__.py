@@ -25,7 +25,4 @@
         'views/account_tax.xml',
         'security/ir.model.access.csv',
     ],
-    'demo': [
-        'demo/br_account.xml',
-    ]
 }
