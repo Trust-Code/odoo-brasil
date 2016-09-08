@@ -80,20 +80,19 @@ class HrEmployee(models.Model):
             rest = 11 - rest
         if rest != digits[10]:
             raise ValidationError(u"PIS/PASEP Inválido")
-    
 
-    check_cpf = fields.Boolean('Check CPF', default=True)
+    check_cpf = fields.Boolean('Verificar CPF', default=True)
     pis_pasep = fields.Char(u'PIS/PASEP', size=15)
-    ctps = fields.Char('CTPS', help='Number of CTPS')
-    ctps_series = fields.Char('Serie')
-    ctps_date = fields.Date('Date of issue')
-    creservist = fields.Char('Certificate of Reservist')
-    crresv_categ = fields.Char('Category')
-    cr_categ = fields.Selection([('estagiario', 'Trainee'),
-                                 ('junior', 'Junior'),
-                                 ('pleno', 'Full'),
+    ctps = fields.Char('CTPS', help='Número da CTPS')
+    ctps_series = fields.Char('Série')
+    ctps_date = fields.Date('Data de emissão')
+    creservist = fields.Char('Certificado de reservista')
+    crresv_categ = fields.Char('Categoria')
+    cr_categ = fields.Selection([('estagiario', u'Estagiário'),
+                                 ('junior', 'Júnior'),
+                                 ('pleno', 'Pleno'),
                                  ('senior', 'Senior')],
-                                string='Category', help="Choose work position")
+                                string='Categoria')
     ginstru = fields.Selection(
         [('fundamental_incompleto', 'Basic Education incomplete'),
          ('fundamental', 'Basic Education complete'),
@@ -104,23 +103,23 @@ class HrEmployee(models.Model):
          ('mestrado', 'Master'),
          ('doutorado', 'PhD')],
         string='Schooling', help="Select Education")
-    have_dependent = fields.Boolean("Associated")
+    have_dependent = fields.Boolean("Possui dependentes")
     dependent_ids = fields.One2many('hr.employee.dependent',
-                                    'employee_id', 'Employee')
-    rg = fields.Char('RG', help='Number of RG')
+                                    'employee_id', 'Dependentes')
+    rg = fields.Char('RG', help='Número do RG')
     cpf = fields.Char(related='address_home_id.cnpj_cpf',
                       string='CPF', required=True)
-    organ_exp = fields.Char("Organ Shipping")
-    rg_emission = fields.Date('Date of issue')
-    title_voter = fields.Char('Title', help='Number Voter')
-    zone_voter = fields.Char('Zone')
-    session_voter = fields.Char('Section')
-    driver_license = fields.Char('Driver License',
-                                 help='Driver License number')
-    driver_categ = fields.Char('Category')
-    father_name = fields.Char('Father name')
-    mother_name = fields.Char('Mother name')
-    validade = fields.Date('Expiration')
+    organ_exp = fields.Char("Orgão de expedição")
+    rg_emission = fields.Date('Data de emissão')
+    title_voter = fields.Char('Title', help='Número título')
+    zone_voter = fields.Char('Zona')
+    session_voter = fields.Char('Secção')
+    driver_license = fields.Char('Carteira de motorista',
+                                 help='Número da carteira de motorista')
+    driver_categ = fields.Char('Categoria')
+    father_name = fields.Char('Nome do Pai')
+    mother_name = fields.Char('Nome da Mãe')
+    validade = fields.Date('Validade')
     sindicate = fields.Char('Sindicato', help="Sigla do Sindicato")
     n_dependent = fields.Float(string="Dependentes", compute=_get_dependents,
                                type="float",
@@ -128,6 +127,7 @@ class HrEmployee(models.Model):
 
     #TODO Remover se não necessário
     def onchange_address_home_id(self):
+        import ipdb; ipdb.set_trace()
         if address:
             address = self.pool.get('res.partner').browse(
                 cr, uid, address, context=context)
@@ -165,11 +165,11 @@ class HrEmployeeDependent(models.Model):
             raise ValidationError(u'Data de aniversário inválida')
         return True
 
-    employee_id = fields.Many2one('hr.employee', 'Employee')
-    dependent_name = fields.Char('Name', size=64, required=True,
+    employee_id = fields.Many2one('hr.employee', 'Funcionário')
+    dependent_name = fields.Char('Nome', size=64, required=True,
                                  translate=True)
-    dependent_age = fields.Date('Date of Birth', required=True)
-    dependent_type = fields.Char('Type Associate', required=True)
-    pension_benefits = fields.Float('Child Support')
-    dependent_verification = fields.Boolean('Is dependent', required=False)
-    health_verification = fields.Boolean('Health Plan', required=False)
+    dependent_age = fields.Date('Data de nascimento', required=True)
+    dependent_type = fields.Char('Tipo', required=True)
+    pension_benefits = fields.Float('Salário familia')
+    dependent_verification = fields.Boolean('É dependente', required=False)
+    health_verification = fields.Boolean('Plano de saúde?', required=False)
