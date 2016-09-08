@@ -4,9 +4,14 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import logging
+import requests
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+
+
+_logger = logging.getLogger(__name__)
 
 
 class L10n_brZip(models.Model):
@@ -84,15 +89,73 @@ class L10n_brZip(models.Model):
             district=district,
             street=street,
             zip_code=zip_code)
-        return self.search(domain)
+        zip_ids = self.search(domain)
+
+        if len(zip_ids) == 0:
+            zip_code = re.sub('[^0-9]', '', zip_code)
+            if zip_code and len(zip_code) == 8:
+                self._search_by_cep(zip_code)
+            elif zip_code:
+                raise UserError('Digite o cep corretamente')
+            else:
+                self._search_by_address(state_id, l10n_br_city_id, street)
+
+            return self.search(domain)
+        else:
+            return zip_ids
+
+    def _search_by_cep(self, zip_code):
+        try:
+            url_viacep = 'http://viacep.com.br/ws/' + \
+                zip_code + '/json/unicode/'
+            obj_viacep = requests.get(url_viacep)
+            res = obj_viacep.json()
+            if res:
+                city = self.env['l10n_br_base.city'].search(
+                    [('ibge_code', '=', res['ibge'][2:]),
+                     ('state_id.code', '=', res['uf'])])
+
+                self.env['l10n_br.zip'].create(
+                    {'zip': re.sub('[^0-9]', '', res['cep']),
+                     'street': res['logradouro'],
+                     'district': res['bairro'],
+                     'country_id': city.state_id.country_id.id,
+                     'state_id': city.state_id.id,
+                     'l10n_br_city_id': city.id})
+
+        except Exception as e:
+            _logger.error(e.message, exc_info=True)
+
+    def _search_by_address(self, state_id, city_id, street):
+        try:
+            city = self.env['l10n_br_base.city'].browse(city_id)
+            url_viacep = 'http://viacep.com.br/ws/' + city.state_id.code + \
+                '/' + city.name + '/' + street + '/json/unicode/'
+            obj_viacep = requests.get(url_viacep)
+            results = obj_viacep.json()
+            if results:
+                for res in results:
+                    city = self.env['l10n_br_base.city'].search(
+                        [('ibge_code', '=', res['ibge'][2:]),
+                         ('state_id.code', '=', res['uf'])])
+
+                    self.env['l10n_br.zip'].create(
+                        {'zip': re.sub('[^0-9]', '', res['cep']),
+                         'street': res['logradouro'],
+                         'district': res['bairro'],
+                         'country_id': city.state_id.country_id.id,
+                         'state_id': city.state_id.id,
+                         'l10n_br_city_id': city.id})
+
+        except Exception as e:
+            _logger.error(e.message, exc_info=True)
 
     @api.multi
     def zip_search(self, country_id=False, state_id=False,
                    l10n_br_city_id=False, district=False,
                    street=False, zip_code=False):
-        result = self.set_result(cr, uid, ids, context)
+        result = self.set_result(None)
         zip_id = self.zip_search_multi(
-            cr, uid, ids, context,
             country_id, state_id,
             l10n_br_city_id, district,
             street, zip_code)

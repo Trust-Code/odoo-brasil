@@ -34,7 +34,7 @@
         'views/sale_stock_view.xml',
     ],
     'demo': [
-        'demo/l10n_br_sale_stock_demo.xml'
+        # 'demo/l10n_br_sale_stock_demo.xml'
     ],
     'test': [
         'tests/sale_order_demo.yml'
