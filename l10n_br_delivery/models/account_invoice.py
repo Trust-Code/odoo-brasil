@@ -17,9 +17,9 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
-from openerp.tools.translate import _
+from odoo.tools.translate import _
 
 
 class AccountInvoice(models.Model):
@@ -38,7 +38,9 @@ class AccountInvoice(models.Model):
         "implies its a series of sales terms which are used in the "
         "commercial transaction.")
 
-    def nfe_check(self, cr, uid, ids, context=None):
+    #TODO Deve herdar invoice eletronic para fazer esta validação
+    @api.multi
+    def _hook_validation(self):
         result = super(AccountInvoice, self).nfe_check(cr, uid, ids, context)
         strErro = u''
 

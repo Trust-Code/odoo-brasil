@@ -29,6 +29,6 @@ class AccountFiscalPosition(models.Model):
         result = super(AccountFiscalPosition, self).map_tax(
             taxes, product=product, partner=partner)
 
-        if tax_taxes:
+        if taxes:
             pass # TODO Antes mapeava os impostos da empresa aqui
         return result

@@ -61,7 +61,7 @@ class ReportCustom(report_int):
         else:
             return False
 
-        boleto_list = aml_obj.action_register_boleto(ids_move_lines)
+        boleto_list = aml_obj.browse(ids_move_lines).action_register_boleto()
         if not boleto_list:
             raise osv.except_osv(
                 'Error !', ('Não é possível gerar os boletos\n'

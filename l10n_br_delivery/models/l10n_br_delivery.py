@@ -59,26 +59,8 @@ class L10n_brDeliveryShipment(models.Model):
     carrier_tracking_ref = fields.Char(u'Carrier Tracking Ref', size=32)
     number_of_packages = fields.Integer(u'Number of Packages')
 
-    def _cal_weight(self, cr, uid, ids, name, args, context=None):
-        result = {}
-
-        for picking in self.browse(cr, uid, ids, context):
-            total_weight = total_weight_net = 0.00
-
-            for move in picking.move_lines:
-                total_weight += move.weight
-                total_weight_net += move.weight_net
-
-            result[picking.id] = {
-                'weight': total_weight,
-                'weight_net': total_weight_net,
-            }
-
-        return result
-
-    def _get_picking_line(self, cr, uid, ids, context=None):
-            result = {}
-            for line in self.pool.get('stock.move').browse(
-                cr, uid, ids, context=context):
-                result[line.picking_id.id] = True
-            return list(result.keys())
+    #@api.depends('product_id', 'move_lines') # TODO Esta função deveria estar aqui?
+    def _cal_weight(self):
+        for picking in self:
+            picking.weight = sum(move.weight for move in picking.move_lines if move.state != 'cancel')
+            picking.weight = sum(move.weight_net for move in picking.move_lines if move.state != 'cancel')

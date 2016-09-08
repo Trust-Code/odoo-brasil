@@ -31,35 +31,3 @@ class StockPicking(models.Model):
         "implies its a series of sales terms which are used in the "
         "commercial transaction.")
 
-    def _prepare_shipping_invoice_line(self, cr, uid, picking,
-                                    invoice, context=None):
-        # TODO: Calcular o valor correto em caso de alteração da quantidade
-        return False
-
-    def _prepare_invoice_line(self, cr, uid, group, picking, move_line,
-                              invoice_id, invoice_vals, context=None):
-        result = super(StockPicking, self)._prepare_invoice_line(
-            cr, uid, group, picking, move_line, invoice_id, invoice_vals,
-            context)
-        # TODO: Calcular o valor correto em caso de alteração da quantidade
-        if move_line.sale_line_id:
-            result['insurance_value'] = move_line.sale_line_id.insurance_value
-            result['other_costs_value'] = \
-                move_line.sale_line_id.other_costs_value
-            result['freight_value'] = move_line.sale_line_id.freight_value
-        return result
-
-    def _invoice_hook(self, cr, uid, picking, invoice_id):
-        """Call after the creation of the invoice."""
-        self.pool.get('account.invoice').write(
-            cr, uid, invoice_id, {
-                'partner_shipping_id': picking.partner_id.id,
-                'carrier_id': picking.carrier_id and picking.carrier_id.id,
-                'vehicle_id': picking.vehicle_id and picking.vehicle_id.id,
-                'incoterm': picking.incoterm.id,
-                'weight': picking.weight,
-                'weight_net': picking.weight_net,
-                'number_of_packages': picking.number_of_packages})
-
-        return super(StockPicking, self)._invoice_hook(
-            cr, uid, picking, invoice_id)

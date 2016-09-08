@@ -33,15 +33,14 @@ import odoo.addons.decimal_precision as dp
 class HrContract(models.Model):
     _inherit = 'hr.contract'
 
-    def _get_wage_ir(self, cr, uid, ids, fields, arg, context=None):
-        res = {}
-        obj_employee = self.pool.get('hr.employee')
-        employee_ids = obj_employee.search(
-            cr, uid, [('contract_ids.id', '=', ids[0])])
-        employees = obj_employee.browse(cr, uid, employee_ids, context=context)
-        for employee in employees:
-            for contract in employee.contract_ids:
-                if employee_ids:
+    @api.multi
+    def _get_wage_ir(self): # TODO Acho que esse valor de IR deve ter uma tabela de faixa de valores, não pode ser fixo
+        for item in self:
+            obj_employee = self.env['hr.employee']
+            employee_ids = obj_employee.search(
+                [('contract_ids.id', '=', item.id)])
+            for employee in employee_ids:
+                for contract in employee.contract_ids:
                     INSS =(-482.93 if ((contract.wage) >= 4390.25) else -((contract.wage) * 0.11) if ((contract.wage) >= 2195.13) and ((contract.wage) <= 4390.24) else -((contract.wage) * 0.09) if ((contract.wage) >= 1317.08) and ((contract.wage) <= 2195.12) else -((contract.wage) * 0.08))
                     lane = (contract.wage - employee.n_dependent + INSS)
                     first_lane = (-(0.275*(lane) - 826.15))
@@ -61,63 +60,45 @@ class HrContract(models.Model):
                     lane4 = l4.quantize(Decimal('1.10'), rounding=ROUND_DOWN)
                     option_four = float(lane4)
                     if (lane >= 4463.81):
-                        res[ids[0]] = option_one
-                        return res
+                        item.ir_value = option_one
                     elif (lane <= 4463.80) and (lane >= 3572.44):
-                        res[ids[0]] = option_two
-                        return res
+                        item.ir_value = option_two
                     elif (lane <= 3572.43) and (lane >= 2679.30):
-                        res[ids[0]] = option_three
-                        return res
+                        item.ir_value = option_three
                     elif (lane <= 2679.29) and (lane >= 1787.78):
-                        res[ids[0]] = option_four
-                        return res
+                        item.ir_value = option_four
                     else:
                         return 0
 
-    def _get_worked_days(self, cr, uid, ids, fields, arg, context=None):
-        res = {}
+    @api.multi
+    def _get_worked_days(self): #TODO Fazer validação se este número de dias está certo
+        for item in self:
+            item.workeddays = 22
 
-        obj_worked_days = self.pool.get('hr.payslip.worked_days')
-        worked_ids = obj_worked_days.search(
-            cr, uid, [('contract_id', '=', ids[0])])
-        if worked_ids:
-            worked = obj_worked_days.browse(cr, uid, worked_ids[0])
-            res[ids[0]] = worked.number_of_days
-            return res
-        else:
-            res[ids[0]] = 0
-            return res
-
-    def _check_date(self, cr, uid, ids, fields, arg, context=None):
-        res = {}
-
-        comp_date_from = time.strftime('%Y-04-01')
-        comp_date_to = time.strftime('%Y-02-28')
-        obj_payslip = self.pool.get('hr.payslip')
-        payslip_ids = obj_payslip.search(
-            cr, uid, [('contract_id', '=', ids[0]),
-                      ('date_from', '<', comp_date_from),
-                      ('date_to', '>', comp_date_to)])
-        if payslip_ids:
-            res[ids[0]] = True
-            return res
-        else:
-            res[ids[0]] = False
-            return res
-
-    def _check_voucher(self, cr, uid, ids, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-
-        for contract in self.browse(cr, uid, ids):
-            if user.company_id.check_benefits:
-                return True
+    @api.multi
+    def _check_date(self):
+        for item in self:
+            comp_date_from = time.strftime('%Y-04-01')
+            comp_date_to = time.strftime('%Y-02-28')
+            obj_payslip = self.env['hr.payslip']
+            payslip_ids = obj_payslip.search(
+                [('contract_id', '=', item.id),
+                 ('date_from', '<', comp_date_from),
+                 ('date_to', '>', comp_date_to)])
+            if payslip_ids:
+                item.calc_date = True
             else:
-                if contract.value_va == 0 or contract.value_vr == 0:
-                    return True
-                else:
-                    return False
-        return True
+                item.calc_date = False
+
+    @api.one
+    @api.constrains('value_va', 'value_vr')
+    def _check_voucher(self):
+        if self.env.user.company_id.check_benefits:
+            return True
+        else:
+            if self.value_va != 0 and self.value_vr != 0:
+                raise ValidationError(
+                    'A configuração da empresa não permite vale alimentação e refeição simultaneamente')
 
     value_va = fields.Float('Valley Food', help='Daily Value Benefit')
     value_vr = fields.Float('Meal valley', help='Daily Value Benefit')
@@ -133,7 +114,3 @@ class HrContract(models.Model):
     ir_value = fields.Float(compute=_get_wage_ir,
                             digits_compute=dp.get_precision('Payroll'),
                             string="Valor IR")
-
-    _constraints = [[_check_voucher,
-                     u'The company settings do not allow the use of food \
-                     voucher and simultaneous meal', ['value_va', 'value_vr']]]

@@ -19,21 +19,22 @@
 
 {
     'name': 'Brazilian Localization Delivery',
-    'description': 'Extend delivery module for Brazilian Localization',
+    'summary': 'Extend delivery module for Brazilian Localization',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
-    'version': '7.0',
+    'version': '10.0.1.0.0',
     'depends': [
         'l10n_br_sale_stock',
         'delivery',
     ],
     'data': [
-        'account_invoice_view.xml',
-        'delivery_view.xml',
-        'stock_view.xml',
-        'l10n_br_delivery_view.xml',
+        'views/account_invoice_view.xml',
+        'views/delivery_view.xml',
+        'views/stock_view.xml',
+        'views/l10n_br_delivery_view.xml',
         'security/ir.model.access.csv',
     ],
     'category': 'Localisation',
+    'application': True,
 }

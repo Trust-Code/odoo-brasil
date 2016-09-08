@@ -23,5 +23,6 @@
         'views/payment_mode.xml',
         'reports/report_print_button_view.xml',
     ],
-    'instalable': True
+    'instalable': True,
+    'application': True,
 }

@@ -29,8 +29,8 @@
         'l10n_br_account_product_new', 'stock',
     ],
     'data': [
-        'l10n_br_stock_data.xml',
-        'stock_view.xml',
+        'data/l10n_br_stock_data.xml',
+        'views/stock_view.xml',
         # 'wizard/stock_invoice_onshipping_view.xml',
         'security/ir.model.access.csv',
     ],
