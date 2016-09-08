@@ -8,14 +8,11 @@
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
-    'version': '7.0',
+    'version': '10.0.1.0.0',
     'depends': [
         'l10n_br_account_new',
     ],
-    'data': [
-        'l10n_br_account.cnae.csv',
-        'l10n_br_account.service.type.csv',
-    ],
+    'post_init_hook': 'post_init',
     'category': 'Localisation',
     'installable': True,
     'auto_install': True,
