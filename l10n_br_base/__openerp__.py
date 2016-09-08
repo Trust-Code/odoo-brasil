@@ -30,7 +30,6 @@
         'sales_team',
     ],
     'data': [
-        'data/l10n_br_base.city.csv',
         'data/l10n_br_base_data.xml',
         'views/l10n_br_base_view.xml',
         'views/res_country_view.xml',
@@ -46,6 +45,7 @@
         'test/base_inscr_est_valid.yml',
         'test/base_inscr_est_invalid.yml',
     ],
+    'post_init_hook': 'post_init',
     'installable': True,
     'auto_install': False,
 }

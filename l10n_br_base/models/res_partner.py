@@ -38,7 +38,7 @@ class ResPartner(models.Model):
     ]
 
     @api.v8
-    def _display_address(self, without_company=False):    
+    def _display_address(self, without_company=False):
         address = self
 
         if address.country_id and address.country_id.code != 'BR':
@@ -47,9 +47,8 @@ class ResPartner(models.Model):
                 without_company=False)
         else:
             address_format = (
-                address.country_id
-                and address.country_id.address_format
-                or "%(street)s\n%(street2)s\n%(city)s %(state_code)s"
+                address.country_id and address.country_id.address_format or
+                "%(street)s\n%(street2)s\n%(city)s %(state_code)s"
                 "%(zip)s\n%(country_name)s")
             args = {
                 'state_code': address.state_id and address.state_id.code or '',
@@ -88,7 +87,8 @@ class ResPartner(models.Model):
     def _validate_ie_param(self, uf, inscr_est):
         try:
             mod = __import__(
-                'openerp.addons.l10n_br_base.tools.fiscal', globals(), locals(), 'fiscal')
+                'odoo.addons.l10n_br_base.tools.fiscal', globals(),
+                locals(), 'fiscal')
 
             validate = getattr(mod, 'validate_ie_%s' % uf)
             if not validate(inscr_est):
@@ -176,7 +176,7 @@ class ResPartner(models.Model):
         Extenção para os novos campos do endereço """
         address_fields = super(ResPartner, self)._address_fields()
         return list(address_fields + ['l10n_br_city_id', 'number', 'district'])
-    
+
     @api.one
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
@@ -186,13 +186,12 @@ class ResPartner(models.Model):
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)
-            
+
             obj = {'cnpj': self.cnpj_cpf, 'estado': self.state_id.ibge_code}
             resposta = consulta_cadastro(certificado, obj=obj)
             print resposta
         else:
             raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
-        
 
 
 class ResBank(models.Model):
@@ -220,6 +219,7 @@ class ResBank(models.Model):
         if self.l10n_br_city_id:
             self.city = self.l10n_br_city_id.name
             self.l10n_br_city_id = self.l10n_br_city_id
+
 
 class ResPartnerBank(models.Model):
     """ Adiciona campos necessários para o cadastramentos de contas

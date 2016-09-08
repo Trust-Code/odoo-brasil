@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_form" model="ir.ui.view">
+        <field name="name">ir.module.module.form</field>
+        <field name="model">ir.module.module</field>
+        <field name="inherit_id" ref="base.module_form"/>
+        <field name="arch" type="xml">
+            <field name="summary" position="after">
+            	<field name="contributors" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
