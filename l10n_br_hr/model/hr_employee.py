@@ -22,49 +22,51 @@
 ##############################################################################
 
 from datetime import datetime
-from odoo import fields, models
+
+from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 import odoo.addons.decimal_precision as dp
+from odoo.exceptions import ValidationError
 
 
 class HrEmployee(models.Model):
+    _inherit = 'hr.employee'
 
-    def _get_dependents(self, cr, uid, ids, fields, arg, context=None):
-        res = {}
-        dependent = self.pool.get('hr.employee.dependent')
-        dep_ids = dependent.search(
-            cr, uid, [('employee_id', '=', ids[0]),
-                      ('dependent_verification', '=', True)])
-        if dep_ids:
-            res[ids[0]] = len(dep_ids)*179.71
-            return res
-        else:
-            res[ids[0]] = 0
-            return res
+    @api.multi
+    def _get_dependents(self):
+        for employee in self:
+            dep_env = self.env['hr.employee.dependent']
+            dep_ids = dep_env.search(
+                [('employee_id', '=', employee.id),
+                 ('dependent_verification', '=', True)])
+            if dep_ids:
+                employee.n_dependent = len(dep_ids)*179.71  #TODO Estranho multiplicar isto aqui
+            else:
+                employee.n_dependent = 0
 
-    def _validate_pis_pasep(self, cr, uid, ids):
-        employee = self.browse(cr, uid, ids[0])
-
-        if not employee.pis_pasep:
+    @api.one
+    @api.constrains('pis_pasep')
+    def _validate_pis_pasep(self):
+        if not self.pis_pasep:
             return True
 
         digits = []
-        for c in employee.pis_pasep:
+        for c in self.pis_pasep:
             if c == '.' or c == ' ' or c == '\t':
                 continue
 
             if c == '-':
                 if len(digits) != 10:
-                    return False
+                    raise ValidationError(u"PIS/PASEP Inválido")
                 continue
 
             if c.isdigit():
                 digits.append(int(c))
                 continue
 
-            return False
+            raise ValidationError(u"PIS/PASEP Inválido")
         if len(digits) != 11:
-            return False
+            raise ValidationError(u"PIS/PASEP Inválido")
 
         height = [int(x) for x in "3298765432"]
 
@@ -76,22 +78,21 @@ class HrEmployee(models.Model):
         rest = total % 11
         if rest != 0:
             rest = 11 - rest
-        return (rest == digits[10])
+        if rest != digits[10]:
+            raise ValidationError(u"PIS/PASEP Inválido")
 
-    _inherit = 'hr.employee'
-
-    check_cpf = fields.Boolean('Check CPF')
+    check_cpf = fields.Boolean('Verificar CPF', default=True)
     pis_pasep = fields.Char(u'PIS/PASEP', size=15)
-    ctps = fields.Char('CTPS', help='Number of CTPS')
-    ctps_series = fields.Char('Serie')
-    ctps_date = fields.Date('Date of issue')
-    creservist = fields.Char('Certificate of Reservist')
-    crresv_categ = fields.Char('Category')
-    cr_categ = fields.Selection([('estagiario', 'Trainee'),
-                                 ('junior', 'Junior'),
-                                 ('pleno', 'Full'),
+    ctps = fields.Char('CTPS', help='Número da CTPS')
+    ctps_series = fields.Char('Série')
+    ctps_date = fields.Date('Data de emissão')
+    creservist = fields.Char('Certificado de reservista')
+    crresv_categ = fields.Char('Categoria')
+    cr_categ = fields.Selection([('estagiario', u'Estagiário'),
+                                 ('junior', 'Júnior'),
+                                 ('pleno', 'Pleno'),
                                  ('senior', 'Senior')],
-                                string='Category', help="Choose work position")
+                                string='Categoria')
     ginstru = fields.Selection(
         [('fundamental_incompleto', 'Basic Education incomplete'),
          ('fundamental', 'Basic Education complete'),
@@ -102,36 +103,31 @@ class HrEmployee(models.Model):
          ('mestrado', 'Master'),
          ('doutorado', 'PhD')],
         string='Schooling', help="Select Education")
-    have_dependent = fields.Boolean("Associated")
+    have_dependent = fields.Boolean("Possui dependentes")
     dependent_ids = fields.One2many('hr.employee.dependent',
-                                    'employee_id', 'Employee')
-    rg = fields.Char('RG', help='Number of RG')
+                                    'employee_id', 'Dependentes')
+    rg = fields.Char('RG', help='Número do RG')
     cpf = fields.Char(related='address_home_id.cnpj_cpf',
                       string='CPF', required=True)
-    organ_exp = fields.Char("Organ Shipping")
-    rg_emission = fields.Date('Date of issue')
-    title_voter = fields.Char('Title', help='Number Voter')
-    zone_voter = fields.Char('Zone')
-    session_voter = fields.Char('Section')
-    driver_license = fields.Char('Driver License',
-                                 help='Driver License number')
-    driver_categ = fields.Char('Category')
-    father_name = fields.Char('Father name')
-    mother_name = fields.Char('Mother name')
-    validade = fields.Date('Expiration')
+    organ_exp = fields.Char("Orgão de expedição")
+    rg_emission = fields.Date('Data de emissão')
+    title_voter = fields.Char('Title', help='Número título')
+    zone_voter = fields.Char('Zona')
+    session_voter = fields.Char('Secção')
+    driver_license = fields.Char('Carteira de motorista',
+                                 help='Número da carteira de motorista')
+    driver_categ = fields.Char('Categoria')
+    father_name = fields.Char('Nome do Pai')
+    mother_name = fields.Char('Nome da Mãe')
+    validade = fields.Date('Validade')
     sindicate = fields.Char('Sindicato', help="Sigla do Sindicato")
     n_dependent = fields.Float(string="Dependentes", compute=_get_dependents,
                                type="float",
                                digits_compute=dp.get_precision('Payroll'))
 
-    _constraints = [[_validate_pis_pasep, u'PIS/PASEP is invalid.',
-                     ['pis_pasep']]]
-
-    _defaults = {
-        'check_cpf': True
-    }
-
-    def onchange_address_home_id(self, cr, uid, ids, address, context=None):
+    #TODO Remover se não necessário
+    def onchange_address_home_id(self):
+        import ipdb; ipdb.set_trace()
         if address:
             address = self.pool.get('res.partner').browse(
                 cr, uid, address, context=context)
@@ -141,7 +137,8 @@ class HrEmployee(models.Model):
                 return {'value': {'check_cpf': False, 'cpf': False}}
         return {'value': {}}
 
-    def onchange_user(self, cr, uid, ids, user_id, context=None):
+    #TODO Remover se não necessário
+    def onchange_user(self):
         res = super(HrEmployee, self).onchange_user(
             cr, uid, ids, user_id, context)
 
@@ -159,21 +156,20 @@ class HrEmployeeDependent(models.Model):
     _name = 'hr.employee.dependent'
     _description = 'Employee\'s Dependents'
 
+    @api.one
+    @api.constrains('dependent_age')
     def _check_birth(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
         dep_age = datetime.strptime(
-            obj.dependent_age, DEFAULT_SERVER_DATE_FORMAT)
+            self.dependent_age, DEFAULT_SERVER_DATE_FORMAT)
         if dep_age.date() > datetime.now().date():
-            return False
+            raise ValidationError(u'Data de aniversário inválida')
         return True
 
-    employee_id = fields.Many2one('hr.employee', 'Employee')
-    dependent_name = fields.Char('Name', size=64, required=True,
+    employee_id = fields.Many2one('hr.employee', 'Funcionário')
+    dependent_name = fields.Char('Nome', size=64, required=True,
                                  translate=True)
-    dependent_age = fields.Date('Date of Birth', required=True)
-    dependent_type = fields.Char('Type Associate', required=True)
-    pension_benefits = fields.Float('Child Support')
-    dependent_verification = fields.Boolean('Is dependent', required=False)
-    health_verification = fields.Boolean('Health Plan', required=False)
-
-    _constraints = [[_check_birth, u'Wrong birthday date!', ['dependent_age']]]
+    dependent_age = fields.Date('Data de nascimento', required=True)
+    dependent_type = fields.Char('Tipo', required=True)
+    pension_benefits = fields.Float('Salário familia')
+    dependent_verification = fields.Boolean('É dependente', required=False)
+    health_verification = fields.Boolean('Plano de saúde?', required=False)

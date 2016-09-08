@@ -3,7 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
+from odoo import api, fields, models
 
 
 class L10n_brZipSearch(models.TransientModel):
@@ -29,17 +29,11 @@ class L10n_brZipSearch(models.TransientModel):
     address_id = fields.Integer('Id do objeto', invisible=True)
     object_name = fields.Char('Nome do bjeto', size=100, invisible=True)
 
-    def create(self, cr, uid, vals, context):
-        result = super(L10n_brZipSearch, self).create(cr, uid, vals, context)
-        context.update({'search_id': result})
-        return result
-
-    def default_get(self, cr, uid, fields_list, context=None):
-        if context is None:
-            context = {}
+    @api.model
+    def default_get(self, fields):
         data = super(L10n_brZipSearch, self).default_get(
-            cr, uid, fields_list, context)
-
+            fields)
+        context = self._context
         data['zip'] = context.get('zip', False)
         data['street'] = context.get('street', False)
         data['district'] = context.get('district', False)
@@ -51,7 +45,6 @@ class L10n_brZipSearch(models.TransientModel):
 
         data['zip_ids'] = context.get('zip_ids', False)
         data['state'] = 'done'
-
         return data
 
     @api.one
@@ -87,18 +80,18 @@ class L10n_brZipSearch(models.TransientModel):
             'nodestroy': True,
         }
 
-    def zip_new_search(self, cr, uid, ids, context=None):
-        data = self.read(cr, uid, ids, [], context=context)[0]
-        self.write(cr, uid, ids,
-                   {'state': 'init',
-                    'zip_ids': [[6, 0, []]]}, context=context)
+    @api.multi
+    def zip_new_search(self):
+        data = self.read()[0]
+        self.write({'state': 'init',
+                    'zip_ids': [[6, 0, []]]})
 
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'l10n_br.zip.search',
             'view_mode': 'form',
             'view_type': 'form',
-            'res_id': data['id'],
+            'res_id': self.id,
             'views': [(False, 'form')],
             'target': 'new',
             'nodestroy': True

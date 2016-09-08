@@ -11,8 +11,8 @@
                 <field name="cpf"/>
             </xpath>
             <page name="public" position="after">
-                <page string="Documents">
-                    <form string="Documents" version="7.0">
+                <page string="Dados Trabalhistas">
+                    <form string="Dados trabalhistas" version="7.0">
                         <group>
                             <group string="CTPS">
                                 <field name="ctps" string="Number"/>
@@ -24,16 +24,16 @@
                                 <field name="organ_exp"/>
                                 <field name="rg_emission"/>
                             </group>
-                            <group string="Reservist">
+                            <group string="Reservista">
                                 <field name="creservist" string="Number"/>
                                 <field name="crresv_categ"/>
                             </group>
-                            <group string="Voter Registration">
+                            <group string="Título eleitoral">
                                 <field name="title_voter" string="Number"/>
                                 <field name="zone_voter"/>
                                 <field name="session_voter"/>
                             </group>
-                            <group string="Driver License">
+                            <group string="Carteira de motorista">
                                 <field name="driver_license" string="Number"/>
                                 <field name="driver_categ"/>
                                 <field name="ginstru"/>
@@ -41,7 +41,7 @@
                             <group string="PIS/PASEP">
                                 <field name="pis_pasep" placeholder="XXX.XXXXX.XX-X" />
                             </group>
-                            <group string="Parents names">
+                            <group string="Pais">
                                 <field name="father_name"/>
                                 <field name="mother_name"/>
                             </group>

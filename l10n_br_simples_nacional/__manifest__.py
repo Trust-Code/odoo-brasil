@@ -17,6 +17,8 @@
         'l10n_br_nfe',
     ],
     'data': [
+        'views/account_tax.xml',
     ],
-    'instalable': True
+    'instalable': True,
+    'application': True,
 }

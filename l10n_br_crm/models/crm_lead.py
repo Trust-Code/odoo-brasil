@@ -125,21 +125,18 @@ class CrmLead(models.Model):
             self.city = self.l10n_br_city_id.name
             self.l10n_br_city_id = self.l10n_br_city_id
 
-    @api.v7
-    def on_change_partner(self, cr, uid, ids, partner_id, context=None):
-        result = super(CrmLead, self).on_change_partner(
-            cr, uid, ids, partner_id, context)
-        if partner_id:
-            partner = self.pool.get('res.partner').browse(
-                cr, uid, partner_id, context=context)
-            result['value']['legal_name'] = partner.legal_name
-            result['value']['cnpj_cpf'] = partner.cnpj_cpf
-            result['value']['inscr_est'] = partner.inscr_est
-            result['value']['suframa'] = partner.suframa
-            result['value']['number'] = partner.number
-            result['value']['district'] = partner.district
-            result['value']['l10n_br_city_id'] = partner.l10n_br_city_id.id
-        return result
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        # TODO Melhorar esse metodo e setar os campos corretamente
+        if self.partner_id:
+            self.legal_name = self.partner_id.legal_name
+            self.cnpj_cpf = self.partner_id.cnpj_cpf
+            self.inscr_est = self.partner_id.inscr_est
+            self.suframa = self.partner_id.suframa
+            self.number = self.partner_id.number
+            self.district = self.partner_id.district
+            self.l10n_br_city_id = self.partner_id.l10n_br_city_id.id
+
 
     @api.model
     def _lead_create_contact(self, lead, name, is_company, parent_id=False):

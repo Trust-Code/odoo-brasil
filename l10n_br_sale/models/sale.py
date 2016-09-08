@@ -17,25 +17,6 @@ class SaleOrder(models.Model):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.default_ind_pres
 
-    def _invoiced_rate(self, cursor, user, ids, name, arg, context=None):
-        result = {}
-        for sale in self.browse(cursor, user, ids, context=context):
-            if sale.invoiced:
-                result[sale.id] = 100.0
-                continue
-            tot = 0.0
-            for invoice in sale.invoice_ids:
-                if invoice.state not in ('draft', 'cancel') and \
-                        invoice.fiscal_category_id.id == \
-                        sale.fiscal_category_id.id:
-                    tot += invoice.amount_untaxed
-            if tot:
-                result[sale.id] = min(100.0, tot * 100.0 / (
-                    sale.amount_untaxed or 1.00))
-            else:
-                result[sale.id] = 0.0
-        return result
-
     @api.one
     def _get_costs_value(self):
         """ Read the l10n_br specific functional fields. """
@@ -51,39 +32,33 @@ class SaleOrder(models.Model):
     @api.one
     def _set_amount_freight(self):
         for line in self.order_line:
-            if not self.amount_gross:
-                break
             line.write({
                 'freight_value': calc_price_ratio(
                     line.price_gross,
                     self.amount_freight,
-                    line.order_id.amount_gross),
+                    line.order_id.amount_untaxed),
                 })
         return True
 
     @api.one
     def _set_amount_insurance(self):
         for line in self.order_line:
-            if not self.amount_gross:
-                break
             line.write({
                 'insurance_value': calc_price_ratio(
                     line.price_gross,
                     self.amount_insurance,
-                    line.order_id.amount_gross),
+                    line.order_id.amount_untaxed),
                 })
         return True
 
     @api.one
     def _set_amount_costs(self):
         for line in self.order_line:
-            if not self.amount_gross:
-                break
             line.write({
                 'other_costs_value': calc_price_ratio(
                     line.price_gross,
                     self.amount_costs,
-                    line.order_id.amount_gross),
+                    line.order_id.amount_untaxed),
                 })
         return True
 
@@ -193,19 +168,20 @@ class SaleOrderLine(models.Model):
         compute='_amount_line', string='Vlr. Bruto',
         digits=dp.get_precision('Sale Price'))
 
-    def _prepare_order_line_invoice_line(self, cr, uid, line,
-                                         account_id=False, context=None):
-        result = super(SaleOrderLine, self)._prepare_order_line_invoice_line(
-            cr, uid, line, account_id, context)
+    # TODO Verificar o nome do metodo correto, foi modificado na 10
+    #def _prepare_order_line_invoice_line(self, cr, uid, line,
+    #                                     account_id=False, context=None):
+    #    result = super(SaleOrderLine, self)._prepare_order_line_invoice_line(
+    #        cr, uid, line, account_id, context)
 
-        result['insurance_value'] = line.insurance_value
-        result['other_costs_value'] = line.other_costs_value
-        result['freight_value'] = line.freight_value
+    #    result['insurance_value'] = line.insurance_value
+    #    result['other_costs_value'] = line.other_costs_value
+    #    result['freight_value'] = line.freight_value
 
         # FIXME
         # Necessário informar estes campos pois são related do
         # objeto account.invoice e quando o método create do
         # account.invoice.line é invocado os valores são None
-        result['company_id'] = line.order_id.company_id.id
-        result['partner_id'] = line.order_id.partner_id.id
-        return result
+    #    result['company_id'] = line.order_id.company_id.id
+    #    result['partner_id'] = line.order_id.partner_id.id
+    #    return result
