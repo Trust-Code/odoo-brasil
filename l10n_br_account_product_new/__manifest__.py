@@ -17,6 +17,7 @@
     'data': [
         'data/l10n_br_account_product.cfop.csv',
         'data/l10n_br_account.fiscal.document.csv',
+        'data/br_account_product.xml',
         'views/l10n_br_account_product_view.xml',
         'views/account_invoice_view.xml',
         'views/account_view.xml',

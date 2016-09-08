@@ -73,19 +73,6 @@ class AccountInvoice(models.Model):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.fiscal_document_for_product_id
 
-    @api.model
-    def _default_fiscal_document_serie(self):
-        result = self.env['l10n_br_account.document.serie']
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        fiscal_document_series = [doc_serie for doc_serie in
-                                  company.document_serie_product_ids if
-                                  doc_serie.fiscal_document_id.id ==
-                                  company.product_invoice_id.id and
-                                  doc_serie.active]
-        if fiscal_document_series:
-            result = fiscal_document_series[0]
-        return result
-
     @api.one
     @api.depends('invoice_line_ids.cfop_id')
     def _compute_cfops(self):
@@ -123,12 +110,6 @@ class AccountInvoice(models.Model):
         default=_default_fiscal_document)
     fiscal_document_electronic = fields.Boolean(
         related='fiscal_document_id.electronic')
-    document_serie_id = fields.Many2one(
-        'l10n_br_account.document.serie', u'Série',
-        domain="[('fiscal_document_id', '=', fiscal_document_id),\
-        ('company_id','=',company_id)]", readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document_serie)
     fiscal_type = fields.Selection(
         [('service', 'Serviço'), ('product', 'Produto')],
         'Tipo Fiscal',
@@ -303,7 +284,7 @@ class AccountInvoice(models.Model):
             if not invoice.date_hour_invoice:
                 invoice.write({
                     'date_hour_invoice': datetime.now(),
-                    'date_invoice': datetime.now().date()    
+                    'date_invoice': datetime.now().date()
                 })
         return res
 
@@ -566,23 +547,23 @@ class AccountInvoiceLine(models.Model):
     freight_value = fields.Float(
         'Frete', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
-    
+
     @api.multi
     def write(self, vals):
-        
+
         res = super(AccountInvoiceLine, self).write(vals)
         #for item in self:
         #    item.invoice_line_tax_ids = item.tax_icms_id | item.tax_pis_id | item.tax_cofins_id | item.tax_ipi_id
         return res
-        
-    
+
+
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
         if self.tax_icms_id:
             self.icms_percent = self.tax_icms_id.amount
             self.icms_percent_reduction = self.tax_icms_id.base_reduction
             self.icms_cst = self.tax_ipi_id.cst
-            
+
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
         if self.tax_pis_id:
@@ -594,7 +575,7 @@ class AccountInvoiceLine(models.Model):
         if self.tax_cofins_id:
             self.cofins_percent = self.tax_cofins_id.amount
             self.cofins_cst = self.tax_ipi_id.cst
-            
+
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
         if self.tax_ipi_id:
