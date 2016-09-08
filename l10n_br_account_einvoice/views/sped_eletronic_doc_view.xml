@@ -81,8 +81,8 @@
                                 <field name="consumidor_final"/>
                             </group>
                         </group>
-                        <group name="totais" string="Totais">
-                            <group>
+                        <group>
+                            <group name="totais" string="Totais">
                                 <field name="valor_bruto" />
                                 <field name="valor_frete" />
                                 <field name="valor_seguro" />
@@ -90,6 +90,18 @@
                                 <field name="valor_despesas" />
                                 <field name="valor_retencoes" />
                                 <field name="valor_final" />
+                            </group>
+                            <group name="impostos" string="Impostos">
+                                <field name="valor_BC" />
+                                <field name="valor_icms" />
+                                <field name="valor_icms_deson" />
+
+                                <field name="valor_bcst" />
+                                <field name="valor_st" />
+                                <field name="valor_ii" />
+                                <field name="valor_ipi" />
+                                <field name="valor_pis" />
+                                <field name="valor_cofins" />
                             </group>
                         </group>
                         <group string="Itens">

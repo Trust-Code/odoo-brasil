@@ -94,6 +94,15 @@ class InvoiceEletronic(models.Model):
     valor_desconto = fields.Float(u'Valor do desconto')
     valor_despesas = fields.Float(u'Valor despesas')
     valor_retencoes = fields.Float(u'Retenções')
+    valor_BC = fields.Float(u"Valor da Base de Cálculo")
+    valor_icms = fields.Float(u"Valor do ICMS")
+    valor_icms_deson = fields.Float(u'Valor ICMSDeson')
+    valor_bcst = fields.Float(u'Valor BCST')
+    valor_st = fields.Float(u'Valor ST')
+    valor_ii = fields.Float(u'Valor do Imposto de Importação')
+    valor_ipi = fields.Float(u"Valor do IPI")
+    valor_pis = fields.Float(u"Valor PIS")
+    valor_cofins = fields.Float(u"Valor COFINS")
 
     valor_final = fields.Float(u'Valor Final')
 
@@ -277,7 +286,65 @@ class InvoiceEletronicItem(models.Model):
     gross_total = fields.Float(u'Valor Bruto')
     total = fields.Float(u'Valor Liquido')
 
-    tax_icms_id = fields.Many2one('sped.tax.icms', string=u'ICMS')
+    origem = fields.Selection(
+        [('0', '0 - Nacional'),
+         ('1', '1 - Estrangeira - Importação direta'),
+         ('2', '2 - Estrangeira - Adquirida no mercado interno'),
+         ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+superior a 40% \e inferior ou igual a 70%'),
+         ('4', '4 - Nacional, cuja produção tenha sido feita em conformidade \
+com os processos produtivos básicos de que tratam as \
+legislações citadas nos Ajustes'),
+         ('5', '5 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+inferior ou igual a 40%'),
+         ('6', '6 - Estrangeira - Importação direta, sem similar nacional, \
+constante em lista da CAMEX e gás natural'),
+         ('7', '7 - Estrangeira - Adquirida no mercado interno, sem similar \
+nacional, constante lista CAMEX e gás natural'),
+         ('8', '8 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+superior a 70%')],
+        u'Origem da mercadoria')
+    icms_cst = fields.Selection(
+     [
+      ('00', '00 - Tributada Integralmente'),
+      ('10', '10 - Tributada com ICMS ST'),
+      ('20', '20 - Com redução de base de cálculo'),
+      ('30', '30 - Isenta ou não tributada e com cobrança do ICMS por \
+substituição tributária'),
+      ('40', '40 - Isenta'),
+      ('41', '41 - Não tributada'),
+      ('50', '50 - Suspensão'),
+      ('51', '51 - Diferimento'),
+      ('60', '60 - ICMS cobrado anteriormente por substituição tributária'),
+      ('70', '70 - Com redução de base de cálculo e cobrança do ICMS por \
+substituição tributária'),
+      ('90', '90 - Outros')],
+     u'Situação tributária do ICMS')
+    icms_aliquota = fields.Float(u'Alíquota')
+    icms_modalidade_BC = fields.Selection(
+        [('0', '0 - Margem Valor Agregado (%)'),
+         ('1', '1 - Pauta (Valor)'),
+         ('2', '2 - Preço Tabelado Máx. (valor)'),
+         ('3', '3 - Valor da operação')],
+        u'Modalidade de determinação da BC do ICMS')
+    icms_base_calculo = fields.Float(u'Base de cálculo')
+    icms_percentual_reducao_bc = fields.Float(u'% Redução Base')
+    icms_valor = fields.Float(u'Valor Total')
+    icms_value_credit = fields.Float(u"Valor de Cŕedito")
+    icms_value_percentual = fields.FLoat(u'%% de Crédito')
+
+    percentual_mva = fields.Float(u'% MVA')
+    aliquota_st = fields.Float(u'Alíquota')
+    base_calculo_st = fields.Float(u'Base de cálculo')
+    percentual_reducao_bc_st = fields.Float(u'% Redução Base')
+    valor_st = fields.Float(u'Valor Total')
+
+    percentual_diferimento = fields.Float(u'% Diferimento')
+    valor_diferido = fields.Float(u'Valor Diferido')
+
+    motivo_desoneracao = fields.Float(u'Motivo Desoneração')
+    valor_desonerado = fields.Float(u'Valor Desonerado')
+
     tax_ipi_id = fields.Many2one('sped.tax.ipi', string=u'IPI')
     tax_ii_id = fields.Many2one('sped.tax.ii', string=u'Imposto de importação')
     tax_pis_id = fields.Many2one('sped.tax.pis', string=u'PIS')

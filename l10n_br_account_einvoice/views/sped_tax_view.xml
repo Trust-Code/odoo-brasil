@@ -13,6 +13,7 @@
                             <field name="origem"/>
                             <field name="cst"/>
                             <field name="aliquota"/>
+                            <field name="modalidade_BC" />
                             <field name="base_calculo"/>
                             <field name="percentual_reducao_bc"/>
                             <field name="valor"/>

@@ -177,6 +177,14 @@
 										<field name="icms_base_other"/>
 										<field name="icms_percent"/>
 										<field name="icms_value"/>
+                                        <field name="origem" />
+                                        <field name="icms_cst" />
+                                        <field name="icms_modalidade_BC" />
+                                        <field name="icms_base_calculo" />
+                                        <field name="icms_percentual_reducao_bc" />
+                                        <field name="icms_valor" />
+                                        <field name="icms_value_credit" />
+                                        <field name="icms_value_percentual" />
 									</group>
 								</group>
 								<group string="Substituição Tributária ICMS">

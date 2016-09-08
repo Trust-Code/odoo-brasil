@@ -33,7 +33,12 @@ class AccountInvoice(models.Model):
             'discount': invoice_line.discount_value,
             'other_expenses': invoice_line.other_costs_value,
             'gross_total': invoice_line.price_subtotal,
-            'total': invoice_line.price_subtotal
+            'total': invoice_line.price_subtotal,
+            'origem': invoice_line.origem,
+            'icms_cst': invoice_line.icms_cst,
+            'icms_percentual_credit': invoice_line.icms_percent_credit,
+            'icms_value_credit': invoice_line.icms_value_credit
+
         }
 
         return vals
@@ -62,11 +67,40 @@ class AccountInvoice(models.Model):
         }
 
         eletronic_items = []
+        total_sum = float()
+        total_frete = float()
+        total_seguro = float()
+        total_desconto = float()
+        total_despesas = float()
+        total_icms = sum([tax.amount for tax in invoice.tax_line_ids.filtered(
+            lambda x: x.tax_id.domain == 'simples')])
+        total_ipi = sum([tax.amount for tax in invoice.tax_line_ids.filtered(
+            lambda x: x.tax_id.domain == 'ipi')])
+        total_pis = sum([tax.amount for tax in invoice.tax_line_ids.filtered(
+            lambda x: x.tax_id.domain == 'pis')])
+        total_cofins = sum(
+            [tax.amount for tax in invoice.tax_line_ids.filtered(
+                lambda x: x.tax_id.domain == 'cofins')])
         for inv_line in invoice.invoice_line_ids:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
+            total_sum += inv_line.price_total
+            total_frete += inv_line.freight_value
+            total_seguro += inv_line.insurance_value
+            total_desconto += (inv_line.price_total
+                               / (1 - inv_line.discount / 100)) - total_sum
+            total_despesas += inv_line.other_costs_value
 
         vals['eletronic_item_ids'] = eletronic_items
+        vals['valor_icms'] = total_icms
+        vals['valor_ipi'] = total_ipi
+        vals['valor_pis'] = total_pis
+        vals['valor_cofins'] = total_cofins
+        vals['valor_bruto'] = total_sum
+        vals['valor_frete'] = total_frete
+        vals['valor_seguro'] = total_seguro
+        vals['valor_desconto'] = total_desconto
+        vals['valor_final'] = total_sum + total_seguro + total_frete
         return vals
 
     @api.multi

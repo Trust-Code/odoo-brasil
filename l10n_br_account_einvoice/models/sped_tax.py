@@ -33,9 +33,24 @@ class SpedTaxIcms(models.Model):
          ) for rec in self]
 
     name = fields.Char(u'Nome', size=20)
-    origem = fields.Selection([('0', 'Nacional'),
-                               ('1', 'Estrangeira adquirida no Brasil')],
-                              u'Origem da mercadoria')
+    origem = fields.Selection(
+        [('0', '0 - Nacional'),
+         ('1', '1 - Estrangeira - Importação direta'),
+         ('2', '2 - Estrangeira - Adquirida no mercado interno'),
+         ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+superior a 40% \e inferior ou igual a 70%'),
+         ('4', '4 - Nacional, cuja produção tenha sido feita em conformidade \
+com os processos produtivos básicos de que tratam as \
+legislações citadas nos Ajustes'),
+         ('5', '5 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+inferior ou igual a 40%'),
+         ('6', '6 - Estrangeira - Importação direta, sem similar nacional, \
+constante em lista da CAMEX e gás natural'),
+         ('7', '7 - Estrangeira - Adquirida no mercado interno, sem similar \
+nacional, constante lista CAMEX e gás natural'),
+         ('8', '8 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+superior a 70%')],
+        u'Origem da mercadoria')
     cst = fields.Selection(
      [
       ('00', '00 - Tributada Integralmente'),
@@ -53,6 +68,12 @@ substituição tributária'),
       ('90', '90 - Outros')],
      u'Situação tributária do ICMS')
     aliquota = fields.Float(u'Alíquota')
+    modalidade_BC = fields.Selection(
+        [('0', '0 - Margem Valor Agregado (%)'),
+         ('1', '1 - Pauta (Valor)'),
+         ('2', '2 - Preço Tabelado Máx. (valor)'),
+         ('3', '3 - Valor da operação')],
+        u'Modalidade de determinação da BC do ICMS')
     base_calculo = fields.Float(u'Base de cálculo')
     percentual_reducao_bc = fields.Float(u'% Redução Base')
     valor = fields.Float(u'Valor Total')

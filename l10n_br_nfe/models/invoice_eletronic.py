@@ -41,45 +41,41 @@ class InvoiceEletronic(models.Model):
             'uTrib': item.uom_id.name,
             'qTrib': item.quantity,
             'vUnTrib': item.unit_price,
-            'indTot': 1
+            'indTot': 0
         }
-        icms_name = 'ICMS%s' % item.tax_icms_id.cst
         imposto = {
-            'vTotTrib': 0,
+            'vTotTrib': 00,
             'ICMS': {
-                'tipo': icms_name,
-                'ICMS00': {
-                    'orig':  item.tax_icms_id.origem,
-                    'CST': '00',
-                    'modBC': 0,
-                    'vBC': '100.00',
-                    'pICMS': '12.00',
-                    'vICMS': '12.00'
-                }
+                'orig':  item.tax_icms_id.origem,
+                'CST': item.tax_icms_id.cst,
+                'modBC': item.tax_icms_id.modalidade_BC,
+                'vBC': "%.02f" % self.valor_BC,
+                'pICMS': "%.02f" % item.tax_icms_id.aliquota,
+                'vICMS': "%.02f" % self.valor_icms
             },
             'IPI': {
                 'cEnq': 999,
                 'IPITrib': {
                     'CST': '50',
                     'vBC': '100.00',
-                    'pIPI': '5.00',
-                    'vIPI': '5.00'
+                    'pIPI': "%.02f" % item.tax_ipi_id.aliquota,
+                    'vIPI': "%.02f" % self.valor_ipi
                 }
             },
             'PIS': {
                 'PISAliq': {
                     'CST': '01',
                     'vBC': '100.00',
-                    'pPIS': '0.6500',
-                    'vPIS': '0.65'
+                    'pPIS': '0.0000',
+                    'vPIS': '0.00'
                 }
             },
             'COFINS': {
                 'COFINSAliq': {
                     'CST': '01',
                     'vBC': '100.00',
-                    'pCOFINS': '3.0000',
-                    'vCOFINS': '3.00'
+                    'pCOFINS': '0.0000',
+                    'vCOFINS': '0.00'
                 }
             }
         }

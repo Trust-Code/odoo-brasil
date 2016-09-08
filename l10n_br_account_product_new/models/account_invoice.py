@@ -426,6 +426,9 @@ class AccountInvoiceLine(models.Model):
         'Base ICMS ST Outras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_cst = fields.Char('CST ICMS', size=10)
+    icms_percent_credit = fields.Float(u"%% Cŕedito ICMS")
+    icms_value_credit = fields.Float(u"Valor de Crédito")
+
     tax_issqn_id = fields.Many2one('account.tax', string="ISSQN",
                                   domain=[('domain', '=', 'issqn')])
     issqn_manual = fields.Boolean('ISSQN Manual?', default=False)
