@@ -1,26 +1,12 @@
-#  -*- encoding: utf-8 -*-
-# #############################################################################
-#                                                                             #
-#  Copyright (C) 2012  Renato Lima - Akretion                                 #
-#                                                                             #
-# This program is free software: you can redistribute it and/or modify        #
-# it under the terms of the GNU Affero General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or           #
-# (at your option) any later version.                                         #
-#                                                                             #
-# This program is distributed in the hope that it will be useful,             #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU Affero General Public License for more details.                         #
-#                                                                             #
-# You should have received a copy of the GNU Affero General Public License    #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
-# #############################################################################
+# -*- coding: utf-8 -*-
+# © 2012  Renato Lima - Akretion
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
-from openerp import models, fields, api, _
-from openerp.addons.l10n_br_base.tools import fiscal
-from openerp.exceptions import Warning
+from odoo import models, fields, api, _
+from odoo.addons.l10n_br_base.tools import fiscal
+from odoo.exceptions import UserError
 
 
 class CrmLead(models.Model):
@@ -32,8 +18,8 @@ class CrmLead(models.Model):
     inscr_est = fields.Char('Inscr. Estadual', size=16)
     inscr_mun = fields.Char('Inscr. Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    l10n_br_city_id = fields.Many2one('l10n_br_base.city', 'Municipio',
-                                      domain="[('state_id','=',state_id)]")
+    city_id = fields.Many2one('res.state.city', 'Municipio',
+                              domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
     number = fields.Char('Número', size=10)
     name_surname = fields.Char(u'Nome e Sobrenome', size=128,
@@ -46,7 +32,7 @@ class CrmLead(models.Model):
     def _check_cnpj(self):
         if self.cnpj:
             if not fiscal.validate_cnpj(self.cnpj):
-                raise Warning(_(u'CNPJ inválido!'))
+                raise UserError(_(u'CNPJ inválido!'))
         return True
 
     @api.one
@@ -54,13 +40,14 @@ class CrmLead(models.Model):
     def _check_cpf(self):
         if self.cpf:
             if not fiscal.validate_cpf(self.cpf):
-                raise Warning(_(u'CPF inválido!'))
+                raise UserError(_(u'CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
         try:
             mod = __import__(
-                'openerp.addons.l10n_br_base.tools.fiscal', globals(), locals(), 'fiscal')
+                'odoo.addons.l10n_br_base.tools.fiscal',
+                globals(), locals(), 'fiscal')
 
             validate = getattr(mod, 'validate_ie_%s' % uf)
             if not validate(inscr_est):
@@ -77,8 +64,7 @@ class CrmLead(models.Model):
         this method call others methods because this validation is State wise
 
         :Return: True or False."""
-        if (not self.inscr_est
-                or self.inscr_est == 'ISENTO'):
+        if (not self.inscr_est or self.inscr_est == 'ISENTO'):
             return True
         uf = (self.state_id and
               self.state_id.code.lower() or '')
@@ -109,21 +95,10 @@ class CrmLead(models.Model):
             else:
                 raise Warning(_(u'Verifique o CPF'))
 
-    @api.onchange('l10n_br_city_id')
-    def onchange_l10n_br_city_id(self):
-        """ Ao alterar o campo l10n_br_city_id que é um campo relacional
-        com o l10n_br_base.city que são os municípios do IBGE, copia o nome
-        do município para o campo city que é o campo nativo do módulo base
-        para manter a compatibilidade entre os demais módulos que usam o
-        campo city.
-
-        param int l10n_br_city_id: id do l10n_br_city_id digitado.
-
-        return: dicionário com o nome e id do município.
-        """
-        if self.l10n_br_city_id:
-            self.city = self.l10n_br_city_id.name
-            self.l10n_br_city_id = self.l10n_br_city_id
+    @api.onchange('city_id')
+    def onchange_city_id(self):
+        if self.city_id:
+            self.city = self.city_id.name
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
@@ -135,8 +110,7 @@ class CrmLead(models.Model):
             self.suframa = self.partner_id.suframa
             self.number = self.partner_id.number
             self.district = self.partner_id.district
-            self.l10n_br_city_id = self.partner_id.l10n_br_city_id.id
-
+            self.city_id = self.partner_id.city_id.id
 
     @api.model
     def _lead_create_contact(self, lead, name, is_company, parent_id=False):

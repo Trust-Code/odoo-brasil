@@ -30,12 +30,12 @@ class L10n_brZip(models.Model):
     state_id = fields.Many2one(
         'res.country.state', 'Estado',
         domain="[('country_id','=',country_id)]")
-    l10n_br_city_id = fields.Many2one(
-        'l10n_br_base.city', 'Cidade',
+    city_id = fields.Many2one(
+        'res.state.city', 'Cidade',
         required=True, domain="[('state_id','=',state_id)]")
 
     def set_domain(self, country_id=False, state_id=False,
-                   l10n_br_city_id=False, district=False,
+                   city_id=False, district=False,
                    street=False, zip_code=False):
         domain = []
         if zip_code:
@@ -52,7 +52,7 @@ class L10n_brZip(models.Model):
             if state_id:
                 domain.append(('state_id', '=', state_id))
             if l10n_br_city_id:
-                domain.append(('l10n_br_city_id', '=', l10n_br_city_id))
+                domain.append(('city_id', '=', city_id))
             if district:
                 domain.append(('district', 'ilike', district))
             if street:
@@ -68,7 +68,7 @@ class L10n_brZip(models.Model):
             result = {
                 'country_id': zip_obj.country_id.id,
                 'state_id': zip_obj.state_id.id,
-                'l10n_br_city_id': zip_obj.l10n_br_city_id.id,
+                'city_id': zip_obj.city_id.id,
                 'district': zip_obj.district,
                 'street': ((zip_obj.street_type or '') +
                            ' ' + (zip_obj.street or '')) if
@@ -80,12 +80,12 @@ class L10n_brZip(models.Model):
         return result
 
     def zip_search_multi(self, country_id=False,
-                         state_id=False, l10n_br_city_id=False,
+                         state_id=False, city_id=False,
                          district=False, street=False, zip_code=False):
         domain = self.set_domain(
             country_id=country_id,
             state_id=state_id,
-            l10n_br_city_id=l10n_br_city_id,
+            city_id=city_id,
             district=district,
             street=street,
             zip_code=zip_code)
@@ -98,7 +98,7 @@ class L10n_brZip(models.Model):
             elif zip_code:
                 raise UserError('Digite o cep corretamente')
             else:
-                self._search_by_address(state_id, l10n_br_city_id, street)
+                self._search_by_address(state_id, city_id, street)
 
             return self.search(domain)
         else:
@@ -111,7 +111,7 @@ class L10n_brZip(models.Model):
             obj_viacep = requests.get(url_viacep)
             res = obj_viacep.json()
             if res:
-                city = self.env['l10n_br_base.city'].search(
+                city = self.env['res.state.city'].search(
                     [('ibge_code', '=', res['ibge'][2:]),
                      ('state_id.code', '=', res['uf'])])
 
@@ -121,21 +121,21 @@ class L10n_brZip(models.Model):
                      'district': res['bairro'],
                      'country_id': city.state_id.country_id.id,
                      'state_id': city.state_id.id,
-                     'l10n_br_city_id': city.id})
+                     'city_id': city.id})
 
         except Exception as e:
             _logger.error(e.message, exc_info=True)
 
     def _search_by_address(self, state_id, city_id, street):
         try:
-            city = self.env['l10n_br_base.city'].browse(city_id)
+            city = self.env['res.state.city'].browse(city_id)
             url_viacep = 'http://viacep.com.br/ws/' + city.state_id.code + \
                 '/' + city.name + '/' + street + '/json/unicode/'
             obj_viacep = requests.get(url_viacep)
             results = obj_viacep.json()
             if results:
                 for res in results:
-                    city = self.env['l10n_br_base.city'].search(
+                    city = self.env['res.state.city'].search(
                         [('ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
 
@@ -145,19 +145,19 @@ class L10n_brZip(models.Model):
                          'district': res['bairro'],
                          'country_id': city.state_id.country_id.id,
                          'state_id': city.state_id.id,
-                         'l10n_br_city_id': city.id})
+                         'city_id': city.id})
 
         except Exception as e:
             _logger.error(e.message, exc_info=True)
 
     @api.multi
     def zip_search(self, country_id=False, state_id=False,
-                   l10n_br_city_id=False, district=False,
+                   city_id=False, district=False,
                    street=False, zip_code=False):
         result = self.set_result(None)
         zip_id = self.zip_search_multi(
             country_id, state_id,
-            l10n_br_city_id, district,
+            city_id, district,
             street, zip_code)
         if len(zip_id) == 1:
             result = self.set_result(zip_id[0])
@@ -166,7 +166,7 @@ class L10n_brZip(models.Model):
             return False
 
     def create_wizard(self, object_name, address_id, country_id=False,
-                      state_id=False, l10n_br_city_id=False,
+                      state_id=False, city_id=False,
                       district=False, street=False, zip_code=False,
                       zip_ids=False):
         context = dict(self.env.context)
@@ -176,7 +176,7 @@ class L10n_brZip(models.Model):
             'district': district,
             'country_id': country_id,
             'state_id': state_id,
-            'l10n_br_city_id': l10n_br_city_id,
+            'city_id': city_id,
             'zip_ids': zip_ids,
             'address_id': address_id,
             'object_name': object_name})

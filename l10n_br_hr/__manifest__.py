@@ -9,6 +9,7 @@
         refered to the national context of HR""",
     'category': 'Localization',
     'author': 'KMEE',
+    'sequence': 45,
     'maintainer': 'Trustcode',
     'website': 'http://www.trustcode.com.br/',
     'version': '10.0.1.0.0',

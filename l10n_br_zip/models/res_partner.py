@@ -20,7 +20,7 @@ class ResPartner(models.Model):
         zip_ids = obj_zip.zip_search_multi(
             country_id=self.country_id.id,
             state_id=self.state_id.id,
-            l10n_br_city_id=self.l10n_br_city_id.id,
+            city_id=self.city_id.id,
             district=self.district,
             street=self.street,
             zip_code=self.zip,
@@ -41,7 +41,7 @@ class ResPartner(models.Model):
                     self.id,
                     country_id=self.country_id.id,
                     state_id=self.state_id.id,
-                    l10n_br_city_id=self.l10n_br_city_id.id,
+                    city_id=self.city_id.id,
                     district=self.district,
                     street=self.street,
                     zip_code=self.zip,

@@ -54,7 +54,7 @@
             </field>
             <field name="zip" position="replace" />
             <field name="street" position="replace">
-                <field name="zip" placeholder="Cep" />
+                <field name="zip" placeholder="Cep" class="o_address_zip oe_inline" />
                 <field name="street" placeholder="Logradouro" />
                 <field name="number" placeholder="Número" />
                 <field name="district" placeholder="Bairro" />

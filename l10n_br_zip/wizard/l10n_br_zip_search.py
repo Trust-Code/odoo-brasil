@@ -17,8 +17,8 @@ class L10n_brZipSearch(models.TransientModel):
     state_id = fields.Many2one(
         "res.country.state", 'Estado',
         domain="[('country_id','=',country_id)]")
-    l10n_br_city_id = fields.Many2one(
-        'l10n_br_base.city', 'Cidade',
+    city_id = fields.Many2one(
+        'res.state.city', 'Cidade',
         domain="[('state_id','=',state_id)]")
     zip_ids = fields.Many2many(
         'l10n_br.zip.result', 'zip_search', 'zip_search_id',
@@ -39,7 +39,7 @@ class L10n_brZipSearch(models.TransientModel):
         data['district'] = context.get('district', False)
         data['country_id'] = context.get('country_id', False)
         data['state_id'] = context.get('state_id', False)
-        data['l10n_br_city_id'] = context.get('l10n_br_city_id', False)
+        data['city_id'] = context.get('city_id', False)
         data['address_id'] = context.get('address_id', False)
         data['object_name'] = context.get('object_name', False)
 
@@ -55,7 +55,7 @@ class L10n_brZipSearch(models.TransientModel):
         domain = obj_zip.set_domain(
             country_id=data['country_id'][0],
             state_id=data['state_id'][0],
-            l10n_br_city_id=data['l10n_br_city_id'][0],
+            city_id=data['city_id'][0],
             district=data['district'],
             street=data['street'],
             zip=data['zip']
@@ -82,7 +82,6 @@ class L10n_brZipSearch(models.TransientModel):
 
     @api.multi
     def zip_new_search(self):
-        data = self.read()[0]
         self.write({'state': 'init',
                     'zip_ids': [[6, 0, []]]})
 
@@ -117,8 +116,8 @@ class L10n_brZipResult(models.TransientModel):
     state_id = fields.Many2one('res.country.state', 'Estado',
                                domain="[('country_id', '=', country_id)]",
                                readonly=True)
-    l10n_br_city_id = fields.Many2one(
-        'l10n_br_base.city', 'Cidade', required=True,
+    city_id = fields.Many2one(
+        'res.state.city', 'Cidade', required=True,
         domain="[('state_id', '=', state_id)]", readonly=True)
 
     def map_to_zip_result(self, zip_data, object_name, address_id):
