@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
 {
     'name': 'Plano de Contas Simplificado Brasil',
     'summary': """Plano de contas simplificado""",
-    'version': '8.0',
+    'version': '10.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -23,5 +23,4 @@
         'data/account_tax_template_data.xml',
     ],
     'instalable': True,
-    'auto_install': False,
 }
