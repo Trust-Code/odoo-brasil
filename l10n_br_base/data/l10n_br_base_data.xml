@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="base.BRL" model="res.currency">
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="base.main_company" model="res.company">
+        <field name="currency_id" ref="base.BRL" />
+    </record>
+
+    <record id="base.user_root" model="res.users">
+        <field name="tz">America/Sao_Paulo</field>
+    </record>
 
         <!-- <function eval="('default',False,'country_id', [('res.partner', False)], ref('base.br'), True, False, False, False, True)" id="country_br_set" model="ir.values" name="set"/> -->
 

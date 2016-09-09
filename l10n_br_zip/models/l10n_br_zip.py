@@ -42,7 +42,7 @@ class L10n_brZip(models.Model):
             new_zip = re.sub('[^0-9]', '', zip_code or '')
             domain.append(('zip', '=', new_zip))
         else:
-            if not state_id or not l10n_br_city_id or \
+            if not state_id or not city_id or \
                     len(street or '') == 0:
                 raise UserError(
                     u'Necessário informar Estado, município e logradouro')
@@ -51,7 +51,7 @@ class L10n_brZip(models.Model):
                 domain.append(('country_id', '=', country_id))
             if state_id:
                 domain.append(('state_id', '=', state_id))
-            if l10n_br_city_id:
+            if city_id:
                 domain.append(('city_id', '=', city_id))
             if district:
                 domain.append(('district', 'ilike', district))
