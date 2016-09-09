@@ -37,7 +37,6 @@
         'l10n_br_account_product_new',
     ],
     'data': [
-        'views/res_company_view.xml',
         'views/sped_base_view.xml',
         'views/sped_tax_view.xml',
         'views/sped_eletronic_doc_view.xml',

@@ -428,9 +428,27 @@ class AccountInvoiceLine(models.Model):
     icms_cst = fields.Char('CST ICMS', size=10)
     icms_percent_credit = fields.Float(u"%% Cŕedito ICMS")
     icms_value_credit = fields.Float(u"Valor de Crédito")
+    origem = fields.Selection(
+        [('0', '0 - Nacional'),
+         ('1', '1 - Estrangeira - Importação direta'),
+         ('2', '2 - Estrangeira - Adquirida no mercado interno'),
+         ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+superior a 40% \e inferior ou igual a 70%'),
+         ('4', '4 - Nacional, cuja produção tenha sido feita em conformidade \
+com os processos produtivos básicos de que tratam as \
+legislações citadas nos Ajustes'),
+         ('5', '5 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+inferior ou igual a 40%'),
+         ('6', '6 - Estrangeira - Importação direta, sem similar nacional, \
+constante em lista da CAMEX e gás natural'),
+         ('7', '7 - Estrangeira - Adquirida no mercado interno, sem similar \
+nacional, constante lista CAMEX e gás natural'),
+         ('8', '8 - Nacional, mercadoria ou bem com Conteúdo de Importação \
+superior a 70%')],
+        u'Origem da mercadoria')
 
     tax_issqn_id = fields.Many2one('account.tax', string="ISSQN",
-                                  domain=[('domain', '=', 'issqn')])
+                                   domain=[('domain', '=', 'issqn')])
     issqn_manual = fields.Boolean('ISSQN Manual?', default=False)
     issqn_type = fields.Selection(
         [('N', 'Normal'), ('R', 'Retida'),

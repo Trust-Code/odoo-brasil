@@ -301,6 +301,23 @@ substituição tributária'),
       ('60', '60 - ICMS cobrado anteriormente por substituição tributária'),
       ('70', '70 - Com redução de base de cálculo e cobrança do ICMS por \
 substituição tributária'),
+      ('101', '101 - Tributada pelo Simples Nacional com permissão de \
+crédito'),
+      ('102', '102 - Tributada pelo Simples Nacional sem permissão de \
+crédito'),
+      ('103', '103 - Isenção do ICMS no Simples Nacional para faixa de \
+receita bruta'),
+      ('201', '201 - Tributada pelo Simples Nacional com permissão de crédito \
+e com cobrança do ICMS por substituição tributária'),
+      ('202', '202 - Tributada pelo Simples Nacional sem permissão de crédito \
+e com cobrança do ICMS por substituição tributária'),
+      ('203', '203 - Isenção do ICMS no Simples Nacional para faixa de receita \
+bruta e com cobrança do ICMS por substituição tributária'),
+      ('300', '300 - Imune'),
+      ('400', '400 - Não tributada pelo Simples Nacional'),
+      ('500', '500 - ICMS cobrado anteriormente por substituição tributária \
+(substituído) ou por antecipação'),
+      ('900', '900 - Outros'),
       ('90', '90 - Outros')],
      u'Situação tributária do ICMS')
     icms_aliquota = fields.Float(u'Alíquota')

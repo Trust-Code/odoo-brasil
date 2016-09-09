@@ -34,7 +34,7 @@ class AccountInvoice(models.Model):
             'other_expenses': invoice_line.other_costs_value,
             'gross_total': invoice_line.price_subtotal,
             'total': invoice_line.price_subtotal,
-            'origem': invoice_line.origem,
+            'origem': invoice_line.icms_origin,
             'icms_cst': invoice_line.icms_cst,
             'icms_percentual_credit': invoice_line.icms_percent_credit,
             'icms_value_credit': invoice_line.icms_value_credit

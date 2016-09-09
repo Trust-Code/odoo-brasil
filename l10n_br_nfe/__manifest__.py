@@ -35,6 +35,7 @@
         'l10n_br_account_einvoice',
     ],
     'data': [
+        'views/res_company.xml'
     ],
     'instalable': True,
     'application': True,

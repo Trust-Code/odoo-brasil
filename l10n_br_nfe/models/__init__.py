@@ -21,3 +21,4 @@
 
 
 from . import invoice_eletronic
+from . import res_company

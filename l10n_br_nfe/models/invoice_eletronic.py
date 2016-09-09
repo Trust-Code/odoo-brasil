@@ -16,6 +16,18 @@ from pytrustnfe.certificado import Certificado
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    @api.multi
+    def _hook_validation(self):
+        errors = super(InvoiceEletronic, self)._hook_validation()
+
+        for inv_line in self.eletronic_item_ids:
+            prod = u"Produto: %s - %s" % (inv_line.product_id.default_code,
+                                          inv_line.product_id.name)
+
+            if not inv_line.cfop:
+                errors.append(u'%s - CFOP' % prod)
+        return errors
+
     @api.one
     def _id_dest(self):
         id_dest = '1'
@@ -41,17 +53,20 @@ class InvoiceEletronic(models.Model):
             'uTrib': item.uom_id.name,
             'qTrib': item.quantity,
             'vUnTrib': item.unit_price,
-            'indTot': 0
+            'indTot': 0,
+            'cfop': item.cfop
         }
         imposto = {
             'vTotTrib': 00,
             'ICMS': {
-                'orig':  item.tax_icms_id.origem,
-                'CST': item.tax_icms_id.cst,
-                'modBC': item.tax_icms_id.modalidade_BC,
+                'orig':  item.origem,
+                'CST': item.icms_cst,
+                'modBC': item.icms_modalidade_BC,
                 'vBC': "%.02f" % self.valor_BC,
-                'pICMS': "%.02f" % item.tax_icms_id.aliquota,
-                'vICMS': "%.02f" % self.valor_icms
+                'pICMS': "%.02f" % item.icms_aliquota,
+                'vICMS': "%.02f" % self.valor_icms,
+                'pCredSN': "%.02f" % item.icms_value_credit,
+                'vCredICMSSN': "%.02f" % item.icms_value_percentual
             },
             'IPI': {
                 'cEnq': 999,
@@ -111,7 +126,9 @@ class InvoiceEletronic(models.Model):
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
-            'xNome': self.company_id.legal_name,
+            'xNome': self.company_id.legal_name if
+            self.company_id.homologacao == 1 else
+            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'xFant': self.company_id.name,
             'enderEmit': {
                 'xLgr': self.company_id.street,

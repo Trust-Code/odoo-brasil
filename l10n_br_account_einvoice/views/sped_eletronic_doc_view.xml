@@ -22,7 +22,6 @@
                         </group>
                         <group>
                             <field name="cfop" />
-                            <field name="tax_icms_id" />
                             <field name="tax_ipi_id" />
                             <field name="tax_pis_id" />
                             <field name="tax_cofins_id" />
@@ -31,8 +30,23 @@
                             <field name="tax_inss_id" />
                             <field name="tax_ii_id" />
                             <field name="tax_irrf_id" />
+                            <field name="origem" />
                         </group>
                     </group>
+
+                    <group>
+                        <group>
+                            <field name="icms_cst" />
+                            <field name="icms_aliquota" />
+                            <field name="icms_modalidade_BC" />
+                            <field name="icms_base_calculo" />
+                            <field name="icms_percentual_reducao_bc" />
+                            <field name="icms_valor" />
+                            <field name="icms_value_credit" />
+                            <field name="icms_value_percentual" />
+                        </group>
+                    </group>
+
                 </form>
             </field>
         </record>
