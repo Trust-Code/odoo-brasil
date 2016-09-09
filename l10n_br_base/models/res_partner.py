@@ -3,7 +3,7 @@
 # © 2009 Renato Lima (Akretion)
 # © 2012 Raphaël Valyi (Akretion)
 # © 2015  Michell Stuttgart (KMEE)
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
@@ -26,8 +26,8 @@ class ResPartner(models.Model):
     suframa = fields.Char('Suframa', size=18)
     legal_name = fields.Char(
         u'Razão Social', size=60, help="nome utilizado em documentos fiscais")
-    l10n_br_city_id = fields.Many2one(
-        'l10n_br_base.city', u'Município',
+    city_id = fields.Many2one(
+        'res.state.city', u'Município',
         domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
     number = fields.Char(u'Número', size=10)
@@ -59,8 +59,8 @@ class ResPartner(models.Model):
                 address.country_id.name or '',
                 'company_name': address.parent_id and
                 address.parent_id.name or '',
-                'l10n_br_city_name': address.l10n_br_city_id and
-                address.l10n_br_city_id.name or '',
+                'city_name': address.l10n_br_city_id and
+                address.city_id.name or '',
             }
             address_field = ['title', 'street', 'street2', 'zip', 'city',
                              'number', 'district']
@@ -105,8 +105,8 @@ class ResPartner(models.Model):
         this method call others methods because this validation is State wise
 
         :Return: True or False."""
-        if (not self.inscr_est or self.inscr_est == 'ISENTO'
-            or not self.is_company):
+        if (not self.inscr_est or self.inscr_est == 'ISENTO' or
+           not self.is_company):
             return True
         uf = (self.state_id and
               self.state_id.code.lower() or '')
@@ -146,20 +146,15 @@ class ResPartner(models.Model):
             else:
                 raise UserError(_(u'Verifique o CNPJ/CPF'))
 
-    @api.onchange('l10n_br_city_id')
-    def _onchange_l10n_br_city_id(self):
-        """ Ao alterar o campo l10n_br_city_id que é um campo relacional
-        com o l10n_br_base.city que são os municípios do IBGE, copia o nome
+    @api.onchange('city_id')
+    def _onchange_city_id(self):
+        """ Ao alterar o campo city_id copia o nome
         do município para o campo city que é o campo nativo do módulo base
         para manter a compatibilidade entre os demais módulos que usam o
         campo city.
-
-        param int l10n_br_city_id: id do l10n_br_city_id digitado.
-
-        return: dicionário com o nome e id do município.
         """
-        if self.l10n_br_city_id:
-            self.city = self.l10n_br_city_id.name
+        if self.city_id:
+            self.city = self.city_id.name
 
     @api.onchange('zip')
     def onchange_mask_zip(self):
@@ -175,7 +170,7 @@ class ResPartner(models.Model):
         when the `use_parent_address` flag is set.
         Extenção para os novos campos do endereço """
         address_fields = super(ResPartner, self)._address_fields()
-        return list(address_fields + ['l10n_br_city_id', 'number', 'district'])
+        return list(address_fields + ['city_id', 'number', 'district'])
 
     @api.one
     def action_check_sefaz(self):
@@ -187,9 +182,37 @@ class ResPartner(models.Model):
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)
 
-            obj = {'cnpj': self.cnpj_cpf, 'estado': self.state_id.ibge_code}
-            resposta = consulta_cadastro(certificado, obj=obj)
-            print resposta
+            cnpj = re.sub('[^0-9]', '', self.cnpj_cpf)
+            obj = {'cnpj': cnpj, 'estado': self.state_id.code}
+            resposta = consulta_cadastro(certificado, obj=obj,
+                                         estado=self.state_id.ibge_code)
+
+            obj = resposta['object']
+            if "Body" in dir(obj) and \
+               "consultaCadastro2Result" in dir(obj.Body):
+                info = obj.Body.consultaCadastro2Result.retConsCad.infCons
+                if info.cStat == 111 or info.cStat == 112:
+                    if not self.inscr_est:
+                        self.inscr_est = info.infCad.IE
+                    if not self.cnpj_cpf:
+                        self.cnpj_cpf = info.infCad.IE
+
+                    def get_value(obj, prop):
+                        if prop not in dir(obj):
+                            return None
+                        return getattr(obj, prop)
+
+                    #TODO Buscar o municipio
+                    self.legal_name = get_value(info.infCad, 'xNome')
+                    self.zip = get_value(info.infCad.ender, 'CEP')
+                    self.street = get_value(info.infCad.ender, 'xLgr')
+                    self.number = get_value(info.infCad.ender, 'nro')
+                    self.street2 = get_value(info.infCad.ender, 'xCpl')
+                    self.district = get_value(info.infCad.ender, 'xBairro')
+                    self.zip = get_value(info.infCad.ender, 'cMun')
+                else:
+                    msg = "%s - %s" % (info.cStat, info.xMotivo)
+                    raise UserError(msg)
         else:
             raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
 
@@ -200,25 +223,19 @@ class ResBank(models.Model):
     number = fields.Char(u'Número', size=10)
     street2 = fields.Char('Street2', size=128)
     district = fields.Char('Bairro', size=32)
-    l10n_br_city_id = fields.Many2one(comodel_name='l10n_br_base.city',
-                                      string='Municipio',
-                                      domain="[('state_id','=',state_id)]")
+    city_id = fields.Many2one(comodel_name='res.state.city',
+                              string='Municipio',
+                              domain="[('state_id','=',state_id)]")
 
-    @api.onchange('l10n_br_city_id')
-    def onchange_l10n_br_city_id(self):
-        """ Ao alterar o campo l10n_br_city_id que é um campo relacional
-        com o l10n_br_base.city que são os municípios do IBGE, copia o nome
+    @api.onchange('city_id')
+    def onchange_city_id(self):
+        """ Ao alterar o campo city_id copia o nome
         do município para o campo city que é o campo nativo do módulo base
         para manter a compatibilidade entre os demais módulos que usam o
         campo city.
-
-        param int l10n_br_city_id: id do l10n_br_city_id digitado.
-
-        return: dicionário com o nome e id do município.
         """
-        if self.l10n_br_city_id:
-            self.city = self.l10n_br_city_id.name
-            self.l10n_br_city_id = self.l10n_br_city_id
+        if self.city_id:
+            self.city = self.city_id.name
 
 
 class ResPartnerBank(models.Model):

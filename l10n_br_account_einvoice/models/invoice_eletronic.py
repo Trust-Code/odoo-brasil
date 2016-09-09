@@ -1,23 +1,6 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#                                                                             #
-# Copyright (C) 2016 TrustCode - www.trustcode.com.br                         #
-#              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
-#                                                                             #
-# This program is free software: you can redistribute it and/or modify        #
-# it under the terms of the GNU Affero General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or           #
-# (at your option) any later version.                                         #
-#                                                                             #
-# This program is distributed in the hope that it will be useful,             #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU General Public License for more details.                                #
-#                                                                             #
-# You should have received a copy of the GNU General Public License           #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
-#                                                                             #
-###############################################################################
+# © 2016 Danimar Ribeiro, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.exceptions import UserError
 from odoo import api, fields, models
@@ -331,7 +314,7 @@ substituição tributária'),
     icms_percentual_reducao_bc = fields.Float(u'% Redução Base')
     icms_valor = fields.Float(u'Valor Total')
     icms_value_credit = fields.Float(u"Valor de Cŕedito")
-    icms_value_percentual = fields.FLoat(u'%% de Crédito')
+    icms_value_percentual = fields.Float(u'%% de Crédito')
 
     percentual_mva = fields.Float(u'% MVA')
     aliquota_st = fields.Float(u'Alíquota')

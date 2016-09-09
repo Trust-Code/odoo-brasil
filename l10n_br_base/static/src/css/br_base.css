@@ -11,3 +11,10 @@ body.container div.o_database_list {
     border-radius: 10px;
     box-shadow: 4px 10px 18px -1px rgba(0,0,0,0.75);
 }
+
+.o_form_view.o_form_editable .o_address_format div.o_address_state {
+    width:75%;
+}
+.o_form_view.o_form_editable .o_address_format input.o_address_zip {
+    width: 50%;
+}
