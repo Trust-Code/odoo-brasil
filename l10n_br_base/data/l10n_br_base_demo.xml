@@ -107,10 +107,9 @@
 				<field eval="1" name="customer"/>
 				<field eval="1" name="supplier"/>
 				<field eval="1" name="active"/>
-                                <field name="is_company" eval="1"/>
+                <field name="is_company" eval="1"/>
 				<field name="legal_name">Trustcode</field>
 				<field name="name">Trustcode</field>
-				<field name="parent_id" ref="res_partner_akretion"/>
 				<field name="district">Rio de Janeiro</field>
 				<field name="city_id" ref="l10n_br_base.city_3304557"/>
 				<field name="zip">20081-000</field>

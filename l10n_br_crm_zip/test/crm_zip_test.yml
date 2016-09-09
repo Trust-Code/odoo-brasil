@@ -4,7 +4,7 @@
   !record {model: l10n_br.zip, id: crm_zip_test }:
     zip: 88032050
     city_id: l10n_br_base.city_4205407
-    state_id: l10n_br_base.br_sc
+    state_id: base.state_br_sc
     country_id: base.br
     street: Donicia
     street_type: Rua
@@ -28,7 +28,7 @@
 -
   !python {model: crm.lead, id: l10n_br_crm_zip.zip_crm_lead_test }: |
     self.zip = ''
-    self.state_id = ref('l10n_br_base.br_sc')
+    self.state_id = ref('base.state_br_sc')
     self.city_id = ref('l10n_br_base.city_4205407')
     self.street = 'donici'
     assert self.zip_search(), 'Zip search does not return true'
@@ -49,7 +49,7 @@
   !record {model: l10n_br.zip, id: crm_zip_test2 }:
     zip: 88032040
     city_id: l10n_br_base.city_4205407
-    state_id: l10n_br_base.br_sc
+    state_id: base.state_br_sc
     country_id: base.br
     street: Donicia Maria da Costa
     street_type: Rua
@@ -59,7 +59,7 @@
 -
   !python {model: crm.lead, id: l10n_br_crm_zip.zip_crm_lead_test }: |
     self.zip = ''
-    self.state_id = ref('l10n_br_base.br_sc')
+    self.state_id = ref('base.state_br_sc')
     self.city_id = ref('l10n_br_base.city_4205407')
     self.street = 'Donicia'
     self.district = ''
