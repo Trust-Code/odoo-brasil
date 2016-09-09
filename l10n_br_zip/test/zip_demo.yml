@@ -25,9 +25,9 @@
     self.zip = ''
     self.state_id = ref('base.state_br_sc')
     self.city_id = ref('l10n_br_base.city_4205407')
-    self.street = 'donici'
+    self.street = 'Don'
     assert self.zip_search(), 'Zip search does not return true'
-    assert self.zip == '88032050', 'Zip code is wrong'
+    assert self.partner_id.zip == '88032-050', 'Zip code is wrong'
 -
  I check if it raises a warning when there is no zip code
 -

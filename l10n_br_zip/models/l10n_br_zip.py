@@ -90,9 +90,8 @@ class L10n_brZip(models.Model):
             street=street,
             zip_code=zip_code)
         zip_ids = self.search(domain)
-
         if len(zip_ids) == 0:
-            zip_code = re.sub('[^0-9]', '', zip_code)
+            zip_code = re.sub('[^0-9]', '', zip_code or '')
             if zip_code and len(zip_code) == 8:
                 self._search_by_cep(zip_code)
             elif zip_code:
