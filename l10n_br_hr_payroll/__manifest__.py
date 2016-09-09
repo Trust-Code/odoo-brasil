@@ -21,19 +21,20 @@
 ##############################################################################
 
 {
-    'name' : 'Brazilian Localization HR Payroll',
-    'description' : """
-Brazilian Localization HT Payroll""",
-    'category' : 'Localization',
-    'author' : 'KMEE',
-    'maintainer': 'KMEE',
-    'website' : 'http://www.kmee.com.br',
-    'version' : '0.1',
-    'depends' : ['hr_payroll', 'hr_contract', 'l10n_br_hr'],
+    'name': 'Folha de Pagamento Brasil',
+    'summary': """Permite gerar o cálculo automático do pagamento a seus
+        funcionários - Mantido por Trustcode""",
+    'category': 'Localization',
+    'author': 'KMEE',
+    'license': 'AGPL-3',
+    'maintainer': 'Trustcode',
+    'website': 'http://www.trustcode.com.br',
+    'version': '10.0.1.0.0',
+    'depends': ['hr_payroll', 'hr_contract', 'l10n_br_hr'],
     'data': [
              'data/l10n_br_hr_payroll_data.xml',
              'view/hr_contract_view.xml',
              ],
     'installable': True,
-    'license': 'AGPL-3',
+    'application': True,
 }

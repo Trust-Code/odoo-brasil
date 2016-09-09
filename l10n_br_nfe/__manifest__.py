@@ -20,8 +20,9 @@
 ###############################################################################
 
 {
-    'name': 'NF-e Module',
-    'summary': """Module for the Brazilian Invoice Eletronic""",
+    'name': 'Envio de NF-e',
+    'summary': """Permite o envio de NF-e através das faturaas do Odoo
+    Mantido por Trustcode""",
     'version': '9.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

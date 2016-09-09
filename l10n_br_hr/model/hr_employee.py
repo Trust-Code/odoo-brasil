@@ -1,25 +1,10 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    Brazillian Human Resources Payroll module for OpenERP
-#    Copyright (C) 2014 KMEE (http://www.kmee.com.br)
-#    @author Rafael da Silva Lima <rafael.lima@kmee.com.br>
-#            Matheus Felix <matheus.felix@kmee.com.br>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# -*- coding: utf-8 -*-
+# © 2014 KMEE (http://www.kmee.com.br)
+# @author Rafael da Silva Lima <rafael.lima@kmee.com.br>
+# @author Matheus Felix <matheus.felix@kmee.com.br>
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 
 from datetime import datetime
 
@@ -40,7 +25,8 @@ class HrEmployee(models.Model):
                 [('employee_id', '=', employee.id),
                  ('dependent_verification', '=', True)])
             if dep_ids:
-                employee.n_dependent = len(dep_ids)*179.71  #TODO Estranho multiplicar isto aqui
+                employee.n_dependent = len(dep_ids)*179.71
+                # TODO Estranho multiplicar isto aqui
             else:
                 employee.n_dependent = 0
 
@@ -125,17 +111,6 @@ class HrEmployee(models.Model):
                                type="float",
                                digits_compute=dp.get_precision('Payroll'))
 
-    #TODO Remover se não necessário
-    def onchange_address_home_id(self):
-        import ipdb; ipdb.set_trace()
-        if address:
-            address = self.pool.get('res.partner').browse(
-                cr, uid, address, context=context)
-            if address.cnpj_cpf:
-                return {'value': {'check_cpf': True, 'cpf': address.cnpj_cpf}}
-            else:
-                return {'value': {'check_cpf': False, 'cpf': False}}
-        return {'value': {}}
 
     #TODO Remover se não necessário
     def onchange_user(self):

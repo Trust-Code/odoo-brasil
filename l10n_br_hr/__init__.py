@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from . import model
+
 
 def post_init(cr, registry):
     """Import CSV data as it is faster than xml and because we can't use

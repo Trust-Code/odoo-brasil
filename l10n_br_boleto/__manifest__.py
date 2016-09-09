@@ -3,9 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Brazilian Payment (Boleto)',
-    'summary': """Module to print brazilian boleto's""",
-    'version': '9.0.1.0.0',
+    'name': 'Pagamentos via Boleto Bancário',
+    'summary': """Permite gerar e realizar a integração bancária através de
+        arquivo CNAB 240 - Mantido por Trustcode""",
+    'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',
