@@ -3,7 +3,7 @@
 -
   !record {model: l10n_br.zip, id: crm_zip_test }:
     zip: 88032050
-    l10n_br_city_id: l10n_br_base.city_4205407
+    city_id: l10n_br_base.city_4205407
     state_id: l10n_br_base.br_sc
     country_id: base.br
     street: Donicia
@@ -13,26 +13,26 @@
   I create a new crm lead
 -
   !record {model: crm.lead, id: zip_crm_lead_test }:
-    name: new lead    
+    name: new lead
 -
   I set the created zip code to lead and check if it returns correctly
 -
   !python {model: crm.lead, id: l10n_br_crm_zip.zip_crm_lead_test }: |
     self.zip = '88032050'
     assert self.zip_search(), 'Zip search does not return true'
-    assert self.district == 'centro', 'District value is wrong'    
+    assert self.district == 'centro', 'District value is wrong'
     assert self.street == 'Rua Donicia', 'Street value is wrong'
-    assert self.l10n_br_city_id.id == ref('l10n_br_base.city_4205407')
+    assert self.city_id.id == ref('l10n_br_base.city_4205407')
 -
   I set the values to search the zip code now
 -
   !python {model: crm.lead, id: l10n_br_crm_zip.zip_crm_lead_test }: |
     self.zip = ''
     self.state_id = ref('l10n_br_base.br_sc')
-    self.l10n_br_city_id = ref('l10n_br_base.city_4205407')
+    self.city_id = ref('l10n_br_base.city_4205407')
     self.street = 'donici'
-    assert self.zip_search(), 'Zip search does not return true'    
-    assert self.zip == '88032-050', 'Zip code is wrong'   
+    assert self.zip_search(), 'Zip search does not return true'
+    assert self.zip == '88032-050', 'Zip code is wrong'
 -
  I check if it raises a warning when there is no zip code
 -
@@ -48,7 +48,7 @@
 -
   !record {model: l10n_br.zip, id: crm_zip_test2 }:
     zip: 88032040
-    l10n_br_city_id: l10n_br_base.city_4205407
+    city_id: l10n_br_base.city_4205407
     state_id: l10n_br_base.br_sc
     country_id: base.br
     street: Donicia Maria da Costa
@@ -60,7 +60,7 @@
   !python {model: crm.lead, id: l10n_br_crm_zip.zip_crm_lead_test }: |
     self.zip = ''
     self.state_id = ref('l10n_br_base.br_sc')
-    self.l10n_br_city_id = ref('l10n_br_base.city_4205407')
+    self.city_id = ref('l10n_br_base.city_4205407')
     self.street = 'Donicia'
     self.district = ''
     result = self.zip_search()
@@ -68,4 +68,3 @@
     assert result['res_model'] == 'l10n_br.zip.search', 'It should return the model zip.search'
     assert result['context']['street'] == 'Donicia', 'It should return the correct street'
     assert result['context']['state_id'] == ref('l10n_br_base.br_sc'), 'It should return the correct state'
-

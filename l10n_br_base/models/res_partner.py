@@ -59,7 +59,7 @@ class ResPartner(models.Model):
                 address.country_id.name or '',
                 'company_name': address.parent_id and
                 address.parent_id.name or '',
-                'city_name': address.l10n_br_city_id and
+                'city_name': address.city_id and
                 address.city_id.name or '',
             }
             address_field = ['title', 'street', 'street2', 'zip', 'city',

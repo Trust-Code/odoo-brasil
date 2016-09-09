@@ -33,8 +33,8 @@ class L10n_brDeliveryCarrierVehicle(models.Model):
     state_id = fields.Many2one(
         'res.country.state', u'Estado',
         domain="[('country_id', '=', country_id)]")
-    l10n_br_city_id = fields.Many2one(
-        'l10n_br_base.city', u'Município',
+    city_id = fields.Many2one(
+        'res.state.city', u'Município',
         domain="[('state_id','=',state_id)]")
     active = fields.Boolean(u'Ativo')
     manufacture_year = fields.Char(u'Ano de Fabricação', size=4)

@@ -107,7 +107,7 @@ class Boleto:
         self.boleto.cedente_documento = company.cnpj_cpf
         self.boleto.cedente_bairro = company.district
         self.boleto.cedente_cep = company.zip
-        self.boleto.cedente_cidade = company.l10n_br_city_id.name
+        self.boleto.cedente_cidade = company.city_id.name
         self.boleto.cedente_logradouro = company.street + ', ' + company.number
         self.boleto.cedente_uf = company.state_id.code
         self.boleto.agencia_cedente = self.getBranchNumber()
@@ -120,7 +120,7 @@ class Boleto:
         :return:
         """
         self.boleto.sacado_endereco = partner.street + ', ' + partner.number
-        self.boleto.sacado_cidade = partner.l10n_br_city_id.name
+        self.boleto.sacado_cidade = partner.city_id.name
         self.boleto.sacado_bairro = partner.district
         self.boleto.sacado_uf = partner.state_id.code
         self.boleto.sacado_cep = partner.zip

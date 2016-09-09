@@ -132,8 +132,8 @@ class AccountInvoice(models.Model):
     carrier_name = fields.Char('Nome Transportadora', size=32)
     vehicle_plate = fields.Char('Placa do Veiculo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
-    vehicle_l10n_br_city_id = fields.Many2one(
-        'l10n_br_base.city',
+    vehicle_city_id = fields.Many2one(
+        'res.state.city',
         'Municipio',
         domain="[('state_id', '=', vehicle_state_id)]")
     amount_untaxed = fields.Float(

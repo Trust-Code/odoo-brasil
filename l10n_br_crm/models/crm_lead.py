@@ -119,7 +119,7 @@ class CrmLead(models.Model):
         value = {
             'number': lead.number,
             'district': lead.district,
-            'l10n_br_city_id': lead.l10n_br_city_id.id
+            'city_id': lead.city_id.id
         }
         if is_company:
             value.update({

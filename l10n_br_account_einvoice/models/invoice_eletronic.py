@@ -136,12 +136,12 @@ class InvoiceEletronic(models.Model):
             if not self.company_id.partner_id.state_id.name:
                 errors.append(u'Emitente / Endereço - Nome do estado')
 
-        if not self.company_id.partner_id.l10n_br_city_id:
+        if not self.company_id.partner_id.city_id:
             errors.append(u'Emitente / Endereço - município')
         else:
-            if not self.company_id.partner_id.l10n_br_city_id.name:
+            if not self.company_id.partner_id.city_id.name:
                 errors.append(u'Emitente / Endereço - Nome do município')
-            if not self.company_id.partner_id.l10n_br_city_id.ibge_code:
+            if not self.company_id.partner_id.city_id.ibge_code:
                 errors.append(u'Emitente/Endereço - Cód. do IBGE do município')
 
         if not self.company_id.partner_id.country_id:
@@ -183,13 +183,13 @@ class InvoiceEletronic(models.Model):
                     errors.append(u'Destinatário / Endereço - Nome do estado')
 
         if partner.country_id.id == company.partner_id.country_id.id:
-            if not partner.l10n_br_city_id:
+            if not partner.city_id:
                 errors.append(u'Destinatário / Endereço - Município')
             else:
-                if not partner.l10n_br_city_id.name:
+                if not partner.city_id.name:
                     errors.append(u'Destinatário / Endereço - Nome do \
                                   município')
-                if not partner.l10n_br_city_id.ibge_code:
+                if not partner.city_id.ibge_code:
                     errors.append(u'Destinatário / Endereço - Código do IBGE \
                                   do município')
 
@@ -353,5 +353,5 @@ class InvoiceTransport(models.Model):
     placa_veiculo = fields.Char('Placa do Veiculo', size=7)
     estado_veiculo_id = fields.Many2one('res.country.state', 'UF da Placa')
     cidade_veiculo_id = fields.Many2one(
-        'l10n_br_base.city', 'Municipio',
+        'res.state.city', 'Municipio',
         domain="[('state_id', '=', estado_veiculo_id)]")

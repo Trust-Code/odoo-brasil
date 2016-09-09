@@ -22,7 +22,7 @@
 									<field name="carrier_name"/>
 									<field name="vehicle_plate"/>
 									<field name="vehicle_state_id"/>
-									<field name="vehicle_l10n_br_city_id"/>
+									<field name="vehicle_city_id"/>
 									<field name="amount_freight"/>
 									<field name="amount_insurance"/>
 									<field name="amount_costs"/>
@@ -82,7 +82,7 @@
 									<field name="carrier_name"/>
 									<field name="vehicle_plate"/>
 									<field name="vehicle_state_id"/>
-									<field name="vehicle_l10n_br_city_id"/>
+									<field name="vehicle_city_id"/>
 									<field name="amount_freight"/>
 									<field name="amount_insurance"/>
 									<field name="amount_costs"/>
