@@ -59,16 +59,18 @@
                                 <field name="dependent_age"/>
                                 <field name="dependent_type"/>
                                 <field name="pension_benefits"/>
-                                <field name="health_verification"/>
-                                <field name="dependent_verification"/>
+                                <field name="use_health_plan"/>
+                                <field name="is_dependent"/>
                             </tree>
                             <form>
-                                <field name="dependent_name" />
-                                <field name="dependent_age"/>
-                                <field name="dependent_type"/>
-                                <field name="pension_benefits"/>
-                                <field name="health_verification"/>
-                                <field name="dependent_verification"/>
+                                <group>
+                                    <field name="dependent_name" />
+                                    <field name="dependent_age"/>
+                                    <field name="dependent_type"/>
+                                    <field name="pension_benefits"/>
+                                    <field name="use_health_plan"/>
+                                    <field name="is_dependent"/>
+                                </group>
                             </form>
                         </field>
                     </form>

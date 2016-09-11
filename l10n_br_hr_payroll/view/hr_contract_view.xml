@@ -10,7 +10,7 @@
                 <field name='value_va'/>
                 <field name='value_vr'/>
                 <field name="transportation_voucher" />
-                <field name="health_insurance_father" />
+                <field name="health_insurance" />
                 <field name="health_insurance_dependent" />
                 <field name="workeddays" invisible='1' />
             </xpath>

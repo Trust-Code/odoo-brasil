@@ -18,17 +18,14 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     @api.multi
-    def _get_dependents(self):
-        for employee in self:
-            dep_env = self.env['hr.employee.dependent']
-            dep_ids = dep_env.search(
-                [('employee_id', '=', employee.id),
-                 ('dependent_verification', '=', True)])
-            if dep_ids:
-                employee.n_dependent = len(dep_ids)*179.71
-                # TODO Estranho multiplicar isto aqui
-            else:
-                employee.n_dependent = 0
+    @api.depends('dependent_ids')
+    def _number_dependents(self):
+        for item in self:
+            item.no_of_dependent = \
+                sum(1 if x.is_dependent else 0 for x in item.dependent_ids)
+            item.no_of_dependent_health_plan = \
+                sum(1 if x.use_health_plan else 0 for x in item.dependent_ids)
+
 
     @api.one
     @api.constrains('pis_pasep')
@@ -107,24 +104,10 @@ class HrEmployee(models.Model):
     mother_name = fields.Char('Nome da Mãe')
     validade = fields.Date('Validade')
     sindicate = fields.Char('Sindicato', help="Sigla do Sindicato")
-    n_dependent = fields.Float(string="Dependentes", compute=_get_dependents,
-                               type="float",
-                               digits_compute=dp.get_precision('Payroll'))
-
-
-    #TODO Remover se não necessário
-    def onchange_user(self):
-        res = super(HrEmployee, self).onchange_user(
-            cr, uid, ids, user_id, context)
-
-        obj_partner = self.pool.get('res.partner')
-        partner_id = obj_partner.search(
-            cr, uid, [('user_ids', '=', user_id)])[0]
-        partner = obj_partner.browse(cr, uid, partner_id)
-
-        res['value'].update({'address_home_id': partner.id,
-                             'cpf': partner.cnpj_cpf})
-        return res
+    no_of_dependent = fields.Integer('Número de dependentes',
+                                     compute=_number_dependents)
+    no_of_dependent_health_plan = fields.Integer('Número de dependentes',
+                                                 compute=_number_dependents)
 
 
 class HrEmployeeDependent(models.Model):
@@ -133,7 +116,7 @@ class HrEmployeeDependent(models.Model):
 
     @api.one
     @api.constrains('dependent_age')
-    def _check_birth(self, cr, uid, ids, context=None):
+    def _check_birth(self):
         dep_age = datetime.strptime(
             self.dependent_age, DEFAULT_SERVER_DATE_FORMAT)
         if dep_age.date() > datetime.now().date():
@@ -145,6 +128,7 @@ class HrEmployeeDependent(models.Model):
                                  translate=True)
     dependent_age = fields.Date('Data de nascimento', required=True)
     dependent_type = fields.Char('Tipo', required=True)
-    pension_benefits = fields.Float('Salário familia')
-    dependent_verification = fields.Boolean('É dependente', required=False)
-    health_verification = fields.Boolean('Plano de saúde?', required=False)
+    pension_benefits = fields.Float(
+        'Valor pensão', help="Valor a descontar de pensão alimenticia")
+    is_dependent = fields.Boolean('É dependente', required=False)
+    use_health_plan = fields.Boolean('Plano de saúde?', required=False)

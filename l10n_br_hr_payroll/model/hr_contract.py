@@ -42,7 +42,7 @@ class HrContract(models.Model):
             for employee in employee_ids:
                 for contract in employee.contract_ids:
                     INSS =(-482.93 if ((contract.wage) >= 4390.25) else -((contract.wage) * 0.11) if ((contract.wage) >= 2195.13) and ((contract.wage) <= 4390.24) else -((contract.wage) * 0.09) if ((contract.wage) >= 1317.08) and ((contract.wage) <= 2195.12) else -((contract.wage) * 0.08))
-                    lane = (contract.wage - employee.n_dependent + INSS)
+                    lane = (contract.wage - employee.no_of_dependent + INSS)
                     first_lane = (-(0.275*(lane) - 826.15))
                     l1 = Decimal(str(first_lane))
                     lane1 = l1.quantize(Decimal('1.10'), rounding=ROUND_DOWN)
@@ -100,14 +100,14 @@ class HrContract(models.Model):
                 raise ValidationError(
                     'A configuração da empresa não permite vale alimentação e refeição simultaneamente')
 
-    value_va = fields.Float('Valley Food', help='Daily Value Benefit')
-    value_vr = fields.Float('Meal valley', help='Daily Value Benefit')
+    value_va = fields.Float('Vale alimentação', help='Valor diário')
+    value_vr = fields.Float('Vale Refeição', help='Valor diário')
     workeddays = fields.Float(compute=_get_worked_days,
                               string="Dias trabalhados")
     transportation_voucher = fields.Float(
-        'Valley Transportation', help='Percentage of monthly deduction')
-    health_insurance_father = fields.Float(
-        'Employee Health Plan', help='Health Plan of the Employee')
+        'Vale Transporte', help='Valor diário')
+    health_insurance = fields.Float(
+        'Plano de saúde', help='Valor mensal do plano de saúde')
     health_insurance_dependent = fields.Float(
         'Dependent Health Plan', help='Health Plan for Spouse and Dependents')
     calc_date = fields.Boolean(compute=_check_date, string="Calcular data")

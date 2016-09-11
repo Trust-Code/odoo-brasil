@@ -12,7 +12,7 @@
     'version': '10.0.1.0.0',
     'depends': [
         'base',
-        'sales_team',
+        'sales_team',  #TODO Tentar remover esta dependencia
     ],
     'data': [
         'data/res.state.city.csv',
@@ -33,5 +33,5 @@
         'test/base_inscr_est_invalid.yml',
     ],
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
 }
