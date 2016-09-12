@@ -19,6 +19,7 @@
     ],
     'data': [
         'views/account_tax.xml',
+        'views/account_invoice.xml',
     ],
     'instalable': True,
     'application': True,

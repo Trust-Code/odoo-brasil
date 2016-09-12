@@ -127,8 +127,8 @@ class InvoiceEletronic(models.Model):
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'xNome': self.company_id.legal_name if
-            self.company_id.homologacao == 1 else
-            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
+            self.company_id.tipo_ambiente == 1 else
+            u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'xFant': self.company_id.name,
             'enderEmit': {
                 'xLgr': self.company_id.street,
@@ -223,6 +223,7 @@ class InvoiceEletronic(models.Model):
             'idLote': lote,
             'indSinc': 1,
             'estado': self.company_id.partner_id.state_id.ibge_code,
+            'ambiente': self.company_id.tipo_ambiente,
             'NFes': [{
                 'infNFe': nfe_values
             }]

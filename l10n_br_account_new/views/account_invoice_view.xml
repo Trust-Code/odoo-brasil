@@ -15,7 +15,7 @@
                     <field name="vendor_serie" attrs="{'invisible': [('issuer', '=', '0')], 'required': [('issuer', '=', '1')]}" />
                 </field>
                 <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
-					<attribute name="editable"/>
+					<attribute name="editable"></attribute>
 				</xpath>
 				<page name="other_info" position="before">
 					<page name="vencimentos" string="Vencimentos">

@@ -162,6 +162,15 @@
             </field>
         </record>
 
+        <record id="sped_base_eletronic_doc_search" model="ir.ui.view">
+            <field name="name">sped.eletronic.doc.search</field>
+            <field name="model">invoice.eletronic</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="invoice_id"/>
+                </search>
+            </field>
+        </record>
 
         <record id="action_sped_base_eletronic_doc" model="ir.actions.act_window">
             <field name="name">Documentos Eletrônicos</field>

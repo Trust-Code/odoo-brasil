@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-	<data>
-
-		<record id="view_l10n_br_account_einvoice_invoice_form" model="ir.ui.view">
-			<field name="name">l10n_br_account_einvoice_invoice_form</field>
-			<field name="model">account.invoice</field>
-			<field name="inherit_id" ref="account.invoice_form"/>
-			<field name="arch" type="xml">
-                <xpath expr="//sheet/label" position="before">
-                 	<div class="oe_button_box" name="button_box">
-                        <button name="%(action_sped_base_eletronic_doc)d" type="action" class="oe_stat_button" icon="fa-file-text-o">
-                            <field name="total_edocs" /> <span> E-Docs</span>                       
-                        </button>
-                    </div>
-				</xpath>
-            </field>
-        </record>
-    </data>
-</openerp>
+<odoo>
+    <record id="view_l10n_br_account_einvoice_invoice_form" model="ir.ui.view">
+        <field name="name">l10n_br_account_einvoice_invoice_form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/label" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="%(action_sped_base_eletronic_doc)d" type="action" class="oe_stat_button" icon="fa-file-text-o"
+                        context="{ 'search_default_invoice_id': id }">
+                        <field name="total_edocs" /> <span> E-Docs</span>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

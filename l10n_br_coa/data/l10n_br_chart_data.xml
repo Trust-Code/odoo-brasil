@@ -16,12 +16,6 @@
         <field name="cash_account_code_prefix">1.1.1.01</field>
         <field name="currency_id" ref="base.BRL"/>
         <field name="transfer_account_id" ref="transfer_account_id"/>
-        <field name="account_root_id" ref="id_0" />
-        <field name="bank_account_view_id" ref="id_1_1_1_02" />
-        <field name="property_account_receivable_id" ref="id_1_1_2_01_001" />
-        <field name="property_account_payable_id" ref="id_2_1_2_01_001" />
-        <field name="property_account_income_categ_id" ref="id_3_1_1_03_001" />
-        <field name="property_account_expense_categ_id" ref="id_5_1_1_01_001" />
     </record>
 
     <record id="transfer_account_id" model="account.account.template">

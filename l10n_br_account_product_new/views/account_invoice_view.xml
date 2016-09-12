@@ -137,6 +137,7 @@
 								<group>
 									<group>
 										<field name="product_id" />
+                                        <field name="product_type" invisible="1"/>
 										<label for="quantity"/>
 										<div>
 											<field name="quantity" class="oe_inline"/>
@@ -149,8 +150,6 @@
 										<field name="total_taxes"/>
 									</group>
 									<group>
-										<field name="product_type" attrs="{'readonly': [('product_id','!=', False)]}"/>
-										<field name="fci" attrs="{'readonly': [('product_id','!=', False)]}"/>
 										<field name="fiscal_position_id" required="1"/>
 										<field name="cfop_id"/>
 										<field domain="[('journal_id', '=', parent.journal_id), ('type', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
@@ -162,10 +161,11 @@
 								<label for="name"/>
 								<field name="name"/>
 							</page>
-							<page string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
-								<group string="Detalhes do ICMS">
+							<page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
+								<group name="detalhes_icms" string="Detalhes do ICMS">
 									<group>
 										<field name="icms_manual" invisible="True"/>
+                                        <field name="tax_icms_id" />
 										<field name="icms_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
 										<field name="icms_origin"/>
 										<field name="icms_base_type"/>
@@ -180,7 +180,7 @@
 										<field name="icms_value"/>
 									</group>
 								</group>
-								<group string="Substituição Tributária ICMS">
+								<group name="substituicao_icms" string="Substituição Tributária ICMS">
 									<group>
 										<field name="icms_st_base_type"/>
 										<field name="icms_st_base"/>
@@ -194,7 +194,7 @@
 									</group>
 								</group>
 							</page>
-							<page string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
+							<page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
 								<group>
 									<field name="tax_issqn_id" />
 									<field name="issqn_manual" invisible="True"/>
@@ -205,7 +205,7 @@
 									<field name="issqn_value"/>
 								</group>
 							</page>
-							<page string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
+							<page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
 								<group string="Detalhes do IPI">
 									<group>
 										<field name="tax_ipi_id" />
@@ -221,7 +221,7 @@
 									</group>
 								</group>
 							</page>
-							<page string="PIS">
+							<page name="pis" string="PIS">
 								<group string="Detalhes do PIS">
 									<group>
 										<field name="tax_pis_id" />
@@ -246,7 +246,7 @@
 									</group>
 								</group>
 							</page>
-							<page string="COFINS">
+							<page name="cofins" string="COFINS">
 								<group string="Detalhes do COFINS">
 									<group>
 										<field name="tax_cofins_id" />
@@ -271,7 +271,7 @@
 									</group>
 								</group>
 							</page>
-							<page string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
+							<page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
 								<group string="Detalhes do Imposto de Importação">
 									<field name="tax_ii_id" />
 									<field name="ii_base"/>
@@ -280,7 +280,7 @@
 									<field name="ii_value"/>
 								</group>
 							</page>
-							<page string="DI">
+							<page name="di" string="DI">
 								<group>
 								</group>
 							</page>

@@ -381,6 +381,7 @@ class AccountInvoiceLine(models.Model):
         digits=dp.get_precision('Account'))
     tax_icms_id = fields.Many2one('account.tax', string="ICMS",
                                   domain=[('domain', '=', 'icms')])
+
     icms_manual = fields.Boolean('ICMS Manual?', default=False)
     icms_origin = fields.Selection(PRODUCT_ORIGIN, 'Origem', default='0')
     icms_base_type = fields.Selection(
@@ -426,7 +427,7 @@ class AccountInvoiceLine(models.Model):
         'Base ICMS ST Outras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_cst = fields.Char('CST ICMS', size=10)
-    icms_percent_credit = fields.Float(u"%% Cŕedito ICMS")
+    icms_percent_credit = fields.Float(u"% Cŕedito ICMS")
     icms_value_credit = fields.Float(u"Valor de Crédito")
     origem = fields.Selection(
         [('0', '0 - Nacional'),
@@ -577,13 +578,11 @@ superior a 70%')],
         #    item.invoice_line_tax_ids = item.tax_icms_id | item.tax_pis_id | item.tax_cofins_id | item.tax_ipi_id
         return res
 
-
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
         if self.tax_icms_id:
             self.icms_percent = self.tax_icms_id.amount
-            self.icms_percent_reduction = self.tax_icms_id.base_reduction
-            self.icms_cst = self.tax_ipi_id.cst
+            self.icms_cst = self.tax_icms_id.cst
 
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
