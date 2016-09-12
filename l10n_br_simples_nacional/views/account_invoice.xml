@@ -10,6 +10,24 @@
             <page name="pis" position="replace"></page>
             <page name="cofins" position="replace"></page>
             <page name="ii" position="replace"></page>
+            <field name="icms_base_type" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="icms_base" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="icms_percent_reduction" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="icms_base_other" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="icms_percent" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="icms_value" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
         </field>
     </record>
 </odoo>

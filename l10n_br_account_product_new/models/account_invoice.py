@@ -129,7 +129,7 @@ class AccountInvoice(models.Model):
     #    'l10n_br_account_product.document.related', 'invoice_id',
     #    'Fiscal Document Related', readonly=True,
     #    states={'draft': [('readonly', False)]})
-    carrier_name = fields.Char('Nome Transportadora', size=32)
+    carrier_name = fields.Char('Transportadora', size=32)
     vehicle_plate = fields.Char('Placa do Veiculo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
     vehicle_city_id = fields.Many2one(
@@ -288,7 +288,6 @@ class AccountInvoice(models.Model):
                 })
         return res
 
-
     @api.multi
     def button_reset_taxes(self):
         result = super(AccountInvoice, self).button_reset_taxes()
@@ -415,13 +414,13 @@ class AccountInvoiceLine(models.Model):
         'Base ICMS ST', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_st_percent = fields.Float(
-        'Percentual ICMS ST', digits=dp.get_precision('Discount'),
+        '% ICMS ST', digits=dp.get_precision('Discount'),
         default=0.00)
     icms_st_percent_reduction = fields.Float(
-        'Perc Redução de Base ICMS ST',
+        '% Red. Base ST',
         digits=dp.get_precision('Discount'), default=0.00)
     icms_st_mva = fields.Float(
-        'MVA Ajustado ICMS ST',
+        'MVA Ajustado ST',
         digits=dp.get_precision('Discount'), default=0.00)
     icms_st_base_other = fields.Float(
         'Base ICMS ST Outras', required=True,

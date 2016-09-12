@@ -9,6 +9,9 @@ from odoo import api, fields, models
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
+    tax_icms_id = fields.Many2one('account.tax', string="ICMS",
+                                  domain=[('domain', '=', 'simples')])
+
     @api.onchange('tax_icms_id')
     def _simples_nacional_onchange_tax_icms_id(self):
         if self.tax_icms_id:

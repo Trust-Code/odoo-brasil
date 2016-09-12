@@ -4,9 +4,10 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
-from openerp.addons import decimal_precision as dp
-from openerp.addons.l10n_br_base.tools.misc import calc_price_ratio
+from odoo import models, fields, api
+from odoo.addons import decimal_precision as dp
+from odoo.addons.l10n_br_base.tools.misc import calc_price_ratio
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
@@ -168,20 +169,17 @@ class SaleOrderLine(models.Model):
         compute='_amount_line', string='Vlr. Bruto',
         digits=dp.get_precision('Sale Price'))
 
-    # TODO Verificar o nome do metodo correto, foi modificado na 10
-    #def _prepare_order_line_invoice_line(self, cr, uid, line,
-    #                                     account_id=False, context=None):
-    #    result = super(SaleOrderLine, self)._prepare_order_line_invoice_line(
-    #        cr, uid, line, account_id, context)
+    @api.multi
+    def _prepare_invoice_line(self, qty):
+        res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-    #    result['insurance_value'] = line.insurance_value
-    #    result['other_costs_value'] = line.other_costs_value
-    #    result['freight_value'] = line.freight_value
+        res['insurance_value'] = self.insurance_value
+        res['other_costs_value'] = self.other_costs_value
+        res['freight_value'] = self.freight_value
+        icms = self.tax_id.filtered(lambda x: x.domain == 'icms')
+        if len(icms) > 1:
+            raise UserError(
+                'Apenas um imposto com o domínio ICMS deve ser cadastrado')
+        res['tax_icms_id'] = icms and icms.id or False
 
-        # FIXME
-        # Necessário informar estes campos pois são related do
-        # objeto account.invoice e quando o método create do
-        # account.invoice.line é invocado os valores são None
-    #    result['company_id'] = line.order_id.company_id.id
-    #    result['partner_id'] = line.order_id.partner_id.id
-    #    return result
+        return res
