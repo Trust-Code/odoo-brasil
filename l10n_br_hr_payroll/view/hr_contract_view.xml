@@ -8,10 +8,14 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='wage']" position="after">
                 <field name='value_va'/>
+                <field name="percent_va" />
                 <field name='value_vr'/>
+                <field name="percent_vr" />
                 <field name="transportation_voucher" />
+                <field name="percent_transportation" />
                 <field name="health_insurance" />
                 <field name="health_insurance_dependent" />
+                <field name="ir_value" />
                 <field name="workeddays" invisible='1' />
             </xpath>
         </field>

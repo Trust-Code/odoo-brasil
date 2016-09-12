@@ -126,10 +126,12 @@ class InvoiceEletronic(models.Model):
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
-            'xNome': self.company_id.legal_name if
+            'xNome': self.company_id.name if
             self.company_id.tipo_ambiente == 1 else
-            u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-            'xFant': self.company_id.name,
+            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
+            'xFant': self.company_id.legal_name if
+            self.company_id.tipo_ambiente == 1 else
+            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,

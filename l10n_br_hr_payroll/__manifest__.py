@@ -34,6 +34,7 @@
     'data': [
              'data/l10n_br_hr_payroll_data.xml',
              'view/hr_contract_view.xml',
+             'view/hr_employee.xml'
              ],
     'installable': True,
     'application': True,

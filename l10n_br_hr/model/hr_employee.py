@@ -26,7 +26,6 @@ class HrEmployee(models.Model):
             item.no_of_dependent_health_plan = \
                 sum(1 if x.use_health_plan else 0 for x in item.dependent_ids)
 
-
     @api.one
     @api.constrains('pis_pasep')
     def _validate_pis_pasep(self):
@@ -129,6 +128,6 @@ class HrEmployeeDependent(models.Model):
     dependent_age = fields.Date('Data de nascimento', required=True)
     dependent_type = fields.Char('Tipo', required=True)
     pension_benefits = fields.Float(
-        'Valor pensão', help="Valor a descontar de pensão alimenticia")
+        '% Pensão', help="Percentual a descontar de pensão alimenticia")
     is_dependent = fields.Boolean('É dependente', required=False)
     use_health_plan = fields.Boolean('Plano de saúde?', required=False)
