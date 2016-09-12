@@ -44,6 +44,14 @@
             <field name="name">Valor da Pensão Alimentícia</field>
         </record>
 
+        <record id="hr_fgts_acumulado_register" model="hr.contribution.register">
+            <field name="name">Valor do FGTS Acumulado</field>
+        </record>
+
+        <record id="hr_desconto_falta_register" model="hr.contribution.register">
+            <field name="name">Falta Não Remunerada</field>
+        </record>
+
         <!-- Regras de Salário -->
 
         <record id="hr_salary_rule_inss" model="hr.salary.rule">
@@ -156,8 +164,7 @@ for dependent in employee.dependent_ids:
             <field name="condition_select">python</field>
             <field name="condition_python">result = (contract.transportation_voucher > 0.0)</field>
             <field name="amount_select">percentage</field>
-            <field name="amount_percentage_base">contract.wage</field>
-            <field name="amount_percentage" eval="-6.00"/>
+            <field name="amount_python_compute">result = (contract.transportation_voucher * workeddays.WORK100 * contract.percent_transportation / 100.0)</field>
             <field name="sequence" eval="105"/>
             <field name="register_id" ref="hr_vt_contribution_register"/>
             <field name="note"> Empregado terá um desconto de 6% do seu salário mediante ao Vale Transporte.</field>
@@ -167,11 +174,12 @@ for dependent in employee.dependent_ids:
 	        <field name="name">Vale Refeição</field>
 	        <field name="sequence">70</field>
 	        <field name="code">VR</field>
-	        <field name="category_id" ref="hr_payroll.COMP"/>
-          <field name="condition_select">python</field>
-          <field name="condition_python">result = (contract.value_vr > 0.0)</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = (contract.value_vr > 0.0)</field>
 	        <field name="amount_select">code</field>
-	        <field name="amount_python_compute">result = (contract.value_vr * contract.workeddays)</field>
+	        <field name="amount_python_compute">result = (contract.value_vr * workeddays.WORK100 * contract.percent_vr / 100.0)
+if result > contract.wage * 0.2: result = contract.wage * 0.2</field>
             <field name="register_id" ref="hr_vr_contribution_register"/>
 	        <field name="note">Vale Refeição</field>
     	</record>
@@ -184,9 +192,52 @@ for dependent in employee.dependent_ids:
             <field name="condition_select">python</field>
             <field name="condition_python">result = (contract.value_va > 0.0)</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = (contract.value_va * contract.workeddays)</field>
+            <field name="amount_python_compute">result = (contract.value_va * contract.workeddays * contract.percent_va / 100.0)
+if result > contract.wage * 0.2: result = contract.wage * 0.2</field>
             <field name="register_id" ref="hr_va_contribution_register"/>
             <field name="note">Vale Alimentação</field>
         </record>
+
+        <record id="hr_salary_rule_pension" model="hr.salary.rule">
+            <field name="name">Pensão Alimentícia</field>
+            <field name="sequence" eval="90"/>
+            <field name="code">PSAL</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = contract.employee_id.have_dependent</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = 0
+for dependent in contract.employee_id.dependent_ids:
+    result -= dependent.pension_benefits * categories.BASIC / 100.0</field>
+            <field name="register_id" ref="hr_psal_contribution_register"/>
+            <field name="note">Pensão Alimentícia</field>
+        </record>
+
+        <record id="hr_salary_accumulated_fgts" model="hr.salary.rule">
+            <field name="name">FGTS Acumulado</field>
+            <field name="sequence" eval="74"/>
+            <field name="code">AcumFGTS</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.accumulated_fgts</field>
+            <field name="register_id" ref="hr_fgts_acumulado_register"/>
+            <field name="note">FGTS Acumulado</field>
+        </record>
+
+        <record id="hr_salary_rule_falta" model="hr.salary.rule">
+            <field name="name">Faltas Não Remuneradas</field>
+            <field name="sequence" eval="68"/>
+            <field name="code">FNR</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = 1</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = 0
+for day in worked_days.Unpaid:
+    result -= 2 * categories.BASIC / 30</field>
+            <field name="register_id" ref="hr_desconto_falta_register"/>
+            <field name="note">Faltas Não Remuneradas</field>
+        </record>
+
     </data>
 </openerp>
