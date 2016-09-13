@@ -39,8 +39,8 @@
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -51,8 +51,8 @@
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -61,8 +61,8 @@
         <field name="name">ICMS Saida Subist</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
-        <field eval="0" name="price_include"/>
-        <field eval="0" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -73,8 +73,8 @@
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -84,8 +84,8 @@
         <field name="amount">12</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -95,8 +95,8 @@
         <field name="amount">19</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
 
     </record>
@@ -107,8 +107,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -119,8 +119,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <<field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -129,8 +129,8 @@
         <field name="name">ICMS Entrada Subist</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">purchase</field>
-        <field eval="0" name="price_include"/>
-        <field eval="0" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -141,8 +141,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -153,8 +153,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -165,20 +165,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_pis" model="account.tax.template">
-        <field name="description">PIS</field>
-        <field name="name">PIS Saida</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">sale</field>
-        <field ref="id_2_1_4_03_001" name="account_id"/>
-        <field ref="id_1_1_5_01_005" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -189,20 +177,8 @@
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_001" name="account_id"/>
         <field ref="id_1_1_5_01_005" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_in_pis" model="account.tax.template">
-        <field name="description">PIS</field>
-        <field name="name">PIS Entrada</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">purchase</field>
-        <field ref="id_1_1_5_01_005" name="account_id"/>
-        <field ref="id_2_1_4_03_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -213,20 +189,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_005" name="account_id"/>
         <field ref="id_2_1_4_03_001" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_cofins" model="account.tax.template">
-        <field name="description">COFINS</field>
-        <field name="name">COFINS Saida</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">sale</field>
-        <field ref="id_2_1_4_03_002" name="account_id"/>
-        <field ref="id_1_1_5_01_002" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -237,20 +201,8 @@
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_002" name="account_id"/>
         <field ref="id_1_1_5_01_002" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_in_cofins" model="account.tax.template">
-        <field name="description">COFINS</field>
-        <field name="name">COFINS Entrada</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">purchase</field>
-        <field ref="id_1_1_5_01_002" name="account_id"/>
-        <field ref="id_2_1_4_03_002" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -261,8 +213,8 @@
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_002" name="account_id"/>
         <field ref="id_2_1_4_03_002" name="refund_account_id"/>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -271,8 +223,8 @@
         <field name="name">IRPJ</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -281,8 +233,8 @@
         <field name="name">ISSQN Entrada 2%</field>
         <field name="amount">2</field>
         <field name="type_tax_use">purchase</field>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -291,18 +243,8 @@
         <field name="name">ISSQN Saida 3%</field>
         <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_csll" model="account.tax.template">
-        <field name="description">CSLL</field>
-        <field name="name">CSLL</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">sale</field>
-        <field eval="0" name="price_include"/>
-        <field eval="1" name="tax_discount"/>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 

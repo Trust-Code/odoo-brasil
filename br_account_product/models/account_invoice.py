@@ -73,15 +73,6 @@ class AccountInvoice(models.Model):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.fiscal_document_for_product_id
 
-    @api.one
-    @api.depends('invoice_line_ids.cfop_id')
-    def _compute_cfops(self):
-        lines = self.env['l10n_br_account_product.cfop']
-        for line in self.invoice_line_ids:
-            if line.cfop_id:
-                lines |= line.cfop_id
-        self.cfop_ids = (lines).sorted()
-
     date_hour_invoice = fields.Datetime(
         u'Data e hora de emissão', readonly=True,
         states={'draft': [('readonly', False)]},
@@ -122,9 +113,6 @@ class AccountInvoice(models.Model):
          ('4', u'Devolução de Mercadoria')],
         'Finalidade da Emissão', readonly=True,
         states={'draft': [('readonly', False)]}, default='1')
-    cfop_ids = fields.Many2many(
-        'l10n_br_account_product.cfop', string='CFOP',
-        copy=False, compute='_compute_cfops')
     # fiscal_document_related_ids = fields.One2many(
     #    'l10n_br_account_product.document.related', 'invoice_id',
     #    'Fiscal Document Related', readonly=True,

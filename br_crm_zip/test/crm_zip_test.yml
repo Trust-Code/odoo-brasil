@@ -30,7 +30,7 @@
     self.zip = ''
     self.state_id = ref('base.state_br_sc')
     self.city_id = ref('br_base.city_4205407')
-    self.street = 'donici'
+    self.street = 'Don'
     assert self.zip_search(), 'Zip search does not return true'
     assert self.zip == '88032-050', 'Zip code is wrong'
 -
