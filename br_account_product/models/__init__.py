@@ -4,6 +4,6 @@
 
 from . import product
 from . import account_invoice
-from . import l10n_br_account_product
+from . import br_account_product
 from . import account
 from . import res_company

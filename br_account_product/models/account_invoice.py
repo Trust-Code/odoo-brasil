@@ -105,7 +105,7 @@ class AccountInvoice(models.Model):
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
     fiscal_document_id = fields.Many2one(
-        'l10n_br_account.fiscal.document', 'Documento', readonly=True,
+        'br_account.fiscal.document', 'Documento', readonly=True,
         states={'draft': [('readonly', False)]},
         default=_default_fiscal_document)
     fiscal_document_electronic = fields.Boolean(

@@ -18,24 +18,24 @@
 ###############################################################################
 
 {
-    'name': 'Brazilian Localisation Data Extension for Product',
+    'name': 'Odoo Brasil - Dados Account Product',
     'description': 'Brazilian Localisation Data Extension for Product',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
-    'version': '7.0',
+    'version': '10.0.1.0.0',
     'depends': [
-        'l10n_br_account_product_new',
+        'br_account_product',
         'l10n_br_data_account',
     ],
     'data': [
-        # 'account.product.fiscal.classification.template.csv',
-        # 'l10n_br_data_account_product_data.xml',
-        #'account_fiscal_position_rule_data.xml',
+        'data/br_account_product.xml',
     ],
     'demo': [
         'l10n_br_data_account_product_demo.xml',
     ],
+    'post_init_hook': 'post_init',
     'category': 'Localisation',
     'auto_install': True,
+
 }

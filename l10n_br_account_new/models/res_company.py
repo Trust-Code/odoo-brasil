@@ -19,7 +19,7 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     fiscal_document_id = fields.Many2one(
-        'l10n_br_account.fiscal.document',
+        'br_account.fiscal.document',
         'Documento Fiscal')
     document_serie_id = fields.Many2one(
         'l10n_br_account.document.serie', u'Série Fiscal',

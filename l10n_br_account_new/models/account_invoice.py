@@ -22,8 +22,8 @@ class AccountInvoice(models.Model):
 
     @api.model
     def _default_fiscal_document(self):
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.service_invoice_id
+        # company = self.env['res.company'].browse(self.env.user.company_id.id)
+        return False
 
     @api.model
     def _default_fiscal_document_serie(self):
@@ -56,7 +56,7 @@ class AccountInvoice(models.Model):
         states={'draft': [('readonly', False)]},
         default=_default_fiscal_document_serie)
     fiscal_document_id = fields.Many2one(
-        'l10n_br_account.fiscal.document', string='Documento', readonly=True,
+        'br_account.fiscal.document', string='Documento', readonly=True,
         states={'draft': [('readonly', False)]},
         default=_default_fiscal_document)
     fiscal_document_electronic = fields.Boolean(

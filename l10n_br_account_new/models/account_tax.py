@@ -8,7 +8,7 @@ from odoo import fields, models
 
 class AccountTax(models.Model):
     _inherit = 'account.tax'
-    
+
     cst = fields.Char(string="CST", size=4)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('pis', 'PIS'),

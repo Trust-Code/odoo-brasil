@@ -35,7 +35,7 @@ class L10nBrAccountServiceType(models.Model):
 
 
 class L10nBrAccountFiscalDocument(models.Model):
-    _name = 'l10n_br_account.fiscal.document'
+    _name = 'br_account.fiscal.document'
     _description = 'Tipo de Documento Fiscal'
 
     code = fields.Char(u'Codigo', size=8, required=True)
@@ -53,7 +53,7 @@ class L10nBrAccountDocumentSerie(models.Model):
     fiscal_type = fields.Selection([('service', u'Serviço'),
                                     ('product', 'Produto')], 'Tipo Fiscal',
                                    default='service')
-    fiscal_document_id = fields.Many2one('l10n_br_account.fiscal.document',
+    fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          'Documento Fiscal', required=True)
     company_id = fields.Many2one('res.company', 'Empresa',
                                  required=True)

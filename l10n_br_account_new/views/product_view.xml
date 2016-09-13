@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-	<data>
+<odoo>
 
-        <record id="l10n_br_account_product_template_form_view" model="ir.ui.view">
-			<field name="name">l10n_br_account_product_template_form_view</field>
-			<field name="model">product.template</field>
-			<field name="inherit_id" ref="account.product_template_form_view"/>
-			<field name="arch" type="xml">
-                <group name="accounting" position="inside">
+    <record id="l10n_br_account_product_template_form_view" model="ir.ui.view">
+        <field name="name">l10n_br_account_product_template_form_view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <group name="accounting" position="inside">
+                <group>
                     <field name="fiscal_type" />
+                    <field name="origin" attrs="{'required': [('fiscal_type', '=', 'product')]}" />
+                    <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')]}" />
+                    <field name="service_type_id" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('type', '!=', 'service'), ('fiscal_type', '=', 'product')]}" domain="[('internal_type', '=', 'normal')]"/>
                 </group>
-            </field>
-        </record>
-    </data>
-</openerp>
+            </group>
+        </field>
+    </record>
+
+</odoo>

@@ -27,22 +27,22 @@ class ResCompany(models.Model):
         domain="[('company_id', '=', active_id),('active','=',True),"
         "('fiscal_type','=','product')]")
     product_tax_definition_line = fields.One2many(
-        'l10n_br_tax.definition.company.product',
+        'br_tax.definition.company.product',
         'company_id', 'Taxes Definitions')
     product_tax_ids = fields.Many2many(
         'account.tax', string='Product Taxes', compute='_compute_taxes',
         store=True)
     fiscal_document_for_product_id = fields.Many2one(
-        'l10n_br_account.fiscal.document', "Documento Fiscal para produto")
+        'br_account.fiscal.document', "Documento Fiscal para produto")
 
 
-class L10nBrTaxDefinitionCompanyProduct(L10nBrTaxDefinition, models.Model):
-    _name = 'l10n_br_tax.definition.company.product'
+class BrTaxDefinitionCompanyProduct(L10nBrTaxDefinition, models.Model):
+    _name = 'br_tax.definition.company.product'
 
     company_id = fields.Many2one('res.company', 'Empresa')
 
     _sql_constraints = [
-        ('l10n_br_tax_definition_tax_id_uniq',
+        ('br_tax_definition_tax_id_uniq',
          'unique (tax_id, company_id)',
          u'Imposto já existente nesta empresa!')
     ]

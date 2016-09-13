@@ -1,4 +1,4 @@
-"id","name","description","type","parent_id:id"
+"id","code","name","type","parent_id:id"
 "ncm_1","1","Capítulo 1 – Animais Vivos","view",
 "ncm_0101","01.01","Cavalos, asininos e muares, vivos.","view",
 "ncm_01012","0101.2","Cavalos:","view","ncm_0101"
@@ -2270,7 +2270,7 @@ alcoólico em volume superior a 54% e inferior a 70%, obtido de cevada maltada",
 "ncm_27149000","2714.90.00","Outros","normal",
 "ncm_27150000","2715.00.00","Misturas betuminosas à base de asfalto ou de betume naturais, de betume de petróleo, de alcatrão mineral ou de breu de alcatrão mineral (por exemplo, mástiques betuminosos e cut-backs).","normal",
 "ncm_27160000","2716.00.00","Energia elétrica.","normal",
-"ncm_28","28","Capítulo 28 - Produtos químicos inorgânicos; compostos inorgânicos ou orgânicos de metais preciosos, 
+"ncm_28","28","Capítulo 28 - Produtos químicos inorgânicos; compostos inorgânicos ou orgânicos de metais preciosos,
 de elementos radioativos, de metais das terras raras ou de isótopos","view",
 "ncm_2801","28.01","Flúor, cloro, bromo e iodo.","view",
 "ncm_28011000","2801.10.00","Cloro","normal",

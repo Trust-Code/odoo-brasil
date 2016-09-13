@@ -23,6 +23,7 @@
         'views/product_view.xml',
         'views/res_company_view.xml',
         'views/account_tax.xml',
+        'views/product_fiscal_classification.xml',
         'security/ir.model.access.csv',
     ],
 }

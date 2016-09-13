@@ -7,13 +7,23 @@
 from openerp import fields, models
 
 
-class AccountFiscalPosition(models.Model):
-    _inherit = 'account.fiscal.position'
+class AccountFiscalPositionTemplate(models.Model):
+    _inherit = 'account.fiscal.position.template'
 
     fiscal_category_fiscal_type = fields.Selection(
         [('service', u'Serviço'), ('product', 'Produto')],
         string='Fiscal Type')
     type = fields.Selection(
         [('input', 'Entrada'), ('output', 'Saida')], 'Tipo')
-    inv_copy_note = fields.Boolean('Copiar Observação na Nota Fiscal')
-    note = fields.Text('Observações')
+
+
+class AccountFiscalPosition(models.Model):
+    _inherit = 'account.fiscal.position'
+
+    note = fields.Text('Observações')  # TODO Fazer este campo gerar mensagens dinamicas
+
+
+class AccountFiscalPositionTax(models.Model):
+    _inherit = 'account.fiscal.position.tax'
+
+    state_ids = fields.Many2many('res.country.state', string="Estados")

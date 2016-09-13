@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-	<data>
+<odoo>
 
-        <record id="view_tax_form" model="ir.ui.view">
-			<field name="name">view.tax.form</field>
-			<field name="model">account.tax</field>
-			<field name="inherit_id" ref="account.view_tax_form"/>
-			<field name="arch" type="xml">
-                <field name="name" position="after">
-                    <field name="domain" />
-                </field>
-                <field name="type_tax_use" position="after">
-                    <field name="cst" />
-                </field>
-			</field>
-		</record>
+    <record id="view_tax_form" model="ir.ui.view">
+        <field name="name">view.tax.form</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="domain" />
+            </field>
+            <field name="type_tax_use" position="after">
+                <field name="cst" />
+            </field>
+        </field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

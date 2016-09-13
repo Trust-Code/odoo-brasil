@@ -8,7 +8,7 @@ from openerp import models, fields, api
 
 class L10nbrAccountCFOP(models.Model):
     """CFOP - Código Fiscal de Operações e Prestações"""
-    _name = 'l10n_br_account_product.cfop'
+    _name = 'br_account_product.cfop'
     _description = 'CFOP'
 
     code = fields.Char(u'Código', size=4, required=True)
@@ -18,9 +18,9 @@ class L10nbrAccountCFOP(models.Model):
     type = fields.Selection([('input', u'Entrada'), ('output', 'Saída')],
                             'Tipo', required=True)
     parent_id = fields.Many2one(
-        'l10n_br_account_product.cfop', 'CFOP Pai')
+        'br_account_product.cfop', 'CFOP Pai')
     child_ids = fields.One2many(
-        'l10n_br_account_product.cfop', 'parent_id', 'CFOP Filhos')
+        'br_account_product.cfop', 'parent_id', 'CFOP Filhos')
     internal_type = fields.Selection(
         [('view', u'Visualização'), ('normal', 'Normal')],
         'Tipo Interno', required=True, default='normal')
@@ -32,7 +32,7 @@ class L10nbrAccountCFOP(models.Model):
         help=u'Identificador de local de destino da operação.')
 
     _sql_constraints = [
-        ('l10n_br_account_cfop_code_uniq', 'unique (code)',
+        ('br_account_cfop_code_uniq', 'unique (code)',
             u'Já existe um CFOP com esse código !')
     ]
 

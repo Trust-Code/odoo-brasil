@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="l10n_br_account_product_invoice_form" model="ir.ui.view">
-        <field name="name">l10n_br_account_product.invoice.form</field>
+    <record id="br_account_product_invoice_form" model="ir.ui.view">
+        <field name="name">br_account_product.invoice.form</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
@@ -56,8 +56,8 @@
     </record>
 
     <!-- Vendor view -->
-    <record id="l10n_br_account_product_invoice_supplier_form" model="ir.ui.view">
-        <field name="name">l10n_br_account.invoice.supplier.form</field>
+    <record id="br_account_product_invoice_supplier_form" model="ir.ui.view">
+        <field name="name">br_account.invoice.supplier.form</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_supplier_form" />
         <field name="arch" type="xml">
@@ -106,8 +106,8 @@
     </record>
 
     <!-- Invoice Line views -->
-    <record model="ir.ui.view" id="l10n_br_account_product_invoice_line_tree">
-        <field name="name">l10n_br_account_product.invoice.line.tree</field>
+    <record model="ir.ui.view" id="br_account_product_invoice_line_tree">
+        <field name="name">br_account_product.invoice.line.tree</field>
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="account.view_invoice_line_tree" />
         <field name="priority">26</field>
@@ -118,8 +118,8 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="view_l10n_br_account_invoice_line_form">
-        <field name="name">l10n_br_account.invoice.line.form</field>
+    <record model="ir.ui.view" id="view_br_account_invoice_line_form">
+        <field name="name">br_account.invoice.line.form</field>
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="account.view_invoice_line_form" />
         <field name="priority">36</field>
