@@ -15,6 +15,7 @@
         'sale', 'l10n_br_account_new',
     ],
     'data': [
+        'views/br_base.xml',
         'views/sale_view.xml',
         'views/res_config_view.xml',
         'views/res_company_view.xml',

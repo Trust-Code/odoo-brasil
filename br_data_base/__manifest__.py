@@ -9,16 +9,16 @@
     'author': 'Akretion, OpenERP Brasil',
     'version': '10.0.1.0.0',
     'depends': [
-        'l10n_br_base',
+        'br_base',
     ],
     'data': [
         'data/res.bank.csv',
         'data/res.country.csv',
         'data/res.country.state.csv',
-        'data/l10n_br_base_data.xml',
+        'data/br_base_data.xml',
     ],
     'demo': [
-        'data/l10n_br_base_demo.xml',
+        'data/br_base_demo.xml',
     ],
     'category': 'Localisation',
     'installable': True,

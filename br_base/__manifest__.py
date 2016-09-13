@@ -12,7 +12,6 @@
     'version': '10.0.1.0.0',
     'depends': [
         'base',
-        'sales_team',  #TODO Tentar remover esta dependencia
     ],
     'data': [
         'views/br_base.xml',

@@ -6,8 +6,14 @@
 
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
-from odoo.addons.l10n_br_base.tools.misc import calc_price_ratio
 from odoo.exceptions import UserError
+
+
+def calc_price_ratio(preco_bruto, quantidade, total):
+    if total:
+        return preco_bruto * quantidade / total
+    else:
+        return 0.0
 
 
 class SaleOrder(models.Model):

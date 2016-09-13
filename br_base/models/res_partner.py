@@ -11,7 +11,7 @@ import re
 import base64
 
 from odoo import models, fields, api, _
-from odoo.addons.l10n_br_base.tools import fiscal
+from odoo.addons.br_base.tools import fiscal
 from odoo.exceptions import UserError
 from pytrustnfe.nfe import consulta_cadastro
 from pytrustnfe.certificado import Certificado

@@ -5,7 +5,7 @@
 
 import re
 from odoo import models, fields, api, _
-from odoo.addons.l10n_br_base.tools import fiscal
+from odoo.addons.br_base.tools import fiscal
 from odoo.exceptions import UserError
 
 

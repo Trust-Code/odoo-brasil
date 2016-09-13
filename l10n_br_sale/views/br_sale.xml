@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_action_br_base_city_form" name="Municípios"
+        parent="sales_team.menu_localisation" action="br_base.action_br_base_city_form"/>
+
+</odoo>
