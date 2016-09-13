@@ -77,6 +77,8 @@ id_2_1_3_01_002,2.1.3.01.002,Autonomos a pagar,id_2_1_3_01,FALSE,other,account.d
 id_2_1_3_01_003,2.1.3.01.003,Rescisao a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
 id_2_1_3_01_004,2.1.3.01.004,Ferias a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
 id_2_1_3_01_005,2.1.3.01.005,13o Salario a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_006,2.1.3.01.006,FGTS a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_007,2.1.3.01.007,Pensao Alimenticia a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
 id_2_1_3_02,2.1.3.02,Provisao de Ferias e 13o Salarios,id_2_1_3,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
 id_2_1_3_02_001,2.1.3.02.001,Ferias a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
 id_2_1_3_02_002,2.1.3.02.002,INSS sobre Ferias a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
@@ -179,9 +181,10 @@ id_4_1_1_02_003,4.1.1.02.003,Contribuicoes Sindicais e Confederativas,id_4_1_1_0
 id_4_1_1_03,4.1.1.03,Beneficios ,id_4_1_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
 id_4_1_1_03_001,4.1.1.03.001,Vale Transportes,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
 id_4_1_1_03_002,4.1.1.03.002,Vale Alimentacao ,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
-id_4_1_1_03_003,4.1.1.03.003,Cursos e Treinamentos,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
-id_4_1_1_03_003,4.1.1.03.003,Seguro de Vida e Saude,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
-id_4_1_1_03_004,4.1.1.03.004,Assistencia  Medica,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_003,4.1.1.03.003,Vale Refeicao ,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_004,4.1.1.03.004,Cursos e Treinamentos,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_005,4.1.1.03.005,Seguro de Vida e Saude,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_006,4.1.1.03.006,Assistencia  Medica,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
 id_4_1_1_03_007,4.1.1.03.007,Uniformes,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
 id_4_1_1_03_008,4.1.1.03.008,Previdencia Privada,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
 id_4_1_1_04,4.1.1.04,Remuneracao Diretoria,id_4_1_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
