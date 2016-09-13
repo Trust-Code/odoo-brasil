@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+        <!-- SALARY RULE CATEGORIES -->
+
+        <record id="hr_payroll.COMP" model="hr.salary.rule.category">
+            <field name="name">Contribuição da Companhia</field>
+        </record>
+
+        <record id="hr_payroll.NET" model="hr.salary.rule.category">
+            <field name="name">Líquido</field>
+            <field name="code">LIQ</field>
+        </record>
+
+        <record id="hr_payroll.DED" model="hr.salary.rule.category">
+            <field name="name">Dedução</field>
+        </record>
+
+        <record id="hr_payroll.GROSS" model="hr.salary.rule.category">
+            <field name="name">Bruto</field>
+            <field name="code">BRUT</field>
+        </record>
+
+        <record id="hr_payroll.ALW" model="hr.salary.rule.category">
+            <field name="name">Benefício</field>
+            <field name="code">BEN</field>
+        </record>
+
+        <record id="hr_payroll.BASIC" model="hr.salary.rule.category">
+            <field name="name">Base</field>
+            <field name="code">BASE</field>
+        </record>
+
+        <!-- SALARY RULES -->
+
+        <record id="hr_payroll.hr_rule_basic" model="hr.salary.rule">
+            <field name="name">Base</field>
+            <field name="code">BASE</field>
+        </record>
+
+        <record id="hr_payroll.hr_rule_taxable" model="hr.salary.rule">
+            <field name="name">Bruto</field>
+            <field name="code">BRUT</field>
+            <field name="amount_python_compute">result = categories.BASE + categories.BEN</field>
+        </record>
+
+        <record id="hr_payroll.hr_rule_net" model="hr.salary.rule">
+            <field name="name">Líquido</field>
+            <field name="code">LIQ</field>
+            <field name="amount_python_compute">result = categories.BASE + categories.BEN + categories.DED</field>
+        </record>
+
         <!-- Registros de Contribuição -->
 
         <record id="hr_csd_contribution_register" model="hr.contribution.register">
@@ -57,7 +107,7 @@
             <field name="name">INSS</field>
             <field name="category_id" ref="hr_payroll.DED"/>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">base = (categories.BASIC + categories.ALW)
+            <field name="amount_python_compute">base = (categories.BASE + categories.BEN)
 result = 570.88
 if base &lt; 1556.95:
     result = base * 0.08
@@ -77,12 +127,12 @@ result *= -1
             <field name="name">Imposto de Renda</field>
             <field name="category_id" ref="hr_payroll.DED"/>
             <field name="condition_select">python</field>
-            <field name="condition_python">base = (categories.BASIC + categories.ALW + INSS)
+            <field name="condition_python">base = (categories.BASE + categories.BEN + INSS)
 base -= employee.no_of_dependent * 189.59
 result = (base &gt; 1903.98)
             </field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">base = (categories.BASIC + categories.ALW + INSS)
+            <field name="amount_python_compute">base = (categories.BASE + categories.BEN + INSS)
 base -= employee.no_of_dependent * 189.59
 if base &gt; 1903.98 and base &lt; 2822.66:
     result = (base * 0.075) - 142.80
@@ -106,7 +156,7 @@ result *= -1
             <field name="name">FGTS</field>
             <field name="category_id" ref="hr_payroll.COMP"/>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = (categories.BASIC + categories.ALW) * 0.08</field>
+            <field name="amount_python_compute">result = (categories.BASE + categories.BEN) * 0.08</field>
             <field name="sequence" eval="103"/>
             <field name="register_id" ref="hr_fgts_contribution_register"/>
             <field name="note">Empregado terá desconto de 8% de FGTS</field>
@@ -206,7 +256,7 @@ if result > contract.wage * 0.2: result = contract.wage * 0.2</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = 0
 for dependent in contract.employee_id.dependent_ids:
-    result -= dependent.pension_benefits * categories.BASIC / 100.0</field>
+    result -= dependent.pension_benefits * categories.BASE / 100.0</field>
             <field name="register_id" ref="hr_psal_contribution_register"/>
             <field name="note">Pensão Alimentícia</field>
         </record>
@@ -230,9 +280,9 @@ for dependent in contract.employee_id.dependent_ids:
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = 0
 for day in worked_days.Unpaid:
-    result -= categories.BASIC / 30
+    result -= categories.BASE / 30
 for day in worked_days.DSR:
-    result -= categories.BASIC / 30</field>
+    result -= categories.BASE / 30</field>
             <field name="register_id" ref="hr_desconto_falta_register"/>
             <field name="note">Faltas Não Remuneradas</field>
         </record>
