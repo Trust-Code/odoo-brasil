@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-
+<odoo>
         <!-- Registros de Contribuição -->
 
         <record id="hr_csd_contribution_register" model="hr.contribution.register">
@@ -239,5 +237,5 @@ for day in worked_days.Unpaid:
             <field name="note">Faltas Não Remuneradas</field>
         </record>
 
-    </data>
-</openerp>
+
+</odoo>

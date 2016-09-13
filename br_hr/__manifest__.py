@@ -15,9 +15,9 @@
     'version': '10.0.1.0.0',
     'depends': ['hr', 'br_base'],
     'data': [
-        'data/l10n_br_hr.cbo.csv',
+        'data/br_hr.cbo.csv',
         'security/ir.model.access.csv',
-        'view/l10n_br_hr_cbo_view.xml',
+        'view/br_hr_cbo_view.xml',
         'view/hr_employee_view.xml',
         'view/hr_job_view.xml',
     ],

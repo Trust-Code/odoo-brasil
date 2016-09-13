@@ -30,9 +30,9 @@
     'maintainer': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
     'version': '10.0.1.0.0',
-    'depends': ['hr_payroll', 'hr_contract', 'l10n_br_hr'],
+    'depends': ['hr_payroll', 'hr_contract', 'br_hr'],
     'data': [
-             'data/l10n_br_hr_payroll_data.xml',
+             'data/br_hr_payroll_data.xml',
              'view/hr_contract_view.xml',
              'view/hr_employee.xml'
              ],

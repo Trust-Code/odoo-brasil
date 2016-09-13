@@ -10,7 +10,6 @@ from datetime import datetime
 
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-import odoo.addons.decimal_precision as dp
 from odoo.exceptions import ValidationError
 
 

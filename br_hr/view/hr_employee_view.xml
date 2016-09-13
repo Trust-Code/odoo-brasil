@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <odoo>
-    <record model="ir.ui.view" id="view_l10n_br_hr_employee_form">
-        <field name="name">l10n_br_hr_employee.form</field>
+    <record model="ir.ui.view" id="view_br_hr_employee_form">
+        <field name="name">br_hr_employee.form</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form" />
         <field name="type">form</field>

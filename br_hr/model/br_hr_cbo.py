@@ -7,8 +7,8 @@
 from odoo import fields, models
 
 
-class L10nBrHrCbo(models.Model):
-    _name = "l10n_br_hr.cbo"
+class BrHrCbo(models.Model):
+    _name = "br_hr.cbo"
     _description = "Brazilian Classification of Occupation"
 
     code = fields.Integer(string='Code', required=True)

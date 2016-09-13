@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record model="ir.ui.view" id="view_l10n_br_zip_tree">
+    <record model="ir.ui.view" id="view_br_zip_tree">
         <field name="name">br.zip</field>
         <field name="model">br.zip</field>
         <field name="arch" type="xml">
@@ -13,7 +13,7 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="view_l10n_br_zip_form">
+    <record model="ir.ui.view" id="view_br_zip_form">
         <field name="name">br.zip</field>
         <field name="model">br.zip</field>
         <field name="arch" type="xml">
@@ -32,7 +32,7 @@
     </record>
 
 
-    <record model="ir.actions.act_window" id="action_l10n_br_zip">
+    <record model="ir.actions.act_window" id="action_br_zip">
         <field name="name">CEPs</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">br.zip</field>

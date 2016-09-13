@@ -4,7 +4,7 @@
 # @author Matheus Lima Felix <matheus.felix@kmee.com.br>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from . import l10n_br_hr_cbo
+from . import br_hr_cbo
 from . import hr_employee
 from . import hr_job
 from . import res_company
