@@ -161,8 +161,8 @@ for dependent in employee.dependent_ids:
             <field name="category_id" ref="hr_payroll.DED"/>
             <field name="condition_select">python</field>
             <field name="condition_python">result = (contract.transportation_voucher > 0.0)</field>
-            <field name="amount_select">percentage</field>
-            <field name="amount_python_compute">result = (contract.transportation_voucher * workeddays.WORK100 * contract.percent_transportation / 100.0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (contract.transportation_voucher * worked_days.WORK100.number_of_days * contract.percent_transportation / 100.0)</field>
             <field name="sequence" eval="105"/>
             <field name="register_id" ref="hr_vt_contribution_register"/>
             <field name="note"> Empregado terá um desconto de 6% do seu salário mediante ao Vale Transporte.</field>
@@ -176,7 +176,7 @@ for dependent in employee.dependent_ids:
             <field name="condition_select">python</field>
             <field name="condition_python">result = (contract.value_vr > 0.0)</field>
 	        <field name="amount_select">code</field>
-	        <field name="amount_python_compute">result = (contract.value_vr * workeddays.WORK100 * contract.percent_vr / 100.0)
+	        <field name="amount_python_compute">result = (contract.value_vr * worked_days.WORK100.number_of_days * contract.percent_vr / 100.0)
 if result > contract.wage * 0.2: result = contract.wage * 0.2</field>
             <field name="register_id" ref="hr_vr_contribution_register"/>
 	        <field name="note">Vale Refeição</field>
@@ -190,7 +190,7 @@ if result > contract.wage * 0.2: result = contract.wage * 0.2</field>
             <field name="condition_select">python</field>
             <field name="condition_python">result = (contract.value_va > 0.0)</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = (contract.value_va * contract.workeddays * contract.percent_va / 100.0)
+            <field name="amount_python_compute">result = (contract.value_va * worked_days.WORK100.number_of_days * contract.percent_va / 100.0)
 if result > contract.wage * 0.2: result = contract.wage * 0.2</field>
             <field name="register_id" ref="hr_va_contribution_register"/>
             <field name="note">Vale Alimentação</field>
@@ -227,12 +227,12 @@ for dependent in contract.employee_id.dependent_ids:
             <field name="sequence" eval="68"/>
             <field name="code">FNR</field>
             <field name="category_id" ref="hr_payroll.COMP"/>
-            <field name="condition_select">python</field>
-            <field name="condition_python">result = 1</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = 0
 for day in worked_days.Unpaid:
-    result -= 2 * categories.BASIC / 30</field>
+    result -= categories.BASIC / 30
+for day in worked_days.DSR:
+    result -= categories.BASIC / 30</field>
             <field name="register_id" ref="hr_desconto_falta_register"/>
             <field name="note">Faltas Não Remuneradas</field>
         </record>

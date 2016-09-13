@@ -21,7 +21,8 @@ class HrEmployee(models.Model):
                    INNER JOIN hr_payslip b on a.slip_id = b.id
                    WHERE a.code='FGTS' AND b.credit_note=true""")
             fgts_negativo = self.env.cr.fetchone()
-            item.accumulated_fgts = fgts_positivo[0] - fgts_negativo[0]
+            item.accumulated_fgts = ((fgts_positivo[0] or 0) -
+                                     (fgts_negativo[0] or 0))
 
     accumulated_fgts = fields.Float(u'FGTS Acumulado',
                                     compute=get_accumulated_fgts)
