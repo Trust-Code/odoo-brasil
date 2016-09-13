@@ -34,7 +34,7 @@ class BrAccountServiceType(models.Model):
         return result
 
 
-class L10nBrAccountFiscalDocument(models.Model):
+class BrAccountFiscalDocument(models.Model):
     _name = 'br_account.fiscal.document'
     _description = 'Tipo de Documento Fiscal'
 
@@ -43,7 +43,7 @@ class L10nBrAccountFiscalDocument(models.Model):
     electronic = fields.Boolean(u'Eletrônico')
 
 
-class L10nBrAccountDocumentSerie(models.Model):
+class BrAccountDocumentSerie(models.Model):
     _name = 'br_account.document.serie'
     _description = 'Serie de documentos fiscais'
 
@@ -83,7 +83,7 @@ class L10nBrAccountDocumentSerie(models.Model):
 
 
 class BrAccountCNAE(models.Model):
-    _name = 'l10n_br_account.cnae'
+    _name = 'br_account.cnae'
     _description = 'Cadastro de CNAE'
 
     code = fields.Char(u'Código', size=16, required=True)

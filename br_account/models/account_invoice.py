@@ -50,7 +50,7 @@ class AccountInvoice(models.Model):
         states={'draft': [('readonly', False)]},
         help=u"Série do número da Nota Fiscal do Fornecedor")
     document_serie_id = fields.Many2one(
-        'l10n_br_account.document.serie', string=u'Série',
+        'br_account.document.serie', string=u'Série',
         domain="[('fiscal_document_id', '=', fiscal_document_id),\
         ('company_id','=',company_id)]", readonly=True,
         states={'draft': [('readonly', False)]},

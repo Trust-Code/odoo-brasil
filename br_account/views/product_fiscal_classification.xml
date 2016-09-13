@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
+    <record id="action_br_account_product_fiscal_classification" model="ir.actions.act_window">
+        <field name="name">Classificações Fiscais (NCM)</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.fiscal.classification</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_br_account_product_fiscal_classification" name="Classificações Fiscais (NCM)"
+        parent="menu_br_account" sequence="0"/>
+
 </odoo>

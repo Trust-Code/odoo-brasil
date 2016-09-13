@@ -22,7 +22,7 @@ class ResCompany(models.Model):
         'br_account.fiscal.document',
         'Documento Fiscal')
     document_serie_id = fields.Many2one(
-        'l10n_br_account.document.serie', u'Série Fiscal',
+        'br_account.document.serie', u'Série Fiscal',
         domain="[('company_id', '=', active_id),('active','=',True)]")
     annual_revenue = fields.Float(
         'Faturamento Anual', required=True,
@@ -32,8 +32,8 @@ class ResCompany(models.Model):
         COMPANY_FISCAL_TYPE, 'Regime Tributário', required=True,
         default=COMPANY_FISCAL_TYPE_DEFAULT)
     cnae_main_id = fields.Many2one(
-        'l10n_br_account.cnae', 'CNAE Primário')
+        'br_account.cnae', 'CNAE Primário')
     cnae_secondary_ids = fields.Many2many(
-        'l10n_br_account.cnae', 'res_company_l10n_br_account_cnae',
+        'br_account.cnae', 'res_company_br_account_cnae',
         'company_id', 'cnae_id', 'CNAE Segundários')
     ipbt_token = fields.Char(string='IPBT Token')

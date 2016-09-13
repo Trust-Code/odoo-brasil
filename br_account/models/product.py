@@ -41,4 +41,4 @@ class ProductTemplate(models.Model):
         'product.fiscal.classification', string="Classificação Fiscal (NCM)")
 
     service_type_id = fields.Many2one(
-        'l10n_br_account.service.type', u'Tipo de Serviço')
+        'br_account.service.type', u'Tipo de Serviço')

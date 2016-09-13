@@ -5,8 +5,8 @@
 {
     'name': 'Brazilian Localization Account',
     'summary': """Brazilian Localization Account""",
-    'version': '9.0.1.0.0',
-    'category': 'pos',
+    'version': '10.0.1.0.0',
+    'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',

@@ -1,227 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-	<data>
+<odoo>
 
-		<menuitem id="menu_l10n_br_account" name="Brasil" parent="account.menu_finance_configuration" sequence="0"/>
+    <menuitem id="menu_br_account" name="Brasil" parent="account.menu_finance_configuration" sequence="0"/>
 
-		<record id="view_l10n_br_account_fiscal_document_form" model="ir.ui.view">
-			<field name="name">l10n_br_account.fiscal.document</field>
-			<field name="model">br_account.fiscal.document</field>
-			<field name="arch" type="xml">
-				<form string="Documento Fiscal">
-                    <sheet>
-                        <group>
-							<field name="code" select="1"/>
-							<field name="name" select="1"/>
-							<field name="electronic" select="2"/>
-                        </group>
-                    </sheet>
-				</form>
-			</field>
-		</record>
+    <record id="view_br_account_fiscal_document_form" model="ir.ui.view">
+        <field name="name">br_account.fiscal.document</field>
+        <field name="model">br_account.fiscal.document</field>
+        <field name="arch" type="xml">
+            <form string="Documento Fiscal">
+                <sheet>
+                    <group>
+                        <field name="code" select="1"/>
+                        <field name="name" select="1"/>
+                        <field name="electronic" select="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_fiscal_document_tree" model="ir.ui.view">
-			<field name="name">l10n_br_account.fiscal.document</field>
-			<field name="model">br_account.fiscal.document</field>
-			<field name="arch" type="xml">
-				<tree string="Documento Fiscal">
-					<field name="code" select="1"/>
-					<field name="name" select="1"/>
-					<field name="electronic" select="2"/>
-				</tree>
-			</field>
-		</record>
+    <record id="view_br_account_fiscal_document_tree" model="ir.ui.view">
+        <field name="name">br_account.fiscal.document</field>
+        <field name="model">br_account.fiscal.document</field>
+        <field name="arch" type="xml">
+            <tree string="Documento Fiscal">
+                <field name="code" select="1"/>
+                <field name="name" select="1"/>
+                <field name="electronic" select="2"/>
+            </tree>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_document_serie_form" model="ir.ui.view">
-			<field name="name">l10n_br_account.document.serie</field>
-			<field name="model">l10n_br_account.document.serie</field>
-			<field name="arch" type="xml">
-				<form string="Serie de Documentos Fiscais">
-					<sheet>
-						<group>
-							<field name="code" select="1"/>
-							<field name="active"/>
-							<field name="name" select="1"/>
-							<field name="fiscal_document_id" select="1"/>
-							<field name="fiscal_type"/>
-							<field name="internal_sequence_id" select="1"/>
-							<field name="company_id"/>
-                        </group>
-                    </sheet>
-				</form>
-			</field>
-		</record>
+    <record id="view_br_account_document_serie_form" model="ir.ui.view">
+        <field name="name">br_account.document.serie</field>
+        <field name="model">br_account.document.serie</field>
+        <field name="arch" type="xml">
+            <form string="Serie de Documentos Fiscais">
+                <sheet>
+                    <group>
+                        <field name="code" select="1"/>
+                        <field name="active"/>
+                        <field name="name" select="1"/>
+                        <field name="fiscal_document_id" select="1"/>
+                        <field name="fiscal_type"/>
+                        <field name="internal_sequence_id" select="1"/>
+                        <field name="company_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_document_serie_tree" model="ir.ui.view">
-			<field name="name">l10n_br_account.document.serie</field>
-			<field name="model">l10n_br_account.document.serie</field>
-			<field name="arch" type="xml">
-				<tree string="Serie de Documentos Fiscais">
-					<field name="code" select="1"/>
-					<field name="name" select="1"/>
-					<field name="fiscal_document_id" select="1"/>
-					<field name="company_id" select="1"/>
-					<field name="active" select="1"/>
-				</tree>
-			</field>
-		</record>
+    <record id="view_br_account_document_serie_tree" model="ir.ui.view">
+        <field name="name">br_account.document.serie</field>
+        <field name="model">br_account.document.serie</field>
+        <field name="arch" type="xml">
+            <tree string="Serie de Documentos Fiscais">
+                <field name="code" select="1"/>
+                <field name="name" select="1"/>
+                <field name="fiscal_document_id" select="1"/>
+                <field name="company_id" select="1"/>
+                <field name="active" select="1"/>
+            </tree>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_cnae_form" model="ir.ui.view">
-			<field name="name">l10n_br_account.cnae.form</field>
-			<field name="model">l10n_br_account.cnae</field>
-			<field name="arch" type="xml">
-				<form string="CNAE">
-                    <sheet>
-                        <group>
-						    <field name="code" select="1"/>
-					    	<field name="name" select="1"/>
-					    	<field name="version" select="1"/>
-					   	    <field name="internal_type" select="1"/>
-						    <field name="parent_id"/>
-                        </group>
-                    </sheet>
-				</form>
-			</field>
-		</record>
+    <record id="view_br_account_cnae_form" model="ir.ui.view">
+        <field name="name">br_account.cnae.form</field>
+        <field name="model">br_account.cnae</field>
+        <field name="arch" type="xml">
+            <form string="CNAE">
+                <sheet>
+                    <group>
+                        <field name="code" select="1"/>
+                        <field name="name" select="1"/>
+                        <field name="version" select="1"/>
+                        <field name="internal_type" select="1"/>
+                        <field name="parent_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_cnae_tree" model="ir.ui.view">
-			<field name="name">l10n_br_account.cnae.tree</field>
-			<field name="model">l10n_br_account.cnae</field>
-			<field name="arch" type="xml">
-				<tree string="CNAE">
-					<field name="code" select="1"/>
-					<field name="name" select="1"/>
-					<field name="version" select="1"/>
-					<field name="parent_id" select="1"/>
-				</tree>
-			</field>
-		</record>
+    <record id="view_br_account_cnae_tree" model="ir.ui.view">
+        <field name="name">br_account.cnae.tree</field>
+        <field name="model">br_account.cnae</field>
+        <field name="arch" type="xml">
+            <tree string="CNAE">
+                <field name="code" select="1"/>
+                <field name="name" select="1"/>
+                <field name="version" select="1"/>
+                <field name="parent_id" select="1"/>
+            </tree>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_cnae_structure" model="ir.ui.view">
-			<field name="name">l10n_br_account.cnae.structure</field>
-			<field name="model">l10n_br_account.cnae</field>
-			<field name="field_parent">child_ids</field>
-			<field name="arch" type="xml">
-				<tree string="Estrutura do CNAE">
-					<field name="code"/>
-					<field name="name"/>
-					<field name="version"/>
-					<field name="internal_type"/>
-				</tree>
-			</field>
-		</record>
+    <record id="view_br_account_cnae_structure" model="ir.ui.view">
+        <field name="name">br_account.cnae.structure</field>
+        <field name="model">br_account.cnae</field>
+        <field name="field_parent">child_ids</field>
+        <field name="arch" type="xml">
+            <tree string="Estrutura do CNAE">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="version"/>
+                <field name="internal_type"/>
+            </tree>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_service_type_form" model="ir.ui.view">
-			<field name="name">l10n_br_account.service.type.form</field>
-			<field name="model">l10n_br_account.service.type</field>
-			<field name="arch" type="xml">
-				<form string="Tipo de Serviço">
-                    <sheet>
-					    <group>
-						    <field name="code"/>
-						    <field name="name"/>
-						    <field name="internal_type"/>
-						    <field name="parent_id"/>
-					    </group>
-                    </sheet>
-				</form>
-			</field>
-		</record>
+    <record id="view_br_account_service_type_form" model="ir.ui.view">
+        <field name="name">br_account.service.type.form</field>
+        <field name="model">br_account.service.type</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Serviço">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="internal_type"/>
+                        <field name="parent_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_service_type_tree" model="ir.ui.view">
-			<field name="name">l10n_br_account.service.type.tree</field>
-			<field name="model">l10n_br_account.service.type</field>
-			<field name="arch" type="xml">
-				<tree string="Tipo de Serviço">
-					<field name="code" select="1"/>
-					<field name="name" select="1"/>
-					<field name="parent_id" select="1"/>
-				</tree>
-			</field>
-		</record>
+    <record id="view_br_account_service_type_tree" model="ir.ui.view">
+        <field name="name">br_account.service.type.tree</field>
+        <field name="model">br_account.service.type</field>
+        <field name="arch" type="xml">
+            <tree string="Tipo de Serviço">
+                <field name="code" select="1"/>
+                <field name="name" select="1"/>
+                <field name="parent_id" select="1"/>
+            </tree>
+        </field>
+    </record>
 
-		<record id="view_l10n_br_account_service_type_structure" model="ir.ui.view">
-			<field name="name">l10n_br_account.service.type.structure</field>
-			<field name="model">l10n_br_account.service.type</field>
-			<field name="field_parent">child_ids</field>
-			<field name="arch" type="xml">
-				<tree string="Estrutura de Tipo de Serviço">
-					<field name="code"/>
-					<field name="name"/>
-					<field name="internal_type"/>
-				</tree>
-			</field>
-		</record>
+    <record id="view_br_account_service_type_structure" model="ir.ui.view">
+        <field name="name">br_account.service.type.structure</field>
+        <field name="model">br_account.service.type</field>
+        <field name="field_parent">child_ids</field>
+        <field name="arch" type="xml">
+            <tree string="Estrutura de Tipo de Serviço">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="internal_type"/>
+            </tree>
+        </field>
+    </record>
 
-		<record id="action_l10n_br_account_fiscal_document_form" model="ir.actions.act_window">
-			<field name="name">Documento Fiscal</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">br_account.fiscal.document</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_type">form</field>
-			<field name="view_id" ref="view_l10n_br_account_fiscal_document_tree"/>
-		</record>
+    <record id="action_br_account_fiscal_document_form" model="ir.actions.act_window">
+        <field name="name">Documento Fiscal</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.fiscal.document</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_fiscal_document_tree"/>
+    </record>
 
+    <record id="action_br_account_document_serie_form" model="ir.actions.act_window">
+        <field name="name">Document Serie</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.document.serie</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_document_serie_tree"/>
+    </record>
 
-		<record id="action_l10n_br_account_document_serie_form" model="ir.actions.act_window">
-			<field name="name">Document Serie</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">l10n_br_account.document.serie</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_type">form</field>
-			<field name="view_id" ref="view_l10n_br_account_document_serie_tree"/>
-		</record>
+    <record id="action_br_account_cnae_form" model="ir.actions.act_window">
+        <field name="name">CNAE</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.cnae</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_cnae_tree"/>
+    </record>
 
-		<record id="action_l10n_br_account_cnae_form" model="ir.actions.act_window">
-			<field name="name">CNAE</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">l10n_br_account.cnae</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_type">form</field>
-			<field name="view_id" ref="view_l10n_br_account_cnae_tree"/>
-		</record>
+    <record id="action_br_account_cnae_structure" model="ir.actions.act_window">
+        <field name="name">Estrutura do CNAE</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.cnae</field>
+        <field name="view_type">tree</field>
+        <field name="domain">[('parent_id','=',False)]</field>
+        <field name="view_id" ref="view_br_account_cnae_structure"/>
+    </record>
 
-		<record id="action_l10n_br_account_cnae_structure" model="ir.actions.act_window">
-			<field name="name">Estrutura do CNAE</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">l10n_br_account.cnae</field>
-			<field name="view_type">tree</field>
-			<field name="domain">[('parent_id','=',False)]</field>
-			<field name="view_id" ref="view_l10n_br_account_cnae_structure"/>
-		</record>
+    <record id="action_br_account_service_type_form" model="ir.actions.act_window">
+        <field name="name">Tipo de Serviço</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.service.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_service_type_tree"/>
+    </record>
 
-		<record id="action_l10n_br_account_service_type_form" model="ir.actions.act_window">
-			<field name="name">Tipo de Serviço</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">l10n_br_account.service.type</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_type">form</field>
-			<field name="view_id" ref="view_l10n_br_account_service_type_tree"/>
-		</record>
+    <record id="action_br_account_service_type_structure" model="ir.actions.act_window">
+        <field name="name">Estrutura de Tipo de Serviço</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.service.type</field>
+        <field name="view_type">tree</field>
+        <field name="domain">[('parent_id','=',False)]</field>
+        <field name="view_id" ref="view_br_account_service_type_structure"/>
+    </record>
 
-		<record id="action_l10n_br_account_service_type_structure" model="ir.actions.act_window">
-			<field name="name">Estrutura de Tipo de Serviço</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">l10n_br_account.service.type</field>
-			<field name="view_type">tree</field>
-			<field name="domain">[('parent_id','=',False)]</field>
-			<field name="view_id" ref="view_l10n_br_account_service_type_structure"/>
-		</record>
+    <menuitem id="menu_br_account_fiscal_manager" name="Cadastros" parent="menu_br_account" sequence="0"/>
 
-		<menuitem id="menu_l10n_br_account_fiscal_manager" name="Cadastros" parent="menu_l10n_br_account" sequence="0"/>
+    <menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_form" sequence="30" />
 
-		<menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_l10n_br_account_fiscal_manager" action="action_l10n_br_account_cnae_form" sequence="30" />
+    <menuitem id="menu_action_cnae_structure" name="Estrutura do CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_structure" sequence="40" />
 
-		<menuitem id="menu_action_cnae_structure" name="Estrutura do CNAE" parent="menu_l10n_br_account_fiscal_manager" action="action_l10n_br_account_cnae_structure" sequence="40" />
+    <menuitem id="menu_action_service_type_form" name="Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_form" sequence="50" />
 
-		<menuitem id="menu_action_service_type_form" name="Tipo de Serviço" parent="menu_l10n_br_account_fiscal_manager" action="action_l10n_br_account_service_type_form" sequence="50" />
+    <menuitem id="menu_action_service_type_structure" name="Estrutura de Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_structure" sequence="60" />
 
-		<menuitem id="menu_action_service_type_structure" name="Estrutura de Tipo de Serviço" parent="menu_l10n_br_account_fiscal_manager" action="action_l10n_br_account_service_type_structure" sequence="60" />
+    <menuitem id="menu_action_br_account_fiscal_document_form" name="Documento Fiscal" parent="menu_br_account" action="action_br_account_fiscal_document_form"/>
 
-		<menuitem id="menu_action_l10n_br_account_fiscal_document_form" name="Documento Fiscal" parent="menu_l10n_br_account" action="action_l10n_br_account_fiscal_document_form"/>
+    <menuitem id="menu_action_document_serie_form" name="Serie de Documento Fiscal" parent="menu_br_account" action="action_br_account_document_serie_form"/>
 
-		<menuitem id="menu_action_document_serie_form" name="Serie de Documento Fiscal" parent="menu_l10n_br_account" action="action_l10n_br_account_document_serie_form"/>
-
-	</data>
-
-</openerp>
+</odoo>
