@@ -15,7 +15,7 @@ class ResPartner(models.Model):
     @api.multi
     def zip_search(self):
         self.ensure_one()
-        obj_zip = self.env['l10n_br.zip']
+        obj_zip = self.env['br.zip']
 
         zip_ids = obj_zip.zip_search_multi(
             country_id=self.country_id.id,
@@ -32,7 +32,7 @@ class ResPartner(models.Model):
             return True
         else:
             if len(zip_ids) > 1:
-                obj_zip_result = self.env['l10n_br.zip.result']
+                obj_zip_result = self.env['br.zip.result']
                 zip_ids = obj_zip_result.map_to_zip_result(
                     zip_ids, self._name, self.id)
 

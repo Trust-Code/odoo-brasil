@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'l10n_br_nfe', 'sale'
+        'br_nfe', 'sale'
     ],
     'data': [
         'views/account_tax.xml',

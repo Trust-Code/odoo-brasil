@@ -86,7 +86,7 @@
         <field name="view_id" ref="br_account_product_cfop_structure"/>
     </record>
 
-    <menuitem id="br_account_product_cfop_menu" name="CFOP" parent="l10n_br_account_new.menu_l10n_br_account_fiscal_manager" action="br_account_product_cfop_action" sequence="10" />
-    <menuitem id="br_account_product_cfop_structure_menu" name="Estrutura do CFOP" parent="l10n_br_account_new.menu_l10n_br_account_fiscal_manager" action="br_account_product_cfop_structure_action" sequence="20" />
+    <menuitem id="br_account_product_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_product_cfop_action" sequence="10" />
+    <menuitem id="br_account_product_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_product_cfop_structure_action" sequence="20" />
 
 </odoo>

@@ -26,7 +26,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_account_product_new', 'stock',
+        'br_account_product', 'stock',
     ],
     'data': [
         'data/l10n_br_stock_data.xml',
@@ -34,5 +34,5 @@
         # 'wizard/stock_invoice_onshipping_view.xml',
         'security/ir.model.access.csv',
     ],
-    'auto_install': True,
+    'auto_install': False,
 }

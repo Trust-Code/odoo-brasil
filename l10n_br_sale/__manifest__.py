@@ -12,7 +12,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '9.0.1.0.0',
     'depends': [
-        'sale', 'l10n_br_account_new',
+        'sale', 'br_account',
     ],
     'data': [
         'views/br_base.xml',
@@ -26,5 +26,5 @@
     ],
     'demo': ['demo/l10n_br_sale_demo.xml'],
     'installable': True,
-    'auto_install': True
+    'auto_install': False
 }

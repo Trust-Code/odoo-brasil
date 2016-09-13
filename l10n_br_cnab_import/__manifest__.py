@@ -14,7 +14,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'l10n_br_cnab',
+        'br_cnab',
     ],
     'data': [
     ],

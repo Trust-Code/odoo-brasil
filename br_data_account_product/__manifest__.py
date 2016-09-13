@@ -17,7 +17,6 @@
         'data/br_account_product.xml',
     ],
     'demo': [
-        'br_data_account_product_demo.xml',
     ],
     'post_init_hook': 'post_init',
     'category': 'Localisation',

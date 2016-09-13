@@ -3,9 +3,9 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import api, fields, models
-from openerp.addons.l10n_br_account_new.models.l10n_br_account import (
-    L10nBrTaxDefinition
+from odoo import api, fields, models
+from odoo.addons.br_account.models.br_account import (
+    BrTaxDefinition
 )
 
 
@@ -21,7 +21,7 @@ class ResCompany(models.Model):
         self.product_tax_ids = product_taxes
 
     document_serie_product_ids = fields.Many2many(
-        'l10n_br_account.document.serie',
+        'br_account.document.serie',
         'res_company_l10n_br_account_document_serie', 'company_id',
         'document_serie_product_id', 'Série de Documentos Fiscais',
         domain="[('company_id', '=', active_id),('active','=',True),"
@@ -36,7 +36,7 @@ class ResCompany(models.Model):
         'br_account.fiscal.document', "Documento Fiscal para produto")
 
 
-class BrTaxDefinitionCompanyProduct(L10nBrTaxDefinition, models.Model):
+class BrTaxDefinitionCompanyProduct(BrTaxDefinition, models.Model):
     _name = 'br_tax.definition.company.product'
 
     company_id = fields.Many2one('res.company', 'Empresa')

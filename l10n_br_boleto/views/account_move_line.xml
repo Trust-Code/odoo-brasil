@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-	<data>
-		<record id="account_move_line_form" model="ir.ui.view">
-		    <field name="name">account.move.line.form</field>
-		    <field name="model">account.move.line</field>
-		    <field name="inherit_id" ref="account.view_move_line_form" />
-		    <field name="arch" type="xml">
-				<page position="after">
-					<page name="boletos" string="Boletos">
-						<group>
-							<field name="payment_mode_id" />
-						</group>
-					</page>
-				</page>
-		    </field>
-		</record>		
-	</data>
-</openerp>
+<odoo>
 
+    <record id="account_move_line_form" model="ir.ui.view">
+        <field name="name">account.move.line.form</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form" />
+        <field name="arch" type="xml">
+            <page position="after">
+                <page name="boletos" string="Boletos">
+                    <group>
+                        <field name="payment_mode_id" />
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+
+</odoo>

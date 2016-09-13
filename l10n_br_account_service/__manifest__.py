@@ -26,7 +26,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '7.0',
     'depends': [
-        'l10n_br_account_new',
+        'br_account',
     ],
     'data': [
         'views/res_company_view.xml',

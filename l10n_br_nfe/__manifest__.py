@@ -32,7 +32,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'l10n_br_account_einvoice',
+        'br_account_einvoice',
     ],
     'data': [
         'views/res_company.xml'

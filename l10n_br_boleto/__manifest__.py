@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'l10n_br_account_new',
+        'br_account',
     ],
     'data': [
         'views/account_invoice.xml',

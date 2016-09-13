@@ -32,9 +32,9 @@
     ],
     'depends': [
         'document',
-        'l10n_br_base',
-        'l10n_br_account_new',
-        'l10n_br_account_product_new',
+        'br_base',
+        'br_account',
+        'br_account_product',
     ],
     'data': [
         'views/sped_base_view.xml',

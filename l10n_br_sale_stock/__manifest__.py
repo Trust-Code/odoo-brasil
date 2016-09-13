@@ -28,7 +28,7 @@
     'version': '7.0',
     'depends': [
         'sale_stock',
-        'l10n_br_stock',
+        'br_stock',
     ],
     'data': [
         'views/sale_stock_view.xml',
@@ -39,5 +39,5 @@
     'test': [
         # 'tests/sale_order_demo.yml'
     ],
-    'auto_install': True,
+    'auto_install': False,
 }

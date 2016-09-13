@@ -9,7 +9,7 @@ from openerp import models, fields, api, _
 from openerp.addons import decimal_precision as dp
 from openerp.exceptions import RedirectWarning
 
-from .product import PRODUCT_ORIGIN
+from odoo.addons.br_account.models.product import PRODUCT_ORIGIN
 
 
 class AccountInvoice(models.Model):
