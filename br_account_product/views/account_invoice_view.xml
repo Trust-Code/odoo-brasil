@@ -3,16 +3,9 @@
     <record id="br_account_product_invoice_form" model="ir.ui.view">
         <field name="name">br_account_product.invoice.form</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
-            <field name="date_invoice" position="after">
-                <field name="date_hour_invoice" string="Data Emissão"/>
-                <field name="fiscal_document_electronic" invisible="1"/>
-            </field>
-            <field name="date_invoice" position="replace">
-                <field name="date_invoice" invisible="1"/>
-            </field>
-            <page name="other_info" position="before">
+            <page name="vencimentos" position="after">
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
@@ -59,18 +52,9 @@
     <record id="br_account_product_invoice_supplier_form" model="ir.ui.view">
         <field name="name">br_account.invoice.supplier.form</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_supplier_form" />
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
-            <field name="date_invoice" position="after">
-                <field name="document_serie_id" />
-                <field name="fiscal_document_id" required="1"/>
-                <field name="date_hour_invoice" string="Data Emissão"/>
-                <field name="fiscal_document_electronic" invisible="1"/>
-            </field>
-            <field name="date_invoice" position="attributes">
-                <field name="date_invoice" invisible="1"/>
-            </field>
-            <page position="before">
+            <page  name="vencimentos" position="after">
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
@@ -94,14 +78,14 @@
                     </group>
                 </page>
             </page>
-            <field name="tax_line_ids" position="after">
+            <xpath expr="//notebook/page[last()]/group" position="after">
                 <group string="Observações">
                     <field name="comment" nolabel="1"/>
                 </group>
                 <group string="Observações Fiscais">
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
-            </field>
+            </xpath>
         </field>
     </record>
 

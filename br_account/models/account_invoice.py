@@ -3,9 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
-from openerp import api, fields, models
-from openerp.exceptions import Warning as UserError
+from odoo import api, fields, models
 
 
 class AccountInvoice(models.Model):
@@ -16,14 +14,25 @@ class AccountInvoice(models.Model):
     def _compute_receivables(self):
         receivable_lines = []
         for line in self.move_id.line_ids:
-            receivable_lines.append(line.id)
+            if line.account_id.user_type_id.type == "receivable":
+                receivable_lines.append(line.id)
+        self.receivable_move_line_ids = self.env['account.move.line'].browse(
+            list(set(receivable_lines)))
+
+    @api.one
+    @api.depends('move_id.line_ids')
+    def _compute_payables(self):
+        receivable_lines = []
+        for line in self.move_id.line_ids:
+            if line.account_id.user_type_id.type == "payable":
+                receivable_lines.append(line.id)
         self.receivable_move_line_ids = self.env['account.move.line'].browse(
             list(set(receivable_lines)))
 
     @api.model
     def _default_fiscal_document(self):
-        # company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return False
+        company = self.env['res.company'].browse(self.env.user.company_id.id)
+        return company.fiscal_document_for_product_id
 
     @api.model
     def _default_fiscal_document_serie(self):
@@ -32,19 +41,22 @@ class AccountInvoice(models.Model):
 
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
-        compute='_compute_receivables', store=True)
+        compute='_compute_receivables')
+
+    payable_move_line_ids = fields.Many2many(
+        'account.move.line', string='Payable Move Lines',
+        compute='_compute_payables')
 
     issuer = fields.Selection(
-        [('0', u'Emissão própria'), ('1', 'Terceiros')], 'Emitente',
+        [('0', 'Terceiros'), ('1', u'Emissão própria')], 'Emitente',
         default='0', readonly=True, states={'draft': [('readonly', False)]})
-    internal_number = fields.Integer(
-        'Invoice Number', readonly=True,
-        states={'draft': [('readonly', False)]},
-        help="""Unique number of the invoice, computed
-            automatically when the invoice is created.""")
     fiscal_type = fields.Selection(
         [('service', u'Serviço'), ('product', 'Produto')], 'Tipo Fiscal',
         required=True, default='product')
+    vendor_number = fields.Char(
+        'Número NF Entrada', size=18, readonly=True,
+        states={'draft': [('readonly', False)]},
+        help=u"Número da Nota Fiscal do Fornecedor")
     vendor_serie = fields.Char(
         'Série NF Entrada', size=12, readonly=True,
         states={'draft': [('readonly', False)]},
@@ -59,82 +71,15 @@ class AccountInvoice(models.Model):
         'br_account.fiscal.document', string='Documento', readonly=True,
         states={'draft': [('readonly', False)]},
         default=_default_fiscal_document)
-    fiscal_document_electronic = fields.Boolean(
-        related='fiscal_document_id.electronic', type='boolean', readonly=True,
+    is_eletronic = fields.Boolean(
+        related='fiscal_document_id.electronic', type='boolean',
         store=True, string='Electronic')
     fiscal_comment = fields.Text(u'Observação Fiscal')
-
-    @api.one
-    @api.constrains('internal_number')
-    def _check_invoice_number(self):
-        domain = []
-        if self.internal_number:
-            fiscal_document = self.fiscal_document_id and\
-                self.fiscal_document_id.id or False
-            domain.extend([('internal_number', '=', self.internal_number),
-                           ('fiscal_type', '=', self.fiscal_type),
-                           ('fiscal_document_id', '=', fiscal_document)
-                           ])
-            if self.issuer == '0':
-                domain.extend([
-                    ('company_id', '=', self.company_id.id),
-                    ('internal_number', '=', self.internal_number),
-                    ('fiscal_document_id', '=', self.fiscal_document_id.id),
-                    ('issuer', '=', '0')])
-            else:
-                domain.extend([
-                    ('partner_id', '=', self.partner_id.id),
-                    ('vendor_serie', '=', self.vendor_serie),
-                    ('issuer', '=', '1')])
-
-            invoices = self.env['account.invoice'].search(domain)
-            if len(invoices) > 1:
-                raise UserError(u'Não é possível registrar documentos\
-                              fiscais com números repetidos.')
 
     _sql_constraints = [
         ('number_uniq', 'unique(number, company_id, journal_id,\
          type, partner_id)', 'Invoice Number must be unique per Company!'),
     ]
-
-    @api.multi
-    def action_number(self):
-        for invoice in self:
-            if not invoice.document_serie_id.internal_sequence_id.id:
-                raise UserError(
-                    u'Configure corretamente a sequência para a numeração da nota')
-            sequence_obj = self.env['ir.sequence']
-            seq_number = sequence_obj.get_id(
-                invoice.document_serie_id.internal_sequence_id.id)
-
-            self.write(
-                {'internal_number': seq_number})
-        return True
-
-    @api.multi
-    def finalize_invoice_move_lines(self, move_lines):
-        """ finalize_invoice_move_lines(move_lines) -> move_lines
-
-            Hook method to be overridden in additional modules to verify and
-            possibly alter the move lines to be created by an invoice, for
-            special cases.
-            :param move_lines: list of dictionaries with the account.move.lines
-            (as for create())
-            :return: the (possibly updated) final move_lines to create for this
-            invoice
-        """
-        move_lines = super(
-            AccountInvoice, self).finalize_invoice_move_lines(move_lines)
-        count = 1
-        result = []
-        for move_line in move_lines:
-            if move_line[2]['debit'] or move_line[2]['credit']:
-                if move_line[2]['account_id'] == self.account_id.id:
-                    move_line[2]['name'] = '%s/%s' % \
-                        (self.internal_number, count)
-                    count += 1
-                result.append(move_line)
-        return result
 
     @api.onchange('fiscal_document_id')
     def onchange_fiscal_document_id(self):

@@ -2,10 +2,11 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime
+
 
 from odoo import api, fields, models
-from datetime import datetime
-from errno import ECOMM
+from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -19,6 +20,26 @@ class AccountInvoice(models.Model):
 
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
+
+    internal_number = fields.Integer(
+        'Invoice Number', readonly=True,
+        states={'draft': [('readonly', False)]},
+        help="""Unique number of the invoice, computed
+            automatically when the invoice is created.""")
+
+    @api.multi
+    def action_number(self):
+        for invoice in self:
+            if not invoice.document_serie_id.internal_sequence_id.id:
+                raise UserError(
+                    u'Configure a sequência para a numeração da nota')
+            sequence_obj = self.env['ir.sequence']
+            seq_number = sequence_obj.get_id(
+                invoice.document_serie_id.internal_sequence_id.id)
+
+            self.write(
+                {'internal_number': seq_number})
+        return True
 
     def _prepare_edoc_item_vals(self, invoice_line):
         vals = {
