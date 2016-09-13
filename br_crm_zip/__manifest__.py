@@ -12,8 +12,8 @@
     'website': 'http://www.trustcode.com.br',
     'version': '10.0.1.0.0',
     'depends': [
-        'l10n_br_zip',
-        'l10n_br_crm',
+        'br_zip',
+        'br_crm',
     ],
     'data': [
         'views/crm_lead_view.xml',
