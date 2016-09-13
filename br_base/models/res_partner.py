@@ -87,7 +87,7 @@ class ResPartner(models.Model):
     def _validate_ie_param(self, uf, inscr_est):
         try:
             mod = __import__(
-                'odoo.addons.l10n_br_base.tools.fiscal', globals(),
+                'odoo.addons.br_base.tools.fiscal', globals(),
                 locals(), 'fiscal')
 
             validate = getattr(mod, 'validate_ie_%s' % uf)

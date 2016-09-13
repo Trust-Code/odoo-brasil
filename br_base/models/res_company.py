@@ -23,7 +23,7 @@ class ResCompany(models.Model):
         self.number = self.partner_id.number
 
     @api.one
-    def _get_l10n_br_data(self):
+    def _get_br_data(self):
         """ Read the l10n_br specific functional fields. """
         self.legal_name = self.partner_id.legal_name
         self.cnpj_cpf = self.partner_id.cnpj_cpf
@@ -32,37 +32,37 @@ class ResCompany(models.Model):
         self.suframa = self.partner_id.suframa
 
     @api.one
-    def _set_l10n_br_suframa(self):
+    def _set_br_suframa(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.suframa = self.suframa
 
     @api.one
-    def _set_l10n_br_legal_name(self):
+    def _set_br_legal_name(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.legal_name = self.legal_name
 
     @api.one
-    def _set_l10n_br_cnpj_cpf(self):
+    def _set_br_cnpj_cpf(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.cnpj_cpf = self.cnpj_cpf
 
     @api.one
-    def _set_l10n_br_inscr_est(self):
+    def _set_br_inscr_est(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.inscr_est = self.inscr_est
 
     @api.one
-    def _set_l10n_br_inscr_mun(self):
+    def _set_br_inscr_mun(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.inscr_mun = self.inscr_mun
 
     @api.one
-    def _set_l10n_br_number(self):
+    def _set_br_number(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.number = self.number
 
     @api.one
-    def _set_l10n_br_district(self):
+    def _set_br_district(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.district = self.district
 
@@ -72,23 +72,23 @@ class ResCompany(models.Model):
         self.partner_id.city_id = self.city_id
 
     cnpj_cpf = fields.Char(
-        compute=_get_l10n_br_data, inverse=_set_l10n_br_cnpj_cpf, size=18,
+        compute=_get_br_data, inverse=_set_br_cnpj_cpf, size=18,
         string='CNPJ')
 
     inscr_est = fields.Char(
-        compute=_get_l10n_br_data, inverse=_set_l10n_br_inscr_est, size=16,
+        compute=_get_br_data, inverse=_set_br_inscr_est, size=16,
         string='Inscr. Estadual')
 
     inscr_mun = fields.Char(
-        compute=_get_l10n_br_data, inverse=_set_l10n_br_inscr_mun, size=18,
+        compute=_get_br_data, inverse=_set_br_inscr_mun, size=18,
         string='Inscr. Municipal')
 
     suframa = fields.Char(
-        compute=_get_l10n_br_data, inverse=_set_l10n_br_suframa, size=18,
+        compute=_get_br_data, inverse=_set_br_suframa, size=18,
         string='Suframa')
 
     legal_name = fields.Char(
-        compute=_get_l10n_br_data, inverse=_set_l10n_br_legal_name, size=128,
+        compute=_get_br_data, inverse=_set_br_legal_name, size=128,
         string=u'Razão Social')
 
     city_id = fields.Many2one(
@@ -96,11 +96,11 @@ class ResCompany(models.Model):
         comodel_name='res.state.city', string="City", multi='address')
 
     district = fields.Char(
-        compute=_get_address_data, inverse='_set_l10n_br_district', size=32,
+        compute=_get_address_data, inverse='_set_br_district', size=32,
         string="Bairro", multi='address')
 
     number = fields.Char(
-        compute=_get_address_data, inverse='_set_l10n_br_number', size=10,
+        compute=_get_address_data, inverse='_set_br_number', size=10,
         string=u"Número", multi='address')
 
     nfe_a1_file = fields.Binary('Arquivo NFe A1')
