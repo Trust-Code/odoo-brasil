@@ -13,7 +13,7 @@
     'maintainer': 'Trustcode',
     'website': 'http://www.trustcode.com.br/',
     'version': '10.0.1.0.0',
-    'depends': ['hr', 'l10n_br_base'],
+    'depends': ['hr', 'br_base'],
     'data': [
         'data/l10n_br_hr.cbo.csv',
         'security/ir.model.access.csv',

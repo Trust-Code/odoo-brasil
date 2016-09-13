@@ -10,7 +10,7 @@
     'author': 'Akretion, Odoo Brasil',
     'version': '10.0.1.0.0',
     'depends': [
-        'l10n_br_base',
+        'br_base',
     ],
     'data': [
         'views/l10n_br_zip_view.xml',

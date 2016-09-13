@@ -11,7 +11,7 @@
     'website': 'http://www.trustcode.com.br',
     'version': '10.0.1.0.0',
     'depends': [
-        'l10n_br_base',
+        'br_base',
         'crm',
     ],
     'data': [
