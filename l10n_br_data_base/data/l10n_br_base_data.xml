@@ -2,6 +2,18 @@
 <odoo>
     <data noupdate="1">
 
+        <record id="base.BRL" model="res.currency">
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="base.main_company" model="res.company">
+            <field name="currency_id" ref="base.BRL" />
+        </record>
+
+        <record id="base.user_root" model="res.users">
+            <field name="tz">America/Sao_Paulo</field>
+        </record>
+
         <record id="base.ad" model="res.country">
             <field name="bc_code">00370</field>
         </record>

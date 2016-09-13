@@ -17,6 +17,9 @@
         'data/res.country.state.csv',
         'data/l10n_br_base_data.xml',
     ],
+    'demo': [
+        'data/l10n_br_base_demo.xml',
+    ],
     'category': 'Localisation',
     'installable': True,
     'auto_install': True,
