@@ -8,16 +8,16 @@
 from openerp import api, fields, models
 
 
-class L10nBrAccountServiceType(models.Model):
-    _name = 'l10n_br_account.service.type'
+class BrAccountServiceType(models.Model):
+    _name = 'br_account.service.type'
     _description = u'Cadastro de Operações Fiscais de Serviço'
 
     code = fields.Char(u'Código', size=16, required=True)
     name = fields.Char(u'Descrição', size=256, required=True)
     parent_id = fields.Many2one(
-        'l10n_br_account.service.type', 'Tipo de Serviço Pai')
+        'br_account.service.type', 'Tipo de Serviço Pai')
     child_ids = fields.One2many(
-        'l10n_br_account.service.type', 'parent_id',
+        'br_account.service.type', 'parent_id',
         u'Tipo de Serviço Filhos')
     internal_type = fields.Selection(
         [('view', u'Visualização'), ('normal', 'Normal')], 'Tipo Interno',
@@ -44,7 +44,7 @@ class L10nBrAccountFiscalDocument(models.Model):
 
 
 class L10nBrAccountDocumentSerie(models.Model):
-    _name = 'l10n_br_account.document.serie'
+    _name = 'br_account.document.serie'
     _description = 'Serie de documentos fiscais'
 
     code = fields.Char(u'Código', size=3, required=True)
@@ -79,19 +79,19 @@ class L10nBrAccountDocumentSerie(models.Model):
          this field is null """
         if not vals.get('internal_sequence_id'):
             vals.update({'internal_sequence_id': self._create_sequence(vals)})
-        return super(L10nBrAccountDocumentSerie, self).create(vals)
+        return super(BrAccountDocumentSerie, self).create(vals)
 
 
-class L10nBrAccountCNAE(models.Model):
+class BrAccountCNAE(models.Model):
     _name = 'l10n_br_account.cnae'
     _description = 'Cadastro de CNAE'
 
     code = fields.Char(u'Código', size=16, required=True)
     name = fields.Char(u'Descrição', size=64, required=True)
     version = fields.Char(u'Versão', size=16, required=True)
-    parent_id = fields.Many2one('l10n_br_account.cnae', 'CNAE Pai')
+    parent_id = fields.Many2one('br_account.cnae', 'CNAE Pai')
     child_ids = fields.One2many(
-        'l10n_br_account.cnae', 'parent_id', 'CNAEs Filhos')
+        'br_account.cnae', 'parent_id', 'CNAEs Filhos')
     internal_type = fields.Selection(
         [('view', u'Visualização'), ('normal', 'Normal')],
         'Tipo Interno', required=True, default='normal')
@@ -107,8 +107,8 @@ class L10nBrAccountCNAE(models.Model):
         return result
 
 
-class L10nBrTaxDefinition(object):
-    _name = 'l10n_br_tax.definition'
+class BrTaxDefinition(object):
+    _name = 'br_tax.definition'
 
     tax_id = fields.Many2one('account.tax', string='Imposto', required=True)
     tax_domain = fields.Char('Tax Domain', store=True)

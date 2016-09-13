@@ -12,7 +12,7 @@
     'license': 'AGPL-3',
     'website': 'http://odoo-brasil.org',
     'depends': [
-        'l10n_br_data_account',
+        'br_data_account',
     ],
     'data': [
         'views/br_account_product_view.xml',

@@ -11,13 +11,13 @@
     'version': '10.0.1.0.0',
     'depends': [
         'br_account_product',
-        'l10n_br_data_account',
+        'br_data_account',
     ],
     'data': [
         'data/br_account_product.xml',
     ],
     'demo': [
-        'l10n_br_data_account_product_demo.xml',
+        'br_data_account_product_demo.xml',
     ],
     'post_init_hook': 'post_init',
     'category': 'Localisation',
