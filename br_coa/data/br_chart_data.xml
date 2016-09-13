@@ -9,7 +9,7 @@
         <field ref="account.data_account_type_current_assets" name="user_type_id"/>
     </record>
 
-    <record id="l10n_br_account_chart_template" model="account.chart.template">
+    <record id="br_account_chart_template" model="account.chart.template">
         <field name="name">Plano de Contas Simplificado Brasil</field>
         <field name="code_digits">1</field>
         <field name="bank_account_code_prefix">1.1.1.02</field>
@@ -19,6 +19,6 @@
     </record>
 
     <record id="transfer_account_id" model="account.account.template">
-        <field name="chart_template_id" ref="l10n_br_account_chart_template"/>
+        <field name="chart_template_id" ref="br_account_chart_template"/>
     </record>
 </odoo>
