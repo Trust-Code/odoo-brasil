@@ -42,6 +42,13 @@ class HrPayslip(models.Model):
              'code': 'DSR',
              'number_of_days': len(dsr),
              'contract_id': self.contract_id,
-        }]
+        },
+                {
+                     'name': "Provisão de #13",
+                     'sequence': 13,
+                     'code': 'P13',
+                     'number_of_days': 30,
+                     'contract_id': self.contract_id,
+                }]
 
         return res

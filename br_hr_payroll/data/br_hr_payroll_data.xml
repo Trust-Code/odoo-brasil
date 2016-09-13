@@ -100,6 +100,10 @@
             <field name="name">Falta Não Remunerada</field>
         </record>
 
+        <record id="hr_13_prov_register" model="hr.contribution.register">
+            <field name="name">Provisão de 13º</field>
+        </record>
+
         <!-- Regras de Salário -->
 
         <record id="hr_salary_rule_inss" model="hr.salary.rule">
@@ -285,6 +289,17 @@ for day in worked_days.DSR:
     result -= categories.BASE / 30</field>
             <field name="register_id" ref="hr_desconto_falta_register"/>
             <field name="note">Faltas Não Remuneradas</field>
+        </record>
+
+        <record id="hr_salary_rule_13_prov" model="hr.salary.rule">
+            <field name="name">Provisão de #13</field>
+            <field name="sequence" eval="87"/>
+            <field name="code">P13</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.BASE / 12</field>
+            <field name="register_id" ref="hr_13_prov_register"/>
+            <field name="note">Provisão de #13</field>
         </record>
 
 

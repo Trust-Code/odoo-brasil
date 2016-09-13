@@ -97,4 +97,12 @@
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
+    <record id="br_hr_payroll.hr_salary_rule_13_prov" model="hr.salary.rule">
+        <field name="account_credit" search="[('code', '=', '2.1.3.02')]"/>
+    </record>
+
+    <record id="br_hr_payroll.hr_salary_rule_13_prov" model="hr.salary.rule">
+        <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
+    </record>
+
 </odoo>
