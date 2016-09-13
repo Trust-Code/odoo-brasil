@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_br_account_product_fiscal_classification_form" model="ir.ui.view">
+        <field name="name">br_account.product.fiscal.classification.form</field>
+        <field name="model">product.fiscal.classification</field>
+        <field name="arch" type="xml">
+            <tree string="Classificações Fiscais (NCM)">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="action_br_account_product_fiscal_classification" model="ir.actions.act_window">
         <field name="name">Classificações Fiscais (NCM)</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.fiscal.classification</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_br_account_product_fiscal_classification_form"/>
     </record>
 
     <menuitem id="menu_br_account_product_fiscal_classification" name="Classificações Fiscais (NCM)"
-        parent="menu_br_account" sequence="0"/>
+        parent="menu_br_account" sequence="0" action="action_br_account_product_fiscal_classification"/>
 
 </odoo>
