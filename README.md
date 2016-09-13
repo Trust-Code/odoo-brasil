@@ -1,73 +1,90 @@
-[![Coverage Status](https://coveralls.io/repos/bitbucket/trustcode/odoo-brasil/badge.svg?branch=9.0)](https://coveralls.io/bitbucket/trustcode/odoo-brasil?branch=9.0)
-
-
-Localização Brasileira - Odoo - l10n-brazil
+Odoo Brasil
 ============================================
 
-Este projeto contêm os principais módulos da localização brasileira do OpenERP, estes módulos são a base dos recursos:
+<p align="center">
+<a name="top"></a>
+</p>
 
-* Fiscais
-* Contábil
-* Sped
+<p align="center">
+<b><a href="#overview">Overview</a></b>
+|
+<b><a href="#features">Features</a></b>
+|
+<b><a href="#installation">Installation</a></b>
+|
+<b><a href="#updating">Updating</a></b>
+|
+<b><a href="#setup">Setup</a></b>
+|
+<b><a href="#structure">Structure</a></b>
+|
+<b><a href="#credits">Credits</a></b>
+|
+<b><a href="#license">License</a></b>
+</p>
 
-Sobre
------
+<br>
+
+This is a repository from Trustcode.
+
+[![Build Status](https://travis-ci.org/Trust-Code/scrum.svg?branch=master)](https://travis-ci.org/Trust-Code/scrum)
+[![Coverage Status](https://coveralls.io/repos/Trust-Code/scrum/badge.svg?branch=master)](https://coveralls.io/r/Trust-Code/scrum?branch=master)
+[![Code Climate](https://codeclimate.com/github/Trust-Code/scrum/badges/gpa.svg)](https://codeclimate.com/github/Trust-Code/scrum)
+[![Code Health](https://landscape.io/github/Trust-Code/scrum/master/landscape.svg?style=flat)](https://landscape.io/github/Trust-Code/scrum/master)
+
+
+## Overview
+
+Este repositório adapta o Odoo 10 para ser usado no Brasil
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Features
+
+TODO
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Installation
+
+TODO
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+### Quick installation
+
+TODO
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Updating
+
+## Setup
+
+### Initialize
+
+TODO
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Structure
+
+TODO
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Credits
+
+**"f I have seen further, it is by standing on the shoulders of giants"**
+
+This repository is built on top of the great work made by those people.
+
+TODO
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Licence [!(https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square)
 
 Este projeto é open source sob licença AGPL v3 http://www.gnu.org/licenses/agpl-3.0.html
 
-Instalação
-----------
-
-Instalar o Odoo para produção foge um pouco do escopo desse projeto, pois é algo complexo, em evolução, e que varia muito dependendo se você quer apenas testar, desenvolver, usar em produção ou ainda hospedar.
-
-Vamos então dar aqui os procedimentos simples para testar apenas o core da localização brasileira do OpenERP numa máquina Ubuntu. Mas deixamos claro que essa forma de instalar certamente não é adequada para produção em termo de segurança, desempenho e mantenabilidade.
-
-```
-# pacotes debian:
-sudo apt-get install postgresql-server
-sudo apt-get install -qq graphviz
-sudo apt-get -ym install python-dateutil python-docutils python-feedparser python-gdata python-jinja2 python-ldap python-lxml python-mako python-mock python-openid python-psycopg2 python-psutil python-pybabel python-pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-unittest2 python-vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi python-imaging bzr
-
-# OpenERP v7.0 nightly:
-wget http://nightly.openerp.com/7.0/nightly/src/openerp-7.0-latest.tar.gz
-mkdir -p src
-tar -xf openerp-7.0-latest.tar.gz -C src
-
-for f in ./src/*
-do
-    echo "$f" | grep -Eq '^\./abc.[0-9]+$' && continue
-    echo "Something with $f here"
-done
-
-mv $f openerp
-rm -rf ./src
-cd openerp
-python setup.py --quiet install
-cd ..
-
-# dependencias para as regras fiscais:
-bzr branch --stacked lp:openerp-fiscal-rules fiscal_rules
-
-# codigo do projeto l10n_br_core (esse projeto):
-git clone https://github.com/openerpbrasil/l10n_br_core.git --depth=1 --branch=7.0
-
-
-psql -c "CREATE USER openerp WITH PASSWORD 'admin';" -U postgres
-psql -c 'create database l10n_br_test with owner openerp;' -U postgres
-
-
-# serviço OpenERP:
-cd openerp
-./openerp-server --db_user=postgres --db_user=openerp --db_password=admin --db_host=localhost --stop-after-init --addons-path=../fiscal_rules,../l10n_br_core
-```
-
-Depois como usuário admin (senha admin), instalar os módulos l10n_br_**
-
-É aconselhado instalar os módulos conforme a necessidade e capacidade de implementação, aos poucos, e não todos os módulos de uma só vez. Instalar com dados de demostração ajuda a melhor avaliar os módulos.
-
-Contribuindo com o código
------------------------
-
-Você pode resolver umas das issues cadastradas no Github ou implementar melhorias em geral, nos enviando um pull request com as suas alterações.
-
-lista de discussão: http://www.openerpbrasil.org/comunidade
+<p align="right"><a href="#top">:arrow_up:</a></p>
