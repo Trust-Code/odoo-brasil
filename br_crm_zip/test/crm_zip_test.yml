@@ -46,9 +46,9 @@
 -
   I create a new zip to test multiple results
 -
-  !record {model: l10n_br.zip, id: crm_zip_test2 }:
+  !record {model: br.zip, id: crm_zip_test2 }:
     zip: 88032040
-    city_id: l10n_br_base.city_4205407
+    city_id: br_base.city_4205407
     state_id: base.state_br_sc
     country_id: base.br
     street: Donicia Maria da Costa
@@ -57,10 +57,10 @@
 -
   I set the values to search the zip and test if it returns two zip
 -
-  !python {model: crm.lead, id: l10n_br_crm_zip.zip_crm_lead_test }: |
+  !python {model: crm.lead, id: br_crm_zip.zip_crm_lead_test }: |
     self.zip = ''
     self.state_id = ref('base.state_br_sc')
-    self.city_id = ref('l10n_br_base.city_4205407')
+    self.city_id = ref('br_base.city_4205407')
     self.street = 'Donicia'
     self.district = ''
     result = self.zip_search()
