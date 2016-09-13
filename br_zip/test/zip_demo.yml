@@ -3,7 +3,7 @@
 -
   !record {model: br.zip, id: company_zip_test }:
     zip: 88032050
-    city_id: l10n_br_base.city_4205407
+    city_id: br_base.city_4205407
     state_id: base.state_br_sc
     country_id: base.br
     street: Donicia
@@ -43,7 +43,7 @@
 -
   !record {model: br.zip, id: company_zip_test2 }:
     zip: 88032040
-    city_id: l10n_br_base.city_4205407
+    city_id: br_base.city_4205407
     state_id: base.state_br_sc
     country_id: base.br
     street: Donicia Maria da Costa
