@@ -120,7 +120,7 @@
         <field ref="id_1_1_5_01_006" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
-        <<field name="amount_type">division</field>
+        <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
