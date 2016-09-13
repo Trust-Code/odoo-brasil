@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record model="ir.ui.view" id="view_l10n_br_zip_tree">
-        <field name="name">l10n_br.zip</field>
-        <field name="model">l10n_br.zip</field>
+        <field name="name">br.zip</field>
+        <field name="model">br.zip</field>
         <field name="arch" type="xml">
             <tree string="CEPs">
                 <field name="zip" select="1"/>
@@ -14,8 +14,8 @@
     </record>
 
     <record model="ir.ui.view" id="view_l10n_br_zip_form">
-        <field name="name">l10n_br.zip</field>
-        <field name="model">l10n_br.zip</field>
+        <field name="name">br.zip</field>
+        <field name="model">br.zip</field>
         <field name="arch" type="xml">
             <form string="CEPs">
                 <group>
@@ -35,12 +35,12 @@
     <record model="ir.actions.act_window" id="action_l10n_br_zip">
         <field name="name">CEPs</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">l10n_br.zip</field>
+        <field name="res_model">br.zip</field>
         <field name="view_mode">tree,form</field>
         <field name="view_type">form</field>
-        <field name="view_id" ref="view_l10n_br_zip_tree"/>
+        <field name="view_id" ref="view_br_zip_tree"/>
     </record>
 
-    <menuitem name="CEPs" id="menu_action_l10n_br_base_zip_form" parent="sales_team.menu_localisation" action="action_l10n_br_zip"/>
+    <menuitem name="CEPs" id="menu_action_br_base_zip_form" parent="sales_team.menu_localisation" action="action_br_zip"/>
 
 </odoo>

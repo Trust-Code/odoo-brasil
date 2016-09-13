@@ -6,8 +6,8 @@
 from odoo import api, fields, models
 
 
-class L10n_brZipSearch(models.TransientModel):
-    _name = 'l10n_br.zip.search'
+class BrZipSearch(models.TransientModel):
+    _name = 'br.zip.search'
     _description = 'Zipcode Search'
 
     zip = fields.Char('CEP', size=8)
@@ -21,7 +21,7 @@ class L10n_brZipSearch(models.TransientModel):
         'res.state.city', 'Cidade',
         domain="[('state_id','=',state_id)]")
     zip_ids = fields.Many2many(
-        'l10n_br.zip.result', 'zip_search', 'zip_search_id',
+        'br.zip.result', 'zip_search', 'zip_search_id',
         'zip_id', 'CEP', readonly=False)
     state = fields.Selection(
         [('init', 'init'), ('done', 'done')],
@@ -31,7 +31,7 @@ class L10n_brZipSearch(models.TransientModel):
 
     @api.model
     def default_get(self, fields):
-        data = super(L10n_brZipSearch, self).default_get(
+        data = super(BrZipSearch, self).default_get(
             fields)
         context = self._context
         data['zip'] = context.get('zip', False)
@@ -50,8 +50,8 @@ class L10n_brZipSearch(models.TransientModel):
     @api.one
     def zip_search(self):
         data = self
-        obj_zip = self.env['l10n_br.zip']
-        obj_zip_result = self.env['l10n_br.zip.result']
+        obj_zip = self.env['br.zip']
+        obj_zip_result = self.env['br.zip.result']
         domain = obj_zip.set_domain(
             country_id=data['country_id'][0],
             state_id=data['state_id'][0],
@@ -71,7 +71,7 @@ class L10n_brZipSearch(models.TransientModel):
 
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'l10n_br.zip.search',
+            'res_model': 'br.zip.search',
             'view_mode': 'form',
             'view_type': 'form',
             'res_id': data['id'],
@@ -97,14 +97,14 @@ class L10n_brZipSearch(models.TransientModel):
         }
 
 
-class L10n_brZipResult(models.TransientModel):
-    _name = 'l10n_br.zip.result'
+class BrZipResult(models.TransientModel):
+    _name = 'br.zip.result'
     _description = 'Zipcode result'
 
     zip_id = fields.Many2one(
-        'l10n_br.zip', 'Zipcode', readonly=True, invisible=True)
+        'br.zip', 'Zipcode', readonly=True, invisible=True)
     search_id = fields.Many2one(
-        'l10n_br.zip.search', 'Search', readonly=True, invisible=True)
+        'br.zip.search', 'Search', readonly=True, invisible=True)
     address_id = fields.Integer('Id do objeto', invisible=True)
     object_name = fields.Char('Nome do bjeto', size=100, invisible=True)
     # ZIPCODE data to be shown
@@ -121,7 +121,7 @@ class L10n_brZipResult(models.TransientModel):
         domain="[('state_id', '=', state_id)]", readonly=True)
 
     def map_to_zip_result(self, zip_data, object_name, address_id):
-        obj_zip = self.env['l10n_br.zip']
+        obj_zip = self.env['br.zip']
         result = []
 
         for zip_read in zip_data:
@@ -141,7 +141,7 @@ class L10n_brZipResult(models.TransientModel):
         object_name = data['object_name']
         if address_id and object_name:
             obj = self.env[object_name].browse(address_id)
-            obj_zip = self.env['l10n_br.zip']
+            obj_zip = self.env['br.zip']
             result = obj_zip.set_result(data)
             obj.write(result)
         return True

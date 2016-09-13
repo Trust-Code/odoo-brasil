@@ -14,11 +14,11 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 
-class L10n_brZip(models.Model):
+class BrZip(models.Model):
     """ Este objeto persiste todos os códigos postais que podem ser
     utilizados para pesquisar e auxiliar o preenchimento dos endereços.
     """
-    _name = 'l10n_br.zip'
+    _name = 'br.zip'
     _description = 'CEP'
     _rec_name = 'zip'
 
@@ -114,7 +114,7 @@ class L10n_brZip(models.Model):
                     [('ibge_code', '=', res['ibge'][2:]),
                      ('state_id.code', '=', res['uf'])])
 
-                self.env['l10n_br.zip'].create(
+                self.env['br.zip'].create(
                     {'zip': re.sub('[^0-9]', '', res['cep']),
                      'street': res['logradouro'],
                      'district': res['bairro'],
@@ -138,7 +138,7 @@ class L10n_brZip(models.Model):
                         [('ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
 
-                    self.env['l10n_br.zip'].create(
+                    self.env['br.zip'].create(
                         {'zip': re.sub('[^0-9]', '', res['cep']),
                          'street': res['logradouro'],
                          'district': res['bairro'],
@@ -184,7 +184,7 @@ class L10n_brZip(models.Model):
             'name': 'Zip Search',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'l10n_br.zip.search',
+            'res_model': 'br.zip.search',
             'view_id': False,
             'context': context,
             'type': 'ir.actions.act_window',
