@@ -130,7 +130,7 @@ class InvoiceEletronic(models.Model):
             self.company_id.tipo_ambiente == 1 else
             'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'xFant': self.company_id.legal_name if
-            self.company_id.tipo_ambiente == 1 else
+            self.ambiente == 'producao' else
             'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'enderEmit': {
                 'xLgr': self.company_id.street,

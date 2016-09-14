@@ -8,5 +8,5 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    tipo_ambiente = fields.Selection([(1, 'Produção'), (2, 'Homologação'), ],
-                                     string="Homologação", default=1)
+    tipo_ambiente = fields.Selection([('1', 'Produção'), ('2', 'Homologação')],
+                                     string="Homologação", default=2)

@@ -36,5 +36,6 @@ class AccountInvoice(models.Model):
 
     def _prepare_edoc_vals(self, invoice):
         res = super(AccountInvoice, self)._prepare_edoc_vals(invoice)
-        res['ambiente'] = invoice.company_id.tipo_ambiente
+        res['ambiente'] = 'homologacao' \
+            if invoice.company_id.tipo_ambiente == '2' else 'producao'
         return res

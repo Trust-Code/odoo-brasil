@@ -181,7 +181,7 @@
             <field name="view_id" ref="sped_base_eletronic_doc_tree"/>
         </record>
 
-        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="l10n_br_account_new.menu_l10n_br_account"
+        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="br_account.menu_br_account"
                   action="action_sped_base_eletronic_doc" sequence="5"/>
 
     </data>

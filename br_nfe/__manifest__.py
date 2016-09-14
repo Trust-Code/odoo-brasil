@@ -18,7 +18,7 @@
         'br_account_einvoice',
     ],
     'data': [
-        'views/account_fiscal_position.xml'
+        'views/account_fiscal_position.xml',
         'views/res_company.xml'
     ],
     'instalable': True,
