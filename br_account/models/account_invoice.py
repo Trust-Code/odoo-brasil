@@ -33,7 +33,7 @@ class AccountInvoice(models.Model):
         self.amount_discount = sum(l.discount_value for l in lines)
         self.amount_insurance = sum(l.insurance_value for l in lines)
         self.amount_costs = sum(l.other_costs_value for l in lines)
-        self.amount_extimated_tax = sum(l.estimated_tax for l in lines)
+        self.amount_estimated_tax = sum(l.estimated_taxes for l in lines)
 
     @api.one
     @api.depends('move_id.line_ids')
@@ -200,7 +200,7 @@ class AccountInvoiceLine(models.Model):
         self.price_gross = self.quantity * self.price_unit
         self.discount_value = self.price_gross * (self.discount / 100)
 
-    cfop_id = fields.Many2one('l10n_br_account.cfop', 'CFOP')
+    cfop_id = fields.Many2one('br_account.cfop', 'CFOP')
     fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', 'Classificação Fiscal')
     fiscal_type = fields.Selection(
@@ -293,7 +293,7 @@ superior a 70%')],
          ('S', 'Substituta'), ('I', 'Isenta')], 'Tipo do ISSQN',
         required=True, default='N')
     service_type_id = fields.Many2one(
-        'l10n_br_account.service.type', 'Tipo de Serviço')
+        'br_account.service.type', 'Tipo de Serviço')
     issqn_base = fields.Float(
         'Base ISSQN', required=True, digits=dp.get_precision('Account'),
         default=0.00)
@@ -404,6 +404,12 @@ superior a 70%')],
     other_costs_value = fields.Float(
         'Outros Custos', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
+
+    @api.onchange('product_id')
+    def _br_account_onchange_product_id(self):
+        self.service_type_id = self.product_id.service_type_id.id
+        self.fiscal_classification_id = \
+            self.product_id.fiscal_classification_id.id
 
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):

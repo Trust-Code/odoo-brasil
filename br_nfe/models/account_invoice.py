@@ -2,7 +2,6 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
 from odoo import api, fields, models
 
 
@@ -34,3 +33,8 @@ class AccountInvoice(models.Model):
          ('4', u'Devolução de Mercadoria')],
         'Finalidade da Emissão', readonly=True,
         states={'draft': [('readonly', False)]}, default='1')
+
+    def _prepare_edoc_vals(self, invoice):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(invoice)
+        res['ambiente'] = invoice.company_id.tipo_ambiente
+        return res
