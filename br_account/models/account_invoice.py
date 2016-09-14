@@ -33,7 +33,7 @@ class AccountInvoice(models.Model):
         self.amount_discount = sum(l.discount_value for l in lines)
         self.amount_insurance = sum(l.insurance_value for l in lines)
         self.amount_costs = sum(l.other_costs_value for l in lines)
-        self.amount_extimated_tax = sum(l.extimated_tax for l in lines)
+        self.amount_extimated_tax = sum(l.estimated_tax for l in lines)
 
     @api.one
     @api.depends('move_id.line_ids')
