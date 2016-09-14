@@ -10,12 +10,6 @@ from openerp import fields, models
 class AccountFiscalPositionTemplate(models.Model):
     _inherit = 'account.fiscal.position.template'
 
-    fiscal_category_fiscal_type = fields.Selection(
-        [('service', u'Serviço'), ('product', 'Produto')],
-        string='Fiscal Type')
-    type = fields.Selection(
-        [('input', 'Entrada'), ('output', 'Saida')], 'Tipo')
-
 
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'

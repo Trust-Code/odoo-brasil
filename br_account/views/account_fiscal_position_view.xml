@@ -6,8 +6,8 @@
         <field name="model">account.fiscal.position</field>
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
-            <field name="auto_apply" position="before">
-            </field>
+            <group position="after">
+            </group>
         </field>
     </record>
 

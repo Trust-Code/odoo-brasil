@@ -51,17 +51,6 @@ class HrContract(models.Model):
             else:
                 item.calc_date = False
 
-    @api.one
-    @api.constrains('value_va', 'value_vr')
-    def _check_voucher(self):
-        if self.env.user.company_id.check_benefits:
-            return True
-        else:
-            if self.value_va != 0 and self.value_vr != 0:
-                raise ValidationError(
-                    'A configuração da empresa não permite vale alimentação e \
-refeição simultaneamente')
-
     value_va = fields.Float('Vale Alimentação', help='Valor diário')
     percent_va = fields.Float('% Vale Alimentação',
                               help='Percentagem descontada ao final do mês')

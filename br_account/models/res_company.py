@@ -18,9 +18,9 @@ COMPANY_FISCAL_TYPE_DEFAULT = '3'
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document',
-        'Documento Fiscal')
+    fiscal_document_for_product_id = fields.Many2one(
+        'br_account.fiscal.document', "Documento Fiscal para produto")
+
     document_serie_id = fields.Many2one(
         'br_account.document.serie', u'Série Fiscal',
         domain="[('company_id', '=', active_id),('active','=',True)]")
@@ -36,3 +36,10 @@ class ResCompany(models.Model):
     cnae_secondary_ids = fields.Many2many(
         'br_account.cnae', 'res_company_br_account_cnae',
         'company_id', 'cnae_id', 'CNAE Segundários')
+
+    document_serie_product_ids = fields.Many2many(
+        'br_account.document.serie',
+        'res_company_l10n_br_account_document_serie', 'company_id',
+        'document_serie_product_id', 'Série de Documentos Fiscais',
+        domain="[('company_id', '=', active_id),('active','=',True),"
+        "('fiscal_type','=','product')]")

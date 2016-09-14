@@ -15,9 +15,6 @@
         'br_data_account',
     ],
     'data': [
-        'views/br_account_product_view.xml',
-        'views/account_invoice_view.xml',
-        'views/account_view.xml',
         'views/res_company_view.xml',
     ],
 }

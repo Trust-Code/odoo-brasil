@@ -19,6 +19,7 @@
     'data': [
         'views/account_fiscal_position_view.xml',
         'views/account_invoice_view.xml',
+        'views/account.xml',
         'views/br_account_view.xml',
         'views/product_view.xml',
         'views/res_company_view.xml',
