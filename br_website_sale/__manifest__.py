@@ -14,7 +14,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'l10n_br_base', 'website_sale'
+        'br_base', 'website_sale'
     ],
     'data': [
         # 'views/website_sale_view.xml',

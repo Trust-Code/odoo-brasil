@@ -1,47 +1,25 @@
-# -*- encoding: utf-8 -*-
-###############################################################################
-#                                                                             #
-# Copyright (C) 2013  Raphaël Valyi - Akretion                                #
-# Copyright (C) 2014  Renato Lima - Akretion                                  #
-#                                                                             #
-#This program is free software: you can redistribute it and/or modify         #
-#it under the terms of the GNU Affero General Public License as published by  #
-#the Free Software Foundation, either version 3 of the License, or            #
-#(at your option) any later version.                                          #
-#                                                                             #
-#This program is distributed in the hope that it will be useful,              #
-#but WITHOUT ANY WARRANTY; without even the implied warranty of               #
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                #
-#GNU Affero General Public License for more details.                          #
-#                                                                             #
-#You should have received a copy of the GNU Affero General Public License     #
-#along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
-###############################################################################
+# -*- coding: utf-8 -*-
+# © 2014  Renato Lima - Akretion
+# © 2013  Raphaël Valyi - Akretion
+# © 2016 Danimar Ribeiro, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import api, models
-from openerp.osv import orm
-
-class ProcurementOrder(models.Model):
-    _inherit = "procurement.order"
-
-    @api.model
-    def _run_move_create(self, procurement):
-        result = super(ProcurementOrder, self)._run_move_create(procurement)
-        if procurement.sale_line_id:
-            result.update({
-                'fiscal_category_id': procurement.sale_line_id.fiscal_category_id.id,
-                'fiscal_position': procurement.sale_line_id.fiscal_position.id,
-            })
-        return result
+from odoo import fields, models
+from odoo.addons import decimal_precision as dp
 
 
-class SaleOrder(orm.Model):
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
-    def _prepare_invoice(self):
-        result = super(SaleOrder, self)._prepare_invoice()
-        if self.incoterm:
-            result['incoterm'] = self.incoterm.id
-        return result
+    amount_freight = fields.Float(
+        string='Frete', default=0.00, digits=dp.get_precision('Account'),
+        readonly=True, states={'draft': [('readonly', False)]})
+
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    freight_value = fields.Float('Freight',
+                                 default=0.0,
+                                 digits=dp.get_precision('Account'))

@@ -17,14 +17,9 @@
     'data': [
         'views/br_base.xml',
         'views/sale_view.xml',
-        'views/res_config_view.xml',
-        'views/res_company_view.xml',
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'security/l10n_br_sale_security.xml',
-        'data/l10n_br_sale_data.xml',
-        'report/sale_report_view.xml',
     ],
-    'demo': ['demo/l10n_br_sale_demo.xml'],
     'installable': True,
     'auto_install': False
 }
