@@ -25,7 +25,9 @@ class HrPayslip(models.Model):
         res = super(HrPayslip, self).get_worked_day_lines(
             contract_ids, date_from, date_to)
         employee = self.employee_id
-        if self.get_contract(employee, date_from, date_to):
+        contract = self.env['hr.contract'].browse(
+            self.get_contract(employee, date_from, date_to))
+        if contract:
             leaves = self.env['hr.holidays'].search(
                 [('employee_id', '=', self.employee_id.id),
                  ('date_from', '>=', date_from),
@@ -43,7 +45,7 @@ class HrPayslip(models.Model):
              'sequence': 8,
              'code': 'DSR',
              'number_of_days': len(dsr),
-             'contract_id': self.contract_id,
+             'contract_id': contract,
              }
             if dsr_dict['number_of_days'] != 0:
                 res += [dsr_dict, {
@@ -51,7 +53,7 @@ class HrPayslip(models.Model):
                  'sequence': 13,
                  'code': 'P13',
                  'number_of_days': 30,
-                 'contract_id': self.contract_id,
+                 'contract_id': contract,
                 }]
             else:
                 res += [{
@@ -59,7 +61,7 @@ class HrPayslip(models.Model):
                  'sequence': 13,
                  'code': 'P13',
                  'number_of_days': 30,
-                 'contract_id': self.contract_id,
+                 'contract_id': contract,
                 }]
 
             return res
