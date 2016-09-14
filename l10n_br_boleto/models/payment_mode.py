@@ -4,7 +4,7 @@
 
 from ..boleto.document import getBoletoSelection
 from odoo import fields, models
-from odoo.addons import decimal_precision as dp 
+from odoo.addons import decimal_precision as dp
 
 selection = getBoletoSelection()
 
@@ -13,7 +13,7 @@ class PaymentMode(models.Model):
     _name = "payment.mode"
     _description = 'Payment Modes'
     _order = 'name'
-    
+
     name = fields.Char(string='Name', required=True, translate=True)
     company_id = fields.Many2one(
         'res.company', string='Company', required=True, ondelete='restrict',
@@ -21,7 +21,7 @@ class PaymentMode(models.Model):
             'account.payment.mode'))
     active = fields.Boolean(string='Active', default=True)
     bank_account_id = fields.Many2one(
-        'res.partner.bank',string="Bank Account", ondelete='restrict')
+        'res.partner.bank', string="Bank Account", ondelete='restrict')
     late_payment_fee = fields.Float(string=u"Percentual Multa",
                                     digits=dp.get_precision('Account'))
     late_payment_interest = fields.Float(string=u"Juros de Mora ao Mês",

@@ -73,4 +73,4 @@ class ReportCustom(report_int):
         return self.obj.pdf, 'pdf'
 
 
-ReportCustom('report.l10n_br_boleto.report')
+ReportCustom('report.br_boleto.report')
