@@ -45,23 +45,8 @@ class HrPayslip(models.Model):
              'sequence': 8,
              'code': 'DSR',
              'number_of_days': len(dsr),
-             'contract_id': contract,
+             'contract_id': contract.id,
              }
             if dsr_dict['number_of_days'] != 0:
-                res += [dsr_dict, {
-                 'name': "Provisão de #13",
-                 'sequence': 13,
-                 'code': 'P13',
-                 'number_of_days': 30,
-                 'contract_id': contract,
-                }]
-            else:
-                res += [{
-                 'name': "Provisão de #13",
-                 'sequence': 13,
-                 'code': 'P13',
-                 'number_of_days': 30,
-                 'contract_id': contract,
-                }]
-
+                res += [dsr_dict]
             return res
