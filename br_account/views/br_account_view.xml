@@ -152,9 +152,9 @@
         </field>
     </record>
 
-    <record id="br_account_product_cfop_form" model="ir.ui.view">
-        <field name="name">br_account_product.cfop.name</field>
-        <field name="model">br_account_product.cfop</field>
+    <record id="br_account_cfop_form" model="ir.ui.view">
+        <field name="name">br_account.cfop.name</field>
+        <field name="model">br_account.cfop</field>
         <field name="arch" type="xml">
             <form string="CFOP">
                 <sheet>
@@ -174,9 +174,9 @@
         </field>
     </record>
 
-    <record id="br_account_product_cfop_search" model="ir.ui.view">
-        <field name="name">br_account_product.cfop.search</field>
-        <field name="model">br_account_product.cfop</field>
+    <record id="br_account_cfop_search" model="ir.ui.view">
+        <field name="name">br_account.cfop.search</field>
+        <field name="model">br_account.cfop</field>
         <field name="arch" type="xml">
             <search string="CFOP">
                 <filter string="Entrada" icon="terp-accessories-archiver+" domain="[('type', '=', 'input')]" />
@@ -193,9 +193,9 @@
         </field>
     </record>
 
-    <record id="br_account_product_cfop_tree" model="ir.ui.view">
-        <field name="name">br_account_product.cfop.tree</field>
-        <field name="model">br_account_product.cfop</field>
+    <record id="br_account_cfop_tree" model="ir.ui.view">
+        <field name="name">br_account.cfop.tree</field>
+        <field name="model">br_account.cfop</field>
         <field name="arch" type="xml">
             <tree string="CFOP">
                 <field name="code" select="1"/>
@@ -205,9 +205,9 @@
         </field>
     </record>
 
-    <record id="br_account_product_cfop_structure" model="ir.ui.view">
-        <field name="name">br_account_product.cfop.structure</field>
-        <field name="model">br_account_product.cfop</field>
+    <record id="br_account_cfop_structure" model="ir.ui.view">
+        <field name="name">br_account.cfop.structure</field>
+        <field name="model">br_account.cfop</field>
         <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
             <tree string="Estrutura do CFOP">
@@ -218,22 +218,22 @@
         </field>
     </record>
 
-    <record id="br_account_product_cfop_action" model="ir.actions.act_window">
+    <record id="br_account_cfop_action" model="ir.actions.act_window">
         <field name="name">CFOP</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">br_account_product.cfop</field>
+        <field name="res_model">br_account.cfop</field>
         <field name="view_mode">tree,form</field>
         <field name="view_type">form</field>
-        <field name="view_id" ref="br_account_product_cfop_tree"/>
+        <field name="view_id" ref="br_account_cfop_tree"/>
     </record>
 
-    <record id="br_account_product_cfop_structure_action" model="ir.actions.act_window">
+    <record id="br_account_cfop_structure_action" model="ir.actions.act_window">
         <field name="name">Estrutura do CFOP</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">br_account_product.cfop</field>
+        <field name="res_model">br_account.cfop</field>
         <field name="view_type">tree</field>
         <field name="domain">[('parent_id','=',False)]</field>
-        <field name="view_id" ref="br_account_product_cfop_structure"/>
+        <field name="view_id" ref="br_account_cfop_structure"/>
     </record>
 
     <record id="action_br_account_fiscal_document_form" model="ir.actions.act_window">
@@ -290,10 +290,10 @@
         <field name="view_id" ref="view_br_account_service_type_structure"/>
     </record>
 
-    <menuitem id="br_account_product_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_product_cfop_action" sequence="10" />
-    <menuitem id="br_account_product_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_product_cfop_structure_action" sequence="20" />
-
     <menuitem id="menu_br_account_fiscal_manager" name="Cadastros" parent="menu_br_account" sequence="0"/>
+
+    <menuitem id="br_account_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_action" sequence="10" />
+    <menuitem id="br_account_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_structure_action" sequence="20" />
 
     <menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_form" sequence="30" />
 

@@ -10,7 +10,6 @@
     'website': 'http://openerpbrasil.org',
     'version': '10.0.1.0.0',
     'depends': [
-        'br_account_product',
         'br_data_account',
     ],
     'data': [

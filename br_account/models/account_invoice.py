@@ -200,7 +200,7 @@ class AccountInvoiceLine(models.Model):
         self.price_gross = self.quantity * self.price_unit
         self.discount_value = self.price_gross * (self.discount / 100)
 
-    cfop_id = fields.Many2one('l10n_br_account_product.cfop', 'CFOP')
+    cfop_id = fields.Many2one('l10n_br_account.cfop', 'CFOP')
     fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', 'Classificação Fiscal')
     fiscal_type = fields.Selection(

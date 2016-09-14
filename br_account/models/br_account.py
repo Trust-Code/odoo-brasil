@@ -10,7 +10,7 @@ from odoo import api, fields, models
 
 class BrAccountCFOP(models.Model):
     """CFOP - Código Fiscal de Operações e Prestações"""
-    _name = 'br_account_product.cfop'
+    _name = 'br_account.cfop'
     _description = 'CFOP'
 
     code = fields.Char(u'Código', size=4, required=True)
@@ -20,9 +20,9 @@ class BrAccountCFOP(models.Model):
     type = fields.Selection([('input', u'Entrada'), ('output', 'Saída')],
                             'Tipo', required=True)
     parent_id = fields.Many2one(
-        'br_account_product.cfop', 'CFOP Pai')
+        'br_account.cfop', 'CFOP Pai')
     child_ids = fields.One2many(
-        'br_account_product.cfop', 'parent_id', 'CFOP Filhos')
+        'br_account.cfop', 'parent_id', 'CFOP Filhos')
     internal_type = fields.Selection(
         [('view', u'Visualização'), ('normal', 'Normal')],
         'Tipo Interno', required=True, default='normal')
