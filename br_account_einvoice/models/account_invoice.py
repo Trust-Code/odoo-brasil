@@ -28,6 +28,28 @@ class AccountInvoice(models.Model):
             automatically when the invoice is created.""")
 
     @api.multi
+    def action_view_edocs(self):
+        if self.total_edocs == 1:
+            dummy, act_id = self.env['ir.model.data'].get_object_reference(
+                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+            dummy, view_id = self.env['ir.model.data'].get_object_reference(
+                'br_account_einvoice', 'sped_base_eletronic_doc_form')
+            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals['view_id'] = (view_id, u'sped.eletronic.doc.form')
+            vals['views'][1] = (view_id, u'form')
+            vals['views'] = [vals['views'][1], vals['views'][0]]
+            edoc = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', self.id)], limit=1)
+            vals['res_id'] = edoc.id
+            return vals
+        else:
+            dummy, act_id = self.env['ir.model.data'].get_object_reference(
+                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            print vals
+            return vals
+
+    @api.multi
     def action_number(self):
         for invoice in self:
             if not invoice.document_serie_id.internal_sequence_id.id:

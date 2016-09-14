@@ -20,7 +20,7 @@ class InvoiceEletronic(models.Model):
     tipo_operacao = fields.Selection([('entrada', 'Entrada'),
                                       ('saida', 'Saída')], u'Tipo emissão')
     model = fields.Selection([('55', 'NFe'), ('65', 'NFCe')], u'Modelo')
-    serie = fields.Many2one('l10n_br_account.document.serie', string=u'Série')
+    serie = fields.Many2one('br_account.document.serie', string=u'Série')
     numero = fields.Integer(u'Número')
     numero_controle = fields.Integer(u'Número de Controle')
     data_emissao = fields.Datetime(u'Data emissão')

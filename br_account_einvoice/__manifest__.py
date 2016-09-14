@@ -17,6 +17,7 @@
         'document',
         'br_base',
         'br_account',
+        'sale',  # TODO Será que eh a melhor solução?
     ],
     'data': [
         'views/sped_tax_view.xml',
