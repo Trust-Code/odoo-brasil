@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from datetime import datetime
@@ -78,7 +78,6 @@ class AccountInvoice(models.Model):
             'numero_controle': invoice.internal_number,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
-            'ambiente': 'homologacao',
             'finalidade_emissao': '1',
             'consumidor_final': invoice.ind_final,
             'partner_id': invoice.partner_id.id,
@@ -88,40 +87,20 @@ class AccountInvoice(models.Model):
         }
 
         eletronic_items = []
-        total_sum = float()
-        total_frete = float()
-        total_seguro = float()
-        total_desconto = float()
-        total_despesas = float()
-        total_icms = sum([tax.amount for tax in invoice.tax_line_ids.filtered(
-            lambda x: x.tax_id.domain == 'simples')])
-        total_ipi = sum([tax.amount for tax in invoice.tax_line_ids.filtered(
-            lambda x: x.tax_id.domain == 'ipi')])
-        total_pis = sum([tax.amount for tax in invoice.tax_line_ids.filtered(
-            lambda x: x.tax_id.domain == 'pis')])
-        total_cofins = sum(
-            [tax.amount for tax in invoice.tax_line_ids.filtered(
-                lambda x: x.tax_id.domain == 'cofins')])
         for inv_line in invoice.invoice_line_ids:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
-            total_sum += inv_line.price_total
-            total_frete += inv_line.freight_value
-            total_seguro += inv_line.insurance_value
-            total_desconto += (inv_line.price_total
-                               / (1 - inv_line.discount / 100)) - total_sum
-            total_despesas += inv_line.other_costs_value
 
         vals['eletronic_item_ids'] = eletronic_items
-        vals['valor_icms'] = total_icms
-        vals['valor_ipi'] = total_ipi
-        vals['valor_pis'] = total_pis
-        vals['valor_cofins'] = total_cofins
-        vals['valor_bruto'] = total_sum
-        vals['valor_frete'] = total_frete
-        vals['valor_seguro'] = total_seguro
-        vals['valor_desconto'] = total_desconto
-        vals['valor_final'] = total_sum + total_seguro + total_frete
+        vals['valor_icms'] = invoice.icms_value
+        vals['valor_ipi'] = invoice.ipi_value
+        vals['valor_pis'] = invoice.pis_value
+        vals['valor_cofins'] = invoice.cofins_value
+        vals['valor_ii'] = invoice.ii_value
+        vals['valor_bruto'] = invoice.amount_gross
+        vals['valor_seguro'] = invoice.amount_insurance
+        vals['valor_desconto'] = invoice.amount_discount
+        vals['valor_final'] = invoice.amount_total
         return vals
 
     @api.multi

@@ -133,12 +133,12 @@
                             <label for="name"/>
                             <field name="name"/>
                         </page>
-                        <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
+                        <page name="icms" string="ICMS" attrs="{'invisible': [('fiscal_type', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
                                 <group>
                                     <field name="icms_manual" invisible="True"/>
                                     <field name="tax_icms_id" />
-                                    <field name="icms_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="icms_cst" attrs="{'required': [('fiscal_type','=', 'product')]}"/>
                                     <field name="icms_origin"/>
                                     <field name="icms_base_type"/>
                                     <field name="icms_base"/>
@@ -166,23 +166,23 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('fiscal_type','!=', 'service')]}">
                             <group>
                                 <field name="tax_issqn_id" />
                                 <field name="issqn_manual" invisible="True"/>
                                 <field name="issqn_type"/>
                                 <field name="issqn_base"/>
                                 <field name="issqn_percent"/>
-                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                <field name="service_type_id" attrs="{'required': [('fiscal_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
                                 <field name="issqn_value"/>
                             </group>
                         </page>
-                        <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
+                        <page name="ipi" string="IPI" attrs="{'invisible': [('fiscal_type','=', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>
                                     <field name="tax_ipi_id" />
                                     <field name="ipi_manual" invisible="True"/>
-                                    <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="ipi_cst" attrs="{'required': [('fiscal_type','=', 'product')]}"/>
                                     <field name="ipi_type"/>
                                     <field name="ipi_base"/>
                                 </group>
@@ -198,7 +198,7 @@
                                 <group>
                                     <field name="tax_pis_id" />
                                     <field name="pis_manual" invisible="True"/>
-                                    <field name="pis_cst" attrs="{'required': [('product_type','in', ('product', 'service'))]}"/>
+                                    <field name="pis_cst" attrs="{'required': [('fiscal_type','in', ('product', 'service'))]}"/>
                                     <field name="pis_type"/>
                                     <field name="pis_base"/>
                                 </group>
@@ -223,7 +223,7 @@
                                 <group>
                                     <field name="tax_cofins_id" />
                                     <field name="cofins_manual" invisible="True"/>
-                                    <field name="cofins_cst" attrs="{'required': [('product_type','in', ('product', 'service'))]}"/>
+                                    <field name="cofins_cst" attrs="{'required': [('fiscal_type','in', ('product', 'service'))]}"/>
                                     <field name="cofins_type"/>
                                     <field name="cofins_base"/>
                                 </group>
@@ -243,7 +243,7 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
+                        <page name="ii" string="II" attrs="{'invisible': [('fiscal_type','=', 'service')]}">
                             <group string="Detalhes do Imposto de Importação">
                                 <field name="tax_ii_id" />
                                 <field name="ii_base"/>

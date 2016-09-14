@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
@@ -185,7 +185,7 @@ class InvoiceEletronic(models.Model):
             'vSeg': "%.02f" % self.valor_seguro,
             'vServ': '0.00',
             'vDesc': '0.00',
-            'vII': '0.00',
+            'vII': self.valor_ii,
             'vIPI': '0.00',
             'vPIS': '0.00',
             'vCOFINS': '0.00',
