@@ -4,7 +4,7 @@
     <record id="br_delivery_invoice_form" model="ir.ui.view">
         <field name="name">br_delivery.invoice.form</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="br_account.br_account_invoice_form"/>
+        <field name="inherit_id" ref="br_stock_account.br_account_product_invoice_form"/>
         <field name="arch" type="xml">
             <field name="amount_freight" position="before">
                 <separator colspan="4" string="Dados da Transportadora"/>
@@ -18,7 +18,7 @@
     <record id="br_delivery_invoice_supplier_form" model="ir.ui.view">
         <field name="name">br_delivery.invoice.supplier.form</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="br_account.br_account_invoice_supplier_form"/>
+        <field name="inherit_id" ref="br_stock_account.br_account_product_invoice_supplier_form"/>
         <field name="arch" type="xml">
             <field name="amount_freight" position="before">
                 <separator colspan="4" string="Dados da Transportadora"/>
@@ -29,5 +29,4 @@
         </field>
     </record>
 
-	</data>
-</openerp>
+</odoo>

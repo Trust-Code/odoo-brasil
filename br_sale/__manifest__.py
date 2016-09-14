@@ -15,7 +15,7 @@
         'sale', 'br_account',
     ],
     'data': [
-        'views/br_base.xml',
+        'views/br_sale.xml',
         'views/sale_view.xml',
         'security/ir.model.access.csv',
         'security/l10n_br_sale_security.xml',

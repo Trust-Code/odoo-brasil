@@ -13,6 +13,7 @@
     'depends': [
         'br_sale_stock',
         'delivery',
+        'br_stock_account',
     ],
     'data': [
         'views/account_invoice_view.xml',

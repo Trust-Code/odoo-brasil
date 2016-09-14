@@ -10,7 +10,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     vehicle_id = fields.Many2one(
-        'l10n_br_delivery.carrier.vehicle', u'Veículo')
+        'br_delivery.carrier.vehicle', u'Veículo')
     incoterm = fields.Many2one(
         'stock.incoterms', 'Tipo do Frete',
         help="Incoterm which stands for 'International Commercial terms"

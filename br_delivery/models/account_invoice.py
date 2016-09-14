@@ -15,7 +15,7 @@ class AccountInvoice(models.Model):
         'delivery.carrier', 'Transportadora', readonly=True,
         states={'draft': [('readonly', False)]})
     vehicle_id = fields.Many2one(
-        'l10n_br_delivery.carrier.vehicle', u'Veículo', readonly=True,
+        'br_delivery.carrier.vehicle', u'Veículo', readonly=True,
         states={'draft': [('readonly', False)]})
     incoterm = fields.Many2one(
         'stock.incoterms', 'Tipo do Frete', readonly=True,
