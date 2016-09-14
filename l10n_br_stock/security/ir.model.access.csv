@@ -1,5 +1,0 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"l10n_br_account_product_cfop","l10n_br_account_product_new.cfop","l10n_br_account_product_new.model_l10n_br_account_product_cfop","stock.group_stock_user",1,0,0,0
-"l10n_br_account_fiscal_document","l10n_br_account_new.fiscal.document","l10n_br_account_new.model_l10n_br_account_fiscal_document","stock.group_stock_user",1,0,0,0
-"l10n_br_account_document_serie","l10n_br_account_new.document.serie","l10n_br_account_new.model_l10n_br_account_document_serie","stock.group_stock_user",1,0,0,0
-"l10n_br_account_cnae","l10n_br_account_new.cnae","l10n_br_account_new.model_l10n_br_account_cnae","stock.group_stock_user",1,0,0,0

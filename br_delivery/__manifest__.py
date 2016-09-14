@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+# © 2010  Renato Lima - Akretion
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
+{
+    'name': 'Métodos de entrega no Brasil',
+    'summary': """Extende os módulos do Odoo e adiciona novos métodos de
+     entrega para o Brasil - Mantido por Trustcode""",
+    'license': 'AGPL-3',
+    'author': 'Akretion, OpenERP Brasil',
+    'website': 'http://openerpbrasil.org',
+    'version': '10.0.1.0.0',
+    'depends': [
+        'br_sale_stock',
+        'delivery',
+    ],
+    'data': [
+        'views/account_invoice_view.xml',
+        'views/delivery_view.xml',
+        'views/br_delivery_view.xml',
+        'security/ir.model.access.csv',
+    ],
+    'category': 'Localisation',
+    'application': True,
+}
