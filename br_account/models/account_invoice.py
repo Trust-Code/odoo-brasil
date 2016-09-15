@@ -266,7 +266,7 @@ class AccountInvoiceLine(models.Model):
     icms_cst = fields.Char('CST ICMS', size=10)
     icms_percent_credit = fields.Float(u"% Cŕedito ICMS")
     icms_value_credit = fields.Float(u"Valor de Crédito")
-    origin = fields.Selection(
+    origin_product = fields.Selection(
         [('0', '0 - Nacional'),
          ('1', '1 - Estrangeira - Importação direta'),
          ('2', '2 - Estrangeira - Adquirida no mercado interno'),
