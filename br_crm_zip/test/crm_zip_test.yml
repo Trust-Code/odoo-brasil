@@ -65,6 +65,6 @@
     self.district = ''
     result = self.zip_search()
     assert result['type'] == 'ir.actions.act_window', 'It should return a action when there are more than one result'
-    assert result['res_model'] == 'l10n_br.zip.search', 'It should return the model zip.search'
+    assert result['res_model'] == 'br.zip.search', 'It should return the model zip.search'
     assert result['context']['street'] == 'Donicia', 'It should return the correct street'
     assert result['context']['state_id'] == ref('base.state_br_sc'), 'It should return the correct state'

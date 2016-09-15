@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="br_document_serie_1" model="br_account.document.serie">
         <field name="code">1</field>
-        <field name="name">Série 1</field>
+        <field name="name">Série 1 - Nota Eletrônica</field>
         <field name="fiscal_document_id" ref="br_data_account.fiscal_document_55" />
         <field name="company_id" ref="base.main_company" />
         <field name="active">True</field>
@@ -10,7 +11,7 @@
     </record>
 
     <record id="base.main_company" model="res.company">
-        <field name="fiscal_document_for_product_id" ref="br_data_account.fiscal_document_55"/>
+        <field name="fiscal_document_for_product_id" ref="br_data_account.fiscal_document_1B"/>
         <field name="document_serie_id" ref="br_document_serie_1" />
         <field name="currency_id" ref="base.BRL"/>
     </record>
