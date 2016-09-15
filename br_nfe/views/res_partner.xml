@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_br_nfe_res_partner_form" model="ir.ui.view">
+        <field name="name">view.br_nfe.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="br_base.view_br_base_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="suframa" position="after" >
+                <field name="indicador_ie_dest" />
+            </field>
+        </field>
+    </record>
+</odoo>

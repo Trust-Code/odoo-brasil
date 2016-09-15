@@ -21,7 +21,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     cnpj_cpf = fields.Char('CNPJ/CPF', size=18, copy=False)
-    inscr_est = fields.Char('Inscr. Estadual/RG', size=16, copy=False)
+    inscr_est = fields.Char('Inscr. Estadual', size=16, copy=False)
+    rg_fisica = fields.Char('RG', size=16, copy=False)
     inscr_mun = fields.Char('Inscr. Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
     legal_name = fields.Char(

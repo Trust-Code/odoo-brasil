@@ -11,9 +11,8 @@ class AccountFiscalPositionTemplate(models.Model):
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Consumidor final')
-    ], u'Operação com Consumidor final', readonly=True,
-        states={'draft': [('readonly', False)]}, required=False,
-        help=u'Indica operação com Consumidor final.', default='0')
+    ], u'Operação com Consumidor final',
+        help=u'Indica operação com Consumidor final.')
     ind_pres = fields.Selection([
         ('0', u'Não se aplica'),
         ('1', u'Operação presencial'),
@@ -21,8 +20,7 @@ class AccountFiscalPositionTemplate(models.Model):
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
         ('9', u'Operação não presencial, outros'),
-    ], u'Tipo de operação', readonly=True,
-        states={'draft': [('readonly', False)]}, required=False,
+    ], u'Tipo de operação',
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
@@ -34,9 +32,10 @@ class AccountFiscalPosition(models.Model):
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Consumidor final')
-    ], u'Operação com Consumidor final', readonly=True,
-        states={'draft': [('readonly', False)]}, required=False,
-        help=u'Indica operação com Consumidor final.', default='0')
+    ], u'Operação com Consumidor final',
+        help=u'Indica operação com Consumidor final. Se não utilizado usa\
+        a seguinte regra:\n 0 - Normal quando pessoa jurídica\n1 - Consumidor \
+        Final quando for pessoa física')
     ind_pres = fields.Selection([
         ('0', u'Não se aplica'),
         ('1', u'Operação presencial'),
@@ -44,8 +43,7 @@ class AccountFiscalPosition(models.Model):
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
         ('9', u'Operação não presencial, outros'),
-    ], u'Tipo de operação', readonly=True,
-        states={'draft': [('readonly', False)]}, required=False,
+    ], u'Tipo de operação',
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')

@@ -46,7 +46,6 @@ class AccountInvoice(models.Model):
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
                 'br_account_einvoice', 'action_sped_base_eletronic_doc')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
-            print vals
             return vals
 
     @api.multi
@@ -81,7 +80,6 @@ class AccountInvoice(models.Model):
             'icms_cst': invoice_line.icms_cst,
             'icms_percentual_credit': invoice_line.icms_percent_credit,
             'icms_value_credit': invoice_line.icms_value_credit
-
         }
 
         return vals
@@ -94,14 +92,13 @@ class AccountInvoice(models.Model):
             'company_id': invoice.company_id.id,
             'state': 'draft',
             'tipo_operacao': 'saida',
-            'model': '55',
+            'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
             'numero': invoice.internal_number,
             'numero_controle': invoice.internal_number,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
-            'consumidor_final': invoice.ind_final,
             'partner_id': invoice.partner_id.id,
             'partner_shipping_id': invoice.partner_shipping_id.id,
             'payment_term_id': invoice.payment_term_id.id,
@@ -130,8 +127,11 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         self.action_number()
         for item in self:
-            edoc_vals = self._prepare_edoc_vals(item)
-            self.env['invoice.eletronic'].create(edoc_vals)
+            if item.is_eletronic:
+                edoc_vals = self._prepare_edoc_vals(item)
+                if edoc_vals:
+                    eletronic = self.env['invoice.eletronic'].create(edoc_vals)
+                    eletronic.validate_invoice()
         return res
 
     @api.multi

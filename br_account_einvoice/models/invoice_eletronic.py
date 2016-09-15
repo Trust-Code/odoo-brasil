@@ -34,10 +34,6 @@ class InvoiceEletronic(models.Model):
                                            ('3', 'Ajuste'),
                                            ('4', 'Devolução')],
                                           u'Finalidade da emissão')
-    consumidor_final = fields.Selection([('0', 'Normal'),
-                                         ('1', 'Consumidor')],
-                                        u'Indicador de Consumidor Final')
-
     invoice_id = fields.Many2one('account.invoice', u'Fatura')
     partner_id = fields.Many2one('res.partner', u'Parceiro')
     partner_shipping_id = fields.Many2one('res.partner', u'Entrega')

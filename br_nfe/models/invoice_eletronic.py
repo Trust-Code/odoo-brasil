@@ -3,24 +3,44 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import pytz
 import base64
-from uuid import uuid4
 from datetime import datetime
-from openerp import api, models
+from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from pytrustnfe.nfe import autorizar_nfe
-from pytrustnfe.utils import gerar_chave
 from pytrustnfe.certificado import Certificado
 
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    ind_final = fields.Selection([
+        ('0', u'Não'),
+        ('1', u'Consumidor final')
+    ], u'Operação com Consumidor final', readonly=True,
+        states={'draft': [('readonly', False)]}, required=False,
+        help=u'Indica operação com Consumidor final.', default='0')
+    ind_pres = fields.Selection([
+        ('0', u'Não se aplica'),
+        ('1', u'Operação presencial'),
+        ('2', u'Operação não presencial, pela Internet'),
+        ('3', u'Operação não presencial, Teleatendimento'),
+        ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('9', u'Operação não presencial, outros'),
+    ], u'Tipo de operação', readonly=True,
+        states={'draft': [('readonly', False)]}, required=False,
+        help=u'Indicador de presença do comprador no\n'
+             u'estabelecimento comercial no momento\n'
+             u'da operação.', default='0')
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if not self.consumidor_final:
-            errors.append('Configure o indicador de consumidor final')
+        if not self.ind_final:
+            errors.append(u'Configure o indicador de consumidor final')
+        if not self.fiscal_position_id:
+            errors.append(u'Configure a posição fiscal')
 
         for inv_line in self.eletronic_item_ids:
             prod = u"Produto: %s - %s" % (inv_line.product_id.default_code,
@@ -100,7 +120,6 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
-        import pytz
         tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
         dt_emissao = datetime.strptime(self.data_emissao, DTFT)
         dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
@@ -109,7 +128,7 @@ class InvoiceEletronic(models.Model):
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': 1,
+            'indPag': self.payment_term_id.indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
@@ -119,24 +138,20 @@ class InvoiceEletronic(models.Model):
             'idDest': self._id_dest()[0],
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
                                 self.company_id.city_id.ibge_code),
-            'tpImp': 1,
-            'tpEmis': 1,
-            'cDV': 3,
-            'tpAmb': 2,
+            # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
+            'tpImp': '1' if self.model == '55' else '4',
+            'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
+            'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
-            'indFinal': self.consumidor_final,
-            'indPres': 0,
+            'indFinal': self.ind_final,
+            'indPres': self.ind_pres,
             'procEmi': 0
         }
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
-            'xNome': self.company_id.name if
-            self.ambiente == 'producao' else
-            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-            'xFant': self.company_id.legal_name if
-            self.ambiente == 'producao' else
-            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
+            'xNome': self.company_id.legal_name,
+            'xFant': self.company_id.name,
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
@@ -152,15 +167,27 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
-            'CRT': u'1'
+            'CRT': self.company_id.fiscal_type,
         }
+        ind_ie_dest = False
+        if self.partner_id.is_company:
+            if self.partner_id.inscr_est:
+                ind_ie_dest = '1'
+            elif self.partner_id.state_id.code in ('AM', 'BA', 'CE', 'GO',
+                                                   'MG', 'MS', 'MT', 'PE',
+                                                   'RN', 'SP'):
+                ind_ie_dest = '9'
+            else:
+                ind_ie_dest = '2'
+        else:
+            ind_ie_dest = '9'
+        if self.partner_id.indicador_ie_dest:
+            ind_ie_dest = self.partner_id.indicador_ie_dest
+
         dest = {
             'tipo': self.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf),
-            'xNome': self.partner_id.legal_name
-            if self.ambiente == 'producao' else
-            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-            'xFant': self.partner_id.name,
+            'xNome': self.partner_id.legal_name or self.partner_id.name,
             'enderDest': {
                 'xLgr': self.partner_id.street,
                 'nro': self.partner_id.number,
@@ -174,14 +201,23 @@ class InvoiceEletronic(models.Model):
                 'xPais': self.partner_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
             },
-            'indIEDest': 9,
+            'indIEDest': ind_ie_dest,
             'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
         }
+        if self.ambiente == 'homologacao':
+            dest['xNome'] = \
+                'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
+        if self.partner_id.country_id.id != self.company_id.country_id.id:
+            dest['enderDest']['UF'] = 'EX'
+            dest['enderDest']['xMun'] = 'Exterior'
+            dest['enderDest']['cMun'] = '9999999'
+
         eletronic_items = []
         for item in self.eletronic_item_ids:
             eletronic_items.append(
                 self._prepare_eletronic_invoice_item(item, self))
         total = {
+            # ICMS
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': '0.00',
@@ -190,7 +226,6 @@ class InvoiceEletronic(models.Model):
             'vProd': "%.02f" % self.valor_bruto,
             'vFrete': "%.02f" % self.valor_frete,
             'vSeg': "%.02f" % self.valor_seguro,
-            'vServ': '0.00',
             'vDesc': '0.00',
             'vII': "%.02f" % self.valor_ii,
             'vIPI': '0.00',
@@ -198,7 +233,11 @@ class InvoiceEletronic(models.Model):
             'vCOFINS': '0.00',
             'vOutro': "%.02f" % self.valor_despesas,
             'vNF': "%.02f" % self.valor_final,
-            'vTotTrib': '0.00'
+            'vTotTrib': '0.00',
+            #ISSQn
+            'vServ': '0.00',
+            #Retenções
+
         }
         transp = {
             'modFrete': 9
@@ -252,6 +291,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
+        self.ambiente = 'homologacao'  # Evita esquecimentos
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
         nfe_values = self._prepare_eletronic_invoice_values()

@@ -93,7 +93,6 @@
                                 <field name="data_autorizacao"/>
                                 <field name="ambiente"/>
                                 <field name="finalidade_emissao"/>
-                                <field name="consumidor_final"/>
                             </group>
                         </group>
                         <group>
@@ -110,7 +109,6 @@
                                 <field name="valor_bc_icms" />
                                 <field name="valor_icms" />
                                 <field name="valor_icms_deson" />
-
                                 <field name="valor_bc_icmsst" />
                                 <field name="valor_icmsst" />
                                 <field name="valor_ii" />
