@@ -19,6 +19,7 @@
                             <field name="freight_value" />
                             <field name="other_expenses" />
                             <field name="total" />
+                            <field name="indicador_total" />
                         </group>
                         <group>
                             <field name="cfop" />
@@ -106,12 +107,12 @@
                                 <field name="valor_final" />
                             </group>
                             <group name="impostos" string="Impostos">
-                                <field name="valor_BC" />
+                                <field name="valor_bc_icms" />
                                 <field name="valor_icms" />
                                 <field name="valor_icms_deson" />
 
-                                <field name="valor_bcst" />
-                                <field name="valor_st" />
+                                <field name="valor_bc_icmsst" />
+                                <field name="valor_icmsst" />
                                 <field name="valor_ii" />
                                 <field name="valor_ipi" />
                                 <field name="valor_pis" />

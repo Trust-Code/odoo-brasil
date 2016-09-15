@@ -77,11 +77,11 @@ class InvoiceEletronic(models.Model):
     valor_desconto = fields.Float(u'Valor do desconto')
     valor_despesas = fields.Float(u'Valor despesas')
     valor_retencoes = fields.Float(u'Retenções')
-    valor_BC = fields.Float(u"Valor da Base de Cálculo")
+    valor_bc_icms = fields.Float(u"Valor da Base de Cálculo")
     valor_icms = fields.Float(u"Valor do ICMS")
     valor_icms_deson = fields.Float(u'Valor ICMSDeson')
-    valor_bcst = fields.Float(u'Valor BCST')
-    valor_st = fields.Float(u'Valor ST')
+    valor_bc_icmsst = fields.Float(u'Valor BCST')
+    valor_icmsst = fields.Float(u'Valor ST')
     valor_ii = fields.Float(u'Valor do Imposto de Importação')
     valor_ipi = fields.Float(u"Valor do IPI")
     valor_pis = fields.Float(u"Valor PIS")
@@ -268,6 +268,9 @@ class InvoiceEletronicItem(models.Model):
 
     gross_total = fields.Float(u'Valor Bruto')
     total = fields.Float(u'Valor Liquido')
+    indicador_total = fields.Selection(
+        [('0', 'Não'), ('1', 'Sim')],
+        string="Compõe Total da Nota?", default='1')
 
     origem = fields.Selection(
         [('0', '0 - Nacional'),

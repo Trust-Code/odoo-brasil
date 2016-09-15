@@ -19,6 +19,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
+        if not self.consumidor_final:
+            errors.append('Configure o indicador de consumidor final')
 
         for inv_line in self.eletronic_item_ids:
             prod = u"Produto: %s - %s" % (inv_line.product_id.default_code,
@@ -53,7 +55,7 @@ class InvoiceEletronic(models.Model):
             'uTrib': item.uom_id.name,
             'qTrib': item.quantity,
             'vUnTrib': item.unit_price,
-            'indTot': 0,
+            'indTot': item.indicador_total,
             'cfop': item.cfop
         }
         imposto = {
@@ -62,9 +64,9 @@ class InvoiceEletronic(models.Model):
                 'orig':  item.origem,
                 'CST': item.icms_cst,
                 'modBC': item.icms_modalidade_BC,
-                'vBC': "%.02f" % self.valor_BC,
+                'vBC': "%.02f" % item.icms_base_calculo,
                 'pICMS': "%.02f" % item.icms_aliquota,
-                'vICMS': "%.02f" % self.valor_icms,
+                'vICMS': "%.02f" % item.icms_valor,
                 'pCredSN': "%.02f" % item.icms_value_credit,
                 'vCredICMSSN': "%.02f" % item.icms_value_percentual
             },
@@ -72,7 +74,7 @@ class InvoiceEletronic(models.Model):
                 'cEnq': 999,
                 'IPITrib': {
                     'CST': '50',
-                    'vBC': '100.00',
+                    'vBC': '0.00',
                     'pIPI': "%.02f" % item.tax_ipi_id.aliquota,
                     'vIPI': "%.02f" % self.valor_ipi
                 }
@@ -80,7 +82,7 @@ class InvoiceEletronic(models.Model):
             'PIS': {
                 'PISAliq': {
                     'CST': '01',
-                    'vBC': '100.00',
+                    'vBC': '0.00',
                     'pPIS': '0.0000',
                     'vPIS': '0.00'
                 }
@@ -88,7 +90,7 @@ class InvoiceEletronic(models.Model):
             'COFINS': {
                 'COFINSAliq': {
                     'CST': '01',
-                    'vBC': '100.00',
+                    'vBC': '0.00',
                     'pCOFINS': '0.0000',
                     'vCOFINS': '0.00'
                 }
@@ -98,6 +100,11 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
+        import pytz
+        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
+        dt_emissao = datetime.strptime(self.data_emissao, DTFT)
+        dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
+
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
@@ -106,10 +113,8 @@ class InvoiceEletronic(models.Model):
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': datetime.strptime(
-                self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
-            'dhSaiEnt': datetime.strptime(
-                self.data_emissao, DTFT).strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+            'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+            'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'tpNF': self.finalidade_emissao,
             'idDest': self._id_dest()[0],
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -127,11 +132,11 @@ class InvoiceEletronic(models.Model):
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'xNome': self.company_id.name if
-            self.company_id.tipo_ambiente == 1 else
-            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
+            self.ambiente == 'producao' else
+            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'xFant': self.company_id.legal_name if
             self.ambiente == 'producao' else
-            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
+            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
@@ -147,12 +152,14 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
-            'CRT': '3'
+            'CRT': u'1'
         }
         dest = {
             'tipo': self.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf),
-            'xNome': self.partner_id.legal_name,
+            'xNome': self.partner_id.legal_name
+            if self.ambiente == 'producao' else
+            'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
             'xFant': self.partner_id.name,
             'enderDest': {
                 'xLgr': self.partner_id.street,
@@ -175,17 +182,17 @@ class InvoiceEletronic(models.Model):
             eletronic_items.append(
                 self._prepare_eletronic_invoice_item(item, self))
         total = {
-            'vBC': "%.02f" % self.valor_bruto,
-            'vICMS': '0.00',
+            'vBC': "%.02f" % self.valor_bc_icms,
+            'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': '0.00',
-            'vBCST': '0.00',
-            'vST': '0.00',
+            'vBCST': "%.02f" % self.valor_bc_icmsst,
+            'vST': "%.02f" % self.valor_icmsst,
             'vProd': "%.02f" % self.valor_bruto,
             'vFrete': "%.02f" % self.valor_frete,
             'vSeg': "%.02f" % self.valor_seguro,
             'vServ': '0.00',
             'vDesc': '0.00',
-            'vII': self.valor_ii,
+            'vII': "%.02f" % self.valor_ii,
             'vIPI': '0.00',
             'vPIS': '0.00',
             'vCOFINS': '0.00',
@@ -225,7 +232,7 @@ class InvoiceEletronic(models.Model):
             'idLote': lote,
             'indSinc': 1,
             'estado': self.company_id.partner_id.state_id.ibge_code,
-            'ambiente': self.company_id.tipo_ambiente,
+            'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
                 'infNFe': nfe_values
             }]
@@ -267,11 +274,18 @@ class InvoiceEletronic(models.Model):
                 nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.cStat
             self.mensagem_retorno = resposta['object'].Body.\
                 nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.xMotivo
+            if self.codigo_retorno == '100':
+                self.write({'state': 'done'})
+            # Duplicidade de NF-e significa que a nota já está emitida
+            # TODO Buscar o protocolo de autorização, por hora só finalizar
+            if self.codigo_retorno == '204':
+                self.write({'state': 'done', 'codigo_retorno': '100',
+                            'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
-        event = self.env['invoice.eletronic.event'].create({
+        self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
         self._create_attachment(self, resposta['sent_xml'])
-        # self._create_attachment(self, resposta['received_xml'])
+        self._create_attachment(self, resposta['received_xml'])

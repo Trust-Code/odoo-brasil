@@ -113,7 +113,7 @@ class ResCompany(models.Model):
             if len(val) == 14:
                 cnpj_cpf = "%s.%s.%s/%s-%s"\
                     % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
-            self.cnpj_cpf = cnpj_cpf
+                self.cnpj_cpf = cnpj_cpf
 
     @api.onchange('city_id')
     def onchange_city_id(self):
