@@ -51,7 +51,7 @@ class Boleto:
 
     @staticmethod
     def getBoletoClass(move_line):
-        bank_code = move_line.payment_mode_id.bank_id.bank.bic
+        bank_code = move_line.payment_mode_id.bank_account_id.bank_id.bic
         return bank.get_class_for_codigo(bank_code)
 
     def __init__(self, move_line, nosso_numero):
@@ -77,7 +77,7 @@ class Boleto:
         self.boleto.data_vencimento = datetime.date(datetime.strptime(
             move_line.date_maturity, '%Y-%m-%d'))
         self.boleto.data_documento = datetime.date(datetime.strptime(
-            move_line.invoice.date_invoice, '%Y-%m-%d'))
+            move_line.invoice_id.date_invoice, '%Y-%m-%d'))
         self.boleto.data_processamento = date.today()
         self.boleto.valor = str("%.2f" % move_line.debit or move_line.credit)
         self.boleto.valor_documento = str("%.2f" % move_line.debit or
@@ -159,8 +159,10 @@ class BoletoBB(Boleto):
         # 1: Nosso Numero with 5 positions
         # 2: Nosso Numero with 17 positions
         self.boleto = Boleto.getBoletoClass(move_line)(7, 2)
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -168,8 +170,10 @@ class BoletoBB(Boleto):
 class BoletoBanrisul(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -177,11 +181,15 @@ class BoletoBanrisul(Boleto):
 class BoletoBradesco(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         # bank specific
-        self.account_digit = move_line.payment_mode_id.bank_id.acc_number_dig
-        self.branch_digit = move_line.payment_mode_id.bank_id.bra_number_dig
+        self.account_digit = move_line.payment_mode_id.\
+            bank_account_id.acc_number_dig
+        self.branch_digit = move_line.payment_mode_id.\
+            bank_account_id.bra_number_dig
         # end bank specific
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
@@ -191,10 +199,13 @@ class BoletoBradesco(Boleto):
 class BoletoCaixa(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         # bank specific
-        self.account_digit = move_line.payment_mode_id.bank_id.acc_number_dig
+        self.account_digit = move_line.payment_mode_id.\
+            bank_account_id.acc_number_dig
         # end bank specific
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
@@ -203,8 +214,10 @@ class BoletoCaixa(Boleto):
 class BoletoHsbc(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -216,8 +229,10 @@ class BoletoItau157(Boleto):
 class BoletoItau(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -229,8 +244,10 @@ class BoletoReal(Boleto):
 class BoletoSantander(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.ios = '0'
         self.boleto.nosso_numero = self.nosso_numero
@@ -247,23 +264,30 @@ class BoletoCaixaSigcb(Boleto):
 class BoletoSicredi(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
 
 class BoletoSicoob(Boleto):
     def __init__(self, move_line, nosso_numero):
+        import ipdb; ipdb.set_trace()
         self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.bank_id.acc_number
-        self.account_digit = move_line.payment_mode_id.bank_id.acc_number_dig
-        self.branch_number = move_line.payment_mode_id.bank_id.bra_number
-        self.branch_digit = move_line.payment_mode_id.bank_id.bra_number_dig
+        self.account_number = move_line.payment_mode_id.\
+            bank_account_id.acc_number
+        self.account_digit = move_line.payment_mode_id.\
+            bank_account_id.acc_number_dig
+        self.branch_number = move_line.payment_mode_id.\
+            bank_account_id.bra_number
+        self.branch_digit = move_line.payment_mode_id.\
+            bank_account_id.bra_number_dig
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.codigo_beneficiario = \
             re.sub('[^0-9]', '',
-                   move_line.payment_mode_id.bank_id.codigo_da_empresa)
+                   move_line.payment_mode_id.bank_account_id.codigo_da_empresa)
         self.boleto.nosso_numero = self.nosso_numero
 
     def getAccountNumber(self):
@@ -273,15 +297,15 @@ class BoletoSicoob(Boleto):
         return self.branch_number.encode('utf-8')
 
 dict_boleto = {
-    '1': (BoletoBB, 'Banco do Brasil'),
-    '2': (BoletoBanrisul, 'Banrisul'),
-    '3': (BoletoBradesco, 'Bradesco'),
-    '4': (BoletoCaixa, 'Caixa Econômica'),
-    '5': (BoletoHsbc, 'HSBC'),
-    '6': (BoletoItau, 'Itaú'),
-    '7': (BoletoSantander, 'Santander'),
-    '8': (BoletoSicredi, 'Sicredi'),
-    '9': (BoletoSicoob, 'Sicoob'),
+    u'1': (BoletoBB, 'Banco do Brasil'),
+    u'2': (BoletoBanrisul, 'Banrisul'),
+    u'3': (BoletoBradesco, 'Bradesco'),
+    u'4': (BoletoCaixa, 'Caixa Econômica'),
+    u'5': (BoletoHsbc, 'HSBC'),
+    u'6': (BoletoItau, 'Itaú'),
+    u'7': (BoletoSantander, 'Santander'),
+    u'8': (BoletoSicredi, 'Sicredi'),
+    u'9': (BoletoSicoob, 'Sicoob'),
 }
 
 

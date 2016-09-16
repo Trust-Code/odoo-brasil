@@ -244,7 +244,6 @@ class ResPartnerBank(models.Model):
     _inherit = 'res.partner.bank'
 
     acc_number = fields.Char('Account Number', size=64, required=False)
-    bank = fields.Many2one('res.bank', 'Bank', required=False)
     acc_number_dig = fields.Char(u'Digito Conta', size=8)
     bra_number = fields.Char(u'Agência', size=8)
     bra_number_dig = fields.Char(u'Dígito Agência', size=8)

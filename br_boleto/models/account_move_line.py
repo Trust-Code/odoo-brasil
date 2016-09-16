@@ -19,6 +19,9 @@ class AccountMoveLine(models.Model):
     def action_register_boleto(self):
         boleto_list = []
         for move in self:
+            if not move.company_id.nosso_numero_sequence.id:
+                raise UserError('Ação Bloqueada\nCadastre a sequência do nosso \
+número nas configurações da companhia')
             if not move.boleto_emitido:
                 move.nosso_numero = \
                     move.company_id.nosso_numero_sequence.next_by_id()

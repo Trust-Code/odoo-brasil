@@ -7,8 +7,12 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
             <tree name="vencimentos" position="inside">
+                <field name="payment_mode_id" />                
                 <button name="action_generate_boleto" type="object" string="Boletos" />
             </tree>
+            <field name="payment_term_id" position="after">
+                <field name="payment_mode_id" />
+            </field>
         </field>
     </record>
 

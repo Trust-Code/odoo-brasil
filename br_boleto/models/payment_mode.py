@@ -26,7 +26,7 @@ class PaymentMode(models.Model):
                                     digits=dp.get_precision('Account'))
     late_payment_interest = fields.Float(string=u"Juros de Mora ao Mês",
                                          digits=dp.get_precision('Account'))
-
+    instrucoes = fields.Text(string=u'Instruções')
     boleto_carteira = fields.Char('Carteira', size=3)
     boleto_modalidade = fields.Char('Modalidade', size=2)
     boleto_convenio = fields.Char(u'Codigo convênio', size=10)
