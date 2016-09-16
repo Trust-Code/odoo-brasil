@@ -182,10 +182,9 @@ class ResPartner(models.Model):
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)
-
             cnpj = re.sub('[^0-9]', '', self.cnpj_cpf)
             obj = {'cnpj': cnpj, 'estado': self.state_id.code}
-            resposta = consulta_cadastro(certificado, obj=obj,
+            resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,
                                          estado=self.state_id.ibge_code)
 
             obj = resposta['object']
