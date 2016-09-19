@@ -7,7 +7,7 @@
                 string="Boleto"/>
 
         <report id="action_insert_reports_print_button_account_invoice"
-                name="br_boleto.report"
+                name="br_boleto.report.print"
                 model="account.invoice"
                 string="Boleto"/>
     </data>

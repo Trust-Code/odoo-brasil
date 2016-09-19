@@ -32,4 +32,13 @@ número nas configurações da companhia')
 
     @api.multi
     def action_generate_boleto(self):
-        raise UserError('Oi')
+        return({
+            'name': 'Alterar / Reinprimir Boleto',
+            'type': 'ir.actions.act_window',
+            'res_model': 'br.boleto.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_date_change': fields.Date.context_today(self),
+                        'default_invoice_id': self.invoice_id.id}
+        })

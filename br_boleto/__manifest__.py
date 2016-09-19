@@ -24,6 +24,7 @@
         'views/payment_mode.xml',
         'views/res_partner_bank.xml',
         'reports/report_print_button_view.xml',
+        'wizard/br_boleto_wizard.xml',
     ],
     'instalable': True,
     'application': True,

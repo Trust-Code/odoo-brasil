@@ -75,4 +75,4 @@ forma de pagamento seja duplicatas""")
         return self.obj.pdf, 'pdf'
 
 
-ReportCustom('report.br_boleto.report')
+ReportCustom('report.br_boleto.report.print')
