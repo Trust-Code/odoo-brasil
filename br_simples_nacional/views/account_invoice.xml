@@ -5,9 +5,7 @@
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
         <field name="arch" type="xml">
-            <field name="product_type" position="after">
-                <field name="company_fiscal_type" invisible="1" />
-            </field>
+
             <page name="issqn" position="replace"></page>
             <page name="ipi" position="replace"></page>
             <page name="pis" position="replace"></page>

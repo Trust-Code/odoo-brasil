@@ -9,10 +9,6 @@ from odoo import api, fields, models
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
-    company_fiscal_type = fields.Selection(
-        related='company_id.fiscal_type',
-        string="Regime Tributário")
-
     tax_icms_id = fields.Many2one('account.tax', string="ICMS",
                                   domain=[('domain', '=', 'simples')])
 
