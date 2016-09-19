@@ -73,7 +73,6 @@ class Boleto:
         return self.branch_number.encode('utf-8')
 
     def _move_line(self, move_line):
-        import ipdb; ipdb.set_trace()
         self._payment_mode(move_line.payment_mode_id)
         self.boleto.data_vencimento = datetime.date(datetime.strptime(
             move_line.date_maturity, '%Y-%m-%d'))
