@@ -44,7 +44,6 @@ class AccountInvoice(models.Model):
                     error += u'Número\n'
                 if not self.company_id.state_id.code:
                     error += u'Estado\n'
-                import ipdb; ipdb.set_trace()
                 if len(error) > 0:
                     raise UserError(u"""Ação Bloqueada!
 Para prosseguir é necessário preencher os seguintes campos nas configurações \

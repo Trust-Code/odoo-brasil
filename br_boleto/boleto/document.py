@@ -73,18 +73,19 @@ class Boleto:
         return self.branch_number.encode('utf-8')
 
     def _move_line(self, move_line):
+        import ipdb; ipdb.set_trace()
         self._payment_mode(move_line.payment_mode_id)
         self.boleto.data_vencimento = datetime.date(datetime.strptime(
             move_line.date_maturity, '%Y-%m-%d'))
         self.boleto.data_documento = datetime.date(datetime.strptime(
             move_line.invoice_id.date_invoice, '%Y-%m-%d'))
         self.boleto.data_processamento = date.today()
-        self.boleto.valor = str("%.2f" % move_line.debit or move_line.credit)
-        self.boleto.valor_documento = str("%.2f" % move_line.debit or
-                                          move_line.credit)
+        self.boleto.valor = str("%.2f" % (move_line.debit or move_line.credit))
+        self.boleto.valor_documento = str("%.2f" % (move_line.debit or
+                                          move_line.credit))
         self.boleto.especie = \
             move_line.currency_id and move_line.currency_id.symbol or 'R$'
-        self.boleto.quantidade = ''  # str("%.2f" % move_line.amount_currency)
+        self.boleto.quantidade = '1'  # str("%.2f" % move_line.amount_currency)
         self.boleto.numero_documento = move_line.name.encode('utf-8')
 
     def _payment_mode(self, payment_mode_id):
@@ -124,7 +125,8 @@ class Boleto:
         self.boleto.sacado_bairro = partner.district
         self.boleto.sacado_uf = partner.state_id.code
         self.boleto.sacado_cep = partner.zip
-        self.boleto.sacado_nome = partner.legal_name
+        self.boleto.sacado_nome = partner.legal_name\
+            if partner.company_type == 'company' else partner.name
         self.boleto.sacado_documento = partner.cnpj_cpf
 
     @classmethod
@@ -138,7 +140,6 @@ class Boleto:
 
         fbuffer.reset()
         from pyboleto.pdf import BoletoPDF
-
         boleto = BoletoPDF(fbuffer)
         for i in range(len(boleto_list)):
             boleto.drawBoleto(boleto_list[i])
@@ -274,7 +275,6 @@ class BoletoSicredi(Boleto):
 
 class BoletoSicoob(Boleto):
     def __init__(self, move_line, nosso_numero):
-        import ipdb; ipdb.set_trace()
         self.boleto = Boleto.getBoletoClass(move_line)()
         self.account_number = move_line.payment_mode_id.\
             bank_account_id.acc_number
@@ -287,7 +287,7 @@ class BoletoSicoob(Boleto):
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.codigo_beneficiario = \
             re.sub('[^0-9]', '',
-                   move_line.payment_mode_id.bank_account_id.codigo_da_empresa)
+                   move_line.payment_mode_id.bank_account_id.codigo_convenio)
         self.boleto.nosso_numero = self.nosso_numero
 
     def getAccountNumber(self):

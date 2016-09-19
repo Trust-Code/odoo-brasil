@@ -26,6 +26,7 @@ import odoo
 from odoo.exceptions import UserError
 from odoo.report.render import render
 from odoo.report.interface import report_int
+from ..boleto.document import Boleto
 
 
 class external_pdf(render):
