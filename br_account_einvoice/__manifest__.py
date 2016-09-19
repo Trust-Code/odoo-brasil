@@ -20,7 +20,6 @@
         'sale',  # TODO Será que eh a melhor solução?
     ],
     'data': [
-        'views/sped_tax_view.xml',
         'views/sped_eletronic_doc_view.xml',
         'views/account_invoice.xml',
     ],

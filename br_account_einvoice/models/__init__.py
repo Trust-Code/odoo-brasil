@@ -5,5 +5,4 @@
 
 from . import invoice_eletronic
 from . import res_company
-from . import sped_tax
 from . import account_invoice

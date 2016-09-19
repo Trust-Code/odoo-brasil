@@ -23,14 +23,6 @@
                         </group>
                         <group>
                             <field name="cfop" />
-                            <field name="tax_ipi_id" />
-                            <field name="tax_pis_id" />
-                            <field name="tax_cofins_id" />
-                            <field name="tax_issqn_id" />
-                            <field name="tax_csll_id" />
-                            <field name="tax_inss_id" />
-                            <field name="tax_ii_id" />
-                            <field name="tax_irrf_id" />
                             <field name="origem" />
                         </group>
                     </group>

@@ -53,20 +53,6 @@ class InvoiceEletronic(models.Model):
                                           'invoice_eletronic_id',
                                           string=u"Eventos")
 
-    total_tax_icms_id = fields.Many2one('sped.tax.icms', string=u'Total ICMS')
-    total_tax_ipi_id = fields.Many2one('sped.tax.ipi', string=u'Total IPI')
-    total_tax_ii_id = fields.Many2one('sped.tax.ii',
-                                      string=u'Total Imposto de importação')
-    total_tax_pis_id = fields.Many2one('sped.tax.pis', string=u'Total PIS')
-    total_tax_cofins_id = fields.Many2one('sped.tax.cofins',
-                                          string=u'Total Cofins')
-    total_tax_issqn_id = fields.Many2one('sped.tax.issqn',
-                                         string=u'Total ISSQN')
-    total_tax_csll_id = fields.Many2one('sped.tax.csll',
-                                        string=u'Total CSLL')
-    total_tax_irrf_id = fields.Many2one('sped.tax.irrf', string=u'Total IRRF')
-    total_tax_inss_id = fields.Many2one('sped.tax.inss', string=u'Total INSS')
-
     valor_bruto = fields.Float(u'Valor Produtos')
     valor_frete = fields.Float(u'Valor do frete')
     valor_seguro = fields.Float(u'Valor do seguro')
@@ -344,14 +330,45 @@ bruta e com cobrança do ICMS por substituição tributária'),
     motivo_desoneracao = fields.Float(u'Motivo Desoneração')
     valor_desonerado = fields.Float(u'Valor Desonerado')
 
-    tax_ipi_id = fields.Many2one('sped.tax.ipi', string=u'IPI')
-    tax_ii_id = fields.Many2one('sped.tax.ii', string=u'Imposto de importação')
-    tax_pis_id = fields.Many2one('sped.tax.pis', string=u'PIS')
-    tax_cofins_id = fields.Many2one('sped.tax.cofins', string=u'Cofins')
-    tax_issqn_id = fields.Many2one('sped.tax.issqn', string=u'ISSQN')
-    tax_csll_id = fields.Many2one('sped.tax.csll', string=u'CSLL')
-    tax_irrf_id = fields.Many2one('sped.tax.irrf', string=u'IRRF')
-    tax_inss_id = fields.Many2one('sped.tax.inss', string=u'INSS')
+    # ----------- IPI -------------------
+    classe_enquadramento = fields.Char(u'Classe enquadramento', size=5)
+    codigo_enquadramento = fields.Char(u'Código enquadramento', size=4)
+    ipi_cst = fields.Selection([('00', 'Tributada Integralmente'),
+                                ('01', 'Tributada com ICMS ST')],
+                               u'Situação tributária do ICMS')
+    ipi_aliquota = fields.Float(u'Alíquota')
+    ipi_base_calculo = fields.Float(u'Base de cálculo')
+    ipi_percentual_reducao_bc = fields.Float(u'% Redução Base')
+    ipi_valor = fields.Float(u'Valor Total')
+
+    # ----------- II ----------------------
+    ii_base_calculo = fields.Float(u'Base de cálculo')
+    ii_valor_despesas = fields.Float(u'Despesas aduaneiras')
+    ii_valor = fields.Float(u'Imposto de importação')
+    ii_valor_iof = fields.Float(u'IOF')
+
+    # ------------ PIS ---------------------
+    pis_cst = fields.Selection([('00', 'Tributada Integralmente'),
+                                ('01', 'Tributada com ICMS ST')],
+                               u'Situação tributária do ICMS')
+    pis_aliquota = fields.Float(u'Alíquota')
+    pis_base_calculo = fields.Float(u'Base de cálculo')
+    pis_valor = fields.Float(u'Valor Total')
+
+    # ------------ COFINS ------------
+    cofins_cst = fields.Selection([('00', 'Tributada Integralmente'),
+                                   ('01', 'Tributada com ICMS ST')],
+                                  u'Situação tributária do ICMS')
+    cofins_aliquota = fields.Float(u'Alíquota')
+    cofins_base_calculo = fields.Float(u'Base de cálculo')
+    cofins_valor = fields.Float(u'Valor Total')
+
+    # ----------- ISSQN -------------
+    issqn_codigo = fields.Char(u'Código', size=10)
+    issqn_aliquota = fields.Float(u'Alíquota')
+    issqn_base_calculo = fields.Float(u'Base de cálculo')
+    issqn_valor = fields.Float(u'Valor Total')
+    issqn_valor_retencao = fields.Float(u'Valor retenção')
 
 
 class InvoiceTransport(models.Model):
