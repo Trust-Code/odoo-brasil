@@ -92,7 +92,7 @@ class Boleto:
         :param payment_mode:
         :return:
         """
-        self.boleto.convenio = payment_mode_id.boleto_convenio
+        self.boleto.convenio = payment_mode_id.bank_account_id.codigo_convenio
         self.boleto.especie_documento = payment_mode_id.boleto_modalidade
         self.boleto.aceite = payment_mode_id.boleto_aceite
         self.boleto.carteira = payment_mode_id.boleto_carteira

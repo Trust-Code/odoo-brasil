@@ -3,10 +3,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from ..boleto.document import getBoletoSelection
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
 
 selection = getBoletoSelection()
+IMPLEMENTADOS = (u'1', u'3', u'9')
 
 
 class PaymentMode(models.Model):
@@ -29,7 +30,6 @@ class PaymentMode(models.Model):
     instrucoes = fields.Text(string=u'Instruções')
     boleto_carteira = fields.Char('Carteira', size=3)
     boleto_modalidade = fields.Char('Modalidade', size=2)
-    boleto_convenio = fields.Char(u'Codigo convênio', size=10)
     boleto_variacao = fields.Char(u'Variação', size=2)
     boleto_cnab_code = fields.Char(u'Código Cnab', size=20)
     boleto_aceite = fields.Selection(
@@ -61,3 +61,37 @@ class PaymentMode(models.Model):
         ('8', u'Não Negativar')
     ], string=u'Códigos de Protesto', default='0')
     boleto_protesto_prazo = fields.Char(u'Prazo protesto', size=2)
+
+    @api.onchange("boleto_type")
+    def br_boleto_onchange_boleto_type(self):
+        vals = {}
+
+        if self.boleto_type not in IMPLEMENTADOS:
+            vals['warning'] = {
+                'title': u'Ação Bloqueada!',
+                'message': u'Este boleto ainda não foi implentado!'
+            }
+
+        if self.boleto_type == u'1':
+            self.boleto_carteira = u'17/19'
+
+        if self.boleto_type == u'3':
+            self.boleto_carteira = u'9'
+
+        if self.boleto_type == u'9':
+            self.boleto_carteira = u'1'
+            self.boleto_modalidade = u'01'
+
+        return vals
+
+    @api.onchange("boleto_carteira")
+    def br_boleto_onchange_boleto_carteira(self):
+        vals = {}
+
+        if self.boleto_type == u'9' and len(self.boleto_carteira) != 1:
+            vals['warning'] = {
+                'title': 'Ação Bloqueada!',
+                'message': 'A carteira deste banco possui apenas um digito!'
+                }
+
+        return vals

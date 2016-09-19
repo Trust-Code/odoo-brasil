@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="action_br_account_account_invoice_payment" model="ir.actions.act_window">
+        <field name="name">Register Payment</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account.view_account_payment_invoice_form"/>
+        <field name="target">new</field>
+    </record>
+
     <record id="view_br_account_invoice_form" model="ir.ui.view">
         <field name="name">br_account.invoice.form</field>
         <field name="model">account.invoice</field>
@@ -23,8 +32,8 @@
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
-                            <button name="%(account.action_account_invoice_payment)d" type="action" string="Register Payment"
-                                groups="account.group_account_invoice" class="oe_highlight" context="{'default_amount': credit}"/>
+                            <button name="%(action_br_account_account_invoice_payment)d" type="action" string="Register Payment"
+                                groups="account.group_account_invoice" class="oe_highlight" context="{'default_amount': credit, 'default_invoice_ids': [(4, 18, None)], 'type': 'sale'}"/>
                         </tree>
                     </field>
                 </page>

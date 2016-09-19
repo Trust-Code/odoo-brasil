@@ -14,7 +14,6 @@
                 </group>
                 <group name="boletos" string="Boletos">
                     <field name="boleto_type"/>
-                    <field name="boleto_convenio"/>
                     <field name="boleto_carteira"/>
                     <field name="boleto_modalidade"/>
                     <field name="boleto_variacao"/>
@@ -25,7 +24,7 @@
                     <field name="boleto_protesto_prazo"/>
                     <field name="late_payment_fee"/>
                     <field name="late_payment_interest"/>
-                    <field name="instrucoes" />                    
+                    <field name="instrucoes" />
                 </group>
             </form>
         </field>
