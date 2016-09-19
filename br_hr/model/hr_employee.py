@@ -62,7 +62,6 @@ class HrEmployee(models.Model):
         if rest != digits[10]:
             raise ValidationError(u"PIS/PASEP Inválido")
 
-    check_cpf = fields.Boolean('Verificar CPF', default=True)
     pis_pasep = fields.Char(u'PIS/PASEP', size=15)
     ctps = fields.Char('CTPS', help='Número da CTPS')
     ctps_series = fields.Char('Série')
@@ -89,7 +88,7 @@ class HrEmployee(models.Model):
                                     'employee_id', 'Dependentes')
     rg = fields.Char('RG', help='Número do RG')
     cpf = fields.Char(related='address_home_id.cnpj_cpf',
-                      string='CPF', required=True)
+                      string='CPF')
     organ_exp = fields.Char("Orgão de expedição")
     rg_emission = fields.Date('Data de emissão')
     title_voter = fields.Char('Title', help='Número título')

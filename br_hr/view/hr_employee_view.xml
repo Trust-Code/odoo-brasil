@@ -6,10 +6,9 @@
         <field name="inherit_id" ref="hr.view_employee_form" />
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='identification_id']" position="replace">
-                <field name="check_cpf" invisible="1"/>
+            <field name="address_home_id" position="after">
                 <field name="cpf"/>
-            </xpath>
+            </field>
             <page name="public" position="after">
                 <page string="Dados Trabalhistas">
                     <form string="Dados trabalhistas" version="7.0">
