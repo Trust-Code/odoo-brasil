@@ -27,6 +27,6 @@ def _auto_install_l10n(cr, registry):
             [('name', 'in', ('br_coa',)), ('state', '=', 'uninstalled')])
         module_ids.sudo().button_install()
     else:
-        _auto_install_l10n(cr, registry)
+        _auto_install_l10n_orig(cr, registry)
 
 account._auto_install_l10n = _auto_install_l10n

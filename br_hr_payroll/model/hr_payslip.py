@@ -41,11 +41,11 @@ class HrPayslip(models.Model):
                     leave_start = fields.Datetime.from_string(leave.date_from)
                     dsr[self.week_of_month(leave_start)] = leave_start
             dsr_dict = {
-             'name': "Descanso Semanal Remunerado",
-             'sequence': 8,
-             'code': 'DSR',
-             'number_of_days': len(dsr),
-             'contract_id': contract.id,
+                'name': "Descanso Semanal Remunerado",
+                'sequence': 8,
+                'code': 'DSR',
+                'number_of_days': len(dsr),
+                'contract_id': contract.id,
              }
             if dsr_dict['number_of_days'] != 0:
                 res += [dsr_dict]
