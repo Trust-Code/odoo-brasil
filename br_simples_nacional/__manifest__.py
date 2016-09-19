@@ -18,6 +18,7 @@
         'br_nfe',
     ],
     'data': [
+        'data/br_simples_nacional.xml',
         'views/account_tax.xml',
         'views/account_invoice.xml',
     ],

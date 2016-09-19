@@ -203,7 +203,7 @@ class AccountInvoiceLine(models.Model):
     cfop_id = fields.Many2one('br_account.cfop', 'CFOP')
     fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', 'Classificação Fiscal')
-    fiscal_type = fields.Selection(
+    product_type = fields.Selection(
         related="product_id.fiscal_type", string='Tipo do Produto',
         required=True, default='product')
     discount_value = fields.Float(
