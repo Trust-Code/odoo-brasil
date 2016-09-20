@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.sequence" id="payment_order_seq_id" >
+        <field name="name">Payment Order</field>
+        <field name="code">payment.order</field>
+        <field name="padding">4</field>
+        <field name="prefix">O.C. </field>
+    </record>
+
+</odoo>

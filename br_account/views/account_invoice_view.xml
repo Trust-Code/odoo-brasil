@@ -33,7 +33,7 @@
                             <field name="debit"/>
                             <field name="credit"/>
                             <button name="%(action_br_account_account_invoice_payment)d" type="action" string="Register Payment"
-                                groups="account.group_account_invoice" class="oe_highlight" context="{'default_amount': credit, 'default_invoice_ids': [(4, 18, None)], 'type': 'sale'}"/>
+                                groups="account.group_account_invoice" class="oe_highlight" context="{'default_amount': credit, 'default_invoice_ids': [(4, 18, None)], 'type': 'sale'}" icon="fa-usd"/>
                         </tree>
                     </field>
                 </page>

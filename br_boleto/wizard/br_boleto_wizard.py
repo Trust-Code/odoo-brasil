@@ -9,9 +9,9 @@ class BrBoletoWizard(models.TransientModel):
     _name = 'br.boleto.wizard'
 
     date_change = fields.Date(string='Alterar Vencimento')
-    invoice_id = fields.Many2one('account.invoice', readonly=1)
+    move_line_id = fields.Many2one('account.move.line', readonly=1)
 
     @api.multi
     def imprimir_boleto(self):
-        return self.env['report'].get_action([self.invoice_id.id],
+        return self.env['report'].get_action(self.move_line_id.id,
                                              'br_boleto.report.print')

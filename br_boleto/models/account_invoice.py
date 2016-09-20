@@ -49,3 +49,8 @@ class AccountInvoice(models.Model):
 Para prosseguir é necessário preencher os seguintes campos nas configurações \
 da empresa:\n""" + error)
         return res
+
+    @api.multi
+    def action_register_boleto(self):
+        return self.env['report'].get_action(self.id,
+                                             'br_boleto.report.print')
