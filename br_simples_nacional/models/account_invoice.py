@@ -17,6 +17,17 @@ class AccountInvoiceLine(models.Model):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.fiscal_type
 
+    @api.model
+    def default_get(self, fields):
+        res = super(AccountInvoiceLine, self).default_get(fields)
+        if "pis_cst" not in res:
+            res['pis_cst'] = '99'
+        if "cofins_cst" not in res:
+            res['cofins_cst'] = '99'
+        if "ipi_cst" not in res:
+            res['ipi_cst'] = '99'
+        return res
+
     company_fiscal_type = fields.Selection(
         COMPANY_FISCAL_TYPE,
         default=_default_company_fiscal_type,
