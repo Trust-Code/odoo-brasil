@@ -6,7 +6,7 @@
     'name': 'Folha de Pagamento Brasil',
     'description': 'Folha de Pagamento Brasil',
     'category': 'Localization',
-    'depends': ['br_hr_payroll', 'hr_payroll_account', 'br_coa'],
+    'depends': ['br_hr_payroll', 'hr_payroll_account'],
     'data': [
         'data/br_hr_payroll_account_data.xml',
     ],
