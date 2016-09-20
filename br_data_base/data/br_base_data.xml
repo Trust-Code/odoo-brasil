@@ -6,9 +6,10 @@
             <field name="active" eval="True"/>
         </record>
 
+        <!--
         <record id="base.main_company" model="res.company">
             <field name="currency_id" ref="base.BRL" />
-        </record>
+        </record> -->
 
         <record id="base.user_root" model="res.users">
             <field name="tz">America/Sao_Paulo</field>

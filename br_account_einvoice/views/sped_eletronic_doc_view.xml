@@ -94,7 +94,6 @@
                                 <field name="valor_seguro" />
                                 <field name="valor_desconto" />
                                 <field name="valor_despesas" />
-                                <field name="valor_retencoes" />
                                 <field name="valor_final" />
                             </group>
                             <group name="impostos" string="Impostos">
@@ -107,6 +106,24 @@
                                 <field name="valor_ipi" />
                                 <field name="valor_pis" />
                                 <field name="valor_cofins" />
+                                <field name="valor_estimado_tributos" />
+                            </group>
+                        </group>
+                        <group>
+                            <group name="servico" string="Totais de Serviço">
+                                <field name="valor_servicos" />
+                                <field name="valor_bc_issqn" />
+                                <field name="valor_issqn" />
+                                <field name="valor_pis_servicos" />
+                                <field name="valor_cofins_servicos" />
+                            </group>
+                            <group name="retencoes" string="Retenções">
+                                <field name="valor_retencao_issqn" />
+                                <field name="valor_retencao_pis" />
+                                <field name="valor_retencao_cofins" />
+                                <field name="valor_retencao_irrf" />
+                                <field name="valor_retencao_csll" />
+                                <field name="valor_retencao_previdencia" />
                             </group>
                         </group>
                         <group string="Itens">

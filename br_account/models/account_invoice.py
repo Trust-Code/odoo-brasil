@@ -190,8 +190,8 @@ class AccountInvoiceLine(models.Model):
     fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', 'Classificação Fiscal')
     product_type = fields.Selection(
-        related="product_id.fiscal_type", string='Tipo do Produto',
-        required=True, default='product')
+        [('product', 'Produto'), ('service', 'Serviço')],
+        string='Tipo do Produto', required=True, default='product')
     discount_value = fields.Float(
         string='Vlr. desconto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))

@@ -58,7 +58,6 @@ class InvoiceEletronic(models.Model):
     valor_seguro = fields.Float(u'Valor do seguro')
     valor_desconto = fields.Float(u'Valor do desconto')
     valor_despesas = fields.Float(u'Valor despesas')
-    valor_retencoes = fields.Float(u'Retenções')
     valor_bc_icms = fields.Float(u"Valor da Base de Cálculo")
     valor_icms = fields.Float(u"Valor do ICMS")
     valor_icms_deson = fields.Float(u'Valor ICMSDeson')
@@ -68,6 +67,20 @@ class InvoiceEletronic(models.Model):
     valor_ipi = fields.Float(u"Valor do IPI")
     valor_pis = fields.Float(u"Valor PIS")
     valor_cofins = fields.Float(u"Valor COFINS")
+    valor_estimado_tributos = fields.Float(u"Valor estimado tributos")
+
+    valor_servicos = fields.Float(u"Valor Serviços")
+    valor_bc_issqn = fields.Float(u"Valor Base ISS")
+    valor_issqn = fields.Float(u"Valor ISS")
+    valor_pis_servicos = fields.Float(u"Valor PIS Serviços")
+    valor_cofins_servicos = fields.Float(u"Valor Cofins Serviço")
+
+    valor_retencao_issqn = fields.Float(u"Retenção ISSQN")
+    valor_retencao_pis = fields.Float(u"Retenção PIS")
+    valor_retencao_cofins = fields.Float(u"Retenção COFINS")
+    valor_retencao_irrf = fields.Float(u"Retenção IRRF")
+    valor_retencao_csll = fields.Float(u"Retenção CSLL")
+    valor_retencao_previdencia = fields.Float(u"Retenção Previdencia Social")
 
     valor_final = fields.Float(u'Valor Final')
 
