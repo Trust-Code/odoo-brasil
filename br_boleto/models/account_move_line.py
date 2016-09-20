@@ -17,7 +17,7 @@ class AccountMoveLine(models.Model):
     payment_order_id = fields.Many2one('payment.order')
 
     @api.multi
-    def gerar_cnab(self):
+    def gerar_payment_order(self):
         """Gera um objeto de payment.order ao imprimir um boleto"""
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
@@ -28,6 +28,7 @@ class AccountMoveLine(models.Model):
             'payment_mode_id': self.payment_mode_id.id,
             'date_maturity': self.date_maturity,
             'state': 'draft',
+            'currency_id': self.company_currency_id.id,
         }
         if not payment_order:
             order = payment_order.create(order_dict)
@@ -49,7 +50,7 @@ número nas configurações da companhia')
 
             boleto = Boleto.getBoleto(move, move.nosso_numero)
             boleto_list.append(boleto.boleto)
-            move.gerar_cnab()
+            move.gerar_payment_order()
         return boleto_list
 
     @api.multi

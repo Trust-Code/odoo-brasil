@@ -18,6 +18,7 @@
         'br_boleto'
     ],
     'data': [
+        'views/payment_order.xml'
     ],
     'instalable': True
 }

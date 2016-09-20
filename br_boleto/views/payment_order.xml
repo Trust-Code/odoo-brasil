@@ -42,6 +42,7 @@
                                 <field name='partner_id' />
                                 <field name='debit' />
                                 <field name='credit' />
+                                <field name='currency_id' string="Moeda"/>
                             </tree>
                         </field>
                     </group>

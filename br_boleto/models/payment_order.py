@@ -18,3 +18,4 @@ class PaymentOrder(models.Model):
                               ('open', 'Confirmado'), ('done', 'Fechado')])
     line_ids = fields.One2many('account.move.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
+    currency_id = fields.Many2one('res.currency', string='Moeda')
