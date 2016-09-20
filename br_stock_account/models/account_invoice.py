@@ -50,6 +50,7 @@ class AccountInvoice(models.Model):
             'draft': [
                 ('readonly', False)]})
 
+
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 

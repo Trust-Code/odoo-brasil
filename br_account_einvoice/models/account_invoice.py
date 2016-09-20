@@ -54,8 +54,9 @@ class AccountInvoice(models.Model):
             if not invoice.document_serie_id.internal_sequence_id.id:
                 raise UserError(
                     u'Configure a sequência para a numeração da nota')
+            import ipdb; ipdb.set_trace()
             sequence_obj = self.env['ir.sequence']
-            seq_number = sequence_obj.get_id(
+            seq_number = sequence_obj.next_by_id(
                 invoice.document_serie_id.internal_sequence_id.id)
 
             self.write(

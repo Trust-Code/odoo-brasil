@@ -57,6 +57,7 @@ class SaleOrderLine(models.Model):
     def _amount_line(self):
         price = self._calc_line_base_price()
         qty = self._calc_line_quantity()
+        self.price_gross = self._calc_price_gross(qty)
         self.discount_value = self.order_id.pricelist_id.currency_id.round(
             self.price_gross - (price * qty))
 
@@ -75,10 +76,10 @@ class SaleOrderLine(models.Model):
                                  digits=dp.get_precision('Account'))
 
     discount_value = fields.Float(compute='_amount_line',
-                                  string='Vlr. Desc. (-)',
+                                  string='Vlr. Desc. (-)', store=True,
                                   digits=dp.get_precision('Sale Price'))
     price_gross = fields.Float(
-        compute='_amount_line', string='Vlr. Bruto',
+        compute='_amount_line', string='Vlr. Bruto', store=True,
         digits=dp.get_precision('Sale Price'))
 
     @api.multi

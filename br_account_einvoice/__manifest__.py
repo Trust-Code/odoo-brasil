@@ -21,6 +21,7 @@
         'sale',  # TODO Será que eh a melhor solução?
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/sped_eletronic_doc_view.xml',
         'views/account_invoice.xml',
     ],

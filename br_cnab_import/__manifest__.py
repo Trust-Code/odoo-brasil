@@ -5,7 +5,8 @@
 {
     'name': 'Import Cnab Files',
     'summary': """""",
-    'version': '9.0.1.0.0',
+    'description': 'Import Cnab Files',
+    'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',
