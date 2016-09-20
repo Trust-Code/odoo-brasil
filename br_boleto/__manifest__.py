@@ -6,6 +6,8 @@
     'name': 'Pagamentos via Boleto Bancário',
     'summary': """Permite gerar e realizar a integração bancária através de
         arquivo CNAB 240 - Mantido por Trustcode""",
+    'description': """Permite gerar e realizar a integração bancária através de
+        arquivo CNAB 240 - Mantido por Trustcode""",
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

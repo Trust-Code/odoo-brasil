@@ -6,6 +6,7 @@
     'name': 'Envio de NF-e',
     'summary': """Permite o envio de NF-e através das faturaas do Odoo
     Mantido por Trustcode""",
+    'description': 'Envio de NF-e',
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

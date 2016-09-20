@@ -6,6 +6,7 @@
     'name': 'Simples Nacional',
     'summary': """Facilita a emissão de notas fiscais para empresas do Simples -
       Mantido por Trustcode""",
+    'description': 'Simples Nacional',
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

@@ -5,6 +5,7 @@
 {
     'name': 'Website Sale Checkout Zip Search for Brazil',
     'summary': """Adds zip search to e-commerce checkout""",
+    'description': 'Website Sale Checkout Zip Search for Brazil',
     'version': '1.0',
     'category': 'Website',
     'author': 'Trustcode',

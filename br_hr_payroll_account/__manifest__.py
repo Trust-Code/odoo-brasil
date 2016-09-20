@@ -3,7 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Brazil - Payroll with Accounting',
+    'name': 'Folha de Pagamento Brasil',
+    'description': 'Folha de Pagamento Brasil',
     'category': 'Localization',
     'depends': ['br_hr_payroll', 'hr_payroll_account', 'br_coa'],
     'data': [

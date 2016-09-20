@@ -5,6 +5,7 @@
 {
     'name': 'Generate CNAB Files',
     'summary': """Base Module for the Brazilian Cnab Files""",
+    'description': """Base Module for the Brazilian Cnab Files""",
     'version': '9.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

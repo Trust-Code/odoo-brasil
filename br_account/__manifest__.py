@@ -4,7 +4,7 @@
 
 {
     'name': 'Brazilian Localization Account',
-    'summary': """Brazilian Localization Account""",
+    'description': """Brazilian Localization Account""",
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

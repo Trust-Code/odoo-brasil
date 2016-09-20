@@ -5,6 +5,7 @@
 {
     'name': 'Account E-Invoice',
     'summary': """Base Module for the Brazilian Invoice Eletronic""",
+    'description': """Base Module for the Brazilian Invoice Eletronic""",
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

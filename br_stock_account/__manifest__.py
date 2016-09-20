@@ -5,6 +5,7 @@
 {
     'name': 'Odoo Brasil - WMS Accounting',
     'summary': """Realiza o link entre faturas e o estoque e logistica""",
+    'description': 'Odoo Brasil - WMS Accounting',
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',

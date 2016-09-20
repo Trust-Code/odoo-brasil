@@ -6,6 +6,7 @@
     'name': 'Métodos de entrega no Brasil',
     'summary': """Extende os módulos do Odoo e adiciona novos métodos de
      entrega para o Brasil - Mantido por Trustcode""",
+    'description': 'Métodos de entrega no Brasil',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',

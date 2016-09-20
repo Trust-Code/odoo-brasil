@@ -30,6 +30,7 @@ class AccountInvoice(models.Model):
         self.cofins_base = sum(l.cofins_base for l in lines)
         self.cofins_value = sum(l.cofins_value for l in lines)
         self.ii_value = sum(l.ii_value for l in lines)
+        self.amount_gross = sum(l.price_gross for l in lines)
         self.amount_discount = sum(l.discount_value for l in lines)
         self.amount_insurance = sum(l.insurance_value for l in lines)
         self.amount_costs = sum(l.other_costs_value for l in lines)
@@ -99,21 +100,6 @@ class AccountInvoice(models.Model):
         store=True, string='Electronic')
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
-    amount_untaxed = fields.Float(
-        string='Untaxed',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
-    amount_tax = fields.Float(
-        string='Tax',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
-    amount_total = fields.Float(
-        string='Total',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
     amount_gross = fields.Float(
         string='Vlr. Bruto',
         store=True,
