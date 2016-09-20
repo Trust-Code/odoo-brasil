@@ -273,17 +273,6 @@ for dependent in contract.employee_id.dependent_ids:
             <field name="note">Pensão Alimentícia</field>
         </record>
 
-        <record id="hr_salary_accumulated_fgts" model="hr.salary.rule">
-            <field name="name">FGTS Acumulado</field>
-            <field name="sequence" eval="74"/>
-            <field name="code">AcumFGTS</field>
-            <field name="category_id" ref="hr_payroll.COMP"/>
-            <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = employee.accumulated_fgts</field>
-            <field name="register_id" ref="hr_fgts_acumulado_register"/>
-            <field name="note">FGTS Acumulado</field>
-        </record>
-
         <record id="hr_salary_rule_falta" model="hr.salary.rule">
             <field name="name">Faltas Não Remuneradas</field>
             <field name="sequence" eval="68"/>
