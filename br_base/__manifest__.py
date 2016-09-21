@@ -11,7 +11,7 @@
     'website': 'http://www.trustcode.com,br',
     'version': '10.0.1.0.0',
     'depends': [
-        'base', 'web', 'account'
+        'base', 'web',
     ],
     'data': [
         'views/br_base.xml',
@@ -20,7 +20,6 @@
         'views/res_country_view.xml',
         'views/res_partner_view.xml',
         'views/res_company_view.xml',
-        'views/account_invoice.xml',
         'security/ir.model.access.csv',
     ],
     'test': [
