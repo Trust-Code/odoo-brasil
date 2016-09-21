@@ -6,13 +6,18 @@
         <field name="model">payment.order</field>
         <field name="inherit_id" ref="br_boleto.trustcode_payment_order_form_view" />
         <field name="arch" type="xml">
-
             <group name="payment_order" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="gerar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB"/>
                 </div>
             </group>
-
+            <field name="user_id" position="after" >
+                <field name="partner_id" />
+            </field>
+            <field name="payment_mode_id" position="after">
+                <field name="cnab_file" />
+                <field name="file_number" />
+            </field>
         </field>
     </record>
 

@@ -18,7 +18,9 @@
         'br_boleto'
     ],
     'data': [
-        'views/payment_order.xml'
+        'views/payment_order.xml',
+        'views/payment_mode.xml',
+        'views/payment_type.xml'
     ],
     'instalable': True
 }
