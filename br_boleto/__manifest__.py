@@ -18,6 +18,7 @@
     ],
     'depends': [
         'br_account',
+        'br_base',
     ],
     'data': [
         'security/ir.model.access.csv',
