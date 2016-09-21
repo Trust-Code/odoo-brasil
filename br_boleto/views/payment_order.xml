@@ -57,7 +57,6 @@
         <field name="res_model">payment.order</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field eval="1" name="sequence"/>
         <field name="view_id" ref="trustcode_payment_order_tree_view"/>
     </record>
 
