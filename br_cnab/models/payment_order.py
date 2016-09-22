@@ -13,10 +13,11 @@ class PaymentOrder(models.Model):
 
     cnab_file = fields.Binary('CNAB File', readonly=True)
     partner_id = fields.Many2one('res.partner', string="Cliente")
-    file_number = fields.Integer(u'Número sequencial do arquivo')
+    file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
 
     @api.multi
     def gerar_cnab(self):
+        self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         for order_id in self:
 
             order = self.env['payment.order'].browse(order_id.id)

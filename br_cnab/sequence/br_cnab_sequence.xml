@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.sequence" id="cnab_nsa" >
+        <field name="name">NSA CNAB</field>
+        <field name="code">cnab.nsa</field>
+        <field name="padding">6</field>
+    </record>
+
+</odoo>
