@@ -69,8 +69,8 @@ class Boleto:
     def getBranchNumber(self):
         if self.branch_digit:
             return str(self.branch_number + '-' +
-                       self.branch_digit).encode('utf-8')
-        return self.branch_number.encode('utf-8')
+                       self.branch_digit).encode('utf-8').strip()
+        return self.branch_number.encode('utf-8').strip()
 
     def _move_line(self, move_line):
         self._payment_mode(move_line.payment_mode_id)

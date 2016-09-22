@@ -73,12 +73,29 @@ class PaymentMode(models.Model):
             }
 
         if self.boleto_type == u'1':
-            self.boleto_carteira = u'17/19'
+            if self.bank_account_id.bank_id.bic != '001':
+                vals['warning'] = {
+                    'title': u'Ação Bloqueada!',
+                    'message': u'Este boleto não combina com a conta bancária!'
+                }
+
+            self.boleto_carteira = u'17'
+            self.boleto_variacao = u'19'
 
         if self.boleto_type == u'3':
+            if self.bank_account_id.bank_id.bic != '237':
+                vals['warning'] = {
+                    'title': u'Ação Bloqueada!',
+                    'message': u'Este boleto não combina com a conta bancária!'
+                }
             self.boleto_carteira = u'9'
 
         if self.boleto_type == u'9':
+            if self.bank_account_id.bank_id.bic != '756':
+                vals['warning'] = {
+                    'title': u'Ação Bloqueada!',
+                    'message': u'Este boleto não combina com a conta bancária!'
+                }
             self.boleto_carteira = u'1'
             self.boleto_modalidade = u'01'
 

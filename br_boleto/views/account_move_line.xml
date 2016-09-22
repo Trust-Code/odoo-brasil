@@ -10,6 +10,7 @@
                 <page name="boletos" string="Boletos">
                     <group>
                         <field name="payment_mode_id" />
+                        <field name="nosso_numero" />
                     </group>
                 </page>
             </page>
