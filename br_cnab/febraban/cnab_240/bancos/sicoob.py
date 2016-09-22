@@ -20,14 +20,14 @@ class Sicoob240(Cnab240):
 
     def _prepare_segmento(self, line):
         vals = super(Sicoob240, self)._prepare_segmento(line)
-
         nossonumero, digito = self.nosso_numero(
-            line.move_line_id.transaction_ref)
+            line.nosso_numero)
 
-        parcela = line.move_line_id.name.split('/')[1]
-        vals['carteira_numero'] = int(line.order_id.mode.boleto_carteira)
+        parcela = line.name.split('/')[1]
+        vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira)
         vals['nosso_numero'] = self.format_nosso_numero(
-            nossonumero, digito, parcela, line.order_id.mode.boleto_modalidade)
+            nossonumero, digito, parcela, line.payment_mode_id.
+            boleto_modalidade)
         vals['nosso_numero_dv'] = int(digito)
         vals['prazo_baixa'] = '0'
         vals['controlecob_numero'] = self.order.id

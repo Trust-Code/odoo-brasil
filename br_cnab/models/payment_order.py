@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
 import time
 import base64
 from ..febraban.cnab import Cnab
@@ -25,7 +24,7 @@ class PaymentOrder(models.Model):
                 order.payment_mode_id.bank_account_id.bank_bic,
                 order.payment_mode_id.payment_type_id.code)()
             remessa = cnab.remessa(order)
-            suf_arquivo = 'ABX'#order.get_next_sufixo()
+            suf_arquivo = 'ABX'  # order.get_next_sufixo()
 
             if order.payment_mode_id.payment_type_id.code == '240':
                 self.name = 'CB%s%s.REM' % (

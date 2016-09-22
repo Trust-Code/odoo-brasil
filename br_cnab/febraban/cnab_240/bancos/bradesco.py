@@ -44,7 +44,8 @@ class Bradesco240(Cnab240):
 
         vals = super(Bradesco240, self)._prepare_header()
         vals['servico_servico'] = 1
-        vals['cedente_convenio'] = self.order.mode.bank_id.codigo_da_empresa
+        vals['cedente_convenio'] = self.order.payment_mode_id.bank_account_id.\
+            codigo_convenio
         return vals
 
     def _prepare_segmento(self, line):

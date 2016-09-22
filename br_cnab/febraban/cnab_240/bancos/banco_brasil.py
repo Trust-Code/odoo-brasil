@@ -22,13 +22,14 @@ class BancoBrasil240(Cnab240):
         vals = super(BancoBrasil240, self)._prepare_segmento(line)
 
         nossonumero, digito = self.nosso_numero(
-            line.move_line_id.transaction_ref)
+            line.nosso_numero)
 
-        parcela = line.move_line_id.name.split('/')[1]
+        parcela = line.name.split('/')[1]
         vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(line)
-        vals['carteira_numero'] = int(line.order_id.mode.boleto_carteira[:2])
+        vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira[:2])
         vals['nosso_numero'] = self.format_nosso_numero(
-            nossonumero, digito, parcela, line.order_id.mode.boleto_modalidade)
+            nossonumero, digito, parcela,
+            line.payment_mode_id.boleto_modalidade)
         vals['nosso_numero_dv'] = int(digito)
         vals['prazo_baixa'] = '0'
         vals['controlecob_numero'] = self.order.id
@@ -45,7 +46,7 @@ class BancoBrasil240(Cnab240):
                                    parcela.zfill(2), modalidade)
 
     def format_codigo_convenio_banco(self, line):
-        num_convenio = line.order_id.mode.boleto_convenio
-        carteira = line.order_id.mode.boleto_carteira[:2]
-        boleto = line.order_id.mode.boleto_variacao.zfill(3)
+        num_convenio = line.payment_mode_id.bank_account_id.codigo_convenio
+        carteira = line.payment_mode_id.boleto_carteira[:2]
+        boleto = line.payment_mode_id.boleto_variacao.zfill(3)
         return "%s0014%s%s  " % (num_convenio, carteira, boleto)
