@@ -9,6 +9,7 @@
             <group name="payment_order" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="gerar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB"/>
+                    <button name="validar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Validar CNAB"/>
                 </div>
             </group>
             <field name="user_id" position="after" >

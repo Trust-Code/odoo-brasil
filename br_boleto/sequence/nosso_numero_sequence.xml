@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.sequence" id="nosso_numero_sicoob" >
+        <field name="name">Nosso Numero Sicoob</field>
+        <field name="code">nosso_numero.sicoob</field>
+        <field name="padding">6</field>
+    </record>
+
+    <record model="ir.sequence" id="nosso_numero_bradesco" >
+        <field name="name">Nosso Numero Bradesco</field>
+        <field name="code">nosso_numero.bradesco</field>
+        <field name="padding">6</field>
+    </record>
+
+    <record model="ir.sequence" id="nosso_numero_BB" >
+        <field name="name">Nosso Numero BB</field>
+        <field name="code">nosso_numero.BB</field>
+        <field name="padding">6</field>
+    </record>
+
+    <record model="ir.sequence" id="nosso_numero_cecred" >
+        <field name="name">Nosso Numero Cecred</field>
+        <field name="code">nosso_numero.cecred</field>
+        <field name="padding">6</field>
+    </record>
+
+</odoo>

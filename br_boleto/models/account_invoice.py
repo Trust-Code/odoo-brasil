@@ -20,6 +20,19 @@ class AccountInvoice(models.Model):
             for invoice_line in res:
                 line = invoice_line[2]
                 line['payment_mode_id'] = self.payment_mode_id.id
+                bic = line.payment_mode_id.bank_account_id.bank_id.bic
+                if bic == '765':
+                    line['nosso_numero'] = self.env['ir.sequence'].\
+                        next_by_code('nosso_numero.sicoob')
+                elif bic == '237':
+                    line['nosso_numero'] = self.env['ir.sequence'].\
+                        next_by_code('nosso_numero.bradesco')
+                elif bic == '001':
+                    line['nosso_numero'] = self.env['ir.sequence'].\
+                        next_by_code('nosso_numero.BB')
+                elif bic == '0851':
+                    line['nosso_numero'] = self.env['ir.sequence'].\
+                        next_by_code('nosso_numero.cecred')
         return res
 
     @api.multi
