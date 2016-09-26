@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.sequence" id="numero_documento_sequence" >
+        <field name="name">Número do Documento</field>
+        <field name="code">doc.number.cnab</field>
+        <field name="padding">15</field>
+    </record>
+
+</odoo>

@@ -69,7 +69,6 @@ class AccountInvoice(models.Model):
             'uom_id': invoice_line.uom_id.id,
             'quantity': invoice_line.quantity,
             'unit_price': invoice_line.price_unit,
-            'freight_value': invoice_line.freight_value,
             'insurance_value': invoice_line.insurance_value,
             'discount': invoice_line.discount_value,
             'other_expenses': invoice_line.other_costs_value,

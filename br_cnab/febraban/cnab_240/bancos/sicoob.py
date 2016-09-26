@@ -22,8 +22,7 @@ class Sicoob240(Cnab240):
         vals = super(Sicoob240, self)._prepare_segmento(line)
         nossonumero, digito = self.nosso_numero(
             line.nosso_numero)
-
-        parcela = line.name.split('/')[1]
+        parcela = line.name
         vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira)
         vals['nosso_numero'] = self.format_nosso_numero(
             nossonumero, digito, parcela, line.payment_mode_id.
@@ -42,3 +41,5 @@ class Sicoob240(Cnab240):
     def format_nosso_numero(self, nosso_numero, digito, parcela, modalidade):
         return "%s%s%s%s4     " % (nosso_numero.zfill(9), digito,
                                    parcela.zfill(2), modalidade)
+
+    

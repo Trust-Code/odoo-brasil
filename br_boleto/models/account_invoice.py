@@ -16,11 +16,11 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
-        if self.payment_mode_id:
-            for invoice_line in res:
+        for invoice_line in res:
+            if self.payment_mode_id:
                 line = invoice_line[2]
                 line['payment_mode_id'] = self.payment_mode_id.id
-                bic = line.payment_mode_id.bank_account_id.bank_id.bic
+                bic = self.payment_mode_id.bank_account_id.bank_id.bic
                 if bic == '765':
                     line['nosso_numero'] = self.env['ir.sequence'].\
                         next_by_code('nosso_numero.sicoob')
@@ -33,6 +33,10 @@ class AccountInvoice(models.Model):
                 elif bic == '0851':
                     line['nosso_numero'] = self.env['ir.sequence'].\
                         next_by_code('nosso_numero.cecred')
+            if invoice_line[2]['name'] == '/':
+                invoice_line[2]['name'] = str(
+                    self.env['ir.sequence'].next_by_code('doc.number.cnab')
+                    )
         return res
 
     @api.multi

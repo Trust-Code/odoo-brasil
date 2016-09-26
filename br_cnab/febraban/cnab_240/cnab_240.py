@@ -81,8 +81,7 @@ class Cnab240(Cnab):
                                   bank_account_id.bank_bic),
             'arquivo_data_de_geracao': self.data_hoje(),
             'arquivo_hora_de_geracao': self.hora_agora(),
-            # TODO: Número sequencial de arquivo
-            'arquivo_sequencia': int(self.get_file_numeration()),
+            'arquivo_sequencia': self.order.file_number,
             'cedente_inscricao_tipo': self.inscricao_tipo,
             'cedente_inscricao_numero': int(cnpj_cpf),
             'cedente_agencia': int(
@@ -182,7 +181,7 @@ class Cnab240(Cnab):
             'numero_documento': line.name,
             'vencimento_titulo': self.format_date(
                 line.date_maturity),
-            'valor_titulo': Decimal(str(line.amount_currency)).quantize(
+            'valor_titulo': Decimal(str(line.debit)).quantize(
                 Decimal('1.00')),
             # TODO: Código adotado para identificar o título de cobrança.
             # 8 é Nota de cŕedito comercial
