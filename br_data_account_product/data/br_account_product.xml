@@ -13,7 +13,6 @@
     <record id="base.main_company" model="res.company">
         <field name="fiscal_document_for_product_id" ref="br_data_account.fiscal_document_1B"/>
         <field name="document_serie_id" ref="br_document_serie_1" />
-        <field name="currency_id" ref="base.BRL"/>
     </record>
 
 </odoo>

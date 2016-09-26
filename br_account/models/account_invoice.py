@@ -22,6 +22,8 @@ class AccountInvoice(models.Model):
         self.icms_value = sum(l.icms_value for l in lines)
         self.icms_st_base = sum(l.icms_st_base for l in lines)
         self.icms_st_value = sum(l.icms_st_value for l in lines)
+        self.issqn_base = sum(l.issqn_base for l in lines)
+        self.issqn_value = sum(l.issqn_value for l in lines)
         self.ipi_base = sum(l.ipi_base for l in lines)
         self.ipi_base_other = sum(l.ipi_base_other for l in lines)
         self.ipi_value = sum(l.ipi_value for l in lines)
@@ -135,6 +137,12 @@ class AccountInvoice(models.Model):
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
+    issqn_base = fields.Float(
+        string='Base ISSQN', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    issqn_value = fields.Float(
+        string='Valor ISSQN', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
     ipi_base = fields.Float(
         string='Base IPI', store=True, digits=dp.get_precision('Account'),
         compute='_compute_amount')
