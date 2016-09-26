@@ -4,7 +4,8 @@
 
 {
     'name': 'Exportação XML NFS-e - Florianópolis',
-    'summary': """Realiza a exportação em xml das notas fiscais de serviço""",
+    'description': "Realiza a exportação em xml das notas fiscais de serviço",
+    'summary': "Realiza a exportação em xml das notas fiscais de serviço",
     'version': '10.0.1.0.0',
     'category': "Accounting & Finance",
     'author': 'Trustcode',
