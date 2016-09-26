@@ -394,6 +394,7 @@ superior a 70%')],
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
         self.service_type_id = self.product_id.service_type_id.id
+        self.product_type = self.product_id.fiscal_type
         self.fiscal_classification_id = \
             self.product_id.fiscal_classification_id.id
 

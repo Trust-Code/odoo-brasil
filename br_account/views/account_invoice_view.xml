@@ -211,7 +211,7 @@
                                 <group>
                                     <field name="tax_pis_id" />
                                     <field name="pis_manual" invisible="True"/>
-                                    <field name="pis_cst" attrs="{'required': [('product_type','in', ('product', 'service'))]}"/>
+                                    <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="pis_type"/>
                                     <field name="pis_base"/>
                                 </group>
@@ -236,7 +236,7 @@
                                 <group>
                                     <field name="tax_cofins_id" />
                                     <field name="cofins_manual" invisible="True"/>
-                                    <field name="cofins_cst" attrs="{'required': [('product_type','in', ('product', 'service'))]}"/>
+                                    <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="cofins_type"/>
                                     <field name="cofins_base"/>
                                 </group>

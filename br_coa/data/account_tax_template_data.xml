@@ -8,11 +8,6 @@
         <field name="property_account_expense_categ_id" ref="id_5_1_1_01_001" />
         <field name="income_currency_exchange_account_id" ref="id_3_1_1_04_002" />
         <field name="expense_currency_exchange_account_id" ref="id_4_1_5_01_003" />
-
-
-        <field name="property_stock_account_input_categ_id" ref="id_1_1_3_01"/>
-        <field name="property_stock_account_output_categ_id" ref="id_5_1_1_01_007"/>
-        <field name="property_stock_valuation_account_id" ref="id_1_1_3_01"/>
     </record>
 
     <record id="tax_template_out_ipi" model="account.tax.template">
