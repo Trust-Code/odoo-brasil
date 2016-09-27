@@ -167,7 +167,7 @@ class PaymentOrder(models.Model):
     def sicoob_validate_segmento_p(self, line):
         # parcela = '1' if len(self.line_ids) == 1 else '2'
         # nosso_numero = num_titulo + parcela + modalidade + '1' + '     '
-        numero_registro = [str(i).zfill(5) if i == 1 else str(i).zfill(5+3)
+        numero_registro = [str(i).zfill(5) if i == 1 else str(i+3).zfill(5)
                            for i in range(5)]
         erros = []
         if line[:3] != '756':
@@ -228,13 +228,11 @@ class PaymentOrder(models.Model):
                 self.sicoob_validate_header_arquivo(cnab_header_arquivo)
             cnab_header_lote_erros = \
                 self.sicoob_validate_header_lote(cnab_header_lote)
-
             segmentos = cnab[2:-2]
             dict_segmentos = dict()
             dict_segmentos['P'] = []
             dict_segmentos['Q'] = []
             dict_segmentos['R'] = []
-            import ipdb; ipdb.set_trace()
             for seg in segmentos:
                 dict_segmentos[seg[13]] += [seg.replace('\r\n', '')]
 

@@ -45,5 +45,8 @@ class TestCnab(TransactionCase):
             'account_id': self.account_receivable.id,
         })
 
+        self.env.user_id.company_id.legal_name = "Nome Fictício"
+        self.env.user_id.company_id.cnpj_cpf = "81228576000102"
+
         self.account_journal_model = self.env['account.journal'].create({
             'name': 'Diário Teste', 'type': 'sale', 'code': 'DTJr', })
