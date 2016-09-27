@@ -164,59 +164,6 @@ class PaymentOrder(models.Model):
         else:
             return 'SUCESSO'
 
-    def sicoob_validate_segmento_p(self, line):
-        # parcela = '1' if len(self.line_ids) == 1 else '2'
-        # nosso_numero = num_titulo + parcela + modalidade + '1' + '     '
-        numero_registro = [str(i).zfill(5) if i == 1 else str(i+3).zfill(5)
-                           for i in range(5)]
-        erros = []
-        if line[:3] != '756':
-            erros += ['Código Sicoob']
-        if line[3:7] != '0001':
-            erros += ['Código do Lote']
-        if line[7] != '3':
-            erros += ['Tipo de Registro']
-        if line[8:13] not in numero_registro:
-            erros += ['Número de Registro']
-        if line[13] != 'P':
-            erros += ['Segmento']
-        if line[14] != ' ':
-            erros += ['Uso Exclusivo FEBRABAN/CNAB']
-        if line[15:17] != '01':
-            erros += ['Código de Movimento']
-        if line[17:22] != self.payment_mode_id.bank_account_id.\
-                bra_number.strip().zfill(5):
-            erros += ['Número da Agência']
-        if line[22] != self.payment_mode_id.bank_account_id.\
-                bra_number_dig:
-            erros += ['Digito Verificador da Agência']
-        if line[23:35] != self.payment_mode_id.bank_account_id.acc_number.\
-                zfill(12):
-            erros += ['Número da Conta Bancária']
-        if line[35] != self.payment_mode_id.bank_account_id.acc_number_dig:
-            erros += ['Digito Verificador da Conta']
-        if line[36] != ' ':
-            erros += ['Digito Verificador da Ag/Conta']
-        # TODO: Nosso Numero
-        if line[57] != '1':
-            erros += ['Código da Carteira']
-        if line[58] != '0':
-            erros += ['Forma de Cadastramento do Título no Banco']
-        if line[59] != ' ':
-            erros += ['Tipo de Documento']
-        if line[60] != '2':
-            erros += ['Identificação da Emissão do Boleto']
-        if line[61] != '2':
-            erros += ['Identificação da Distribuição do Boleto']
-        if line[62:77] != numero_documento:
-            erros += ['Número do Documento de Cobrança']
-        if line[77:85] != data_vencimento:
-            erros += ['Data de Vencimento do Título']
-        if len(erros) > 0:
-            return '\n'.join(erros)
-        else:
-            return 'SUCESSO'
-
     @api.multi
     def validar_cnab(self):
         if self.payment_mode_id.bank_account_id.bank_id.bic == '756':
