@@ -35,8 +35,8 @@ class TestCnabSicoob(TestCnab):
             'bank_account_id': self.conta_sicoob.id,
             'boleto_type': 9, 'payment_type_id': self.tipo_pagamento.id,
             'boleto_carteira': '1', 'boleto_modalidade': '01',
-            'instrucoes': "Lorem ipsum dolor sit amet, consectetur adipiscing \
-elit. Etiam interdum.", })
+            'instrucoes': "Lorem ipsum dolor sit amet, consectetur adipiscing",
+             })
 
         self.account_move_line = self.env['account.move.line'].create({
             'name': str(self.env['ir.sequence'].
@@ -65,7 +65,7 @@ elit. Etiam interdum.", })
         assert len(self.fatura_cliente.receivable_move_line_ids, 1)
         self.fatura_cliente.action_register_boleto()
         for move_line in self.fatura_cliente.receivable_move_line_ids:
-            assert move_line.nosso_numero
+            assert move_line.nosso_numero is not None
             assert move_line.boleto_emitido
 
     def test_gen_payment_order(self):
