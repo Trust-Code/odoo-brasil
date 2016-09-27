@@ -1,5 +1,5 @@
 body.container {
-	background: #EEE url("/l10n_br_base/static/src/img/fundo_1.jpg") repeat scroll 0% 0%;
+	background: #EEE url("/br_base/static/src/img/fundo_1.jpg") repeat scroll 0% 0%;
 	height: 100%;
 	background-size:cover;
 }
