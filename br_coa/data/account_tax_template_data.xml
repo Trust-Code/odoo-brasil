@@ -13,6 +13,7 @@
     <record id="tax_template_out_ipi" model="account.tax.template">
         <field name="description">IPI </field>
         <field name="name">IPI Saída</field>
+        <field name="domain">ipi</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_010" name="account_id"/>
@@ -24,6 +25,7 @@
     <record id="tax_template_in_ipi" model="account.tax.template">
         <field name="description">IPI</field>
         <field name="name">IPI Entrada</field>
+        <field name="domain">ipi</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_008" name="account_id"/>
@@ -35,6 +37,7 @@
     <record id="tax_template_out_icms_interno" model="account.tax.template">
         <field name="description">ICMS Interno</field>
         <field name="name">ICMS Saida Interno</field>
+        <field name="domain">icms</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
@@ -47,6 +50,7 @@
     <record id="tax_template_out_icms_externo" model="account.tax.template">
         <field name="description">ICMS Externo</field>
         <field name="name">ICMS Saida Externo</field>
+        <field name="domain">icms</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
@@ -59,6 +63,7 @@
     <record id="tax_template_out_icms_subist" model="account.tax.template">
         <field name="description">ICMS Subist</field>
         <field name="name">ICMS Saida Subist</field>
+        <field name="domain">icms</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
@@ -69,6 +74,7 @@
     <record id="tax_template_out_icms_externo7" model="account.tax.template">
         <field name="description">ICMS Externo 7%</field>
         <field name="name">ICMS Saida Externo 7%</field>
+        <field name="domain">icms</field>
         <field name="amount">7</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
@@ -81,6 +87,7 @@
     <record id="tax_template_out_icms_externo12" model="account.tax.template">
         <field name="description">ICMS Externo 12%</field>
         <field name="name">ICMS Saida Externo 12%</field>
+        <field name="domain">icms</field>
         <field name="amount">12</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
@@ -92,6 +99,7 @@
     <record id="tax_template_out_icms_interno19" model="account.tax.template">
         <field name="description">ICMS Interno 19%</field>
         <field name="name">ICMS Saida Interno 19%</field>
+        <field name="domain">icms</field>
         <field name="amount">19</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_1_1_5_01_006" name="refund_account_id"/>
@@ -103,6 +111,7 @@
     <record id="tax_template_in_icms_interno" model="account.tax.template">
         <field name="description">ICMS Interno</field>
         <field name="name">ICMS Entrada Interno</field>
+        <field name="domain">icms</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
@@ -115,6 +124,7 @@
     <record id="tax_template_in_icms_externo" model="account.tax.template">
         <field name="description">ICMS Externo</field>
         <field name="name">ICMS Entrada Externo</field>
+        <field name="domain">icms</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
@@ -127,6 +137,7 @@
     <record id="tax_template_in_icms_subist" model="account.tax.template">
         <field name="description">ICMS Subist</field>
         <field name="name">ICMS Entrada Subist</field>
+        <field name="domain">icms</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">purchase</field>
         <field eval="1" name="price_include"/>
@@ -137,6 +148,7 @@
     <record id="tax_template_in_icms_externo7" model="account.tax.template">
         <field name="description">ICMS Externo 7%</field>
         <field name="name">ICMS Entrada Externo 7%</field>
+        <field name="domain">icms</field>
         <field name="amount">7</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
@@ -149,6 +161,7 @@
     <record id="tax_template_in_icms_externo12" model="account.tax.template">
         <field name="description">ICMS Externo 12%</field>
         <field name="name">ICMS Entrada Externo 12%</field>
+        <field name="domain">icms</field>
         <field name="amount">12</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
@@ -161,6 +174,7 @@
     <record id="tax_template_in_icms_interno19" model="account.tax.template">
         <field name="description">ICMS Interno 19%</field>
         <field name="name">ICMS Entrada Interno 19%</field>
+        <field name="domain">icms</field>
         <field name="amount">19</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
@@ -173,6 +187,7 @@
     <record id="tax_template_out_pis065" model="account.tax.template">
         <field name="description">PIS 0,65%</field>
         <field name="name">PIS Saida 0,65%</field>
+        <field name="domain">pis</field>
         <field name="amount">0.65</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_001" name="account_id"/>
@@ -185,6 +200,7 @@
     <record id="tax_template_in_pis065" model="account.tax.template">
         <field name="description">PIS 0,65%</field>
         <field name="name">PIS Entrada 0,65%</field>
+        <field name="domain">pis</field>
         <field name="amount">0.65</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_005" name="account_id"/>
@@ -197,6 +213,7 @@
     <record id="tax_template_out_cofins3" model="account.tax.template">
         <field name="description">COFINS 3%</field>
         <field name="name">COFINS Saida 3%</field>
+        <field name="domain">cofins</field>
         <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_002" name="account_id"/>
@@ -209,6 +226,7 @@
     <record id="tax_template_in_cofins3" model="account.tax.template">
         <field name="description">COFINS 3%</field>
         <field name="name">COFINS Entrada 3%</field>
+        <field name="domain">cofins</field>
         <field name="amount">3</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_002" name="account_id"/>
@@ -221,6 +239,7 @@
     <record id="tax_template_out_irpj" model="account.tax.template">
         <field name="description">IRPJ</field>
         <field name="name">IRPJ</field>
+        <field name="domain">outros</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
@@ -231,6 +250,7 @@
     <record id="tax_template_in_issqn2" model="account.tax.template">
         <field name="description">ISSQN 2%</field>
         <field name="name">ISSQN Entrada 2%</field>
+        <field name="domain">issqn</field>
         <field name="amount">2</field>
         <field name="type_tax_use">purchase</field>
         <field eval="1" name="price_include"/>
@@ -241,6 +261,7 @@
     <record id="tax_template_out_issqn3" model="account.tax.template">
         <field name="description">ISSQN 3%</field>
         <field name="name">ISSQN Saida 3%</field>
+        <field name="domain">issqn</field>
         <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>

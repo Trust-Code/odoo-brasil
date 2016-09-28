@@ -58,8 +58,7 @@ class Cnab240(Cnab):
 
     @property
     def inscricao_tipo(self):
-        # TODO: Implementar codigo para PIS/PASEP
-        if self.order.partner_id.is_company:
+        if self.order.payment_mode_id.bank_account_id.partner_id.is_company:
             return 2
         else:
             return 1
@@ -169,7 +168,8 @@ class Cnab240(Cnab):
             acc_number_dig,
             'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
             bra_number_dig,
-            'cedente_nome': self.order.user_id.company_id.legal_name,
+            'cedente_nome':
+            self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             # DV ag e cc
@@ -177,7 +177,7 @@ class Cnab240(Cnab):
                                  bra_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
-            'identificacao_titulo_empresa': (' ' * 25),  # line.move_line_id.move_id.name,
+            'identificacao_titulo_empresa': (' ' * 25),
             'numero_documento': line.name,
             'vencimento_titulo': self.format_date(
                 line.date_maturity),

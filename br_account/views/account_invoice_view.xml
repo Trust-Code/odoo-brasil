@@ -125,6 +125,7 @@
                                 <group>
                                     <field name="product_id" />
                                     <field name="product_type" />
+                                    <field name="company_fiscal_type" />
                                     <label for="quantity"/>
                                     <div>
                                         <field name="quantity" class="oe_inline"/>
@@ -133,14 +134,16 @@
                                     <field name="discount" groups="sale.group_discount_per_so_line"/>
                                     <field name="insurance_value" />
                                     <field name="other_costs_value" />
-                                    <field name="estimated_taxes"/>
+                                    <field name="price_subtotal" />
                                 </group>
                                 <group>
                                     <field name="cfop_id"/>
                                     <field domain="[('journal_id', '=', parent.journal_id), ('type', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
                                     <field domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
-                                    <field name="invoice_line_tax_ids" widget="many2many_tags" />
+                                    <field name="invoice_line_tax_ids" widget="many2many_tags" readonly="1" />
+                                    <field name="estimated_taxes"/>
+                                    <field name="calculate_tax" />
                                 </group>
                             </group>
                             <label for="name"/>
@@ -149,32 +152,31 @@
                         <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
                                 <group>
-                                    <field name="icms_manual" invisible="True"/>
                                     <field name="tax_icms_id" />
-                                    <field name="icms_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
+                                    <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                     <field name="icms_origin"/>
+                                    <field name="include_ipi_base" />
                                     <field name="icms_base_type"/>
-                                    <field name="icms_base"/>
-                                    <field name="icms_percent_reduction"/>
-                                    <field name="icms_percent_credit" />
-                                    <field name="icms_value_credit" />
                                 </group>
                                 <group>
-                                    <field name="icms_base_other"/>
+                                    <field name="icms_base"/>
+                                    <field name="icms_percent_reduction"/>
                                     <field name="icms_percent"/>
                                     <field name="icms_value"/>
+                                    <field name="icms_percent_credit" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_value_credit" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                 </group>
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
                                 <group>
                                     <field name="icms_st_base_type"/>
-                                    <field name="icms_st_base"/>
+                                    <field name="icms_st_mva"/>
                                     <field name="icms_st_percent_reduction"/>
-                                    <field name="icms_st_base_other"/>
+                                    <field name="icms_st_base"/>
                                 </group>
                                 <group>
                                     <field name="icms_st_percent"/>
-                                    <field name="icms_st_mva"/>
                                     <field name="icms_st_value"/>
                                 </group>
                             </group>
@@ -182,7 +184,6 @@
                         <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
                             <group>
                                 <field name="tax_issqn_id" />
-                                <field name="issqn_manual" invisible="True"/>
                                 <field name="issqn_type"/>
                                 <field name="issqn_base"/>
                                 <field name="issqn_percent"/>
@@ -194,7 +195,6 @@
                             <group string="Detalhes do IPI">
                                 <group>
                                     <field name="tax_ipi_id" />
-                                    <field name="ipi_manual" invisible="True"/>
                                     <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="ipi_type"/>
                                     <field name="ipi_base"/>
@@ -210,7 +210,6 @@
                             <group string="Detalhes do PIS">
                                 <group>
                                     <field name="tax_pis_id" />
-                                    <field name="pis_manual" invisible="True"/>
                                     <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="pis_type"/>
                                     <field name="pis_base"/>
@@ -235,7 +234,6 @@
                             <group string="Detalhes do COFINS">
                                 <group>
                                     <field name="tax_cofins_id" />
-                                    <field name="cofins_manual" invisible="True"/>
                                     <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="cofins_type"/>
                                     <field name="cofins_base"/>
@@ -260,6 +258,7 @@
                             <group string="Detalhes do Imposto de Importação">
                                 <field name="tax_ii_id" />
                                 <field name="ii_base"/>
+                                <field name="ii_percent"/>
                                 <field name="ii_customhouse_charges"/>
                                 <field name="ii_iof"/>
                                 <field name="ii_value"/>

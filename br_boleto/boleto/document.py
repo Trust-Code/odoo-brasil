@@ -96,7 +96,7 @@ class Boleto:
         self.boleto.especie_documento = payment_mode_id.boleto_modalidade
         self.boleto.aceite = payment_mode_id.boleto_aceite
         self.boleto.carteira = payment_mode_id.boleto_carteira
-        self.boleto.instrucoes = payment_mode_id.instrucoes
+        self.boleto.instrucoes = payment_mode_id.instrucoes or ''
 
     def _cedente(self, company):
         """

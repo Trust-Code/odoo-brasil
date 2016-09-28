@@ -23,6 +23,8 @@ class PaymentMode(models.Model):
     active = fields.Boolean(string='Active', default=True)
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Bank Account", ondelete='restrict')
+    nosso_numero_sequence = fields.Many2one(
+        'ir.sequence', string=u'Seq. do Nosso Número')
     late_payment_fee = fields.Float(string=u"Percentual Multa",
                                     digits=dp.get_precision('Account'))
     late_payment_interest = fields.Float(string=u"Juros de Mora ao Mês",

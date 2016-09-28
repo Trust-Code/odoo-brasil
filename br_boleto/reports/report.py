@@ -48,11 +48,10 @@ class ReportCustom(report_int):
         env = odoo.api.Environment(cr, uid, context or {})
 
         active_ids = context.get('active_ids')
-        active_model = context.get('active_model')
+        active_model = context.get('origin_model')
 
         ids_move_lines = []
         aml_obj = env['account.move.line']
-
         if active_model == 'account.invoice':
             ai_obj = env['account.invoice']
             for account_invoice in ai_obj.browse(active_ids):
@@ -61,7 +60,7 @@ class ReportCustom(report_int):
         elif active_model == 'account.move.line':
             ids_move_lines = active_ids
         else:
-            return False
+            raise UserError(u'Parâmetros inválidos')
         boleto_list = aml_obj.browse(ids_move_lines).action_register_boleto()
         if not boleto_list:
             raise UserError(

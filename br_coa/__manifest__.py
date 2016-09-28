@@ -16,7 +16,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account',
+        'account', 'br_account'
     ],
     'data': [
         'data/br_chart_data.xml',

@@ -15,7 +15,6 @@ class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
     cnab_file = fields.Binary('CNAB File', readonly=True)
-    partner_id = fields.Many2one('res.partner', string="Cliente")
     file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
     cnab_valido = fields.Boolean(u'CNAB Válido', readonly=1)
@@ -28,20 +27,11 @@ class PaymentOrder(models.Model):
 
             order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
-                order.payment_mode_id.bank_account_id.bank_bic,
-                order.payment_mode_id.payment_type_id.code)()
+                order.payment_mode_id.bank_account_id.bank_bic, '240')()
             remessa = cnab.remessa(order)
-            suf_arquivo = 'ABX'  # order.get_next_sufixo()
 
-            if order.payment_mode_id.payment_type_id.code == '240':
-                self.name = 'CB%s%s.REM' % (
-                    time.strftime('%d%m'), str(order.file_number))
-            elif order.payment_mode_id.payment_type_id.code == '400':
-                self.name = 'CB%s%s.REM' % (
-                    time.strftime('%d%m'), str(suf_arquivo))
-            elif order.payment_mode_id.payment_type_id.code == '500':
-                self.name = 'PG%s%s.REM' % (
-                    time.strftime('%d%m'), str(order.file_number))
+            self.name = 'CB%s%s.REM' % (
+                time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
             self.cnab_file = base64.b64encode(remessa)
 

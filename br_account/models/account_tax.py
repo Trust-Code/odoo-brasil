@@ -6,6 +6,19 @@
 from odoo import fields, models
 
 
+class AccountTaxTemplate(models.Model):
+    _inherit = 'account.tax.template'
+
+    cst = fields.Char(string="CST", size=4)
+    domain = fields.Selection([('icms', 'ICMS'),
+                               ('pis', 'PIS'),
+                               ('cofins', 'COFINS'),
+                               ('ipi', 'IPI'),
+                               ('issqn', 'ISSQN'),
+                               ('ii', 'II'),
+                               ('outros', 'Outros')], string="Tipo")
+
+
 class AccountTax(models.Model):
     _inherit = 'account.tax'
 
@@ -14,4 +27,6 @@ class AccountTax(models.Model):
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
-                               ('issqn', 'ISSQN')], string="Tipo")
+                               ('issqn', 'ISSQN'),
+                               ('ii', 'II'),
+                               ('outros', 'Outros')], string="Tipo")

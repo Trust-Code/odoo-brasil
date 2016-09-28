@@ -12,14 +12,9 @@
                     <button name="validar_cnab" type="object" class="oe_stat_button" icon="fa-check-square-o" string="Validar CNAB" />
                 </div>
             </group>
-            <field name="user_id" position="after" >
-                <field name="partner_id" />
-            </field>
             <field name="payment_mode_id" position="after">
                 <field name="cnab_file" />
                 <field name="file_number" />
-            </field>
-            <field name="partner_id" position="after">
                 <field name="cnab_valido" />
             </field>
         </field>

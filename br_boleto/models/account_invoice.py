@@ -16,27 +16,10 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
+
         for invoice_line in res:
-            if self.payment_mode_id:
-                line = invoice_line[2]
-                line['payment_mode_id'] = self.payment_mode_id.id
-                bic = self.payment_mode_id.bank_account_id.bank_id.bic
-                if bic == '765':
-                    line['nosso_numero'] = self.env['ir.sequence'].\
-                        next_by_code('nosso_numero.sicoob')
-                elif bic == '237':
-                    line['nosso_numero'] = self.env['ir.sequence'].\
-                        next_by_code('nosso_numero.bradesco')
-                elif bic == '001':
-                    line['nosso_numero'] = self.env['ir.sequence'].\
-                        next_by_code('nosso_numero.BB')
-                elif bic == '0851':
-                    line['nosso_numero'] = self.env['ir.sequence'].\
-                        next_by_code('nosso_numero.cecred')
-            if invoice_line[2]['name'] == '/':
-                invoice_line[2]['name'] = str(
-                    self.env['ir.sequence'].next_by_code('doc.number.cnab')
-                    )
+            line = invoice_line[2]
+            line['payment_mode_id'] = self.payment_mode_id.id
         return res
 
     @api.multi
@@ -69,5 +52,8 @@ da empresa:\n""" + error)
 
     @api.multi
     def action_register_boleto(self):
-        return self.env['report'].get_action(self.id,
-                                             'br_boleto.report.print')
+        if self.state in ('draft', 'cancel'):
+            raise UserError(
+                'Fatura provisória ou cancelada não permite emitir boleto')
+        self = self.with_context({'origin_model': 'account.invoice'})
+        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
