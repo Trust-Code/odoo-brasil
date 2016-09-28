@@ -56,5 +56,5 @@ class TestCnab(TransactionCase):
             'account_id': self.account_receivable.id,
             'journal_id': self.account_journal_model.id,
         })
-        self.ud.company_id.legal_name = "Nome Fictício"
+        self.uid.company_id.legal_name = "Nome Fictício"
         self.uid.company_id.cnpj_cpf = "81228576000102"
