@@ -4,7 +4,7 @@
         <field name="name">br_simples_nacional.account.invoice.line.view.form</field>
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
-        <field name="arch" type="xml">            
+        <field name="arch" type="xml">
             <field name="icms_base_type" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
@@ -12,9 +12,6 @@
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
             <field name="icms_percent_reduction" position="attributes">
-                <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
-            </field>
-            <field name="icms_base_other" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
             <field name="icms_percent" position="attributes">

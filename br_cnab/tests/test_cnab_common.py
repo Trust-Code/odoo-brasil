@@ -11,22 +11,9 @@ class TestCnab(TransactionCase):
 
     def setUp(self):
         super(TestCnab, self).setUp()
-        self.account_receivable = self.env['account.account'].create({
-            'name': 'Conta Recebível', 'code': '0.0.0.0.0', 'user_type_id': 1,
-            'reconcile': 1,
-            })
-        self.account_payable = self.env['account.account'].create({
-            'name': 'Conta Pagável', 'code': '1.1.1.1.1', 'user_type_id': 2,
-            'reconcile': 1,
-            })
-        self.account_outra = self.env['account.account'].create({
-            'name': 'Conta Bens Disp.', 'code': '2.2.2.2.2', 'user_type_id': 5,
-            'reconcile': 1,
-            })
-        self.produto = self.env['product.template'].create({
+        self.produto = self.env['product.product'].create({
             'name': 'Produto', 'default_code': '1', 'list_price': 10.00, })
-        self.produto_produto = self.env['product.product'].create({
-            'name': 'Produto', 'default_code': '1', 'list_price': 10.00, })
+
         self.parceiro = self.env['res.partner'].create({
             'name': 'Catarina Isabella Nascimento',
             'cnpj_cpf': '60520426991', 'zip': '85507300',
@@ -34,28 +21,25 @@ class TestCnab(TransactionCase):
             'district': 'Morumbi', 'country_id': 32, 'state_id': 86,
             'city_id': 3521, 'phone': '(46) 3695-7760',
             'mobile': '(46) 8284-4788',
-            'property_account_receivable_id': self.account_receivable.id,
-            'property_account_payable_id': self.account_payable.id,
         })
-        self.linha_fatura = self.env['account.invoice.line'].create({
-            'product_id': self.produto_produto.id,
-            'account_id': self.account_outra.id,
+        invoice_lines = [(0, 0, {
+            'product_id': self.produto.id,
+            'account_id': self.env['account.account'].search(
+                [('user_type_id', '=', self.env.ref(
+                    'account.data_account_type_revenue').id)], limit=1).id,
             'icms_cst': '00', 'ipi_cst': '99', 'pis_cst': '99',
-            'cofins_cst': '99', 'price_unit': self.produto_produto.list_price,
-            'name': self.produto_produto.name
-        })
-        self.account_journal_model = self.env['account.journal'].create({
-            'name': 'Diário Teste', 'type': 'sale', 'code': 'DTJr',
-            'default_debit_account_id': self.account_payable.id,
-            'default_credit_account_id': self.account_receivable.id})
+            'cofins_cst': '99', 'price_unit': self.produto.list_price,
+            'name': self.produto.name
+        })]
+        self.journalrec = self.env['account.journal'].search(
+            [('type', '=', 'sale')])[0]
         self.fatura_cliente = self.env['account.invoice'].create({
             'partner_id': self.parceiro.id,
             'date_invoice': date.today(),
-            'invoice_line_ids': self.env['account.invoice.line'].
-            browse() | self.linha_fatura,
-            'account_id': self.account_receivable.id,
-            'journal_id': self.account_journal_model.id,
+            'invoice_line_ids': invoice_lines,
+            'account_id': self.parceiro.property_account_receivable_id.id,
+            'journal_id': self.journalrec.id,
         })
-        self.user = self.env['res.users'].browse(self.uid)
-        self.user.company_id.legal_name = "Nome Fictício"
-        self.user.company_id.cnpj_cpf = "81228576000102"
+        self.company_id = self.env.user.company_id
+        self.company_id.legal_name = "Nome Fictício"
+        self.company_id.cnpj_cpf = "81228576000102"

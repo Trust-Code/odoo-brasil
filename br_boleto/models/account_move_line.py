@@ -62,6 +62,8 @@ class AccountMoveLine(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'target': 'new',
-            'context': {'default_date_change': fields.Date.context_today(self),
-                        'default_invoice_id': self.id}
+            'context': {
+                'origin_model': 'account.move.line',
+                'default_move_line_id': self.id,
+            }
         })

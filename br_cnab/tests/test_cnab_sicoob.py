@@ -26,69 +26,41 @@ class TestCnabSicoob(TestCnab):
             'bank_id': self.banco_sicoob.id
         })
 
-        self.tipo_pagamento = self.env['payment.type'].create({
-            'name': 'CNAB240 - Sicoob', 'code': '240-9'
-        })
-
         self.modo_pagamento = self.env['payment.mode'].create({
             'name': 'Boleto Sicoob',
             'bank_account_id': self.conta_sicoob.id,
-            'boleto_type': '9', 'payment_type_id': self.tipo_pagamento.id,
+            'boleto_type': '9',
             'boleto_carteira': '1', 'boleto_modalidade': '01',
             'instrucoes': "Lorem ipsum dolor sit amet, consectetur adipiscing",
              })
-
-        self.account_move_line = self.env['account.move.line'].create({
-            'name': str(self.env['ir.sequence'].
-                        next_by_code('doc.number.cnab')),
-            'partner_id': self.parceiro.id,
-            'journal_id': self.account_journal_model.id,
-            'account_id': self.account_receivable.id,
-            'debit': self.produto_produto.list_price,
-            'payment_mode_id': self.modo_pagamento.id,
-            'nosso_numero': self.env['ir.sequence'].
-            next_by_code('nosso_numero.sicoob')
-        })
-
-        self.ordem_cobranca = self.env['payment.order'].create({
-            'name': self.env['ir.sequence'].next_by_code('payment.order'),
-            'user_id': self.user.id,
-            'payment_mode_id': self.modo_pagamento.id,
-            'partner_id': self.parceiro.id,
-            'line_ids': self.account_move_line.id
-        })
 
         self.fatura_cliente.payment_mode_id = self.modo_pagamento.id
 
     def test_gen_account_move_line(self):
         self.fatura_cliente.action_invoice_open()
         assert len(self.fatura_cliente.receivable_move_line_ids) == 1
-        self.fatura_cliente.action_register_boleto()
+        self.fatura_cliente.receivable_move_line_ids.action_register_boleto()
         for move_line in self.fatura_cliente.receivable_move_line_ids:
             assert move_line.nosso_numero is not None
             assert move_line.boleto_emitido
 
     def test_gen_payment_order(self):
         self.fatura_cliente.action_invoice_open()
-        self.fatura_cliente.action_register_boleto()
+        self.fatura_cliente.receivable_move_line_ids.action_register_boleto()
         self.acc_move_line = self.fatura_cliente.receivable_move_line_ids
-        assert self.acc_move_line.partner_id == self.\
-            account_move_line.partner_id
-        #assert self.acc_move_line.journal_id == self.\
-        #    account_move_line.journal_id
-        #assert self.acc_move_line.account_id == self.\
-        #    account_move_line.account_id
-        #assert self.acc_move_line.debit == self.account_move_line.debit
-        #assert self.acc_move_line.payment_mode_id == self.\
-        #    account_move_line.payment_mode_id
-        #assert self.acc_move_line.nosso_numero != self.\
-        #    account_move_line.nosso_numero
+
+        ordem_cobranca = self.env['payment.order'].search([
+            ('state', '=', 'draft')
+        ], limit=1)
+
+        self.assertEquals(len(ordem_cobranca.line_ids),
+                          len(self.fatura_cliente.receivable_move_line_ids))
 
     def test_gen_cnab(self):
         self.fatura_cliente.action_invoice_open()
-        self.fatura_cliente.action_register_boleto()
+        self.fatura_cliente.receivable_move_line_ids.action_register_boleto()
         ordem_cobranca = self.env['payment.order'].search([
-            ('line_ids', '=', self.fatura_cliente.receivable_move_line_ids.id)
+            ('state', '=', 'draft')
         ], limit=1)
         ordem_cobranca.gerar_cnab()
         cnab = base64.decodestring(ordem_cobranca.cnab_file).split('\r\n')
