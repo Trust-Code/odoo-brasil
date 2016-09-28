@@ -62,7 +62,7 @@ class TestCnabSicoob(TestCnab):
 
     def test_gen_account_move_line(self):
         self.fatura_cliente.action_invoice_open()
-        assert len(self.fatura_cliente.receivable_move_line_ids, 1)
+        assert len(self.fatura_cliente.receivable_move_line_ids) == 1
         self.fatura_cliente.action_register_boleto()
         for move_line in self.fatura_cliente.receivable_move_line_ids:
             assert move_line.nosso_numero is not None
