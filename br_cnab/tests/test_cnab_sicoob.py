@@ -52,7 +52,7 @@ class TestCnabSicoob(TestCnab):
 
         self.ordem_cobranca = self.env['payment.order'].create({
             'name': self.env['ir.sequence'].next_by_code('payment.order'),
-            'user_id': self.env.user_id.id,
+            'user_id': self.user.id,
             'payment_mode_id': self.modo_pagamento.id,
             'partner_id': self.parceiro.id,
             'line_ids': self.account_move_line.id
@@ -111,7 +111,7 @@ class TestCnabSicoob(TestCnab):
         assert cnab_header_arquivo[3:17] == '00000         '
         assert cnab_header_arquivo[17] in ('1', '2')
         assert cnab_header_arquivo[18:32] == re.sub(
-            '[^0-9]', '', self.user_id.company_id.cnpj_cpf)
+            '[^0-9]', '', self.user.company_id.cnpj_cpf)
     #    assert cnab_header_arquivo[32:52] == (' ' * 20)
     #    assert cnab_header_arquivo[52:57] == self.modo_pagamento.\
     #        bank_account_id.bra_number.strip().zfill(5)
