@@ -5,6 +5,9 @@
 {
     'name': 'Folha de Pagamento Brasil',
     'description': 'Folha de Pagamento Brasil',
+    'maintainer': 'Trustcode',
+    'website': 'http://www.trustcode.com.br',
+    'license': 'AGPL-3',
     'category': 'Localization',
     'depends': ['br_hr_payroll', 'hr_payroll_account'],
     'data': [
@@ -12,8 +15,5 @@
     ],
     'post_init_hook': '_set_accounts',
     'installable': True,
-    'application': True,
-    'license': 'AGPL-3',
-    'maintainer': 'Trustcode',
-    'website': 'http://www.trustcode.com.br',
+    'application': False,
 }
