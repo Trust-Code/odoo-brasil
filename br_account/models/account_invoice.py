@@ -187,12 +187,11 @@ class AccountInvoice(models.Model):
 
         count = 1
         for invoice_line in res:
-            if self.payment_mode_id:
-                line = invoice_line[2]
-                line['ref'] = self.origin
-                if line['name'] == '/':
-                    line['name'] = "%02d" % count
-                    count += 1
+            line = invoice_line[2]
+            line['ref'] = self.origin
+            if line['name'] == '/':
+                line['name'] = "%02d" % count
+                count += 1
         return res
 
     @api.multi
