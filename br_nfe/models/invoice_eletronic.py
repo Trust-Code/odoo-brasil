@@ -95,7 +95,7 @@ class InvoiceEletronic(models.Model):
                 'IPITrib': {
                     'CST': '50',
                     'vBC': '0.00',
-                    'pIPI': "%.02f" % item.tax_ipi_id.aliquota,
+                    'pIPI': "%.02f" % item.ipi_aliquota,
                     'vIPI': "%.02f" % self.valor_ipi
                 }
             },
