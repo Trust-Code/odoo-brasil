@@ -60,7 +60,7 @@ class AccountBankStatementImport(models.TransientModel):
 
     def _check_ofx(self, data_file, raise_error=False):
         try:
-            data_file = data_file.replace('\r', '\n')
+            data_file = data_file.replace('\r\n', '\n').replace('\r', '\n')
             OfxParser.parse(StringIO.StringIO(data_file))
             return True
         except Exception as e:
@@ -69,7 +69,7 @@ class AccountBankStatementImport(models.TransientModel):
             return False
 
     def _parse_ofx(self, data_file):
-        data_file = data_file.replace('\r', '\n')
+        data_file = data_file.replace('\r\n', '\n').replace('\r', '\n')
         ofx = OfxParser.parse(StringIO.StringIO(data_file))
         transacoes = []
         total = 0.0

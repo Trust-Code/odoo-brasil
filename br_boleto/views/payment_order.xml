@@ -63,8 +63,8 @@
         <field name="view_id" ref="trustcode_payment_order_tree_view"/>
     </record>
 
-    <menuitem sequence="69" action="action_payment_order_form"
+    <menuitem sequence="30" action="action_payment_order_form"
               id="menu_action_payment_order"
-              parent="account.menu_finance_receivables"/>
+              parent="br_account_payment.menu_br_payments"/>
 
 </odoo>

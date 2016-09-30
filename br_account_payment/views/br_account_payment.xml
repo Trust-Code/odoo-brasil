@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem sequence="3"
+        id="menu_br_payments"
+        name="Receber e Pagar"
+        parent="account.menu_finance"/>
+
+
+    <record id="action_receivable_move_line" model="ir.actions.act_window">
+        <field name="name">Contas a Receber</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('user_type_id.type', '=', 'receivable'),
+                              ('reconciled', '=', False)]</field>
+    </record>
+
+    <menuitem sequence="10" action="action_receivable_move_line"
+              id="menu_action_receivable_move_line"
+              parent="menu_br_payments"/>
+
+
+    <record id="action_payable_move_lines" model="ir.actions.act_window">
+        <field name="name">Contas a Pagar</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('user_type_id.type', '=', 'payable'),
+                              ('reconciled', '=', False)]</field>
+    </record>
+
+    <menuitem sequence="20" action="action_payable_move_lines"
+              id="menu_action_payable_move_lines"
+              parent="menu_br_payments"/>
+
+</odoo>

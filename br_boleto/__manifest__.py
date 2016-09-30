@@ -17,8 +17,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'br_account',
-        'br_base',
+        'br_account_payment',
     ],
     'data': [
         'security/ir.model.access.csv',

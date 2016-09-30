@@ -201,15 +201,25 @@ class ResPartner(models.Model):
                         if prop not in dir(obj):
                             return None
                         return getattr(obj, prop)
-
-                    #TODO Buscar o municipio
                     self.legal_name = get_value(info.infCad, 'xNome')
                     self.zip = get_value(info.infCad.ender, 'CEP')
                     self.street = get_value(info.infCad.ender, 'xLgr')
                     self.number = get_value(info.infCad.ender, 'nro')
                     self.street2 = get_value(info.infCad.ender, 'xCpl')
                     self.district = get_value(info.infCad.ender, 'xBairro')
-                    self.zip = get_value(info.infCad.ender, 'cMun')
+                    cMun = get_value(info.infCad.ender, 'cMun')
+                    xMun = get_value(info.infCad.ender, 'xMun')
+                    city = None
+                    if cMun:
+                        city = self.env['res.state.city'].search(
+                            [('ibge_code', '=', cMun[2:]),
+                             ('state_id', '=', self.state_id.id)])
+                    if not city and xMun:
+                        city = self.env['res.state.city'].search(
+                            [('name', 'ilike', xMun),
+                             ('state_id', '=', self.state_id.id)])
+                    if city:
+                        self.city_id = city.id
                 else:
                     msg = "%s - %s" % (info.cStat, info.xMotivo)
                     raise UserError(msg)
