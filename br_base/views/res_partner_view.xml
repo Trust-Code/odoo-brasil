@@ -79,6 +79,22 @@
                     </group>
                 </page>
             </notebook>
+
+            <!-- Contacts -->
+            <xpath expr="//div[@name='div_address']/field[@name='zip']" potition="replace"></xpath>
+            <xpath expr="//div[@name='div_address']/field[@name='city']" potition="replace"></xpath>
+            <xpath expr="//div[@name='div_address']/field[@name='country_id']" potition="replace"></xpath>
+            <xpath expr="//div[@name='div_address']/field[@name='street']" potition="before">
+                <field name="zip" />
+            </xpath>
+            <xpath expr="//div[@name='div_address']/field[@name='street']" potition="after">
+                <field name="number" placeholder="Número" />
+                <field name="district" placeholder="Bairro" />
+                <field name="country_id" placeholder="País" />
+            </xpath>
+            <xpath expr="//div[@name='div_address']/field[@name='state_id']" potition="after">
+                <field name="city_id" placeholder="Município" />
+            </xpath>
         </field>
     </record>
 

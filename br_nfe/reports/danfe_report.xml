@@ -98,8 +98,25 @@
                         </t>
 
                     </div>
-                    <div class="bt br col-xs-2 line3">
-                        <span class="small">DANFE</span><br />
+                    <div class="bt br col-xs-2 line3" style="line-height:16px;">
+                        <div class="row center">
+                            <span class="enfase">DANFE</span><br />
+                            <span style="font-size:10px;text-transform:uppercase;">Documento Auxiliar da Nota Fiscal Eletrônica</span>
+                        </div>
+                        <div class="row" style="margin-top:5px;">
+                            <div class="col-xs-8">
+                                <span>0-ENTRADA</span><br />
+                                <span>1-SAÍDA</span>
+                            </div>
+                            <div class="col-xs-4" style="margin-top: 5px;">
+                                <span class="enfase" style="border:1px solid black; padding:4px;">1</span>
+                            </div>
+                        </div>
+                        <div class="row center" style="margin-top:5px;">
+                            <span class="enfase">Nº 999.999.999</span><br />
+                            <span class="enfase">SÉRIE 999</span><br />
+                            <span>FOLHA 01/01</span>
+                        </div>
                     </div>
                     <div class="br bt col-xs-5 line3">
                         <div class="row bb line60">
