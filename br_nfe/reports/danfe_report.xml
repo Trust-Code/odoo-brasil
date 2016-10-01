@@ -1,0 +1,474 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <template id="danfe_assets_backend" name="Danfe assets" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css" href="/br_nfe/static/css/danfe.css"/>
+        </xpath>
+    </template>
+
+    <record id="paperformat_br_nfe_danfe" model="report.paperformat">
+        <field name="name">Formato Danfe</field>
+        <field name="default" eval="True" />
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3.0</field>
+        <field name="margin_left">3.0</field>
+        <field name="margin_right">3.0</field>
+        <field name="margin_bottom">3.0</field>
+    </record>
+
+    <record id="report_br_nfe_danfe" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="paperformat_br_nfe_danfe"/>
+        <field name="name">Impressão de Danfe</field>
+    </record>
+
+    <template id="template_br_nfe_danfe">
+        <div class="page">
+
+            <t t-if="o.ambiente == 'homologacao'">
+                <div style="width:100%;position:fixed;top:400px;">
+                  <div  style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Sem Valor Fiscal</div>
+                </div>
+            </t>
+
+            <div class="oe_structure container">
+                <div class="row">
+                    <div class="borda-completa col-xs-10">
+                        <div class="row bb">
+                            <div class="col-xs-12 line">
+                                <span class="medium">Recebemos de José Salésio Machado - ME os produtos e/ou serviços constantes na nota fiscal eletrônica indicada abaixo</span>
+                            </div>
+                        </div>
+                        <div class="row line">
+                            <div class="br col-xs-3 line">
+                                <span class="small">Data de Recebimento</span>
+                            </div>
+                            <div class="col-xs-9 line">
+                                <span class="small">Identificação e assinatura do recebedor</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bt br bb center col-xs-2 line2">
+                        <span class="enfase">NF-e</span><br />
+                        <span class="enfase">Nº 000.001.574</span><br />
+                        <span class="enfase">Série 001</span>
+                    </div>
+                </div>
+                <hr style="border-top:1px dashed black; margin:5px;" />
+
+                <div class="row line">
+                    <div class="bl bt br col-xs-5 line3 center" style="line-height:14px;">
+
+                        <t t-if="o.company_id.cabecalho_danfe == 'horizontal'">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <img style="max-width:120px;margin-top:20px;margin-left:10px;" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" />
+                                </div>
+                                <div class="col-xs-8" style="margin-top:25px;">
+                                    <span class="enfase" t-field="o.company_id.legal_name"></span><br />
+                                    <span class="medium" t-field="o.company_id.street"></span>
+                                    <span class="medium" t-field="o.company_id.number"></span>
+                                    <span class="medium" t-field="o.company_id.district"></span>
+                                    <br />
+                                    <span class="medium">Fone:</span>
+                                    <span class="medium" t-field="o.company_id.phone"/>
+                                    <br />
+                                    <span class="medium" t-field="o.company_id.city_id.name" /> -
+                                    <span class="medium" t-field="o.company_id.state_id.code" /> -
+                                    <span class="medium" t-field="o.company_id.zip" /><br />
+                                    <span class="medium">Regime tributário: SIMPLES Nacional</span><br />
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-if="o.company_id.cabecalho_danfe == 'vertical'">
+                            <img style="height:65px;" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" /><br />
+                            <span class="enfase" t-field="o.company_id.legal_name"></span><br />
+                            <span class="medium" t-field="o.company_id.street"></span>
+                            <span class="medium" t-field="o.company_id.number"></span>
+                            <span class="medium" t-field="o.company_id.district"></span>
+                            <br />
+                            <span class="medium">Fone:</span>
+                            <span class="medium" t-field="o.company_id.phone"/>
+                            <br />
+                            <span class="medium" t-field="o.company_id.city_id.name" /> -
+                            <span class="medium" t-field="o.company_id.state_id.code" /> -
+                            <span class="medium" t-field="o.company_id.zip" /><br />
+                            <span class="medium">Regime tributário: SIMPLES Nacional</span><br />
+                        </t>
+
+                    </div>
+                    <div class="bt br col-xs-2 line3">
+                        <span class="small">DANFE</span><br />
+                    </div>
+                    <div class="br bt col-xs-5 line3">
+                        <div class="row bb line60">
+                            <img style="width:470px;height:50px;margin-top:5px;" src="http://demo2.odoo.com/report/barcode/Code128/12345678910234567896523456987563245687598456" />
+                        </div>
+                        <div class="row bb">
+                            <div class="col-xs-12">
+                                <span class="small">Chave de Acesso</span><br />
+                                <span t-field="o.chave_nfe"></span><br />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 center">
+                                <span class="small">Consulta de autenticidade no portal nacional da NF-e
+                                    www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="borda-completa col-xs-7 line">
+                        <span class="small">Natureza da Operação</span><br />
+                        <span t-field="o.fiscal_position_id.name"></span>
+                    </div>
+                    <div class="bt br bb col-xs-5 line">
+                        <span class="small">Protocolo de autorização de uso</span><br />
+                        <span>11090123456789 12/03/2009 10:00:00</span>
+                    </div>
+                </div>
+                <div class="row line">
+                    <div class="bl bb br col-xs-4 line">
+                        <span class="small">Inscrição estadual</span><br />
+                        <span t-field="o.company_id.inscr_est"></span>
+                    </div>
+                    <div class="br bb col-xs-4 line">
+                        <span class="small">Inscrição do substituto tributário</span><br />
+                        <span></span>
+                    </div>
+                    <div class="br bb col-xs-4 line">
+                        <span class="small">CNPJ</span><br />
+                        <span t-field="o.company_id.cnpj_cpf"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Destinatário/Remetente</span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="bt bl br col-xs-8 line">
+                        <span class="small">Nome/Razão Social</span><br />
+                        <span t-raw="o.partner_id.legal_name or o.partner_id.name"></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">CNPJ/CPF</span><br />
+                        <span t-field="o.partner_id.cnpj_cpf"></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Data da Emissão</span><br />
+                        <span t-field="o.data_emissao"></span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="bt bl br col-xs-6 line">
+                        <span class="small">Endereço</span><br />
+                        <span t-field="o.partner_id.street"></span>
+                    </div>
+                    <div class="bt br col-xs-3 line">
+                        <span class="small">Bairro/Distrito</span><br />
+                        <span t-field="o.partner_id.street"></span>
+                    </div>
+                    <div class="bt br col-xs-1 line">
+                        <span class="small">CEP</span><br />
+                        <span t-field="o.partner_id.zip" style="font-size:11px;"></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Data da Entrada/Saída</span><br />
+                        <span t-field="o.data_fatura"></span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="bt bl br bb col-xs-6 line">
+                        <span class="small">Município</span><br />
+                        <span t-field="o.partner_id.city_id.name"></span>
+                    </div>
+                    <div class="bt br bb col-xs-3 line">
+                        <span class="small">Fone</span><br />
+                        <span t-raw="o.partner_id.phone or o.partner_id.mobile"></span>
+                    </div>
+                    <div class="bt br bb col-xs-1 line">
+                        <span class="small">UF</span><br />
+                        <span t-field="o.partner_id.state_id.code"></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Inscrição Estadual</span><br />
+                        <span t-field="o.partner_id.inscr_est"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Faturas</span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="borda-completa col-xs-6 line">
+                        <span class="small">Número da Fatura</span><br />
+                        <span t-field="o.payment_term_id.name"></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Valor Original</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Desconto</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Valor Líquido</span><br />
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Duplicatas</span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="borda-completa col-xs-1 line">
+                        <span class="small">Número</span><br />
+                        <span style="font-size:11px;">151/1</span>
+                    </div>
+                    <div class="bt br bb col-xs-1 line">
+                        <span class="small">Vencimento</span><br />
+                        <span style="font-size:11px;">08/10/2016</span>
+                    </div>
+                    <div class="bt br bb col-xs-1 line">
+                        <span class="small">Valor</span><br />
+                        <span style="font-size:11px;">15,00</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Cálculo do Imposto</span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="bt br bl col-xs-2 line">
+                        <span class="small">Base Cálculo ICMS</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Valor do ICMS</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Base de cálculo do ICMS ST</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Valor do ICMS ST</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Total Estimado Tributos</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br col-xs-2 line">
+                        <span class="small">Valor Total dos Produtos</span><br />
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="borda-completa col-xs-2 line">
+                        <span class="small">Valor do Frete</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Valor do Seguro</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Desconto</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Outras despesas</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Valor Total do IPI</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Valor total da Nota</span><br />
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Transportador/Volumes Transportados</span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="borda-completa col-xs-5 line">
+                        <span class="small">Nome/Razão Social</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">Frete por conta</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-1 line">
+                        <span class="small">Código ANTT</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-1 line">
+                        <span class="small">Placa</span><br />
+                        <span style="font-size:11px;">MJU-2582</span>
+                    </div>
+                    <div class="bt br bb col-xs-1 line">
+                        <span class="small">UF</span><br />
+                        <span></span>
+                    </div>
+                    <div class="bt br bb col-xs-2 line">
+                        <span class="small">CNPJ/CPF</span><br />
+                        <span></span>
+                    </div>
+                </div>
+
+                <t t-if="o.finalidade_emissao == '1'">
+
+                    <div class="row line">
+                        <div class="bl br bb col-xs-5 line">
+                            <span class="small">Endereço</span><br />
+                            <span></span>
+                        </div>
+                        <div class="bb br  col-xs-4 line">
+                            <span class="small">Município</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-1 line">
+                            <span class="small">UF</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-2 line">
+                            <span class="small">Inscrição Estadual</span><br />
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="row line">
+                        <div class="bl br bb col-xs-2 line">
+                            <span class="small">Quantidade</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-2 line">
+                            <span class="small">Espécie</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-2 line">
+                            <span class="small">Marca</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-2 line">
+                            <span class="small">Número</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-2 line">
+                            <span class="small">Peso Bruto</span><br />
+                            <span></span>
+                        </div>
+                        <div class="br bb col-xs-2 line">
+                            <span class="small">Peso Líquido</span><br />
+                            <span></span>
+                        </div>
+                    </div>
+
+                </t>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Transportador/Volumes Transportados</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-bordered table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:6%;">Cód. Produto</th>
+                                <th style="width:33%;">Descrição do Produto/Serviço</th>
+                                <th style="width:5%;">NCM/SH</th>
+                                <th style="width:3%;">CST</th>
+                                <th style="width:3%;">CFOP</th>
+                                <th style="width:3%;">Un.</th>
+                                <th style="width:6%;">Quantidade</th>
+                                <th style="width:7%;">Valor Unitário</th>
+                                <th style="width:7%;">Valor Total</th>
+                                <th style="width:7%;">Base Cálc ICMS</th>
+                                <th style="width:7%;">Valor do ICMS</th>
+                                <th style="width:7%;">Valor do IPI</th>
+                                <th style="width:3%;">% ICMS</th>
+                                <th style="width:3%;">% IPI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="range(0, 150)" t-as="l">
+                                <td><span t-raw="l" /></td>
+                                <td>Mark</td>
+                                <td>68101100</td>
+                                <td>0101</td>
+                                <td>5101</td>
+                                <td>UN</td>
+                                <td>1546,0000</td>
+                                <td>165.568,2500</td>
+                                <td>9.165.568,25</td>
+                                <td>9.165.568,25</td>
+                                <td>65.568,25</td>
+                                <td>165.568,25</td>
+                                <td>7,00</td>
+                                <td>3,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="enfase">Dados Adicionais</span>
+                    </div>
+                </div>
+
+                <div class="row line">
+                    <div class="borda-completa col-xs-7 line4">
+                        <span class="small">Informações Complementares</span><br />
+                        <span t-field="o.informacoes_complementar"></span>
+                    </div>
+                    <div class="bt br bb col-xs-5 line4">
+                        <span class="small">Reservado ao Fisco</span><br />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <span style="font-size:10px">Danfe gerado com Odoo Brasil - Software open source - saiba mais em <a href="http://www.trustcode.com.br/odoo-open-source">http://www.trustcode.com.br/odoo-open-source</a></span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+    <template id="main_template_br_nfe_danfe">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="br_nfe.template_br_nfe_danfe" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

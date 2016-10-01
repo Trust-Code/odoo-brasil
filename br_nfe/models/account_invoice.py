@@ -2,11 +2,28 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import models
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    def action_preview_danfe(self):
+        docs = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)])
+        action = self.env['report'].get_action(
+            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+        action['report_type'] = 'qweb-html'
+        return action
+
+    def invoice_print(self):
+        if self.fiscal_document_id.code == '55':
+            docs = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', self.id)])
+            return self.env['report'].get_action(
+                docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+        else:
+            return super(AccountInvoice, self).invoice_print()
 
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)

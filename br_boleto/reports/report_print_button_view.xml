@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
         <report id="action_insert_reports_print_button_account_move_line"
                 name="br_boleto.report"
@@ -11,4 +11,4 @@
                 model="account.invoice"
                 string="Boleto"/>
     </data>
-</openerp>
+</odoo>

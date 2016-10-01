@@ -10,3 +10,7 @@ class ResCompany(models.Model):
 
     tipo_ambiente = fields.Selection([('1', 'Produção'), ('2', 'Homologação')],
                                      string="Homologação", default=2)
+
+    cabecalho_danfe = fields.Selection([('vertical', 'Modelo Vertical'),
+                                        ('horizontal', 'Modelo Horizontal')],
+                                       string=u"Cabeçalho Danfe")

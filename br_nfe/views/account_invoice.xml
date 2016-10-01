@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_br_account_einvoice_invoice_form" model="ir.ui.view">
+        <field name="name">br_account_einvoice_invoice_form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o" string="Preview Danfe">
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

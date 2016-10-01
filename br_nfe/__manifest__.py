@@ -21,8 +21,11 @@
     'data': [
         'views/account_fiscal_position.xml',
         'views/invoice_eletronic.xml',
+        'views/account_invoice.xml',
         'views/res_company.xml',
-        'views/res_partner.xml'
+        'views/res_partner.xml',
+        'reports/br_nfe_reports.xml',
+        'reports/danfe_report.xml',
     ],
     'instalable': True,
     'application': True,

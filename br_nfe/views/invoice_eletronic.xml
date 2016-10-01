@@ -6,6 +6,10 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_account_einvoice.sped_base_eletronic_doc_form"/>
         <field name="arch" type="xml">
+            <field name="codigo_retorno" position="before">
+                <field name="chave_nfe" />
+                <field name="protocolo_nfe" />
+            </field>
             <field name="finalidade_emissao" position="after">
                 <field name="ind_final" />
                 <field name="ind_pres" />

@@ -34,6 +34,9 @@ class InvoiceEletronic(models.Model):
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
 
+    chave_nfe = fields.Char(string="Chave NFe", size=50)
+    protocolo_nfe = fields.Char(string="Protocolo Autorização", size=50)
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()

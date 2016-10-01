@@ -1,0 +1,19 @@
+.center { text-align: center; }
+.bold {font-weight: bold;}
+.borda-completa { border:1px solid #bbbbbb; }
+.enfase { font-size: 16px; font-weight: bold;}
+.line { height: 36px; }
+.line2 { height: 75px; }
+.line60 { height: 60px; }
+.line3 { height: 143px; }
+.line4 { height: 152px; }
+.small {font-size: 8px; text-transform: uppercase;}
+.medium {font-size: 10px; text-transform: uppercase;}
+.bt { border-top: 1px solid #bbbbbb; }
+.bb { border-bottom: 1px solid #bbbbbb; }
+.bl { border-left: 1px solid #bbbbbb; }
+.br { border-right: 1px solid #bbbbbb; }
+.row { margin-left: -5px; margin-right: -5px; }
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 { padding-left: 5px; padding-right: 5px;}
+.table th { font-size: 8px; text-transform: uppercase; text-align: center;}
+.table td { font-size: 10px;}
