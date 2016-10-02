@@ -315,35 +315,31 @@ class InvoiceEletronic(models.Model):
 
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
+        resposta_recibo = None
         resposta = autorizar_nfe(certificado, **lote)
-
-        if resposta['object'].Body.nfeAutorizacaoLoteResult.\
-                retEnviNFe.cStat == 103:
-
+        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe
+        if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
                 'ambiente': 1 if self.ambiente == 'producao' else 2,
                 'obj': {
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
-                    'numero_recibo': resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe.infRec.nRec
+                    'numero_recibo': retorno.infRec.nRec
                 }
             }
             self.recibo_nfe = obj['obj']['numero_recibo']
             import time
             time.sleep(2)
-            resposta = retorno_autorizar_nfe(certificado, **obj)
+            resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
+            retorno = resposta_recibo['object'].Body.\
+                nfeRetAutorizacaoLoteResult.retConsReciNFe
 
-        if resposta['object'].Body.nfeAutorizacaoLoteResult.\
-                retEnviNFe.cStat != 104:
-            self.codigo_retorno = resposta['object'].Body.\
-                nfeAutorizacaoLoteResult.retEnviNFe.cStat
-            self.mensagem_retorno = resposta['object'].Body.\
-                nfeAutorizacaoLoteResult.retEnviNFe.xMotivo
+        if retorno.cStat != 104:
+            self.codigo_retorno = retorno.cStat
+            self.mensagem_retorno = retorno.xMotivo
         else:
-            self.codigo_retorno = resposta['object'].Body.\
-                nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.cStat
-            self.mensagem_retorno = resposta['object'].Body.\
-                nfeAutorizacaoLoteResult.retEnviNFe.protNFe.infProt.xMotivo
+            self.codigo_retorno = retorno.protNFe.infProt.cStat
+            self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
                 self.write({'state': 'done'})
             # Duplicidade de NF-e significa que a nota já está emitida
@@ -359,3 +355,6 @@ class InvoiceEletronic(models.Model):
         })
         self._create_attachment(self, resposta['sent_xml'])
         self._create_attachment(self, resposta['received_xml'])
+        if resposta_recibo:
+            self._create_attachment(self, resposta_recibo['sent_xml'])
+            self._create_attachment(self, resposta_recibo['received_xml'])

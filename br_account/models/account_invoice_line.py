@@ -7,6 +7,11 @@
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
 from .product import PRODUCT_ORIGIN
+from odoo.addons.br_account.models.cst import CST_ICMS
+from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
+from odoo.addons.br_account.models.cst import CST_IPI
+from odoo.addons.br_account.models.cst import CST_PIS_COFINS
+from odoo.addons.br_account.models.cst import ORIGEM_PROD
 from odoo.addons.br_account.models.res_company import COMPANY_FISCAL_TYPE
 
 
@@ -142,61 +147,13 @@ class AccountInvoiceLine(models.Model):
 
     icms_cst = fields.Char('CST ICMS', size=10,
                            store=True, compute='_compute_cst_icms')
-    icms_cst_normal = fields.Selection([
-        ('00', '00 - Tributada Integralmente'),
-        ('10', '10 - Tributada e com cobrança do ICMS por substituição \
-         tributária'),
-        ('20', '20 - Com redução de base de cálculo'),
-        ('30', '30 - Isenta ou não tributada e com cobrança do ICMS por \
-         substituição tributária'),
-        ('40', '40 - Isenta'),
-        ('41', '41 - Não tributada'),
-        ('50', '50 - Suspensão'),
-        ('51', '51 - Diferimento'),
-        ('60', '60 - ICMS cobrado anteriormente por substituição tributária'),
-        ('70', '70 - Com redução de base de cálculo e cobrança do ICMS por \
-         substituição tributária'),
-        ('90', '90 - Outras')], string="CST ICMS")
+    icms_cst_normal = fields.Selection(CST_ICMS, string="CST ICMS")
 
-    icms_csosn_simples = fields.Selection([
-        ('101', '101 - Tributada pelo Simples Nacional com permissão de \
-         crédito'),
-        ('102', '102 - Tributada pelo Simples Nacional sem permissão de \
-         crédito'),
-        ('103', '103 -Isenção do ICMS no Simples Nacional para faixa de \
-         receita bruta'),
-        ('201', '201 - Tributada pelo Simples Nacional com permissão de \
-         crédito e com cobrança do ICMS por substituição tributária'),
-        ('202', '202 - Tributada pelo Simples Nacional sem permissão de \
-         crédito e com cobrança do ICMS por substituição tributária'),
-        ('203', '203 - Isenção do ICMS no Simples Nacional para faixa de \
-         receita bruta e com cobrança do ICMS por substituição tributária'),
-        ('300', '300 - Imune'),
-        ('400', '400 - Não tributada pelo Simples Nacional'),
-        ('500', '500 - ICMS cobrado anteriormente por substituição tributária \
-         (substituído) ou por antecipação'),
-        ('900', '900 - Outros')], string="CSOSN ICMS")
+    icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
 
     icms_percent_credit = fields.Float(u"% Cŕedito ICMS")
     icms_value_credit = fields.Float(u"Valor de Crédito")
-    origin_product = fields.Selection(
-        [('0', '0 - Nacional'),
-         ('1', '1 - Estrangeira - Importação direta'),
-         ('2', '2 - Estrangeira - Adquirida no mercado interno'),
-         ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação \
-superior a 40% \e inferior ou igual a 70%'),
-         ('4', '4 - Nacional, cuja produção tenha sido feita em conformidade \
-com os processos produtivos básicos de que tratam as \
-legislações citadas nos Ajustes'),
-         ('5', '5 - Nacional, mercadoria ou bem com Conteúdo de Importação \
-inferior ou igual a 40%'),
-         ('6', '6 - Estrangeira - Importação direta, sem similar nacional, \
-constante em lista da CAMEX e gás natural'),
-         ('7', '7 - Estrangeira - Adquirida no mercado interno, sem similar \
-nacional, constante lista CAMEX e gás natural'),
-         ('8', '8 - Nacional, mercadoria ou bem com Conteúdo de Importação \
-superior a 70%')],
-        u'Origem da mercadoria')
+    origin_product = fields.Selection(ORIGEM_PROD, u'Origem da mercadoria')
 
     tax_issqn_id = fields.Many2one('account.tax', string="ISSQN",
                                    domain=[('domain', '=', 'issqn')])
@@ -232,24 +189,10 @@ superior a 70%')],
     ipi_aliquota = fields.Float(
         'Perc IPI', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
-    ipi_cst = fields.Selection([
-        ('00', '00 - Entrada com Recuperação de Crédito'),
-        ('01', '01 - Entrada Tributável com Alíquota Zero'),
-        ('02', '02 - Entrada Isenta'),
-        ('03', '03 - Entrada Não-Tributada'),
-        ('04', '04 - Entrada Imune'),
-        ('05', '05 - Entrada com Suspensão'),
-        ('49', '49 - Outras Entradas'),
-        ('50', '50 - Saída Tributada'),
-        ('51', '51 - Saída Tributável com Alíquota Zero'),
-        ('52', '52 - Saída Isenta'),
-        ('53', '52 - Saída Não-Tributada'),
-        ('54', '54 - Saída Imune'),
-        ('55', '55 - Saída com Suspensão'),
-        ('99', '99 - Outras Saídas')], string='CST IPI')
+    ipi_cst = fields.Selection(CST_IPI, string='CST IPI')
     tax_pis_id = fields.Many2one('account.tax', string="PIS",
                                  domain=[('domain', '=', 'pis')])
-    pis_cst = fields.Char('CST PIS', size=10)
+    pis_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
     pis_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do PIS', required=True, default='percent')
@@ -277,7 +220,7 @@ superior a 70%')],
         default=0.00)
     tax_cofins_id = fields.Many2one('account.tax', string="COFINS",
                                     domain=[('domain', '=', 'cofins')])
-    cofins_cst = fields.Char('CST PIS')
+    cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
     cofins_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do COFINS', required=True, default='percent')

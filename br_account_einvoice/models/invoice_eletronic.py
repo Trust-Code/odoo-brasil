@@ -4,6 +4,11 @@
 
 from odoo.exceptions import UserError
 from odoo import api, fields, models
+from odoo.addons.br_account.models.cst import CST_ICMS
+from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
+from odoo.addons.br_account.models.cst import CST_IPI
+from odoo.addons.br_account.models.cst import CST_PIS_COFINS
+from odoo.addons.br_account.models.cst import ORIGEM_PROD
 
 
 class InvoiceEletronic(models.Model):
@@ -60,7 +65,7 @@ class InvoiceEletronic(models.Model):
     valor_despesas = fields.Float(u'Valor despesas')
     valor_bc_icms = fields.Float(u"Valor da Base de Cálculo")
     valor_icms = fields.Float(u"Valor do ICMS")
-    valor_icms_deson = fields.Float(u'Valor ICMSDeson')
+    valor_icms_deson = fields.Float(u'Valor ICMS Desoneração')
     valor_bc_icmsst = fields.Float(u'Valor BCST')
     valor_icmsst = fields.Float(u'Valor ST')
     valor_ii = fields.Float(u'Valor do Imposto de Importação')
@@ -276,57 +281,9 @@ class InvoiceEletronicItem(models.Model):
         [('0', 'Não'), ('1', 'Sim')],
         string="Compõe Total da Nota?", default='1')
 
-    origem = fields.Selection(
-        [('0', '0 - Nacional'),
-         ('1', '1 - Estrangeira - Importação direta'),
-         ('2', '2 - Estrangeira - Adquirida no mercado interno'),
-         ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação \
-superior a 40% \e inferior ou igual a 70%'),
-         ('4', '4 - Nacional, cuja produção tenha sido feita em conformidade \
-com os processos produtivos básicos de que tratam as \
-legislações citadas nos Ajustes'),
-         ('5', '5 - Nacional, mercadoria ou bem com Conteúdo de Importação \
-inferior ou igual a 40%'),
-         ('6', '6 - Estrangeira - Importação direta, sem similar nacional, \
-constante em lista da CAMEX e gás natural'),
-         ('7', '7 - Estrangeira - Adquirida no mercado interno, sem similar \
-nacional, constante lista CAMEX e gás natural'),
-         ('8', '8 - Nacional, mercadoria ou bem com Conteúdo de Importação \
-superior a 70%')],
-        u'Origem da mercadoria')
+    origem = fields.Selection(ORIGEM_PROD, u'Origem da mercadoria')
     icms_cst = fields.Selection(
-     [
-      ('00', '00 - Tributada Integralmente'),
-      ('10', '10 - Tributada com ICMS ST'),
-      ('20', '20 - Com redução de base de cálculo'),
-      ('30', '30 - Isenta ou não tributada e com cobrança do ICMS por \
-substituição tributária'),
-      ('40', '40 - Isenta'),
-      ('41', '41 - Não tributada'),
-      ('50', '50 - Suspensão'),
-      ('51', '51 - Diferimento'),
-      ('60', '60 - ICMS cobrado anteriormente por substituição tributária'),
-      ('70', '70 - Com redução de base de cálculo e cobrança do ICMS por \
-substituição tributária'),
-      ('101', '101 - Tributada pelo Simples Nacional com permissão de \
-crédito'),
-      ('102', '102 - Tributada pelo Simples Nacional sem permissão de \
-crédito'),
-      ('103', '103 - Isenção do ICMS no Simples Nacional para faixa de \
-receita bruta'),
-      ('201', '201 - Tributada pelo Simples Nacional com permissão de crédito \
-e com cobrança do ICMS por substituição tributária'),
-      ('202', '202 - Tributada pelo Simples Nacional sem permissão de crédito \
-e com cobrança do ICMS por substituição tributária'),
-      ('203', '203 - Isenção do ICMS no Simples Nacional para faixa de receita \
-bruta e com cobrança do ICMS por substituição tributária'),
-      ('300', '300 - Imune'),
-      ('400', '400 - Não tributada pelo Simples Nacional'),
-      ('500', '500 - ICMS cobrado anteriormente por substituição tributária \
-(substituído) ou por antecipação'),
-      ('900', '900 - Outros'),
-      ('90', '90 - Outros')],
-     u'Situação tributária do ICMS')
+        CST_ICMS + CSOSN_SIMPLES, u'Situação tributária')
     icms_aliquota = fields.Float(u'Alíquota')
     icms_modalidade_BC = fields.Selection(
         [('0', '0 - Margem Valor Agregado (%)'),
@@ -355,22 +312,7 @@ bruta e com cobrança do ICMS por substituição tributária'),
     # ----------- IPI -------------------
     classe_enquadramento = fields.Char(u'Classe enquadramento', size=5)
     codigo_enquadramento = fields.Char(u'Código enquadramento', size=4)
-    ipi_cst = fields.Selection([
-        ('00', '00 - Entrada com Recuperação de Crédito'),
-        ('01', '01 - Entrada Tributável com Alíquota Zero'),
-        ('02', '02 - Entrada Isenta'),
-        ('03', '03 - Entrada Não-Tributada'),
-        ('04', '04 - Entrada Imune'),
-        ('05', '05 - Entrada com Suspensão'),
-        ('49', '49 - Outras Entradas'),
-        ('50', '50 - Saída Tributada'),
-        ('51', '51 - Saída Tributável com Alíquota Zero'),
-        ('52', '52 - Saída Isenta'),
-        ('53', '52 - Saída Não-Tributada'),
-        ('54', '54 - Saída Imune'),
-        ('55', '55 - Saída com Suspensão'),
-        ('99', '99 - Outras Saídas')],
-        string=u'Situação tributária do ICMS')
+    ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária do ICMS')
     ipi_aliquota = fields.Float(u'Alíquota')
     ipi_base_calculo = fields.Float(u'Base de cálculo')
     ipi_percentual_reducao_bc = fields.Float(u'% Redução Base')
@@ -383,79 +325,13 @@ bruta e com cobrança do ICMS por substituição tributária'),
     ii_valor_iof = fields.Float(u'IOF')
 
     # ------------ PIS ---------------------
-    pis_cst = fields.Selection([('01', 'Tributada Integralmente'),
-                                ('02', '02'),
-                                ('03', '03'),
-                                ('04', '04'),
-                                ('05', '05'),
-                                ('06', '06'),
-                                ('07', '07'),
-                                ('08', '08'),
-                                ('09', '09'),
-                                ('49', '49'),
-                                ('50', '50'),
-                                ('51', '51'),
-                                ('52', '52'),
-                                ('53', '53'),
-                                ('54', '54'),
-                                ('55', '55'),
-                                ('56', '56'),
-                                ('60', '60'),
-                                ('61', '61'),
-                                ('62', '62'),
-                                ('63', '63'),
-                                ('64', '64'),
-                                ('65', '65'),
-                                ('66', '66'),
-                                ('67', '67'),
-                                ('70', '70'),
-                                ('71', '71'),
-                                ('72', '72'),
-                                ('73', '73'),
-                                ('74', '74'),
-                                ('75', '75'),
-                                ('98', '98'),
-                                ('99', '99')],
-                               u'Situação tributária')
+    pis_cst = fields.Selection(CST_PIS_COFINS, u'Situação tributária')
     pis_aliquota = fields.Float(u'Alíquota')
     pis_base_calculo = fields.Float(u'Base de cálculo')
     pis_valor = fields.Float(u'Valor Total')
 
     # ------------ COFINS ------------
-    cofins_cst = fields.Selection([('01', 'Tributada Integralmente'),
-                                  ('02', '02'),
-                                  ('03', '03'),
-                                  ('04', '04'),
-                                  ('05', '05'),
-                                  ('06', '06'),
-                                  ('07', '07'),
-                                  ('08', '08'),
-                                  ('09', '09'),
-                                  ('49', '49'),
-                                  ('50', '50'),
-                                  ('51', '51'),
-                                  ('52', '52'),
-                                  ('53', '53'),
-                                  ('54', '54'),
-                                  ('55', '55'),
-                                  ('56', '56'),
-                                  ('60', '60'),
-                                  ('61', '61'),
-                                  ('62', '62'),
-                                  ('63', '63'),
-                                  ('64', '64'),
-                                  ('65', '65'),
-                                  ('66', '66'),
-                                  ('67', '67'),
-                                  ('70', '70'),
-                                  ('71', '71'),
-                                  ('72', '72'),
-                                  ('73', '73'),
-                                  ('74', '74'),
-                                  ('75', '75'),
-                                  ('98', '98'),
-                                  ('99', '99')],
-                                  u'Situação tributária')
+    cofins_cst = fields.Selection(CST_PIS_COFINS, u'Situação tributária')
     cofins_aliquota = fields.Float(u'Alíquota')
     cofins_base_calculo = fields.Float(u'Base de cálculo')
     cofins_valor = fields.Float(u'Valor Total')
