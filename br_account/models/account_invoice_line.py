@@ -200,36 +200,36 @@ superior a 70%')],
 
     tax_issqn_id = fields.Many2one('account.tax', string="ISSQN",
                                    domain=[('domain', '=', 'issqn')])
-    issqn_type = fields.Selection(
+    issqn_tipo = fields.Selection(
         [('N', 'Normal'), ('R', 'Retida'),
          ('S', 'Substituta'), ('I', 'Isenta')], 'Tipo do ISSQN',
         required=True, default='N')
     service_type_id = fields.Many2one(
         'br_account.service.type', 'Tipo de Serviço')
-    issqn_base = fields.Float(
+    issqn_base_calculo = fields.Float(
         'Base ISSQN', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    issqn_percent = fields.Float(
+    issqn_aliquota = fields.Float(
         'Perc ISSQN', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
-    issqn_value = fields.Float(
+    issqn_valor = fields.Float(
         'Valor ISSQN', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     tax_ipi_id = fields.Many2one('account.tax', string="IPI",
                                  domain=[('domain', '=', 'ipi')])
-    ipi_type = fields.Selection(
+    ipi_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do IPI', required=True, default='percent')
-    ipi_base = fields.Float(
+    ipi_base_calculo = fields.Float(
         'Base IPI', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ipi_base_other = fields.Float(
-        'Base IPI Outras', required=True, digits=dp.get_precision('Account'),
+    ipi_reducao_bc = fields.Float(
+        '% Redução Base', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ipi_value = fields.Float(
+    ipi_valor = fields.Float(
         'Valor IPI', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ipi_percent = fields.Float(
+    ipi_aliquota = fields.Float(
         'Perc IPI', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
     ipi_cst = fields.Selection([
@@ -249,21 +249,20 @@ superior a 70%')],
         ('99', '99 - Outras Saídas')], string='CST IPI')
     tax_pis_id = fields.Many2one('account.tax', string="PIS",
                                  domain=[('domain', '=', 'pis')])
-    pis_type = fields.Selection(
+    pis_cst = fields.Char('CST PIS', size=10)
+    pis_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do PIS', required=True, default='percent')
-    pis_base = fields.Float('Base PIS', required=True,
-                            digits=dp.get_precision('Account'), default=0.00)
-    pis_base_other = fields.Float(
-        'Base PIS Outras', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
-    pis_value = fields.Float(
+    pis_base_calculo = fields.Float(
+        'Base PIS', required=True,
+        digits=dp.get_precision('Account'), default=0.00)
+    pis_valor = fields.Float(
         'Valor PIS', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    pis_percent = fields.Float(
+    pis_aliquota = fields.Float(
         'Perc PIS', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
-    pis_cst = fields.Char('CST PIS', size=10)
+
     pis_st_type = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do PIS ST', required=True, default='percent')
@@ -278,24 +277,21 @@ superior a 70%')],
         default=0.00)
     tax_cofins_id = fields.Many2one('account.tax', string="COFINS",
                                     domain=[('domain', '=', 'cofins')])
-    cofins_type = fields.Selection(
+    cofins_cst = fields.Char('CST PIS')
+    cofins_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do COFINS', required=True, default='percent')
-    cofins_base = fields.Float(
+    cofins_base_calculo = fields.Float(
         'Base COFINS',
         required=True,
         digits=dp.get_precision('Account'),
         default=0.00)
-    cofins_base_other = fields.Float(
-        'Base COFINS Outras', required=True,
-        digits=dp.get_precision('Account'), default=0.00)
-    cofins_value = fields.Float(
+    cofins_valor = fields.Float(
         'Valor COFINS', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    cofins_percent = fields.Float(
+    cofins_aliquota = fields.Float(
         'Perc COFINS', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
-    cofins_cst = fields.Char('CST PIS')
     cofins_st_type = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do COFINS ST', required=True, default='percent')
@@ -310,19 +306,19 @@ superior a 70%')],
         default=0.00)
     tax_ii_id = fields.Many2one('account.tax', string="II",
                                 domain=[('domain', '=', 'ii')])
-    ii_base = fields.Float(
+    ii_base_calculo = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ii_percent = fields.Float(
+    ii_aliquota = fields.Float(
         '% II', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ii_value = fields.Float(
+    ii_valor = fields.Float(
         'Valor II', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ii_iof = fields.Float(
+    ii_valor_iof = fields.Float(
         'Valor IOF', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    ii_customhouse_charges = fields.Float(
+    ii_valor_despesas = fields.Float(
         'Depesas Atuaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     insurance_value = fields.Float(
@@ -362,22 +358,22 @@ superior a 70%')],
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
         if self.tax_pis_id:
-            self.pis_percent = self.tax_pis_id.amount
+            self.pis_aliquota = self.tax_pis_id.amount
             self.pis_cst = self.tax_ipi_id.cst
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):
         if self.tax_cofins_id:
-            self.cofins_percent = self.tax_cofins_id.amount
+            self.cofins_aliquota = self.tax_cofins_id.amount
             self.cofins_cst = self.tax_ipi_id.cst
 
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
         if self.tax_ipi_id:
-            self.ipi_percent = self.tax_ipi_id.amount
+            self.ipi_aliquota = self.tax_ipi_id.amount
             self.ipi_cst = self.tax_ipi_id.cst
 
     @api.onchange('tax_ii_id')
     def _onchange_tax_ii_id(self):
         if self.tax_ii_id:
-            self.ii_percent = self.tax_ii_id.amount
+            self.ii_aliquota = self.tax_ii_id.amount

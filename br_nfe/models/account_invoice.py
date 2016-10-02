@@ -36,4 +36,6 @@ class AccountInvoice(models.Model):
         if inv.fiscal_position_id.ind_final:
             res['ind_final'] = inv.fiscal_position_id.ind_final
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
+        res['informacoes_legais'] = inv.fiscal_comment
+        res['informacoes_complementares'] = inv.comment
         return res

@@ -87,7 +87,7 @@ class InvoiceEletronic(models.Model):
     transportation_id = fields.Many2one('invoice.transport')
 
     informacoes_legais = fields.Text(u'Informações legais')
-    informacoes_complementar = fields.Text(u'Informações complementares')
+    informacoes_complementares = fields.Text(u'Informações complementares')
 
     codigo_retorno = fields.Char(string=u'Código Retorno')
     mensagem_retorno = fields.Char(string=u'Mensagem Retorno')
@@ -109,6 +109,10 @@ class InvoiceEletronic(models.Model):
                           a série deve ter uma sequencia interna')
 
         # Emitente
+        if not self.company_id.nfe_a1_file:
+            errors.append(u'Emitente - Certificado Digital')
+        if not self.company_id.nfe_a1_password:
+            errors.append(u'Emitente - Senha do Certificado Digital')
         if not self.company_id.partner_id.legal_name:
             errors.append(u'Emitente - Razão Social')
         if not self.company_id.partner_id.name:
@@ -197,19 +201,19 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Destinatário / Endereço - Cód. do BC do país')
 
         # produtos
-        for inv_line in self.eletronic_item_ids:
-            if inv_line.product_id:
-                if not inv_line.product_id.default_code:
+        for eletr in self.eletronic_item_ids:
+            if eletr.product_id:
+                if not eletr.product_id.default_code:
                     errors.append(
                         u'Prod: %s - Código do produto' % (
-                            inv_line.product_id.name))
-                prod = u"Produto: %s - %s" % (inv_line.product_id.default_code,
-                                              inv_line.product_id.name)
-                if not inv_line.product_id.name:
+                            eletr.product_id.name))
+                prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
+                                              eletr.product_id.name)
+                if not eletr.product_id.name:
                     errors.append(u'%s - Nome do produto' % prod)
-                if not inv_line.quantity:
+                if not eletr.quantidade:
                     errors.append(u'%s - Quantidade' % prod)
-                if not inv_line.unit_price:
+                if not eletr.preco_unitario:
                     errors.append(u'%s - Preco unitario' % prod)
         return errors
 
@@ -250,19 +254,24 @@ class InvoiceEletronicItem(models.Model):
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', u'Documento')
 
     product_id = fields.Many2one('product.product', string=u'Produto')
+    tipo_produto = fields.Selection([('product', 'Produto'),
+                                     ('service', 'Serviço')],
+                                    string="Tipo Produto")
     cfop = fields.Char(u'CFOP', size=5)
 
     uom_id = fields.Many2one('product.uom', u'Unidade de medida')
-    quantity = fields.Float(u'Quantidade')
-    unit_price = fields.Float(u'Preço Unitário')
+    quantidade = fields.Float(u'Quantidade')
+    preco_unitario = fields.Float(u'Preço Unitário')
 
-    freight_value = fields.Float(u'Frete')
-    insurance_value = fields.Float(u'Seguro')
-    discount = fields.Float(u'Desconto')
-    other_expenses = fields.Float(u'Outras despesas')
+    frete = fields.Float(u'Frete')
+    seguro = fields.Float(u'Seguro')
+    desconto = fields.Float(u'Desconto')
+    outras_despesas = fields.Float(u'Outras despesas')
 
-    gross_total = fields.Float(u'Valor Bruto')
-    total = fields.Float(u'Valor Liquido')
+    tributos_estimados = fields.Float(u'Valor Estimado Tributos')
+
+    valor_bruto = fields.Float(u'Valor Bruto')
+    valor_liquido = fields.Float(u'Valor Liquido')
     indicador_total = fields.Selection(
         [('0', 'Não'), ('1', 'Sim')],
         string="Compõe Total da Nota?", default='1')
@@ -329,26 +338,39 @@ bruta e com cobrança do ICMS por substituição tributária'),
     icms_percentual_reducao_bc = fields.Float(u'% Redução Base')
     icms_valor = fields.Float(u'Valor Total')
     icms_value_credit = fields.Float(u"Valor de Cŕedito")
-    icms_value_percentual = fields.Float(u'%% de Crédito')
+    icms_value_percentual = fields.Float(u'% de Crédito')
 
-    percentual_mva = fields.Float(u'% MVA')
-    aliquota_st = fields.Float(u'Alíquota')
-    base_calculo_st = fields.Float(u'Base de cálculo')
-    percentual_reducao_bc_st = fields.Float(u'% Redução Base')
-    valor_st = fields.Float(u'Valor Total')
+    icms_percentual_mva = fields.Float(u'% MVA')
+    icms_aliquota_st = fields.Float(u'Alíquota')
+    icms_base_calculo_st = fields.Float(u'Base de cálculo')
+    icms_percentual_reducao_bc_st = fields.Float(u'% Redução Base')
+    icms_valor_st = fields.Float(u'Valor Total')
 
-    percentual_diferimento = fields.Float(u'% Diferimento')
-    valor_diferido = fields.Float(u'Valor Diferido')
+    icms_percentual_diferimento = fields.Float(u'% Diferimento')
+    icms_valor_diferido = fields.Float(u'Valor Diferido')
 
-    motivo_desoneracao = fields.Float(u'Motivo Desoneração')
-    valor_desonerado = fields.Float(u'Valor Desonerado')
+    icms_motivo_desoneracao = fields.Float(u'Motivo Desoneração')
+    icms_valor_desonerado = fields.Float(u'Valor Desonerado')
 
     # ----------- IPI -------------------
     classe_enquadramento = fields.Char(u'Classe enquadramento', size=5)
     codigo_enquadramento = fields.Char(u'Código enquadramento', size=4)
-    ipi_cst = fields.Selection([('00', 'Tributada Integralmente'),
-                                ('01', 'Tributada com ICMS ST')],
-                               u'Situação tributária do ICMS')
+    ipi_cst = fields.Selection([
+        ('00', '00 - Entrada com Recuperação de Crédito'),
+        ('01', '01 - Entrada Tributável com Alíquota Zero'),
+        ('02', '02 - Entrada Isenta'),
+        ('03', '03 - Entrada Não-Tributada'),
+        ('04', '04 - Entrada Imune'),
+        ('05', '05 - Entrada com Suspensão'),
+        ('49', '49 - Outras Entradas'),
+        ('50', '50 - Saída Tributada'),
+        ('51', '51 - Saída Tributável com Alíquota Zero'),
+        ('52', '52 - Saída Isenta'),
+        ('53', '52 - Saída Não-Tributada'),
+        ('54', '54 - Saída Imune'),
+        ('55', '55 - Saída com Suspensão'),
+        ('99', '99 - Outras Saídas')],
+        string=u'Situação tributária do ICMS')
     ipi_aliquota = fields.Float(u'Alíquota')
     ipi_base_calculo = fields.Float(u'Base de cálculo')
     ipi_percentual_reducao_bc = fields.Float(u'% Redução Base')
@@ -361,17 +383,79 @@ bruta e com cobrança do ICMS por substituição tributária'),
     ii_valor_iof = fields.Float(u'IOF')
 
     # ------------ PIS ---------------------
-    pis_cst = fields.Selection([('00', 'Tributada Integralmente'),
-                                ('01', 'Tributada com ICMS ST')],
-                               u'Situação tributária do ICMS')
+    pis_cst = fields.Selection([('01', 'Tributada Integralmente'),
+                                ('02', '02'),
+                                ('03', '03'),
+                                ('04', '04'),
+                                ('05', '05'),
+                                ('06', '06'),
+                                ('07', '07'),
+                                ('08', '08'),
+                                ('09', '09'),
+                                ('49', '49'),
+                                ('50', '50'),
+                                ('51', '51'),
+                                ('52', '52'),
+                                ('53', '53'),
+                                ('54', '54'),
+                                ('55', '55'),
+                                ('56', '56'),
+                                ('60', '60'),
+                                ('61', '61'),
+                                ('62', '62'),
+                                ('63', '63'),
+                                ('64', '64'),
+                                ('65', '65'),
+                                ('66', '66'),
+                                ('67', '67'),
+                                ('70', '70'),
+                                ('71', '71'),
+                                ('72', '72'),
+                                ('73', '73'),
+                                ('74', '74'),
+                                ('75', '75'),
+                                ('98', '98'),
+                                ('99', '99')],
+                               u'Situação tributária')
     pis_aliquota = fields.Float(u'Alíquota')
     pis_base_calculo = fields.Float(u'Base de cálculo')
     pis_valor = fields.Float(u'Valor Total')
 
     # ------------ COFINS ------------
-    cofins_cst = fields.Selection([('00', 'Tributada Integralmente'),
-                                   ('01', 'Tributada com ICMS ST')],
-                                  u'Situação tributária do ICMS')
+    cofins_cst = fields.Selection([('01', 'Tributada Integralmente'),
+                                  ('02', '02'),
+                                  ('03', '03'),
+                                  ('04', '04'),
+                                  ('05', '05'),
+                                  ('06', '06'),
+                                  ('07', '07'),
+                                  ('08', '08'),
+                                  ('09', '09'),
+                                  ('49', '49'),
+                                  ('50', '50'),
+                                  ('51', '51'),
+                                  ('52', '52'),
+                                  ('53', '53'),
+                                  ('54', '54'),
+                                  ('55', '55'),
+                                  ('56', '56'),
+                                  ('60', '60'),
+                                  ('61', '61'),
+                                  ('62', '62'),
+                                  ('63', '63'),
+                                  ('64', '64'),
+                                  ('65', '65'),
+                                  ('66', '66'),
+                                  ('67', '67'),
+                                  ('70', '70'),
+                                  ('71', '71'),
+                                  ('72', '72'),
+                                  ('73', '73'),
+                                  ('74', '74'),
+                                  ('75', '75'),
+                                  ('98', '98'),
+                                  ('99', '99')],
+                                  u'Situação tributária')
     cofins_aliquota = fields.Float(u'Alíquota')
     cofins_base_calculo = fields.Float(u'Base de cálculo')
     cofins_valor = fields.Float(u'Valor Total')

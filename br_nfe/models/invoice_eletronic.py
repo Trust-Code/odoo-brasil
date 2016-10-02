@@ -9,6 +9,7 @@ from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from pytrustnfe.nfe import autorizar_nfe
+from pytrustnfe.nfe import retorno_autorizar_nfe
 from pytrustnfe.certificado import Certificado
 
 
@@ -34,6 +35,7 @@ class InvoiceEletronic(models.Model):
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
 
+    recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
     protocolo_nfe = fields.Char(string="Protocolo Autorização", size=50)
 
@@ -45,12 +47,25 @@ class InvoiceEletronic(models.Model):
         if not self.fiscal_position_id:
             errors.append(u'Configure a posição fiscal')
 
-        for inv_line in self.eletronic_item_ids:
-            prod = u"Produto: %s - %s" % (inv_line.product_id.default_code,
-                                          inv_line.product_id.name)
+        for eletr in self.eletronic_item_ids:
+            prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
+                                          eletr.product_id.name)
 
-            if not inv_line.cfop:
+            if not eletr.cfop:
                 errors.append(u'%s - CFOP' % prod)
+            if eletr.tipo_produto == 'product':
+                if not eletr.icms_cst:
+                    errors.append(u'%s - CST do ICMS' % prod)
+                if not eletr.ipi_cst:
+                    errors.append(u'%s - CST do IPI' % prod)
+            if eletr.tipo_produto == 'service':
+                if not eletr.service_type_id:
+                    errors.append(u'%s - Código de Serviço' % prod)
+            if not eletr.pis_cst:
+                errors.append(u'%s - CST do PIS' % prod)
+            if not eletr.cofins_cst:
+                errors.append(u'%s - CST do Cofins' % prod)
+
         return errors
 
     @api.one
@@ -71,18 +86,18 @@ class InvoiceEletronic(models.Model):
             'NCM': '39259090',
             'CFOP': item.cfop,
             'uCom': item.uom_id.name,
-            'qCom': item.quantity,
-            'vUnCom': item.unit_price,
-            'vProd':  "%.02f" % item.total,
+            'qCom': item.quantidade,
+            'vUnCom': item.preco_unitario,
+            'vProd':  "%.02f" % item.valor_liquido,
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': item.uom_id.name,
-            'qTrib': item.quantity,
-            'vUnTrib': item.unit_price,
+            'qTrib': item.quantidade,
+            'vUnTrib': item.preco_unitario,
             'indTot': item.indicador_total,
             'cfop': item.cfop
         }
         imposto = {
-            'vTotTrib': 00,
+            'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
                 'orig':  item.origem,
                 'CST': item.icms_cst,
@@ -95,28 +110,22 @@ class InvoiceEletronic(models.Model):
             },
             'IPI': {
                 'cEnq': 999,
-                'IPITrib': {
-                    'CST': '50',
-                    'vBC': '0.00',
-                    'pIPI': "%.02f" % item.ipi_aliquota,
-                    'vIPI': "%.02f" % self.valor_ipi
-                }
+                'CST': item.ipi_cst,
+                'vBC': "%.02f" % item.ipi_base_calculo,
+                'pIPI': "%.02f" % item.ipi_aliquota,
+                'vIPI': "%.02f" % item.ipi_valor
             },
             'PIS': {
-                'PISAliq': {
-                    'CST': '01',
-                    'vBC': '0.00',
-                    'pPIS': '0.0000',
-                    'vPIS': '0.00'
-                }
+                'CST': item.pis_cst,
+                'vBC': "%.02f" % item.pis_base_calculo,
+                'pPIS': "%.02f" % item.pis_aliquota,
+                'vPIS': "%.02f" % item.pis_valor
             },
             'COFINS': {
-                'COFINSAliq': {
-                    'CST': '01',
-                    'vBC': '0.00',
-                    'pCOFINS': '0.0000',
-                    'vCOFINS': '0.00'
-                }
+                'CST': item.cofins_cst,
+                'vBC': "%.02f" % item.cofins_base_calculo,
+                'pCOFINS': "%.02f" % item.cofins_aliquota,
+                'vCOFINS': "%.02f" % item.cofins_valor
             }
         }
         return {'prod': prod, 'imposto': imposto}
@@ -245,15 +254,17 @@ class InvoiceEletronic(models.Model):
         transp = {
             'modFrete': 9
         }
+        vencimento = fields.Datetime.from_string(self.data_emissao)
         cobr = {
             'dup': [{
                 'nDup': '1',
-                'dVenc': self.data_emissao,
-                'vDup': self.valor_final
+                'dVenc': vencimento.strftime('%Y-%m-%d'),
+                'vDup': "%.02f" % self.valor_final
             }]
         }
         infAdic = {
-            'infCpl': 'Agora vai'
+            'infCpl': self.informacoes_complementares,
+            'infAdFisco': self.informacoes_legais,
         }
         vals = {
             'Id': '',
@@ -305,6 +316,22 @@ class InvoiceEletronic(models.Model):
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
         resposta = autorizar_nfe(certificado, **lote)
+
+        if resposta['object'].Body.nfeAutorizacaoLoteResult.\
+                retEnviNFe.cStat == 103:
+
+            obj = {
+                'estado': self.company_id.partner_id.state_id.ibge_code,
+                'ambiente': 1 if self.ambiente == 'producao' else 2,
+                'obj': {
+                    'ambiente': 1 if self.ambiente == 'producao' else 2,
+                    'numero_recibo': resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe.infRec.nRec
+                }
+            }
+            self.recibo_nfe = obj['obj']['numero_recibo']
+            import time
+            time.sleep(2)
+            resposta = retorno_autorizar_nfe(certificado, **obj)
 
         if resposta['object'].Body.nfeAutorizacaoLoteResult.\
                 retEnviNFe.cStat != 104:
