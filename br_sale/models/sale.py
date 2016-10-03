@@ -6,93 +6,72 @@
 
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
-from odoo.exceptions import UserError
-
-
-def calc_price_ratio(preco_bruto, quantidade, total):
-    if total:
-        return preco_bruto * quantidade / total
-    else:
-        return 0.0
 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    amount_costs = fields.Float(
-        string='Outros Custos', default=0.00,
-        digits=dp.get_precision('Account'),
-        readonly=True, states={'draft': [('readonly', False)]})
-    amount_insurance = fields.Float(
-        string='Seguro', default=0.00, digits=dp.get_precision('Account'),
-        readonly=True, states={'draft': [('readonly', False)]})
-    amount_discount = fields.Float(
-        string='Desconto (-)',
+    @api.depends('order_line.price_total', 'order_line.valor_desconto')
+    def _amount_all(self):
+        super(SaleOrder, self)._amount_all()
+        for order in self:
+            order.update({
+                'total_desconto': sum(l.valor_desconto
+                                      for l in order.order_line),
+                'total_bruto': sum(l.valor_bruto
+                                   for l in order.order_line)
+            })
+
+    total_bruto = fields.Float(
+        string='Valor Bruto', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True)
+
+    total_desconto = fields.Float(
+        string='Total Desconto (-)', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
         help="The discount amount.")
-    discount_rate = fields.Float(
-        'Desconto', readonly=True, states={'draft': [('readonly', False)]})
-
-    @api.onchange('discount_rate')
-    def onchange_discount_rate(self):
-        for sale_order in self:
-            for sale_line in sale_order.order_line:
-                sale_line.discount = sale_order.discount_rate
 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    def _calc_line_base_price(self):
-        return self.price_unit * (1 - (self.discount or 0.0) / 100.0)
+    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
+    def _compute_amount(self):
+        super(SaleOrderLine, self)._compute_amount()
+        for item in self:
+            valor_bruto = item.price_unit * item.product_uom_qty
+            desconto = valor_bruto * item.discount / 100.0
+            desconto = item.order_id.pricelist_id.currency_id.round(desconto)
+            item.update({
+                'valor_bruto': valor_bruto,
+                'valor_desconto': desconto,
+            })
 
-    def _calc_line_quantity(self):
-        return self.product_uom_qty
-
-    def _calc_price_gross(self, qty):
-        return self.price_unit * qty
-
-    @api.one
-    @api.depends('price_unit', 'tax_id', 'discount', 'product_uom_qty')
-    def _amount_line(self):
-        price = self._calc_line_base_price()
-        qty = self._calc_line_quantity()
-        self.price_gross = self._calc_price_gross(qty)
-        self.discount_value = self.order_id.pricelist_id.currency_id.round(
-            self.price_gross - (price * qty))
-
-    fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', 'Fiscal Position',
-        readonly=True, states={'draft': [('readonly', False)],
-                               'sent': [('readonly', False)]})
-    insurance_value = fields.Float('Insurance',
-                                   default=0.0,
-                                   digits=dp.get_precision('Account'))
-    other_costs_value = fields.Float('Other costs',
-                                     default=0.0,
-                                     digits=dp.get_precision('Account'))
-    freight_value = fields.Float('Freight',
-                                 default=0.0,
-                                 digits=dp.get_precision('Account'))
-
-    discount_value = fields.Float(compute='_amount_line',
-                                  string='Vlr. Desc. (-)', store=True,
-                                  digits=dp.get_precision('Sale Price'))
-    price_gross = fields.Float(
-        compute='_amount_line', string='Vlr. Bruto', store=True,
+    valor_desconto = fields.Float(
+        compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
+        digits=dp.get_precision('Sale Price'))
+    valor_bruto = fields.Float(
+        compute='_compute_amount', string='Vlr. Bruto', store=True,
         digits=dp.get_precision('Sale Price'))
 
     @api.multi
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-        res['insurance_value'] = self.insurance_value
-        res['other_costs_value'] = self.other_costs_value
-        res['freight_value'] = self.freight_value
+        res['valor_desconto'] = self.valor_desconto
+        res['valor_bruto'] = self.valor_bruto
         icms = self.tax_id.filtered(lambda x: x.domain == 'icms')
-        if len(icms) > 1:
-            raise UserError(
-                'Apenas um imposto com o domínio ICMS deve ser cadastrado')
+        ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
+        pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
+        cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
+        ii = self.tax_id.filtered(lambda x: x.domain == 'ii')
+        issqn = self.tax_id.filtered(lambda x: x.domain == 'issqn')
+
         res['tax_icms_id'] = icms and icms.id or False
+        res['tax_ipi_id'] = ipi and ipi.id or False
+        res['tax_pis_id'] = pis and pis.id or False
+        res['tax_cofins_id'] = cofins and cofins.id or False
+        res['tax_ii_id'] = ii and ii.id or False
+        res['tax_issqn_id'] = issqn and issqn.id or False
 
         return res

@@ -18,3 +18,7 @@ body.container div.o_database_list {
 .o_form_view.o_form_editable .o_address_format input.o_address_zip {
     width: 50%;
 }
+
+.o_form_view .o_form_sheet_bg .o_form_sheet {
+    max-width: 90%;
+}

@@ -5,13 +5,13 @@
         <field name="name">l10n_br_sale.order.form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
-        <field name="priority">36</field>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
+                <field name="valor_desconto" />
+                <field name="valor_bruto" />
+            </xpath>
             <field name="amount_tax" position="after">
-                <field name="discount_rate"  />
-                <field name="amount_discount" groups="l10n_br_sale.group_discount_per_value" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="amount_costs" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="amount_insurance" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
             </field>
         </field>
     </record>
