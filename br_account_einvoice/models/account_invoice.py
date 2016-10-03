@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from datetime import datetime
+from random import SystemRandom
 
 
 from odoo import api, fields, models
@@ -137,7 +138,8 @@ class AccountInvoice(models.Model):
             'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
             'numero': invoice.internal_number,
-            'numero_controle': invoice.internal_number,
+            'numero_controle': int(''.join([str(SystemRandom().randrange(9))
+                                            for i in range(8)])),
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',

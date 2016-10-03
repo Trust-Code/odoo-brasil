@@ -36,7 +36,7 @@
                     <div class="borda-completa col-xs-10">
                         <div class="row bb">
                             <div class="col-xs-12 line">
-                                <span class="medium">Recebemos de José Salésio Machado - ME os produtos e/ou serviços constantes na nota fiscal eletrônica indicada abaixo</span>
+                                <span class="medium">Recebemos de <t t-raw="o.company_id.legal_name"/> os produtos e/ou serviços constantes na nota fiscal eletrônica indicada abaixo</span>
                             </div>
                         </div>
                         <div class="row line">
@@ -50,7 +50,7 @@
                     </div>
                     <div class="bt br bb center col-xs-2 line2">
                         <span class="enfase">NF-e</span><br />
-                        <span class="enfase">Nº 000.001.574</span><br />
+                        <span class="enfase">Nº <t t-raw="o.numero"/></span><br />
                         <span class="enfase">Série 001</span>
                     </div>
                 </div>
@@ -113,8 +113,8 @@
                             </div>
                         </div>
                         <div class="row center" style="margin-top:5px;">
-                            <span class="enfase">Nº 999.999.999</span><br />
-                            <span class="enfase">SÉRIE 999</span><br />
+                            <span class="enfase">Nº <t t-raw="o.numero"/></span><br />
+                            <span class="enfase">SÉRIE 001</span><br />
                             <span>FOLHA 01/01</span>
                         </div>
                     </div>
