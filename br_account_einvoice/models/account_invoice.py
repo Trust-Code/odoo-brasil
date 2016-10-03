@@ -128,6 +128,8 @@ class AccountInvoice(models.Model):
         return vals
 
     def _prepare_edoc_vals(self, invoice):
+        num_NFe = str(invoice.internal_number).zfill(9)
+        num_NFe = num_NFe[:3] + '.' + num_NFe[3:6] + '.' + num_NFe[6:9]
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
@@ -140,6 +142,7 @@ class AccountInvoice(models.Model):
             'numero': invoice.internal_number,
             'numero_controle': int(''.join([str(SystemRandom().randrange(9))
                                             for i in range(8)])),
+            'numero_nfe': num_NFe,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',

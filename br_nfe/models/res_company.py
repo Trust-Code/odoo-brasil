@@ -13,4 +13,5 @@ class ResCompany(models.Model):
 
     cabecalho_danfe = fields.Selection([('vertical', 'Modelo Vertical'),
                                         ('horizontal', 'Modelo Horizontal')],
-                                       string=u"Cabeçalho Danfe")
+                                       string=u"Cabeçalho Danfe",
+                                       default='vertical')

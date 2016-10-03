@@ -96,6 +96,7 @@ class InvoiceEletronic(models.Model):
 
     codigo_retorno = fields.Char(string=u'Código Retorno')
     mensagem_retorno = fields.Char(string=u'Mensagem Retorno')
+    numero_nfe = fields.Char(string="Numero Formatado NFe")
 
     @api.multi
     def _hook_validation(self):

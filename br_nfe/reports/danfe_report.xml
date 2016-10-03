@@ -50,7 +50,7 @@
                     </div>
                     <div class="bt br bb center col-xs-2 line2">
                         <span class="enfase">NF-e</span><br />
-                        <span class="enfase">Nº <t t-raw="o.numero"/></span><br />
+                        <span class="enfase">Nº <t t-raw="o.numero_nfe"/></span><br />
                         <span class="enfase">Série 001</span>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         <div class="row center" style="margin-top:5px;">
-                            <span class="enfase">Nº <t t-raw="o.numero"/></span><br />
+                            <span class="enfase">Nº <t t-raw="o.numero_nfe"/></span><br />
                             <span class="enfase">SÉRIE 001</span><br />
                             <span>FOLHA 01/01</span>
                         </div>
@@ -234,15 +234,15 @@
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Original</span><br />
-                        <span></span>
+                        <span t-field="o.invoice_id.amount_gross"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Desconto</span><br />
-                        <span></span>
+                        <span t-field="o.invoice_id.amount_discount"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Líquido</span><br />
-                        <span></span>
+                        <span t-field="o.invoice_id.amount_total"></span>
                     </div>
                 </div>
 
@@ -276,46 +276,46 @@
                 <div class="row line">
                     <div class="bt br bl col-xs-2 line">
                         <span class="small">Base Cálculo ICMS</span><br />
-                        <span></span>
+                        <span t-field="o.valor_bc_icms"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Valor do ICMS</span><br />
-                        <span></span>
+                        <span t-field="o.valor_icms"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Base de cálculo do ICMS ST</span><br />
-                        <span></span>
+                        <span t-field="o.valor_bc_icmsst"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Valor do ICMS ST</span><br />
-                        <span></span>
+                        <span t-field="o.valor_icms"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Total Estimado Tributos</span><br />
-                        <span></span>
+                        <span t-field="o.valor_estimado_tributos"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Valor Total dos Produtos</span><br />
-                        <span></span>
+                        <span t-field="o.valor_bruto"></span>
                     </div>
                 </div>
 
                 <div class="row line">
                     <div class="borda-completa col-xs-2 line">
                         <span class="small">Valor do Frete</span><br />
-                        <span></span>
+                        <span t-field="o.valor_frete"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor do Seguro</span><br />
-                        <span></span>
+                        <span t-field="o.valor_seguro"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Desconto</span><br />
-                        <span></span>
+                        <span t-field="o.valor_desconto"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Outras despesas</span><br />
-                        <span></span>
+                        <span t-field="o.valor_despesas"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Total do IPI</span><br />
@@ -323,7 +323,7 @@
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor total da Nota</span><br />
-                        <span></span>
+                        <span t-field="o.valor_ipi"></span>
                     </div>
                 </div>
 
@@ -336,11 +336,11 @@
                 <div class="row line">
                     <div class="borda-completa col-xs-5 line">
                         <span class="small">Nome/Razão Social</span><br />
-                        <span></span>
+                        <span t-field="o.transportation_id.name"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Frete por conta</span><br />
-                        <span></span>
+                        <span t-field="o.transportation_id.modalidade_frete"></span>
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">Código ANTT</span><br />
@@ -348,15 +348,15 @@
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">Placa</span><br />
-                        <span style="font-size:11px;">MJU-2582</span>
+                        <span style="font-size:11px;" t-field="o.transportation_id.placa_veiculo"></span>
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">UF</span><br />
-                        <span></span>
+                        <span t-field="o.transportation_id.estado_veiculo_id"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">CNPJ/CPF</span><br />
-                        <span></span>
+                        <span t-field="o.transportation_id.company_id.cnpj_cpf"></span>
                     </div>
                 </div>
 
@@ -436,21 +436,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="range(0, 150)" t-as="l">
-                                <td><span t-raw="l" /></td>
-                                <td>Mark</td>
-                                <td>68101100</td>
-                                <td>0101</td>
+                            <tr t-foreach="o.eletronic_item_ids" t-as="e">
+                                <td><span t-field="e.product_id.default_code"></span></td>
+                                <td><span t-field="e.product_id.name"></span></td>
+                                <td><span t-field="e.product_id.fiscal_classification_id"></span></td>
                                 <td>5101</td>
-                                <td>UN</td>
-                                <td>1546,0000</td>
-                                <td>165.568,2500</td>
-                                <td>9.165.568,25</td>
-                                <td>9.165.568,25</td>
-                                <td>65.568,25</td>
-                                <td>165.568,25</td>
-                                <td>7,00</td>
-                                <td>3,00</td>
+                                <td><span t-field="e.cfop"></span></td>
+                                <td><span t-field="e.uom_id"></span></td>
+                                <td><span t-field="e.quantidade"></span></td>
+                                <td><span t-field="e.preco_unitario"></span></td>
+                                <td><span t-field="e.valor_liquido"></span></td>
+                                <td><span t-field="e.icms_base_calculo"></span></td>
+                                <td><span t-field="e.icms_valor"></span></td>
+                                <td><span t-field="e.ipi_valor"></span></td>
+                                <td><span t-field="e.icms_aliquota_reducao_base"></span></td>
+                                <td><span t-field="e.ipi_aliquota_reducao_base"></span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -459,6 +459,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <span class="enfase">Dados Adicionais</span>
+
                     </div>
                 </div>
 
@@ -466,6 +467,7 @@
                     <div class="borda-completa col-xs-7 line4">
                         <span class="small">Informações Complementares</span><br />
                         <span t-field="o.informacoes_complementares"></span>
+                        <span t-field="o.informacoes_legais"></span>
                     </div>
                     <div class="bt br bb col-xs-5 line4">
                         <span class="small">Reservado ao Fisco</span><br />
