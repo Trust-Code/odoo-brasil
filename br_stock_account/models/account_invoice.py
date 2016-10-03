@@ -15,9 +15,9 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
-        self.amount_freight = sum(l.freight_value for l in lines)
+        self.total_frete = sum(l.valor_frete for l in lines)
 
-    amount_freight = fields.Float(
+    total_frete = fields.Float(
         string='Valor do Frete', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
 
@@ -54,5 +54,5 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
-    freight_value = fields.Float(
+    valor_frete = fields.Float(
         'Frete', digits=dp.get_precision('Account'), default=0.00)

@@ -13,7 +13,7 @@
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id"/>
                             <field name="vehicle_city_id"/>
-                            <field name="amount_freight"/>
+                            <field name="total_frete"/>
                         </group>
                         <group name="package_info">
                             <field name="weight"/>
@@ -43,7 +43,7 @@
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id"/>
                             <field name="vehicle_city_id"/>
-                            <field name="amount_freight"/>
+                            <field name="total_frete"/>
                         </group>
                         <group name="package_info">
                             <field name="weight"/>
@@ -66,8 +66,8 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form" />
         <field name="priority">36</field>
         <field name="arch" type="xml">
-            <field name="insurance_value" position="after">
-                <field name="freight_value" />
+            <field name="valor_seguro" position="after">
+                <field name="valor_frete" />
             </field>
         </field>
     </record>
