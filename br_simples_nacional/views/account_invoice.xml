@@ -5,25 +5,25 @@
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
         <field name="arch" type="xml">
-            <field name="icms_base_type" position="attributes">
+            <field name="icms_tipo_base" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
-            <field name="icms_base" position="attributes">
+            <field name="icms_base_calculo" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
-            <field name="icms_percent_reduction" position="attributes">
+            <field name="icms_aliquota_reducao_base" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
-            <field name="icms_percent" position="attributes">
+            <field name="icms_aliquota" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
-            <field name="icms_value" position="attributes">
+            <field name="icms_valor" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '!=', '3')] }</attribute>
             </field>
-            <field name="icms_percent_credit" position="attributes">
+            <field name="icms_aliquota_credito" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '=', '3')] }</attribute>
             </field>
-            <field name="icms_value_credit" position="attributes">
+            <field name="icms_valor_credito" position="attributes">
                 <attribute name="attrs">{'invisible':[('company_fiscal_type', '=', '3')] }</attribute>
             </field>
         </field>

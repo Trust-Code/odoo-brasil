@@ -132,8 +132,8 @@
                                     </div>
                                     <field name="price_unit"/>
                                     <field name="discount" groups="sale.group_discount_per_so_line"/>
-                                    <field name="insurance_value" />
-                                    <field name="other_costs_value" />
+                                    <field name="valor_seguro" />
+                                    <field name="outras_despesas" />
                                     <field name="price_subtotal" />
                                 </group>
                                 <group>
@@ -142,7 +142,7 @@
                                     <field domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" widget="many2many_tags" readonly="1" />
-                                    <field name="estimated_taxes"/>
+                                    <field name="tributos_estimados" />
                                     <field name="calculate_tax" />
                                 </group>
                             </group>
@@ -155,29 +155,29 @@
                                     <field name="tax_icms_id" />
                                     <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
                                     <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
-                                    <field name="icms_origin"/>
-                                    <field name="include_ipi_base" />
-                                    <field name="icms_base_type"/>
+                                    <field name="icms_origem"/>
+                                    <field name="incluir_ipi_base" />
+                                    <field name="icms_tipo_base"/>
                                 </group>
                                 <group>
-                                    <field name="icms_base"/>
-                                    <field name="icms_percent_reduction"/>
-                                    <field name="icms_percent"/>
-                                    <field name="icms_value"/>
-                                    <field name="icms_percent_credit" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
-                                    <field name="icms_value_credit" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_base_calculo"/>
+                                    <field name="icms_aliquota_reducao_base"/>
+                                    <field name="icms_aliquota"/>
+                                    <field name="icms_valor"/>
+                                    <field name="icms_aliquota_credito" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_valor_credito" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                 </group>
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
                                 <group>
-                                    <field name="icms_st_base_type"/>
-                                    <field name="icms_st_mva"/>
-                                    <field name="icms_st_percent_reduction"/>
-                                    <field name="icms_st_base"/>
+                                    <field name="icms_st_tipo_base"/>
+                                    <field name="icms_st_aliquota_mva"/>
+                                    <field name="icms_st_aliquota_reducao_base"/>
+                                    <field name="icms_st_base_calculo"/>
                                 </group>
                                 <group>
-                                    <field name="icms_st_percent"/>
-                                    <field name="icms_st_value"/>
+                                    <field name="icms_st_aliquota"/>
+                                    <field name="icms_st_valor"/>
                                 </group>
                             </group>
                         </page>
@@ -221,12 +221,12 @@
                             </group>
                             <group string="Detalhes do PIS ST">
                                 <group>
-                                    <field name="pis_st_type"/>
-                                    <field name="pis_st_base"/>
+                                    <field name="pis_st_tipo"/>
+                                    <field name="pis_st_base_calculo"/>
                                 </group>
                                 <group>
-                                    <field name="pis_st_percent"/>
-                                    <field name="pis_st_value"/>
+                                    <field name="pis_st_aliquota"/>
+                                    <field name="pis_st_valor"/>
                                 </group>
                             </group>
                         </page>
@@ -245,12 +245,12 @@
                             </group>
                             <group string="Detalhes do COFINS ST">
                                 <group>
-                                    <field name="cofins_st_type"/>
-                                    <field name="cofins_st_base"/>
+                                    <field name="cofins_st_tipo"/>
+                                    <field name="cofins_st_base_calculo"/>
                                 </group>
                                 <group>
-                                    <field name="cofins_st_percent"/>
-                                    <field name="cofins_st_value"/>
+                                    <field name="cofins_st_aliquota"/>
+                                    <field name="cofins_st_valor"/>
                                 </group>
                             </group>
                         </page>

@@ -412,7 +412,7 @@
 
                 <div class="row">
                     <div class="col-xs-12">
-                        <span class="enfase">Transportador/Volumes Transportados</span>
+                        <span class="enfase">Dados dos Produtos/Serviços</span>
                     </div>
                 </div>
                 <div class="row">
@@ -465,7 +465,7 @@
                 <div class="row line">
                     <div class="borda-completa col-xs-7 line4">
                         <span class="small">Informações Complementares</span><br />
-                        <span t-field="o.informacoes_complementar"></span>
+                        <span t-field="o.informacoes_complementares"></span>
                     </div>
                     <div class="bt br bb col-xs-5 line4">
                         <span class="small">Reservado ao Fisco</span><br />

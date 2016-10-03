@@ -32,18 +32,18 @@
                         <group name="icms" string="ICMS">
                             <field name="icms_cst" />
                             <field name="icms_aliquota" />
-                            <field name="icms_modalidade_BC" />
+                            <field name="icms_tipo_base" />
                             <field name="icms_base_calculo" />
-                            <field name="icms_percentual_reducao_bc" />
+                            <field name="icms_aliquota_reducao_base" />
                             <field name="icms_valor" />
-                            <field name="icms_value_credit" />
-                            <field name="icms_value_percentual" />
-                            <field name="icms_percentual_mva" />
-                            <field name="icms_aliquota_st" />
-                            <field name="icms_base_calculo_st" />
-                            <field name="icms_percentual_reducao_bc_st" />
-                            <field name="icms_valor_st" />
-                            <field name="icms_percentual_diferimento" />
+                            <field name="icms_valor_credito" />
+                            <field name="icms_aliquota_credito" />
+                            <field name="icms_st_aliquota_mva" />
+                            <field name="icms_st_aliquota" />
+                            <field name="icms_st_base_calculo" />
+                            <field name="icms_st_aliquota_reducao_base" />
+                            <field name="icms_st_valor" />
+                            <field name="icms_aliquota_diferimento" />
                             <field name="icms_valor_diferido" />
                             <field name="icms_motivo_desoneracao" />
                             <field name="icms_valor_desonerado" />
@@ -54,7 +54,7 @@
                             <field name="ipi_cst" />
                             <field name="ipi_aliquota" />
                             <field name="ipi_base_calculo" />
-                            <field name="ipi_percentual_reducao_bc" />
+                            <field name="ipi_aliquota_reducao_base" />
                             <field name="ipi_valor" />
                         </group>
                         <group name="ii" string="II">

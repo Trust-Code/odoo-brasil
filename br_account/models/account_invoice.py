@@ -16,10 +16,10 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
-        self.icms_base = sum(l.icms_base for l in lines)
-        self.icms_value = sum(l.icms_value for l in lines)
-        self.icms_st_base = sum(l.icms_st_base for l in lines)
-        self.icms_st_value = sum(l.icms_st_value for l in lines)
+        self.icms_base = sum(l.icms_base_calculo for l in lines)
+        self.icms_value = sum(l.icms_valor for l in lines)
+        self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
+        self.icms_st_value = sum(l.icms_st_valor for l in lines)
         self.issqn_base = sum(l.issqn_base_calculo for l in lines)
         self.issqn_value = sum(l.issqn_valor for l in lines)
         self.ipi_base = sum(l.ipi_base_calculo for l in lines)
@@ -29,11 +29,11 @@ class AccountInvoice(models.Model):
         self.cofins_base = sum(l.cofins_base_calculo for l in lines)
         self.cofins_value = sum(l.cofins_valor for l in lines)
         self.ii_value = sum(l.ii_valor for l in lines)
-        self.amount_gross = sum(l.price_gross for l in lines)
-        self.amount_discount = sum(l.discount_value for l in lines)
-        self.amount_insurance = sum(l.insurance_value for l in lines)
-        self.amount_costs = sum(l.other_costs_value for l in lines)
-        self.amount_estimated_tax = sum(l.estimated_taxes for l in lines)
+        self.amount_gross = sum(l.valor_bruto for l in lines)
+        self.amount_discount = sum(l.valor_desconto for l in lines)
+        self.amount_insurance = sum(l.valor_seguro for l in lines)
+        self.amount_costs = sum(l.outras_despesas for l in lines)
+        self.amount_estimated_tax = sum(l.tributos_estimados for l in lines)
 
     @api.one
     @api.depends('move_id.line_ids')

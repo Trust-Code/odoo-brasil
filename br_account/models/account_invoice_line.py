@@ -6,7 +6,6 @@
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
-from .product import PRODUCT_ORIGIN
 from odoo.addons.br_account.models.cst import CST_ICMS
 from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
 from odoo.addons.br_account.models.cst import CST_IPI
@@ -35,34 +34,34 @@ class AccountInvoiceLine(models.Model):
         self.discount_value = self.price_gross * (self.discount / 100)
 
     @api.onchange('quantity', 'price_unit', 'discount',
-                  'insurance_value', 'other_costs_value')
+                  'valor_seguro', 'outras_despesas')
     def _recompute_tax_values(self):
         if self.calculate_tax:
             base_icms = base = self.quantity * self.price_unit
-            self.ipi_base = base
-            self.ipi_value = base * self.ipi_percent
-            self.pis_base = base
-            self.pis_value = base * self.cofins_percent
-            self.cofins_base = base
-            self.cofins_value = base * self.cofins_percent
-            self.issqn_base = base
-            self.issqn_value = base * self.issqn_percent
-            self.ii_base = base
-            self.ii_value = base * self.ii_percent
+            self.ipi_base_calculo = base
+            self.ipi_valor = base * self.ipi_aliquota
+            self.pis_base_calculo = base
+            self.pis_valor = base * self.cofins_aliquota
+            self.cofins_base_calculo = base
+            self.cofins_value = base * self.cofins_aliquota
+            self.issqn_base_calculo = base
+            self.issqn_valor = base * self.issqn_aliquota
+            self.ii_base_calculo = base
+            self.ii_valor = base * self.ii_aliquota
 
-            if self.include_ipi_base:
+            if self.incluir_ipi_base:
                 base_icms += self.ipi_base * self.ipi_percent
-            base_icms += self.insurance_value + self.other_costs_value
-            base_icms -= self.discount_value
+            base_icms += self.valor_seguro + self.outras_despesas
+            base_icms -= self.valor_desconto
 
-            self.icms_base = base_icms * (1 - self.icms_percent_reduction / 100)
-            self.icms_value = self.icms_base * (self.icms_percent / 100)
+            self.icms_base_calculo = base_icms * (1 - self.icms_aliquota_reducao_base / 100)
+            self.icms_valor = self.icms_base_calculo * (self.icms_aliquota / 100)
 
-            self.icms_st_base = base * self.icms_st_mva * \
-                (1 - self.icms_st_percent_reduction / 100)
+            self.icms_st_base = base * self.icms_st_aliquota_mva * \
+                (1 - self.icms_st_aliquota_reducao_base / 100)
 
-            self.icms_st_value = self.icms_value - \
-                (self.icms_st_base * self.icms_st_percent)
+            self.icms_st_value = self.icms_valor - \
+                (self.icms_st_base_calculo * self.icms_st_aliquota)
 
     calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
 
@@ -77,65 +76,60 @@ class AccountInvoiceLine(models.Model):
     product_type = fields.Selection(
         [('product', 'Produto'), ('service', 'Serviço')],
         string='Tipo do Produto', required=True, default='product')
-    discount_value = fields.Float(
+    valor_desconto = fields.Float(
         string='Vlr. desconto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
-    price_gross = fields.Float(
+    valor_bruto = fields.Float(
         string='Vlr. Bruto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
-    estimated_taxes = fields.Float(
+    tributos_estimados = fields.Float(
         string='Total Estimado de Tributos', requeried=True, default=0.00,
         digits=dp.get_precision('Account'))
 
     tax_icms_id = fields.Many2one('account.tax', string="ICMS",
                                   domain=[('domain', '=', 'icms')])
 
-    icms_origin = fields.Selection(PRODUCT_ORIGIN, 'Origem', default='0')
-    icms_base_type = fields.Selection(
+    icms_origem = fields.Selection(ORIGEM_PROD, 'Origem', default='0')
+    icms_tipo_base = fields.Selection(
         [('0', 'Margem Valor Agregado (%)'), ('1', 'Pauta (valor)'),
          ('2', 'Preço Tabelado Máximo (valor)'),
          ('3', 'Valor da Operação')],
         'Tipo Base ICMS', required=True, default='0')
-    include_ipi_base = fields.Boolean(
+    incluir_ipi_base = fields.Boolean(
         string="Incl. Vlr Ipi?",
         help="Se marcado o valor do IPI inclui a base de cálculo")
-    icms_base = fields.Float('Base ICMS', required=True,
-                             digits=dp.get_precision('Account'), default=0.00)
-    icms_base_other = fields.Float(
-        'Base ICMS Outras', required=True,
+    icms_base_calculo = fields.Float(
+        'Base ICMS', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    icms_value = fields.Float(
+    icms_valor = fields.Float(
         'Valor ICMS', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    icms_percent = fields.Float(
+    icms_aliquota = fields.Float(
         'Perc ICMS', digits=dp.get_precision('Discount'), default=0.00)
-    icms_percent_reduction = fields.Float(
+    icms_aliquota_reducao_base = fields.Float(
         '% Red. Base ICMS', digits=dp.get_precision('Discount'),
         default=0.00)
-    icms_st_base_type = fields.Selection(
+    icms_st_tipo_base = fields.Selection(
         [('0', 'Preço tabelado ou máximo  sugerido'),
          ('1', 'Lista Negativa (valor)'),
          ('2', 'Lista Positiva (valor)'), ('3', 'Lista Neutra (valor)'),
          ('4', 'Margem Valor Agregado (%)'), ('5', 'Pauta (valor)')],
         'Tipo Base ICMS ST', required=True, default='4')
-    icms_st_value = fields.Float(
+    icms_st_valor = fields.Float(
         'Valor ICMS ST', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    icms_st_base = fields.Float(
+    icms_st_base_calculo = fields.Float(
         'Base ICMS ST', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    icms_st_percent = fields.Float(
+    icms_st_aliquota = fields.Float(
         '% ICMS ST', digits=dp.get_precision('Discount'),
         default=0.00)
-    icms_st_percent_reduction = fields.Float(
+    icms_st_aliquota_reducao_base = fields.Float(
         '% Red. Base ST',
         digits=dp.get_precision('Discount'), default=0.00)
-    icms_st_mva = fields.Float(
+    icms_st_aliquota_mva = fields.Float(
         'MVA Ajustado ST',
         digits=dp.get_precision('Discount'), default=0.00)
-    icms_st_base_other = fields.Float(
-        'Base ICMS ST Outras', required=True,
-        digits=dp.get_precision('Account'), default=0.00)
 
     @api.multi
     @api.depends('icms_cst_normal', 'icms_csosn_simples',
@@ -151,9 +145,8 @@ class AccountInvoiceLine(models.Model):
 
     icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
 
-    icms_percent_credit = fields.Float(u"% Cŕedito ICMS")
-    icms_value_credit = fields.Float(u"Valor de Crédito")
-    origin_product = fields.Selection(ORIGEM_PROD, u'Origem da mercadoria')
+    icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
+    icms_valor_credito = fields.Float(u"Valor de Crédito")
 
     tax_issqn_id = fields.Many2one('account.tax', string="ISSQN",
                                    domain=[('domain', '=', 'issqn')])
@@ -206,16 +199,16 @@ class AccountInvoiceLine(models.Model):
         'Perc PIS', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
 
-    pis_st_type = fields.Selection(
+    pis_st_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do PIS ST', required=True, default='percent')
-    pis_st_base = fields.Float(
+    pis_st_base_calculo = fields.Float(
         'Base PIS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    pis_st_percent = fields.Float(
+    pis_st_aliquota = fields.Float(
         'Perc PIS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    pis_st_value = fields.Float(
+    pis_st_valor = fields.Float(
         'Valor PIS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     tax_cofins_id = fields.Many2one('account.tax', string="COFINS",
@@ -235,16 +228,16 @@ class AccountInvoiceLine(models.Model):
     cofins_aliquota = fields.Float(
         'Perc COFINS', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
-    cofins_st_type = fields.Selection(
+    cofins_st_tipo = fields.Selection(
         [('percent', 'Percentual'), ('quantity', 'Em Valor')],
         'Tipo do COFINS ST', required=True, default='percent')
-    cofins_st_base = fields.Float(
+    cofins_st_base_calculo = fields.Float(
         'Base COFINS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
-    cofins_st_percent = fields.Float(
+    cofins_st_aliquota = fields.Float(
         'Perc COFINS ST', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
-    cofins_st_value = fields.Float(
+    cofins_st_valor = fields.Float(
         'Valor COFINS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     tax_ii_id = fields.Many2one('account.tax', string="II",
@@ -264,10 +257,10 @@ class AccountInvoiceLine(models.Model):
     ii_valor_despesas = fields.Float(
         'Depesas Atuaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    insurance_value = fields.Float(
+    valor_seguro = fields.Float(
         'Valor do Seguro', digits=dp.get_precision('Account'), default=0.00)
-    other_costs_value = fields.Float(
-        'Outros Custos', digits=dp.get_precision('Account'), default=0.00)
+    outras_despesas = fields.Float(
+        'Outros Despesas', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
     def _set_taxes(self):

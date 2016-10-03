@@ -59,7 +59,7 @@ class InvoiceEletronic(models.Model):
                 if not eletr.ipi_cst:
                     errors.append(u'%s - CST do IPI' % prod)
             if eletr.tipo_produto == 'service':
-                if not eletr.service_type_id:
+                if not eletr.issqn_codigo:
                     errors.append(u'%s - Código de Serviço' % prod)
             if not eletr.pis_cst:
                 errors.append(u'%s - CST do PIS' % prod)

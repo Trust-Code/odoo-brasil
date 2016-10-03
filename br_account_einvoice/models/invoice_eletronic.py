@@ -285,25 +285,25 @@ class InvoiceEletronicItem(models.Model):
     icms_cst = fields.Selection(
         CST_ICMS + CSOSN_SIMPLES, u'Situação tributária')
     icms_aliquota = fields.Float(u'Alíquota')
-    icms_modalidade_BC = fields.Selection(
+    icms_tipo_base = fields.Selection(
         [('0', '0 - Margem Valor Agregado (%)'),
          ('1', '1 - Pauta (Valor)'),
          ('2', '2 - Preço Tabelado Máx. (valor)'),
          ('3', '3 - Valor da operação')],
         u'Modalidade de determinação da BC do ICMS')
     icms_base_calculo = fields.Float(u'Base de cálculo')
-    icms_percentual_reducao_bc = fields.Float(u'% Redução Base')
+    icms_aliquota_reducao_base = fields.Float(u'% Redução Base')
     icms_valor = fields.Float(u'Valor Total')
-    icms_value_credit = fields.Float(u"Valor de Cŕedito")
-    icms_value_percentual = fields.Float(u'% de Crédito')
+    icms_valor_credito = fields.Float(u"Valor de Cŕedito")
+    icms_aliquota_credito = fields.Float(u'% de Crédito')
 
-    icms_percentual_mva = fields.Float(u'% MVA')
-    icms_aliquota_st = fields.Float(u'Alíquota')
-    icms_base_calculo_st = fields.Float(u'Base de cálculo')
-    icms_percentual_reducao_bc_st = fields.Float(u'% Redução Base')
-    icms_valor_st = fields.Float(u'Valor Total')
+    icms_st_aliquota_mva = fields.Float(u'% MVA')
+    icms_st_aliquota = fields.Float(u'Alíquota')
+    icms_st_base_calculo = fields.Float(u'Base de cálculo')
+    icms_st_aliquota_reducao_base = fields.Float(u'% Redução Base')
+    icms_st_valor = fields.Float(u'Valor Total')
 
-    icms_percentual_diferimento = fields.Float(u'% Diferimento')
+    icms_aliquota_diferimento = fields.Float(u'% Diferimento')
     icms_valor_diferido = fields.Float(u'Valor Diferido')
 
     icms_motivo_desoneracao = fields.Float(u'Motivo Desoneração')
@@ -315,7 +315,7 @@ class InvoiceEletronicItem(models.Model):
     ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária do ICMS')
     ipi_aliquota = fields.Float(u'Alíquota')
     ipi_base_calculo = fields.Float(u'Base de cálculo')
-    ipi_percentual_reducao_bc = fields.Float(u'% Redução Base')
+    ipi_aliquota_reducao_base = fields.Float(u'% Redução Base')
     ipi_valor = fields.Float(u'Valor Total')
 
     # ----------- II ----------------------
