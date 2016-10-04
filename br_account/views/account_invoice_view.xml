@@ -29,10 +29,7 @@
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="valor_bruto" />
-                <field name="valor_frete" />
                 <field name="valor_desconto" />
-                <field name="valor_seguro" />
-                <field name="outras_despesas" />
             </xpath>
             <page name="other_info" position="before">
                 <page name="vencimentos" string="Vencimentos">
@@ -60,9 +57,6 @@
             <field name="amount_untaxed" position="before">
                 <field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
@@ -85,10 +79,7 @@
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="valor_bruto" />
-                <field name="valor_frete" />
                 <field name="valor_desconto" />
-                <field name="valor_seguro" />
-                <field name="outras_despesas" />
             </xpath>
             <xpath expr="//notebook/page" position="after">
                 <page name="vencimentos" string="Vencimentos">
@@ -114,9 +105,6 @@
             <field name="amount_untaxed" position="before">
                 <field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
@@ -148,17 +136,15 @@
                             <group>
                                 <group>
                                     <field name="product_id" />
-                                    <field name="product_type" />
-                                    <field name="company_fiscal_type" />
+                                    <field name="product_type" invisible="1" />
+                                    <field name="company_fiscal_type" invisible="1" />
                                     <label for="quantity"/>
                                     <div>
                                         <field name="quantity" class="oe_inline"/>
                                     </div>
                                     <field name="price_unit"/>
-                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
-                                    <field name="valor_seguro" />
-                                    <field name="outras_despesas" />
-                                    <field name="price_subtotal" />
+                                    <field name="discount" groups="sale.group_discount_per_so_line" string="(-) Desconto (%)"/>
+                                    <field name="price_subtotal" string="(=) Valor Líquido" />
                                 </group>
                                 <group>
                                     <field name="cfop_id"/>

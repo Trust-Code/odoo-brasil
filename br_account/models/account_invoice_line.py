@@ -33,8 +33,7 @@ class AccountInvoiceLine(models.Model):
         self.price_gross = self.quantity * self.price_unit
         self.discount_value = self.price_gross * (self.discount / 100)
 
-    @api.onchange('quantity', 'price_unit', 'discount',
-                  'valor_seguro', 'outras_despesas')
+    @api.onchange('quantity', 'price_unit', 'discount')
     def _recompute_tax_values(self):
         if self.calculate_tax:
             base_icms = base = self.quantity * self.price_unit
@@ -257,12 +256,6 @@ class AccountInvoiceLine(models.Model):
     ii_valor_despesas = fields.Float(
         'Depesas Atuaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    valor_seguro = fields.Float(
-        'Valor do Seguro', digits=dp.get_precision('Account'), default=0.00)
-    outras_despesas = fields.Float(
-        'Outros Despesas', digits=dp.get_precision('Account'), default=0.00)
-    valor_frete = fields.Float(
-        'Valor do Frete', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
     def _set_taxes(self):

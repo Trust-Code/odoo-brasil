@@ -40,14 +40,15 @@ class SaleOrder(models.Model):
             })
 
     total_despesas = fields.Float(
-        string='Outras Despesas', default=0.00,
+        string='Despesas ( + )', default=0.00,
         digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)]})
     total_seguro = fields.Float(
-        string='Seguro', default=0.00, digits=dp.get_precision('Account'),
+        string='Seguro ( + )', default=0.00,
+        digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)]})
     total_frete = fields.Float(
-        string='Frete', default=0.00, digits=dp.get_precision('Account'),
+        string='Frete ( + )', default=0.00, digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)]})
 
 

@@ -5,6 +5,16 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="valor_frete" />
+                <field name="valor_seguro" />
+                <field name="outras_despesas" />
+            </xpath>
+            <field name="amount_untaxed" position="after">
+                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </field>
             <page name="vencimentos" position="after">
                 <page name="transporte" string="Transporte">
                     <group>
@@ -34,6 +44,16 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="valor_frete" />
+                <field name="valor_seguro" />
+                <field name="outras_despesas" />
+            </xpath>
+            <field name="amount_untaxed" position="after">
+                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </field>
             <page  name="vencimentos" position="after">
                 <page name="transporte" string="Transporte">
                     <group>
@@ -64,8 +84,10 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form" />
         <field name="priority">36</field>
         <field name="arch" type="xml">
-            <field name="valor_seguro" position="after">
+            <field name="discount" position="after">
                 <field name="valor_frete" />
+                <field name="valor_seguro" />
+                <field name="outras_despesas" />
             </field>
         </field>
     </record>

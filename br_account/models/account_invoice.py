@@ -31,10 +31,7 @@ class AccountInvoice(models.Model):
         self.ii_value = sum(l.ii_valor for l in lines)
         self.amount_gross = sum(l.valor_bruto for l in lines)
         self.amount_discount = sum(l.valor_desconto for l in lines)
-        self.total_seguro = sum(l.valor_seguro for l in lines)
-        self.total_frete = sum(l.valor_frete for l in lines)
-        self.total_despesas = sum(l.outras_despesas for l in lines)
-        self.amount_estimated_tax = sum(l.tributos_estimados for l in lines)
+        self.total_tributos_estimados = sum(l.tributos_estimados for l in lines)
 
     @api.one
     @api.depends('move_id.line_ids')
@@ -167,15 +164,6 @@ class AccountInvoice(models.Model):
         string='Valor II', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
-    total_seguro = fields.Float(
-        string='Total do Seguro', store=True,
-        digits=dp.get_precision('Account'), compute='_compute_amount')
-    total_despesas = fields.Float(
-        string='Total Despesas', store=True,
-        digits=dp.get_precision('Account'), compute='_compute_amount')
-    total_frete = fields.Float(
-        string='Total Frete', store=True,
-        digits=dp.get_precision('Account'), compute='_compute_amount')
     total_tributos_estimados = fields.Float(
         string='Total de Tributos',
         store=True,

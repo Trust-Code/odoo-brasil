@@ -15,11 +15,17 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
-        self.total_frete = sum(l.valor_frete for l in lines)
 
+        self.total_seguro = sum(l.valor_seguro for l in lines)
+        self.total_frete = sum(l.valor_frete for l in lines)
+        self.total_despesas = sum(l.outras_despesas for l in lines)
+
+    total_seguro = fields.Float(
+        string='Total do Seguro', digits=dp.get_precision('Account'))
+    total_despesas = fields.Float(
+        string='Total Despesas', digits=dp.get_precision('Account'))
     total_frete = fields.Float(
-        string='Valor do Frete', store=True,
-        digits=dp.get_precision('Account'), compute='_compute_amount')
+        string='Total Frete', digits=dp.get_precision('Account'))
 
     carrier_name = fields.Char('Transportadora', size=32)
     vehicle_plate = fields.Char('Placa do Veiculo', size=7)
@@ -55,4 +61,8 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     valor_frete = fields.Float(
-        'Frete', digits=dp.get_precision('Account'), default=0.00)
+        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
+    valor_seguro = fields.Float(
+        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
+    outras_despesas = fields.Float(
+        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)

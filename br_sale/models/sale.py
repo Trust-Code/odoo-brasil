@@ -23,11 +23,11 @@ class SaleOrder(models.Model):
             })
 
     total_bruto = fields.Float(
-        string='Valor Bruto', readonly=True, compute='_amount_all',
+        string='Total Bruto ( = )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
 
     total_desconto = fields.Float(
-        string='Total Desconto (-)', readonly=True, compute='_amount_all',
+        string='Desconto Total ( - )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
         help="The discount amount.")
 
