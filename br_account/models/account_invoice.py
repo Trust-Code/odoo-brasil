@@ -49,12 +49,12 @@ class AccountInvoice(models.Model):
     @api.one
     @api.depends('move_id.line_ids')
     def _compute_payables(self):
-        receivable_lines = []
+        payable_lines = []
         for line in self.move_id.line_ids:
             if line.account_id.user_type_id.type == "payable":
-                receivable_lines.append(line.id)
-        self.receivable_move_line_ids = self.env['account.move.line'].browse(
-            list(set(receivable_lines)))
+                payable_lines.append(line.id)
+        self.payable_move_line_ids = self.env['account.move.line'].browse(
+            list(set(payable_lines)))
 
     @api.model
     def _default_fiscal_document(self):
@@ -204,3 +204,27 @@ class AccountInvoice(models.Model):
                 line.tax_ii_id
 
         return super(AccountInvoice, self).get_taxes_values()
+
+    @api.model
+    def tax_line_move_line_get(self):
+        res = super(AccountInvoice, self).tax_line_move_line_get()
+
+        done_taxes = []
+        for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
+            if tax_line.amount and tax_line.tax_id.deduced_account_id:
+                tax = tax_line.tax_id
+                done_taxes.append(tax.id)
+                res.append({
+                    'invoice_tax_line_id': tax_line.id,
+                    'tax_line_id': tax_line.tax_id.id,
+                    'type': 'tax',
+                    'name': tax_line.name,
+                    'price_unit': tax_line.amount*-1,
+                    'quantity': 1,
+                    'price': tax_line.amount*-1,
+                    'account_id': tax_line.tax_id.deduced_account_id.id,
+                    'account_analytic_id': tax_line.account_analytic_id.id,
+                    'invoice_id': self.id,
+                    'tax_ids': [(6, 0, done_taxes)] if tax_line.tax_id.include_base_amount else []
+                })
+        return res

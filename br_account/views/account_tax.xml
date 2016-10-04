@@ -6,6 +6,10 @@
         <field name="model">account.tax</field>
         <field name="inherit_id" ref="account.view_tax_form"/>
         <field name="arch" type="xml">
+            <field name="refund_account_id" position="after">
+                <field name="deduced_account_id" />
+                <field name="refund_deduced_account_id" />
+            </field>
             <field name="name" position="after">
                 <field name="domain" />
             </field>
