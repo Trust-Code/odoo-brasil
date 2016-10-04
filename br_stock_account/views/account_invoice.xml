@@ -13,7 +13,6 @@
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id"/>
                             <field name="vehicle_city_id"/>
-                            <field name="total_frete"/>
                         </group>
                         <group name="package_info">
                             <field name="weight"/>
@@ -43,7 +42,6 @@
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id"/>
                             <field name="vehicle_city_id"/>
-                            <field name="total_frete"/>
                         </group>
                         <group name="package_info">
                             <field name="weight"/>

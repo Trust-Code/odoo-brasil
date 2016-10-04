@@ -27,6 +27,13 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="valor_bruto" />
+                <field name="valor_frete" />
+                <field name="valor_desconto" />
+                <field name="valor_seguro" />
+                <field name="outras_despesas" />
+            </xpath>
             <page name="other_info" position="before">
                 <page name="vencimentos" string="Vencimentos">
                     <field nolabel="1" name="receivable_move_line_ids">
@@ -53,6 +60,9 @@
             <field name="amount_untaxed" position="before">
                 <field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
@@ -72,6 +82,13 @@
             </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="valor_bruto" />
+                <field name="valor_frete" />
+                <field name="valor_desconto" />
+                <field name="valor_seguro" />
+                <field name="outras_despesas" />
             </xpath>
             <xpath expr="//notebook/page" position="after">
                 <page name="vencimentos" string="Vencimentos">
@@ -94,6 +111,13 @@
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </xpath>
+            <field name="amount_untaxed" position="before">
+                <field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </field>
         </field>
     </record>
 

@@ -17,7 +17,8 @@ class SaleOrder(models.Model):
         super(SaleOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.amount_total + order.total_frete + order.total_seguro + order.total_despesas,
+                'amount_total': order.amount_total + order.total_frete +
+                order.total_seguro + order.total_despesas,
             })
 
     def _calc_ratio(self, qty, total):

@@ -261,6 +261,8 @@ class AccountInvoiceLine(models.Model):
         'Valor do Seguro', digits=dp.get_precision('Account'), default=0.00)
     outras_despesas = fields.Float(
         'Outros Despesas', digits=dp.get_precision('Account'), default=0.00)
+    valor_frete = fields.Float(
+        'Valor do Frete', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
     def _set_taxes(self):
