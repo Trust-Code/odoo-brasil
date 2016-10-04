@@ -54,9 +54,12 @@
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </field>
-            <field name="amount_untaxed" position="before">
-                <field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            <field name="amount_tax" position="before">
+                <field name="total_bruto"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </field>
+            <field name="amount_tax" position="attributes">
+                <attribute name="string">Impostos ( + )</attribute>
             </field>
         </field>
     </record>
@@ -102,9 +105,12 @@
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </xpath>
-            <field name="amount_untaxed" position="before">
-                <field name="amount_gross"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            <field name="amount_tax" position="before">
+                <field name="total_bruto"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </field>
+            <field name="amount_tax" position="attributes">
+                <attribute name="string">Impostos ( + )</attribute>
             </field>
         </field>
     </record>

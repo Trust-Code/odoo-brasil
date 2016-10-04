@@ -30,8 +30,8 @@ class AccountInvoiceLine(models.Model):
                  'invoice_id.currency_id', 'invoice_id.company_id')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
-        self.price_gross = self.quantity * self.price_unit
-        self.discount_value = self.price_gross * (self.discount / 100)
+        self.valor_bruto = self.quantity * self.price_unit
+        self.valor_desconto = self.valor_bruto * (self.discount / 100)
 
     @api.onchange('quantity', 'price_unit', 'discount')
     def _recompute_tax_values(self):
@@ -50,7 +50,6 @@ class AccountInvoiceLine(models.Model):
 
             if self.incluir_ipi_base:
                 base_icms += self.ipi_base * self.ipi_percent
-            base_icms += self.valor_seguro + self.outras_despesas
             base_icms -= self.valor_desconto
 
             self.icms_base_calculo = base_icms * (1 - self.icms_aliquota_reducao_base / 100)

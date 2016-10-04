@@ -29,8 +29,8 @@ class AccountInvoice(models.Model):
         self.cofins_base = sum(l.cofins_base_calculo for l in lines)
         self.cofins_value = sum(l.cofins_valor for l in lines)
         self.ii_value = sum(l.ii_valor for l in lines)
-        self.amount_gross = sum(l.valor_bruto for l in lines)
-        self.amount_discount = sum(l.valor_desconto for l in lines)
+        self.total_bruto = sum(l.valor_bruto for l in lines)
+        self.total_desconto = sum(l.valor_desconto for l in lines)
         self.total_tributos_estimados = sum(l.tributos_estimados for l in lines)
 
     @api.one
@@ -97,17 +97,13 @@ class AccountInvoice(models.Model):
         store=True, string='Electronic')
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
-    amount_gross = fields.Float(
-        string='Vlr. Bruto',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount',
-        readonly=True)
-    amount_discount = fields.Float(
-        string='Desconto',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
+    total_bruto = fields.Float(
+        string='Total Bruto ( = )', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    total_desconto = fields.Float(
+        string='Desconto ( - )', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+
     icms_base = fields.Float(
         string='Base ICMS',
         store=True,
