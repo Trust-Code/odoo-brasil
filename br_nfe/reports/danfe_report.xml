@@ -234,11 +234,11 @@
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Original</span><br />
-                        <span t-field="o.invoice_id.amount_gross"></span>
+                        <span t-field="o.invoice_id.total_bruto"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Desconto</span><br />
-                        <span t-field="o.invoice_id.amount_discount"></span>
+                        <span t-field="o.invoice_id.total_desconto"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Líquido</span><br />

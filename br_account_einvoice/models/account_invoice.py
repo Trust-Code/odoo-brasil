@@ -71,9 +71,6 @@ class AccountInvoice(models.Model):
             'uom_id': invoice_line.uom_id.id,
             'quantidade': invoice_line.quantity,
             'preco_unitario': invoice_line.price_unit,
-            'seguro': invoice_line.valor_seguro,
-            'desconto': invoice_line.valor_desconto,
-            'outras_despesas': invoice_line.outras_despesas,
             'valor_bruto': invoice_line.valor_bruto,
             'valor_liquido': invoice_line.price_subtotal,
             'origem': invoice_line.icms_origem,
@@ -163,9 +160,8 @@ class AccountInvoice(models.Model):
         vals['valor_pis'] = invoice.pis_value
         vals['valor_cofins'] = invoice.cofins_value
         vals['valor_ii'] = invoice.ii_value
-        vals['valor_bruto'] = invoice.amount_gross
-        vals['valor_seguro'] = invoice.amount_insurance
-        vals['valor_desconto'] = invoice.amount_discount
+        vals['valor_bruto'] = invoice.total_bruto
+        vals['valor_desconto'] = invoice.total_desconto
         vals['valor_final'] = invoice.amount_total
         return vals
 
