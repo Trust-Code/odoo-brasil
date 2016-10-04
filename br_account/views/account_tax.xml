@@ -6,6 +6,9 @@
         <field name="model">account.tax</field>
         <field name="inherit_id" ref="account.view_tax_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//div" position="attributes">
+                <attribute name="attrs">{'invisible':[('amount_type','not in', ('fixed', 'percent', 'division', 'icmsst'))]}</attribute>
+            </xpath>
             <field name="refund_account_id" position="after">
                 <field name="deduced_account_id" />
                 <field name="refund_deduced_account_id" />

@@ -37,16 +37,30 @@ class SaleOrderLine(models.Model):
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
-        super(SaleOrderLine, self)._compute_amount()
-        for item in self:
-            valor_bruto = item.price_unit * item.product_uom_qty
-            desconto = valor_bruto * item.discount / 100.0
-            desconto = item.order_id.pricelist_id.currency_id.round(desconto)
-            item.update({
+        for line in self:
+
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            tax_ids = line.tax_id.with_context(incluir_ipi_base=True,
+                                               aliquota_mva=line.aliquota_mva)
+            taxes = tax_ids.compute_all(
+                price, line.order_id.currency_id,
+                line.product_uom_qty, product=line.product_id,
+                partner=line.order_id.partner_id)
+
+            valor_bruto = line.price_unit * line.product_uom_qty
+            desconto = valor_bruto * line.discount / 100.0
+            desconto = line.order_id.pricelist_id.currency_id.round(desconto)
+            print taxes
+            line.update({
+                'price_tax': taxes['total_included'] - taxes['total_excluded'],
+                'price_total': taxes['total_included'],
+                'price_subtotal': taxes['total_excluded'],
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
             })
 
+    aliquota_mva = fields.Float(string='Alíquota MVA (%)',
+                                digits=dp.get_precision('Account'))
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
