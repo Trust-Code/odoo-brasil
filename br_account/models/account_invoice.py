@@ -11,11 +11,16 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     @api.one
-    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount',
+    @api.depends('invoice_line_ids.price_subtotal',
+                 'invoice_line_ids.price_total',
+                 'tax_line_ids.amount',
                  'currency_id', 'company_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
+        self.amount_total = sum(l.price_total for l in lines)
+        self.amount_untaxed = sum(l.price_subtotal for l in lines)
+        self.amount_tax = self.amount_total - self.amount_untaxed
         self.icms_base = sum(l.icms_base_calculo for l in lines)
         self.icms_value = sum(l.icms_valor for l in lines)
         self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
