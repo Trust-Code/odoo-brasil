@@ -51,7 +51,6 @@ class SaleOrderLine(models.Model):
             valor_bruto = line.price_unit * line.product_uom_qty
             desconto = valor_bruto * line.discount / 100.0
             desconto = line.order_id.pricelist_id.currency_id.round(desconto)
-            print taxes
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],

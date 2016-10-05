@@ -2,4 +2,4 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from . import br_sale_stock
+from . import test_br_sale_stock

@@ -10,7 +10,7 @@ class TestTaxBrasil(TransactionCase):
 
     def setUp(self):
         super(TestTaxBrasil, self).setUp()
-
+        self.tax_model = self.env['account.tax']
         self.pis = self.tax_model.create({
             'name': "PIS",
             'amount_type': 'division',
