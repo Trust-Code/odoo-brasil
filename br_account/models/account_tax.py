@@ -51,8 +51,6 @@ class AccountTax(models.Model):
         self = self - icms_taxes
         res = super(AccountTax, self).compute_all(
             price_unit, currency, quantity, product, partner)
-        if not icms_taxes:
-            return res
 
         incluir_ipi = False
         aliquota_mva = 0.0
@@ -110,6 +108,8 @@ class AccountTax(models.Model):
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
                 total_included += tax['amount']
+            if not tax_id.domain and tax_id.price_include:
+                total_excluded -= tax['amount']
 
         res['total_included'] = total_included
         res['total_excluded'] = total_excluded
