@@ -12,6 +12,17 @@
                     <i class="fa fa-search"></i>
                 </button>
             </field>
+            <div name="div_address" position="replace">
+                <field name="zip" />
+                <field name="street" placeholder="Logradouro" />
+                <field name="number" placeholder="Número" />
+                <field name="district" placeholder="Bairro" />
+                <field name="street2" placeholder="Complemento" />
+                <field name="country_id" placeholder="País" />
+                <field name="state_id" placeholder="Estado" />
+                <field name="city_id" placeholder="Cidade" />
+            </div>
+
         </field>
     </record>
 

@@ -12,6 +12,11 @@ from openerp.exceptions import Warning
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    @api.onchange("zip")
+    def _onchange_field(self):
+        if self.type != 'contact':
+            self.zip_search()
+
     @api.multi
     def zip_search(self):
         self.ensure_one()
@@ -28,7 +33,7 @@ class ResPartner(models.Model):
 
         if len(zip_ids) == 1:
             result = obj_zip.set_result(zip_ids[0])
-            self.write(result)
+            self.update(result)
             return True
         else:
             if len(zip_ids) > 1:
