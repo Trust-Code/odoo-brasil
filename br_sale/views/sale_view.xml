@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
                 <field name="aliquota_mva" />
+                <field name="aliquota_icms_proprio" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
                 <field name="valor_desconto" />

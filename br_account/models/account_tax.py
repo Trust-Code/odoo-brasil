@@ -62,21 +62,23 @@ class AccountTax(models.Model):
         ipi = self.filtered(lambda x: x.domain == 'ipi')
         total_ipi = sum(x['amount'] for x in res['taxes'] if x['id'] == ipi.id)
 
-        base_icms = round(price_unit * quantity, 2)
+        base = round(price_unit * quantity, 2)
         icms_amount = 0.0
         icmsst_amount = 0.0
 
         if incluir_ipi:
-            base_icms += total_ipi
+            base += total_ipi
         icms = icms_taxes.filtered(lambda x: x.domain == 'icms')
         if icms:
             icms_amount = icms._compute_amount(
-                base_icms, price_unit, quantity, product, partner)
+                base, price_unit, quantity, product, partner)
 
         icmsst = icms_taxes.filtered(lambda x: x.domain == 'icmsst')
         if icms and icmsst:
-            base_st = base_icms * (1 + aliquota_mva / 100)
-            icmsst = icmsst.with_context({'icms_proprio': icms_amount})
+            base_icms_proprio = round(price_unit * quantity, 2)
+            icms_proprio = base_icms_proprio * icms.amount / 100
+            base_st = base * (1 + aliquota_mva / 100)
+            icmsst = icmsst.with_context({'icms_proprio': icms_proprio})
             icmsst_amount = icmsst._compute_amount(
                 base_st, price_unit, quantity, product, partner)
 

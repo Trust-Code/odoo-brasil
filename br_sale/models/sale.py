@@ -35,7 +35,8 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
+    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
+                 'aliquota_mva')
     def _compute_amount(self):
         for line in self:
 
@@ -61,6 +62,9 @@ class SaleOrderLine(models.Model):
 
     aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                 digits=dp.get_precision('Account'))
+    aliquota_icms_proprio = fields.Float(
+        string='Alíquota ICMS Próprio (%)',
+        digits=dp.get_precision('Account'))
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
