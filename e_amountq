@@ -1,0 +1,232 @@
+[1mdiff --git a/br_account/models/account_invoice.py b/br_account/models/account_invoice.py[m
+[1mindex d3a6e8d..c316465 100644[m
+[1m--- a/br_account/models/account_invoice.py[m
+[1m+++ b/br_account/models/account_invoice.py[m
+[36m@@ -183,9 +183,11 @@[m [mclass AccountInvoice(models.Model):[m
+     @api.multi[m
+     def get_taxes_values(self):[m
+         for line in self.invoice_line_ids:[m
+[31m-            line.invoice_line_tax_ids = line.tax_icms_id | line.tax_ipi_id | \[m
+[31m-                line.tax_pis_id | line.tax_cofins_id | line.tax_issqn_id | \[m
+[31m-                line.tax_ii_id[m
+[32m+[m[32m            other_taxes = line.invoice_line_tax_ids.filtered([m
+[32m+[m[32m                lambda x: not x.domain)[m
+[32m+[m[32m            line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \[m
+[32m+[m[32m                line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \[m
+[32m+[m[32m                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id[m
+ [m
+         return super(AccountInvoice, self).get_taxes_values()[m
+ [m
+[1mdiff --git a/br_account/models/account_invoice_line.py b/br_account/models/account_invoice_line.py[m
+[1mindex d9586ca..0245785 100644[m
+[1m--- a/br_account/models/account_invoice_line.py[m
+[1m+++ b/br_account/models/account_invoice_line.py[m
+[36m@@ -107,6 +107,9 @@[m [mclass AccountInvoiceLine(models.Model):[m
+     icms_aliquota_reducao_base = fields.Float([m
+         '% Red. Base ICMS', digits=dp.get_precision('Discount'),[m
+         default=0.00)[m
+[32m+[m
+[32m+[m[32m    tax_icms_st_id = fields.Many2one('account.tax', string="ICMS",[m
+[32m+[m[32m                                     domain=[('domain', '=', 'icmsst')])[m
+     icms_st_tipo_base = fields.Selection([m
+         [('0', 'Preço tabelado ou máximo  sugerido'),[m
+          ('1', 'Lista Negativa (valor)'),[m
+[36m@@ -261,6 +264,8 @@[m [mclass AccountInvoiceLine(models.Model):[m
+         super(AccountInvoiceLine, self)._set_taxes()[m
+         self.tax_icms_id = self.invoice_line_tax_ids.filtered([m
+             lambda r: r.domain == 'icms').id[m
+[32m+[m[32m        self.tax_icms_st_id = self.invoice_line_tax_ids.filtered([m
+[32m+[m[32m            lambda r: r.domain == 'icmsst').id[m
+         self.tax_issqn_id = self.invoice_line_tax_ids.filtered([m
+             lambda r: r.domain == 'issqn').id[m
+         self.tax_ipi_id = self.invoice_line_tax_ids.filtered([m
+[36m@@ -279,31 +284,43 @@[m [mclass AccountInvoiceLine(models.Model):[m
+         self.fiscal_classification_id = \[m
+             self.product_id.fiscal_classification_id.id[m
+ [m
+[32m+[m[32m    def _update_invoice_line_ids(self):[m
+[32m+[m[32m        other_taxes = self.invoice_line_tax_ids.filtered([m
+[32m+[m[32m            lambda x: not x.domain)[m
+[32m+[m[32m        self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \[m
+[32m+[m[32m            self.tax_ipi_id | self.tax_pis_id | self.tax_cofins_id | \[m
+[32m+[m[32m            self.tax_issqn_id | self.tax_ii_id | self.tax_icms_st_id[m
+[32m+[m
+     @api.onchange('tax_icms_id')[m
+     def _onchange_tax_icms_id(self):[m
+         if self.tax_icms_id:[m
+             self.icms_percent = self.tax_icms_id.amount[m
+             self.icms_cst = self.tax_icms_id.cst[m
+[32m+[m[32m            self._update_invoice_line_ids()[m
+ [m
+     @api.onchange('tax_pis_id')[m
+     def _onchange_tax_pis_id(self):[m
+         if self.tax_pis_id:[m
+             self.pis_aliquota = self.tax_pis_id.amount[m
+             self.pis_cst = self.tax_ipi_id.cst[m
+[32m+[m[32m            self._update_invoice_line_ids()[m
+ [m
+     @api.onchange('tax_cofins_id')[m
+     def _onchange_tax_cofins_id(self):[m
+         if self.tax_cofins_id:[m
+             self.cofins_aliquota = self.tax_cofins_id.amount[m
+             self.cofins_cst = self.tax_ipi_id.cst[m
+[32m+[m[32m            self._update_invoice_line_ids()[m
+ [m
+     @api.onchange('tax_ipi_id')[m
+     def _onchange_tax_ipi_id(self):[m
+         if self.tax_ipi_id:[m
+             self.ipi_aliquota = self.tax_ipi_id.amount[m
+             self.ipi_cst = self.tax_ipi_id.cst[m
+[32m+[m[32m            self._update_invoice_line_ids()[m
+ [m
+     @api.onchange('tax_ii_id')[m
+     def _onchange_tax_ii_id(self):[m
+         if self.tax_ii_id:[m
+             self.ii_aliquota = self.tax_ii_id.amount[m
+[32m+[m[32m            self._update_invoice_line_ids()[m
+[1mdiff --git a/br_account/tests/test_br_account.py b/br_account/tests/test_br_account.py[m
+[1mindex 28f1379..ce60548 100644[m
+[1m--- a/br_account/tests/test_br_account.py[m
+[1m+++ b/br_account/tests/test_br_account.py[m
+[36m@@ -14,6 +14,7 @@[m [mclass TestTaxBrasil(TransactionCase):[m
+         self.pis = self.tax_model.create({[m
+             'name': "PIS",[m
+             'amount_type': 'division',[m
+[32m+[m[32m            'domain': 'pis',[m
+             'amount': 5,[m
+             'sequence': 1,[m
+             'price_include': True,[m
+[36m@@ -21,6 +22,7 @@[m [mclass TestTaxBrasil(TransactionCase):[m
+         self.cofins = self.tax_model.create({[m
+             'name': "Cofins",[m
+             'amount_type': 'division',[m
+[32m+[m[32m            'domain': 'cofins',[m
+             'amount': 15,[m
+             'sequence': 2,[m
+             'price_include': True,[m
+[36m@@ -28,12 +30,14 @@[m [mclass TestTaxBrasil(TransactionCase):[m
+         self.ipi = self.tax_model.create({[m
+             'name': "IPI",[m
+             'amount_type': 'percent',[m
+[32m+[m[32m            'domain': 'ipi',[m
+             'amount': 7,[m
+             'sequence': 3,[m
+         })[m
+         self.icms = self.tax_model.create({[m
+             'name': "ICMS",[m
+             'amount_type': 'division',[m
+[32m+[m[32m            'domain': 'icms',[m
+             'amount': 17,[m
+             'sequence': 4,[m
+             'price_include': True,[m
+[36m@@ -41,6 +45,7 @@[m [mclass TestTaxBrasil(TransactionCase):[m
+         self.icms_inter = self.tax_model.create({[m
+             'name': "ICMS Inter",[m
+             'amount_type': 'division',[m
+[32m+[m[32m            'domain': 'icms',[m
+             'amount': 12,[m
+             'sequence': 4,[m
+             'price_include': True,[m
+[36m@@ -48,6 +53,7 @@[m [mclass TestTaxBrasil(TransactionCase):[m
+         self.icms_st = self.tax_model.create({[m
+             'name': "ICMS ST",[m
+             'amount_type': 'icmsst',[m
+[32m+[m[32m            'domain': 'icmsst',[m
+             'amount': 0,[m
+             'amount': 18,[m
+             'price_include': False,[m
+[1mdiff --git a/br_account/views/account_invoice_view.xml b/br_account/views/account_invoice_view.xml[m
+[1mindex e9409be..ee81869 100644[m
+[1m--- a/br_account/views/account_invoice_view.xml[m
+[1m+++ b/br_account/views/account_invoice_view.xml[m
+[36m@@ -186,6 +186,7 @@[m
+                             </group>[m
+                             <group name="substituicao_icms" string="Substituição Tributária ICMS">[m
+                                 <group>[m
+[32m+[m[32m                                    <field name="tax_icms_st_id" />[m
+                                     <field name="icms_st_tipo_base"/>[m
+                                     <field name="icms_st_aliquota_mva"/>[m
+                                     <field name="icms_st_aliquota_reducao_base"/>[m
+[1mdiff --git a/br_sale/models/sale.py b/br_sale/models/sale.py[m
+[1mindex d12d456..46f7d15 100644[m
+[1m--- a/br_sale/models/sale.py[m
+[1m+++ b/br_sale/models/sale.py[m
+[36m@@ -78,6 +78,7 @@[m [mclass SaleOrderLine(models.Model):[m
+         res['valor_desconto'] = self.valor_desconto[m
+         res['valor_bruto'] = self.valor_bruto[m
+         icms = self.tax_id.filtered(lambda x: x.domain == 'icms')[m
+[32m+[m[32m        icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')[m
+         ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')[m
+         pis = self.tax_id.filtered(lambda x: x.domain == 'pis')[m
+         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')[m
+[36m@@ -85,10 +86,31 @@[m [mclass SaleOrderLine(models.Model):[m
+         issqn = self.tax_id.filtered(lambda x: x.domain == 'issqn')[m
+ [m
+         res['tax_icms_id'] = icms and icms.id or False[m
+[32m+[m[32m        res['tax_icms_st_id'] = icmsst and icmsst.id or False[m
+         res['tax_ipi_id'] = ipi and ipi.id or False[m
+         res['tax_pis_id'] = pis and pis.id or False[m
+         res['tax_cofins_id'] = cofins and cofins.id or False[m
+         res['tax_ii_id'] = ii and ii.id or False[m
+         res['tax_issqn_id'] = issqn and issqn.id or False[m
+ [m
+[32m+[m[32m        res['icms_base_calculo'] = self.price_subtotal[m
+[32m+[m[32m        res['icms_aliquota'] = icms.amount or 0.0[m
+[32m+[m[32m        res['icms_st_aliquota_mva'] = self.aliquota_mva[m
+[32m+[m[32m        res['icms_st_aliquota'] = icmsst.amount or 0.0[m
+[32m+[m
+[32m+[m[32m        res['ipi_base_calculo'] = self.valor_bruto - self.valor_desconto[m
+[32m+[m[32m        res['ipi_aliquota'] = ipi.amount or 0.0[m
+[32m+[m
+[32m+[m[32m        res['pis_base_calculo'] = self.valor_bruto - self.valor_desconto[m
+[32m+[m[32m        res['pis_aliquota'] = pis.amount or 0.0[m
+[32m+[m
+[32m+[m[32m        res['cofins_base_calculo'] = self.valor_bruto - self.valor_desconto[m
+[32m+[m[32m        res['cofins_aliquota'] = cofins.amount or 0.0[m
+[32m+[m
+[32m+[m[32m        res['issqn_base_calculo'] = self.valor_bruto - self.valor_desconto[m
+[32m+[m[32m        res['issqn_aliquota'] = issqn.amount or 0.0[m
+[32m+[m
+[32m+[m[32m        res['ii_base_calculo'] = self.valor_bruto - self.valor_desconto[m
+[32m+[m[32m        res['ii_aliquota'] = ii.amount or 0.0[m
+[32m+[m
+         return res[m
+[1mdiff --git a/br_simples_nacional/models/account_invoice.py b/br_simples_nacional/models/account_invoice.py[m
+[1mindex f0a41f5..86088ae 100644[m
+[1m--- a/br_simples_nacional/models/account_invoice.py[m
+[1m+++ b/br_simples_nacional/models/account_invoice.py[m
+[36m@@ -3,7 +3,7 @@[m
+ # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).[m
+ [m
+ [m
+[31m-from odoo import api, fields, models[m
+[32m+[m[32mfrom odoo import api, models[m
+ [m
+ [m
+ class AccountInvoiceLine(models.Model):[m
+[36m@@ -20,9 +20,6 @@[m [mclass AccountInvoiceLine(models.Model):[m
+             res['ipi_cst'] = '99'[m
+         return res[m
+ [m
+[31m-    tax_icms_id = fields.Many2one('account.tax', string="ICMS",[m
+[31m-                                  domain=[('domain', '=', 'simples')])[m
+[31m-[m
+     @api.onchange('tax_icms_id')[m
+     def _simples_nacional_onchange_tax_icms_id(self):[m
+         if self.tax_icms_id:[m
+[1mdiff --git a/br_simples_nacional/models/sale_order.py b/br_simples_nacional/models/sale_order.py[m
+[1mindex 0ab6f2e..b39b3ad 100644[m
+[1m--- a/br_simples_nacional/models/sale_order.py[m
+[1m+++ b/br_simples_nacional/models/sale_order.py[m
+[36m@@ -13,10 +13,6 @@[m [mclass SaleOrderLine(models.Model):[m
+     def _prepare_invoice_line(self, qty):[m
+         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)[m
+ [m
+[31m-        icms = self.tax_id.filtered(lambda x: x.domain == 'simples')[m
+[31m-        if len(icms) > 1:[m
+[31m-            raise UserError([m
+[31m-                'Apenas um imposto com o domínio ICMS deve ser cadastrado')[m
+[31m-        res['tax_icms_id'] = icms and icms.id or False[m
+[32m+[m[32m        # TODO Implementar um imposto do tipo SIMPLES[m
+ [m
+         return res[m

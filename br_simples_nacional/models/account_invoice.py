@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import api, models
 
 
 class AccountInvoiceLine(models.Model):
@@ -19,9 +19,6 @@ class AccountInvoiceLine(models.Model):
         if "ipi_cst" not in res:
             res['ipi_cst'] = '99'
         return res
-
-    tax_icms_id = fields.Many2one('account.tax', string="ICMS",
-                                  domain=[('domain', '=', 'simples')])
 
     @api.onchange('tax_icms_id')
     def _simples_nacional_onchange_tax_icms_id(self):

@@ -30,6 +30,7 @@ class AccountInvoiceLine(models.Model):
                  'invoice_id.currency_id', 'invoice_id.company_id')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
+
         self.valor_bruto = self.quantity * self.price_unit
         self.valor_desconto = self.valor_bruto * (self.discount / 100)
 
@@ -107,6 +108,9 @@ class AccountInvoiceLine(models.Model):
     icms_aliquota_reducao_base = fields.Float(
         '% Red. Base ICMS', digits=dp.get_precision('Discount'),
         default=0.00)
+
+    tax_icms_st_id = fields.Many2one('account.tax', string="ICMS",
+                                     domain=[('domain', '=', 'icmsst')])
     icms_st_tipo_base = fields.Selection(
         [('0', 'Preço tabelado ou máximo  sugerido'),
          ('1', 'Lista Negativa (valor)'),
@@ -261,6 +265,8 @@ class AccountInvoiceLine(models.Model):
         super(AccountInvoiceLine, self)._set_taxes()
         self.tax_icms_id = self.invoice_line_tax_ids.filtered(
             lambda r: r.domain == 'icms').id
+        self.tax_icms_st_id = self.invoice_line_tax_ids.filtered(
+            lambda r: r.domain == 'icmsst').id
         self.tax_issqn_id = self.invoice_line_tax_ids.filtered(
             lambda r: r.domain == 'issqn').id
         self.tax_ipi_id = self.invoice_line_tax_ids.filtered(
@@ -279,31 +285,48 @@ class AccountInvoiceLine(models.Model):
         self.fiscal_classification_id = \
             self.product_id.fiscal_classification_id.id
 
+    def _update_invoice_line_ids(self):
+        other_taxes = self.invoice_line_tax_ids.filtered(
+            lambda x: not x.domain)
+        self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \
+            self.tax_ipi_id | self.tax_pis_id | self.tax_cofins_id | \
+            self.tax_issqn_id | self.tax_ii_id | self.tax_icms_st_id
+
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
         if self.tax_icms_id:
-            self.icms_percent = self.tax_icms_id.amount
-            self.icms_cst = self.tax_icms_id.cst
+            self.icms_aliquota = self.tax_icms_id.amount
+            self._update_invoice_line_ids()
+
+    @api.onchange('tax_icms_st_id')
+    def _onchange_tax_icms_st_id(self):
+        if self.tax_icms_st_id:
+            self.icms_st_aliquota = self.tax_icms_st_id.amount
+            self._update_invoice_line_ids()
 
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
         if self.tax_pis_id:
             self.pis_aliquota = self.tax_pis_id.amount
             self.pis_cst = self.tax_ipi_id.cst
+            self._update_invoice_line_ids()
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):
         if self.tax_cofins_id:
             self.cofins_aliquota = self.tax_cofins_id.amount
             self.cofins_cst = self.tax_ipi_id.cst
+            self._update_invoice_line_ids()
 
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
         if self.tax_ipi_id:
             self.ipi_aliquota = self.tax_ipi_id.amount
             self.ipi_cst = self.tax_ipi_id.cst
+            self._update_invoice_line_ids()
 
     @api.onchange('tax_ii_id')
     def _onchange_tax_ii_id(self):
         if self.tax_ii_id:
             self.ii_aliquota = self.tax_ii_id.amount
+            self._update_invoice_line_ids()

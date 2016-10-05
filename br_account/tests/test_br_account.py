@@ -14,6 +14,7 @@ class TestTaxBrasil(TransactionCase):
         self.pis = self.tax_model.create({
             'name': "PIS",
             'amount_type': 'division',
+            'domain': 'pis',
             'amount': 5,
             'sequence': 1,
             'price_include': True,
@@ -21,6 +22,7 @@ class TestTaxBrasil(TransactionCase):
         self.cofins = self.tax_model.create({
             'name': "Cofins",
             'amount_type': 'division',
+            'domain': 'cofins',
             'amount': 15,
             'sequence': 2,
             'price_include': True,
@@ -28,12 +30,14 @@ class TestTaxBrasil(TransactionCase):
         self.ipi = self.tax_model.create({
             'name': "IPI",
             'amount_type': 'percent',
+            'domain': 'ipi',
             'amount': 7,
             'sequence': 3,
         })
         self.icms = self.tax_model.create({
             'name': "ICMS",
             'amount_type': 'division',
+            'domain': 'icms',
             'amount': 17,
             'sequence': 4,
             'price_include': True,
@@ -41,6 +45,7 @@ class TestTaxBrasil(TransactionCase):
         self.icms_inter = self.tax_model.create({
             'name': "ICMS Inter",
             'amount_type': 'division',
+            'domain': 'icms',
             'amount': 12,
             'sequence': 4,
             'price_include': True,
@@ -48,6 +53,7 @@ class TestTaxBrasil(TransactionCase):
         self.icms_st = self.tax_model.create({
             'name': "ICMS ST",
             'amount_type': 'icmsst',
+            'domain': 'icmsst',
             'amount': 0,
             'amount': 18,
             'price_include': False,

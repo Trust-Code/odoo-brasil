@@ -157,7 +157,7 @@
                                     <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
                                     <field domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
-                                    <field name="invoice_line_tax_ids" widget="many2many_tags" readonly="1" />
+                                    <field name="invoice_line_tax_ids" widget="many2many_tags" />
                                     <field name="tributos_estimados" />
                                     <field name="calculate_tax" />
                                 </group>
@@ -186,6 +186,7 @@
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
                                 <group>
+                                    <field name="tax_icms_st_id" />
                                     <field name="icms_st_tipo_base"/>
                                     <field name="icms_st_aliquota_mva"/>
                                     <field name="icms_st_aliquota_reducao_base"/>

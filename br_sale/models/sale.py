@@ -78,6 +78,7 @@ class SaleOrderLine(models.Model):
         res['valor_desconto'] = self.valor_desconto
         res['valor_bruto'] = self.valor_bruto
         icms = self.tax_id.filtered(lambda x: x.domain == 'icms')
+        icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')
         ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
         pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
@@ -85,10 +86,31 @@ class SaleOrderLine(models.Model):
         issqn = self.tax_id.filtered(lambda x: x.domain == 'issqn')
 
         res['tax_icms_id'] = icms and icms.id or False
+        res['tax_icms_st_id'] = icmsst and icmsst.id or False
         res['tax_ipi_id'] = ipi and ipi.id or False
         res['tax_pis_id'] = pis and pis.id or False
         res['tax_cofins_id'] = cofins and cofins.id or False
         res['tax_ii_id'] = ii and ii.id or False
         res['tax_issqn_id'] = issqn and issqn.id or False
+
+        res['icms_base_calculo'] = self.price_subtotal
+        res['icms_aliquota'] = icms.amount or 0.0
+        res['icms_st_aliquota_mva'] = self.aliquota_mva
+        res['icms_st_aliquota'] = icmsst.amount or 0.0
+
+        res['ipi_base_calculo'] = self.valor_bruto - self.valor_desconto
+        res['ipi_aliquota'] = ipi.amount or 0.0
+
+        res['pis_base_calculo'] = self.valor_bruto - self.valor_desconto
+        res['pis_aliquota'] = pis.amount or 0.0
+
+        res['cofins_base_calculo'] = self.valor_bruto - self.valor_desconto
+        res['cofins_aliquota'] = cofins.amount or 0.0
+
+        res['issqn_base_calculo'] = self.valor_bruto - self.valor_desconto
+        res['issqn_aliquota'] = issqn.amount or 0.0
+
+        res['ii_base_calculo'] = self.valor_bruto - self.valor_desconto
+        res['ii_aliquota'] = ii.amount or 0.0
 
         return res

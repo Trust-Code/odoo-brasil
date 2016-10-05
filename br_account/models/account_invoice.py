@@ -183,9 +183,11 @@ class AccountInvoice(models.Model):
     @api.multi
     def get_taxes_values(self):
         for line in self.invoice_line_ids:
-            line.invoice_line_tax_ids = line.tax_icms_id | line.tax_ipi_id | \
-                line.tax_pis_id | line.tax_cofins_id | line.tax_issqn_id | \
-                line.tax_ii_id
+            other_taxes = line.invoice_line_tax_ids.filtered(
+                lambda x: not x.domain)
+            line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
+                line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
+                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id
 
         return super(AccountInvoice, self).get_taxes_values()
 
