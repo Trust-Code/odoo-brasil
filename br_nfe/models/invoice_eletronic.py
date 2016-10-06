@@ -93,7 +93,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'uCom': item.uom_id.name,
             'qCom': item.quantidade,
             'vUnCom': item.preco_unitario,
-            'vProd':  "%.02f" % item.valor_liquido,
+            'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': item.uom_id.name,
             'qTrib': item.quantidade,
@@ -106,12 +106,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'ICMS': {
                 'orig':  item.origem,
                 'CST': item.icms_cst,
-                'modBC': item.icms_modalidade_BC,
+                'modBC': item.icms_tipo_base,
                 'vBC': "%.02f" % item.icms_base_calculo,
                 'pICMS': "%.02f" % item.icms_aliquota,
                 'vICMS': "%.02f" % item.icms_valor,
-                'pCredSN': "%.02f" % item.icms_value_credit,
-                'vCredICMSSN': "%.02f" % item.icms_value_percentual
+                'pCredSN': "%.02f" % item.icms_valor_credito,
+                'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
             },
             'IPI': {
                 'cEnq': 999,

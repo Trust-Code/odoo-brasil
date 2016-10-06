@@ -40,7 +40,7 @@ class AccountMoveLine(models.Model):
     def action_register_boleto(self):
         boleto_list = []
         for move in self:
-            if not move.payment_mode_id.nosso_numero_sequence.id:
+            if not move.invoice_id.payment_mode_id.nosso_numero_sequence.id:
                 raise UserError('Cadastre a sequência do nosso número no modo \
                                 de pagamento')
             if not move.boleto_emitido:
