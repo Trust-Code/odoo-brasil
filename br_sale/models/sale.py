@@ -11,6 +11,71 @@ from odoo.addons import decimal_precision as dp
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    @api.multi
+    def print_quotation(self):
+        return super(SaleOrder, self).print_quotation()
+        self.tax_model = self.env['account.tax']
+        self.pis = self.tax_model.create({
+            'name': "PIS",
+            'amount_type': 'division',
+            'domain': 'pis',
+            'amount': 5,
+            'sequence': 1,
+            'price_include': True,
+        })
+        self.cofins = self.tax_model.create({
+            'name': "Cofins",
+            'amount_type': 'division',
+            'domain': 'cofins',
+            'amount': 15,
+            'sequence': 2,
+            'price_include': True,
+        })
+        self.ipi = self.tax_model.create({
+            'name': "IPI",
+            'amount_type': 'percent',
+            'domain': 'ipi',
+            'amount': 7,
+            'sequence': 3,
+        })
+        self.icms = self.tax_model.create({
+            'name': "ICMS",
+            'amount_type': 'division',
+            'domain': 'icms',
+            'amount': 17,
+            'sequence': 4,
+            'price_include': True,
+        })
+        self.icms_inter = self.tax_model.create({
+            'name': "ICMS Inter",
+            'amount_type': 'division',
+            'domain': 'icms',
+            'amount': 12,
+            'sequence': 4,
+            'price_include': True,
+        })
+        self.icms_st = self.tax_model.create({
+            'name': "ICMS ST",
+            'amount_type': 'icmsst',
+            'domain': 'icmsst',
+            'amount': 0,
+            'amount': 18,
+            'price_include': False,
+        })
+        res = self.pis.compute_all(200.0)
+        print res
+
+        res = self.cofins.compute_all(100.0)
+        print res
+
+        res = self.ipi.compute_all(100.0)
+        print res
+
+        res = self.icms.compute_all(100.0)
+        print res
+
+        raise Warning('sadas')
+
     @api.depends('order_line.price_total', 'order_line.valor_desconto')
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()

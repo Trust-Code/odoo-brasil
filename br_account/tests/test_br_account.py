@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests.common import TransactionCase
-from odoo.tools import float_compare
 
 
 class TestTaxBrasil(TransactionCase):
@@ -61,13 +60,27 @@ class TestTaxBrasil(TransactionCase):
 
     def test_simple_tax_pis_cofins(self):
         res = self.pis.compute_all(200.0)
-        self.assertEquals(res['total_excluded'], 200.0)
-        self.assertEquals(res['total_included'], 210.0)
+        self.assertEquals(res['price_without_tax'], 200.0)
+        self.assertEquals(res['total_included'], 200.0)
         self.assertEquals(len(res['taxes']), 1)
         self.assertEquals(res['taxes'][0]['amount'], 10.0)
 
         res = self.cofins.compute_all(100.0)
-        self.assertEquals(res['total_excluded'], 100.0)
-        self.assertEquals(res['total_included'], 105.0)
+        self.assertEquals(res['price_without_tax'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 1)
         self.assertEquals(res['taxes'][0]['amount'], 5.0)
+
+    def test_ipi_tax(self):
+        res = self.ipi.compute_all(100.0)
+        self.assertEquals(res['price_without_tax'], 100.0)
+        self.assertEquals(res['total_included'], 107.0)
+        self.assertEquals(len(res['taxes']), 1)
+        self.assertEquals(res['taxes'][0]['amount'], 7.0)
+
+    def test_normal_icms(self):
+        res = self.icms.compute_all(100.0)
+        self.assertEquals(res['price_without_tax'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 1)
+        self.assertEquals(res['taxes'][0]['amount'], 17.0)
