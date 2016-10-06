@@ -4,7 +4,7 @@
 
 from datetime import datetime
 from random import SystemRandom
-
+from pytrustnfe.utils import ChaveNFe, gerar_chave
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -79,13 +79,15 @@ class AccountInvoice(models.Model):
             'icms_cst': invoice_line.icms_cst,
             'icms_aliquota': invoice_line.icms_aliquota,
             'icms_tipo_base': invoice_line.icms_tipo_base,
-            'icms_aliquota_reducao_base': invoice_line.icms_aliquota_reducao_base,
+            'icms_aliquota_reducao_base': invoice_line.\
+            icms_aliquota_reducao_base,
             'icms_base_calculo': invoice_line.icms_base_calculo,
             'icms_valor': invoice_line.icms_valor,
             # - ICMS ST -
             'icms_st_aliquota': invoice_line.icms_st_aliquota,
             'icms_st_aliquota_mva': invoice_line.icms_st_aliquota_mva,
-            'icms_st_aliquota_reducao_base': invoice_line.icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base': invoice_line.\
+            icms_st_aliquota_reducao_base,
             'icms_st_base_calculo': invoice_line.icms_st_base_calculo,
             'icms_st_valor': invoice_line.icms_st_valor,
             # - Simples Nacional -
@@ -125,9 +127,22 @@ class AccountInvoice(models.Model):
         return vals
 
     def _prepare_edoc_vals(self, invoice):
+        today = datetime.now()
+        num_Controle = int(''.join([str(SystemRandom().randrange(9))
+                           for i in range(8)]))
         num_NFe = str(invoice.internal_number).zfill(9)
+        chave_dict = {
+            'cnpj': invoice.company_id.cnpj_cpf,
+            'estado': invoice.company_id.state_id.ibge_code,
+            'emissao': str(today.year)[2:]+str(today.month).zfill(2),
+            'modelo': '55', 'numero': invoice.internal_number,
+            'serie': str(invoice.company_id.document_serie_id.code).zfill(3),
+            'tipo': 1 if invoice.type == 'out_invoice' else 0,
+            'codigo': int(num_Controle)}
+        chave = ChaveNFe(**chave_dict)
         num_NFe = num_NFe[:3] + '.' + num_NFe[3:6] + '.' + num_NFe[6:9]
         vals = {
+            'chave_nfe': gerar_chave(chave),
             'invoice_id': invoice.id,
             'code': invoice.number,
             'name': u'Documento Eletrônico: nº %d' % invoice.internal_number,
@@ -137,8 +152,7 @@ class AccountInvoice(models.Model):
             'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
             'numero': invoice.internal_number,
-            'numero_controle': int(''.join([str(SystemRandom().randrange(9))
-                                            for i in range(8)])),
+            'numero_controle': num_Controle,
             'numero_nfe': num_NFe,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),

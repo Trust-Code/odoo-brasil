@@ -120,7 +120,7 @@
                     </div>
                     <div class="br bt col-xs-5 line3">
                         <div class="row bb line60">
-                            <img style="width:470px;height:50px;margin-top:5px;" src="http://demo2.odoo.com/report/barcode/Code128/12345678910234567896523456987563245687598456" />
+                            <t t-raw="o.barcode_url()" />
                         </div>
                         <div class="row bb">
                             <div class="col-xs-12">
@@ -144,7 +144,7 @@
                     </div>
                     <div class="bt br bb col-xs-5 line">
                         <span class="small">Protocolo de autorização de uso</span><br />
-                        <span>11090123456789 12/03/2009 10:00:00</span>
+                        <span t-field="o.protocolo_nfe"></span><br />
                     </div>
                 </div>
                 <div class="row line">

@@ -39,6 +39,11 @@ class InvoiceEletronic(models.Model):
     chave_nfe = fields.Char(string="Chave NFe", size=50)
     protocolo_nfe = fields.Char(string="Protocolo Autorização", size=50)
 
+    def barcode_url(self):
+        url = '<img style="width:470px;height:50px;margin-top:5px;"\
+src="/report/barcode/Code128/' + self.chave_nfe + '" />'
+        return url
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
