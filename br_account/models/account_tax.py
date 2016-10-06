@@ -54,6 +54,7 @@ class AccountTax(models.Model):
         res = super(AccountTax, self).compute_all(
             price_unit, currency, quantity, product, partner)
         if not exists_br_tax:
+            res['price_without_tax'] = round(price_unit * quantity, 2)
             return res
 
         incluir_ipi = False
@@ -114,7 +115,7 @@ class AccountTax(models.Model):
                 total_included += tax['amount']
 
         res['total_included'] = total_included
-        res['total_excluded'] = total_excluded
+        res['price_without_tax'] = total_excluded
         return res
 
     def _compute_amount(self, base_amount, price_unit, quantity=1.0,

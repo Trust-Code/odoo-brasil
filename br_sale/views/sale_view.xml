@@ -11,15 +11,15 @@
                 <field name="aliquota_icms_proprio" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
+                <field name="price_without_tax" />
                 <field name="valor_desconto" />
                 <field name="valor_bruto" />
             </xpath>
             <field name="amount_tax" position="before">
-                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
+                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="total_without_tax" widget='monetary' options="{'currency_field': 'currency_id'}" />
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
-            </field>
-            <field name="amount_tax" position="attributes">
-                <attribute name="string">Impostos ( + )</attribute>
+                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
         </field>
     </record>

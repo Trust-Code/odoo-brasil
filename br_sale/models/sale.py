@@ -15,21 +15,34 @@ class SaleOrder(models.Model):
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()
         for order in self:
+            without_tax = sum(l.price_without_tax for l in order.order_line)
+            price_total = sum(l.price_total for l in order.order_line)
             order.update({
+                'total_without_tax': without_tax,
+                'total_tax': price_total - without_tax,
                 'total_desconto': sum(l.valor_desconto
                                       for l in order.order_line),
                 'total_bruto': sum(l.valor_bruto
-                                   for l in order.order_line)
+                                   for l in order.order_line),
+                'amount_total': price_total
             })
 
     total_bruto = fields.Float(
         string='Total Bruto ( = )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
 
+    total_without_tax = fields.Float(
+        string='Total Base ( = )', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True)
+
     total_desconto = fields.Float(
         string='Desconto Total ( - )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
         help="The discount amount.")
+
+    total_tax = fields.Float(
+        string='Impostos ( + )', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True)
 
 
 class SaleOrderLine(models.Model):
@@ -55,6 +68,8 @@ class SaleOrderLine(models.Model):
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
                 'price_subtotal': taxes['total_excluded'],
+                'price_subtotal': taxes['total_excluded'],
+                'price_without_tax': taxes['price_without_tax'],
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
             })
@@ -69,6 +84,9 @@ class SaleOrderLine(models.Model):
         digits=dp.get_precision('Sale Price'))
     valor_bruto = fields.Float(
         compute='_compute_amount', string='Vlr. Bruto', store=True,
+        digits=dp.get_precision('Sale Price'))
+    price_without_tax = fields.Float(
+        compute='_compute_amount', string='Preço Base', store=True,
         digits=dp.get_precision('Sale Price'))
 
     @api.multi
