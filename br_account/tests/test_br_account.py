@@ -69,7 +69,7 @@ class TestTaxBrasil(TransactionCase):
         self.assertEquals(res['price_without_tax'], 100.0)
         self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 1)
-        self.assertEquals(res['taxes'][0]['amount'], 5.0)
+        self.assertEquals(res['taxes'][0]['amount'], 15.0)
 
     def test_ipi_tax(self):
         res = self.ipi.compute_all(100.0)

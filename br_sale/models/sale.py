@@ -99,15 +99,14 @@ class SaleOrder(models.Model):
     total_without_tax = fields.Float(
         string='Total Base ( = )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
+    total_tax = fields.Float(
+        string='Impostos ( + )', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True)
 
     total_desconto = fields.Float(
         string='Desconto Total ( - )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
         help="The discount amount.")
-
-    total_tax = fields.Float(
-        string='Impostos ( + )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
 
 
 class SaleOrderLine(models.Model):

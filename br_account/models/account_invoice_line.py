@@ -40,8 +40,9 @@ class AccountInvoiceLine(models.Model):
                 price, currency, self.quantity, product=self.product_id,
                 partner=self.invoice_id.partner_id)
 
-        subtotal = taxes['total_excluded'] if taxes else self.quantity * price
+        subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else self.quantity * price
         total = taxes['total_included'] if taxes else self.quantity * price
+        without_tax = taxes['price_without_tax'] if taxes else self.quantity * price
 
         icms = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_icms_id.id) if taxes else 0.0
         icmsst = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_icms_st_id.id) if taxes else 0.0
@@ -51,9 +52,17 @@ class AccountInvoiceLine(models.Model):
         issqn = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_issqn_id.id) if taxes else 0.0
         ii = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_ii_id.id) if taxes else 0.0
 
+        if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
+            price_subtotal_signed = self.invoice_id.currency_id.compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
+        sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
+
+        price_subtotal_signed = price_subtotal_signed * sign
+
         self.update({
             'price_total': total,
+            'price_without_tax': without_tax,
             'price_subtotal': subtotal,
+            'price_subtotal_signed': price_subtotal_signed,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': self.valor_bruto * (self.discount / 100),
             'icms_valor': icms,
@@ -93,6 +102,9 @@ class AccountInvoiceLine(models.Model):
             self.icms_st_value = self.icms_valor - \
                 (self.icms_st_base_calculo * self.icms_st_aliquota)
 
+    price_without_tax = fields.Float(
+        compute='_compute_price', string='Preço Base', store=True,
+        digits=dp.get_precision('Sale Price'))
     price_total = fields.Float(
         'Valor Líquido', digits=dp.get_precision('Account'), store=True,
         default=0.00, compute='_compute_price')

@@ -18,9 +18,12 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
+        self.total_without_tax = sum(l.price_without_tax for l in lines)
         self.amount_total = sum(l.price_total for l in lines)
+        self.amount_total_signed = self.amount_total
         self.amount_untaxed = sum(l.price_subtotal for l in lines)
         self.amount_tax = self.amount_total - self.amount_untaxed
+        self.total_tax = self.amount_total - self.total_without_tax
         self.icms_base = sum(l.icms_base_calculo for l in lines)
         self.icms_value = sum(l.icms_valor for l in lines)
         self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
@@ -67,6 +70,13 @@ class AccountInvoice(models.Model):
     def _default_fiscal_document_serie(self):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.document_serie_id.id
+
+    total_without_tax = fields.Float(
+        string='Total Base ( = )', readonly=True, compute='_compute_amount',
+        digits=dp.get_precision('Account'), store=True)
+    total_tax = fields.Float(
+        string='Impostos ( + )', readonly=True, compute='_compute_amount',
+        digits=dp.get_precision('Account'), store=True)
 
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
