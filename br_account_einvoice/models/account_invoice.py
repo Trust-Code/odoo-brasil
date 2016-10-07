@@ -122,6 +122,7 @@ class AccountInvoice(models.Model):
             'issqn_base_calculo': invoice_line.issqn_base_calculo,
             'issqn_valor': invoice_line.issqn_valor,
             'issqn_valor_retencao': 0.00,
+
         }
 
         return vals

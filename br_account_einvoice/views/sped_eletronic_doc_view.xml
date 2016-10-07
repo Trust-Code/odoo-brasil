@@ -48,16 +48,6 @@
                             <field name="icms_motivo_desoneracao" />
                             <field name="icms_valor_desonerado" />
 
-                            <!-- ICMS INTERESTADUAL -->
-                            <field name="icms_bc_uf_dest" />
-                            <field name="icms_aliquota_fcp_uf_dest" />
-                            <field name="icms_aliquota_uf_dest" />
-                            <field name="icms_aliquota_interestadual" />
-                            <field name="pICMSInterPart" />
-                            <field name="icms_fcp_uf_dest" />
-                            <field name="icms_uf_dest" />
-                            <field name="icms_uf_remet" />
-
                         </group>
                         <group name="ipi" string="IPI">
                             <field name="classe_enquadramento" />

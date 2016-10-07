@@ -39,6 +39,13 @@ class InvoiceEletronic(models.Model):
     chave_nfe = fields.Char(string="Chave NFe", size=50)
     protocolo_nfe = fields.Char(string="Protocolo Autorização", size=50)
 
+    valor_icms_fcp_uf_dest = fields.Float('Valor total do ICMS relativo Fundo \
+de Combate à Pobreza (FCP) da UF de destino')
+    valor_icms_uf_dest = fields.Float('Valor total do ICMS Interestadual \
+para a UF de destino')
+    valor_icms_uf_remet = fields.Float('Valor total do ICMS Interestadual \
+para a UF do Remetente')
+
     def barcode_url(self):
         url = '<img style="width:470px;height:50px;margin-top:5px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'

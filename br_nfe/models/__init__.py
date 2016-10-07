@@ -7,3 +7,4 @@ from . import account_invoice
 from . import invoice_eletronic
 from . import res_company
 from . import res_partner
+from . import invoice_eletronic_item

@@ -310,20 +310,6 @@ class InvoiceEletronicItem(models.Model):
     icms_motivo_desoneracao = fields.Float(u'Motivo Desoneração')
     icms_valor_desonerado = fields.Float(u'Valor Desonerado')
 
-    # ----------- ICMS INTERESTADUAL -----------
-
-    icms_bc_uf_dest = fields.Float(u'Valor da Base de Cálculo da UF de \
-Destino')
-    icms_aliquota_fcp_uf_dest = fields.Float(u'% Fundo de Combate à Pobreza \
-na UF de Destino')
-    icms_aliquota_uf_dest = fields.Float(u'% ICMS da UF de Destino')
-    icms_aliquota_interestadual = fields.Float(u"% do ICMS Interestadual")
-    pICMSInterPart = fields.Float(u'pICMSInterPart')
-    icms_fcp_uf_dest = fields.Float(u'Valor do Fundo de Combate à Pobreza na UF de \
-Destino')
-    icms_uf_dest = fields.Float(u'Valor do ICMS da UF de Destino')
-    icms_uf_remet = fields.Float(u'Valor do ICMS da UF Remetente')
-
     # ----------- IPI -------------------
     classe_enquadramento = fields.Char(u'Classe enquadramento', size=5)
     codigo_enquadramento = fields.Char(u'Código enquadramento', size=4)

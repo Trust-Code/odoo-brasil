@@ -18,6 +18,12 @@
             <field name="fiscal_position_id" position="after">
                 <field name="transportation_id" />
             </field>
+            <field name="valor_cofins" position="after">
+                <field name="valor_icms_fcp_uf_dest" />
+                <field name="valor_icms_uf_dest" />
+                <field name="field_name" />
+                <field name="valor_icms_uf_remet" />
+            </field>
         </field>
     </record>
 
