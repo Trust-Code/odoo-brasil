@@ -20,6 +20,7 @@
         'br_account',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/br_account_payment.xml',
         'views/payment_mode.xml'
     ],
