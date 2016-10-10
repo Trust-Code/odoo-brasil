@@ -11,135 +11,86 @@
     </record>
 
     <record id="tax_template_out_ipi" model="account.tax.template">
-        <field name="description">IPI </field>
-        <field name="name">IPI Saída</field>
+        <field name="description">IPI Saída 3%</field>
+        <field name="name">IPI Saída 3%</field>
         <field name="domain">ipi</field>
-        <field name="amount">0.00</field>
+        <field name="amount">3.00</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_010" name="account_id"/>
-        <field ref="id_1_1_5_01_008" name="refund_account_id"/>
+        <field ref="id_2_1_4_03_010" name="refund_account_id"/>
+        <field ref="id_3_2_2_03_006" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_006" name="refund_deduced_account_id"/>
         <field eval="0" name="price_include"/>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
     <record id="tax_template_in_ipi" model="account.tax.template">
-        <field name="description">IPI</field>
-        <field name="name">IPI Entrada</field>
+        <field name="description">IPI Entrada 5%</field>
+        <field name="name">IPI Entrada 5%</field>
         <field name="domain">ipi</field>
         <field name="amount">0.00</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_008" name="account_id"/>
-        <field ref="id_2_1_4_03_010" name="refund_account_id"/>
+        <field ref="id_1_1_5_01_008" name="refund_account_id"/>
         <field eval="0" name="price_include"/>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
-    <record id="tax_template_out_icms_interno" model="account.tax.template">
-        <field name="description">ICMS Interno</field>
-        <field name="name">ICMS Saida Interno</field>
-        <field name="domain">icms</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">sale</field>
-        <field ref="id_2_1_4_02_001" name="account_id"/>
-        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_icms_externo" model="account.tax.template">
-        <field name="description">ICMS Externo</field>
-        <field name="name">ICMS Saida Externo</field>
-        <field name="domain">icms</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">sale</field>
-        <field ref="id_2_1_4_02_001" name="account_id"/>
-        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
     <record id="tax_template_out_icms_subist" model="account.tax.template">
-        <field name="description">ICMS Subist</field>
-        <field name="name">ICMS Saida Subist</field>
+        <field name="description">ICMS ST 18%</field>
+        <field name="name">ICMS ST Saída 18%</field>
         <field name="domain">icms</field>
-        <field name="amount">0.00</field>
+        <field name="amount">18</field>
         <field name="type_tax_use">sale</field>
+        <field ref="id_2_1_4_02_001" name="account_id"/>
+        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
+        <field ref="id_3_2_2_03_001" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_001" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
     <record id="tax_template_out_icms_externo7" model="account.tax.template">
-        <field name="description">ICMS Externo 7%</field>
-        <field name="name">ICMS Saida Externo 7%</field>
+        <field name="description">ICMS Inter 7%</field>
+        <field name="name">ICMS Interestadual 7%</field>
         <field name="domain">icms</field>
         <field name="amount">7</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
-        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
+        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
+        <field ref="id_3_2_2_03_001" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_001" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
     <record id="tax_template_out_icms_externo12" model="account.tax.template">
-        <field name="description">ICMS Externo 12%</field>
-        <field name="name">ICMS Saida Externo 12%</field>
+        <field name="description">ICMS Inter 12%</field>
+        <field name="name">ICMS Interestadual 12%</field>
         <field name="domain">icms</field>
         <field name="amount">12</field>
         <field name="type_tax_use">sale</field>
-        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
+        <field ref="id_2_1_4_02_001" name="account_id"/>
+        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
+        <field ref="id_3_2_2_03_001" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_001" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
-    <record id="tax_template_out_icms_interno19" model="account.tax.template">
-        <field name="description">ICMS Interno 19%</field>
-        <field name="name">ICMS Saida Interno 19%</field>
+    <record id="tax_template_out_icms_interno17" model="account.tax.template">
+        <field name="description">ICMS Interno 17%</field>
+        <field name="name">ICMS Saida Interno 17%</field>
         <field name="domain">icms</field>
         <field name="amount">19</field>
         <field name="type_tax_use">sale</field>
-        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-
-    </record>
-    <record id="tax_template_in_icms_interno" model="account.tax.template">
-        <field name="description">ICMS Interno</field>
-        <field name="name">ICMS Entrada Interno</field>
-        <field name="domain">icms</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">purchase</field>
-        <field ref="id_1_1_5_01_006" name="account_id"/>
+        <field ref="id_2_1_4_02_001" name="account_id"/>
         <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_in_icms_externo" model="account.tax.template">
-        <field name="description">ICMS Externo</field>
-        <field name="name">ICMS Entrada Externo</field>
-        <field name="domain">icms</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">purchase</field>
-        <field ref="id_1_1_5_01_006" name="account_id"/>
-        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_in_icms_subist" model="account.tax.template">
-        <field name="description">ICMS Subist</field>
-        <field name="name">ICMS Entrada Subist</field>
-        <field name="domain">icms</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">purchase</field>
+        <field ref="id_3_2_2_03_001" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_001" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -152,7 +103,7 @@
         <field name="amount">7</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
-        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
+        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -165,7 +116,7 @@
         <field name="amount">12</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
-        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
+        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -178,7 +129,7 @@
         <field name="amount">19</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_006" name="account_id"/>
-        <field ref="id_2_1_4_02_001" name="refund_account_id"/>
+        <field ref="id_1_1_5_01_006" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -191,7 +142,9 @@
         <field name="amount">0.65</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_001" name="account_id"/>
-        <field ref="id_1_1_5_01_005" name="refund_account_id"/>
+        <field ref="id_2_1_4_03_001" name="refund_account_id"/>
+        <field ref="id_3_2_2_03_002" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_002" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -204,7 +157,7 @@
         <field name="amount">0.65</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_005" name="account_id"/>
-        <field ref="id_2_1_4_03_001" name="refund_account_id"/>
+        <field ref="id_1_1_5_01_005" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -217,7 +170,9 @@
         <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_03_002" name="account_id"/>
-        <field ref="id_1_1_5_01_002" name="refund_account_id"/>
+        <field ref="id_2_1_4_03_002" name="refund_account_id"/>
+        <field ref="id_3_2_2_03_003" name="deduced_account_id"/>
+        <field ref="id_3_2_2_03_003" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -230,18 +185,7 @@
         <field name="amount">3</field>
         <field name="type_tax_use">purchase</field>
         <field ref="id_1_1_5_01_002" name="account_id"/>
-        <field ref="id_2_1_4_03_002" name="refund_account_id"/>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_irpj" model="account.tax.template">
-        <field name="description">IRPJ</field>
-        <field name="name">IRPJ</field>
-        <field name="domain">outros</field>
-        <field name="amount">0.00</field>
-        <field name="type_tax_use">sale</field>
+        <field ref="id_1_1_5_01_002" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -253,6 +197,8 @@
         <field name="domain">issqn</field>
         <field name="amount">2</field>
         <field name="type_tax_use">purchase</field>
+        <field ref="id_1_1_5_01_001" name="account_id"/>
+        <field ref="id_1_1_5_01_001" name="refund_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
@@ -264,6 +210,10 @@
         <field name="domain">issqn</field>
         <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
+        <field ref="id_2_1_4_01_001" name="account_id"/>
+        <field ref="id_2_1_4_01_001" name="refund_account_id"/>
+        <field ref="id_3_2_2_01_001" name="deduced_account_id"/>
+        <field ref="id_3_2_2_01_001" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>

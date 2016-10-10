@@ -10,9 +10,9 @@ class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
     deduced_account_id = fields.Many2one(
-        'account.account', string="Conta de Dedução da Venda")
+        'account.account.template', string="Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
-        'account.account', string="Conta de Dedução do Reembolso")
+        'account.account.template', string="Conta de Dedução do Reembolso")
     cst = fields.Char(string="CST", size=4)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
