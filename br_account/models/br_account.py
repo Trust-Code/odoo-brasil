@@ -64,6 +64,10 @@ class BrAccountServiceType(models.Model):
     internal_type = fields.Selection(
         [('view', u'Visualização'), ('normal', 'Normal')], 'Tipo Interno',
         required=True, default='normal')
+    federal_nacional = fields.Float(u'Imposto Fed. Sobre Serviço Nacional')
+    federal_importado = fields.Float(u'Imposto Fed. Sobre Serviço Importado')
+    estadual_imposto = fields.Float(u'Imposto Estadual')
+    municipal_imposto = fields.Float(u'Imposto Municipal')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

@@ -121,6 +121,10 @@
                         <field name="name"/>
                         <field name="internal_type"/>
                         <field name="parent_id"/>
+                        <field name="federal_nacional" />
+                        <field name="federal_importado" />
+                        <field name="estadual_imposto" />
+                        <field name="municipal_imposto" />
                     </group>
                 </sheet>
             </form>

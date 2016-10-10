@@ -54,6 +54,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
+        is_interestadual = self.company_id.state_id.id != (
+            self.partner_shipping_id.state_id.id or self.
+            partner_id.state_id.id)
         if not self.ind_final:
             errors.append(u'Configure o indicador de consumidor final')
         if not self.fiscal_position_id:
@@ -62,7 +65,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         for eletr in self.eletronic_item_ids:
             prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                           eletr.product_id.name)
-
+            if is_interestadual and not eletr.cfop.startswith('6'):
+                errors.append(
+                    u'%s - CFOP Não Começa com 6 em Operação \
+Interestadual' % prod)
             if not eletr.cfop:
                 errors.append(u'%s - CFOP' % prod)
             if eletr.tipo_produto == 'product':
@@ -91,6 +97,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
+        is_interestadual = self.company_id.state_id.id != (
+            self.partner_shipping_id.state_id.id or self.
+            partner_id.state_id.id)
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
@@ -106,7 +115,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'qTrib': item.quantidade,
             'vUnTrib': item.preco_unitario,
             'indTot': item.indicador_total,
-            'cfop': item.cfop
+            'cfop': item.cfop,
+            'CEST': item.cest,
         }
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
@@ -138,8 +148,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'vBC': "%.02f" % item.cofins_base_calculo,
                 'pCOFINS': "%.02f" % item.cofins_aliquota,
                 'vCOFINS': "%.02f" % item.cofins_valor
-            }
+            },
         }
+        if item.has_icms_interestadual and is_interestadual:
+            imposto['ICMSUFDest'] = {
+                'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
+                'pFCPUFDest': "%.02f" % item.icms_aliquota_fcp_uf_dest,
+                'pICMSUFDest': "%.02f" % item.icms_aliquota_uf_dest,
+                'pICMSInter': "%.02f" % item.icms_aliquota_interestadual,
+                'pICMSInterPart': "%.02f" % item.icms_aliquota_inter_part,
+                'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
+                'vICMSUFDest': "%.02f" % item.icms_uf_dest,
+                'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
         return {'prod': prod, 'imposto': imposto}
 
     @api.multi
@@ -341,10 +361,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             }
             self.recibo_nfe = obj['obj']['numero_recibo']
             import time
-            time.sleep(2)
-            resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-            retorno = resposta_recibo['object'].Body.\
-                nfeRetAutorizacaoLoteResult.retConsReciNFe
+            while True:
+                time.sleep(2)
+                resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
+                retorno = resposta_recibo['object'].Body.\
+                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                if retorno.cStat != 105:
+                    break
 
         if retorno.cStat != 104:
             self.codigo_retorno = retorno.cStat

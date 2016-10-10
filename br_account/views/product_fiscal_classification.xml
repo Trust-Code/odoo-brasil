@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="view_br_account_product_fiscal_classification_form" model="ir.ui.view">
-        <field name="name">br_account.product.fiscal.classification.form</field>
+    <record id="view_br_account_product_fiscal_classification_tree" model="ir.ui.view">
+        <field name="name">br_account.product.fiscal.classification.tree</field>
         <field name="model">product.fiscal.classification</field>
         <field name="arch" type="xml">
             <tree string="Classificações Fiscais (NCM)">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="type"/>
+                <field name="federal_nacional" />
+                <field name="federal_importado" />
+                <field name="estadual_imposto" />
+                <field name="municipal_imposto" />
             </tree>
         </field>
     </record>
@@ -18,7 +22,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.fiscal.classification</field>
         <field name="view_type">form</field>
-        <field name="view_id" ref="view_br_account_product_fiscal_classification_form"/>
+        <field name="view_id" ref="view_br_account_product_fiscal_classification_tree"/>
     </record>
 
     <menuitem id="menu_br_account_product_fiscal_classification" name="Classificações Fiscais (NCM)"

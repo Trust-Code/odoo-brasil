@@ -25,6 +25,7 @@
         'views/res_company_view.xml',
         'views/account_tax.xml',
         'views/product_fiscal_classification.xml',
+        'wizard/br_product_fiscal_classification_wizard.xml',
         'security/ir.model.access.csv',
     ],
 }

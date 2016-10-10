@@ -16,6 +16,12 @@ class ProductFiscalClassification(models.Model):
                              ('normal', 'Normal'),
                              ('extension', u'Extensão')], 'Tipo')
     parent_id = fields.Many2one('product.fiscal.classification', string="Pai")
+    cest = fields.Char(string="CEST", size=10,
+                       help="Código Especificador da Substituição Tributária")
+    federal_nacional = fields.Float(u'Imposto Fed. Sobre Produto Nacional')
+    federal_importado = fields.Float(u'Imposto Fed. Sobre Produto Importado')
+    estadual_imposto = fields.Float(u'Imposto Estadual')
+    municipal_imposto = fields.Float(u'Imposto Municipal')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

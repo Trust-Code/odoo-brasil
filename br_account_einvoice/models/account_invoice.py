@@ -124,7 +124,10 @@ class AccountInvoice(models.Model):
             'issqn_valor_retencao': 0.00,
 
         }
-
+        print "============================"
+        print "vals"
+        print vals
+        print "============================"
         return vals
 
     def _prepare_edoc_vals(self, invoice):
@@ -168,6 +171,10 @@ class AccountInvoice(models.Model):
         for inv_line in invoice.invoice_line_ids:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
+        print "============================"
+        print "eletronic_items"
+        print eletronic_items
+        print "============================"
 
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = invoice.icms_value
@@ -178,6 +185,8 @@ class AccountInvoice(models.Model):
         vals['valor_bruto'] = invoice.total_bruto
         vals['valor_desconto'] = invoice.total_desconto
         vals['valor_final'] = invoice.amount_total
+        vals['valor_bc_icms'] = invoice.icms_base
+        vals['valor_bc_icmsst'] = invoice.icms_st_base
         return vals
 
     @api.multi
@@ -187,6 +196,10 @@ class AccountInvoice(models.Model):
         for item in self:
             if item.is_eletronic:
                 edoc_vals = self._prepare_edoc_vals(item)
+                print "============================"
+                print "invoice validate"
+                print edoc_vals
+                print "============================"
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()

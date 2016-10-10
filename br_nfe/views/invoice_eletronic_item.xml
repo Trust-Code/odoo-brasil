@@ -8,6 +8,7 @@
             <group name="icms" position="after">
                 <group name="icms_interestaual" string="ICMS Interestadual">
                     <!-- ICMS INTERESTADUAL -->
+                    <field name="has_icms_interestadual" />
                     <field name="icms_bc_uf_dest" />
                     <field name="icms_aliquota_fcp_uf_dest" />
                     <field name="icms_aliquota_uf_dest" />

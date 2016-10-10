@@ -22,3 +22,6 @@ class ProductTemplate(models.Model):
 
     service_type_id = fields.Many2one(
         'br_account.service.type', u'Tipo de Serviço')
+
+    cest = fields.Char(string="CEST", size=10,
+                       help="Código Especificador da Substituição Tributária")
