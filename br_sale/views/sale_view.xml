@@ -7,10 +7,26 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
-                <field name="aliquota_mva" />
-                <field name="aliquota_icms_proprio" />
+                <field name="aliquota_mva" invisible="1" />
+                <field name="aliquota_icms_proprio" invisible="1" />
+                <field name="reducao_base_icms" invisible="1" />
+                <field name="reducao_base_icms_st" invisible="1" />
+                <field name="reducao_base_ipi" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
+                <field name="detalhes_calculo" />
+                <field name="aliquota_mva" invisible="1" />
+                <field name="aliquota_icms_proprio" invisible="1" />
+                <field name="reducao_base_icms" invisible="1" />
+                <field name="reducao_base_icms_st" invisible="1" />
+                <field name="reducao_base_ipi" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
+                <field name="price_without_tax" />
+                <field name="valor_desconto" />
+                <field name="valor_bruto" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="after">
                 <field name="price_without_tax" />
                 <field name="valor_desconto" />
                 <field name="valor_bruto" />
