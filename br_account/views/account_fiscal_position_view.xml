@@ -15,7 +15,7 @@
                         <field name="tax_id" nolabel="1" placeholder="% de imposto" />
                     </group>
                     <group>
-                        <field name="cfop" nolabel="1" placeholder="CFOP" />
+                        <field name="cfop_id" nolabel="1" placeholder="CFOP" />
                     </group>
                     <group>
                         <field name="cst_to_use" nolabel="1" placeholder="CST" />
@@ -44,7 +44,7 @@
             <tree>
                 <field name="name" />
                 <field name="tax_id" />
-                <field name="cfop" />
+                <field name="cfop_id" />
                 <field name="cst_to_use" />
             </tree>
         </field>

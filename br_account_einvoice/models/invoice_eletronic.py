@@ -34,11 +34,12 @@ class InvoiceEletronic(models.Model):
 
     ambiente = fields.Selection([('homologacao', 'Homologação'),
                                  ('producao', 'Produção')], u'Ambiente')
-    finalidade_emissao = fields.Selection([('1', 'Normal'),
-                                           ('2', 'Complementar'),
-                                           ('3', 'Ajuste'),
-                                           ('4', 'Devolução')],
-                                          u'Finalidade da emissão')
+    finalidade_emissao = fields.Selection(
+        [('1', 'Normal'),
+         ('2', 'Complementar'),
+         ('3', 'Ajuste'),
+         ('4', 'Devolução')],
+        u'Finalidade', help="Finalidade da emissão de NFe")
     invoice_id = fields.Many2one('account.invoice', u'Fatura')
     partner_id = fields.Many2one('res.partner', u'Parceiro')
     partner_shipping_id = fields.Many2one('res.partner', u'Entrega')
@@ -58,34 +59,36 @@ class InvoiceEletronic(models.Model):
                                           'invoice_eletronic_id',
                                           string=u"Eventos")
 
-    valor_bruto = fields.Float(u'Valor Produtos')
-    valor_frete = fields.Float(u'Valor do frete')
-    valor_seguro = fields.Float(u'Valor do seguro')
-    valor_desconto = fields.Float(u'Valor do desconto')
-    valor_despesas = fields.Float(u'Valor despesas')
-    valor_bc_icms = fields.Float(u"Valor da Base de Cálculo")
-    valor_icms = fields.Float(u"Valor do ICMS")
-    valor_icms_deson = fields.Float(u'Valor ICMS Desoneração')
-    valor_bc_icmsst = fields.Float(u'Valor BCST')
-    valor_icmsst = fields.Float(u'Valor ST')
-    valor_ii = fields.Float(u'Valor do Imposto de Importação')
-    valor_ipi = fields.Float(u"Valor do IPI")
-    valor_pis = fields.Float(u"Valor PIS")
-    valor_cofins = fields.Float(u"Valor COFINS")
-    valor_estimado_tributos = fields.Float(u"Valor estimado tributos")
+    valor_bruto = fields.Float(u'Total Produtos')
+    valor_frete = fields.Float(u'Total frete')
+    valor_seguro = fields.Float(u'Total seguro')
+    valor_desconto = fields.Float(u'Total desconto')
+    valor_despesas = fields.Float(u'Total despesas')
+    valor_bc_icms = fields.Float(u"Base de Cálc ICMS")
+    valor_icms = fields.Float(u"Total do ICMS")
+    valor_icms_deson = fields.Float(u'ICMS Desoneração')
+    valor_bc_icmsst = fields.Float(u'Total Base ST',
+                                   help="Total da base de cálculo do ICMS ST")
+    valor_icmsst = fields.Float(u'Total ST')
+    valor_ii = fields.Float(u'Total II')
+    valor_ipi = fields.Float(u"Total IPI")
+    valor_pis = fields.Float(u"Total PIS")
+    valor_cofins = fields.Float(u"Total COFINS")
+    valor_estimado_tributos = fields.Float(u"Tributos estimados")
 
-    valor_servicos = fields.Float(u"Valor Serviços")
-    valor_bc_issqn = fields.Float(u"Valor Base ISS")
-    valor_issqn = fields.Float(u"Valor ISS")
-    valor_pis_servicos = fields.Float(u"Valor PIS Serviços")
-    valor_cofins_servicos = fields.Float(u"Valor Cofins Serviço")
+    valor_servicos = fields.Float(u"Total Serviços")
+    valor_bc_issqn = fields.Float(u"Base ISS")
+    valor_issqn = fields.Float(u"Total ISS")
+    valor_pis_servicos = fields.Float(u"Total PIS Serviços")
+    valor_cofins_servicos = fields.Float(u"Total Cofins Serviço")
 
     valor_retencao_issqn = fields.Float(u"Retenção ISSQN")
     valor_retencao_pis = fields.Float(u"Retenção PIS")
     valor_retencao_cofins = fields.Float(u"Retenção COFINS")
     valor_retencao_irrf = fields.Float(u"Retenção IRRF")
     valor_retencao_csll = fields.Float(u"Retenção CSLL")
-    valor_retencao_previdencia = fields.Float(u"Retenção Previdencia Social")
+    valor_retencao_previdencia = fields.Float(
+        u"Retenção Prev.", help="Retenção Previdência Social")
 
     valor_final = fields.Float(u'Valor Final')
 
@@ -234,6 +237,10 @@ class InvoiceEletronic(models.Model):
             raise UserError(msg)
 
     @api.multi
+    def action_post_validate(self):
+        pass
+
+    @api.multi
     def _prepare_eletronic_invoice_values(self):
         return {}
 
@@ -282,7 +289,7 @@ class InvoiceEletronicItem(models.Model):
         [('0', 'Não'), ('1', 'Sim')],
         string="Compõe Total da Nota?", default='1')
 
-    origem = fields.Selection(ORIGEM_PROD, u'Origem da mercadoria')
+    origem = fields.Selection(ORIGEM_PROD, u'Origem mercadoria')
     icms_cst = fields.Selection(
         CST_ICMS + CSOSN_SIMPLES, u'Situação tributária')
     icms_aliquota = fields.Float(u'Alíquota')
@@ -291,7 +298,7 @@ class InvoiceEletronicItem(models.Model):
          ('1', '1 - Pauta (Valor)'),
          ('2', '2 - Preço Tabelado Máx. (valor)'),
          ('3', '3 - Valor da operação')],
-        u'Modalidade de determinação da BC do ICMS')
+        u'Modalidade BC do ICMS')
     icms_base_calculo = fields.Float(u'Base de cálculo')
     icms_aliquota_reducao_base = fields.Float(u'% Redução Base')
     icms_valor = fields.Float(u'Valor Total')
@@ -311,8 +318,10 @@ class InvoiceEletronicItem(models.Model):
     icms_valor_desonerado = fields.Float(u'Valor Desonerado')
 
     # ----------- IPI -------------------
-    classe_enquadramento = fields.Char(u'Classe enquadramento', size=5)
-    codigo_enquadramento = fields.Char(u'Código enquadramento', size=4)
+    classe_enquadramento = fields.Char(u'Classe enq.', size=5,
+                                       help="Classe Enquadramento no IPI")
+    codigo_enquadramento = fields.Char(u'Código enq.', size=4,
+                                       help="Código Enquadramento no IPI")
     ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária do ICMS')
     ipi_aliquota = fields.Float(u'Alíquota')
     ipi_base_calculo = fields.Float(u'Base de cálculo')

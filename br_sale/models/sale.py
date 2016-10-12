@@ -149,27 +149,31 @@ class SaleOrderLine(models.Model):
                 'valor_desconto': desconto,
             })
 
-    @api.depends('aliquota_mva', 'aliquota_icms_proprio',
+    @api.depends('cfop_id', 'aliquota_mva', 'aliquota_icms_proprio',
                  'incluir_ipi_base_icms', 'reducao_base_icms',
                  'reducao_base_icms_st', 'reducao_base_ipi')
     def _compute_detalhes(self):
         for line in self:
-            msg = ['IPI na base ICMS: %s' % (
-                'Sim' if line.incluir_ipi_base_icms else 'Não')]
+            msg = []
+            if line.cfop_id:
+                msg += [u'CFOP: %s' % line.cfop_id.code]
+            msg += [u'IPI na base ICMS: %s' % (
+                u'Sim' if line.incluir_ipi_base_icms else u'Não')]
             if line.aliquota_mva:
-                msg += ['MVA (%%): %.2f' % line.aliquota_mva]
+                msg += [u'MVA (%%): %.2f' % line.aliquota_mva]
             if line.aliquota_icms_proprio:
-                msg += ['ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
+                msg += [u'ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
             if line.reducao_base_icms:
-                msg += ['Red. Base ICMS (%%): %.2f' % line.reducao_base_icms]
+                msg += [u'Red. Base ICMS (%%): %.2f' % line.reducao_base_icms]
             if line.reducao_base_icms_st:
-                msg += ['Red. Base ICMS ST (%%): %.2f' %
+                msg += [u'Red. Base ICMS ST (%%): %.2f' %
                         line.reducao_base_icms_st]
             if line.reducao_base_ipi:
-                msg += ['Red. Base IPI (%%): %.2f' % line.reducao_base_ipi]
+                msg += [u'Red. Base IPI (%%): %.2f' % line.reducao_base_ipi]
 
-            line.detalhes_calculo = '\n'.join(msg)
+            line.detalhes_calculo = u'\n'.join(msg)
 
+    cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                 digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
@@ -194,6 +198,22 @@ class SaleOrderLine(models.Model):
 
     detalhes_calculo = fields.Text(
         string="Detalhes Cálculo", compute='_compute_detalhes', store=True)
+
+    @api.multi
+    def _compute_tax_id(self):
+        res = super(SaleOrderLine, self)._compute_tax_id()
+        for line in self:
+            fpos = line.order_id.fiscal_position_id or \
+                line.order_id.partner_id.property_account_position_id
+            if fpos:
+                vals = fpos.map_tax_extra_values(
+                    line.company_id, line.product_id, line.order_id.partner_id)
+
+                for key, value in vals.iteritems():
+                    if value and key in line._fields:
+                        line.update({key: value})
+
+        return res
 
     @api.multi
     def _prepare_invoice_line(self, qty):

@@ -310,20 +310,18 @@ class AccountInvoiceLine(models.Model):
 
     def _set_taxes(self):
         super(AccountInvoiceLine, self)._set_taxes()
-        self.tax_icms_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'icms').id
-        self.tax_icms_st_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'icmsst').id
-        self.tax_issqn_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'issqn').id
-        self.tax_ipi_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'ipi').id
-        self.tax_cofins_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'cofins').id
-        self.tax_pis_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'pis').id
-        self.tax_ii_id = self.invoice_line_tax_ids.filtered(
-            lambda r: r.domain == 'ii').id
+        fpos = self.invoice_id.fiscal_position_id
+        if fpos:
+            vals = fpos.map_tax_extra_values(
+                self.company_id, self.product_id, self.invoice_id.partner_id)
+
+            for key, value in vals.iteritems():
+                if value and key in self._fields:
+                    self.update({key: value})
+
+        self.invoice_line_tax_ids = self.tax_icms_id | \
+            self.tax_ipi_id | self.tax_pis_id | self.tax_cofins_id | \
+            self.tax_issqn_id | self.tax_ii_id | self.tax_icms_st_id
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):

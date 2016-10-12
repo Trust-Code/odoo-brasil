@@ -13,7 +13,7 @@ class AccountInvoice(models.Model):
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])
         if not docs:
-            raise UserError('Não existe um E-Doc relacionado à esta cobrança')
+            raise UserError('Não existe um E-Doc relacionado à esta fatura')
         action = self.env['report'].get_action(
             docs.ids, 'br_nfe.main_template_br_nfe_danfe')
         action['report_type'] = 'qweb-html'

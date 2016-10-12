@@ -4,7 +4,6 @@
 
 from datetime import datetime
 from random import SystemRandom
-from pytrustnfe.utils import ChaveNFe, gerar_chave
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -131,22 +130,9 @@ class AccountInvoice(models.Model):
         return vals
 
     def _prepare_edoc_vals(self, invoice):
-        today = datetime.now()
-        num_Controle = int(''.join([str(SystemRandom().randrange(9))
+        num_controle = int(''.join([str(SystemRandom().randrange(9))
                            for i in range(8)]))
-        num_NFe = str(invoice.internal_number).zfill(9)
-        chave_dict = {
-            'cnpj': invoice.company_id.cnpj_cpf,
-            'estado': invoice.company_id.state_id.ibge_code,
-            'emissao': str(today.year)[2:]+str(today.month).zfill(2),
-            'modelo': '55', 'numero': invoice.internal_number,
-            'serie': str(invoice.company_id.document_serie_id.code).zfill(3),
-            'tipo': 1 if invoice.type == 'out_invoice' else 0,
-            'codigo': int(num_Controle)}
-        chave = ChaveNFe(**chave_dict)
-        num_NFe = num_NFe[:3] + '.' + num_NFe[3:6] + '.' + num_NFe[6:9]
         vals = {
-            'chave_nfe': gerar_chave(chave),
             'invoice_id': invoice.id,
             'code': invoice.number,
             'name': u'Documento Eletrônico: nº %d' % invoice.internal_number,
@@ -156,8 +142,8 @@ class AccountInvoice(models.Model):
             'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
             'numero': invoice.internal_number,
-            'numero_controle': num_Controle,
-            'numero_nfe': num_NFe,
+            'numero_controle': num_controle,
+            'numero_nfe': invoice.internal_number,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
@@ -171,10 +157,6 @@ class AccountInvoice(models.Model):
         for inv_line in invoice.invoice_line_ids:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
-        print "============================"
-        print "eletronic_items"
-        print eletronic_items
-        print "============================"
 
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = invoice.icms_value
@@ -196,13 +178,10 @@ class AccountInvoice(models.Model):
         for item in self:
             if item.is_eletronic:
                 edoc_vals = self._prepare_edoc_vals(item)
-                print "============================"
-                print "invoice validate"
-                print edoc_vals
-                print "============================"
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
+                    eletronic.action_post_validate()
         return res
 
     @api.multi

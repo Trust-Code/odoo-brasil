@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import fields, models
+from openerp import api, fields, models
 
 
 class AccountFiscalPositionTaxRule(models.Model):
@@ -19,7 +19,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     partner_ids = fields.Many2many('res.partner', string="Parceiros")
 
     cst_to_use = fields.Char(string="CST")
-    cfop = fields.Many2one('br_account.cfop', string="CFOP")
+    cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     tax_id = fields.Many2one('account.tax', string="Imposto")
 
 
@@ -31,3 +31,23 @@ class AccountFiscalPosition(models.Model):
     tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras")
+
+    @api.model
+    def map_tax_extra_values(self, company, product, partner):
+        rule_obj = self.env['account.fiscal.position.tax.rule']
+
+        to_state = partner.state_id.id
+        product_id = product.id
+        partner_id = partner.id
+
+        domain = [('fiscal_position_id', '=', self.id)]
+
+        rules = rule_obj.search(domain)
+        if rules:
+            return {
+                'cfop_id': rules[0].cfop_id.id,
+                'icms_cst_normal': rules[0].cst_to_use,
+                'tax_icms_id': rules[0].tax_id.id,
+            }
+        else:
+            return {}
