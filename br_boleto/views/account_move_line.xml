@@ -15,4 +15,15 @@
         </field>
     </record>
 
+    <record id="view_br_boleto_account_move_line_tree" model="ir.ui.view">
+        <field name="name">account.move.line.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="br_account_payment.view_payments_tree_a_receber" />
+        <field name="arch" type="xml">
+            <button name="action_register_payment" position="after">
+                <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"/>
+            </button>
+        </field>
+    </record>
+
 </odoo>

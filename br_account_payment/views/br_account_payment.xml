@@ -21,7 +21,6 @@
                 <field name="move_id" readonly="1"/>
                 <field name="reconciled" string="Pago" />
                 <button name="action_register_payment" type="object" string="Register Payment" groups="account.group_account_invoice" icon="fa-usd"/>
-                <button name="action_register_boleto" type="object" string="Boletos" icon="fa-barcode"/>
             </tree>
         </field>
     </record>
