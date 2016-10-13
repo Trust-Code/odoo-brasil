@@ -6,6 +6,29 @@
 from odoo import api, fields, models
 
 
+class AccountChartTemplate(models.Model):
+    _inherit = 'account.chart.template'
+
+    @api.multi
+    def _load_template(self, company, code_digits=None,
+                       transfer_account_id=None, account_ref=None,
+                       taxes_ref=None):
+        acc_ref, tax_ref = super(AccountChartTemplate, self)._load_template(
+            company, code_digits, transfer_account_id, account_ref, taxes_ref)
+
+        tax_tmpl_obj = self.env['account.tax.template']
+        tax_obj = self.env['account.tax']
+        for key, value in tax_ref.items():
+            tax_tmpl_id = tax_tmpl_obj.browse(key)
+            tax_obj.browse(value).write({
+                'deduced_account_id': acc_ref.get(
+                    tax_tmpl_id.deduced_account_id.id, False),
+                'refund_deduced_account_id': acc_ref.get(
+                    tax_tmpl_id.refund_deduced_account_id.id, False)
+            })
+        return acc_ref, tax_ref
+
+
 class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
@@ -13,7 +36,6 @@ class AccountTaxTemplate(models.Model):
         'account.account.template', string="Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
         'account.account.template', string="Conta de Dedução do Reembolso")
-    cst = fields.Char(string="CST", size=4)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('pis', 'PIS'),
@@ -24,6 +46,12 @@ class AccountTaxTemplate(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
+    def _get_tax_vals(self, company):
+        res = super(AccountTaxTemplate, self)._get_tax_vals(company)
+        res['domain'] = self.domain
+        res['amount_type'] = self.amount_type
+        return res
+
 
 class AccountTax(models.Model):
     _inherit = 'account.tax'
@@ -32,7 +60,6 @@ class AccountTax(models.Model):
         'account.account', string="Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
         'account.account', string="Conta de Dedução do Reembolso")
-    cst = fields.Char(string="CST", size=4)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('pis', 'PIS'),

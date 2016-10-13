@@ -9,6 +9,7 @@
             <group position="after">
                 <group name="nfe" string="Informações NF-e">
                     <group>
+                        <field name="finalidade_emissao" />
                         <field name="ind_final" />
                     </group>
                     <group>

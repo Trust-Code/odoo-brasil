@@ -39,7 +39,7 @@
     <record id="tax_template_out_icms_subist" model="account.tax.template">
         <field name="description">ICMS ST 18%</field>
         <field name="name">ICMS ST Saída 18%</field>
-        <field name="domain">icms</field>
+        <field name="domain">icmsst</field>
         <field name="amount">18</field>
         <field name="type_tax_use">sale</field>
         <field ref="id_2_1_4_02_001" name="account_id"/>
@@ -47,7 +47,7 @@
         <field ref="id_3_2_2_03_001" name="deduced_account_id"/>
         <field ref="id_3_2_2_03_001" name="refund_deduced_account_id"/>
         <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
+        <field name="amount_type">icmsst</field>
         <field ref="br_account_chart_template" name="chart_template_id"/>
     </record>
 
@@ -123,8 +123,8 @@
     </record>
 
     <record id="tax_template_in_icms_interno19" model="account.tax.template">
-        <field name="description">ICMS Interno 19%</field>
-        <field name="name">ICMS Entrada Interno 19%</field>
+        <field name="description">ICMS Entrada 19%</field>
+        <field name="name">ICMS Entrada 19%</field>
         <field name="domain">icms</field>
         <field name="amount">19</field>
         <field name="type_tax_use">purchase</field>
@@ -136,7 +136,7 @@
     </record>
 
     <record id="tax_template_out_pis065" model="account.tax.template">
-        <field name="description">PIS 0,65%</field>
+        <field name="description">PIS Saída 0,65%</field>
         <field name="name">PIS Saida 0,65%</field>
         <field name="domain">pis</field>
         <field name="amount">0.65</field>
@@ -151,7 +151,7 @@
     </record>
 
     <record id="tax_template_in_pis065" model="account.tax.template">
-        <field name="description">PIS 0,65%</field>
+        <field name="description">PIS Entrada 0,65%</field>
         <field name="name">PIS Entrada 0,65%</field>
         <field name="domain">pis</field>
         <field name="amount">0.65</field>
@@ -164,7 +164,7 @@
     </record>
 
     <record id="tax_template_out_cofins3" model="account.tax.template">
-        <field name="description">COFINS 3%</field>
+        <field name="description">COFINS Saída 3%</field>
         <field name="name">COFINS Saida 3%</field>
         <field name="domain">cofins</field>
         <field name="amount">3</field>
@@ -179,7 +179,7 @@
     </record>
 
     <record id="tax_template_in_cofins3" model="account.tax.template">
-        <field name="description">COFINS 3%</field>
+        <field name="description">COFINS Entrada 3%</field>
         <field name="name">COFINS Entrada 3%</field>
         <field name="domain">cofins</field>
         <field name="amount">3</field>
@@ -192,7 +192,7 @@
     </record>
 
     <record id="tax_template_in_issqn2" model="account.tax.template">
-        <field name="description">ISSQN 2%</field>
+        <field name="description">ISSQN Entrada 2%</field>
         <field name="name">ISSQN Entrada 2%</field>
         <field name="domain">issqn</field>
         <field name="amount">2</field>
@@ -205,7 +205,7 @@
     </record>
 
     <record id="tax_template_out_issqn3" model="account.tax.template">
-        <field name="description">ISSQN 3%</field>
+        <field name="description">ISSQN Entrada 3%</field>
         <field name="name">ISSQN Saida 3%</field>
         <field name="domain">issqn</field>
         <field name="amount">3</field>

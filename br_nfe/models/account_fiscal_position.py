@@ -29,10 +29,16 @@ class AccountFiscalPositionTemplate(models.Model):
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
+    finalidade_emissao = fields.Selection(
+        [('1', 'Normal'),
+         ('2', 'Complementar'),
+         ('3', 'Ajuste'),
+         ('4', 'Devolução')],
+        u'Finalidade', help="Finalidade da emissão de NFe", default="1")
     ind_final = fields.Selection([
         ('0', u'Não'),
-        ('1', u'Consumidor final')
-    ], u'Operação com Consumidor final',
+        ('1', u'Sim')
+    ], u'Consumidor final?',
         help=u'Indica operação com Consumidor final. Se não utilizado usa\
         a seguinte regra:\n 0 - Normal quando pessoa jurídica\n1 - Consumidor \
         Final quando for pessoa física')
