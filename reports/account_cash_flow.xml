@@ -56,7 +56,8 @@
                                             id: 'y-axis-total',
                                             position: 'right',
                                             gridLines: {
-                                                display: false,
+                                                display: true,
+                                                color: 'rgba(254, 200, 150, 0.3)'
                                             }
                                         }],
                                     }
@@ -64,13 +65,14 @@
                             });
                         }
                     </script>
+                    <h2>Gráfico</h2>
+                    <div class="row">
+                        <div class="col-xs-12" style="width:1300px;height:400px;">
+                            <canvas id="myChart" width="1300" height="400"></canvas>
+                        </div>
+                    </div>
                     <div class="page">
                         <h2>Cash Flow Report</h2>
-                        <div class="row">
-                            <div class="col-xs-12" style="width:1000px;height:400px;">
-                                <canvas id="myChart" width="1000" height="400"></canvas>
-                            </div>
-                        </div>
                         <table class="table table-condensed table-bordered table-striped">
                             <thead>
                                 <tr>
