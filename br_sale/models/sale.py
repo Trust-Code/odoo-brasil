@@ -173,6 +173,7 @@ class SaleOrderLine(models.Model):
 
             line.detalhes_calculo = u'\n'.join(msg)
 
+    rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                 digits=dp.get_precision('Account'))
@@ -212,6 +213,17 @@ class SaleOrderLine(models.Model):
                 for key, value in vals.iteritems():
                     if value and key in line._fields:
                         line.update({key: value})
+
+                tax_ids = [vals.get('tax_icms_id', False),
+                           vals.get('tax_icms_st_id', False),
+                           vals.get('tax_ipi_id', False),
+                           vals.get('tax_pis_id', False),
+                           vals.get('tax_cofins_id', False),
+                           vals.get('tax_ii_id', False),
+                           vals.get('tax_issqn_id', False)]
+                line.update({
+                    'tax_id': [(6, None, [x.id for x in tax_ids if x])]
+                })
 
         return res
 

@@ -116,6 +116,7 @@ class AccountInvoiceLine(models.Model):
         default=_default_company_fiscal_type,
         string="Regime Tributário")
 
+    rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     cfop_id = fields.Many2one('br_account.cfop', 'CFOP')
     fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', 'Classificação Fiscal')

@@ -15,6 +15,7 @@
                 <field name="reducao_base_ipi" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
+                <field name="rule_id" readonly="1" />
                 <field name="detalhes_calculo" />
                 <field name="cfop_id" invisible="1" />
                 <field name="aliquota_mva" invisible="1" />

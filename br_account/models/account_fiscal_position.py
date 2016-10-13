@@ -39,15 +39,26 @@ class AccountFiscalPosition(models.Model):
         to_state = partner.state_id.id
         product_id = product.id
         partner_id = partner.id
-
         domain = [('fiscal_position_id', '=', self.id)]
-
+        domain += [('partner_ids', '=', partner_id)]
         rules = rule_obj.search(domain)
+        if not rules:
+            domain.pop()
+            domain += [('product_ids', '=', product_id)]
+            rules = rule_obj.search(domain)
+        if not rules:
+            domain.pop()
+            domain += [('state_ids', '=', to_state)]
+            rules = rule_obj.search(domain)
+        if not rules:
+            domain.pop()
+            rules = rule_obj.search(domain)
         if rules:
             return {
-                'cfop_id': rules[0].cfop_id.id,
+                'rule_id': rules[0],
+                'cfop_id': rules[0].cfop_id,
                 'icms_cst_normal': rules[0].cst_to_use,
-                'tax_icms_id': rules[0].tax_id.id,
+                'tax_icms_id': rules[0].tax_id,
             }
         else:
             return {}
