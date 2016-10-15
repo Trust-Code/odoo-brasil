@@ -49,4 +49,5 @@ class AccountInvoice(models.Model):
             _prepare_edoc_item_vals(invoice_line)
         vals['cest'] = invoice_line.product_id.cest or \
             invoice_line.fiscal_classification_id.cest or ''
+        vals['has_icms_difal'] = invoice_line.has_icms_difal
         return vals

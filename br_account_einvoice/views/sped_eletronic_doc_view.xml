@@ -7,84 +7,120 @@
             <field name="model">invoice.eletronic.item</field>
             <field name="arch" type="xml">
                 <form string="Item Documento">
-                    <group>
-                        <group>
-                            <field name="product_id" />
-                            <field name="uom_id" />
-                            <field name="quantidade" />
-                            <field name="preco_unitario" />
-                            <field name="valor_bruto" />
-                            <field name="desconto" />
-                            <field name="seguro" />
-                            <field name="frete" />
-                            <field name="outras_despesas" />
-                            <field name="valor_liquido" />
-                            <field name="indicador_total" />
-                        </group>
-                        <group>
-                            <field name="tipo_produto" />
-                            <field name="cfop" />
-                            <field name="origem" />
-                        </group>
-                    </group>
+                    <notebook>
+                        <page string="Dados do produto">
+                            <group>
+                                <group>
+                                    <field name="product_id" />
+                                    <field name="uom_id" />
+                                    <field name="quantidade" />
+                                    <field name="preco_unitario" />
+                                    <field name="valor_bruto" />
+                                    <field name="desconto" />
+                                    <field name="seguro" />
+                                    <field name="frete" />
+                                    <field name="outras_despesas" />
+                                    <field name="valor_liquido" />
+                                    <field name="indicador_total" />
+                                </group>
+                                <group>
+                                    <field name="tipo_produto" />
+                                    <field name="cfop" />
+                                    <field name="origem" />
+                                </group>
+                            </group>
+                        </page>
 
-                    <group>
-                        <group name="icms" string="ICMS">
-                            <field name="icms_cst" />
-                            <field name="icms_aliquota" />
-                            <field name="icms_tipo_base" />
-                            <field name="icms_base_calculo" />
-                            <field name="icms_aliquota_reducao_base" />
-                            <field name="icms_valor" />
-                            <field name="icms_valor_credito" />
-                            <field name="icms_aliquota_credito" />
-                            <field name="icms_st_aliquota_mva" />
-                            <field name="icms_st_aliquota" />
-                            <field name="icms_st_base_calculo" />
-                            <field name="icms_st_aliquota_reducao_base" />
-                            <field name="icms_st_valor" />
-                            <field name="icms_aliquota_diferimento" />
-                            <field name="icms_valor_diferido" />
-                            <field name="icms_motivo_desoneracao" />
-                            <field name="icms_valor_desonerado" />
+                        <page name="icms" string="ICMS" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
+                            <group name="detalhes_icms" string="Detalhes do ICMS">
+                                <group>
+                                    <field name="icms_cst" />
+                                    <field name="origem"/>
+                                    <field name="icms_tipo_base"/>
+                                    <field name="icms_aliquota_diferimento" />
+                                    <field name="icms_valor_diferido" />
+                                    <field name="icms_motivo_desoneracao" />
+                                    <field name="icms_valor_desonerado" />
+                                </group>
+                                <group>
+                                    <field name="icms_base_calculo"/>
+                                    <field name="icms_aliquota_reducao_base"/>
+                                    <field name="icms_aliquota" />
+                                    <field name="icms_valor"/>
+                                    <field name="icms_aliquota_credito" />
+                                    <field name="icms_valor_credito" />
+                                </group>
+                            </group>
+                            <group name="substituicao_icms" string="Substituição Tributária ICMS">
+                                <group name="icms_substituicao">
+                                    <field name="icms_st_tipo_base"/>
+                                    <field name="icms_st_aliquota_mva"/>
+                                    <field name="icms_st_base_calculo"/>
+                                    <field name="icms_st_aliquota_reducao_base"/>
+                                    <field name="icms_st_aliquota" />
+                                    <field name="icms_st_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
+                            <group>
+                                <field name="issqn_base_calculo"/>
+                                <field name="issqn_aliquota"/>
+                                <field name="issqn_codigo" />
+                                <field name="issqn_valor"/>
+                            </group>
+                        </page>
+                        <page name="ipi" string="IPI">
+                            <group string="Detalhes do IPI">
+                                <group>
+                                    <field name="ipi_cst" />
+                                    <field name="classe_enquadramento" />
+                                    <field name="codigo_enquadramento" />
+                                </group>
+                                <group>
+                                    <field name="ipi_valor" />
+                                    <field name="ipi_base_calculo"/>
+                                    <field name="ipi_aliquota_reducao_base" />
+                                    <field name="ipi_aliquota" />
+                                    <field name="ipi_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="pis" string="PIS">
+                            <group string="Detalhes do PIS">
+                                <group>
+                                    <field name="pis_cst" />
+                                </group>
+                                <group>
+                                    <field name="pis_base_calculo"/>
+                                    <field name="pis_aliquota"/>
+                                    <field name="pis_valor"/>
+                                </group>
+                            </group>
 
-                        </group>
-                        <group name="ipi" string="IPI">
-                            <field name="classe_enquadramento" />
-                            <field name="codigo_enquadramento" />
-                            <field name="ipi_cst" />
-                            <field name="ipi_aliquota" />
-                            <field name="ipi_base_calculo" />
-                            <field name="ipi_aliquota_reducao_base" />
-                            <field name="ipi_valor" />
-                        </group>
-                        <group name="ii" string="II">
-                            <field name="ii_base_calculo" />
-                            <field name="ii_valor_despesas" />
-                            <field name="ii_valor" />
-                            <field name="ii_valor_iof" />
-                        </group>
-                        <group name="pis" string="PIS">
-                            <field name="pis_cst" />
-                            <field name="pis_aliquota" />
-                            <field name="pis_base_calculo" />
-                            <field name="pis_valor" />
-                        </group>
-                        <group name="cofins" string="COFINS">
-                            <field name="cofins_cst" />
-                            <field name="cofins_aliquota" />
-                            <field name="cofins_base_calculo" />
-                            <field name="cofins_valor" />
-                        </group>
-                        <group name="issqn" string="ISSQN">
-                            <field name="issqn_codigo" />
-                            <field name="issqn_aliquota" />
-                            <field name="issqn_base_calculo" />
-                            <field name="issqn_valor" />
-                            <field name="issqn_valor_retencao" />
-                        </group>
-                    </group>
-
+                        </page>
+                        <page name="cofins" string="COFINS">
+                            <group string="Detalhes do COFINS">
+                                <group>
+                                    <field name="cofins_cst"/>
+                                </group>
+                                <group>
+                                    <field name="cofins_base_calculo"/>
+                                    <field name="cofins_aliquota"/>
+                                    <field name="cofins_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ii" string="II">
+                            <group string="Detalhes do Imposto de Importação">
+                                <field name="ii_base_calculo"/>
+                                <field name="ii_aliquota"/>
+                                <field name="ii_valor_despesas"/>
+                                <field name="ii_valor_iof"/>
+                                <field name="ii_valor"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </form>
             </field>
         </record>
@@ -109,6 +145,18 @@
                                 <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
                             </group>
+                        </group>
+                        <group string="Itens">
+                            <field name="eletronic_item_ids" nolabel="1">
+                                <tree name="eletronic_items">
+                                    <field name="product_id" />
+                                    <field name="uom_id" />
+                                    <field name="cfop" />
+                                    <field name="quantidade" />
+                                    <field name="preco_unitario" />
+                                    <field name="valor_liquido" />
+                                </tree>
+                            </field>
                         </group>
                         <group>
                         	<field name="codigo_retorno" />
@@ -171,18 +219,6 @@
                                 <field name="valor_retencao_previdencia" />
                             </group>
                         </group>
-                        <group string="Itens">
-	                        <field name="eletronic_item_ids" nolabel="1">
-	                            <tree name="eletronic_items">
-	                                <field name="product_id" />
-	                                <field name="uom_id" />
-	                                <field name="cfop" />
-	                                <field name="quantidade" />
-	                                <field name="preco_unitario" />
-	                                <field name="valor_liquido" />
-	                            </tree>
-	                        </field>
-	                    </group>
 	                    <group string="Eventos">
 	                    	<field name="eletronic_event_ids" nolabel="1">
 	                            <tree name="Eventos">

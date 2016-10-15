@@ -24,7 +24,8 @@ class InvoiceEletronic(models.Model):
 
     tipo_operacao = fields.Selection([('entrada', 'Entrada'),
                                       ('saida', 'Saída')], u'Tipo emissão')
-    model = fields.Selection([('55', 'NFe'), ('65', 'NFCe')], u'Modelo')
+    model = fields.Selection([('55', '55 - NFe'), ('65', '65 - NFCe')],
+                             u'Modelo')
     serie = fields.Many2one('br_account.document.serie', string=u'Série')
     numero = fields.Integer(u'Número')
     numero_controle = fields.Integer(u'Número de Controle')
@@ -35,10 +36,10 @@ class InvoiceEletronic(models.Model):
     ambiente = fields.Selection([('homologacao', 'Homologação'),
                                  ('producao', 'Produção')], u'Ambiente')
     finalidade_emissao = fields.Selection(
-        [('1', 'Normal'),
-         ('2', 'Complementar'),
-         ('3', 'Ajuste'),
-         ('4', 'Devolução')],
+        [('1', '1 - Normal'),
+         ('2', '2 - Complementar'),
+         ('3', '3 - Ajuste'),
+         ('4', '4 - Devolução')],
         u'Finalidade', help="Finalidade da emissão de NFe")
     invoice_id = fields.Many2one('account.invoice', u'Fatura')
     partner_id = fields.Many2one('res.partner', u'Parceiro')
@@ -286,7 +287,7 @@ class InvoiceEletronicItem(models.Model):
     valor_bruto = fields.Float(u'Valor Bruto')
     valor_liquido = fields.Float(u'Valor Liquido')
     indicador_total = fields.Selection(
-        [('0', 'Não'), ('1', 'Sim')],
+        [('0', '0 - Não'), ('1', '1 - Sim')],
         string="Compõe Total da Nota?", default='1')
 
     origem = fields.Selection(ORIGEM_PROD, u'Origem mercadoria')
@@ -305,6 +306,13 @@ class InvoiceEletronicItem(models.Model):
     icms_valor_credito = fields.Float(u"Valor de Cŕedito")
     icms_aliquota_credito = fields.Float(u'% de Crédito')
 
+    icms_st_tipo_base = fields.Selection(
+        [('0', '0- Preço tabelado ou máximo  sugerido'),
+         ('1', '1 - Lista Negativa (valor)'),
+         ('2', '2 - Lista Positiva (valor)'),
+         ('3', '3 - Lista Neutra (valor)'),
+         ('4', '4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
+        'Tipo Base ICMS ST', required=True, default='4')
     icms_st_aliquota_mva = fields.Float(u'% MVA')
     icms_st_aliquota = fields.Float(u'Alíquota')
     icms_st_base_calculo = fields.Float(u'Base de cálculo')
@@ -330,6 +338,7 @@ class InvoiceEletronicItem(models.Model):
 
     # ----------- II ----------------------
     ii_base_calculo = fields.Float(u'Base de cálculo')
+    ii_aliquota = fields.Float(u'Alíquota II')
     ii_valor_despesas = fields.Float(u'Despesas aduaneiras')
     ii_valor = fields.Float(u'Imposto de importação')
     ii_valor_iof = fields.Float(u'IOF')
@@ -360,10 +369,10 @@ class InvoiceTransport(models.Model):
     name = fields.Char(u'Nome', size=100)
     company_id = fields.Many2one('res.company', u'Empresa', select=True)
 
-    modalidade_frete = fields.Selection([('0', 'Sem Frete'),
-                                         ('1', 'Por conta do destinatário'),
-                                         ('2', 'Por conta do emitente'),
-                                         ('9', 'Outros')],
+    modalidade_frete = fields.Selection([('0', '0 - Sem Frete'),
+                                         ('1', '1 - Por conta destinatário'),
+                                         ('2', '2 - Por conta do emitente'),
+                                         ('9', '9 - Outros')],
                                         u'Modalidade do frete')
     transportadora_id = fields.Many2one('res.partner', u'Transportadora')
     placa_veiculo = fields.Char('Placa do Veiculo', size=7)

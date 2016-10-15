@@ -123,10 +123,6 @@ class AccountInvoice(models.Model):
             'issqn_valor_retencao': 0.00,
 
         }
-        print "============================"
-        print "vals"
-        print vals
-        print "============================"
         return vals
 
     def _prepare_edoc_vals(self, invoice):

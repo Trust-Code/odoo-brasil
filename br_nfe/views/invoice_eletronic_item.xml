@@ -5,8 +5,11 @@
         <field name="model">invoice.eletronic.item</field>
         <field name="inherit_id" ref="br_account_einvoice.invoice_eletronic_item_form" />
         <field name="arch" type="xml">
-            <group name="icms" position="after">
-                <group name="icms_interestaual" string="ICMS Difal">
+            <field name="icms_tipo_base" position="after">
+                <field name="has_icms_difal" />
+            </field>
+            <group name="icms_substituicao" position="after">
+                <group name="icms_interestaual">
                     <!-- ICMS Difal -->
                     <field name="has_icms_difal" />
                     <field name="icms_bc_uf_dest" />

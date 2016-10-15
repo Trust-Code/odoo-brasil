@@ -103,9 +103,6 @@ Interestadual' % prod)
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
-        is_interestadual = self.company_id.state_id.id != (
-            self.partner_shipping_id.state_id.id or self.
-            partner_id.state_id.id)
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
@@ -156,7 +153,7 @@ Interestadual' % prod)
                 'vCOFINS': "%.02f" % item.cofins_valor
             },
         }
-        if item.has_icms_interestadual and is_interestadual:
+        if item.has_icms_difal:
             imposto['ICMSUFDest'] = {
                 'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
                 'pFCPUFDest': "%.02f" % item.icms_aliquota_fcp_uf_dest,
