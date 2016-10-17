@@ -19,7 +19,8 @@ class InvoiceEletronic(models.Model):
     code = fields.Char(u'Código', size=100, required=True)
     name = fields.Char(u'Name', size=100, required=True)
     company_id = fields.Many2one('res.company', u'Company', select=True)
-    state = fields.Selection([('draft', 'Draft'), ('done', 'Done')],
+    state = fields.Selection([('draft', 'Draft'), ('error', 'Erro'),
+                              ('done', 'Done')],
                              string=u'State', default='draft')
 
     tipo_operacao = fields.Selection([('entrada', 'Entrada'),

@@ -358,6 +358,7 @@ Interestadual' % prod)
     @api.multi
     def action_send_eletronic_invoice(self):
         self.ambiente = 'homologacao'  # Evita esquecimentos
+        self.state = 'error'
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
         nfe_values = self._prepare_eletronic_invoice_values()
@@ -396,11 +397,12 @@ Interestadual' % prod)
             self.codigo_retorno = retorno.protNFe.infProt.cStat
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
-                self.write({'state': 'done'})
+                self.write({'state': 'done', 'nfe_exception': False})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
                 self.write({'state': 'done', 'codigo_retorno': '100',
+                            'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
         self.env['invoice.eletronic.event'].create({
@@ -414,3 +416,9 @@ Interestadual' % prod)
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
+
+    @api.multi
+    def cron_send_nfe(self):
+        nfes = self.env['invoice.eletronic'].search([('state', '==', 'draft')])
+        for item in nfes:
+            item.action_send_eletronic_invoice()
