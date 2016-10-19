@@ -11,6 +11,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from pytrustnfe.nfe import autorizar_nfe
 from pytrustnfe.nfe import retorno_autorizar_nfe
 from pytrustnfe.certificado import Certificado
+from pytrustnfe.utils import ChaveNFe, gerar_chave
 
 
 class InvoiceEletronic(models.Model):
@@ -18,8 +19,8 @@ class InvoiceEletronic(models.Model):
 
     ind_final = fields.Selection([
         ('0', u'Não'),
-        ('1', u'Consumidor final')
-    ], u'Operação com Consumidor final', readonly=True,
+        ('1', u'Sim')
+    ], u'Consumidor final', readonly=True,
         states={'draft': [('readonly', False)]}, required=False,
         help=u'Indica operação com Consumidor final.', default='0')
     ind_pres = fields.Selection([
@@ -37,14 +38,19 @@ class InvoiceEletronic(models.Model):
 
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
-    protocolo_nfe = fields.Char(string="Protocolo Autorização", size=50)
+    protocolo_nfe = fields.Char(string="Protocolo", size=50,
+                                help="Protocolo de autorização da NFe")
 
-    valor_icms_fcp_uf_dest = fields.Float('Valor total do ICMS relativo Fundo \
-de Combate à Pobreza (FCP) da UF de destino')
-    valor_icms_uf_dest = fields.Float('Valor total do ICMS Interestadual \
-para a UF de destino')
-    valor_icms_uf_remet = fields.Float('Valor total do ICMS Interestadual \
-para a UF do Remetente')
+    valor_icms_fcp_uf_dest = fields.Float(
+        string="Total ICMS FCP",
+        help='Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
+        da UF de destino')
+    valor_icms_uf_dest = fields.Float(
+        string="ICMS Destino",
+        help='Valor total do ICMS Interestadual para a UF de destino')
+    valor_icms_uf_remet = fields.Float(
+        string="ICMS Remetente",
+        help='Valor total do ICMS Interestadual para a UF do Remetente')
 
     def barcode_url(self):
         url = '<img style="width:470px;height:50px;margin-top:5px;"\
@@ -98,9 +104,6 @@ Interestadual' % prod)
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
-        is_interestadual = self.company_id.state_id.id != (
-            self.partner_shipping_id.state_id.id or self.
-            partner_id.state_id.id)
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
@@ -151,7 +154,7 @@ Interestadual' % prod)
                 'vCOFINS': "%.02f" % item.cofins_valor
             },
         }
-        if item.has_icms_interestadual and is_interestadual:
+        if item.has_icms_difal:
             imposto['ICMSUFDest'] = {
                 'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
                 'pFCPUFDest': "%.02f" % item.icms_aliquota_fcp_uf_dest,
@@ -279,9 +282,9 @@ Interestadual' % prod)
             'vOutro': "%.02f" % self.valor_despesas,
             'vNF': "%.02f" % self.valor_final,
             'vTotTrib': '0.00',
-            #ISSQn
+            # ISSQn
             'vServ': '0.00',
-            #Retenções
+            # Retenções
 
         }
         transp = {
@@ -324,8 +327,9 @@ Interestadual' % prod)
             }]
         }
 
-    def _create_attachment(self, event, data):
-        file_name = 'nfe-%s.xml' % datetime.now().strftime('%Y-%m-%d-%H-%M')
+    def _create_attachment(self, prefix, event, data):
+        file_name = '%s-%s.xml' % (
+            prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
         self.env['ir.attachment'].create(
             {
                 'name': file_name,
@@ -337,8 +341,25 @@ Interestadual' % prod)
             })
 
     @api.multi
+    def action_post_validate(self):
+        super(InvoiceEletronic, self).action_post_validate()
+        for item in self:
+            chave_dict = {
+                'cnpj': re.sub('[^0-9]', '', item.company_id.cnpj_cpf),
+                'estado': item.company_id.state_id.ibge_code,
+                'emissao': item.data_emissao[2:4] + item.data_emissao[5:7],
+                'modelo': item.model,
+                'numero': item.numero,
+                'serie': item.serie.code.zfill(3),
+                'tipo': 0 if item.tipo_operacao == 'entrada' else 1,
+                'codigo': item.numero_controle
+            }
+            item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
+
+    @api.multi
     def action_send_eletronic_invoice(self):
         self.ambiente = 'homologacao'  # Evita esquecimentos
+        self.state = 'error'
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
         nfe_values = self._prepare_eletronic_invoice_values()
@@ -377,11 +398,12 @@ Interestadual' % prod)
             self.codigo_retorno = retorno.protNFe.infProt.cStat
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
-                self.write({'state': 'done'})
+                self.write({'state': 'done', 'nfe_exception': False})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
                 self.write({'state': 'done', 'codigo_retorno': '100',
+                            'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
         self.env['invoice.eletronic.event'].create({
@@ -389,8 +411,15 @@ Interestadual' % prod)
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
-        self._create_attachment(self, resposta['sent_xml'])
-        self._create_attachment(self, resposta['received_xml'])
+        self._create_attachment('nfe-envio', self, resposta['sent_xml'])
+        self._create_attachment('nfe-ret', self, resposta['received_xml'])
         if resposta_recibo:
-            self._create_attachment(self, resposta_recibo['sent_xml'])
-            self._create_attachment(self, resposta_recibo['received_xml'])
+            self._create_attachment('rec', self, resposta_recibo['sent_xml'])
+            self._create_attachment('rec-ret', self,
+                                    resposta_recibo['received_xml'])
+
+    @api.multi
+    def cron_send_nfe(self):
+        nfes = self.env['invoice.eletronic'].search([('state', '==', 'draft')])
+        for item in nfes:
+            item.action_send_eletronic_invoice()

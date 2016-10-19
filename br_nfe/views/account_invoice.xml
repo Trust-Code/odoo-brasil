@@ -6,6 +6,28 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
+            <div class="alert alert-info" position="after">
+                <field name="sending_nfe" invisible="1" />
+                <field name="nfe_exception" invisible="1" />
+                <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('sending_nfe', '==', False)]}">
+                    Sua <b>NFe de número <field name="nfe_number" class="oe_inline"/></b> está na fila de envio.
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                        context="{ 'search_default_invoice_id': id }" string="Visualizar Fila">
+                    </button>
+                    ou
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                        context="{ 'search_default_invoice_id': id }" string="Enviar Agora">
+                    </button>
+                </div>
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('nfe_exception', '==', False)]}">
+                    Ocorreu um erro com a <b>NFe de número <field name="nfe_exception_number" class="oe_inline"/>. </b>
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                        context="{ 'search_default_invoice_id': id }" string="Visualizar NFe">
+                    </button>
+                    <br/>
+                    <field name="nfe_status" />
+                </div>
+            </div>
             <div name="button_box" position="inside">
                 <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o" string="Preview Danfe">
                 </button>

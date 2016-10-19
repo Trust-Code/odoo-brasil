@@ -24,7 +24,6 @@
 
     <template id="template_br_nfe_danfe">
         <div class="page">
-
             <t t-if="o.ambiente == 'homologacao'">
                 <div style="width:100%;position:fixed;top:400px;">
                   <div  style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Sem Valor Fiscal</div>

@@ -2,11 +2,14 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    payment_mode_id = fields.Many2one('payment.mode',
+                                      string=u"Modo de pagamento")
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):

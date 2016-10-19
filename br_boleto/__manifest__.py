@@ -25,6 +25,7 @@
         'views/account_move_line.xml',
         'views/res_partner_bank.xml',
         'views/payment_order.xml',
+        'views/payment_mode.xml',
         'reports/report_print_button_view.xml',
         'sequence/payment_order_sequence.xml',
         'sequence/numero_documento_sequence.xml',

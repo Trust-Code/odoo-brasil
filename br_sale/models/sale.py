@@ -112,14 +112,25 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    def _prepare_tax_context(self):
+        return {
+            'incluir_ipi_base': self.incluir_ipi_base_icms,
+            'aliquota_mva': self.aliquota_mva,
+            'aliquota_icms_proprio': self.aliquota_icms_proprio,
+            'reducao_base_icms': self.reducao_base_icms,
+            'reducao_base_icms_st': self.reducao_base_icms_st,
+            'reducao_base_ipi': self.reducao_base_ipi
+        }
+
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
-                 'aliquota_mva')
+                 'aliquota_mva', 'incluir_ipi_base_icms', 'reducao_base_icms',
+                 'reducao_base_icms_st', 'reducao_base_ipi')
     def _compute_amount(self):
         for line in self:
 
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            tax_ids = line.tax_id.with_context(incluir_ipi_base=True,
-                                               aliquota_mva=line.aliquota_mva)
+            ctx = line._prepare_tax_context()
+            tax_ids = line.tax_id.with_context(**ctx)
             taxes = tax_ids.compute_all(
                 price, line.order_id.currency_id,
                 line.product_uom_qty, product=line.product_id,
@@ -138,11 +149,44 @@ class SaleOrderLine(models.Model):
                 'valor_desconto': desconto,
             })
 
+    @api.depends('cfop_id', 'aliquota_mva', 'aliquota_icms_proprio',
+                 'incluir_ipi_base_icms', 'reducao_base_icms',
+                 'reducao_base_icms_st', 'reducao_base_ipi')
+    def _compute_detalhes(self):
+        for line in self:
+            msg = []
+            if line.cfop_id:
+                msg += [u'CFOP: %s' % line.cfop_id.code]
+            msg += [u'IPI na base ICMS: %s' % (
+                u'Sim' if line.incluir_ipi_base_icms else u'Não')]
+            if line.aliquota_mva:
+                msg += [u'MVA (%%): %.2f' % line.aliquota_mva]
+            if line.aliquota_icms_proprio:
+                msg += [u'ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
+            if line.reducao_base_icms:
+                msg += [u'Red. Base ICMS (%%): %.2f' % line.reducao_base_icms]
+            if line.reducao_base_icms_st:
+                msg += [u'Red. Base ICMS ST (%%): %.2f' %
+                        line.reducao_base_icms_st]
+            if line.reducao_base_ipi:
+                msg += [u'Red. Base IPI (%%): %.2f' % line.reducao_base_ipi]
+
+            line.detalhes_calculo = u'\n'.join(msg)
+
+    rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
+    cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                 digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
-        string='Alíquota ICMS Próprio (%)',
-        digits=dp.get_precision('Account'))
+        string='Alíquota ICMS Próprio (%)', digits=dp.get_precision('Account'))
+    incluir_ipi_base_icms = fields.Boolean(string="Incluir Ipi na Base ICMS")
+    reducao_base_icms = fields.Float(
+        string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
+    reducao_base_icms_st = fields.Float(
+        string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+    reducao_base_ipi = fields.Float(
+        string='Redução Base IPI (%)', digits=dp.get_precision('Account'))
+
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
@@ -152,6 +196,36 @@ class SaleOrderLine(models.Model):
     price_without_tax = fields.Float(
         compute='_compute_amount', string='Preço Base', store=True,
         digits=dp.get_precision('Sale Price'))
+
+    detalhes_calculo = fields.Text(
+        string="Detalhes Cálculo", compute='_compute_detalhes', store=True)
+
+    @api.multi
+    def _compute_tax_id(self):
+        res = super(SaleOrderLine, self)._compute_tax_id()
+        for line in self:
+            fpos = line.order_id.fiscal_position_id or \
+                line.order_id.partner_id.property_account_position_id
+            if fpos:
+                vals = fpos.map_tax_extra_values(
+                    line.company_id, line.product_id, line.order_id.partner_id)
+
+                for key, value in vals.iteritems():
+                    if value and key in line._fields:
+                        line.update({key: value})
+
+                tax_ids = [vals.get('tax_icms_id', False),
+                           vals.get('tax_icms_st_id', False),
+                           vals.get('tax_ipi_id', False),
+                           vals.get('tax_pis_id', False),
+                           vals.get('tax_cofins_id', False),
+                           vals.get('tax_ii_id', False),
+                           vals.get('tax_issqn_id', False)]
+                line.update({
+                    'tax_id': [(6, None, [x.id for x in tax_ids if x])]
+                })
+
+        return res
 
     @api.multi
     def _prepare_invoice_line(self, qty):
@@ -179,9 +253,12 @@ class SaleOrderLine(models.Model):
         res['icms_aliquota'] = icms.amount or 0.0
         res['icms_st_aliquota_mva'] = self.aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0
+        res['icms_aliquota_reducao_base'] = self.reducao_base_icms
+        res['icms_st_aliquota_reducao_base'] = self.reducao_base_icms_st
 
         res['ipi_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['ipi_aliquota'] = ipi.amount or 0.0
+        res['ipi_reducao_bc'] = self.reducao_base_ipi
 
         res['pis_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['pis_aliquota'] = pis.amount or 0.0

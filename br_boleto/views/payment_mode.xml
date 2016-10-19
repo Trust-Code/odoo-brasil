@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_boleto_account_payment_mode_form" model="ir.ui.view">
+        <field name="name">view.br.boleto.payment.mode.form</field>
+        <field name="model">payment.mode</field>
+        <field name="inherit_id" ref="br_account_payment.account_payment_mode_form" />
+        <field name="arch" type="xml">
+            <field name="active">
+                <field name="boleto" />
+            </field>
+            <group name="main" position="after">
+                <group name="boletos" string="Boletos">
+                    <field name="boleto_type"/>
+                    <field name="nosso_numero_sequence"/>
+                    <field name="boleto_carteira"/>
+                    <field name="boleto_modalidade"/>
+                    <field name="boleto_variacao"/>
+                    <field name="boleto_cnab_code"/>
+                    <field name="boleto_aceite"/>
+                    <field name="boleto_especie"/>
+                    <field name="boleto_protesto"/>
+                    <field name="boleto_protesto_prazo"/>
+                    <field name="late_payment_fee"/>
+                    <field name="late_payment_interest"/>
+                    <field name="instrucoes" />
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <record id="view_braccount_payment_mode_tree" model="ir.ui.view">
+        <field name="name">payment.mode.tree</field>
+        <field name="model">payment.mode</field>
+        <field name="inherit_id" ref="br_account_payment.account_payment_mode_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="bank_account_id"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

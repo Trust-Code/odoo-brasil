@@ -1,13 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="br_account_tax_rule_form" model="ir.ui.view">
+        <field name="name">br_account.tax.rule.form</field>
+        <field name="model">account.fiscal.position.tax.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" />
+                    <field name="fiscal_position_id" invisible="1" />
+                    <field name="domain" invisible="1" />
+                </group>
+                <group string="Usar a seguinte tributação">
+                    <group>
+                        <field name="tax_id" domain="[('domain', '=', domain)]" />
+                    </group>
+                    <group>
+                        <field name="reducao_base" />
+                    </group>
+                </group>
+                <group name="icms" attrs="{'invisible': [('domain', '!=', 'icms')]}">
+                    <group>
+                        <field name="cfop_id" />
+                        <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
+                        <field name="reducao_base_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
+                    </group>
+                    <group>
+                        <field name="cst_icms" />
+                        <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
+                    </group>
+                </group>
+                <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">
+                    <group>
+                        <field name="cst_ipi" />
+                    </group>
+                    <group></group>
+                </group>
+                <group name="pis" attrs="{'invisible': [('domain', '!=', 'pis')]}">
+                    <group>
+                        <field name="cst_pis" />
+                    </group>
+                    <group></group>
+                </group>
+                <group name="cofins" attrs="{'invisible': [('domain', '!=', 'cofins')]}">
+                    <group>
+                        <field name="cst_cofins" />
+                    </group>
+                    <group></group>
+                </group>
+                <group string="Estados">
+                    <field name="state_ids" widget="many2many_tags" nolabel="1"/>
+                </group>
+                <group string="Categorias de Produto">
+                    <field name="product_category_ids" widget="many2many_tags" nolabel="1"/>
+                </group>
+                <group string="Produtos">
+                    <field name="product_ids" widget="many2many_tags" nolabel="1"/>
+                </group>
+                <group string="Parceiros">
+                    <field name="partner_ids" widget="many2many_tags" nolabel="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_br_account_tax_rule_formtree" model="ir.ui.view">
+        <field name="name">view.br_account.tax.rule.tree</field>
+        <field name="model">account.fiscal.position.tax.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="tax_id" />
+                <field name="reducao_base" />
+            </tree>
+        </field>
+    </record>
+
     <record id="br_account_position_form" model="ir.ui.view">
         <field name="name">br_account.fiscal.position.form</field>
         <field name="model">account.fiscal.position</field>
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
-            <group position="after">
-            </group>
+            <page name="tax_mapping" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </page>
+            <page name="tax_mapping" position="before">
+                <page name="icms_rules" string="Regras ICMS">
+                    <field name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
+                        <tree>
+                            <field name="name" />
+                            <field name="tax_id" />
+                            <field name="cfop_id" />
+                            <field name="cst_icms" />
+                            <field name="reducao_base" />
+                            <field name="tax_icms_st_id" />
+                            <field name="reducao_base_st" />
+                            <field name="aliquota_mva" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="ipi_rules" string="Regras IPI">
+                    <field name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
+                        <tree>
+                            <field name="name" />
+                            <field name="tax_id" />
+                            <field name="cst_ipi" />
+                            <field name="reducao_base" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="pis_rules" string="Regras PIS">
+                    <field name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
+                        <tree>
+                            <field name="name" />
+                            <field name="tax_id" />
+                            <field name="cst_pis" />
+                            <field name="reducao_base" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="cofins_rules" string="Regras COFINS">
+                    <field name="cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
+                        <tree>
+                            <field name="name" />
+                            <field name="tax_id" />
+                            <field name="cst_cofins" />
+                            <field name="reducao_base" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="issqn_rules" string="Regras ISSQN">
+                    <field name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>                </page>
+                <page name="ii_rules" string="Regras II">
+                    <field name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
+                </page>
+            </page>
         </field>
     </record>
 

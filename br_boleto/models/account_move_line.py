@@ -17,6 +17,14 @@ class AccountMoveLine(models.Model):
     payment_order_id = fields.Many2one('payment.order')
 
     @api.multi
+    def action_print_boleto(self):
+        if self.move_id.state in ('draft', 'cancel'):
+            raise UserError(
+                'Fatura provisória ou cancelada não permite emitir boleto')
+        self = self.with_context({'origin_model': 'account.invoice'})
+        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+
+    @api.multi
     def gerar_payment_order(self):
         """Gera um objeto de payment.order ao imprimir um boleto"""
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
@@ -54,9 +62,9 @@ class AccountMoveLine(models.Model):
         return boleto_list
 
     @api.multi
-    def action_generate_boleto(self):
+    def open_wizard_print_boleto(self):
         return({
-            'name': 'Alterar / Reinprimir Boleto',
+            'name': 'Alterar / Reimprimir Boleto',
             'type': 'ir.actions.act_window',
             'res_model': 'br.boleto.wizard',
             'view_type': 'form',

@@ -12,21 +12,6 @@
                     <field name="bank_account_id" />
                     <field name="active"/>
                 </group>
-                <group name="boletos" string="Boletos">
-                    <field name="boleto_type"/>
-                    <field name="nosso_numero_sequence"/>
-                    <field name="boleto_carteira"/>
-                    <field name="boleto_modalidade"/>
-                    <field name="boleto_variacao"/>
-                    <field name="boleto_cnab_code"/>
-                    <field name="boleto_aceite"/>
-                    <field name="boleto_especie"/>
-                    <field name="boleto_protesto"/>
-                    <field name="boleto_protesto_prazo"/>
-                    <field name="late_payment_fee"/>
-                    <field name="late_payment_interest"/>
-                    <field name="instrucoes" />
-                </group>
             </form>
         </field>
     </record>
@@ -37,7 +22,7 @@
         <field name="arch" type="xml">
             <tree string="Payment Modes">
                 <field name="name"/>
-                <field name="boleto_type"/>
+                <field name="bank_account_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
