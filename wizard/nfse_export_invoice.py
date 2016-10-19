@@ -133,7 +133,6 @@ class NfseExportInvoice(models.TransientModel):
                 error_msg += err
                 raise UserError(error_msg)
             invoice.date_invoice = date.today()
-            print invoice.date_invoice
             xmls.append(self._export(invoice))
 
         self.file = self._save_zip(xmls)
