@@ -65,12 +65,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         for eletr in self.eletronic_item_ids:
             prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                           eletr.product_id.name)
-            if is_interestadual and not eletr.cfop.startswith('6'):
+            if not eletr.cfop:
+                errors.append(u'%s - CFOP' % prod)
+            if is_interestadual and eletr.cfop and not eletr.cfop.\
+                    startswith('6'):
                 errors.append(
                     u'%s - CFOP Não Começa com 6 em Operação \
 Interestadual' % prod)
-            if not eletr.cfop:
-                errors.append(u'%s - CFOP' % prod)
             if eletr.tipo_produto == 'product':
                 if not eletr.icms_cst:
                     errors.append(u'%s - CST do ICMS' % prod)

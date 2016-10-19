@@ -9,6 +9,11 @@
                 <group>
                     <group>
                         <field name="product_fiscal_class_csv" />
+                        <field name="ncm_csv_delimiter" />
+                    </group>
+                    <group>
+                        <field name="has_quote_char" />
+                        <field name="ncm_quote_char" attrs="{'invisible': [('has_quote_char','!=', True)]}"/>
                     </group>
                 </group>
                 <footer>
@@ -29,9 +34,9 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem sequence="10" action="br_product_fiscal_classification_action"
+    <menuitem sequence="3" action="br_product_fiscal_classification_action"
               id="menu_br_account_product_fiscal_classification_wizard"
-              parent="menu_br_account_product_fiscal_classification"
+              parent="menu_br_account"
               name="Importar Classificações Fiscais (NCM)"/>
 
 
