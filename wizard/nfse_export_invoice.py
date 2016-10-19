@@ -6,6 +6,7 @@ import os
 import io
 import re
 import base64
+from datetime import date
 import os.path
 from jinja2 import Environment, FileSystemLoader
 from zipfile import ZipFile
@@ -108,6 +109,14 @@ class NfseExportInvoice(models.TransientModel):
         xmls = []
         for invoice in invoice_ids:
             errors = []
+            if invoice.partner_id.is_company and\
+                    not invoice.partner_id.legal_name:
+                errors += ['Razão Social incompleta.']
+            if not invoice.partner_id.phone and invoice.partner_id.mobile:
+                invoice.partner_id.phone = invoice.partner_id.mobile
+            if not invoice.partner_id.phone and not invoice.\
+                    partner_id.mobile:
+                errors += ['Telefone incompleto.']
             if not invoice.partner_id.city_id:
                 errors += ['Munícipio incompleto.']
             if not invoice.partner_id.zip:
@@ -123,6 +132,8 @@ class NfseExportInvoice(models.TransientModel):
                 error_msg = '%s\n' % invoice.move_name
                 error_msg += err
                 raise UserError(error_msg)
+            invoice.date_invoice = date.today()
+            print invoice.date_invoice
             xmls.append(self._export(invoice))
 
         self.file = self._save_zip(xmls)
