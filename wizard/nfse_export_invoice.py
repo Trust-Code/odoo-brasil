@@ -11,6 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 from zipfile import ZipFile
 from StringIO import StringIO
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class NfseExportInvoice(models.TransientModel):
@@ -19,8 +20,8 @@ class NfseExportInvoice(models.TransientModel):
     name = fields.Char('Nome', size=255)
     file = fields.Binary('Arquivo', readonly=True)
     state = fields.Selection(
-        [('init', 'init'), ('done', 'done')], 'state',
-        readonly=True, default='init')
+       [('init', 'init'), ('done', 'done'), ],
+       'state', readonly=True, default='init')
 
     def _invoice_vals(self, inv):
         tomador = {
@@ -46,7 +47,7 @@ class NfseExportInvoice(models.TransientModel):
                 'CNAE': re.sub('[^0-9]', '',
                                inv.company_id.cnae_main_id.code or ''),
                 'CST': '1',
-                'aliquota': line.issqn_percent / 100,
+                'aliquota': line.issqn_aliquota / 100,
                 'valor_unitario': line.price_unit,
                 'quantidade': int(line.quantity),
                 'valor_total': line.price_subtotal,
@@ -106,6 +107,22 @@ class NfseExportInvoice(models.TransientModel):
         invoice_ids = self.env['account.invoice'].browse(active_ids)
         xmls = []
         for invoice in invoice_ids:
+            errors = []
+            if not invoice.partner_id.city_id:
+                errors += ['Munícipio incompleto.']
+            if not invoice.partner_id.zip:
+                errors += ['CEP incompleto.']
+            if not invoice.partner_id.cnpj_cpf:
+                errors += ['CPF / CNPJ incompleto.']
+            if not invoice.partner_id.street:
+                errors += ['Logradouro incompleto.']
+            if not invoice.partner_id.email:
+                errors += ['Email incompleto.']
+            if len(errors) > 0:
+                err = ''.join(errors)
+                error_msg = '%s\n' % invoice.move_name
+                error_msg += err
+                raise UserError(error_msg)
             xmls.append(self._export(invoice))
 
         self.file = self._save_zip(xmls)
