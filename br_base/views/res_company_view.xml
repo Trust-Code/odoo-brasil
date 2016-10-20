@@ -42,7 +42,7 @@
             <group position="inside">
                 <group string="Certificado Digital">
                     <field name="nfe_a1_file" />
-                    <field name="nfe_a1_password" />
+                    <field name="nfe_a1_password" password="True" />
                 </group>
             </group>
         </field>
