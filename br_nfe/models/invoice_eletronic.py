@@ -129,8 +129,17 @@ Interestadual' % prod)
                 'CST': item.icms_cst,
                 'modBC': item.icms_tipo_base,
                 'vBC': "%.02f" % item.icms_base_calculo,
+                'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
                 'pICMS': "%.02f" % item.icms_aliquota,
                 'vICMS': "%.02f" % item.icms_valor,
+                'modBCST': item.icms_st_tipo_base,
+                'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
+                'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
+                'vBCST': "%.02f" % item.icms_st_base_calculo,
+                'pICMSST': "%.02f" % item.icms_st_aliquota,
+                'vICMSST': "%.02f" % item.icms_st_valor,
+                'vICMSDeson': "%.02f" % 0.0,
+                'motDesICMS': "%.02f" % 0.0,
                 'pCredSN': "%.02f" % item.icms_valor_credito,
                 'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
             },
@@ -420,6 +429,8 @@ Interestadual' % prod)
 
     @api.multi
     def cron_send_nfe(self):
-        nfes = self.env['invoice.eletronic'].search([('state', '=', 'draft')])
+        inv_obj = self.env['invoice.eletronic'].with_context({
+            'lang': self.env.user.lang, 'tz': self.env.user.tz})
+        nfes = inv_obj.search([('state', '=', 'draft')])
         for item in nfes:
             item.action_send_eletronic_invoice()
