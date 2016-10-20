@@ -65,14 +65,11 @@ class AccountFiscalPosition(models.Model):
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras II", domain=[('domain', '=', 'ii')])
 
-    @api.model
-    def map_tax_extra_values(self, company, product, partner):
+    def _filter_rules(self, fpos_id, type_tax, partner_id,
+                      product_id, state_id):
         rule_obj = self.env['account.fiscal.position.tax.rule']
-
-        to_state = partner.state_id.id
-        product_id = product.id
-        partner_id = partner.id
-        domain = [('fiscal_position_id', '=', self.id)]
+        domain = [('fiscal_position_id', '=', fpos_id),
+                  ('domain', '=', type_tax)]
         domain += [('partner_ids', '=', partner_id)]
         rules = rule_obj.search(domain)
         if not rules:
@@ -81,7 +78,7 @@ class AccountFiscalPosition(models.Model):
             rules = rule_obj.search(domain)
         if not rules:
             domain.pop()
-            domain += [('state_ids', '=', to_state)]
+            domain += [('state_ids', '=', state_id)]
             rules = rule_obj.search(domain)
         if not rules:
             domain.pop()
@@ -90,8 +87,55 @@ class AccountFiscalPosition(models.Model):
             return {
                 'rule_id': rules[0],
                 'cfop_id': rules[0].cfop_id,
+                ('tax_%s_id' % type_tax): rules[0].tax_id,
+                # ICMS
                 'icms_cst_normal': rules[0].cst_icms,
-                'tax_icms_id': rules[0].tax_id,
+                'icms_cst_simples': rules[0].cst_icms,
+                'icms_aliquota_reducao_base': rules[0].reducao_base,
+                # ICMS ST
+                'tax_icms_st_id': rules[0].tax_icms_st_id,
+                'icms_st_aliquota_mva': rules[0].aliquota_mva,
+                'icms_st_aliquota_reducao_base': rules[0].reducao_base_st,
+                # IPI
+                'ipi_cst': rules[0].cst_ipi,
+                'ipi_reducao_bc': rules[0].reducao_base,
+                # PIS
+                'pis_cst': rules[0].cst_pis,
+                # PIS
+                'cofins_cst': rules[0].cst_cofins,
             }
         else:
             return {}
+
+    @api.model
+    def map_tax_extra_values(self, company, product, partner):
+        to_state = partner.state_id.id
+        product_id = product.id
+        partner_id = partner.id
+
+        res = {}
+        vals = self._filter_rules(
+            self.id, 'icms', partner_id, product_id, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        vals = self._filter_rules(
+            self.id, 'ipi', partner_id, product_id, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        vals = self._filter_rules(
+            self.id, 'pis', partner_id, product_id, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        vals = self._filter_rules(
+            self.id, 'cofins', partner_id, product_id, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        vals = self._filter_rules(
+            self.id, 'issqn', partner_id, product_id, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        vals = self._filter_rules(
+            self.id, 'ii', partner_id, product_id, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        return res

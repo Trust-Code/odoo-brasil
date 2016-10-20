@@ -404,21 +404,18 @@ class AccountInvoiceLine(models.Model):
     def _onchange_tax_pis_id(self):
         if self.tax_pis_id:
             self.pis_aliquota = self.tax_pis_id.amount
-            self.pis_cst = self.tax_ipi_id.cst
             self._update_invoice_line_ids()
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):
         if self.tax_cofins_id:
             self.cofins_aliquota = self.tax_cofins_id.amount
-            self.cofins_cst = self.tax_ipi_id.cst
             self._update_invoice_line_ids()
 
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
         if self.tax_ipi_id:
             self.ipi_aliquota = self.tax_ipi_id.amount
-            self.ipi_cst = self.tax_ipi_id.cst
             self._update_invoice_line_ids()
 
     @api.onchange('tax_ii_id')

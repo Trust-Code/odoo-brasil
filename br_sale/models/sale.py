@@ -11,71 +11,6 @@ from odoo.addons import decimal_precision as dp
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
-    def print_quotation(self):
-        return super(SaleOrder, self).print_quotation()
-        self.tax_model = self.env['account.tax']
-        self.pis = self.tax_model.create({
-            'name': "PIS",
-            'amount_type': 'division',
-            'domain': 'pis',
-            'amount': 5,
-            'sequence': 1,
-            'price_include': True,
-        })
-        self.cofins = self.tax_model.create({
-            'name': "Cofins",
-            'amount_type': 'division',
-            'domain': 'cofins',
-            'amount': 15,
-            'sequence': 2,
-            'price_include': True,
-        })
-        self.ipi = self.tax_model.create({
-            'name': "IPI",
-            'amount_type': 'percent',
-            'domain': 'ipi',
-            'amount': 7,
-            'sequence': 3,
-        })
-        self.icms = self.tax_model.create({
-            'name': "ICMS",
-            'amount_type': 'division',
-            'domain': 'icms',
-            'amount': 17,
-            'sequence': 4,
-            'price_include': True,
-        })
-        self.icms_inter = self.tax_model.create({
-            'name': "ICMS Inter",
-            'amount_type': 'division',
-            'domain': 'icms',
-            'amount': 12,
-            'sequence': 4,
-            'price_include': True,
-        })
-        self.icms_st = self.tax_model.create({
-            'name': "ICMS ST",
-            'amount_type': 'icmsst',
-            'domain': 'icmsst',
-            'amount': 0,
-            'amount': 18,
-            'price_include': False,
-        })
-        res = self.pis.compute_all(200.0)
-        print res
-
-        res = self.cofins.compute_all(100.0)
-        print res
-
-        res = self.ipi.compute_all(100.0)
-        print res
-
-        res = self.icms.compute_all(100.0)
-        print res
-
-        raise Warning('sadas')
-
     @api.depends('order_line.price_total', 'order_line.valor_desconto')
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()
@@ -114,17 +49,19 @@ class SaleOrderLine(models.Model):
 
     def _prepare_tax_context(self):
         return {
-            'incluir_ipi_base': self.incluir_ipi_base_icms,
-            'aliquota_mva': self.aliquota_mva,
+            'incluir_ipi_base': self.incluir_ipi_base,
+            'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
             'aliquota_icms_proprio': self.aliquota_icms_proprio,
-            'reducao_base_icms': self.reducao_base_icms,
-            'reducao_base_icms_st': self.reducao_base_icms_st,
-            'reducao_base_ipi': self.reducao_base_ipi
+            'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base':
+            self.icms_st_aliquota_reducao_base,
+            'ipi_reducao_bc': self.ipi_reducao_bc
         }
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
-                 'aliquota_mva', 'incluir_ipi_base_icms', 'reducao_base_icms',
-                 'reducao_base_icms_st', 'reducao_base_ipi')
+                 'icms_st_aliquota_mva', 'incluir_ipi_base',
+                 'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
+                 'ipi_reducao_bc')
     def _compute_amount(self):
         for line in self:
 
@@ -149,42 +86,45 @@ class SaleOrderLine(models.Model):
                 'valor_desconto': desconto,
             })
 
-    @api.depends('cfop_id', 'aliquota_mva', 'aliquota_icms_proprio',
-                 'incluir_ipi_base_icms', 'reducao_base_icms',
-                 'reducao_base_icms_st', 'reducao_base_ipi')
+    @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
+                 'incluir_ipi_base', 'icms_aliquota_reducao_base',
+                 'icms_st_aliquota_reducao_base', 'ipi_reducao_bc')
     def _compute_detalhes(self):
         for line in self:
             msg = []
             if line.cfop_id:
                 msg += [u'CFOP: %s' % line.cfop_id.code]
             msg += [u'IPI na base ICMS: %s' % (
-                u'Sim' if line.incluir_ipi_base_icms else u'Não')]
-            if line.aliquota_mva:
-                msg += [u'MVA (%%): %.2f' % line.aliquota_mva]
+                u'Sim' if line.incluir_ipi_base else u'Não')]
+            if line.icms_st_aliquota_mva:
+                msg += [u'MVA (%%): %.2f' % line.icms_st_aliquota_mva]
             if line.aliquota_icms_proprio:
                 msg += [u'ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
-            if line.reducao_base_icms:
-                msg += [u'Red. Base ICMS (%%): %.2f' % line.reducao_base_icms]
-            if line.reducao_base_icms_st:
+            if line.icms_aliquota_reducao_base:
+                msg += [u'Red. Base ICMS (%%): %.2f' %
+                        line.icms_aliquota_reducao_base]
+            if line.icms_st_aliquota_reducao_base:
                 msg += [u'Red. Base ICMS ST (%%): %.2f' %
-                        line.reducao_base_icms_st]
-            if line.reducao_base_ipi:
-                msg += [u'Red. Base IPI (%%): %.2f' % line.reducao_base_ipi]
+                        line.icms_st_aliquota_reducao_base]
+            if line.ipi_reducao_bc:
+                msg += [u'Red. Base IPI (%%): %.2f' % line.ipi_reducao_bc]
 
             line.detalhes_calculo = u'\n'.join(msg)
 
     rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
-    aliquota_mva = fields.Float(string='Alíquota MVA (%)',
-                                digits=dp.get_precision('Account'))
+
+    icms_st_aliquota_mva = fields.Float(string='Alíquota MVA (%)',
+                                        digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
         string='Alíquota ICMS Próprio (%)', digits=dp.get_precision('Account'))
-    incluir_ipi_base_icms = fields.Boolean(string="Incluir Ipi na Base ICMS")
-    reducao_base_icms = fields.Float(
+    incluir_ipi_base = fields.Boolean(string="Incluir Ipi na Base ICMS")
+    icms_aliquota_reducao_base = fields.Float(
         string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
-    reducao_base_icms_st = fields.Float(
+    icms_st_aliquota_reducao_base = fields.Float(
         string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
-    reducao_base_ipi = fields.Float(
+
+    ipi_reducao_bc = fields.Float(
         string='Redução Base IPI (%)', digits=dp.get_precision('Account'))
 
     valor_desconto = fields.Float(
@@ -249,16 +189,22 @@ class SaleOrderLine(models.Model):
         res['tax_ii_id'] = ii and ii.id or False
         res['tax_issqn_id'] = issqn and issqn.id or False
 
+        res['cfop_id'] = self.cfop_id.id
+        res['fiscal_classification_id'] = \
+            self.product_id.fiscal_classification_id.id
+        res['service_type_id'] = self.product_id.service_type_id.id
+
         res['icms_base_calculo'] = self.price_subtotal
         res['icms_aliquota'] = icms.amount or 0.0
-        res['icms_st_aliquota_mva'] = self.aliquota_mva
+        res['icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0
-        res['icms_aliquota_reducao_base'] = self.reducao_base_icms
-        res['icms_st_aliquota_reducao_base'] = self.reducao_base_icms_st
+        res['icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
+        res['icms_st_aliquota_reducao_base'] = \
+            self.icms_st_aliquota_reducao_base
 
         res['ipi_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['ipi_aliquota'] = ipi.amount or 0.0
-        res['ipi_reducao_bc'] = self.reducao_base_ipi
+        res['ipi_reducao_bc'] = self.ipi_reducao_bc
 
         res['pis_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['pis_aliquota'] = pis.amount or 0.0

@@ -85,54 +85,57 @@
                 <attribute name="invisible">1</attribute>
             </page>
             <page name="tax_mapping" position="before">
-                <page name="icms_rules" string="Regras ICMS">
-                    <field name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
-                        <tree>
-                            <field name="name" />
-                            <field name="tax_id" />
-                            <field name="cfop_id" />
-                            <field name="cst_icms" />
-                            <field name="reducao_base" />
-                            <field name="tax_icms_st_id" />
-                            <field name="reducao_base_st" />
-                            <field name="aliquota_mva" />
-                        </tree>
-                    </field>
-                </page>
-                <page name="ipi_rules" string="Regras IPI">
-                    <field name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
-                        <tree>
-                            <field name="name" />
-                            <field name="tax_id" />
-                            <field name="cst_ipi" />
-                            <field name="reducao_base" />
-                        </tree>
-                    </field>
-                </page>
-                <page name="pis_rules" string="Regras PIS">
-                    <field name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
-                        <tree>
-                            <field name="name" />
-                            <field name="tax_id" />
-                            <field name="cst_pis" />
-                            <field name="reducao_base" />
-                        </tree>
-                    </field>
-                </page>
-                <page name="cofins_rules" string="Regras COFINS">
-                    <field name="cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
-                        <tree>
-                            <field name="name" />
-                            <field name="tax_id" />
-                            <field name="cst_cofins" />
-                            <field name="reducao_base" />
-                        </tree>
-                    </field>
-                </page>
-                <page name="issqn_rules" string="Regras ISSQN">
-                    <field name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>                </page>
-                <page name="ii_rules" string="Regras II">
-                    <field name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
+                <page name="icms_rules" string="Regras de Impostos">
+                    <group string="Regras de ICMS">
+                        <field nolabel="1" name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
+                            <tree>
+                                <field name="name" />
+                                <field name="tax_id" />
+                                <field name="cfop_id" />
+                                <field name="cst_icms" />
+                                <field name="reducao_base" />
+                                <field name="tax_icms_st_id" />
+                                <field name="reducao_base_st" />
+                                <field name="aliquota_mva" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group name="ipi_rules" string="Regras de IPI">
+                        <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
+                            <tree>
+                                <field name="name" />
+                                <field name="tax_id" />
+                                <field name="cst_ipi" />
+                                <field name="reducao_base" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group name="pis_rules" string="Regras de PIS">
+                        <field nolabel="1" name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
+                            <tree>
+                                <field name="name" />
+                                <field name="tax_id" />
+                                <field name="cst_pis" />
+                                <field name="reducao_base" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group name="cofins_rules" string="Regras de COFINS">
+                        <field nolabel="1" name="cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
+                            <tree>
+                                <field name="name" />
+                                <field name="tax_id" />
+                                <field name="cst_cofins" />
+                                <field name="reducao_base" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group name="issqn_rules" string="Regras ISSQN">
+                        <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>
+                    </group>
+                    <group name="ii_rules" string="Regras de II">
+                        <field nolabel="1" name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
+                    </group>
                 </page>
             </page>
         </field>
