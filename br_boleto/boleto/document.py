@@ -211,6 +211,26 @@ class BoletoCaixa(Boleto):
         self.boleto.nosso_numero = self.nosso_numero
 
 
+class BoletoCecred(Boleto):
+    def __init__(self, move_line, nosso_numero):
+        conta = move_line.payment_mode_id.bank_account_id
+        self.boleto = Boleto.getBoletoClass(move_line)()
+        self.account_number = conta.acc_number
+        self.account_digit = conta.acc_number_dig
+        self.branch_number = conta.bra_number
+        self.branch_digit = conta.bra_number_dig
+        Boleto.__init__(self, move_line, nosso_numero)
+        self.boleto.codigo_beneficiario = re.sub(
+            '\D', '', conta.codigo_convenio)
+        self.boleto.nosso_numero = self.nosso_numero
+
+    def getAccountNumber(self):
+        return u"%s-%s" % (self.account_number, self.account_digit)
+
+    def getBranchNNumber(self):
+        return u"%s-%s" % (self.branch_number, self.branch_digit)
+
+
 class BoletoHsbc(Boleto):
     def __init__(self, move_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(move_line)()
@@ -305,6 +325,7 @@ dict_boleto = {
     u'7': (BoletoSantander, 'Santander'),
     u'8': (BoletoSicredi, 'Sicredi'),
     u'9': (BoletoSicoob, 'Sicoob'),
+    u'10': (BoletoCecred, 'Cecred'),
 }
 
 
