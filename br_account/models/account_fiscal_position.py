@@ -90,7 +90,6 @@ class AccountFiscalPosition(models.Model):
                 ('tax_%s_id' % type_tax): rules[0].tax_id,
                 # ICMS
                 'icms_cst_normal': rules[0].cst_icms,
-                'icms_cst_simples': rules[0].cst_icms,
                 'icms_aliquota_reducao_base': rules[0].reducao_base,
                 # ICMS ST
                 'tax_icms_st_id': rules[0].tax_icms_st_id,

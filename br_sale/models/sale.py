@@ -114,6 +114,8 @@ class SaleOrderLine(models.Model):
     rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
 
+    icms_cst_normal = fields.Char(string="CST ICMS", size=5)
+    icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
     icms_st_aliquota_mva = fields.Float(string='Alíquota MVA (%)',
                                         digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
@@ -124,8 +126,12 @@ class SaleOrderLine(models.Model):
     icms_st_aliquota_reducao_base = fields.Float(
         string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
 
+    ipi_cst = fields.Char(string='CST IPI', size=5)
     ipi_reducao_bc = fields.Float(
         string='Redução Base IPI (%)', digits=dp.get_precision('Account'))
+
+    pis_cst = fields.Char(string='CST PIS', size=5)
+    cofins_cst = fields.Char(string='CST COFINS', size=5)
 
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
@@ -181,6 +187,9 @@ class SaleOrderLine(models.Model):
         ii = self.tax_id.filtered(lambda x: x.domain == 'ii')
         issqn = self.tax_id.filtered(lambda x: x.domain == 'issqn')
 
+        res['icms_cst_normal'] = self.icms_cst_normal
+        res['icms_csosn_simples'] = self.icms_csosn_simples
+
         res['tax_icms_id'] = icms and icms.id or False
         res['tax_icms_st_id'] = icmsst and icmsst.id or False
         res['tax_ipi_id'] = ipi and ipi.id or False
@@ -202,13 +211,16 @@ class SaleOrderLine(models.Model):
         res['icms_st_aliquota_reducao_base'] = \
             self.icms_st_aliquota_reducao_base
 
+        res['ipi_cst'] = self.ipi_cst
         res['ipi_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['ipi_aliquota'] = ipi.amount or 0.0
         res['ipi_reducao_bc'] = self.ipi_reducao_bc
 
+        res['pis_cst'] = self.pis_cst
         res['pis_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['pis_aliquota'] = pis.amount or 0.0
 
+        res['cofins_cst'] = self.cofins_cst
         res['cofins_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['cofins_aliquota'] = cofins.amount or 0.0
 
