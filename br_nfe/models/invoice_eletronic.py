@@ -420,6 +420,6 @@ Interestadual' % prod)
 
     @api.multi
     def cron_send_nfe(self):
-        nfes = self.env['invoice.eletronic'].search([('state', '==', 'draft')])
+        nfes = self.env['invoice.eletronic'].search([('state', '=', 'draft')])
         for item in nfes:
             item.action_send_eletronic_invoice()
