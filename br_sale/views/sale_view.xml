@@ -8,21 +8,33 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
                 <field name="cfop_id" invisible="1" />
-                <field name="aliquota_mva" invisible="1" />
+                <field name="incluir_ipi_base" invisible="1" />
+                <field name="icms_cst_normal" invisible="1" />
+                <field name="icms_csosn_simples" invisible="1" />
+                <field name="icms_st_aliquota_mva" invisible="1" />
                 <field name="aliquota_icms_proprio" invisible="1" />
-                <field name="reducao_base_icms" invisible="1" />
-                <field name="reducao_base_icms_st" invisible="1" />
-                <field name="reducao_base_ipi" invisible="1" />
+                <field name="icms_aliquota_reducao_base" invisible="1" />
+                <field name="icms_st_aliquota_reducao_base" invisible="1" />
+                <field name="ipi_cst" invisible="1" />
+                <field name="ipi_reducao_bc" invisible="1" />
+                <field name="pis_cst" invisible="1" />
+                <field name="cofins_cst" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
                 <field name="rule_id" readonly="1" />
                 <field name="detalhes_calculo" />
                 <field name="cfop_id" invisible="1" />
-                <field name="aliquota_mva" invisible="1" />
+                <field name="incluir_ipi_base" invisible="1" />
+                <field name="icms_cst_normal" invisible="1" />
+                <field name="icms_csosn_simples" invisible="1" />
+                <field name="icms_st_aliquota_mva" invisible="1" />
                 <field name="aliquota_icms_proprio" invisible="1" />
-                <field name="reducao_base_icms" invisible="1" />
-                <field name="reducao_base_icms_st" invisible="1" />
-                <field name="reducao_base_ipi" invisible="1" />
+                <field name="icms_aliquota_reducao_base" invisible="1" />
+                <field name="icms_st_aliquota_reducao_base" invisible="1" />
+                <field name="ipi_cst" invisible="1" />
+                <field name="ipi_reducao_bc" invisible="1" />
+                <field name="pis_cst" invisible="1" />
+                <field name="cofins_cst" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
                 <field name="price_without_tax" />
