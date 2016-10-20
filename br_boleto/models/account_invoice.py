@@ -31,6 +31,8 @@ class AccountInvoice(models.Model):
                     error += u'Número\n'
                 if not self.company_id.state_id.code:
                     error += u'Estado\n'
+                if not self.payment_mode_id.bank_account_id.codigo_convenio:
+                    error += u'Código de Convênio\n'
                 if len(error) > 0:
                     raise UserError(u"""Ação Bloqueada!
 Para prosseguir é necessário preencher os seguintes campos nas configurações \
@@ -39,6 +41,8 @@ da empresa:\n""" + error)
 
     @api.multi
     def action_register_boleto(self):
+        if not self.payment_mode_id.bank_account_id.codigo_convenio:
+            raise UserError(u'Código de Convênio Inválido!')
         if self.state in ('draft', 'cancel'):
             raise UserError(
                 'Fatura provisória ou cancelada não permite emitir boleto')
