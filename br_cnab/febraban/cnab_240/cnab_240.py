@@ -239,11 +239,11 @@ class Cnab240(Cnab):
         header = self._prepare_header()
         self.arquivo = Arquivo(self.bank, **header)
         for line in order.line_ids:
-            seg = self._prepare_segmento(line)
+            seg = self._prepare_segmento(line.move_line_id)
             self.arquivo.incluir_cobranca(header, **seg)
             self.arquivo.lotes[0].header.servico_servico = 1
             # TODO: tratar soma de tipos de cobranca
-            cobrancasimples_valor_titulos += line.amount_currency
+            cobrancasimples_valor_titulos += line.move_line_id.amount_currency
             self.arquivo.lotes[0].trailer.cobrancasimples_valor_titulos = \
                 Decimal(cobrancasimples_valor_titulos).quantize(
                     Decimal('1.00'))
