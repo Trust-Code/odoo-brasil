@@ -14,7 +14,6 @@ class AccountMoveLine(models.Model):
         'payment.mode', string=u"Modo de pagamento")
     boleto_emitido = fields.Boolean(string=u"Emitido")
     nosso_numero = fields.Char(string=u"Nosso número", size=30)
-    payment_order_id = fields.Many2one('payment.order')
 
     @api.multi
     def action_print_boleto(self):
@@ -40,10 +39,16 @@ class AccountMoveLine(models.Model):
             'currency_id': self.company_currency_id.id,
         }
         if not payment_order:
-            order = payment_order.create(order_dict)
-            self.payment_order_id = order.id
-        else:
-            self.payment_order_id = payment_order.id
+            payment_order = payment_order.create(order_dict)
+
+        move = self.env['payment.order.line'].search(
+            [('payment_order_id', '=', payment_order.id),
+             ('move_line_id', '=', self.id)])
+        if not move:
+            self.env['payment.order.line'].create({
+                'move_line_id': self.id,
+                'payment_order_id': payment_order.id,
+            })
 
     @api.multi
     def action_register_boleto(self):
