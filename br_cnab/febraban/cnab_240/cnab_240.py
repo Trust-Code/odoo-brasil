@@ -73,6 +73,8 @@ class Cnab240(Cnab):
                           self.order.payment_mode_id.company_id.cnpj_cpf)
         cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
             acc_number_dig
+        if self.order.payment_mode_id.bank_account_id.bank_id.bic == '237':
+            cedente_conta_dv = str(cedente_conta_dv)
         cedente_conta_dv = cedente_conta_dv if self.order.payment_mode_id.\
             bank_account_id.bank_id.bic == '756' else int(cedente_conta_dv)
         return {
@@ -87,7 +89,7 @@ class Cnab240(Cnab):
                 self.order.payment_mode_id.bank_account_id.bra_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
-            'cedente_conta_dv': str(cedente_conta_dv),
+            'cedente_conta_dv': cedente_conta_dv,
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
