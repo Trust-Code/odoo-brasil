@@ -29,15 +29,4 @@
         </field>
     </record>
 
-    <record id="view_braccount_payment_mode_tree" model="ir.ui.view">
-        <field name="name">payment.mode.tree</field>
-        <field name="model">payment.mode</field>
-        <field name="inherit_id" ref="br_account_payment.account_payment_mode_form" />
-        <field name="arch" type="xml">
-            <field name="company_id" position="after">
-                <field name="bank_account_id"/>
-            </field>
-        </field>
-    </record>
-
 </odoo>
