@@ -9,6 +9,21 @@ class TestTaxBrasil(TransactionCase):
 
     def setUp(self):
         super(TestTaxBrasil, self).setUp()
+        self.default_ncm = self.env['product.fiscal.classification'].create({
+            'code': '0201.20.20',
+            'name': 'Furniture'
+        })
+        self.default_product = self.env['product.product'].create({
+            'name': 'Normal Product',
+            'fiscal_classification_id': self.default_ncm.id,
+            'list_price': 15.0
+        })
+        self.st_product = self.env['product.product'].create({
+            'name': 'Product for ICMS ST',
+            'fiscal_classification_id': self.default_ncm.id,
+            'list_price': 25.0
+        })
+
         self.tax_model = self.env['account.tax']
         self.pis = self.tax_model.create({
             'name': "PIS",
