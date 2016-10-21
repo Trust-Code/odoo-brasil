@@ -85,7 +85,7 @@ class AccountFiscalPosition(models.Model):
             rules = rule_obj.search(domain)
         if rules:
             return {
-                'rule_id': rules[0],
+                ('%s_rule_id' % type_tax): rules[0],
                 'cfop_id': rules[0].cfop_id,
                 ('tax_%s_id' % type_tax): rules[0].tax_id,
                 # ICMS

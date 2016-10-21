@@ -116,15 +116,19 @@ class AccountTax(models.Model):
 
         for tax in icms_taxes:
             amount = 0
+            base = 0
             if tax.domain == 'icms':
+                base = base
                 amount = icms_amount
             if tax.domain == 'icmsst':
+                base = base_st
                 amount = icmsst_amount
             if amount > 0.0:
                 res['taxes'].append({
                     'id': tax.id,
                     'name': tax.with_context(
                         **{'lang': partner.lang} if partner else {}).name,
+                    'base': base,
                     'amount': amount,
                     'sequence': tax.sequence,
                     'account_id': tax.account_id.id,

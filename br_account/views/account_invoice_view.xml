@@ -19,6 +19,10 @@
                 <div class="oe_button_box" name="button_box">
                 </div>
             </xpath>
+            <field name="fiscal_position_id" position="replace"></field>
+            <field name="payment_term_id" position="after">
+                <field name="fiscal_position_id" />
+            </field>
             <field name="date_invoice" position="before">
                 <field name="is_eletronic" invisible="1" />
                 <field name="fiscal_document_id" />
@@ -173,6 +177,7 @@
                                     <field name="has_icms_difal" />
                                 </group>
                                 <group>
+                                    <field name="icms_rule_id" />
                                     <field name="icms_base_calculo"/>
                                     <field name="icms_aliquota_reducao_base"/>
                                     <field name="tax_icms_id" />
@@ -219,6 +224,7 @@
                                 <group>
                                     <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="ipi_tipo"/>
+                                    <field name="ipi_rule_id" />
                                 </group>
                                 <group>
                                     <field name="ipi_base_calculo"/>
@@ -234,6 +240,7 @@
                                 <group>
                                     <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="pis_tipo"/>
+                                    <field name="pis_rule_id" />
                                 </group>
                                 <group>
                                     <field name="pis_base_calculo"/>
@@ -258,6 +265,7 @@
                                 <group>
                                     <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="cofins_tipo"/>
+                                    <field name="cofins_rule_id" />
                                 </group>
                                 <group>
                                     <field name="cofins_base_calculo"/>
@@ -279,6 +287,7 @@
                         </page>
                         <page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
                             <group string="Detalhes do Imposto de Importação">
+                                <field name="ii_rule_id" />
                                 <field name="tax_ii_id" />
                                 <field name="ii_base_calculo"/>
                                 <field name="ii_aliquota" invisible="1"/>

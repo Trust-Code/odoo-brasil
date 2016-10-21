@@ -142,6 +142,7 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # ICMS Normal
     # =========================================================================
+    icms_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     tax_icms_id = fields.Many2one('account.tax', string="Alíquota ICMS",
                                   domain=[('domain', '=', 'icms')])
     icms_cst = fields.Char('CST ICMS', size=10,
@@ -229,6 +230,8 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # ISSQN
     # =========================================================================
+    issqn_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra')
     tax_issqn_id = fields.Many2one('account.tax', string="Alíquota ISSQN",
                                    domain=[('domain', '=', 'issqn')])
     issqn_tipo = fields.Selection(
@@ -250,6 +253,7 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # IPI
     # =========================================================================
+    ipi_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     tax_ipi_id = fields.Many2one('account.tax', string="Alíquota IPI",
                                  domain=[('domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
@@ -272,6 +276,7 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # PIS
     # =========================================================================
+    pis_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     tax_pis_id = fields.Many2one('account.tax', string="Alíquota PIS",
                                  domain=[('domain', '=', 'pis')])
     pis_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
@@ -304,6 +309,8 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # COFINS
     # =========================================================================
+    cofins_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra')
     tax_cofins_id = fields.Many2one('account.tax', string="Alíquota COFINS",
                                     domain=[('domain', '=', 'cofins')])
     cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
@@ -337,6 +344,7 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # Imposto de importação
     # =========================================================================
+    ii_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
     tax_ii_id = fields.Many2one('account.tax', string="Alíquota II",
                                 domain=[('domain', '=', 'ii')])
     ii_base_calculo = fields.Float(
