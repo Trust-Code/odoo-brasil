@@ -29,7 +29,8 @@ class AccountMoveLine(models.Model):
         """Gera um objeto de payment.order ao imprimir um boleto"""
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
-            ('state', '=', 'draft')], limit=1)
+            ('state', '=', 'draft'),
+            ('payment_mode_id', '=', self.payment_mode_id.id)], limit=1)
         order_dict = {
             'name': u'%s' % order_name,
             'user_id': self.write_uid.id,
