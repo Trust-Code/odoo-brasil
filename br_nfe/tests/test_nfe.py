@@ -4,14 +4,10 @@
 
 import os
 import base64
-import logging
 from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 from pytrustnfe.xml import sanitize_response
-
-
-_logger = logging.getLogger(__name__)
 
 
 class TestNFeBrasil(TransactionCase):

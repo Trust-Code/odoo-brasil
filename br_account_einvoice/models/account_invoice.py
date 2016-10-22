@@ -144,7 +144,6 @@ class AccountInvoice(models.Model):
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
             'partner_id': invoice.partner_id.id,
-            'partner_shipping_id': invoice.partner_shipping_id.id,
             'payment_term_id': invoice.payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
         }

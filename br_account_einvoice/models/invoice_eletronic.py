@@ -111,8 +111,6 @@ class InvoiceEletronic(models.Model):
             @returns list<string> errors
         """
         errors = []
-        if not self.serie:
-            errors.append(u'Nota Fiscal - Série da nota fiscal')
         if not self.serie.fiscal_document_id:
             errors.append(u'Nota Fiscal - Tipo de documento fiscal')
         if not self.serie.internal_sequence_id:
@@ -126,8 +124,6 @@ class InvoiceEletronic(models.Model):
             errors.append(u'Emitente - Senha do Certificado Digital')
         if not self.company_id.partner_id.legal_name:
             errors.append(u'Emitente - Razão Social')
-        if not self.company_id.partner_id.name:
-            errors.append(u'Emitente - Fantasia')
         if not self.company_id.partner_id.cnpj_cpf:
             errors.append(u'Emitente - CNPJ/CPF')
         if not self.company_id.partner_id.street:
@@ -218,14 +214,6 @@ class InvoiceEletronic(models.Model):
                     errors.append(
                         u'Prod: %s - Código do produto' % (
                             eletr.product_id.name))
-                prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
-                                              eletr.product_id.name)
-                if not eletr.product_id.name:
-                    errors.append(u'%s - Nome do produto' % prod)
-                if not eletr.quantidade:
-                    errors.append(u'%s - Quantidade' % prod)
-                if not eletr.preco_unitario:
-                    errors.append(u'%s - Preco unitario' % prod)
         return errors
 
     @api.multi
@@ -248,7 +236,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        self.validate_invoice()
+        pass
 
 
 class InvoiceEletronicEvent(models.Model):
