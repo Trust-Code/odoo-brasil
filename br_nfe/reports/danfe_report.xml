@@ -449,7 +449,7 @@
                                 <td><span t-field="e.icms_valor"></span></td>
                                 <td><span t-field="e.ipi_valor"></span></td>
                                 <td><span t-field="e.icms_aliquota_reducao_base"></span></td>
-                                <td><span t-field="e.ipi_aliquota_reducao_base"></span></td>
+                                <td><span t-field="e.ipi_reducao_bc"></span></td>
                             </tr>
                         </tbody>
                     </table>

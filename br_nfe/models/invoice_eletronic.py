@@ -35,6 +35,17 @@ class InvoiceEletronic(models.Model):
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
+    ind_dest = fields.Selection([
+        ('1', '1 - Operação Interna'),
+        ('2', '2 - Operação Interestadual'),
+        ('3', '3 - Operação com exterior')],
+        string="Indicador Destinatário", readonly=True,
+        states={'draft': [('readonly', False)]})
+    ind_ie_dest = fields.Selection([
+        ('1', '1 - Contribuinte ICMS'),
+        ('2', '2 - Contribuinte Isento de Cadastro'),
+        ('9', '9 - Não Contribuinte')],
+        string="Indicador IE Dest.", help="Indicador da IE do desinatário")
 
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
@@ -60,11 +71,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        is_interestadual = self.company_id.state_id.id != (
-            self.partner_shipping_id.state_id.id or self.
-            partner_id.state_id.id)
-        if not self.ind_final:
-            errors.append(u'Configure o indicador de consumidor final')
         if not self.fiscal_position_id:
             errors.append(u'Configure a posição fiscal')
 
@@ -73,11 +79,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                                           eletr.product_id.name)
             if not eletr.cfop:
                 errors.append(u'%s - CFOP' % prod)
-            if is_interestadual and eletr.cfop and not eletr.cfop.\
-                    startswith('6'):
-                errors.append(
-                    u'%s - CFOP Não Começa com 6 em Operação \
-Interestadual' % prod)
             if eletr.tipo_produto == 'product':
                 if not eletr.icms_cst:
                     errors.append(u'%s - CST do ICMS' % prod)
@@ -92,15 +93,6 @@ Interestadual' % prod)
                 errors.append(u'%s - CST do Cofins' % prod)
 
         return errors
-
-    @api.one
-    def _id_dest(self):
-        id_dest = '1'
-        if self.company_id.state_id != self.partner_id.state_id:
-            id_dest = '2'
-        if self.company_id.country_id != self.partner_id.country_id:
-            id_dest = '3'
-        return id_dest
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
@@ -192,7 +184,7 @@ Interestadual' % prod)
             'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'tpNF': self.finalidade_emissao,
-            'idDest': self._id_dest()[0],
+            'idDest': self.ind_dest,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
                                 self.company_id.city_id.ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
@@ -226,21 +218,6 @@ Interestadual' % prod)
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
-        ind_ie_dest = False
-        if self.partner_id.is_company:
-            if self.partner_id.inscr_est:
-                ind_ie_dest = '1'
-            elif self.partner_id.state_id.code in ('AM', 'BA', 'CE', 'GO',
-                                                   'MG', 'MS', 'MT', 'PE',
-                                                   'RN', 'SP'):
-                ind_ie_dest = '9'
-            else:
-                ind_ie_dest = '2'
-        else:
-            ind_ie_dest = '9'
-        if self.partner_id.indicador_ie_dest:
-            ind_ie_dest = self.partner_id.indicador_ie_dest
-
         dest = {
             'tipo': self.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf),
@@ -258,7 +235,7 @@ Interestadual' % prod)
                 'xPais': self.partner_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
             },
-            'indIEDest': ind_ie_dest,
+            'indIEDest': self.ind_ie_dest,
             'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
         }
         if self.ambiente == 'homologacao':

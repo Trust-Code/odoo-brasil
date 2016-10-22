@@ -60,12 +60,33 @@ class AccountInvoice(models.Model):
             res['ind_final'] = '0'
         else:
             res['ind_final'] = '1'
+        res['ind_dest'] = '1'
+        if inv.company_id.state_id != inv.partner_id.state_id:
+            res['ind_dest'] = '2'
+        if inv.company_id.country_id != inv.partner_id.country_id:
+            res['ind_dest'] = '3'
         if inv.fiscal_position_id.ind_final:
             res['ind_final'] = inv.fiscal_position_id.ind_final
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
         res['informacoes_complementares'] = inv.comment
+
+        ind_ie_dest = False
+        if inv.partner_id.is_company:
+            if inv.partner_id.inscr_est:
+                ind_ie_dest = '1'
+            elif inv.partner_id.state_id.code in ('AM', 'BA', 'CE', 'GO',
+                                                  'MG', 'MS', 'MT', 'PE',
+                                                  'RN', 'SP'):
+                ind_ie_dest = '9'
+            else:
+                ind_ie_dest = '2'
+        else:
+            ind_ie_dest = '9'
+        if inv.partner_id.indicador_ie_dest:
+            ind_ie_dest = inv.partner_id.indicador_ie_dest
+        res['ind_ie_dest'] = ind_ie_dest
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):

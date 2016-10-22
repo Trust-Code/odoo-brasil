@@ -334,7 +334,7 @@ class InvoiceEletronicItem(models.Model):
     ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária do ICMS')
     ipi_aliquota = fields.Float(u'Alíquota')
     ipi_base_calculo = fields.Float(u'Base de cálculo')
-    ipi_aliquota_reducao_base = fields.Float(u'% Redução Base')
+    ipi_reducao_bc = fields.Float(u'% Redução Base')
     ipi_valor = fields.Float(u'Valor Total')
 
     # ----------- II ----------------------

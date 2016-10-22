@@ -80,7 +80,7 @@
                                 <group>
                                     <field name="ipi_valor" />
                                     <field name="ipi_base_calculo"/>
-                                    <field name="ipi_aliquota_reducao_base" />
+                                    <field name="ipi_reducao_bc" />
                                     <field name="ipi_aliquota" />
                                     <field name="ipi_valor"/>
                                 </group>
