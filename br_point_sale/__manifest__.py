@@ -16,7 +16,9 @@
     ],
     'depends': [
         'point_of_sale',
+        'br_nfe',
     ],
     'data': [
+        'views/pos_order.xml'
     ],
 }
