@@ -21,10 +21,11 @@ class PaymentOrder(models.Model):
 
     @api.multi
     def gerar_cnab(self):
+        if len(self.line_ids) < 1:
+            raise UserError('Ordem de Cobrança não possui Linhas de Cobrança!')
         self.data_emissao_cnab = datetime.now()
         self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         for order_id in self:
-
             order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
                 order.payment_mode_id.bank_account_id.bank_bic, '240')()
@@ -156,6 +157,8 @@ class PaymentOrder(models.Model):
 
     @api.multi
     def validar_cnab(self):
+        if not self.cnab_file:
+            raise UserError('Ordem de Cobrança não possui CNAB')
         if self.payment_mode_id.bank_account_id.bank_id.bic == '756':
             cnab = base64.decodestring(self.cnab_file).split('\r\n')
             cnab = [line for line in cnab if len(line) == 240]
