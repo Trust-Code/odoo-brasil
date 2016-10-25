@@ -23,8 +23,10 @@ class BancoBrasil240(Cnab240):
 
         nossonumero, digito = self.nosso_numero(
             line.nosso_numero)
-
-        parcela = line.name.split('/')[1]
+        try:
+            parcela = line.name.split('/')[1]
+        except:
+            parcela = line.name
         vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(line)
         vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira[:2])
         vals['nosso_numero'] = self.format_nosso_numero(

@@ -74,8 +74,10 @@ class Cnab240(Cnab):
         cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
             acc_number_dig
         cedent_str = ['237', '756', '0851', ]
-        if self.order.payment_mode_id.bank_account_id.bank_id.bic in cedente_str:
+        if self.order.payment_mode_id.bank_account_id.bank_id.bic in cedent_str:
             cedente_conta_dv = str(cedente_conta_dv)
+        else:
+            cedente_conta_dv = int(cedente_conta_dv)
         return {
             'controle_banco': int(self.order.payment_mode_id.
                                   bank_account_id.bank_bic),
