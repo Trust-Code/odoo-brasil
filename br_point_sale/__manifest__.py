@@ -21,4 +21,5 @@
     'data': [
         'views/pos_order.xml'
     ],
+    'application': True,
 }
