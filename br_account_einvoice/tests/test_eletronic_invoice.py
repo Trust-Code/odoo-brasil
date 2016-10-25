@@ -114,7 +114,7 @@ class TestEletronicInvoice(TransactionCase):
         invoice_eletronic = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.inv_incomplete.id)])
 
-        self.assertEquals(self.inv_incomplete.total_edocs, 1)
+        self.assertEquals(self.inv_incomplete.total_edocs, 0)
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
         self.assertEquals(vals['res_model'], 'invoice.eletronic')
