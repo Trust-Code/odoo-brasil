@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from ..boleto.document import Boleto
@@ -42,21 +43,32 @@ class AccountMoveLine(models.Model):
             payment_order = payment_order.create(order_dict)
 
         move = self.env['payment.order.line'].search(
-            [('payment_order_id', '=', payment_order.id),
-             ('move_line_id', '=', self.id)])
+            [('payment_mode_id', '=', self.payment_mode_id.id),
+             ('nosso_numero', '=', self.nosso_numero)])
         if not move:
             self.env['payment.order.line'].create({
                 'move_line_id': self.id,
                 'payment_order_id': payment_order.id,
+                'nosso_numero': self.nosso_numero,
+                'payment_mode_id': self.payment_mode_id.id,
+                'date_maturity': self.date_maturity,
+                'value': self.amount_residual,
+                'name': self.name,
             })
 
     @api.multi
     def action_register_boleto(self):
         boleto_list = []
         for move in self:
-            if not move.invoice_id.payment_mode_id.nosso_numero_sequence.id:
+            if not move.payment_mode_id:
+                raise UserError('O modo de pagamento configurado não é boleto')
+            if not move.payment_mode_id.nosso_numero_sequence.id:
                 raise UserError('Cadastre a sequência do nosso número no modo \
                                 de pagamento')
+            vencimento = fields.Date.from_string(move.date_maturity)
+            if vencimento < datetime.today().date() and not move.reconciled:
+                raise UserError('A data de vencimento deve ser maior que a \
+                                data atual. Altere a data de vencimento!')
             if not move.boleto_emitido:
                 move.boleto_emitido = True
                 move.nosso_numero = \

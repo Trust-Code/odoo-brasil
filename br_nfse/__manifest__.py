@@ -3,9 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Account E-Invoice',
-    'summary': """Base Module for the Brazilian Invoice Eletronic""",
-    'description': """Base Module for the Brazilian Invoice Eletronic""",
+    'name': 'Envio de NFS-e',
+    'summary': """Permite o envio de NFS-e através das faturas do Odoo
+    Mantido por Trustcode""",
+    'description': 'Envio de NFS-e - Nota Fiscal Paulistana',
     'version': '10.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
@@ -15,15 +16,11 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'document',
-        'br_base',
-        'br_account',
-        'br_data_account',
+        'br_account_einvoice',
     ],
     'data': [
-        'security/ir.model.access.csv',
-        'views/invoice_eletronic.xml',
-        'views/account_invoice.xml',
+        'views/res_company.xml',
     ],
-    'instalable': True
+    'instalable': True,
+    'application': True,
 }
