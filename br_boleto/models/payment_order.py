@@ -8,16 +8,20 @@ from odoo import fields, models
 class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
 
+    name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
-        'payment.order', string="Ordem de Pagamento")
+        'payment.order', string="Ordem de Pagamento", ondelete="cascade")
     move_line_id = fields.Many2one(
         'account.move.line', string=u'Linhas de Cobrança')
     partner_id = fields.Many2one(
         'res.partner', related='move_line_id.partner_id', string="Parceiro")
     move_id = fields.Many2one('account.move', string="Lançamento de Diário",
                               related='move_line_id.move_id')
-    nosso_numero = fields.Char(
-        string="Nosso Número", related="move_line_id.nosso_numero")
+    nosso_numero = fields.Char(string="Nosso Número", size=20)
+    payment_mode_id = fields.Many2one(
+        'payment.mode', string="Modo de pagamento")
+    date_maturity = fields.Date(string="Vencimento")
+    value = fields.Float(string="Valor", digits=(18, 2))
 
 
 class PaymentOrder(models.Model):

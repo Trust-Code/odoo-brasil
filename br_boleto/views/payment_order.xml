@@ -39,6 +39,9 @@
                         <field name="line_ids" nolabel='1'>
                             <tree name='account_move_line'>
                                 <field name="move_id" />
+                                <field name="name" />
+                                <field name="date_maturity" />
+                                <field name="value" />
                                 <field name='partner_id' />
                                 <field name="nosso_numero" />
                             </tree>

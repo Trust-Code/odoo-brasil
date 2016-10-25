@@ -9,6 +9,7 @@
                 <group>
                     <group>
                         <field name="move_line_id" string='Vencimento'/>
+                        <field name="date_change" />
                     </group>
                 </group>
                 <footer>

@@ -16,7 +16,6 @@ class TestFiscalPosition(TransactionCase):
             is_company=False,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
-            sale_warn='no-message'
         ))
         self.product = self.env['product.product'].create({
             'name': 'Normal Product',

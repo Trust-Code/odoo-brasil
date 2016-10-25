@@ -5,11 +5,15 @@
 from odoo import api, fields, models
 
 
+FIELD_STATE = {'draft': [('readonly', False)]}
+
+
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    payment_mode_id = fields.Many2one('payment.mode',
-                                      string=u"Modo de pagamento")
+    payment_mode_id = fields.Many2one(
+        'payment.mode', readonly=True,
+        states=FIELD_STATE, string=u"Modo de pagamento")
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
