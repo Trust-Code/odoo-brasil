@@ -14,8 +14,6 @@ class PosOrder(models.Model):
 
     @api.model
     def _process_order(self, pos_order):
-        import ipdb
-        ipdb.set_trace()
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                            for i in range(8)]))
         res = super(PosOrder, self)._process_order(pos_order)
@@ -137,8 +135,6 @@ class PosOrder(models.Model):
 
     @api.multi
     def action_view_edocs(self):
-        import ipdb
-        ipdb.set_trace()
         if self.total_edocs == 1:
             edoc = self.env['invoice.eletronic'].search(
                 [('numero_controle', '=', self.numero_controle)], limit=1)
@@ -151,6 +147,7 @@ class PosOrder(models.Model):
             vals['views'][1] = (view_id, u'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
             vals['res_id'] = edoc.id
+            vals['search_view'] = False
             return vals
         else:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
