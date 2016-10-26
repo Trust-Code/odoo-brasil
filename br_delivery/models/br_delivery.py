@@ -27,7 +27,7 @@ class BrDeliveryCarrierVehicle(models.Model):
     model_year = fields.Char(u'Ano do Modelo', size=4)
     type = fields.Selection([('bau', u'Caminhão Baú')], u'Tipo')
     carrier_id = fields.Many2one(
-        'delivery.carrier', u'Carrier', select=True,
+        'delivery.carrier', u'Carrier', index=True,
         required=True, ondelete='cascade')
 
 
@@ -37,9 +37,9 @@ class BrDeliveryShipment(models.Model):
     code = fields.Char(u'Nome', size=32)
     description = fields.Char(u'Descrição', size=132)
     carrier_id = fields.Many2one(
-        'delivery.carrier', u'Carrier', select=True, required=True)
+        'delivery.carrier', u'Carrier', index=True, required=True)
     vehicle_id = fields.Many2one(
-        'br_delivery.carrier.vehicle', u'Vehicle', select=True,
+        'br_delivery.carrier.vehicle', u'Vehicle', index=True,
         required=True)
     volume = fields.Float(u'Volume')
     carrier_tracking_ref = fields.Char(u'Carrier Tracking Ref', size=32)
