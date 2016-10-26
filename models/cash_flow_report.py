@@ -26,10 +26,10 @@ class CashFlowReport(models.TransientModel):
         string="End Date", required=True,
         default=fields.date.today()+datetime.timedelta(6*365/12))
     start_amount = fields.Float(string="Initial Value",
-                                digits_compute=dp.get_precision('Account'))
+                                digits=dp.get_precision('Account'))
     final_amount = fields.Float(string="Total",
                                 compute="calc_final_amount",
-                                digits_compute=dp.get_precision('Account'))
+                                digits=dp.get_precision('Account'))
     line_ids = fields.One2many(
         "account.cash.flow.line", "cashflow_id",
         string="Cash Flow Lines")
@@ -124,11 +124,11 @@ class CashFlowReportLine(models.TransientModel):
     journal_id = fields.Many2one("account.journal", string="Journal")
     invoice_id = fields.Many2one("account.invoice", string="Invoice")
     debit = fields.Float(string="Debit",
-                         digits_compute=dp.get_precision('Account'))
+                         digits=dp.get_precision('Account'))
     credit = fields.Float(string="Credit",
-                          digits_compute=dp.get_precision('Account'))
+                          digits=dp.get_precision('Account'))
     amount = fields.Float(string="Balance(C-D)",
-                          digits_compute=dp.get_precision('Account'))
+                          digits=dp.get_precision('Account'))
     balance = fields.Float(string="Accumulated Balance",
-                           digits_compute=dp.get_precision('Account'))
+                           digits=dp.get_precision('Account'))
     cashflow_id = fields.Many2one("account.cash.flow", string="Cash Flow")

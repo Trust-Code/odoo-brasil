@@ -16,7 +16,7 @@ class CashFlowWizard(models.TransientModel):
         string="End Date", required=True,
         default=fields.date.today()+datetime.timedelta(6*365/12))
     start_amount = fields.Float(string="Initial value",
-                                digits_compute=dp.get_precision('Account'))
+                                digits=dp.get_precision('Account'))
     print_report = fields.Boolean(string="Imprimir")
 
     @api.multi
