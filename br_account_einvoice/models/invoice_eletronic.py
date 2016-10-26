@@ -18,7 +18,7 @@ class InvoiceEletronic(models.Model):
 
     code = fields.Char(u'Código', size=100, required=True)
     name = fields.Char(u'Name', size=100, required=True)
-    company_id = fields.Many2one('res.company', u'Company', select=True)
+    company_id = fields.Many2one('res.company', u'Company', index=True)
     state = fields.Selection([('draft', 'Draft'), ('error', 'Erro'),
                               ('done', 'Done')],
                              string=u'State', default='draft')
@@ -255,7 +255,7 @@ class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
 
     name = fields.Char(u'Nome', size=100)
-    company_id = fields.Many2one('res.company', u'Empresa', select=True)
+    company_id = fields.Many2one('res.company', u'Empresa', index=True)
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', u'Documento')
 
     product_id = fields.Many2one('product.product', string=u'Produto')
@@ -358,7 +358,7 @@ class InvoiceTransport(models.Model):
     _name = 'invoice.transport'
 
     name = fields.Char(u'Nome', size=100)
-    company_id = fields.Many2one('res.company', u'Empresa', select=True)
+    company_id = fields.Many2one('res.company', u'Empresa', index=True)
 
     modalidade_frete = fields.Selection([('0', '0 - Sem Frete'),
                                          ('1', '1 - Por conta destinatário'),
