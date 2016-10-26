@@ -74,6 +74,7 @@ class AccountInvoice(models.Model):
             'valor_liquido': invoice_line.price_subtotal,
             'origem': invoice_line.icms_origem,
             'tributos_estimados': invoice_line.tributos_estimados,
+            'ncm': invoice_line.fiscal_classification_id.code,
             # - ICMS -
             'icms_cst': invoice_line.icms_cst,
             'icms_aliquota': invoice_line.icms_aliquota,

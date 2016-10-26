@@ -10,4 +10,4 @@ class ResCompany(models.Model):
 
     tipo_ambiente_nfse = fields.Selection(
         [('1', 'Produção'), ('2', 'Homologação')],
-        string="Homologação", default=2)
+        string="Ambiente NFSe", default=2)

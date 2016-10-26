@@ -21,5 +21,5 @@
         'security/l10n_br_sale_security.xml',
     ],
     'installable': True,
-    'auto_install': False
+    'auto_install': True
 }

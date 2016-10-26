@@ -48,6 +48,11 @@
                     </group>
                     <group></group>
                 </group>
+                <group string="Aplicar esta regra quando:">
+                    <field name="tipo_produto" />
+                    <field name="consumidor_final" />
+                    <field name="origem_produto" />
+                </group>
                 <group string="Estados">
                     <field name="state_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
@@ -69,6 +74,7 @@
         <field name="model">account.fiscal.position.tax.rule</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="sequence" widget="handle"/>
                 <field name="name" />
                 <field name="tax_id" />
                 <field name="reducao_base" />
@@ -89,6 +95,7 @@
                     <group string="Regras de ICMS">
                         <field nolabel="1" name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
                             <tree>
+                                <field name="sequence" widget="handle"/>
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cfop_id" />
@@ -103,6 +110,7 @@
                     <group name="ipi_rules" string="Regras de IPI">
                         <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
                             <tree>
+                                <field name="sequence" widget="handle"/>
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cst_ipi" />
@@ -113,6 +121,7 @@
                     <group name="pis_rules" string="Regras de PIS">
                         <field nolabel="1" name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
                             <tree>
+                                <field name="sequence" widget="handle"/>
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cst_pis" />
@@ -123,6 +132,7 @@
                     <group name="cofins_rules" string="Regras de COFINS">
                         <field nolabel="1" name="cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
                             <tree>
+                                <field name="sequence" widget="handle"/>
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cst_cofins" />

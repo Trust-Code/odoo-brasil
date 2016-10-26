@@ -263,6 +263,7 @@ class InvoiceEletronicItem(models.Model):
                                      ('service', 'Serviço')],
                                     string="Tipo Produto")
     cfop = fields.Char(u'CFOP', size=5)
+    ncm = fields.Char(u'NCM', size=10)
 
     uom_id = fields.Many2one('product.uom', u'Unidade de medida')
     quantidade = fields.Float(u'Quantidade')

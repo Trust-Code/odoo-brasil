@@ -100,7 +100,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
             'xProd': item.product_id.name,
-            'NCM': '39259090',
+            'NCM': re.sub('[^0-9]', '', item.ncm or ''),
             'CFOP': item.cfop,
             'uCom': item.uom_id.name,
             'qCom': item.quantidade,
@@ -169,9 +169,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
-        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
         dt_emissao = datetime.strptime(self.data_emissao, DTFT)
-        dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
 
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
@@ -181,8 +179,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
-            'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+            'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'tpNF': self.finalidade_emissao,
             'idDest': self.ind_dest,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,

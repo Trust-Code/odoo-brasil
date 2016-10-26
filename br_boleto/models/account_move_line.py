@@ -11,8 +11,6 @@ from ..boleto.document import Boleto
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    payment_mode_id = fields.Many2one(
-        'payment.mode', string=u"Modo de pagamento")
     boleto_emitido = fields.Boolean(string=u"Emitido")
     nosso_numero = fields.Char(string=u"Nosso número", size=30)
 

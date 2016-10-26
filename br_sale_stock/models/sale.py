@@ -17,8 +17,8 @@ class SaleOrder(models.Model):
         super(SaleOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.amount_total + order.total_frete +
-                order.total_seguro + order.total_despesas,
+                'amount_total': order.total_bruto - order.total_desconto +
+                order.total_frete + order.total_seguro + order.total_despesas,
             })
 
     def _calc_ratio(self, qty, total):
@@ -29,10 +29,15 @@ class SaleOrder(models.Model):
 
     @api.onchange('total_despesas', 'total_seguro', 'total_frete')
     def _onchange_despesas_frete_seguro(self):
+        amount = 0
+        for line in self.order_line:
+            if line.product_id.fiscal_type == 'product':
+                amount += line.price_without_tax
         for l in self.order_line:
+            if l.product_id.fiscal_type == 'service':
+                continue
             item_liquido = l.valor_bruto - l.valor_desconto
-            total_liquido = self.total_bruto - self.total_desconto
-            percentual = self._calc_ratio(item_liquido, total_liquido)
+            percentual = self._calc_ratio(item_liquido, amount)
             l.update({
                 'valor_seguro': self.total_seguro * percentual,
                 'valor_frete': self.total_frete * percentual,

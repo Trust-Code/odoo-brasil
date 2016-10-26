@@ -26,6 +26,7 @@
                                 <group>
                                     <field name="tipo_produto" />
                                     <field name="cfop" />
+                                    <field name="ncm" />
                                     <field name="origem" />
                                 </group>
                             </group>
