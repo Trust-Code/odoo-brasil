@@ -91,6 +91,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 errors.append(u'%s - CST do PIS' % prod)
             if not eletr.cofins_cst:
                 errors.append(u'%s - CST do Cofins' % prod)
+            if not eletr.cest:
+                errors.append(u'%s - CEST' % prod)
+
 
         return errors
 
@@ -182,7 +185,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'tpNF': self.finalidade_emissao,
-            'idDest': self.ind_dest,
+            'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
                                 self.company_id.city_id.ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
@@ -218,7 +221,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         }
         dest = {
             'tipo': self.partner_id.company_type,
-            'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf),
+            'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf or ''),
             'xNome': self.partner_id.legal_name or self.partner_id.name,
             'enderDest': {
                 'xLgr': self.partner_id.street,
@@ -228,7 +231,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                                   self.partner_id.city_id.ibge_code),
                 'xMun': self.partner_id.city_id.name,
                 'UF': self.partner_id.state_id.code,
-                'CEP': re.sub('[^0-9]', '', self.partner_id.zip),
+                'CEP': re.sub('[^0-9]', '', self.partner_id.zip or ''),
                 'cPais': self.partner_id.country_id.ibge_code,
                 'xPais': self.partner_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')

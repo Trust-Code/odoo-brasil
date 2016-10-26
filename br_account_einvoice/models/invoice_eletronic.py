@@ -240,6 +240,10 @@ class InvoiceEletronic(models.Model):
     def action_send_eletronic_invoice(self):
         pass
 
+    @api.multi
+    def action_back_to_draft(self):
+        self.state = 'draft'
+
 
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
