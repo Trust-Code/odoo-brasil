@@ -102,7 +102,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'xProd': item.product_id.name,
             'NCM': re.sub('[^0-9]', '', item.ncm or ''),
             'CFOP': item.cfop,
-            'uCom': item.uom_id.name,
+            'uCom': '{:.6}'.format(item.uom_id.name),
             'qCom': item.quantidade,
             'vUnCom': item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
@@ -190,8 +190,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
-            'indFinal': self.ind_final,
-            'indPres': self.ind_pres,
+            'indFinal': self.ind_final or 1,
+            'indPres': self.ind_pres or 1,
             'procEmi': 0
         }
         emit = {
