@@ -91,9 +91,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 errors.append(u'%s - CST do PIS' % prod)
             if not eletr.cofins_cst:
                 errors.append(u'%s - CST do Cofins' % prod)
-            if not eletr.cest:
-                errors.append(u'%s - CEST' % prod)
-
 
         return errors
 

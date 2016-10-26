@@ -67,8 +67,7 @@ class AccountInvoice(models.Model):
             'product_id': invoice_line.product_id.id,
             'tipo_produto': invoice_line.product_type,
             'cfop': invoice_line.cfop_id.code,
-            'cest': invoice_line.fiscal_classification_id.\
-                cest or invoice_line.cest,
+            'cest': invoice_line.fiscal_classification_id.cest or invoice_line.product_id.cest,
             'uom_id': invoice_line.uom_id.id,
             'quantidade': invoice_line.quantity,
             'preco_unitario': invoice_line.price_unit,
