@@ -29,6 +29,8 @@ class PosOrder(models.Model):
             'product_id': pos_line.product_id.id,
             'tipo_produto': pos_line.product_id.fiscal_type,
             'cfop': 6101,
+            'cest': pos_line.product_id.fiscal_classification_id.\
+                cest or pos_line.product_id.cest,
             'uom_id': pos_line.product_id.uom_id.id,
             'quantidade': pos_line.qty,
             'preco_unitario': pos_line.price_unit,
