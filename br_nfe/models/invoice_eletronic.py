@@ -102,7 +102,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'xProd': item.product_id.name,
             'NCM': re.sub('[^0-9]', '', item.ncm or ''),
             'CFOP': item.cfop,
-            'uCom': '{:.6}'.format(item.uom_id.name),
+            'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
             'vUnCom': item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
@@ -401,11 +401,3 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
-
-    @api.multi
-    def cron_send_nfe(self):
-        inv_obj = self.env['invoice.eletronic'].with_context({
-            'lang': self.env.user.lang, 'tz': self.env.user.tz})
-        nfes = inv_obj.search([('state', '=', 'draft')])
-        for item in nfes:
-            item.action_send_eletronic_invoice()

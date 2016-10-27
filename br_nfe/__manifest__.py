@@ -19,7 +19,6 @@
         'br_account_einvoice',
     ],
     'data': [
-        'data/nfe_cron.xml',
         'views/account_fiscal_position.xml',
         'views/invoice_eletronic.xml',
         'views/account_invoice.xml',

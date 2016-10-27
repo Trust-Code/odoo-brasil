@@ -244,6 +244,14 @@ class InvoiceEletronic(models.Model):
     def action_back_to_draft(self):
         self.state = 'draft'
 
+    @api.multi
+    def cron_send_nfe(self):
+        inv_obj = self.env['invoice.eletronic'].with_context({
+            'lang': self.env.user.lang, 'tz': self.env.user.tz})
+        nfes = inv_obj.search([('state', '=', 'draft')])
+        for item in nfes:
+            item.action_send_eletronic_invoice()
+
 
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
