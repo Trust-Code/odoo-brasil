@@ -16,6 +16,7 @@
                 <field name="ind_final" />
                 <field name="ind_pres" />
                 <field name="ind_dest" />
+                <field name="ind_ie_dest" />
             </field>
             <field name="fiscal_position_id" position="after">
                 <field name="transportation_id" />

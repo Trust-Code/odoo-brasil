@@ -202,6 +202,8 @@ class ResPartner(models.Model):
                             return None
                         return getattr(obj, prop)
                     self.legal_name = get_value(info.infCad, 'xNome')
+                    if "ender" not in dir(info.infCad):
+                        return
                     self.zip = get_value(info.infCad.ender, 'CEP')
                     self.street = get_value(info.infCad.ender, 'xLgr')
                     self.number = get_value(info.infCad.ender, 'nro')

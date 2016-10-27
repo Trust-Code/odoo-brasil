@@ -27,9 +27,10 @@ class AccountInvoiceLine(models.Model):
     @api.one
     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
                  'product_id', 'invoice_id.partner_id',
-                 'invoice_id.currency_id', 'invoice_id.company_id')
+                 'invoice_id.currency_id', 'invoice_id.company_id',
+                 'tax_icms_id', 'tax_ipi_id', 'tax_pis_id', 'tax_cofins_id',
+                 'tax_ii_id', 'tax_issqn_id', 'ipi_base_calculo', 'ipi_reducao_bc')
     def _compute_price(self):
-
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = False
