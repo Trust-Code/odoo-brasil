@@ -79,7 +79,7 @@ class NfseExportInvoice(models.TransientModel):
         xml = template.render(vals)
         xml = xml.replace('&', '&amp;')
         return {'name': u'{0}_{1}_nfse.xml'.format(
-            invoice.internal_number,
+            invoice.number.replace('/', '-'),
             re.sub('[^A-Za-z]', '', invoice.partner_id.name)),
             'content': xml}
 
@@ -128,7 +128,7 @@ class NfseExportInvoice(models.TransientModel):
             if not invoice.partner_id.email:
                 errors += ['Email incompleto.']
             if len(errors) > 0:
-                err = ''.join(errors)
+                err = '\n'.join(errors)
                 error_msg = '%s\n' % invoice.move_name
                 error_msg += err
                 raise UserError(error_msg)
