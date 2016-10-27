@@ -107,12 +107,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vUnCom': item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
-            'uTrib': item.uom_id.name,
+            'uTrib': '{:.6}'.format(item.uom_id.name),
             'qTrib': item.quantidade,
             'vUnTrib': item.preco_unitario,
             'indTot': item.indicador_total,
             'cfop': item.cfop,
-            'CEST': item.cest,
+            'CEST': re.sub('\D', '', item.cest or ''),
         }
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
