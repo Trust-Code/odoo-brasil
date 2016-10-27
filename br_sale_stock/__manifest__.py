@@ -18,5 +18,5 @@
     'data': [
         'views/sale_stock_view.xml',
     ],
-    'auto_install': False,
+    'auto_install': True,
 }

@@ -15,10 +15,11 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'stock_account', 'br_account',
+        'stock_account', 'br_account', 'br_account_einvoice'
     ],
     'data': [
         'views/account_invoice.xml',
     ],
     'instalable': True,
+    'auto_install': True,
 }

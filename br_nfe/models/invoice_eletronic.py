@@ -104,14 +104,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
-            'vUnCom': item.preco_unitario,
+            'vUnCom': "%.02f" % item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': item.uom_id.name,
             'qTrib': item.quantidade,
-            'vUnTrib': item.preco_unitario,
+            'vUnTrib': "%.02f" % item.preco_unitario,
+            'vFrete': "%.02f" % item.frete if item.frete else '',
+            'vSeg': "%.02f" % item.seguro if item.seguro else '',
+            'vDesc': "%.02f" % item.desconto if item.desconto else '',
+            'vOutro': "%.02f" % item.outras_despesas
+            if item.outras_despesas else '',
             'indTot': item.indicador_total,
-            'cfop': item.cfop,
             'CEST': item.cest,
         }
         imposto = {
