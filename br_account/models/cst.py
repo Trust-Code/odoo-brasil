@@ -52,7 +52,7 @@ CST_IPI = [
     ('50', '50 - Saída Tributada'),
     ('51', '51 - Saída Tributável com Alíquota Zero'),
     ('52', '52 - Saída Isenta'),
-    ('53', '52 - Saída Não-Tributada'),
+    ('53', '53 - Saída Não-Tributada'),
     ('54', '54 - Saída Imune'),
     ('55', '55 - Saída com Suspensão'),
     ('99', '99 - Outras Saídas')
