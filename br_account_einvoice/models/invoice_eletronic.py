@@ -34,7 +34,7 @@ class InvoiceEletronic(models.Model):
     numero_controle = fields.Integer(u'Número de Controle')
     data_emissao = fields.Datetime(u'Data emissão')
     data_fatura = fields.Datetime(u'Data Entrada/Saída')
-    data_autorizacao = fields.Datetime(u'Data de autorização')
+    data_autorizacao = fields.Char(u'Data de autorização', size=30)
 
     ambiente = fields.Selection([('homologacao', 'Homologação'),
                                  ('producao', 'Produção')], u'Ambiente')

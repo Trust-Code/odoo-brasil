@@ -14,7 +14,7 @@
         <field name="margin_top">3.0</field>
         <field name="margin_left">3.0</field>
         <field name="margin_right">3.0</field>
-        <field name="margin_bottom">3.0</field>
+        <field name="margin_bottom">5.0</field>
     </record>
 
     <record id="report_br_nfe_danfe" model="ir.actions.report.xml">
@@ -129,8 +129,9 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12 center">
-                                <span class="small">Consulta de autenticidade no portal nacional da NF-e
-                                    www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora</span>
+                                <span>Consulta de autenticidade no portal nacional da NF-e</span><br />
+                                <span>www.nfe.fazenda.gov.br/portal</span><br />
+                                <span>ou no site da Sefaz Autorizadora</span>
                             </div>
                         </div>
                     </div>
@@ -143,7 +144,8 @@
                     </div>
                     <div class="bt br bb col-xs-5 line">
                         <span class="small">Protocolo de autorização de uso</span><br />
-                        <span t-field="o.protocolo_nfe"></span><br />
+                        <span t-field="o.protocolo_nfe"></span> -
+                        <span t-field="o.data_autorizacao"></span><br />
                     </div>
                 </div>
                 <div class="row line">
@@ -287,7 +289,7 @@
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Valor do ICMS ST</span><br />
-                        <span t-field="o.valor_icms"></span>
+                        <span t-field="o.valor_icmsst"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Total Estimado Tributos</span><br />
@@ -318,11 +320,11 @@
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Total do IPI</span><br />
-                        <span></span>
+                        <span t-field="o.valor_ipi"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor total da Nota</span><br />
-                        <span t-field="o.valor_ipi"></span>
+                        <span t-field="o.valor_final"></span>
                     </div>
                 </div>
 
@@ -435,6 +437,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <t t-foreach="range(50)" t-as="a">
                             <tr t-foreach="o.eletronic_item_ids" t-as="e">
                                 <td><span t-esc="e.product_id.default_code.replace('.', '')"></span></td>
                                 <td><span t-field="e.product_id.name"></span></td>
@@ -451,6 +454,7 @@
                                 <td><span t-field="e.icms_aliquota_reducao_base"></span></td>
                                 <td><span t-field="e.ipi_reducao_bc"></span></td>
                             </tr>
+                            </t>
                         </tbody>
                     </table>
                 </div>
@@ -472,10 +476,12 @@
                         <span class="small">Reservado ao Fisco</span><br />
                     </div>
                 </div>
-
-                <div class="row">
-                    <span style="font-size:10px">Danfe gerado com Odoo Brasil - Software open source - saiba mais em <a href="http://www.trustcode.com.br/odoo-open-source">http://www.trustcode.com.br/odoo-open-source</a></span>
-                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="row" style="font-size:10px">
+                Página <span class="page"/> de <span class="topage"/> ----
+                <span style="font-size:10px">Danfe gerado com Odoo Brasil - Software open source - saiba mais em <a href="http://www.trustcode.com.br/odoo-open-source">http://www.trustcode.com.br/odoo-open-source</a></span>
             </div>
         </div>
     </template>

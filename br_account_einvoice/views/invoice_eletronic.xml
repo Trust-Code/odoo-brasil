@@ -133,12 +133,13 @@
                 <form string="Documento Eletrônico">
                     <header>
                         <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
-						<button name="action_back_to_draft" states="error" string="Rascunho" type="object"/>
+                        <button name="action_back_to_draft" states="error" string="Rascunho" type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                     </header>
                     <sheet string="Documento Eletronico">
                         <group>
                             <group>
+                                <field name="model"/>
                             	<field name="invoice_id"/>
                                 <field name="partner_id"/>
                                 <field name="partner_shipping_id"/>
@@ -169,7 +170,6 @@
                                 <field name="code"/>
                                 <field name="name"/>
                                 <field name="company_id"/>
-                                <field name="model"/>
                                 <field name="serie"/>
                                 <field name="numero"/>
                                 <field name="numero_controle"/>

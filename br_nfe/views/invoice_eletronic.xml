@@ -9,6 +9,7 @@
             <field name="codigo_retorno" position="before">
                 <field name="chave_nfe" />
                 <field name="protocolo_nfe" />
+                <field name="data_autorizacao" />
                 <field name="recibo_nfe" />
             </field>
             <field name="finalidade_emissao" position="after">

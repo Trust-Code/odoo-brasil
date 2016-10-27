@@ -346,6 +346,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         self.state = 'error'
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
+        if self.model not in ('55', '65'):
+            return
+
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(1, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
@@ -382,7 +385,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self.codigo_retorno = retorno.protNFe.infProt.cStat
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
-                self.write({'state': 'done', 'nfe_exception': False})
+                self.write({
+                    'state': 'done', 'nfe_exception': False,
+                    'protocolo_nfe': retorno.protNFe.infProt.nProt,
+                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
