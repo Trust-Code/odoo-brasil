@@ -181,6 +181,15 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    @api.model
+    def invoice_line_move_line_get(self):
+        res = super(AccountInvoice, self).invoice_line_move_line_get()
+        contador = 0
+        for line in self.invoice_line_ids:
+            res[contador]['price'] = line.price_total
+            contador += 1
+        return res
+
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\

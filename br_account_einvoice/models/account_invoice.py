@@ -188,6 +188,8 @@ class AccountInvoice(models.Model):
         for item in self:
             edocs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', item.id)])
-            edocs.unlink()
-
+            for edoc in edocs:
+                if edoc.state == 'done':
+                    raise UserError('NF-e já enviada')
+                edoc.unlink()
         return res
