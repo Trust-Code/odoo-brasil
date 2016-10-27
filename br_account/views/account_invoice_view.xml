@@ -148,6 +148,7 @@
                                     <div>
                                         <field name="quantity" class="oe_inline"/>
                                     </div>
+                                     <field name="uom_id" groups="product.group_uom"/>
                                     <field name="price_unit"/>
                                     <field name="discount" groups="sale.group_discount_per_so_line" string="(-) Desconto (%)"/>
                                     <field name="price_subtotal" string="(=) Valor Líquido" />

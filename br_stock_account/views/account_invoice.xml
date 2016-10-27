@@ -6,9 +6,9 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_frete" />
-                <field name="valor_seguro" />
-                <field name="outras_despesas" />
+                <field name="valor_frete" invisible="1" />
+                <field name="valor_seguro" invisible="1" />
+                <field name="outras_despesas" invisible="1" />
             </xpath>
             <field name="amount_untaxed" position="after">
                 <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -45,9 +45,9 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_frete" />
-                <field name="valor_seguro" />
-                <field name="outras_despesas" />
+                <field name="valor_frete" invisible="1" />
+                <field name="valor_seguro" invisible="1" />
+                <field name="outras_despesas" invisible="1" />
             </xpath>
             <field name="amount_untaxed" position="after">
                 <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>

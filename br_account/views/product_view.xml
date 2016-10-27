@@ -12,6 +12,7 @@
                     <field name="origin" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}" />
                     <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}" />
                     <field name="service_type_id" attrs="{'required': [('fiscal_type', '=', 'service')], 'invisible': [('fiscal_type', '=', 'product')]}" domain="[('internal_type', '=', 'normal')]"/>
+                    <field name="cest" attrs="{'invisible': [('fiscal_type', '=', 'service')]}" />
                 </group>
             </group>
         </field>
