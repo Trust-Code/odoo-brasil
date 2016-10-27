@@ -107,7 +107,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vUnCom': "%.02f" % item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
-            'uTrib': '{:.6}'.format(item.uom_id.name),
+            'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
             'vUnTrib': "%.02f" % item.preco_unitario,
             'vFrete': "%.02f" % item.frete if item.frete else '',
