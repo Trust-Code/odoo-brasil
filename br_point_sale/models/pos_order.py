@@ -10,39 +10,12 @@ from odoo import api, models, fields
 class PosOrder(models.Model):
     _inherit = 'pos.order'
 
-#    @api.depends('line.amount_total', 'line.valor_desconto')
-#    def _amount_all(self):
-#        super(PosOrder, self)._amount_all()
-#        for order in self:
-#            without_tax = sum(l.price_without_tax for l in order.order_line)
-#            price_total = sum(l.price_total for l in order.order_line)
-#            order.update({
-#                'total_without_tax': without_tax,
-#                'total_tax': price_total - without_tax,
-#                'total_desconto': sum(l.valor_desconto
-#                                      for l in order.order_line),
-#                'total_bruto': sum(l.valor_bruto
-#                                   for l in order.order_line),
-#                'amount_total': price_total
-#            })
-#
     numero_controle = fields.Integer()
-#
-#    total_bruto = fields.Float(
-#        string='Total Bruto ( = )', readonly=True, compute='_amount_all',
-#        digits=dp.get_precision('Account'), store=True)
-#
-#    total_without_tax = fields.Float(
-#        string='Total Base ( = )', readonly=True, compute='_amount_all',
-#        digits=dp.get_precision('Account'), store=True)
-#    total_tax = fields.Float(
-#        string='Impostos ( + )', readonly=True, compute='_amount_all',
-#        digits=dp.get_precision('Account'), store=True)
-#
-#    total_desconto = fields.Float(
-#        string='Desconto Total ( - )', readonly=True, compute='_amount_all',
-#        digits=dp.get_precision('Account'), store=True,
-#        help="The discount amount.")
+
+#    total_bruto = fields.Float() TODO
+#    total_without_tax = fields.Float() TODO
+#    total_tax = fields.Float() TODO
+#    total_desconto = fields.Float() TODO
 
     @api.model
     def _process_order(self, pos_order):
