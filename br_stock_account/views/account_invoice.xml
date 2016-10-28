@@ -10,9 +10,9 @@
                 <field name="valor_seguro" invisible="1" />
                 <field name="outras_despesas" invisible="1" />
             </xpath>
-            <field name="amount_untaxed" position="after">
-                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            <field name="total_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
             <page name="vencimentos" position="after">
@@ -49,9 +49,9 @@
                 <field name="valor_seguro" invisible="1" />
                 <field name="outras_despesas" invisible="1" />
             </xpath>
-            <field name="amount_untaxed" position="after">
-                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            <field name="total_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
             <page  name="vencimentos" position="after">

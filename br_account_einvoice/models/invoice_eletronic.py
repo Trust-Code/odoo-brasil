@@ -4,6 +4,7 @@
 
 from odoo.exceptions import UserError
 from odoo import api, fields, models
+from odoo.addons import decimal_precision as dp
 from odoo.addons.br_account.models.cst import CST_ICMS
 from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
 from odoo.addons.br_account.models.cst import CST_IPI
@@ -63,38 +64,41 @@ class InvoiceEletronic(models.Model):
                                           'invoice_eletronic_id',
                                           string=u"Eventos")
 
-    valor_bruto = fields.Float(u'Total Produtos')
-    valor_frete = fields.Float(u'Total frete')
-    valor_seguro = fields.Float(u'Total seguro')
-    valor_desconto = fields.Float(u'Total desconto')
-    valor_despesas = fields.Float(u'Total despesas')
-    valor_bc_icms = fields.Float(u"Base de Cálc ICMS")
-    valor_icms = fields.Float(u"Total do ICMS")
-    valor_icms_deson = fields.Float(u'ICMS Desoneração')
-    valor_bc_icmsst = fields.Float(u'Total Base ST',
-                                   help="Total da base de cálculo do ICMS ST")
-    valor_icmsst = fields.Float(u'Total ST')
-    valor_ii = fields.Float(u'Total II')
-    valor_ipi = fields.Float(u"Total IPI")
-    valor_pis = fields.Float(u"Total PIS")
-    valor_cofins = fields.Float(u"Total COFINS")
-    valor_estimado_tributos = fields.Float(u"Tributos estimados")
+    valor_bruto = fields.Monetary(u'Total Produtos')
+    valor_frete = fields.Monetary(u'Total frete')
+    valor_seguro = fields.Monetary(u'Total seguro')
+    valor_desconto = fields.Monetary(u'Total desconto')
+    valor_despesas = fields.Monetary(u'Total despesas')
+    valor_bc_icms = fields.Monetary(u"Base de Cálc ICMS")
+    valor_icms = fields.Monetary(u"Total do ICMS")
+    valor_icms_deson = fields.Monetary(u'ICMS Desoneração')
+    valor_bc_icmsst = fields.Monetary(
+        u'Total Base ST', help="Total da base de cálculo do ICMS ST")
+    valor_icmsst = fields.Monetary(u'Total ST')
+    valor_ii = fields.Monetary(u'Total II')
+    valor_ipi = fields.Monetary(u"Total IPI")
+    valor_pis = fields.Monetary(u"Total PIS")
+    valor_cofins = fields.Monetary(u"Total COFINS")
+    valor_estimado_tributos = fields.Monetary(u"Tributos estimados")
 
-    valor_servicos = fields.Float(u"Total Serviços")
-    valor_bc_issqn = fields.Float(u"Base ISS")
-    valor_issqn = fields.Float(u"Total ISS")
-    valor_pis_servicos = fields.Float(u"Total PIS Serviços")
-    valor_cofins_servicos = fields.Float(u"Total Cofins Serviço")
+    valor_servicos = fields.Monetary(u"Total Serviços")
+    valor_bc_issqn = fields.Monetary(u"Base ISS")
+    valor_issqn = fields.Monetary(u"Total ISS")
+    valor_pis_servicos = fields.Monetary(u"Total PIS Serviços")
+    valor_cofins_servicos = fields.Monetary(u"Total Cofins Serviço")
 
-    valor_retencao_issqn = fields.Float(u"Retenção ISSQN")
-    valor_retencao_pis = fields.Float(u"Retenção PIS")
-    valor_retencao_cofins = fields.Float(u"Retenção COFINS")
-    valor_retencao_irrf = fields.Float(u"Retenção IRRF")
-    valor_retencao_csll = fields.Float(u"Retenção CSLL")
-    valor_retencao_previdencia = fields.Float(
+    valor_retencao_issqn = fields.Monetary(u"Retenção ISSQN")
+    valor_retencao_pis = fields.Monetary(u"Retenção PIS")
+    valor_retencao_cofins = fields.Monetary(u"Retenção COFINS")
+    valor_retencao_irrf = fields.Monetary(u"Retenção IRRF")
+    valor_retencao_csll = fields.Monetary(u"Retenção CSLL")
+    valor_retencao_previdencia = fields.Monetary(
         u"Retenção Prev.", help="Retenção Previdência Social")
 
-    valor_final = fields.Float(u'Valor Final')
+    currency_id = fields.Many2one(
+        'res.currency', related='company_id.currency_id',
+        string="Company Currency", readonly=True)
+    valor_final = fields.Monetary(u'Valor Final')
 
     transportation_id = fields.Many2one('invoice.transport')
 
@@ -279,17 +283,22 @@ class InvoiceEletronicItem(models.Model):
 
     uom_id = fields.Many2one('product.uom', u'Unidade de medida')
     quantidade = fields.Float(u'Quantidade')
-    preco_unitario = fields.Float(u'Preço Unitário')
+    preco_unitario = fields.Float(
+        u'Preço Unitário', digits=dp.get_precision('Account'))
 
-    frete = fields.Float(u'Frete')
-    seguro = fields.Float(u'Seguro')
-    desconto = fields.Float(u'Desconto')
-    outras_despesas = fields.Float(u'Outras despesas')
+    frete = fields.Float(u'Frete', digits=dp.get_precision('Account'))
+    seguro = fields.Float(u'Seguro', digits=dp.get_precision('Account'))
+    desconto = fields.Float(u'Desconto', digits=dp.get_precision('Account'))
+    outras_despesas = fields.Float(
+        u'Outras despesas', digits=dp.get_precision('Account'))
 
-    tributos_estimados = fields.Float(u'Valor Estimado Tributos')
+    tributos_estimados = fields.Float(
+        u'Valor Estimado Tributos', digits=dp.get_precision('Account'))
 
-    valor_bruto = fields.Float(u'Valor Bruto')
-    valor_liquido = fields.Float(u'Valor Liquido')
+    valor_bruto = fields.Float(
+        u'Valor Bruto', digits=dp.get_precision('Account'))
+    valor_liquido = fields.Float(
+        u'Valor Liquido', digits=dp.get_precision('Account'))
     indicador_total = fields.Selection(
         [('0', '0 - Não'), ('1', '1 - Sim')],
         string="Compõe Total da Nota?", default='1')
@@ -297,18 +306,24 @@ class InvoiceEletronicItem(models.Model):
     origem = fields.Selection(ORIGEM_PROD, u'Origem mercadoria')
     icms_cst = fields.Selection(
         CST_ICMS + CSOSN_SIMPLES, u'Situação tributária')
-    icms_aliquota = fields.Float(u'Alíquota')
+    icms_aliquota = fields.Float(
+        u'Alíquota', digits=dp.get_precision('Account'))
     icms_tipo_base = fields.Selection(
         [('0', '0 - Margem Valor Agregado (%)'),
          ('1', '1 - Pauta (Valor)'),
          ('2', '2 - Preço Tabelado Máx. (valor)'),
          ('3', '3 - Valor da operação')],
         u'Modalidade BC do ICMS')
-    icms_base_calculo = fields.Float(u'Base de cálculo')
-    icms_aliquota_reducao_base = fields.Float(u'% Redução Base')
-    icms_valor = fields.Float(u'Valor Total')
-    icms_valor_credito = fields.Float(u"Valor de Cŕedito")
-    icms_aliquota_credito = fields.Float(u'% de Crédito')
+    icms_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    icms_aliquota_reducao_base = fields.Float(
+        u'% Redução Base', digits=dp.get_precision('Account'))
+    icms_valor = fields.Float(
+        u'Valor Total', digits=dp.get_precision('Account'))
+    icms_valor_credito = fields.Float(
+        u"Valor de Cŕedito", digits=dp.get_precision('Account'))
+    icms_aliquota_credito = fields.Float(
+        u'% de Crédito', digits=dp.get_precision('Account'))
 
     icms_st_tipo_base = fields.Selection(
         [('0', '0- Preço tabelado ou máximo  sugerido'),
@@ -317,17 +332,25 @@ class InvoiceEletronicItem(models.Model):
          ('3', '3 - Lista Neutra (valor)'),
          ('4', '4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
         'Tipo Base ICMS ST', required=True, default='4')
-    icms_st_aliquota_mva = fields.Float(u'% MVA')
-    icms_st_aliquota = fields.Float(u'Alíquota')
-    icms_st_base_calculo = fields.Float(u'Base de cálculo')
-    icms_st_aliquota_reducao_base = fields.Float(u'% Redução Base')
-    icms_st_valor = fields.Float(u'Valor Total')
+    icms_st_aliquota_mva = fields.Float(
+        u'% MVA', digits=dp.get_precision('Account'))
+    icms_st_aliquota = fields.Float(
+        u'Alíquota', digits=dp.get_precision('Account'))
+    icms_st_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    icms_st_aliquota_reducao_base = fields.Float(
+        u'% Redução Base', digits=dp.get_precision('Account'))
+    icms_st_valor = fields.Float(
+        u'Valor Total', digits=dp.get_precision('Account'))
 
-    icms_aliquota_diferimento = fields.Float(u'% Diferimento')
-    icms_valor_diferido = fields.Float(u'Valor Diferido')
+    icms_aliquota_diferimento = fields.Float(
+        u'% Diferimento', digits=dp.get_precision('Account'))
+    icms_valor_diferido = fields.Float(
+        u'Valor Diferido', digits=dp.get_precision('Account'))
 
     icms_motivo_desoneracao = fields.Float(u'Motivo Desoneração')
-    icms_valor_desonerado = fields.Float(u'Valor Desonerado')
+    icms_valor_desonerado = fields.Float(
+        u'Valor Desonerado', digits=dp.get_precision('Account'))
 
     # ----------- IPI -------------------
     classe_enquadramento = fields.Char(u'Classe enq.', size=5,
@@ -335,36 +358,54 @@ class InvoiceEletronicItem(models.Model):
     codigo_enquadramento = fields.Char(u'Código enq.', size=4,
                                        help="Código Enquadramento no IPI")
     ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária do ICMS')
-    ipi_aliquota = fields.Float(u'Alíquota')
-    ipi_base_calculo = fields.Float(u'Base de cálculo')
-    ipi_reducao_bc = fields.Float(u'% Redução Base')
-    ipi_valor = fields.Float(u'Valor Total')
+    ipi_aliquota = fields.Float(
+        u'Alíquota', digits=dp.get_precision('Account'))
+    ipi_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    ipi_reducao_bc = fields.Float(
+        u'% Redução Base', digits=dp.get_precision('Account'))
+    ipi_valor = fields.Float(
+        u'Valor Total', digits=dp.get_precision('Account'))
 
     # ----------- II ----------------------
-    ii_base_calculo = fields.Float(u'Base de cálculo')
-    ii_aliquota = fields.Float(u'Alíquota II')
-    ii_valor_despesas = fields.Float(u'Despesas aduaneiras')
-    ii_valor = fields.Float(u'Imposto de importação')
-    ii_valor_iof = fields.Float(u'IOF')
+    ii_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    ii_aliquota = fields.Float(
+        u'Alíquota II', digits=dp.get_precision('Account'))
+    ii_valor_despesas = fields.Float(
+        u'Despesas aduaneiras', digits=dp.get_precision('Account'))
+    ii_valor = fields.Float(
+        u'Imposto de importação', digits=dp.get_precision('Account'))
+    ii_valor_iof = fields.Float(u'IOF', digits=dp.get_precision('Account'))
 
     # ------------ PIS ---------------------
     pis_cst = fields.Selection(CST_PIS_COFINS, u'Situação tributária')
-    pis_aliquota = fields.Float(u'Alíquota')
-    pis_base_calculo = fields.Float(u'Base de cálculo')
-    pis_valor = fields.Float(u'Valor Total')
+    pis_aliquota = fields.Float(
+        u'Alíquota', digits=dp.get_precision('Account'))
+    pis_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    pis_valor = fields.Float(
+        u'Valor Total', digits=dp.get_precision('Account'))
 
     # ------------ COFINS ------------
     cofins_cst = fields.Selection(CST_PIS_COFINS, u'Situação tributária')
-    cofins_aliquota = fields.Float(u'Alíquota')
-    cofins_base_calculo = fields.Float(u'Base de cálculo')
-    cofins_valor = fields.Float(u'Valor Total')
+    cofins_aliquota = fields.Float(
+        u'Alíquota', digits=dp.get_precision('Account'))
+    cofins_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    cofins_valor = fields.Float(
+        u'Valor Total', digits=dp.get_precision('Account'))
 
     # ----------- ISSQN -------------
     issqn_codigo = fields.Char(u'Código', size=10)
-    issqn_aliquota = fields.Float(u'Alíquota')
-    issqn_base_calculo = fields.Float(u'Base de cálculo')
-    issqn_valor = fields.Float(u'Valor Total')
-    issqn_valor_retencao = fields.Float(u'Valor retenção')
+    issqn_aliquota = fields.Float(
+        u'Alíquota', digits=dp.get_precision('Account'))
+    issqn_base_calculo = fields.Float(
+        u'Base de cálculo', digits=dp.get_precision('Account'))
+    issqn_valor = fields.Float(
+        u'Valor Total', digits=dp.get_precision('Account'))
+    issqn_valor_retencao = fields.Float(
+        u'Valor retenção', digits=dp.get_precision('Account'))
 
 
 class InvoiceTransport(models.Model):

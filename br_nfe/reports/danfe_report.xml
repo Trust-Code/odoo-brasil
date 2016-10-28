@@ -437,7 +437,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="range(50)" t-as="a">
                             <tr t-foreach="o.eletronic_item_ids" t-as="e">
                                 <td><span t-esc="e.product_id.default_code.replace('.', '')"></span></td>
                                 <td><span t-field="e.product_id.name"></span></td>
@@ -454,7 +453,6 @@
                                 <td><span t-field="e.icms_aliquota_reducao_base"></span></td>
                                 <td><span t-field="e.ipi_reducao_bc"></span></td>
                             </tr>
-                            </t>
                         </tbody>
                     </table>
                 </div>

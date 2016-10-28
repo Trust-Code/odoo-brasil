@@ -64,7 +64,6 @@ class SaleOrderLine(models.Model):
                  'ipi_reducao_bc')
     def _compute_amount(self):
         for line in self:
-
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             ctx = line._prepare_tax_context()
             tax_ids = line.tax_id.with_context(**ctx)
@@ -203,7 +202,10 @@ class SaleOrderLine(models.Model):
         res['service_type_id'] = self.product_id.service_type_id.id
 
         res['incluir_ipi_base'] = self.incluir_ipi_base
-        res['icms_base_calculo'] = self.price_total
+        base_icms = self.price_subtotal
+        if self.incluir_ipi_base:
+            base_icms += ipi.amount or 0.0
+        res['icms_base_calculo'] = base_icms
         res['icms_aliquota'] = icms.amount or 0.0
         res['icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0

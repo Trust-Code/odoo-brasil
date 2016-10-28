@@ -135,8 +135,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'vBCST': "%.02f" % item.icms_st_base_calculo,
                 'pICMSST': "%.02f" % item.icms_st_aliquota,
                 'vICMSST': "%.02f" % item.icms_st_valor,
-                'vICMSDeson': "%.02f" % 0.0,
-                'motDesICMS': "%.02f" % 0.0,
+                'vICMSDeson': "",
+                'motDesICMS': "",
                 'pCredSN': "%.02f" % item.icms_valor_credito,
                 'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
             },

@@ -18,19 +18,18 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
-        self.total_without_tax = sum(l.price_without_tax for l in lines)
-        self.amount_total = sum(l.price_total for l in lines)
-        self.amount_total_signed = self.amount_total
         self.amount_untaxed = sum(l.price_subtotal for l in lines)
-        self.amount_tax = self.amount_total - self.amount_untaxed
-        self.total_tax = self.amount_total - self.total_without_tax
-        self.icms_base = sum(l.icms_base_calculo for l in lines)
+        self.total_tax = sum(l.price_tax for l in lines)
+        self.icms_base = sum(l.icms_base_calculo * (
+            1 - l.icms_aliquota_reducao_base / 100) for l in lines)
         self.icms_value = sum(l.icms_valor for l in lines)
-        self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
+        self.icms_st_base = sum(l.icms_st_base_calculo * (
+            1 - l.icms_st_aliquota_reducao_base / 100) for l in lines)
         self.icms_st_value = sum(l.icms_st_valor for l in lines)
         self.issqn_base = sum(l.issqn_base_calculo for l in lines)
         self.issqn_value = sum(l.issqn_valor for l in lines)
-        self.ipi_base = sum(l.ipi_base_calculo for l in lines)
+        self.ipi_base = sum(l.ipi_base_calculo * (
+            1 - l.ipi_reducao_bc / 100) for l in lines)
         self.ipi_value = sum(l.ipi_valor for l in lines)
         self.pis_base = sum(l.pis_base_calculo for l in lines)
         self.pis_value = sum(l.pis_valor for l in lines)
@@ -39,7 +38,11 @@ class AccountInvoice(models.Model):
         self.ii_value = sum(l.ii_valor for l in lines)
         self.total_bruto = sum(l.valor_bruto for l in lines)
         self.total_desconto = sum(l.valor_desconto for l in lines)
-        self.total_tributos_estimados = sum(l.tributos_estimados for l in lines)
+        self.total_tributos_estimados = sum(
+            l.tributos_estimados for l in lines)
+        # TOTAL
+        self.amount_total = self.total_bruto - \
+            self.total_desconto + self.total_tax
 
     @api.one
     @api.depends('move_id.line_ids')
@@ -71,9 +74,6 @@ class AccountInvoice(models.Model):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.document_serie_id.id
 
-    total_without_tax = fields.Float(
-        string='Total Base ( = )', readonly=True, compute='_compute_amount',
-        digits=dp.get_precision('Account'), store=True)
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
         digits=dp.get_precision('Account'), store=True)
@@ -186,7 +186,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
         contador = 0
         for line in self.invoice_line_ids:
-            res[contador]['price'] = line.price_total
+            res[contador]['price'] = line.price_total + line.price_tax
             contador += 1
         return res
 

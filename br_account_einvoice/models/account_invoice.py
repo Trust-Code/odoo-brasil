@@ -61,70 +61,69 @@ class AccountInvoice(models.Model):
                 {'internal_number': seq_number})
         return True
 
-    def _prepare_edoc_item_vals(self, invoice_line):
+    def _prepare_edoc_item_vals(self, line):
         vals = {
-            'name': invoice_line.name,
-            'product_id': invoice_line.product_id.id,
-            'tipo_produto': invoice_line.product_type,
-            'cfop': invoice_line.cfop_id.code,
-            'cest': invoice_line.product_id.cest or
-            invoice_line.fiscal_classification_id.cest or '',
-            'uom_id': invoice_line.uom_id.id,
-            'quantidade': invoice_line.quantity,
-            'preco_unitario': invoice_line.price_unit,
-            'valor_bruto': invoice_line.valor_bruto,
-            'valor_liquido': invoice_line.price_total,
-            'origem': invoice_line.icms_origem,
-            'tributos_estimados': invoice_line.tributos_estimados,
-            'ncm': invoice_line.fiscal_classification_id.code,
+            'name': line.name,
+            'product_id': line.product_id.id,
+            'tipo_produto': line.product_type,
+            'cfop': line.cfop_id.code,
+            'cest': line.product_id.cest or
+            line.fiscal_classification_id.cest or '',
+            'uom_id': line.uom_id.id,
+            'quantidade': line.quantity,
+            'preco_unitario': line.price_unit,
+            'valor_bruto': line.valor_bruto,
+            'desconto': line.valor_desconto,
+            'valor_liquido': line.price_total,
+            'origem': line.icms_origem,
+            'tributos_estimados': line.tributos_estimados,
+            'ncm': line.fiscal_classification_id.code,
             # - ICMS -
-            'icms_cst': invoice_line.icms_cst,
-            'icms_aliquota': invoice_line.icms_aliquota,
-            'icms_tipo_base': invoice_line.icms_tipo_base,
-            'icms_aliquota_reducao_base': invoice_line.\
-            icms_aliquota_reducao_base,
-            'icms_base_calculo': invoice_line.icms_base_calculo,
-            'icms_valor': invoice_line.icms_valor,
+            'icms_cst': line.icms_cst,
+            'icms_aliquota': line.icms_aliquota,
+            'icms_tipo_base': line.icms_tipo_base,
+            'icms_aliquota_reducao_base': line.icms_aliquota_reducao_base,
+            'icms_base_calculo': line.icms_base_calculo * (1 - (line.icms_aliquota_reducao_base / 100)),
+            'icms_valor': line.icms_valor,
             # - ICMS ST -
-            'icms_st_aliquota': invoice_line.icms_st_aliquota,
-            'icms_st_aliquota_mva': invoice_line.icms_st_aliquota_mva,
-            'icms_st_aliquota_reducao_base': invoice_line.\
+            'icms_st_aliquota': line.icms_st_aliquota,
+            'icms_st_aliquota_mva': line.icms_st_aliquota_mva,
+            'icms_st_aliquota_reducao_base': line.\
             icms_st_aliquota_reducao_base,
-            'icms_st_base_calculo': invoice_line.icms_st_base_calculo,
-            'icms_st_valor': invoice_line.icms_st_valor,
+            'icms_st_base_calculo': line.icms_st_base_calculo * (1 - (line.icms_st_aliquota_reducao_base / 100)),
+            'icms_st_valor': line.icms_st_valor,
             # - Simples Nacional -
-            'icms_aliquota_credito': invoice_line.icms_aliquota_credito,
-            'icms_valor_credito': invoice_line.icms_valor_credito,
+            'icms_aliquota_credito': line.icms_aliquota_credito,
+            'icms_valor_credito': line.icms_valor_credito,
             # - IPI -
             'classe_enquadramento': '',
             'codigo_enquadramento': '999',
-            'ipi_cst': invoice_line.ipi_cst,
-            'ipi_aliquota': invoice_line.ipi_aliquota,
-            'ipi_base_calculo': invoice_line.ipi_base_calculo,
-            'ipi_reducao_bc': invoice_line.ipi_reducao_bc,
-            'ipi_valor': invoice_line.ipi_valor,
+            'ipi_cst': line.ipi_cst,
+            'ipi_aliquota': line.ipi_aliquota,
+            'ipi_base_calculo': line.ipi_base_calculo * (1 - (line.ipi_reducao_bc / 100)),
+            'ipi_reducao_bc': line.ipi_reducao_bc,
+            'ipi_valor': line.ipi_valor,
             # - II -
-            'ii_base_calculo': invoice_line.ii_base_calculo,
-            'ii_valor_despesas': invoice_line.ii_valor_despesas,
-            'ii_valor': invoice_line.ii_valor,
-            'ii_valor_iof': invoice_line.ii_valor_iof,
+            'ii_base_calculo': line.ii_base_calculo,
+            'ii_valor_despesas': line.ii_valor_despesas,
+            'ii_valor': line.ii_valor,
+            'ii_valor_iof': line.ii_valor_iof,
             # - PIS -
-            'pis_cst': invoice_line.pis_cst,
-            'pis_aliquota': invoice_line.pis_aliquota,
-            'pis_base_calculo': invoice_line.pis_base_calculo,
-            'pis_valor': invoice_line.pis_valor,
+            'pis_cst': line.pis_cst,
+            'pis_aliquota': line.pis_aliquota,
+            'pis_base_calculo': line.pis_base_calculo,
+            'pis_valor': line.pis_valor,
             # - COFINS -
-            'cofins_cst': invoice_line.cofins_cst,
-            'cofins_aliquota': invoice_line.cofins_aliquota,
-            'cofins_base_calculo': invoice_line.cofins_base_calculo,
-            'cofins_valor': invoice_line.cofins_valor,
+            'cofins_cst': line.cofins_cst,
+            'cofins_aliquota': line.cofins_aliquota,
+            'cofins_base_calculo': line.cofins_base_calculo,
+            'cofins_valor': line.cofins_valor,
             # - ISSQN -
-            'issqn_codigo': invoice_line.service_type_id.code,
-            'issqn_aliquota': invoice_line.issqn_aliquota,
-            'issqn_base_calculo': invoice_line.issqn_base_calculo,
-            'issqn_valor': invoice_line.issqn_valor,
+            'issqn_codigo': line.service_type_id.code,
+            'issqn_aliquota': line.issqn_aliquota,
+            'issqn_base_calculo': line.issqn_base_calculo,
+            'issqn_valor': line.issqn_valor,
             'issqn_valor_retencao': 0.00,
-
         }
         return vals
 

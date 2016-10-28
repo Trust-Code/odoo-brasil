@@ -24,34 +24,60 @@ class AccountInvoiceLine(models.Model):
         company = self.env['res.company'].browse(self.env.user.company_id.id)
         return company.fiscal_type
 
+    def _prepare_tax_context(self):
+        return {
+            'incluir_ipi_base': self.incluir_ipi_base,
+            'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
+            'aliquota_icms_proprio': self.icms_aliquota,
+            'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base':
+            self.icms_st_aliquota_reducao_base,
+            'ipi_reducao_bc': self.ipi_reducao_bc,
+            'icms_base_calculo': self.icms_base_calculo,
+            'ipi_base_calculo': self.ipi_base_calculo,
+            'pis_base_calculo': self.pis_base_calculo,
+            'cofins_base_calculo': self.cofins_base_calculo,
+            'ii_base_calculo': self.ii_base_calculo,
+        }
+
     @api.one
     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
-                 'product_id', 'invoice_id.partner_id',
+                 'product_id', 'invoice_id.partner_id', 'ipi_reducao_bc',
                  'invoice_id.currency_id', 'invoice_id.company_id',
                  'tax_icms_id', 'tax_ipi_id', 'tax_pis_id', 'tax_cofins_id',
-                 'tax_ii_id', 'tax_issqn_id', 'ipi_base_calculo', 'ipi_reducao_bc')
+                 'tax_ii_id', 'tax_issqn_id', 'ipi_base_calculo')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
-        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
+
+        valor_bruto = self.price_unit * self.quantity
+        desconto = valor_bruto * self.discount / 100.0
+        subtotal = price_subtotal_signed = valor_bruto - desconto
+
         taxes = False
         if self.invoice_line_tax_ids:
-            tax_ids = self.invoice_line_tax_ids.with_context(
-                incluir_ipi_base=True, aliquota_mva=self.icms_st_aliquota_mva)
+            ctx = self._prepare_tax_context()
+
+            tax_ids = self.invoice_line_tax_ids.with_context(**ctx)
             taxes = tax_ids.compute_all(
-                price, currency, self.quantity, product=self.product_id,
+                subtotal, currency, self.quantity, product=self.product_id,
                 partner=self.invoice_id.partner_id)
 
-        subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else self.quantity * price
-        total = taxes['total_included'] if taxes else self.quantity * price
-        without_tax = taxes['price_without_tax'] if taxes else self.quantity * price
+        total = taxes['total_included'] if taxes else subtotal
 
-        icms = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_icms_id.id) if taxes else 0.0
-        icmsst = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_icms_st_id.id) if taxes else 0.0
-        ipi = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_ipi_id.id) if taxes else 0.0
-        pis = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_pis_id.id) if taxes else 0.0
-        cofins = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_cofins_id.id) if taxes else 0.0
-        issqn = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_issqn_id.id) if taxes else 0.0
-        ii = sum(x['amount'] for x in taxes['taxes'] if x['id'] == self.tax_ii_id.id) if taxes else 0.0
+        icms = sum(x['amount'] for x in taxes['taxes']
+                   if x['id'] == self.tax_icms_id.id) if taxes else 0.0
+        icmsst = sum(x['amount'] for x in taxes['taxes']
+                     if x['id'] == self.tax_icms_st_id.id) if taxes else 0.0
+        ipi = sum(x['amount'] for x in taxes['taxes']
+                  if x['id'] == self.tax_ipi_id.id) if taxes else 0.0
+        pis = sum(x['amount'] for x in taxes['taxes']
+                  if x['id'] == self.tax_pis_id.id) if taxes else 0.0
+        cofins = sum(x['amount'] for x in taxes['taxes']
+                     if x['id'] == self.tax_cofins_id.id) if taxes else 0.0
+        issqn = sum(x['amount'] for x in taxes['taxes']
+                    if x['id'] == self.tax_issqn_id.id) if taxes else 0.0
+        ii = sum(x['amount'] for x in taxes['taxes']
+                 if x['id'] == self.tax_ii_id.id) if taxes else 0.0
 
         if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
             price_subtotal_signed = self.invoice_id.currency_id.compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
@@ -61,11 +87,11 @@ class AccountInvoiceLine(models.Model):
 
         self.update({
             'price_total': total,
-            'price_without_tax': without_tax,
+            'price_tax': total - subtotal,
             'price_subtotal': subtotal,
             'price_subtotal_signed': price_subtotal_signed,
             'valor_bruto': self.quantity * self.price_unit,
-            'valor_desconto': self.valor_bruto * (self.discount / 100),
+            'valor_desconto': desconto,
             'icms_valor': icms,
             'icms_st_valor': icmsst,
             'ipi_valor': ipi,
@@ -75,34 +101,6 @@ class AccountInvoiceLine(models.Model):
             'ii_valor': ii,
         })
 
-    @api.onchange('quantity', 'price_unit', 'discount')
-    def _recompute_tax_values(self):
-        if self.calculate_tax:
-            base_icms = base = self.quantity * self.price_unit
-            self.ipi_base_calculo = base
-            self.ipi_valor = base * self.ipi_aliquota
-            self.pis_base_calculo = base
-            self.pis_valor = base * self.cofins_aliquota
-            self.cofins_base_calculo = base
-            self.cofins_value = base * self.cofins_aliquota
-            self.issqn_base_calculo = base
-            self.issqn_valor = base * self.issqn_aliquota
-            self.ii_base_calculo = base
-            self.ii_valor = base * self.ii_aliquota
-
-            if self.incluir_ipi_base:
-                base_icms += self.ipi_base * self.ipi_percent
-            base_icms -= self.valor_desconto
-
-            self.icms_base_calculo = base_icms * (1 - self.icms_aliquota_reducao_base / 100)
-            self.icms_valor = self.icms_base_calculo * (self.icms_aliquota / 100)
-
-            self.icms_st_base = base * self.icms_st_aliquota_mva * \
-                (1 - self.icms_st_aliquota_reducao_base / 100)
-
-            self.icms_st_value = self.icms_valor - \
-                (self.icms_st_base_calculo * self.icms_st_aliquota)
-
     @api.multi
     @api.depends('icms_cst_normal', 'icms_csosn_simples',
                  'company_fiscal_type')
@@ -111,9 +109,9 @@ class AccountInvoiceLine(models.Model):
             item.icms_cst = item.icms_cst_normal \
                 if item.company_fiscal_type == '3' else item.icms_csosn_simples
 
-    price_without_tax = fields.Float(
-        compute='_compute_price', string='Preço Base', store=True,
-        digits=dp.get_precision('Sale Price'))
+    price_tax = fields.Float(
+        compute='_compute_price', string='Impostos', store=True,
+        digits=dp.get_precision('Account'))
     price_total = fields.Float(
         'Valor Líquido', digits=dp.get_precision('Account'), store=True,
         default=0.00, compute='_compute_price')

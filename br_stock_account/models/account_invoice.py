@@ -21,15 +21,18 @@ class AccountInvoice(models.Model):
         self.total_seguro = sum(l.valor_seguro for l in lines)
         self.total_frete = sum(l.valor_frete for l in lines)
         self.total_despesas = sum(l.outras_despesas for l in lines)
+        self.amount_total = self.total_bruto - self.total_desconto + \
+            self.total_tax + self.total_frete + self.total_frete + \
+            self.total_despesas
 
     total_seguro = fields.Float(
-        string='Total do Seguro', digits=dp.get_precision('Account'),
+        string='Seguro ( + )', digits=dp.get_precision('Account'),
         compute="_compute_amount")
     total_despesas = fields.Float(
-        string='Total Despesas', digits=dp.get_precision('Account'),
+        string='Despesas ( + )', digits=dp.get_precision('Account'),
         compute="_compute_amount")
     total_frete = fields.Float(
-        string='Total Frete', digits=dp.get_precision('Account'),
+        string='Frete ( + )', digits=dp.get_precision('Account'),
         compute="_compute_amount")
 
     carrier_name = fields.Char('Transportadora', size=32)

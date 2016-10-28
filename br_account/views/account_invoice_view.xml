@@ -56,11 +56,16 @@
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </field>
+            <field name="amount_untaxed" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="amount_tax" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="amount_tax" position="before">
                 <field name="total_bruto"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_without_tax"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_tax"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
@@ -106,9 +111,14 @@
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </xpath>
+            <field name="amount_untaxed" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="amount_tax" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="amount_tax" position="before">
                 <field name="total_bruto"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_without_tax"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_tax"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
