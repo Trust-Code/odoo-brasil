@@ -10,7 +10,39 @@ from odoo import api, models, fields
 class PosOrder(models.Model):
     _inherit = 'pos.order'
 
+#    @api.depends('line.amount_total', 'line.valor_desconto')
+#    def _amount_all(self):
+#        super(PosOrder, self)._amount_all()
+#        for order in self:
+#            without_tax = sum(l.price_without_tax for l in order.order_line)
+#            price_total = sum(l.price_total for l in order.order_line)
+#            order.update({
+#                'total_without_tax': without_tax,
+#                'total_tax': price_total - without_tax,
+#                'total_desconto': sum(l.valor_desconto
+#                                      for l in order.order_line),
+#                'total_bruto': sum(l.valor_bruto
+#                                   for l in order.order_line),
+#                'amount_total': price_total
+#            })
+#
     numero_controle = fields.Integer()
+#
+#    total_bruto = fields.Float(
+#        string='Total Bruto ( = )', readonly=True, compute='_amount_all',
+#        digits=dp.get_precision('Account'), store=True)
+#
+#    total_without_tax = fields.Float(
+#        string='Total Base ( = )', readonly=True, compute='_amount_all',
+#        digits=dp.get_precision('Account'), store=True)
+#    total_tax = fields.Float(
+#        string='Impostos ( + )', readonly=True, compute='_amount_all',
+#        digits=dp.get_precision('Account'), store=True)
+#
+#    total_desconto = fields.Float(
+#        string='Desconto Total ( - )', readonly=True, compute='_amount_all',
+#        digits=dp.get_precision('Account'), store=True,
+#        help="The discount amount.")
 
     @api.model
     def _process_order(self, pos_order):
@@ -24,11 +56,25 @@ class PosOrder(models.Model):
         return res
 
     def _prepare_edoc_item_vals(self, pos_line):
+        values = pos_line.order_id.fiscal_position_id.map_tax_extra_values(
+            pos_line.company_id, pos_line.product_id,
+            pos_line.order_id.partner_id)
+        tax_ids = [values.get('tax_icms_id', False),
+                   values.get('tax_icms_st_id', False),
+                   values.get('tax_ipi_id', False),
+                   values.get('tax_pis_id', False),
+                   values.get('tax_cofins_id', False),
+                   values.get('tax_ii_id', False),
+                   values.get('tax_issqn_id', False)]
+        pos_line.update({
+            'tax_ids': [(6, None, [x.id for x in tax_ids if x])]
+        })
         vals = {
             'name': pos_line.name,
             'product_id': pos_line.product_id.id,
             'tipo_produto': pos_line.product_id.fiscal_type,
-            'cfop': 6101,
+            'cfop': values['cfop_id'].code if values.get('cfop_id',
+                                                         False) else False,
             'cest': pos_line.product_id.cest or
             pos_line.product_id.fiscal_classification_id.cest or '',
             'uom_id': pos_line.product_id.uom_id.id,
@@ -37,14 +83,15 @@ class PosOrder(models.Model):
             'preco_unitario': pos_line.price_unit,
             'valor_bruto': pos_line.price_subtotal_incl,
             'valor_liquido': pos_line.price_subtotal,
-            'origem': 0,
+            'origem': pos_line.product_id.origin,
             'tributos_estimados': (
                 pos_line.price_subtotal_incl - pos_line.price_subtotal),
             # - ICMS -
-            'icms_cst': 00,
+            'icms_cst': values.get('icms_cst_normal', False),
             'icms_aliquota': 0,
-            'icms_tipo_base': 0,
-            'icms_aliquota_reducao_base': 0,
+            'icms_tipo_base': '3',
+            'icms_aliquota_reducao_base': values.get(
+                'icms_aliquota_reducao_base', False),
             'icms_base_calculo': pos_line.price_subtotal_incl,
             'icms_valor': 0,
             # - ICMS ST -
@@ -59,7 +106,7 @@ class PosOrder(models.Model):
             # - IPI -
             'classe_enquadramento': '',
             'codigo_enquadramento': '999',
-            'ipi_cst': 0,
+            'ipi_cst': '99' or values.get('ipi_cst', False),
             'ipi_aliquota': 0,
             'ipi_base_calculo': 0,
             'ipi_reducao_bc': 0,
@@ -70,12 +117,12 @@ class PosOrder(models.Model):
             'ii_valor': 0,
             'ii_valor_iof': 0,
             # - PIS -
-            'pis_cst': 0,
+            'pis_cst': values.get('pis_cst', False),
             'pis_aliquota': 0,
             'pis_base_calculo': 0,
             'pis_valor': 0,
             # - COFINS -
-            'cofins_cst': 0,
+            'cofins_cst': values['cofins_cst'],
             'cofins_aliquota': 0,
             'cofins_base_calculo': 0,
             'cofins_valor': 0,
@@ -157,3 +204,4 @@ class PosOrder(models.Model):
                 'br_account_einvoice', 'action_sped_base_eletronic_doc')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
+
