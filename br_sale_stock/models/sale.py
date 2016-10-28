@@ -17,7 +17,7 @@ class SaleOrder(models.Model):
         super(SaleOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.total_bruto - order.total_desconto +
+                'amount_total': order.total_bruto - order.total_desconto + order.total_tax +
                 order.total_frete + order.total_seguro + order.total_despesas,
             })
 

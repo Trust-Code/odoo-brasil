@@ -79,8 +79,7 @@ class SaleOrderLine(models.Model):
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
-                'price_subtotal': taxes['total_excluded'],
-                'price_subtotal': taxes['total_excluded'],
+                'price_subtotal': valor_bruto - desconto,
                 'price_without_tax': taxes['price_without_tax'],
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
