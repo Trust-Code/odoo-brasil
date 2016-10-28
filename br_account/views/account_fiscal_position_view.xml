@@ -16,35 +16,27 @@
                         <field name="tax_id" domain="[('domain', '=', domain)]" />
                     </group>
                     <group>
-                        <field name="reducao_base" />
+                        <field name="cst_icms" attrs="{'invisible': [('domain', '!=', 'icms')]}" />
+                        <field name="cst_ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}" />
+                        <field name="cst_pis" attrs="{'invisible': [('domain', '!=', 'pis')]}" />
+                        <field name="cst_cofins" attrs="{'invisible': [('domain', '!=', 'cofins')]}" />
                     </group>
                 </group>
                 <group name="icms" attrs="{'invisible': [('domain', '!=', 'icms')]}">
                     <group>
-                        <field name="cfop_id" />
+                        <field name="cfop_id"  />
                         <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
-                        <field name="reducao_base_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
+                        <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
                     </group>
                     <group>
-                        <field name="cst_icms" />
+                        <field name="incluir_ipi_base" />
+                        <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}" />
                         <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
                     </group>
                 </group>
                 <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">
                     <group>
-                        <field name="cst_ipi" />
-                    </group>
-                    <group></group>
-                </group>
-                <group name="pis" attrs="{'invisible': [('domain', '!=', 'pis')]}">
-                    <group>
-                        <field name="cst_pis" />
-                    </group>
-                    <group></group>
-                </group>
-                <group name="cofins" attrs="{'invisible': [('domain', '!=', 'cofins')]}">
-                    <group>
-                        <field name="cst_cofins" />
+                        <field name="reducao_ipi" />
                     </group>
                     <group></group>
                 </group>
@@ -77,7 +69,6 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name" />
                 <field name="tax_id" />
-                <field name="reducao_base" />
             </tree>
         </field>
     </record>
@@ -100,9 +91,9 @@
                                 <field name="tax_id" />
                                 <field name="cfop_id" />
                                 <field name="cst_icms" />
-                                <field name="reducao_base" />
+                                <field name="reducao_icms" />
                                 <field name="tax_icms_st_id" />
-                                <field name="reducao_base_st" />
+                                <field name="reducao_icms_st" />
                                 <field name="aliquota_mva" />
                             </tree>
                         </field>
@@ -114,7 +105,7 @@
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cst_ipi" />
-                                <field name="reducao_base" />
+                                <field name="reducao_ipi" />
                             </tree>
                         </field>
                     </group>
@@ -125,7 +116,6 @@
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cst_pis" />
-                                <field name="reducao_base" />
                             </tree>
                         </field>
                     </group>
@@ -136,7 +126,6 @@
                                 <field name="name" />
                                 <field name="tax_id" />
                                 <field name="cst_cofins" />
-                                <field name="reducao_base" />
                             </tree>
                         </field>
                     </group>

@@ -48,8 +48,10 @@ class AccountFiscalPositionTaxRule(models.Model):
     tax_id = fields.Many2one('account.tax', string="Imposto")
     tax_icms_st_id = fields.Many2one('account.tax', string="ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
-    reducao_base = fields.Float(string="Redução de base")
-    reducao_base_st = fields.Float(string="Redução de base ST")
+    incluir_ipi_base = fields.Boolean(string="Incl. IPI na base ICMS")
+    reducao_icms = fields.Float(string="Redução de base")
+    reducao_icms_st = fields.Float(string="Redução de base ST")
+    reducao_ipi = fields.Float(string="Redução de base IPI")
     aliquota_mva = fields.Float(string="Alíquota MVA")
 
 
@@ -104,14 +106,15 @@ class AccountFiscalPosition(models.Model):
                 ('tax_%s_id' % type_tax): rules[0].tax_id,
                 # ICMS
                 'icms_cst_normal': rules[0].cst_icms,
-                'icms_aliquota_reducao_base': rules[0].reducao_base,
+                'icms_aliquota_reducao_base': rules[0].reducao_icms,
+                'incluir_ipi_base': rules[0].incluir_ipi_base,
                 # ICMS ST
                 'tax_icms_st_id': rules[0].tax_icms_st_id,
                 'icms_st_aliquota_mva': rules[0].aliquota_mva,
-                'icms_st_aliquota_reducao_base': rules[0].reducao_base_st,
+                'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
                 # IPI
                 'ipi_cst': rules[0].cst_ipi,
-                'ipi_reducao_bc': rules[0].reducao_base,
+                'ipi_reducao_bc': rules[0].reducao_ipi,
                 # PIS
                 'pis_cst': rules[0].cst_pis,
                 # PIS

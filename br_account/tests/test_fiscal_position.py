@@ -32,7 +32,7 @@ class TestFiscalPosition(TransactionCase):
             'fiscal_position_id': self.fpos.id,
             'domain': 'icms',
             'cst_icms': '00',
-            'reducao_base': 20.0
+            'reducao_icms': 20.0
         })
 
     def test_fiscal_mapping_extra(self):
@@ -41,4 +41,4 @@ class TestFiscalPosition(TransactionCase):
 
         self.assertEquals(vals['icms_rule_id'].id, self.rule_icms.id)
         self.assertEquals(
-            vals['icms_aliquota_reducao_base'], self.rule_icms.reducao_base)
+            vals['icms_aliquota_reducao_base'], self.rule_icms.reducao_icms)

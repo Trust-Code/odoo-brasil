@@ -294,19 +294,6 @@ class AccountInvoiceLine(models.Model):
         'Perc PIS', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
 
-    pis_st_tipo = fields.Selection(
-        [('percent', 'Percentual'), ('quantity', 'Em Valor')],
-        'Tipo do PIS ST', required=True, default='percent')
-    pis_st_base_calculo = fields.Float(
-        'Base PIS ST', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
-    pis_st_aliquota = fields.Float(
-        'Perc PIS ST', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
-    pis_st_valor = fields.Float(
-        'Valor PIS ST', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
-
     # =========================================================================
     # COFINS
     # =========================================================================
@@ -328,18 +315,6 @@ class AccountInvoiceLine(models.Model):
         default=0.00, compute='_compute_price', store=True)
     cofins_aliquota = fields.Float(
         'Perc COFINS', required=True, digits=dp.get_precision('Discount'),
-        default=0.00)
-    cofins_st_tipo = fields.Selection(
-        [('percent', 'Percentual'), ('quantity', 'Em Valor')],
-        'Tipo do COFINS ST', required=True, default='percent')
-    cofins_st_base_calculo = fields.Float(
-        'Base COFINS ST', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
-    cofins_st_aliquota = fields.Float(
-        'Perc COFINS ST', required=True, digits=dp.get_precision('Discount'),
-        default=0.00)
-    cofins_st_valor = fields.Float(
-        'Valor COFINS ST', required=True, digits=dp.get_precision('Account'),
         default=0.00)
 
     # =========================================================================

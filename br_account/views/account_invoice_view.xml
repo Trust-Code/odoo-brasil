@@ -250,16 +250,6 @@
                                     <field name="pis_valor"/>
                                 </group>
                             </group>
-                            <group string="Detalhes do PIS ST">
-                                <group>
-                                    <field name="pis_st_tipo"/>
-                                    <field name="pis_st_base_calculo"/>
-                                </group>
-                                <group>
-                                    <field name="pis_st_aliquota"/>
-                                    <field name="pis_st_valor"/>
-                                </group>
-                            </group>
                         </page>
                         <page name="cofins" string="COFINS">
                             <group string="Detalhes do COFINS">
@@ -273,16 +263,6 @@
                                     <field name="tax_cofins_id" />
                                     <field name="cofins_aliquota" invisible="1" />
                                     <field name="cofins_valor"/>
-                                </group>
-                            </group>
-                            <group string="Detalhes do COFINS ST">
-                                <group>
-                                    <field name="cofins_st_tipo"/>
-                                    <field name="cofins_st_base_calculo"/>
-                                </group>
-                                <group>
-                                    <field name="cofins_st_aliquota"/>
-                                    <field name="cofins_st_valor"/>
                                 </group>
                             </group>
                         </page>

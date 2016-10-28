@@ -76,23 +76,46 @@ class AccountTax(models.Model):
 
         exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
 
+        # Filtrando os impostos com cálculo diferenciado
         icms_taxes = self.filtered(lambda x: x.domain in ('icms', 'icmsst'))
-        self = self - icms_taxes
+        ipi_tax = self.filtered(lambda x: x.domain == 'ipi')
+        self = self - icms_taxes - ipi_tax
+
         res = super(AccountTax, self).compute_all(
             price_unit, currency, quantity, product, partner)
         if not exists_br_tax:
             res['price_without_tax'] = round(price_unit * quantity, 2)
             return res
 
+        if ipi_tax:
+            # Calculando IPI primeiro
+            reducao_ipi = 0.0
+            if "ipi_reducao_bc" in self.env.context:
+                reducao_ipi = self.env.context['ipi_reducao_bc']
+
+            base_tax = price_unit * quantity * (1 - (reducao_ipi / 100))
+            res_ipi = super(AccountTax, ipi_tax).compute_all(
+                base_tax, currency, quantity, product, partner)
+            res['total_excluded'] += res_ipi['total_excluded']
+            res['total_included'] += res_ipi['total_included']
+            res['base'] += res_ipi['base']
+            res['taxes'] += res_ipi['taxes']
+
         incluir_ipi = False
         aliquota_mva = 0.0
+        reducao_icms = 0.0
+        reducao_icmsst = 0.0
+
         if 'incluir_ipi_base' in self.env.context:
             incluir_ipi = self.env.context['incluir_ipi_base']
         if 'aliquota_mva' in self.env.context:
             aliquota_mva = self.env.context['aliquota_mva']
+        if "icms_aliquota_reducao_base" in self.env.context:
+            reducao_icms = self.env.context['icms_aliquota_reducao_base']
+        if "icms_st_aliquota_reducao_base" in self.env.context:
+            reducao_icmsst = self.env.context['icms_st_aliquota_reducao_base']
 
-        ipi = self.filtered(lambda x: x.domain == 'ipi')
-        total_ipi = sum(x['amount'] for x in res['taxes'] if x['id'] == ipi.id)
+        total_ipi = sum(x['amount'] for x in res['taxes'] if x['id'] == ipi_tax.id)
 
         base = round(price_unit * quantity, 2)
         icms_amount = 0.0

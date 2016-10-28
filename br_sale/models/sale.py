@@ -202,6 +202,7 @@ class SaleOrderLine(models.Model):
             self.product_id.fiscal_classification_id.id
         res['service_type_id'] = self.product_id.service_type_id.id
 
+        res['incluir_ipi_base'] = self.incluir_ipi_base
         res['icms_base_calculo'] = self.price_total
         res['icms_aliquota'] = icms.amount or 0.0
         res['icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
