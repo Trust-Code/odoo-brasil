@@ -43,6 +43,9 @@ class AccountInvoice(models.Model):
         # TOTAL
         self.amount_total = self.total_bruto - \
             self.total_desconto + self.total_tax
+        sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+        self.amount_total_company_signed = self.amount_total * sign
+        self.amount_total_signed = self.amount_total * sign
 
     @api.one
     @api.depends('move_id.line_ids')

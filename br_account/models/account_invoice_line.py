@@ -51,7 +51,7 @@ class AccountInvoiceLine(models.Model):
 
         valor_bruto = self.price_unit * self.quantity
         desconto = valor_bruto * self.discount / 100.0
-        subtotal = price_subtotal_signed = valor_bruto - desconto
+        base_icms = subtotal = price_subtotal_signed = valor_bruto - desconto
 
         taxes = False
         if self.invoice_line_tax_ids:
@@ -64,27 +64,29 @@ class AccountInvoiceLine(models.Model):
 
         total = taxes['total_included'] if taxes else subtotal
 
-        icms = sum(x['amount'] for x in taxes['taxes']
-                   if x['id'] == self.tax_icms_id.id) if taxes else 0.0
-        icmsst = sum(x['amount'] for x in taxes['taxes']
-                     if x['id'] == self.tax_icms_st_id.id) if taxes else 0.0
-        ipi = sum(x['amount'] for x in taxes['taxes']
-                  if x['id'] == self.tax_ipi_id.id) if taxes else 0.0
-        pis = sum(x['amount'] for x in taxes['taxes']
-                  if x['id'] == self.tax_pis_id.id) if taxes else 0.0
-        cofins = sum(x['amount'] for x in taxes['taxes']
-                     if x['id'] == self.tax_cofins_id.id) if taxes else 0.0
-        issqn = sum(x['amount'] for x in taxes['taxes']
-                    if x['id'] == self.tax_issqn_id.id) if taxes else 0.0
-        ii = sum(x['amount'] for x in taxes['taxes']
-                 if x['id'] == self.tax_ii_id.id) if taxes else 0.0
+        icms = ([x for x in taxes['taxes']
+                 if x['id'] == self.tax_icms_id.id]) if taxes else []
+        icmsst = ([x for x in taxes['taxes']
+                   if x['id'] == self.tax_icms_st_id.id]) if taxes else []
+        ipi = ([x for x in taxes['taxes']
+                if x['id'] == self.tax_ipi_id.id]) if taxes else []
+        pis = ([x for x in taxes['taxes']
+                if x['id'] == self.tax_pis_id.id]) if taxes else []
+        cofins = ([x for x in taxes['taxes']
+                   if x['id'] == self.tax_cofins_id.id]) if taxes else []
+        issqn = ([x for x in taxes['taxes']
+                  if x['id'] == self.tax_issqn_id.id]) if taxes else []
+        ii = ([x for x in taxes['taxes']
+               if x['id'] == self.tax_ii_id.id]) if taxes else []
 
         if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
             price_subtotal_signed = self.invoice_id.currency_id.compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         price_subtotal_signed = price_subtotal_signed * sign
-
+        valor_ipi = sum([x['amount'] for x in ipi])
+        if self.incluir_ipi_base:
+            base_icms += valor_ipi
         self.update({
             'price_total': total,
             'price_tax': total - subtotal,
@@ -92,13 +94,20 @@ class AccountInvoiceLine(models.Model):
             'price_subtotal_signed': price_subtotal_signed,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,
-            'icms_valor': icms,
-            'icms_st_valor': icmsst,
-            'ipi_valor': ipi,
-            'pis_valor': pis,
-            'cofins_valor': cofins,
-            'issqn_valor': issqn,
-            'ii_valor': ii,
+            'icms_valor': sum([x['amount'] for x in icms]),
+            'icms_base_calculo': base_icms,
+            'icms_st_base_calculo': sum([x['base'] for x in icmsst]),
+            'icms_st_valor': sum([x['amount'] for x in icmsst]),
+            'ipi_base_calculo': sum([x['base'] for x in ipi]),
+            'ipi_valor': valor_ipi,
+            'pis_base_calculo': subtotal,
+            'pis_valor': sum([x['amount'] for x in pis]),
+            'cofins_base_calculo': subtotal,
+            'cofins_valor': sum([x['amount'] for x in cofins]),
+            'issqn_base_calculo': sum([x['base'] for x in issqn]),
+            'issqn_valor': sum([x['amount'] for x in issqn]),
+            'ii_base_calculo': subtotal,
+            'ii_valor': sum([x['amount'] for x in ii]),
         })
 
     @api.multi

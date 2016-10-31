@@ -24,6 +24,9 @@ class AccountInvoice(models.Model):
         self.amount_total = self.total_bruto - self.total_desconto + \
             self.total_tax + self.total_frete + self.total_frete + \
             self.total_despesas
+        sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+        self.amount_total_company_signed = self.amount_total * sign
+        self.amount_total_signed = self.amount_total * sign
 
     total_seguro = fields.Float(
         string='Seguro ( + )', digits=dp.get_precision('Account'),
