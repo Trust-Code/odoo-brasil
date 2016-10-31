@@ -96,10 +96,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
+        xprod = item.product_id.name if self.company_id.\
+                tipo_ambiente != '2' else\
+'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': item.product_id.name,
+            'xProd': xprod,
             'NCM': re.sub('[^0-9]', '', item.ncm or ''),
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),

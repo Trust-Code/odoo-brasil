@@ -19,7 +19,8 @@
         'br_nfe',
     ],
     'data': [
-        'views/pos_order.xml'
+        'views/pos_order.xml',
+        'views/invoice_eletronic.xml'
     ],
     'application': True,
 }
