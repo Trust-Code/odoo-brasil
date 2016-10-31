@@ -177,7 +177,7 @@ class Cnab240(Cnab):
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
-            'numero_documento': line.name,
+            'numero_documento': "%s/%s" % (line.move_id.name, line.name),
             'vencimento_titulo': self.format_date(
                 line.date_maturity),
             'valor_titulo': Decimal(str(line.debit)).quantize(
