@@ -194,14 +194,14 @@ class PosOrder(models.Model):
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
-    @api.depends('statement_ids', 'lines.price_subtotal_incl', 'lines.discount')
-    def _compute_amount_all(self):
-        super(PosOrder, self)._compute_amount_all()
-        for order in self:
-            currency = order.pricelist_id.currency_id
-            order.amount_tax = 0
-            amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
-            order.amount_total = amount_untaxed + order.amount_tax
+    @api.model
+    def _amount_line_tax(self, line, fiscal_position_id):
+        taxes = line.tax_ids.filtered(lambda t: t.company_id.id == line.order_id.company_id.id)
+        if fiscal_position_id:
+            taxes = fiscal_position_id.map_tax(taxes, line.product_id, line.order_id.partner_id)
+        price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+        taxes = taxes.compute_all(price, line.order_id.pricelist_id.currency_id, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)
+        return taxes['total_included'] - taxes['total_excluded']
 
 
 class PosOrderLine(models.Model):
