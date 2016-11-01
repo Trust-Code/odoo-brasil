@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
-import pytz
 import base64
 from datetime import datetime
 from odoo import api, fields, models
@@ -16,6 +15,13 @@ from pytrustnfe.utils import ChaveNFe, gerar_chave
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
+
+    @api.multi
+    @api.depends('chave_nfe')
+    def _format_danfe_key(self):
+        for item in self:
+            item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
+                                          item.chave_nfe, 10, re.DOTALL)
 
     ind_final = fields.Selection([
         ('0', u'Não'),
@@ -49,6 +55,8 @@ class InvoiceEletronic(models.Model):
 
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
+    chave_nfe_danfe = fields.Char(string="Chave Formatado",
+                                  compute="_format_danfe_key")
     protocolo_nfe = fields.Char(string="Protocolo", size=50,
                                 help="Protocolo de autorização da NFe")
 

@@ -2,11 +2,19 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class InvoiceEletronicItem(models.Model):
     _inherit = "invoice.eletronic.item"
+
+    @api.multi
+    @api.depends('icms_cst', 'origem')
+    def _compute_cst_danfe(self):
+        for item in self:
+            item.cst_danfe = self.origem + self.icms_cst
+
+    cst_danfe = fields.Char(string="CST Danfe", compute="_compute_cst_danfe")
 
     cest = fields.Char(string="CEST", size=10,
                        help="Código Especificador da Substituição Tributária")
