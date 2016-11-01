@@ -2,9 +2,11 @@
 # © 2016 Alessandro Fernandes Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import csv
 from datetime import datetime
 from random import SystemRandom
 from odoo.addons import decimal_precision as dp
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo import api, models, fields
 
 
@@ -47,6 +49,19 @@ class PosOrder(models.Model):
         foo = self._prepare_edoc_vals(res)
         eletronic = self.env['invoice.eletronic'].create(foo)
         eletronic.action_post_validate()
+        documento_partner = eletronic.partner_id.cnpj_cpf if\
+           eletronic.partner_id else 'Inexistente'
+        dt_emissao = datetime.strptime(eletronic.data_emissao, DTFT)
+        dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+        qr_code_hash = {
+            'chNFe': eletronic.chave_nfe,
+            'nVersao': '100',
+            'tpAmb': self.company_id.tipo_ambiente,
+            'cDest': documento_partner,
+            'dhEmi': dt_emissao[0].encode('hex'),
+            'vNF': eletronic.valor_final,
+            'vICMS': eletronic.valor_icms,
+        }
         return res
 
     def _prepare_edoc_item_vals(self, pos_line):
@@ -179,13 +194,22 @@ class PosOrder(models.Model):
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
+    @api.depends('statement_ids', 'lines.price_subtotal_incl', 'lines.discount')
+    def _compute_amount_all(self):
+        super(PosOrder, self)._compute_amount_all()
+        for order in self:
+            currency = order.pricelist_id.currency_id
+            order.amount_tax = 0
+            amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
+            order.amount_total = amount_untaxed + order.amount_tax
+
 
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
 
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
     def _compute_amount_line_all(self):
-        super(PosOrderLine, self)._compute_amount_line_all()
+        return super(PosOrderLine, self)._compute_amount_line_all()
         for line in self:
             values = line.order_id.fiscal_position_id.map_tax_extra_values(
                 line.company_id, line.product_id,
@@ -197,6 +221,7 @@ class PosOrderLine(models.Model):
                        values.get('tax_cofins_id', False),
                        values.get('tax_ii_id', False),
                        values.get('tax_issqn_id', False)]
+            line.update({'tax_ids': [(5, 0, 0)]})
             line.update({
                 'tax_ids': [(6, None, [x.id for x in tax_ids if x])]
             })
