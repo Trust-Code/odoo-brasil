@@ -122,8 +122,6 @@ class SaleOrderLine(models.Model):
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
-    cofins_base_calculo = fields.Float(
-        'Base COFINS', required=True, digits=dp.get_precision('Account'))
 
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,

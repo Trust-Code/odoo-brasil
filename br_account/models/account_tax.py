@@ -97,7 +97,7 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_ipi += self.env.context["outras_despesas"]
 
-        base_tax = base_ipi * (1 - (reducao_ipi / 100))
+        base_tax = base_ipi * (1 - (reducao_ipi / 100.0))
         vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
         vals['base'] = base_tax
         return [vals]
@@ -124,7 +124,7 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_icms += self.env.context["outras_despesas"]
 
-        base_icms = base_icms * (1 - (reducao_icms / 100))
+        base_icms = base_icms * (1 - (reducao_icms / 100.0))
         vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
         vals['base'] = base_icms
         return [vals]
@@ -149,12 +149,12 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_icmsst += self.env.context["outras_despesas"]
 
-        base_icmsst = base_icmsst * (1 - (reducao_icmsst / 100))  # Redução
-        base_icmsst = base_icmsst * (1 + aliquota_mva / 100)  # Aplica MVA
+        base_icmsst = base_icmsst * (1 - (reducao_icmsst / 100.0))  # Redução
+        base_icmsst = base_icmsst * (1 + aliquota_mva / 100.0)  # Aplica MVA
 
-        icmsst = ((base_icmsst * (icmsst_tax.amount / 100)) - icms_value) or 0
+        icmsst = round((base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
 
-        vals['amount'] = icmsst
+        vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
         vals['base'] = base_icmsst
         return [vals]
 
