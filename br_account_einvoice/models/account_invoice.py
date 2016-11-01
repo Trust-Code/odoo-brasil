@@ -74,7 +74,7 @@ class AccountInvoice(models.Model):
             'preco_unitario': line.price_unit,
             'valor_bruto': line.valor_bruto,
             'desconto': line.valor_desconto,
-            'valor_liquido': line.price_total,
+            'valor_liquido': line.price_subtotal,
             'origem': line.icms_origem,
             'tributos_estimados': line.tributos_estimados,
             'ncm': line.fiscal_classification_id.code,

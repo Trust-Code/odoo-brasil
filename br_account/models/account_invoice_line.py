@@ -88,9 +88,10 @@ class AccountInvoiceLine(models.Model):
 
         price_subtotal_signed = price_subtotal_signed * sign
         self.update({
-            'price_total': taxes['total_included'],
-            'price_tax': taxes['total_included'] - taxes['total_excluded'],
-            'price_subtotal': taxes['total_excluded'],
+            'price_total': taxes['total_included'] if taxes else subtotal,
+            'price_tax': taxes['total_included'] - taxes['total_excluded']
+            if taxes else 0,
+            'price_subtotal': taxes['total_excluded'] if taxes else subtotal,
             'price_subtotal_signed': price_subtotal_signed,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,

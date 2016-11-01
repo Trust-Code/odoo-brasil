@@ -201,9 +201,13 @@ class AccountTax(models.Model):
 
         price_base = price_unit * quantity
         ipi = self._compute_ipi(price_base)
-        icms = self._compute_icms(price_base, ipi[0]['amount'])
+        icms = self._compute_icms(
+            price_base,
+            ipi[0]['amount'] if ipi else 0.0)
         icms_st = self._compute_icms_st(
-            price_base, ipi[0]['amount'], icms[0]['amount'])
+            price_base,
+            ipi[0]['amount'] if ipi else 0.0,
+            icms[0]['amount'] if icms else 0.0)
         pis_cofins = self._compute_pis_cofins(price_base)
         issqn = self._compute_issqn(price_base)
         ii = self._compute_ii(price_base)
