@@ -17,8 +17,9 @@ class SaleOrder(models.Model):
         super(SaleOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.total_bruto - order.total_desconto + order.total_tax +
-                order.total_frete + order.total_seguro + order.total_despesas,
+                'amount_total': order.total_bruto - order.total_desconto +
+                order.total_tax + order.total_frete + order.total_seguro +
+                order.total_despesas,
             })
 
     def _calc_ratio(self, qty, total):
@@ -32,7 +33,8 @@ class SaleOrder(models.Model):
         amount = 0
         for line in self.order_line:
             if line.product_id.fiscal_type == 'product':
-                amount += line.price_without_tax
+                amount += line.valor_bruto - line.valor_desconto
+
         for l in self.order_line:
             if l.product_id.fiscal_type == 'service':
                 continue
@@ -60,25 +62,21 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
-                 'valor_seguro', 'valor_frete', 'outras_despesas')
-    def _compute_amount(self):
-        super(SaleOrderLine, self)._compute_amount()
-        for item in self:
-            somar = item.valor_seguro + item.valor_frete + item.outras_despesas
-            item.update({
-                'price_total': item.price_total + somar,
-            })
+    def _prepare_tax_context(self):
+        res = super(SaleOrderLine, self)._prepare_tax_context()
+        res.update({
+            'valor_frete': self.valor_frete,
+            'valor_seguro': self.valor_seguro,
+            'outras_despesas': self.outras_despesas,
+        })
+        return res
 
     valor_seguro = fields.Float(
-        'Seguro', default=0.0,
-        digits=dp.get_precision('Account'), readonly=True)
+        'Seguro', default=0.0, digits=dp.get_precision('Account'))
     outras_despesas = fields.Float(
-        'Despesas', default=0.0,
-        digits=dp.get_precision('Account'), readonly=True)
+        'Despesas', default=0.0, digits=dp.get_precision('Account'))
     valor_frete = fields.Float(
-        'Frete', default=0.0,
-        digits=dp.get_precision('Account'), readonly=True)
+        'Frete', default=0.0, digits=dp.get_precision('Account'))
 
     @api.multi
     def _prepare_invoice_line(self, qty):

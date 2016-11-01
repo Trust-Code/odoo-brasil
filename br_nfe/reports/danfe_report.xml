@@ -446,7 +446,7 @@
                                 <td><span t-field="e.uom_id"></span></td>
                                 <td><span t-field="e.quantidade"></span></td>
                                 <td><span t-field="e.preco_unitario"></span></td>
-                                <td><span t-field="e.valor_liquido"></span></td>
+                                <td><span t-field="e.price_subtotal"></span></td>
                                 <td><span t-field="e.icms_base_calculo"></span></td>
                                 <td><span t-field="e.icms_valor"></span></td>
                                 <td><span t-field="e.ipi_valor"></span></td>

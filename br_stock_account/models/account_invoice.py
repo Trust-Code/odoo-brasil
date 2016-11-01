@@ -22,7 +22,7 @@ class AccountInvoice(models.Model):
         self.total_frete = sum(l.valor_frete for l in lines)
         self.total_despesas = sum(l.outras_despesas for l in lines)
         self.amount_total = self.total_bruto - self.total_desconto + \
-            self.total_tax + self.total_frete + self.total_frete + \
+            self.total_tax + self.total_frete + self.total_seguro + \
             self.total_despesas
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
@@ -89,11 +89,17 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
+    def _prepare_tax_context(self):
+        res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        res.update({
+            'valor_frete': self.valor_frete,
+            'valor_seguro': self.valor_seguro,
+            'outras_despesas': self.outras_despesas,
+        })
+        return res
+
     @api.one
-    @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
-                 'product_id', 'invoice_id.partner_id',
-                 'invoice_id.currency_id', 'invoice_id.company_id',
-                 'valor_frete', 'valor_seguro', 'outras_despesas')
+    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
 

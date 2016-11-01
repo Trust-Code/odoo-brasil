@@ -6,9 +6,9 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
-                <field name="outras_despesas" invisible="1" />
-                <field name="valor_seguro" invisible="1" />
-                <field name="valor_frete" invisible="1" />
+                <field name="outras_despesas" />
+                <field name="valor_seguro" />
+                <field name="valor_frete" />
             </xpath>
             <field name="amount_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>

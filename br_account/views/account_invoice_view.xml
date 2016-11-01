@@ -171,7 +171,7 @@
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1" />
                                     <field name="tributos_estimados" />
-                                    <field name="calculate_tax" />
+                                    <field name="calculate_tax" invisible="1" />
                                 </group>
                             </group>
                             <label for="name"/>
@@ -183,7 +183,7 @@
                                     <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
                                     <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                     <field name="icms_origem"/>
-                                    <field name="icms_tipo_base"/>
+                                    <field name="icms_tipo_base" invisible="1"/>
                                     <field name="incluir_ipi_base" />
                                     <field name="has_icms_difal" />
                                 </group>
@@ -200,7 +200,7 @@
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
                                 <group>
-                                    <field name="icms_st_tipo_base"/>
+                                    <field name="icms_st_tipo_base" invisible="1"/>
                                     <field name="icms_st_aliquota_mva"/>
                                     <field name="icms_st_base_calculo"/>
                                     <field name="icms_st_aliquota_reducao_base"/>

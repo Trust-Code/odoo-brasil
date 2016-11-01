@@ -18,18 +18,14 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
-        self.amount_untaxed = sum(l.price_subtotal for l in lines)
         self.total_tax = sum(l.price_tax for l in lines)
-        self.icms_base = sum(l.icms_base_calculo * (
-            1 - l.icms_aliquota_reducao_base / 100) for l in lines)
+        self.icms_base = sum(l.icms_base_calculo for l in lines)
         self.icms_value = sum(l.icms_valor for l in lines)
-        self.icms_st_base = sum(l.icms_st_base_calculo * (
-            1 - l.icms_st_aliquota_reducao_base / 100) for l in lines)
+        self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
         self.icms_st_value = sum(l.icms_st_valor for l in lines)
         self.issqn_base = sum(l.issqn_base_calculo for l in lines)
         self.issqn_value = sum(l.issqn_valor for l in lines)
-        self.ipi_base = sum(l.ipi_base_calculo * (
-            1 - l.ipi_reducao_bc / 100) for l in lines)
+        self.ipi_base = sum(l.ipi_base_calculo for l in lines)
         self.ipi_value = sum(l.ipi_valor for l in lines)
         self.pis_base = sum(l.pis_base_calculo for l in lines)
         self.pis_value = sum(l.pis_valor for l in lines)

@@ -83,14 +83,14 @@ class AccountInvoice(models.Model):
             'icms_aliquota': line.icms_aliquota,
             'icms_tipo_base': line.icms_tipo_base,
             'icms_aliquota_reducao_base': line.icms_aliquota_reducao_base,
-            'icms_base_calculo': line.icms_base_calculo * (1 - (line.icms_aliquota_reducao_base / 100)),
+            'icms_base_calculo': line.icms_base_calculo,
             'icms_valor': line.icms_valor,
             # - ICMS ST -
             'icms_st_aliquota': line.icms_st_aliquota,
             'icms_st_aliquota_mva': line.icms_st_aliquota_mva,
             'icms_st_aliquota_reducao_base': line.\
             icms_st_aliquota_reducao_base,
-            'icms_st_base_calculo': line.icms_st_base_calculo * (1 - (line.icms_st_aliquota_reducao_base / 100)),
+            'icms_st_base_calculo': line.icms_st_base_calculo,
             'icms_st_valor': line.icms_st_valor,
             # - Simples Nacional -
             'icms_aliquota_credito': line.icms_aliquota_credito,
@@ -100,7 +100,7 @@ class AccountInvoice(models.Model):
             'codigo_enquadramento': '999',
             'ipi_cst': line.ipi_cst,
             'ipi_aliquota': line.ipi_aliquota,
-            'ipi_base_calculo': line.ipi_base_calculo * (1 - (line.ipi_reducao_bc / 100)),
+            'ipi_base_calculo': line.ipi_base_calculo,
             'ipi_reducao_bc': line.ipi_reducao_bc,
             'ipi_valor': line.ipi_valor,
             # - II -

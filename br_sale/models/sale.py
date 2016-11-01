@@ -15,29 +15,22 @@ class SaleOrder(models.Model):
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()
         for order in self:
-            without_tax = sum(l.price_without_tax for l in order.order_line)
             price_total = sum(l.price_total for l in order.order_line)
+            price_subtotal = sum(l.price_subtotal for l in order.order_line)
             order.update({
-                'total_without_tax': without_tax,
-                'total_tax': price_total - without_tax,
+                'total_tax': price_total - price_subtotal,
                 'total_desconto': sum(l.valor_desconto
                                       for l in order.order_line),
                 'total_bruto': sum(l.valor_bruto
                                    for l in order.order_line),
-                'amount_total': price_total
             })
 
     total_bruto = fields.Float(
         string='Total Bruto ( = )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
-
-    total_without_tax = fields.Float(
-        string='Total Base ( = )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
-
     total_desconto = fields.Float(
         string='Desconto Total ( - )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
@@ -78,8 +71,7 @@ class SaleOrderLine(models.Model):
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
-                'price_subtotal': valor_bruto - desconto,
-                'price_without_tax': taxes['price_without_tax'],
+                'price_subtotal': taxes['total_excluded'],
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
             })
@@ -130,6 +122,8 @@ class SaleOrderLine(models.Model):
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
+    cofins_base_calculo = fields.Float(
+        'Base COFINS', required=True, digits=dp.get_precision('Account'))
 
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
@@ -202,10 +196,6 @@ class SaleOrderLine(models.Model):
         res['service_type_id'] = self.product_id.service_type_id.id
 
         res['incluir_ipi_base'] = self.incluir_ipi_base
-        base_icms = self.price_subtotal
-        if self.incluir_ipi_base:
-            base_icms += ipi.amount or 0.0
-        res['icms_base_calculo'] = base_icms
         res['icms_aliquota'] = icms.amount or 0.0
         res['icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0
@@ -214,22 +204,17 @@ class SaleOrderLine(models.Model):
             self.icms_st_aliquota_reducao_base
 
         res['ipi_cst'] = self.ipi_cst
-        res['ipi_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['ipi_aliquota'] = ipi.amount or 0.0
         res['ipi_reducao_bc'] = self.ipi_reducao_bc
 
         res['pis_cst'] = self.pis_cst
-        res['pis_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['pis_aliquota'] = pis.amount or 0.0
 
         res['cofins_cst'] = self.cofins_cst
-        res['cofins_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['cofins_aliquota'] = cofins.amount or 0.0
 
-        res['issqn_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['issqn_aliquota'] = issqn.amount or 0.0
 
-        res['ii_base_calculo'] = self.valor_bruto - self.valor_desconto
         res['ii_aliquota'] = ii.amount or 0.0
 
         return res

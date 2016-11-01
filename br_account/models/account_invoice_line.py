@@ -28,7 +28,6 @@ class AccountInvoiceLine(models.Model):
         return {
             'incluir_ipi_base': self.incluir_ipi_base,
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
-            'aliquota_icms_proprio': self.icms_aliquota,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
             self.icms_st_aliquota_reducao_base,
@@ -42,27 +41,30 @@ class AccountInvoiceLine(models.Model):
 
     @api.one
     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
-                 'product_id', 'invoice_id.partner_id', 'ipi_reducao_bc',
+                 'product_id', 'invoice_id.partner_id',
                  'invoice_id.currency_id', 'invoice_id.company_id',
                  'tax_icms_id', 'tax_ipi_id', 'tax_pis_id', 'tax_cofins_id',
-                 'tax_ii_id', 'tax_issqn_id', 'ipi_base_calculo')
+                 'tax_ii_id', 'tax_issqn_id', 'incluir_ipi_base',
+                 'has_icms_difal', 'icms_aliquota_reducao_base',
+                 'ipi_reducao_bc', 'icms_st_aliquota_mva',
+                 'icms_st_aliquota_reducao_base')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
+        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
 
         valor_bruto = self.price_unit * self.quantity
         desconto = valor_bruto * self.discount / 100.0
-        base_icms = subtotal = price_subtotal_signed = valor_bruto - desconto
+        subtotal = valor_bruto - desconto
 
         taxes = False
         if self.invoice_line_tax_ids:
             ctx = self._prepare_tax_context()
 
             tax_ids = self.invoice_line_tax_ids.with_context(**ctx)
-            taxes = tax_ids.compute_all(
-                subtotal, currency, self.quantity, product=self.product_id,
-                partner=self.invoice_id.partner_id)
 
-        total = taxes['total_included'] if taxes else subtotal
+            taxes = tax_ids.compute_all(
+                price, currency, self.quantity, product=self.product_id,
+                partner=self.invoice_id.partner_id)
 
         icms = ([x for x in taxes['taxes']
                  if x['id'] == self.tax_icms_id.id]) if taxes else []
@@ -79,34 +81,32 @@ class AccountInvoiceLine(models.Model):
         ii = ([x for x in taxes['taxes']
                if x['id'] == self.tax_ii_id.id]) if taxes else []
 
+        price_subtotal_signed = taxes['total_excluded'] if taxes else subtotal
         if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
             price_subtotal_signed = self.invoice_id.currency_id.compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         price_subtotal_signed = price_subtotal_signed * sign
-        valor_ipi = sum([x['amount'] for x in ipi])
-        if self.incluir_ipi_base:
-            base_icms += valor_ipi
         self.update({
-            'price_total': total,
-            'price_tax': total - subtotal,
-            'price_subtotal': subtotal,
+            'price_total': taxes['total_included'],
+            'price_tax': taxes['total_included'] - taxes['total_excluded'],
+            'price_subtotal': taxes['total_excluded'],
             'price_subtotal_signed': price_subtotal_signed,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,
+            'icms_base_calculo': sum([x['base'] for x in icms]),
             'icms_valor': sum([x['amount'] for x in icms]),
-            'icms_base_calculo': base_icms,
             'icms_st_base_calculo': sum([x['base'] for x in icmsst]),
             'icms_st_valor': sum([x['amount'] for x in icmsst]),
             'ipi_base_calculo': sum([x['base'] for x in ipi]),
-            'ipi_valor': valor_ipi,
-            'pis_base_calculo': subtotal,
+            'ipi_valor': sum([x['amount'] for x in ipi]),
+            'pis_base_calculo': sum([x['base'] for x in pis]),
             'pis_valor': sum([x['amount'] for x in pis]),
-            'cofins_base_calculo': subtotal,
+            'cofins_base_calculo': sum([x['base'] for x in cofins]),
             'cofins_valor': sum([x['amount'] for x in cofins]),
             'issqn_base_calculo': sum([x['base'] for x in issqn]),
             'issqn_valor': sum([x['amount'] for x in issqn]),
-            'ii_base_calculo': subtotal,
+            'ii_base_calculo': sum([x['base'] for x in ii]),
             'ii_valor': sum([x['amount'] for x in ii]),
         })
 
@@ -167,7 +167,7 @@ class AccountInvoiceLine(models.Model):
         string="Incl. Valor Ipi?",
         help="Se marcado o valor do IPI inclui a base de cálculo")
     icms_base_calculo = fields.Float(
-        'Base ICMS', required=True,
+        'Base ICMS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_valor = fields.Float(
         'Valor ICMS', required=True, compute='_compute_price', store=True,
@@ -194,7 +194,7 @@ class AccountInvoiceLine(models.Model):
         'Valor ICMS ST', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_st_base_calculo = fields.Float(
-        'Base ICMS ST', required=True,
+        'Base ICMS ST', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_st_aliquota = fields.Float(
         '% ICMS ST', digits=dp.get_precision('Discount'),
@@ -249,8 +249,8 @@ class AccountInvoiceLine(models.Model):
     service_type_id = fields.Many2one(
         'br_account.service.type', 'Tipo de Serviço')
     issqn_base_calculo = fields.Float(
-        'Base ISSQN', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
+        'Base ISSQN', digits=dp.get_precision('Account'),
+        compute='_compute_price', store=True)
     issqn_aliquota = fields.Float(
         'Perc ISSQN', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
@@ -265,11 +265,11 @@ class AccountInvoiceLine(models.Model):
     tax_ipi_id = fields.Many2one('account.tax', string="Alíquota IPI",
                                  domain=[('domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
-        [('percent', 'Percentual'), ('quantity', 'Em Valor')],
+        [('percent', 'Percentual')],
         'Tipo do IPI', required=True, default='percent')
     ipi_base_calculo = fields.Float(
         'Base IPI', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
+        default=0.00, compute='_compute_price', store=True,)
     ipi_reducao_bc = fields.Float(
         '% Redução Base', required=True, digits=dp.get_precision('Account'),
         default=0.00)
@@ -289,10 +289,10 @@ class AccountInvoiceLine(models.Model):
                                  domain=[('domain', '=', 'pis')])
     pis_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
     pis_tipo = fields.Selection(
-        [('percent', 'Percentual'), ('quantity', 'Em Valor')],
+        [('percent', 'Percentual')],
         'Tipo do PIS', required=True, default='percent')
     pis_base_calculo = fields.Float(
-        'Base PIS', required=True,
+        'Base PIS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     pis_valor = fields.Float(
         'Valor PIS', required=True, digits=dp.get_precision('Account'),
@@ -310,19 +310,16 @@ class AccountInvoiceLine(models.Model):
                                     domain=[('domain', '=', 'cofins')])
     cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
     cofins_tipo = fields.Selection(
-        [('percent', 'Percentual'), ('quantity', 'Em Valor')],
+        [('percent', 'Percentual')],
         'Tipo do COFINS', required=True, default='percent')
     cofins_base_calculo = fields.Float(
-        'Base COFINS',
-        required=True,
-        digits=dp.get_precision('Account'),
-        default=0.00)
+        'Base COFINS', compute='_compute_price', store=True,
+        digits=dp.get_precision('Account'))
     cofins_valor = fields.Float(
-        'Valor COFINS', required=True, digits=dp.get_precision('Account'),
-        default=0.00, compute='_compute_price', store=True)
+        'Valor COFINS', digits=dp.get_precision('Account'),
+        compute='_compute_price', store=True)
     cofins_aliquota = fields.Float(
-        'Perc COFINS', required=True, digits=dp.get_precision('Discount'),
-        default=0.00)
+        'Perc COFINS', digits=dp.get_precision('Discount'))
 
     # =========================================================================
     # Imposto de importação
@@ -332,7 +329,7 @@ class AccountInvoiceLine(models.Model):
                                 domain=[('domain', '=', 'ii')])
     ii_base_calculo = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
-        default=0.00)
+        default=0.00, compute='_compute_price', store=True)
     ii_aliquota = fields.Float(
         '% II', required=True, digits=dp.get_precision('Account'),
         default=0.00)

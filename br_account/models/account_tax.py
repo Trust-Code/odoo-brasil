@@ -70,116 +70,155 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
+    def _tax_vals(self, tax):
+        return {
+            'id': tax.id,
+            'name': tax.name,
+            'sequence': tax.sequence,
+            'account_id': tax.account_id.id,
+            'refund_account_id': tax.refund_account_id.id,
+            'analytic': tax.analytic
+        }
+
+    def _compute_ipi(self, price_base):
+        ipi_tax = self.filtered(lambda x: x.domain == 'ipi')
+        if not ipi_tax:
+            return []
+        vals = self._tax_vals(ipi_tax)
+        reducao_ipi = 0.0
+        if "ipi_reducao_bc" in self.env.context:
+            reducao_ipi = self.env.context['ipi_reducao_bc']
+
+        base_ipi = price_base
+        if "valor_frete" in self.env.context:
+            base_ipi += self.env.context["valor_frete"]
+        if "valor_seguro" in self.env.context:
+            base_ipi += self.env.context["valor_seguro"]
+        if "outras_despesas" in self.env.context:
+            base_ipi += self.env.context["outras_despesas"]
+
+        base_tax = base_ipi * (1 - (reducao_ipi / 100))
+        vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
+        vals['base'] = base_tax
+        return [vals]
+
+    def _compute_icms(self, price_base, ipi_value):
+        icms_tax = self.filtered(lambda x: x.domain == 'icms')
+        if not icms_tax:
+            return []
+        vals = self._tax_vals(icms_tax)
+        base_icms = price_base
+        incluir_ipi = False
+        reducao_icms = 0.0
+        if 'incluir_ipi_base' in self.env.context:
+            incluir_ipi = self.env.context['incluir_ipi_base']
+        if "icms_aliquota_reducao_base" in self.env.context:
+            reducao_icms = self.env.context['icms_aliquota_reducao_base']
+
+        if incluir_ipi:
+            base_icms += ipi_value
+        if "valor_frete" in self.env.context:
+            base_icms += self.env.context["valor_frete"]
+        if "valor_seguro" in self.env.context:
+            base_icms += self.env.context["valor_seguro"]
+        if "outras_despesas" in self.env.context:
+            base_icms += self.env.context["outras_despesas"]
+
+        base_icms = base_icms * (1 - (reducao_icms / 100))
+        vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
+        vals['base'] = base_icms
+        return [vals]
+
+    def _compute_icms_st(self, price_base, ipi_value, icms_value):
+        icmsst_tax = self.filtered(lambda x: x.domain == 'icmsst')
+        if not icmsst_tax:
+            return []
+        vals = self._tax_vals(icmsst_tax)
+
+        base_icmsst = price_base + ipi_value
+        reducao_icmsst = 0.0
+        aliquota_mva = 0.0
+        if "icms_st_aliquota_reducao_base" in self.env.context:
+            reducao_icmsst = self.env.context['icms_st_aliquota_reducao_base']
+        if "icms_st_aliquota_mva" in self.env.context:
+            aliquota_mva = self.env.context['icms_st_aliquota_mva']
+        if "valor_frete" in self.env.context:
+            base_icmsst += self.env.context["valor_frete"]
+        if "valor_seguro" in self.env.context:
+            base_icmsst += self.env.context["valor_seguro"]
+        if "outras_despesas" in self.env.context:
+            base_icmsst += self.env.context["outras_despesas"]
+
+        base_icmsst = base_icmsst * (1 - (reducao_icmsst / 100))  # Redução
+        base_icmsst = base_icmsst * (1 + aliquota_mva / 100)  # Aplica MVA
+
+        icmsst = ((base_icmsst * (icmsst_tax.amount / 100)) - icms_value) or 0
+
+        vals['amount'] = icmsst
+        vals['base'] = base_icmsst
+        return [vals]
+
+    def _compute_pis_cofins(self, price_base):
+        pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
+        if not pis_cofins_tax:
+            return []
+        taxes = []
+        for tax in pis_cofins_tax:
+            vals = self._tax_vals(tax)
+            vals['amount'] = tax._compute_amount(price_base, 1.0)
+            vals['base'] = price_base
+            taxes.append(vals)
+        return taxes
+
+    def _compute_ii(self, price_base):
+        ii_tax = self.filtered(lambda x: x.domain == 'ii')
+        if not ii_tax:
+            return []
+        vals = self._tax_vals(ii_tax)
+        vals['amount'] = ii_tax._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
+    def _compute_issqn(self, price_base):
+        issqn_tax = self.filtered(lambda x: x.domain == 'issqn')
+        if not issqn_tax:
+            return []
+        vals = self._tax_vals(issqn_tax)
+        vals['amount'] = issqn_tax._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None):
 
         exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
-
-        # Filtrando os impostos com cálculo diferenciado
-        icms_taxes = self.filtered(lambda x: x.domain in ('icms', 'icmsst'))
-        ipi_tax = self.filtered(lambda x: x.domain == 'ipi')
-        self = self - icms_taxes - ipi_tax
-
-        res = super(AccountTax, self).compute_all(
-            price_unit, currency, quantity, product, partner)
         if not exists_br_tax:
+            res = super(AccountTax, self).compute_all(
+                price_unit, currency, quantity, product, partner)
             res['price_without_tax'] = round(price_unit * quantity, 2)
             return res
 
-        if ipi_tax:
-            # Calculando IPI primeiro
-            reducao_ipi = 0.0
-            if "ipi_reducao_bc" in self.env.context:
-                reducao_ipi = self.env.context['ipi_reducao_bc']
+        price_base = price_unit * quantity
+        ipi = self._compute_ipi(price_base)
+        icms = self._compute_icms(price_base, ipi[0]['amount'])
+        icms_st = self._compute_icms_st(
+            price_base, ipi[0]['amount'], icms[0]['amount'])
+        pis_cofins = self._compute_pis_cofins(price_base)
+        issqn = self._compute_issqn(price_base)
+        ii = self._compute_ii(price_base)
 
-            base_tax = price_unit * quantity * (1 - (reducao_ipi / 100))
-            res_ipi = super(AccountTax, ipi_tax).compute_all(
-                base_tax, currency, quantity, product, partner)
-            res['total_excluded'] += res_ipi['total_excluded']
-            res['total_included'] += res_ipi['total_included']
-            res['base'] += res_ipi['base']
-            res['taxes'] += res_ipi['taxes']
+        taxes = ipi + icms + icms_st + pis_cofins + issqn + ii
 
-        incluir_ipi = False
-        aliquota_mva = 0.0
-        reducao_icms = 0.0
-        reducao_icmsst = 0.0
-
-        if 'incluir_ipi_base' in self.env.context:
-            incluir_ipi = self.env.context['incluir_ipi_base']
-        if 'aliquota_mva' in self.env.context:
-            aliquota_mva = self.env.context['aliquota_mva']
-        if "icms_aliquota_reducao_base" in self.env.context:
-            reducao_icms = self.env.context['icms_aliquota_reducao_base']
-        if "icms_st_aliquota_reducao_base" in self.env.context:
-            reducao_icmsst = self.env.context['icms_st_aliquota_reducao_base']
-
-        total_ipi = sum(
-            x['amount'] for x in res['taxes'] if x['id'] == ipi_tax.id)
-
-        base_icms = price_unit * quantity * (1 - (reducao_icms / 100))
-        icms_amount = 0.0
-        icmsst_amount = 0.0
-
-        if incluir_ipi:
-            base_icms += total_ipi
-        icms = icms_taxes.filtered(lambda x: x.domain == 'icms')
-        if icms:
-            icms_amount = icms._compute_amount(
-                base_icms, price_unit, quantity, product, partner)
-
-        icmsst = icms_taxes.filtered(lambda x: x.domain == 'icmsst')
-        if icms and icmsst:
-            base_icms_proprio = round(price_unit * quantity, 2)
-            icms_proprio = base_icms_proprio * icms.amount / 100
-
-            base_st = price_unit * quantity * (1 - (reducao_icmsst / 100))
-            base_st = base_st * (1 + aliquota_mva / 100)
-            icmsst = icmsst.with_context({'icms_proprio': icms_proprio})
-            icmsst_amount = icmsst._compute_amount(
-                base_st, price_unit, quantity, product, partner)
-
-        for tax in icms_taxes:
-            amount = 0
-            base = 0
-            if tax.domain == 'icms':
-                base = base
-                amount = icms_amount
-            if tax.domain == 'icmsst':
-                base = base_st
-                amount = icmsst_amount
-            if amount > 0.0:
-                res['taxes'].append({
-                    'id': tax.id,
-                    'name': tax.with_context(
-                        **{'lang': partner.lang} if partner else {}).name,
-                    'base': base,
-                    'amount': amount,
-                    'sequence': tax.sequence,
-                    'account_id': tax.account_id.id,
-                    'refund_account_id': tax.refund_account_id.id,
-                    'analytic': tax.analytic,
-                })
-
-        # Restore self
-        self = self | icms_taxes
-        total_excluded = total_included = round(price_unit * quantity, 2)
-
-        for tax in res['taxes']:
+        total_included = total_excluded = price_base
+        for tax in taxes:
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
                 total_included += tax['amount']
 
-        res['total_included'] = total_included
-        res['price_without_tax'] = total_excluded
-        return res
-
-    def _compute_amount(self, base_amount, price_unit, quantity=1.0,
-                        product=None, partner=None):
-
-        if self.amount_type == 'icmsst':
-            icms_proprio = self.env.context['icms_proprio']
-            return (base_amount * self.amount / 100) - icms_proprio
-        return super(AccountTax, self)._compute_amount(
-            base_amount, price_unit, quantity, product, partner)
+        return {
+            'taxes': sorted(taxes, key=lambda k: k['sequence']),
+            'total_excluded': total_excluded,
+            'total_included': total_included,
+            'base': price_base,
+        }
