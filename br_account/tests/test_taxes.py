@@ -72,6 +72,22 @@ class TestTaxBrasil(TransactionCase):
             'amount': 18,
             'price_include': False,
         })
+        self.issqn = self.tax_model.create({
+            'name': "ISSQN",
+            'amount_type': 'division',
+            'domain': 'issqn',
+            'amount': 0,
+            'amount': 5,
+            'price_include': True,
+        })
+        self.ii = self.tax_model.create({
+            'name': "II",
+            'amount_type': 'division',
+            'domain': 'ii',
+            'amount': 0,
+            'amount': 60,
+            'price_include': True,
+        })
 
     def test_simple_tax_pis_cofins(self):
         res = self.pis.compute_all(200.0)
@@ -256,3 +272,17 @@ class TestTaxBrasil(TransactionCase):
 
         self.assertEquals(res['taxes'][0]['amount'], 7.91)  # ICMS ST
         self.assertEquals(res['taxes'][1]['amount'], 22.1)  # ICMS
+
+    def test_tax_issqn(self):
+        res = self.issqn.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 1)
+        self.assertEquals(res['taxes'][0]['amount'], 5.0)
+
+    def test_tax_ii(self):
+        res = self.ii.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 1)
+        self.assertEquals(res['taxes'][0]['amount'], 60.0)

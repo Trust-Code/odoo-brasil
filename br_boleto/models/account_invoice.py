@@ -14,7 +14,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         error = ''
         for item in self:
-            if item.payment_mode_id and item.payment_mode_id.name == u'Boleto':
+            if item.payment_mode_id and item.payment_mode_id.boleto_type != '':
                 if not self.company_id.partner_id.legal_name:
                     error += u'Razão Social\n'
                 if not self.company_id.cnpj_cpf:

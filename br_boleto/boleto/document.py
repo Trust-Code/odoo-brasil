@@ -168,14 +168,7 @@ class BoletoBB(Boleto):
 
 
 class BoletoBanrisul(Boleto):
-    def __init__(self, move_line, nosso_numero):
-        self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.\
-            bank_account_id.acc_number
-        self.branch_number = move_line.payment_mode_id.\
-            bank_account_id.bra_number
-        Boleto.__init__(self, move_line, nosso_numero)
-        self.boleto.nosso_numero = self.nosso_numero
+    pass
 
 
 class BoletoBradesco(Boleto):
@@ -197,18 +190,7 @@ class BoletoBradesco(Boleto):
 
 
 class BoletoCaixa(Boleto):
-    def __init__(self, move_line, nosso_numero):
-        self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.\
-            bank_account_id.acc_number
-        self.branch_number = move_line.payment_mode_id.\
-            bank_account_id.bra_number
-        # bank specific
-        self.account_digit = move_line.payment_mode_id.\
-            bank_account_id.acc_number_dig
-        # end bank specific
-        Boleto.__init__(self, move_line, nosso_numero)
-        self.boleto.nosso_numero = self.nosso_numero
+    pass
 
 
 class BoletoCecred(Boleto):
@@ -232,14 +214,7 @@ class BoletoCecred(Boleto):
 
 
 class BoletoHsbc(Boleto):
-    def __init__(self, move_line, nosso_numero):
-        self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.\
-            bank_account_id.acc_number
-        self.branch_number = move_line.payment_mode_id.\
-            bank_account_id.bra_number
-        Boleto.__init__(self, move_line, nosso_numero)
-        self.boleto.nosso_numero = self.nosso_numero
+    pass
 
 
 class BoletoItau157(Boleto):
@@ -257,27 +232,7 @@ class BoletoItau(Boleto):
         self.boleto.nosso_numero = self.nosso_numero
 
 
-class BoletoReal(Boleto):
-    pass
-
-
 class BoletoSantander(Boleto):
-    def __init__(self, move_line, nosso_numero):
-        self.boleto = Boleto.getBoletoClass(move_line)()
-        self.account_number = move_line.payment_mode_id.\
-            bank_account_id.acc_number
-        self.branch_number = move_line.payment_mode_id.\
-            bank_account_id.bra_number
-        Boleto.__init__(self, move_line, nosso_numero)
-        self.boleto.ios = '0'
-        self.boleto.nosso_numero = self.nosso_numero
-
-
-class BoletoStatander101201(Boleto):
-    pass
-
-
-class BoletoCaixaSigcb(Boleto):
     pass
 
 

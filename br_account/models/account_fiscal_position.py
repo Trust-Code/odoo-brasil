@@ -53,6 +53,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     reducao_icms_st = fields.Float(string="Redução de base ST")
     reducao_ipi = fields.Float(string="Redução de base IPI")
     aliquota_mva = fields.Float(string="Alíquota MVA")
+    tem_difal = fields.Boolean(string="Aplicar Difal?")
 
 
 class AccountFiscalPosition(models.Model):

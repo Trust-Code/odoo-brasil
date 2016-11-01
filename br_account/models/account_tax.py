@@ -43,6 +43,8 @@ class AccountTaxTemplate(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
+                               ('difal', 'Difal'),
+                               ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
@@ -67,6 +69,8 @@ class AccountTax(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
+                               ('difal', 'Difal'),
+                               ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
@@ -152,7 +156,8 @@ class AccountTax(models.Model):
         base_icmsst = base_icmsst * (1 - (reducao_icmsst / 100.0))  # Redução
         base_icmsst = base_icmsst * (1 + aliquota_mva / 100.0)  # Aplica MVA
 
-        icmsst = round((base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
+        icmsst = round(
+            (base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
 
         vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
         vals['base'] = base_icmsst
