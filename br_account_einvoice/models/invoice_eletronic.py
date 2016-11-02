@@ -21,7 +21,7 @@ class InvoiceEletronic(models.Model):
     name = fields.Char(u'Name', size=100, required=True)
     company_id = fields.Many2one('res.company', u'Company', index=True)
     state = fields.Selection([('draft', 'Draft'), ('error', 'Erro'),
-                              ('done', 'Done')],
+                              ('done', 'Done'), ('cancel', 'Cancelado')],
                              string=u'State', default='draft')
 
     tipo_operacao = fields.Selection([('entrada', 'Entrada'),
@@ -245,8 +245,16 @@ class InvoiceEletronic(models.Model):
         pass
 
     @api.multi
+    def action_cancel_document(self):
+        self.state = 'cancel'
+
+    @api.multi
     def action_back_to_draft(self):
         self.state = 'draft'
+
+    def log_exception(self, exc):
+        self.codigo_retorno = -1
+        self.mensagem_retorno = exc.message
 
     @api.multi
     def cron_send_nfe(self):
@@ -254,7 +262,11 @@ class InvoiceEletronic(models.Model):
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         nfes = inv_obj.search([('state', '=', 'draft')])
         for item in nfes:
-            item.action_send_eletronic_invoice()
+            try:
+                item.action_send_eletronic_invoice()
+            except Exception as e:
+                item.log_exception(e)
+
 
 
 class InvoiceEletronicEvent(models.Model):

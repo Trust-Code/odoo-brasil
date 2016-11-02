@@ -9,6 +9,7 @@ from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from pytrustnfe.nfe import autorizar_nfe
 from pytrustnfe.nfe import retorno_autorizar_nfe
+from pytrustnfe.nfe import recepcao_evento_cancelamento
 from pytrustnfe.certificado import Certificado
 from pytrustnfe.utils import ChaveNFe, gerar_chave
 
@@ -423,3 +424,44 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
+
+    @api.multi
+    def action_cancel_document(self, context=None, justificativa=None):
+        if not justificativa:
+            return {
+                'name': 'Cancelamento NFe',
+                'type': 'ir.actions.act_window',
+                'res_model': 'wizard.cancel.nfe',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_edoc_id': self.id
+                }
+            }
+
+        super(InvoiceEletronic, self).action_cancel_document()
+        if self.model not in ('55', '65'):
+            return
+
+        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+
+        cancelamento = {
+            'idLote': 1,
+            'estado': '42',
+            'ambiente': '2',
+            'eventos': [{
+                'Id': 'id123',
+                'cOrgao': '42',
+                'tpAmb': 2,
+                'CNPJ': '454',
+                'dhEvento': 'hoje',
+                'nSeqEvento': 1,
+                'nProt': 1545,
+                'xJust': justificativa
+                }]
+            }
+        resp = recepcao_evento_cancelamento(certificado, **cancelamento)
+        print resp

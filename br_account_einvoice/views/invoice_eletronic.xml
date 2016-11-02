@@ -134,7 +134,8 @@
                     <header>
                         <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
                         <button name="action_back_to_draft" states="error" string="Rascunho" type="object"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" clickable="true"/>
                     </header>
                     <sheet string="Documento Eletronico">
                         <group>

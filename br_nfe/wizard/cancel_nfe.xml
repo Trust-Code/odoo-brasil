@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_cancel_nfe">
+        <field name="name">wizard.cancel.nfe.form</field>
+        <field name="model">wizard.cancel.nfe</field>
+        <field name="arch" type="xml">
+            <form string="Cancelamento de NFe">
+                <group>
+                    <field name="edoc_id"/>
+                    <field name="justificativa"/>
+                </group>
+                <footer>
+                    <button name="action_cancel_nfe"
+                        string="Enviar Cancelamento" type="object"
+                        class="oe_highlight"
+                        confirm="Deseja realmente cancelar a nota no sefaz?" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

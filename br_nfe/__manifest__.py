@@ -27,6 +27,7 @@
         'views/invoice_eletronic_item.xml',
         'reports/br_nfe_reports.xml',
         'reports/danfe_report.xml',
+        'wizard/cancel_nfe.xml',
     ],
     'instalable': True,
     'application': True,
