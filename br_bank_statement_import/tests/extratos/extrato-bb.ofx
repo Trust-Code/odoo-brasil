@@ -1,0 +1,276 @@
+OFXHEADER:100DATA:OFXSGMLVERSION:102SECURITY:NONEENCODING:USASCIICHARSET:1252COMPRESSION:NONEOLDFILEUID:NONENEWFILEUID:NONE<OFX>
+   <SIGNONMSGSRSV1>
+      <SONRS>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <DTSERVER>20160909120000[-3:BRT]</DTSERVER>
+         <LANGUAGE>POR</LANGUAGE>
+         <FI>
+            <ORG>Banco do Brasil</ORG>
+            <FID>1</FID>
+         </FI>
+      </SONRS>
+   </SIGNONMSGSRSV1>
+   <BANKMSGSRSV1>
+      <STMTTRNRS>
+         <TRNUID>1</TRNUID>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <STMTRS>
+            <CURDEF>BRL</CURDEF>
+            <BANKACCTFROM>
+               <BANKID>1</BANKID>
+               <BRANCHID>4038-X</BRANCHID>
+               <ACCTID>12288-2</ACCTID>
+               <ACCTTYPE>CHECKING</ACCTTYPE>
+            </BANKACCTFROM>
+            <BANKTRANLIST>
+               <DTSTART>20160831120000[-3:BRT]</DTSTART>
+               <DTEND>20160909120000[-3:BRT]</DTEND>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>1500.00</TRNAMT>
+                  <FITID>2016090101500000</FITID>
+                  <CHECKNUM>038000012006</CHECKNUM>
+                  <REFNUM>224.038.000.012.006</REFNUM>
+                  <MEMO>Transfer�ncia on line - 01/09 4038      12006-5 JAIME LUIS VIE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>1000.00</TRNAMT>
+                  <FITID>2016090101000000</FITID>
+                  <CHECKNUM>038000012006</CHECKNUM>
+                  <REFNUM>224.038.000.012.006</REFNUM>
+                  <MEMO>Transfer�ncia on line - 01/09 4038      12006-5 JAIME LUIS VIE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-161.73</TRNAMT>
+                  <FITID>201609011161730</FITID>
+                  <CHECKNUM>000000732811</CHECKNUM>
+                  <REFNUM>732.811</REFNUM>
+                  <MEMO>Compra com Cart�o - 01/09 11:15 ELETRICA NORTE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-142.70</TRNAMT>
+                  <FITID>201609011142700</FITID>
+                  <CHECKNUM>000000870046</CHECKNUM>
+                  <REFNUM>870.046</REFNUM>
+                  <MEMO>Compra com Cart�o - 01/09 14:30 DISTRIBUIDORA DIOGO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-150.00</TRNAMT>
+                  <FITID>201609011150000</FITID>
+                  <CHECKNUM>005022588978</CHECKNUM>
+                  <REFNUM>11.005.022.588.978</REFNUM>
+                  <MEMO>Saque no TAA - 01/09 10:05 SAA-SETE LAGOAS</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-15.00</TRNAMT>
+                  <FITID>20160901115000</FITID>
+                  <CHECKNUM>290139577410</CHECKNUM>
+                  <REFNUM>982.290.139.577.410</REFNUM>
+                  <MEMO>Telefone Pre-Pago - 92982290139-TIM - Amazonas</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-15.00</TRNAMT>
+                  <FITID>20160901115001</FITID>
+                  <CHECKNUM>745944549992</CHECKNUM>
+                  <REFNUM>993.745.944.549.992</REFNUM>
+                  <MEMO>Telefone Pre-Pago - 92993745944-Vivo AM,AP,MA,RR,PA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-300.00</TRNAMT>
+                  <FITID>201609011300000</FITID>
+                  <CHECKNUM>000000090101</CHECKNUM>
+                  <REFNUM>90.101</REFNUM>
+                  <MEMO>TED Transf.Eletr.Disponiv - 341 5653 07986194812 IVANDETE IRACEMA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-8.60</TRNAMT>
+                  <FITID>2016090118600</FITID>
+                  <CHECKNUM>451200073183</CHECKNUM>
+                  <REFNUM>882.451.200.073.183</REFNUM>
+                  <MEMO>DOCeletr�nico - Tarifa referente a 01/09/2016</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160901120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-81.75</TRNAMT>
+                  <FITID>20160901181750</FITID>
+                  <CHECKNUM>000000016773</CHECKNUM>
+                  <REFNUM>16.773</REFNUM>
+                  <MEMO>Pro Teste Assoc Brasil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160902120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-15.30</TRNAMT>
+                  <FITID>20160902115300</FITID>
+                  <CHECKNUM>000000184869</CHECKNUM>
+                  <REFNUM>184.869</REFNUM>
+                  <MEMO>Compra com Cart�o - 02/09 07:42 WERLEY VIRISSIMO DE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160902120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-57.28</TRNAMT>
+                  <FITID>20160902157280</FITID>
+                  <CHECKNUM>000000673779</CHECKNUM>
+                  <REFNUM>673.779</REFNUM>
+                  <MEMO>Compra com Cart�o - 02/09 20:41 SUPERMERCADOS BH</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-66.44</TRNAMT>
+                  <FITID>20160905166440</FITID>
+                  <CHECKNUM>000000690561</CHECKNUM>
+                  <REFNUM>690.561</REFNUM>
+                  <MEMO>Compra com Cart�o - 04/09 20:27 SHIRLEY RODRIGUES DE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-250.00</TRNAMT>
+                  <FITID>201609051250000</FITID>
+                  <CHECKNUM>253272588978</CHECKNUM>
+                  <REFNUM>31.253.272.588.978</REFNUM>
+                  <MEMO>Saque no TAA - 03/09 12:53 SAA-MATOZINHOS</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-119.04</TRNAMT>
+                  <FITID>201609051119040</FITID>
+                  <CHECKNUM>000000090501</CHECKNUM>
+                  <REFNUM>90.501</REFNUM>
+                  <MEMO>Pagamento conta luz - CPFL CIA PAULISTA DE FORC</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-100.41</TRNAMT>
+                  <FITID>201609051100410</FITID>
+                  <CHECKNUM>000000090502</CHECKNUM>
+                  <REFNUM>90.502</REFNUM>
+                  <MEMO>Pagamento conta luz - CPFL CIA PAULISTA DE FORC</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-800.00</TRNAMT>
+                  <FITID>201609051800000</FITID>
+                  <CHECKNUM>000000090503</CHECKNUM>
+                  <REFNUM>90.503</REFNUM>
+                  <MEMO>TED Transf.Eletr.Disponiv - 756 3069 024158233000185 TRUSTCODE TEC</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-80.00</TRNAMT>
+                  <FITID>20160905180000</FITID>
+                  <CHECKNUM>000000090504</CHECKNUM>
+                  <REFNUM>90.504</REFNUM>
+                  <MEMO>Pagamento de T�tulo - BANCO COOPERATIVO DO BRASIL S.A.</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-11.55</TRNAMT>
+                  <FITID>20160905111550</FITID>
+                  <CHECKNUM>491100717202</CHECKNUM>
+                  <REFNUM>872.491.100.717.202</REFNUM>
+                  <MEMO>Tarifa Pacote de Servi�os - Tarifa referente a 05/09/2016</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160905120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-8.60</TRNAMT>
+                  <FITID>2016090518600</FITID>
+                  <CHECKNUM>491200367588</CHECKNUM>
+                  <REFNUM>892.491.200.367.588</REFNUM>
+                  <MEMO>TEDinternet - Tarifa referente a 05/09/2016</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160906120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-86.38</TRNAMT>
+                  <FITID>20160906186380</FITID>
+                  <CHECKNUM>000000645279</CHECKNUM>
+                  <REFNUM>645.279</REFNUM>
+                  <MEMO>Compra com Cart�o - 06/09 18:57 SUPERM SANTO ANTONIO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160908120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>200.00</TRNAMT>
+                  <FITID>201609080200000</FITID>
+                  <CHECKNUM>038000012006</CHECKNUM>
+                  <REFNUM>224.038.000.012.006</REFNUM>
+                  <MEMO>Transfer�ncia on line - 08/09 4038      12006-5 JAIME LUIS VIE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160908120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-20.00</TRNAMT>
+                  <FITID>20160908120000</FITID>
+                  <CHECKNUM>622665537786</CHECKNUM>
+                  <REFNUM>981.622.665.537.786</REFNUM>
+                  <MEMO>Telefone Pre-Pago - TIM - Sao Paulo</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160908120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-15.00</TRNAMT>
+                  <FITID>20160908115000</FITID>
+                  <CHECKNUM>290139062257</CHECKNUM>
+                  <REFNUM>982.290.139.062.257</REFNUM>
+                  <MEMO>Telefone Pre-Pago - 92982290139-TIM - Amazonas</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160908120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-15.00</TRNAMT>
+                  <FITID>20160908115001</FITID>
+                  <CHECKNUM>745944042913</CHECKNUM>
+                  <REFNUM>993.745.944.042.913</REFNUM>
+                  <MEMO>Telefone Pre-Pago - 92993745944-Vivo AM,AP,MA,RR,PA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20160908120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-14.70</TRNAMT>
+                  <FITID>20160908114700</FITID>
+                  <CHECKNUM>000000011806</CHECKNUM>
+                  <REFNUM>11.806</REFNUM>
+                  <MEMO>Pagamento Ped�gio</MEMO>
+               </STMTTRN>
+            </BANKTRANLIST>
+            <LEDGERBAL>
+               <BALAMT>172.61</BALAMT>
+               <DTASOF>20160909120000[-3:BRT]</DTASOF>
+            </LEDGERBAL>
+         </STMTRS>
+      </STMTTRNRS>
+   </BANKMSGSRSV1>
+</OFX>

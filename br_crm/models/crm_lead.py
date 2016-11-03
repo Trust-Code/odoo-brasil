@@ -14,7 +14,7 @@ class CrmLead(models.Model):
     _inherit = "crm.lead"
     legal_name = fields.Char(u'Razão Social', size=60,
                              help="Nome utilizado em documentos fiscais")
-    cnpj = fields.Char('CNPJ', size=18,  oldname='cnpj_cpf')
+    cnpj = fields.Char('CNPJ', size=18)
     inscr_est = fields.Char('Inscr. Estadual', size=16)
     inscr_mun = fields.Char('Inscr. Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
@@ -86,7 +86,7 @@ class CrmLead(models.Model):
 
     @api.onchange('cpf')
     def onchange_mask_cpf(self):
-        if self.cnpj:
+        if self.cpf:
             val = re.sub('[^0-9]', '', self.cpf)
             if len(val) == 11:
                 cnpj_cpf = "%s.%s.%s-%s"\
@@ -102,10 +102,13 @@ class CrmLead(models.Model):
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
-        # TODO Melhorar esse metodo e setar os campos corretamente
         if self.partner_id:
+            val = re.sub('[^0-9]', '', self.partner_id.cnpj_cpf or '')
             self.legal_name = self.partner_id.legal_name
-            self.cnpj_cpf = self.partner_id.cnpj_cpf
+            if len(val) == 11:
+                self.cpf = self.partner_id.cnpj_cpf
+            else:
+                self.cnpj = self.partner_id.cnpj_cpf
             self.inscr_est = self.partner_id.inscr_est
             self.suframa = self.partner_id.suframa
             self.number = self.partner_id.number
@@ -113,29 +116,28 @@ class CrmLead(models.Model):
             self.city_id = self.partner_id.city_id.id
 
     @api.model
-    def _lead_create_contact(self, lead, name, is_company, parent_id=False):
-        id = super(CrmLead, self)._lead_create_contact(
-            lead, name, is_company, parent_id)
+    def _lead_create_contact(self, name, is_company, parent_id=False):
+        partner = super(CrmLead, self)._lead_create_contact(
+            name, is_company, parent_id)
         value = {
-            'number': lead.number,
-            'district': lead.district,
-            'city_id': lead.city_id.id
+            'number': self.number,
+            'district': self.district,
+            'city_id': self.city_id.id
         }
         if is_company:
             value.update({
-                'legal_name': lead.legal_name,
-                'cnpj_cpf': lead.cnpj,
-                'inscr_est': lead.inscr_est,
-                'inscr_mun': lead.inscr_mun,
-                'suframa': lead.suframa,
+                'legal_name': self.legal_name,
+                'cnpj_cpf': self.cnpj,
+                'inscr_est': self.inscr_est,
+                'inscr_mun': self.inscr_mun,
+                'suframa': self.suframa,
                 })
         else:
             value.update({
-                'legal_name': lead.name_surname,
-                'cnpj_cpf': lead.cpf,
-                'inscr_est': lead.rg,
+                'legal_name': self.name_surname,
+                'cnpj_cpf': self.cpf,
+                'inscr_est': self.rg,
                 })
-        if id:
-            partner = self.env['res.partner'].browse(id)
-            partner[0].write(value)
-        return id
+        if partner:
+            partner.write(value)
+        return partner
