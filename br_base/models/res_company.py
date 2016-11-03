@@ -15,7 +15,6 @@ class ResCompany(models.Model):
 
     _inherit = 'res.company'
 
-    # BUG: O super cotinua sendo chamado.
     @api.one
     def _get_address_data(self):
         self.city_id = self.partner_id.city_id

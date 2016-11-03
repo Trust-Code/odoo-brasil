@@ -5,7 +5,7 @@
 from odoo import api, fields, models
 
 
-class CancelNFe(models.Model):
+class CancelNFe(models.TransientModel):
     _name = 'wizard.cancel.nfe'
 
     edoc_id = fields.Many2one('invoice.eletronic', string="Documento")

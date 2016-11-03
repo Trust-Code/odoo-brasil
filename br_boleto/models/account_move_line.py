@@ -33,7 +33,6 @@ class AccountMoveLine(models.Model):
             'name': u'%s' % order_name,
             'user_id': self.write_uid.id,
             'payment_mode_id': self.payment_mode_id.id,
-            'date_maturity': self.date_maturity,
             'state': 'draft',
             'currency_id': self.company_currency_id.id,
         }

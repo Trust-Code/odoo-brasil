@@ -204,7 +204,8 @@ class ResPartner(models.Model):
                     self.legal_name = get_value(info.infCad, 'xNome')
                     if "ender" not in dir(info.infCad):
                         return
-                    self.zip = get_value(info.infCad.ender, 'CEP')
+                    cep = get_value(info.infCad.ender, 'CEP') or ''
+                    self.zip = str(cep).zfill(8) if cep else ''
                     self.street = get_value(info.infCad.ender, 'xLgr')
                     self.number = get_value(info.infCad.ender, 'nro')
                     self.street2 = get_value(info.infCad.ender, 'xCpl')
@@ -214,7 +215,7 @@ class ResPartner(models.Model):
                     city = None
                     if cMun:
                         city = self.env['res.state.city'].search(
-                            [('ibge_code', '=', cMun[2:]),
+                            [('ibge_code', '=', str(cMun)[2:]),
                              ('state_id', '=', self.state_id.id)])
                     if not city and xMun:
                         city = self.env['res.state.city'].search(
