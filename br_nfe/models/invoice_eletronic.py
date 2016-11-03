@@ -54,6 +54,7 @@ class InvoiceEletronic(models.Model):
         ('9', '9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário")
 
+    sequencial_evento = fields.Integer(string="Sequêncial Evento", default=1)
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
     chave_nfe_danfe = fields.Char(string="Chave Formatado",
@@ -367,7 +368,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             return
 
         nfe_values = self._prepare_eletronic_invoice_values()
-        lote = self._prepare_lote(1, nfe_values)
+        lote = self._prepare_lote(self.id, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
@@ -448,20 +449,44 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
+        id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
         cancelamento = {
-            'idLote': 1,
-            'estado': '42',
-            'ambiente': '2',
+            'idLote': self.id,
+            'estado': self.company_id.state_id.ibge_code,
+            'ambiente': 2 if self.ambiente == 'homologacao' else 1,
             'eventos': [{
-                'Id': 'id123',
-                'cOrgao': '42',
-                'tpAmb': 2,
-                'CNPJ': '454',
-                'dhEvento': 'hoje',
-                'nSeqEvento': 1,
-                'nProt': 1545,
+                'Id': id_canc,
+                'cOrgao': self.company_id.state_id.ibge_code,
+                'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
+                'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+                'chNFe': self.chave_nfe,
+                'dhEvento': datetime.utcnow().strftime(
+                    '%Y-%m-%dT%H:%M:%S-00:00'),
+                'nSeqEvento': self.sequencial_evento,
+                'nProt': self.protocolo_nfe,
                 'xJust': justificativa
                 }]
             }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-        print resp
+        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        if resposta.cStat == 128 and \
+           resposta.retEvento.infEvento.cStat in (135, 136, 155):
+            self.codigo_retorno = resposta.retEvento.infEvento.cStat
+            self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
+            self.sequencial_evento += 1
+        else:
+            self.state = 'done'
+            if resposta.cStat == 128:
+                self.codigo_retorno = resposta.retEvento.infEvento.cStat
+                self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
+            else:
+                self.codigo_retorno = resposta.cStat
+                self.mensagem_retorno = resposta.xMotivo
+
+        self.env['invoice.eletronic.event'].create({
+            'code': self.codigo_retorno,
+            'name': self.mensagem_retorno,
+            'invoice_eletronic_id': self.id,
+        })
+        self._create_attachment('canc', self, resp['sent_xml'])
+        self._create_attachment('canc-ret', self, resp['received_xml'])

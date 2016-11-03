@@ -12,8 +12,7 @@
                 <footer>
                     <button name="action_cancel_nfe"
                         string="Enviar Cancelamento" type="object"
-                        class="oe_highlight"
-                        confirm="Deseja realmente cancelar a nota no sefaz?" />
+                        class="oe_highlight" />
                     <button string="Cancelar" special="cancel"/>
                 </footer>
             </form>
