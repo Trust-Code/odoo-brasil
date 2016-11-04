@@ -49,19 +49,6 @@ class PosOrder(models.Model):
         foo = self._prepare_edoc_vals(res)
         eletronic = self.env['invoice.eletronic'].create(foo)
         eletronic.action_post_validate()
-        documento_partner = eletronic.partner_id.cnpj_cpf if\
-           eletronic.partner_id else 'Inexistente'
-        dt_emissao = datetime.strptime(eletronic.data_emissao, DTFT)
-        dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
-        qr_code_hash = {
-            'chNFe': eletronic.chave_nfe,
-            'nVersao': '100',
-            'tpAmb': self.company_id.tipo_ambiente,
-            'cDest': documento_partner,
-            'dhEmi': dt_emissao[0].encode('hex'),
-            'vNF': eletronic.valor_final,
-            'vICMS': eletronic.valor_icms,
-        }
         return res
 
     def _prepare_edoc_item_vals(self, pos_line):
