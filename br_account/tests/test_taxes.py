@@ -72,6 +72,30 @@ class TestTaxBrasil(TransactionCase):
             'amount': 18,
             'price_include': False,
         })
+        self.icms_difal_inter = self.tax_model.create({
+            'name': "ICMS Difal Inter",
+            'amount_type': 'division',
+            'domain': 'icms_inter',
+            'amount': 0,
+            'amount': 7,
+            'price_include': True,
+        })
+        self.icms_difal_intra = self.tax_model.create({
+            'name': "ICMS Difal Intra",
+            'amount_type': 'division',
+            'domain': 'icms_intra',
+            'amount': 0,
+            'amount': 17,
+            'price_include': True,
+        })
+        self.icms_fcp = self.tax_model.create({
+            'name': "FCP",
+            'amount_type': 'division',
+            'domain': 'fcp',
+            'amount': 0,
+            'amount': 2,
+            'price_include': True,
+        })
         self.issqn = self.tax_model.create({
             'name': "ISSQN",
             'amount_type': 'division',
@@ -286,3 +310,51 @@ class TestTaxBrasil(TransactionCase):
         self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 1)
         self.assertEquals(res['taxes'][0]['amount'], 60.0)
+
+    def test_difal_incomplete(self):
+        res = self.icms_difal_inter.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 0)
+
+        res = self.icms_difal_intra.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 0)
+
+        res = self.icms_fcp.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 0)
+
+    def test_tax_difal(self):
+        taxes = self.icms_difal_inter | self.icms_difal_intra
+        res = taxes.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 2)
+        self.assertEquals(res['taxes'][0]['amount'], 6.0)  # Remetente
+        self.assertEquals(res['taxes'][1]['amount'], 4.0)  # Destinatário
+
+    def test_difal_fcp(self):
+        taxes = self.icms_difal_inter | self.icms_difal_intra | self.icms_fcp
+        res = taxes.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 3)
+        self.assertEquals(res['taxes'][0]['amount'], 6.0)  # Remetente
+        self.assertEquals(res['taxes'][1]['amount'], 4.0)  # Destinatário
+        self.assertEquals(res['taxes'][2]['amount'], 2.0)  # FCP
+
+    def test_difal_fcp_reducao_frete_seguro_despesas(self):
+        taxes = self.icms_difal_inter | self.icms_difal_intra | self.icms_fcp
+        res = taxes.with_context(
+            icms_aliquota_reducao_base=20,
+            valor_frete=5.0, outras_despesas=5.0,
+            valor_seguro=30.0).compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 100.0)
+        self.assertEquals(len(res['taxes']), 3)
+        self.assertEquals(res['taxes'][0]['amount'], 6.72)  # Remetente
+        self.assertEquals(res['taxes'][1]['amount'], 4.48)  # Destinatário
+        self.assertEquals(res['taxes'][2]['amount'], 2.24)  # FCP

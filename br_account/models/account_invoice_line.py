@@ -233,7 +233,7 @@ class AccountInvoiceLine(models.Model):
         'account.tax', help="Alíquota interna do produto no estado destino",
         string="ICMS Intra", domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
-        'account.tax', string="% FCP", domain=[('domain', '=', 'icmsst')])
+        'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
     icms_aliquota_inter_part = fields.Float(
         u'% Partilha', default=40.0, digits=dp.get_precision('Discount'))
     icms_fcp_uf_dest = fields.Float(
@@ -395,7 +395,7 @@ class AccountInvoiceLine(models.Model):
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
             self.tax_ipi_id | self.tax_pis_id | self.tax_cofins_id | \
-            self.tax_issqn_id | self.tax_ii_id | self.tax_icms_st_id
+            self.tax_issqn_id | self.tax_ii_id
 
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
@@ -407,6 +407,21 @@ class AccountInvoiceLine(models.Model):
     def _onchange_tax_icms_st_id(self):
         if self.tax_icms_st_id:
             self.icms_st_aliquota = self.tax_icms_st_id.amount
+            self._update_invoice_line_ids()
+
+    @api.onchange('tax_icms_inter_id')
+    def _onchange_tax_icms_inter_id(self):
+        if self.tax_icms_inter_id:
+            self._update_invoice_line_ids()
+
+    @api.onchange('tax_icms_intra_id')
+    def _onchange_tax_icms_intra_id(self):
+        if self.tax_icms_intra_id:
+            self._update_invoice_line_ids()
+
+    @api.onchange('tax_icms_fcp_id')
+    def _onchange_tax_icms_fcp_id(self):
+        if self.tax_icms_fcp_id:
             self._update_invoice_line_ids()
 
     @api.onchange('tax_pis_id')
