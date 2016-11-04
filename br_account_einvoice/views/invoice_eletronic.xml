@@ -126,8 +126,8 @@
             </field>
         </record>
 
-        <record id="sped_base_eletronic_doc_form" model="ir.ui.view">
-            <field name="name">sped.base.eletronic.doc.form</field>
+        <record id="br_account_invoice_eletronic_form" model="ir.ui.view">
+            <field name="name">br.account.invoice.eletronic.form</field>
             <field name="model">invoice.eletronic</field>
             <field name="arch" type="xml">
                 <form string="Documento Eletrônico">
@@ -135,7 +135,7 @@
                         <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
                         <button name="action_back_to_draft" states="error" string="Rascunho" type="object"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done" clickable="true"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
                     <sheet string="Documento Eletronico">
                         <group>
