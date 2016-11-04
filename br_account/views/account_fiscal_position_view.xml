@@ -27,11 +27,15 @@
                         <field name="cfop_id"  />
                         <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
                         <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
+                        <field name="tem_difal" />
+                        <field name="tax_icms_intra_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
                     </group>
                     <group>
                         <field name="incluir_ipi_base" />
                         <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}" />
                         <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90'))]}" />
+                        <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
+                        <field name="tax_icms_fcp_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
                     </group>
                 </group>
                 <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">

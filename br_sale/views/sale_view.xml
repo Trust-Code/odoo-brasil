@@ -7,6 +7,12 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
+                <field name="icms_rule_id" invisible="1" />
+                <field name="ipi_rule_id" invisible="1" />
+                <field name="pis_rule_id" invisible="1" />
+                <field name="cofins_rule_id" invisible="1" />
+                <field name="issqn_rule_id" invisible="1" />
+                <field name="ii_rule_id" invisible="1" />
                 <field name="cfop_id" invisible="1" />
                 <field name="incluir_ipi_base" invisible="1" />
                 <field name="icms_cst_normal" invisible="1" />
@@ -21,7 +27,12 @@
                 <field name="cofins_cst" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
-                <field name="rule_id" readonly="1" />
+                <field name="icms_rule_id" invisible="1" />
+                <field name="ipi_rule_id" invisible="1" />
+                <field name="pis_rule_id" invisible="1" />
+                <field name="cofins_rule_id" invisible="1" />
+                <field name="issqn_rule_id" invisible="1" />
+                <field name="ii_rule_id" invisible="1" />
                 <field name="detalhes_calculo" />
                 <field name="cfop_id" invisible="1" />
                 <field name="incluir_ipi_base" invisible="1" />

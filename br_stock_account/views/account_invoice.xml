@@ -84,7 +84,7 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form" />
         <field name="priority">36</field>
         <field name="arch" type="xml">
-            <field name="discount" position="after">
+            <field name="price_subtotal" position="after">
                 <field name="valor_frete" />
                 <field name="valor_seguro" />
                 <field name="outras_despesas" />

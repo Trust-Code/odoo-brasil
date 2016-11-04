@@ -31,9 +31,12 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_bruto" />
-                <field name="valor_desconto" />
+                <field name="valor_bruto" invisible="1" />
+                <field name="valor_desconto" invisible="1" />
             </xpath>
             <page name="other_info" position="before">
                 <page name="vencimentos" string="Vencimentos">
@@ -86,9 +89,12 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_bruto" />
-                <field name="valor_desconto" />
+                <field name="valor_bruto" invisible="1" />
+                <field name="valor_desconto" invisible="1" />
             </xpath>
             <xpath expr="//notebook/page" position="after">
                 <page name="vencimentos" string="Vencimentos">
@@ -185,7 +191,7 @@
                                     <field name="icms_origem"/>
                                     <field name="icms_tipo_base" invisible="1"/>
                                     <field name="incluir_ipi_base" />
-                                    <field name="has_icms_difal" />
+                                    <field name="tem_difal" />
                                 </group>
                                 <group>
                                     <field name="icms_rule_id" />
@@ -208,11 +214,11 @@
                                     <field name="icms_st_aliquota" invisible="1"/>
                                     <field name="icms_st_valor"/>
                                 </group>
-                                <group name="icms_interestaual" attrs="{'invisible': [('has_icms_difal', '==', False)] }">
+                                <group name="icms_interestaual" attrs="{'invisible': [('tem_difal', '==', False)] }">
                                     <field name="icms_bc_uf_dest" />
-                                    <field name="icms_aliquota_fcp_uf_dest" />
-                                    <field name="icms_aliquota_uf_dest" />
-                                    <field name="icms_aliquota_interestadual" />
+                                    <field name="tax_icms_inter_id" />
+                                    <field name="tax_icms_intra_id" />
+                                    <field name="tax_icms_fcp_id" />
                                     <field name="icms_aliquota_inter_part" />
                                     <field name="icms_fcp_uf_dest" />
                                     <field name="icms_uf_dest" />
@@ -285,10 +291,6 @@
                                 <field name="ii_valor_despesas"/>
                                 <field name="ii_valor_iof"/>
                                 <field name="ii_valor"/>
-                            </group>
-                        </page>
-                        <page name="di" string="DI" attrs="{'invisible': [('product_type','=', 'service')]}">
-                            <group>
                             </group>
                         </page>
                     </notebook>

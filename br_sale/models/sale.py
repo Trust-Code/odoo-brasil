@@ -77,7 +77,7 @@ class SaleOrderLine(models.Model):
             })
 
     @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
-                 'incluir_ipi_base', 'icms_aliquota_reducao_base',
+                 'incluir_ipi_base', 'icms_aliquota_reducao_base', 'tem_difal',
                  'icms_st_aliquota_reducao_base', 'ipi_reducao_bc')
     def _compute_detalhes(self):
         for line in self:
@@ -101,7 +101,19 @@ class SaleOrderLine(models.Model):
 
             line.detalhes_calculo = u'\n'.join(msg)
 
-    rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
+    icms_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra ICMS')
+    ipi_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra IPI')
+    pis_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra PIS')
+    cofins_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra COFINS')
+    issqn_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra ISSQN')
+    ii_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra II')
+
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
 
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
@@ -115,6 +127,7 @@ class SaleOrderLine(models.Model):
         string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
         string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+    tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
     ipi_reducao_bc = fields.Float(
@@ -152,6 +165,9 @@ class SaleOrderLine(models.Model):
 
                 tax_ids = [vals.get('tax_icms_id', False),
                            vals.get('tax_icms_st_id', False),
+                           vals.get('tax_icms_inter_id', False),
+                           vals.get('tax_icms_intra_id', False),
+                           vals.get('tax_icms_fcp_id', False),
                            vals.get('tax_ipi_id', False),
                            vals.get('tax_pis_id', False),
                            vals.get('tax_cofins_id', False),
@@ -169,8 +185,13 @@ class SaleOrderLine(models.Model):
 
         res['valor_desconto'] = self.valor_desconto
         res['valor_bruto'] = self.valor_bruto
+
+        # Improve this one later
         icms = self.tax_id.filtered(lambda x: x.domain == 'icms')
         icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')
+        icms_inter = self.tax_id.filtered(lambda x: x.domain == 'icms_inter')
+        icms_intra = self.tax_id.filtered(lambda x: x.domain == 'icms_intra')
+        icms_fcp = self.tax_id.filtered(lambda x: x.domain == 'icms_fcp')
         ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
         pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
@@ -182,6 +203,9 @@ class SaleOrderLine(models.Model):
 
         res['tax_icms_id'] = icms and icms.id or False
         res['tax_icms_st_id'] = icmsst and icmsst.id or False
+        res['tax_icms_inter_id'] = icms_inter and icms_inter.id or False
+        res['tax_icms_intra_id'] = icms_intra and icms_intra.id or False
+        res['tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
         res['tax_ipi_id'] = ipi and ipi.id or False
         res['tax_pis_id'] = pis and pis.id or False
         res['tax_cofins_id'] = cofins and cofins.id or False
@@ -200,6 +224,10 @@ class SaleOrderLine(models.Model):
         res['icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
         res['icms_st_aliquota_reducao_base'] = \
             self.icms_st_aliquota_reducao_base
+        res['tem_difal'] = self.tem_difal
+        res['icms_uf_remet'] = icms_inter.amount or 0.0
+        res['icms_uf_dest'] = icms_intra.amount or 0.0
+        res['icms_fcp_uf_dest'] = icms_fcp.amount or 0.0
 
         res['ipi_cst'] = self.ipi_cst
         res['ipi_aliquota'] = ipi.amount or 0.0

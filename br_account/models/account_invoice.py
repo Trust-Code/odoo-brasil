@@ -23,6 +23,9 @@ class AccountInvoice(models.Model):
         self.icms_value = sum(l.icms_valor for l in lines)
         self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
         self.icms_st_value = sum(l.icms_st_valor for l in lines)
+        self.valor_icms_uf_remet = sum(l.icms_st_valor for l in lines)
+        self.valor_icms_uf_dest = sum(l.icms_st_valor for l in lines)
+        self.valor_icms_fcp_uf_dest = sum(l.icms_st_valor for l in lines)
         self.issqn_base = sum(l.issqn_base_calculo for l in lines)
         self.issqn_value = sum(l.issqn_valor for l in lines)
         self.ipi_base = sum(l.ipi_base_calculo for l in lines)
@@ -119,29 +122,27 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'), compute='_compute_amount')
 
     icms_base = fields.Float(
-        string='Base ICMS',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
-    icms_base_other = fields.Float(
-        string='Base ICMS Outras',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount',
-        readonly=True)
+        string='Base ICMS', store=True, compute='_compute_amount',
+        digits=dp.get_precision('Account'))
     icms_value = fields.Float(
         string='Valor ICMS', digits=dp.get_precision('Account'),
         compute='_compute_amount', store=True)
     icms_st_base = fields.Float(
-        string='Base ICMS ST',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
+        string='Base ICMS ST', store=True, compute='_compute_amount',
+        digits=dp.get_precision('Account'))
     icms_st_value = fields.Float(
-        string='Valor ICMS ST',
-        store=True,
-        digits=dp.get_precision('Account'),
-        compute='_compute_amount')
+        string='Valor ICMS ST', store=True, compute='_compute_amount',
+        digits=dp.get_precision('Account'))
+    valor_icms_fcp_uf_dest = fields.Float(
+        string="Total ICMS FCP", store=True, compute='_compute_amount',
+        help='Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
+        da UF de destino')
+    valor_icms_uf_dest = fields.Float(
+        string="ICMS Destino", store=True, compute='_compute_amount',
+        help='Valor total do ICMS Interestadual para a UF de destino')
+    valor_icms_uf_remet = fields.Float(
+        string="ICMS Remetente", store=True, compute='_compute_amount',
+        help='Valor total do ICMS Interestadual para a UF do Remetente')
     issqn_base = fields.Float(
         string='Base ISSQN', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')

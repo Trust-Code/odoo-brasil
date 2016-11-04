@@ -43,7 +43,8 @@ class AccountTaxTemplate(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('difal', 'Difal'),
+                               ('icms_inter', 'Difal - Alíquota Inter'),
+                               ('icms_intra', 'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
@@ -69,10 +70,15 @@ class AccountTax(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('difal', 'Difal'),
+                               ('icms_inter', 'Difal - Alíquota Inter'),
+                               ('icms_intra', 'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
+
+    @api.onchange('deduced_account_id')
+    def _onchange_deduced_account_id(self):
+        self.refund_deduced_account_id = self.deduced_account_id
 
     def _tax_vals(self, tax):
         return {
@@ -163,6 +169,46 @@ class AccountTax(models.Model):
         vals['base'] = base_icmsst
         return [vals]
 
+    def _compute_difal(self, price_base):
+        icms_inter = self.filtered(lambda x: x.domain == 'icms_inter')
+        icms_intra = self.filtered(lambda x: x.domain == 'icms_intra')
+        icms_fcp = self.filtered(lambda x: x.domain == 'fcp')
+        if not icms_inter or not icms_intra:
+            return []
+        vals_fcp = None
+        vals_inter = self._tax_vals(icms_inter)
+        vals_intra = self._tax_vals(icms_intra)
+        if icms_fcp:
+            vals_fcp = self._tax_vals(icms_fcp)
+        base_icms = price_base
+        reducao_icms = 0.0
+        if "icms_aliquota_reducao_base" in self.env.context:
+            reducao_icms = self.env.context['icms_aliquota_reducao_base']
+
+        if "valor_frete" in self.env.context:
+            base_icms += self.env.context["valor_frete"]
+        if "valor_seguro" in self.env.context:
+            base_icms += self.env.context["valor_seguro"]
+        if "outras_despesas" in self.env.context:
+            base_icms += self.env.context["outras_despesas"]
+
+        base_icms = base_icms * (1 - (reducao_icms / 100.0))
+        interestadual = icms_inter._compute_amount(base_icms, 1.0)
+        interno = icms_intra._compute_amount(base_icms, 1.0)
+
+        vals_inter['amount'] = (interno - interestadual) * 0.6
+        vals_inter['base'] = base_icms
+        vals_intra['amount'] = (interno - interestadual) * 0.4
+        vals_intra['base'] = base_icms
+
+        taxes = [vals_inter, vals_intra]
+        if vals_fcp:
+            fcp = icms_fcp._compute_amount(base_icms, 1.0)
+            vals_fcp['amount'] = fcp
+            vals_fcp['base'] = base_icms
+            taxes += [vals_fcp]
+        return taxes
+
     def _compute_pis_cofins(self, price_base):
         pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
         if not pis_cofins_tax:
@@ -213,11 +259,12 @@ class AccountTax(models.Model):
             price_base,
             ipi[0]['amount'] if ipi else 0.0,
             icms[0]['amount'] if icms else 0.0)
+        difal = self._compute_difal(price_base)
         pis_cofins = self._compute_pis_cofins(price_base)
         issqn = self._compute_issqn(price_base)
         ii = self._compute_ii(price_base)
 
-        taxes = ipi + icms + icms_st + pis_cofins + issqn + ii
+        taxes = icms + icms_st + difal + ipi + pis_cofins + issqn + ii
 
         total_included = total_excluded = price_base
         for tax in taxes:

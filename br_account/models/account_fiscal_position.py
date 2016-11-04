@@ -54,6 +54,14 @@ class AccountFiscalPositionTaxRule(models.Model):
     reducao_ipi = fields.Float(string="Redução de base IPI")
     aliquota_mva = fields.Float(string="Alíquota MVA")
     tem_difal = fields.Boolean(string="Aplicar Difal?")
+    tax_icms_inter_id = fields.Many2one(
+        'account.tax', help="Alíquota utilizada na operação Interestadual",
+        string="ICMS Inter", domain=[('domain', '=', 'icms_inter')])
+    tax_icms_intra_id = fields.Many2one(
+        'account.tax', help="Alíquota interna do produto no estado destino",
+        string="ICMS Intra", domain=[('domain', '=', 'icms_intra')])
+    tax_icms_fcp_id = fields.Many2one(
+        'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
 
 
 class AccountFiscalPosition(models.Model):
@@ -113,6 +121,11 @@ class AccountFiscalPosition(models.Model):
                 'tax_icms_st_id': rules[0].tax_icms_st_id,
                 'icms_st_aliquota_mva': rules[0].aliquota_mva,
                 'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
+                # ICMS Difal
+                'tem_difal': rules[0].tem_difal,
+                'tax_icms_inter_id': rules[0].tax_icms_inter_id,
+                'tax_icms_intra_id': rules[0].tax_icms_intra_id,
+                'tax_icms_fcp_id': rules[0].tax_icms_fcp_id,
                 # IPI
                 'ipi_cst': rules[0].cst_ipi,
                 'ipi_reducao_bc': rules[0].reducao_ipi,
