@@ -5,7 +5,7 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_nfe.view_br_nfe_invoice_eletronic_form" />
         <field name="arch" type="xml">
-			<field name="transportation_id" position="after">
+			<field name="recibo_nfe" position="after">
 				<field name="qrcode_hash" />
 				<field name="qrcode_url" />
 			</field>

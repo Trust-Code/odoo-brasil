@@ -337,27 +337,27 @@
                 <div class="row line">
                     <div class="borda-completa col-xs-5 line">
                         <span class="small">Nome/Razão Social</span><br />
-                        <span t-field="o.transportation_id.name"></span>
+                        <span t-esc="o.transportadora_id.legal_name or o.transportadora_id.name"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Frete por conta</span><br />
-                        <span t-field="o.transportation_id.modalidade_frete"></span>
+                        <span t-field="o.modalidade_frete"></span>
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">Código ANTT</span><br />
-                        <span></span>
+                        <span t-field="o.rntc"></span>
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">Placa</span><br />
-                        <span style="font-size:11px;" t-field="o.transportation_id.placa_veiculo"></span>
+                        <span style="font-size:11px;" t-field="o.placa_veiculo"></span>
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">UF</span><br />
-                        <span t-field="o.transportation_id.estado_veiculo_id"></span>
+                        <span t-field="o.uf_veiculo"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">CNPJ/CPF</span><br />
-                        <span t-field="o.transportation_id.company_id.cnpj_cpf"></span>
+                        <span t-field="o.transportadora_id.cnpj_cpf"></span>
                     </div>
                 </div>
 
@@ -366,46 +366,60 @@
                     <div class="row line">
                         <div class="bl br bb col-xs-5 line">
                             <span class="small">Endereço</span><br />
-                            <span></span>
+                            <t t-if="o.transportadora_id.street">
+                                <span t-esc="'%s - %s, %s' % (o.transportadora_id.street, o.transportadora_id.number, o.transportadora_id.district)"></span>
+                            </t>
                         </div>
                         <div class="bb br  col-xs-4 line">
                             <span class="small">Município</span><br />
-                            <span></span>
+                            <span t-field="o.transportadora_id.city_id.name"></span>
                         </div>
                         <div class="br bb col-xs-1 line">
                             <span class="small">UF</span><br />
-                            <span></span>
+                            <span t-field="o.transportadora_id.state_id.code"></span>
                         </div>
                         <div class="br bb col-xs-2 line">
                             <span class="small">Inscrição Estadual</span><br />
-                            <span></span>
+                            <span t-field="o.transportadora_id.inscr_est"></span>
                         </div>
                     </div>
 
                     <div class="row line">
                         <div class="bl br bb col-xs-2 line">
                             <span class="small">Quantidade</span><br />
-                            <span></span>
+                            <t t-if="o.volume_ids">
+                                <span t-field="o.volume_ids[0].quantidade_volumes"></span>
+                            </t>
                         </div>
                         <div class="br bb col-xs-2 line">
                             <span class="small">Espécie</span><br />
-                            <span></span>
+                            <t t-if="o.volume_ids">
+                                <span t-field="o.volume_ids[0].especie"></span>
+                            </t>
                         </div>
                         <div class="br bb col-xs-2 line">
                             <span class="small">Marca</span><br />
-                            <span></span>
+                            <t t-if="o.volume_ids">
+                                <span t-field="o.volume_ids[0].marca"></span>
+                            </t>
                         </div>
                         <div class="br bb col-xs-2 line">
                             <span class="small">Número</span><br />
-                            <span></span>
+                            <t t-if="o.volume_ids">
+                                <span t-field="o.volume_ids[0].numeracao"></span>
+                            </t>
                         </div>
                         <div class="br bb col-xs-2 line">
                             <span class="small">Peso Bruto</span><br />
-                            <span></span>
+                            <t t-if="o.volume_ids">
+                                <span t-field="o.volume_ids[0].peso_bruto"></span>
+                            </t>
                         </div>
                         <div class="br bb col-xs-2 line">
                             <span class="small">Peso Líquido</span><br />
-                            <span></span>
+                            <t t-if="o.volume_ids">
+                                <span t-field="o.volume_ids[0].peso_liquido"></span>
+                            </t>
                         </div>
                     </div>
 

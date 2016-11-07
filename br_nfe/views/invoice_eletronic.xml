@@ -7,6 +7,25 @@
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
             <page name="totais" position="after">
+                <page name="transporte" string="Transportes">
+                    <group>
+                        <group>
+                            <field name="modalidade_frete" />
+                            <field name="transportadora_id" />
+                            <field name="placa_veiculo" />
+                        </group>
+                        <group>
+                            <field name="uf_veiculo" />
+                            <field name="rntc" />
+                        </group>
+                    </group>
+                    <group string="Reboques">
+                        <field name="reboque_ids" nolabel="1" context="{'default_invoice_eletronic_id': id}" />
+                    </group>
+                    <group string="Volumes">
+                        <field name="volume_ids" nolabel="1" context="{'default_invoice_eletronic_id': id}" />
+                    </group>
+                </page>
                 <page name="exportacao" string="Exportação/Compras">
                     <group>
                         <field name="uf_saida_pais_id" />
@@ -27,9 +46,6 @@
                 <field name="ind_pres" />
                 <field name="ind_dest" />
                 <field name="ind_ie_dest" />
-            </field>
-            <field name="fiscal_position_id" position="after">
-                <field name="transportation_id" />
             </field>
             <field name="valor_cofins" position="after">
                 <field name="valor_icms_fcp_uf_dest" />

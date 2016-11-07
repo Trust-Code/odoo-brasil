@@ -267,6 +267,7 @@
             <field name="model">invoice.eletronic</field>
             <field name="arch" type="xml">
                 <tree string="Documentos Eletrônicos">
+                    <field name="state" />
                     <field name="model"/>
                     <field name="numero"/>
                     <field name="partner_id"/>

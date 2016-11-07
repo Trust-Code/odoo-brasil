@@ -54,12 +54,38 @@ class InvoiceEletronic(models.Model):
         ('9', '9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário")
 
+    # Transporte
+    modalidade_frete = fields.Selection([('0', '0 - Emitente'),
+                                         ('1', '1 - Destinatário'),
+                                         ('2', '2 - Terceiros'),
+                                         ('9', '9 - Sem Frete')],
+                                        u'Modalidade do frete', default="9")
+    transportadora_id = fields.Many2one('res.partner', string="Transportadora")
+    placa_veiculo = fields.Char('Placa do Veiculo', size=7)
+    uf_veiculo = fields.Char(string='UF da Placa', size=2)
+    rntc = fields.Char(string="RNTC", size=20,
+                       help="Registro Nacional de Transportador de Carga")
+
+    reboque_ids = fields.One2many('nfe.reboque', 'invoice_eletronic_id',
+                                  string="Reboques")
+    volume_ids = fields.One2many('nfe.volume', 'invoice_eletronic_id',
+                                 string="Volumes")
+
     # Exportação
     uf_saida_pais_id = fields.Many2one(
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
         string="UF Saída do País")
     local_embarque = fields.Char('Local de Embarque', size=60)
     local_despacho = fields.Char('Local despacho', size=60)
+
+    # Cobrança
+    numero_fatura = fields.Char(string="Fatura")
+    valor_original = fields.Monetary(string="Valor Original")
+    valor_desconto = fields.Monetary(string="Desconto")
+    valor_liquido = fields.Monetary(string="Valor Líquido")
+
+    duplicata_ids = fields.One2many('nfe.duplicata', 'invoice_eletronic_id',
+                                    string="Duplicatas")
 
     sequencial_evento = fields.Integer(string="Sequêncial Evento", default=1)
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
@@ -305,8 +331,47 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         }
         transp = {
-            'modFrete': 9
+            'modFrete': self.modalidade_frete,
+            'transporta': {
+                'CNPJ': re.sub(
+                    '[^0-9]', '', self.transportadora_id.cnpj_cpf),
+                'xNome': self.transportadora_id.legal_name or
+                self.transportadora_id.name,
+                'IE': re.sub('[^0-9]', '',
+                             self.transportadora_id.inscr_est or ''),
+                'xEnder': "%s - %s, %s" % (self.transportadora_id.street,
+                                           self.transportadora_id.number,
+                                           self.transportadora_id.district),
+                'xMun': self.transportadora_id.city_id.name or '',
+                'UF': self.transportadora_id.state_id.code or ''
+            },
+            'veicTransp': {
+                'placa': self.placa_veiculo or '',
+                'UF': self.uf_veiculo or '',
+                'RNTC': self.rntc or '',
+            }
         }
+        reboques = []
+        for item in self.reboque_ids:
+            reboques.append({
+                'placa': item.placa_veiculo or '',
+                'UF': item.uf_veiculo or '',
+                'RNTC': item.rntc or '',
+                'vagao': item.vagao or '',
+                'balsa': item.balsa or '',
+            })
+        transp['reboque'] = reboques
+        volumes = []
+        for item in self.volume_ids:
+            volumes.append({
+                'qVol': item.quantidade_volumes or '',
+                'esp': item.especie or '',
+                'marca': item.marca or '',
+                'nVol': item.numeracao or '',
+                'pesoL': item.peso_liquido or '',
+                'pesoB': item.peso_bruto or '',
+            })
+        transp['vol'] = volumes
         vencimento = fields.Datetime.from_string(self.data_emissao)
         cobr = {
             'dup': [{
