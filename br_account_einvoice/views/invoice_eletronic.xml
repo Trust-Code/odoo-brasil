@@ -137,11 +137,19 @@
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:0px;">
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-1">
+                                <b>Situação: </b><field name="codigo_retorno" class="oe_inline"/><br />
+                                <b>Mensagem: </b><field name="mensagem_retorno"  class="oe_inline" /><br />
+                            </div>
+                        </div>
+                    </div>
                     <sheet string="Documento Eletronico">
                         <group>
                             <group>
                                 <field name="model"/>
-                            	<field name="invoice_id"/>
+                                <field name="invoice_id"/>
                                 <field name="partner_id"/>
                                 <field name="partner_shipping_id"/>
                             </group>
@@ -150,98 +158,106 @@
                                 <field name="fiscal_position_id"/>
                             </group>
                         </group>
-                        <group string="Itens">
-                            <field name="eletronic_item_ids" nolabel="1">
-                                <tree name="eletronic_items">
-                                    <field name="product_id" />
-                                    <field name="uom_id" />
-                                    <field name="cfop" />
-                                    <field name="quantidade" />
-                                    <field name="preco_unitario" />
-                                    <field name="valor_liquido" />
-                                </tree>
-                            </field>
-                        </group>
-                        <group>
-                        	<field name="codigo_retorno" />
-                        	<field name="mensagem_retorno" />
-                        </group>
-                        <group>
-                            <group>
-                                <field name="code"/>
-                                <field name="name"/>
-                                <field name="company_id"/>
-                                <field name="currency_id" invisible="1"/>
-                                <field name="serie"/>
-                                <field name="numero"/>
-                                <field name="numero_controle"/>
-                            </group>
-                            <group>
-                                <field name="data_emissao"/>
-                                <field name="data_fatura"/>
-                                <field name="data_autorizacao"/>
-                                <field name="ambiente"/>
-                                <field name="finalidade_emissao"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group name="totais" string="Totais">
-                                <field name="valor_bruto" />
-                                <field name="valor_frete" />
-                                <field name="valor_seguro" />
-                                <field name="valor_desconto" />
-                                <field name="valor_despesas" />
-                                <field name="valor_final" />
-                            </group>
-                            <group name="impostos" string="Impostos">
-                                <field name="valor_bc_icms" />
-                                <field name="valor_icms" />
-                                <field name="valor_icms_deson" />
-                                <field name="valor_bc_icmsst" />
-                                <field name="valor_icmsst" />
-                                <field name="valor_ii" />
-                                <field name="valor_ipi" />
-                                <field name="valor_pis" />
-                                <field name="valor_cofins" />
-                                <field name="valor_estimado_tributos" />
-                            </group>
-                        </group>
-                        <group>
-                            <group name="servico" string="Totais de Serviço">
-                                <field name="valor_servicos" />
-                                <field name="valor_bc_issqn" />
-                                <field name="valor_issqn" />
-                                <field name="valor_pis_servicos" />
-                                <field name="valor_cofins_servicos" />
-                            </group>
-                            <group name="retencoes" string="Retenções">
-                                <field name="valor_retencao_issqn" />
-                                <field name="valor_retencao_pis" />
-                                <field name="valor_retencao_cofins" />
-                                <field name="valor_retencao_irrf" />
-                                <field name="valor_retencao_csll" />
-                                <field name="valor_retencao_previdencia" />
-                            </group>
-                        </group>
-	                    <group string="Eventos">
-	                    	<field name="eletronic_event_ids" nolabel="1">
-	                            <tree name="Eventos">
-	                                <field name="code" />
-	                                <field name="name" />
-	                                <field name="create_date" />
-	                                <field name="create_uid" />
-	                            </tree>
-	                        </field>
-	                   	</group>
-                        <group>
-                            <field name="informacoes_legais" />
-                            <field name="informacoes_complementares" />
-                        </group>
+                        <notebook>
+                            <page name="identificacao" string="Identificação">
+                                <group>
+                                    <group>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="company_id"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="serie"/>
+                                        <field name="numero"/>
+                                        <field name="numero_controle"/>
+                                    </group>
+                                    <group>
+                                        <field name="data_emissao"/>
+                                        <field name="data_fatura"/>
+                                        <field name="data_autorizacao"/>
+                                        <field name="ambiente"/>
+                                        <field name="finalidade_emissao"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="itens" string="Itens">
+                                <group>
+                                    <field name="eletronic_item_ids" nolabel="1">
+                                        <tree name="eletronic_items">
+                                            <field name="product_id" />
+                                            <field name="uom_id" />
+                                            <field name="cfop" />
+                                            <field name="quantidade" />
+                                            <field name="preco_unitario" />
+                                            <field name="valor_liquido" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page name="totais" string="Totais">
+                                <group>
+                                    <group name="totais" string="Totais">
+                                        <field name="valor_bruto" />
+                                        <field name="valor_frete" />
+                                        <field name="valor_seguro" />
+                                        <field name="valor_desconto" />
+                                        <field name="valor_despesas" />
+                                        <field name="valor_final" />
+                                    </group>
+                                    <group name="impostos" string="Impostos">
+                                        <field name="valor_bc_icms" />
+                                        <field name="valor_icms" />
+                                        <field name="valor_icms_deson" />
+                                        <field name="valor_bc_icmsst" />
+                                        <field name="valor_icmsst" />
+                                        <field name="valor_ii" />
+                                        <field name="valor_ipi" />
+                                        <field name="valor_pis" />
+                                        <field name="valor_cofins" />
+                                        <field name="valor_estimado_tributos" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group name="servico" string="Totais de Serviço">
+                                        <field name="valor_servicos" />
+                                        <field name="valor_bc_issqn" />
+                                        <field name="valor_issqn" />
+                                        <field name="valor_pis_servicos" />
+                                        <field name="valor_cofins_servicos" />
+                                    </group>
+                                    <group name="retencoes" string="Retenções">
+                                        <field name="valor_retencao_issqn" />
+                                        <field name="valor_retencao_pis" />
+                                        <field name="valor_retencao_cofins" />
+                                        <field name="valor_retencao_irrf" />
+                                        <field name="valor_retencao_csll" />
+                                        <field name="valor_retencao_previdencia" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Observações">
+                                <group>
+                                    <field name="informacoes_legais" />
+                                    <field name="informacoes_complementares" />
+                                </group>
+                            </page>
+                            <page name="eventos" string="Eventos">
+                                <group>
+                                    <field name="eletronic_event_ids" nolabel="1">
+                                        <tree name="Eventos">
+                                            <field name="code" />
+                                            <field name="name" />
+                                            <field name="create_date" />
+                                           <field name="create_uid" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                     <div class="oe_chatter">
-	                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
-	                    <field name="message_ids" widget="mail_thread"/>
-	                </div>
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>

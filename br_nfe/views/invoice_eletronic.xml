@@ -6,9 +6,20 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
-            <field name="codigo_retorno" position="before">
-                <field name="chave_nfe" />
-                <field name="protocolo_nfe" />
+            <page name="totais" position="after">
+                <page name="exportacao" string="Exportação/Compras">
+                    <group>
+                        <field name="uf_saida_pais_id" />
+                        <field name="local_embarque" />
+                        <field name="local_despacho" />
+                    </group>
+                </page>
+            </page>
+            <field name="mensagem_retorno" position="after">
+                <b>Chave NFe:</b> <field name="chave_nfe" class="oe_inline"/><br />
+                <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline"/>
+            </field>
+            <field name="numero_controle" position="after">
                 <field name="recibo_nfe" />
             </field>
             <field name="finalidade_emissao" position="after">
