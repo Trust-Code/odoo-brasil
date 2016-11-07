@@ -53,9 +53,6 @@ class InvoiceEletronic(models.Model):
     fiscal_position_id = fields.Many2one('account.fiscal.position',
                                          string=u'Posição Fiscal')
 
-    # parcela_ids = fields.One2many('sped.documentoduplicata',
-    #  'documento_id', u'Vencimentos'),
-
     eletronic_item_ids = fields.One2many('invoice.eletronic.item',
                                          'invoice_eletronic_id',
                                          string=u"Linhas")
@@ -99,8 +96,6 @@ class InvoiceEletronic(models.Model):
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True)
     valor_final = fields.Monetary(u'Valor Final')
-
-    transportation_id = fields.Many2one('invoice.transport')
 
     informacoes_legais = fields.Text(u'Informações legais')
     informacoes_complementares = fields.Text(u'Informações complementares')
@@ -268,7 +263,6 @@ class InvoiceEletronic(models.Model):
                 item.log_exception(e)
 
 
-
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
     _order = 'id desc'
@@ -418,22 +412,3 @@ class InvoiceEletronicItem(models.Model):
         u'Valor Total', digits=dp.get_precision('Account'))
     issqn_valor_retencao = fields.Float(
         u'Valor retenção', digits=dp.get_precision('Account'))
-
-
-class InvoiceTransport(models.Model):
-    _name = 'invoice.transport'
-
-    name = fields.Char(u'Nome', size=100)
-    company_id = fields.Many2one('res.company', u'Empresa', index=True)
-
-    modalidade_frete = fields.Selection([('0', '0 - Sem Frete'),
-                                         ('1', '1 - Por conta destinatário'),
-                                         ('2', '2 - Por conta do emitente'),
-                                         ('9', '9 - Outros')],
-                                        u'Modalidade do frete')
-    transportadora_id = fields.Many2one('res.partner', u'Transportadora')
-    placa_veiculo = fields.Char('Placa do Veiculo', size=7)
-    estado_veiculo_id = fields.Many2one('res.country.state', 'UF da Placa')
-    cidade_veiculo_id = fields.Many2one(
-        'res.state.city', 'Municipio',
-        domain="[('state_id', '=', estado_veiculo_id)]")

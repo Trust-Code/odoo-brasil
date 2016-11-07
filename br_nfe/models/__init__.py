@@ -4,6 +4,7 @@
 
 from . import account_fiscal_position
 from . import account_invoice
+from . import nfe
 from . import invoice_eletronic
 from . import res_company
 from . import res_partner
