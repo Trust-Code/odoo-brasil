@@ -54,6 +54,13 @@ class InvoiceEletronic(models.Model):
         ('9', '9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário")
 
+    # Exportação
+    uf_saida_pais_id = fields.Many2one(
+        'res.country.state', domain=[('country_id.code', '=', 'BR')],
+        string="UF Saída do País")
+    local_embarque = fields.Char('Local de Embarque', size=60)
+    local_despacho = fields.Char('Local despacho', size=60)
+
     sequencial_evento = fields.Integer(string="Sequêncial Evento", default=1)
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
@@ -208,8 +215,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
-            'indFinal': self.ind_final or 1,
-            'indPres': self.ind_pres or 1,
+            'indFinal': self.ind_final or '1',
+            'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
         emit = {
@@ -247,20 +254,28 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'xMun': self.partner_id.city_id.name,
                 'UF': self.partner_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.partner_id.zip or ''),
-                'cPais': self.partner_id.country_id.ibge_code,
+                'cPais': (self.partner_id.country_id.bc_code or '')[-4:],
                 'xPais': self.partner_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
             },
             'indIEDest': self.ind_ie_dest,
             'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
         }
+        exporta = None
         if self.ambiente == 'homologacao':
             dest['xNome'] = \
                 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
         if self.partner_id.country_id.id != self.company_id.country_id.id:
+            dest['idEstrangeiro'] = re.sub(
+                '[^0-9]', '', self.partner_id.cnpj_cpf or '')
             dest['enderDest']['UF'] = 'EX'
             dest['enderDest']['xMun'] = 'Exterior'
             dest['enderDest']['cMun'] = '9999999'
+            exporta = {
+                'UFSaidaPais': self.uf_saida_pais_id.code or '',
+                'xLocExporta': self.local_embarque or '',
+                'xLocDespacho': self.local_despacho or '',
+            }
 
         eletronic_items = []
         for item in self.eletronic_item_ids:
@@ -314,6 +329,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'transp': transp,
             'cobr': cobr,
             'infAdic': infAdic,
+            'exporta': exporta
         }
         return vals
 

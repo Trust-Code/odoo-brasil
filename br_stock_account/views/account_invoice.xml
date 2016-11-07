@@ -33,6 +33,15 @@
                             <field name="notation_of_packages"/>
                         </group>
                     </group>
+                    <group>
+                        <group name="exporta">
+                            <field name="uf_saida_pais_id"/>
+                            <field name="local_embarque"/>
+                            <field name="local_despacho"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
                 </page>
             </page>
         </field>

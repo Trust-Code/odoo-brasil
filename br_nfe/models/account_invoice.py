@@ -87,6 +87,9 @@ class AccountInvoice(models.Model):
         if inv.partner_id.indicador_ie_dest:
             ind_ie_dest = inv.partner_id.indicador_ie_dest
         res['ind_ie_dest'] = ind_ie_dest
+        res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
+        res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
+        res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):

@@ -33,7 +33,7 @@ class AccountInvoice(models.Model):
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
                 'br_account_einvoice', 'action_sped_base_eletronic_doc')
             dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'sped_base_eletronic_doc_form')
+                'br_account_einvoice', 'br_account_invoice_eletronic_form')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             vals['view_id'] = (view_id, u'sped.eletronic.doc.form')
             vals['views'][1] = (view_id, u'form')

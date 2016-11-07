@@ -67,12 +67,22 @@ class AccountInvoice(models.Model):
             'draft': [
                 ('readonly', False)]})
 
+    # Exportação
+    uf_saida_pais_id = fields.Many2one(
+        'res.country.state', domain=[('country_id.code', '=', 'BR')],
+        string="UF Saída do País")
+    local_embarque = fields.Char('Local de Embarque', size=60)
+    local_despacho = fields.Char('Local despacho', size=60)
+
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
         res['valor_frete'] = inv.total_frete
         res['valor_despesas'] = inv.total_despesas
         res['valor_seguro'] = inv.total_seguro
 
+        res['uf_saida_pais_id'] = inv.uf_saida_pais_id.id
+        res['local_embarque'] = inv.local_embarque
+        res['local_despacho'] = inv.local_despacho
         # TODO Passar as informações de transporte
 
         return res
