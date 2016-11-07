@@ -20,6 +20,7 @@
     ],
     'data': [
         'views/pos_order.xml',
+        'views/res_company.xml',
         'views/invoice_eletronic.xml'
     ],
     'application': True,
