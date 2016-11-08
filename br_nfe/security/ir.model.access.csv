@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_nfe_reboque_manager,access_nfe_reboque,model_nfe_reboque,account.group_account_manager,1,1,1,1
+access_nfe_volume_manager,access_nfe_volume,model_nfe_volume,account.group_account_manager,1,1,1,1
+access_nfe_duplicata_manager,access_nfe_duplicata,model_nfe_duplicata,account.group_account_manager,1,1,1,1
+access_nfe_reboque_accountant,access_nfe_reboque,model_nfe_reboque,account.group_account_user,1,1,1,0
+access_nfe_volume_accountant,access_nfe_volume,model_nfe_volume,account.group_account_user,1,1,1,0
+access_nfe_duplicata_accountant,access_nfe_duplicata,model_nfe_duplicata,account.group_account_user,1,1,1,0
+access_nfe_reboque_item_user,access_nfe_reboque,model_nfe_reboque,account.group_account_invoice,1,0,0,0
+access_nfe_volume_user,access_nfe_volume,model_nfe_volume,account.group_account_invoice,1,0,0,0
+access_nfe_duplicata_user,access_nfe_duplicata,model_nfe_duplicata,account.group_account_invoice,1,0,0,0

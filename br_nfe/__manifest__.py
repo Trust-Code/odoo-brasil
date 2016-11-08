@@ -19,6 +19,7 @@
         'br_account_einvoice',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',
         'views/invoice_eletronic.xml',
         'views/account_invoice.xml',

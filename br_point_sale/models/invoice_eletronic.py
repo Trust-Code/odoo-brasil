@@ -14,17 +14,21 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if len(self.company_id.id_token_csc) != 6:
-            errors.append("Identificador do CSC inválido")
-        if not len(self.company_id.csc):
-            errors.append("CSC Inválido")
+        if self.model != '65':
+            return errors
+        if len(self.company_id.id_token_csc or '') != 6:
+            errors.append(u"Identificador do CSC inválido")
+        if not len(self.company_id.csc or ''):
+            errors.append(u"CSC Inválido")
         if self.partner_id.cnpj_cpf is None:
-            errors.append("CNPJ/CPF do Parceiro inválido")
+            errors.append(u"CNPJ/CPF do Parceiro inválido")
         return errors
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
         vals = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+        if self.model != '65':
+            return vals
         codigo_seguranca = {
             'cid_token': self.company_id.id_token_csc,
             'csc': self.company_id.csc,

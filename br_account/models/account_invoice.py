@@ -239,3 +239,14 @@ class AccountInvoice(models.Model):
                     if tax_line.tax_id.include_base_amount else []
                 })
         return res
+
+    @api.model
+    def _prepare_refund(self, invoice, date_invoice=None, date=None,
+                        description=None, journal_id=None):
+        res = super(AccountInvoice, self)._prepare_refund(
+            invoice, date_invoice=date_invoice, date=date,
+            description=description, journal_id=journal_id)
+
+        res['fiscal_document_id'] = invoice.fiscal_document_id.id
+        res['document_serie_id'] = invoice.document_serie_id.id
+        return res
