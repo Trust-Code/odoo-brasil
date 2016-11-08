@@ -233,7 +233,7 @@ FISCAL'
             'nNF': self.numero,
             'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
-            'tpNF': self.finalidade_emissao,
+            'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
                                 self.company_id.city_id.ibge_code),

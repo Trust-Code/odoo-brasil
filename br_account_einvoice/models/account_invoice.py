@@ -9,6 +9,14 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
+TYPE2EDOC = {
+    'out_invoice': 'saida',        # Customer Invoice
+    'in_invoice': 'entrada',          # Vendor Bill
+    'out_refund': 'entrada',        # Customer Refund
+    'in_refund': 'saida',          # Vendor Refund
+}
+
+
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
@@ -136,7 +144,7 @@ class AccountInvoice(models.Model):
             'name': u'Documento Eletrônico: nº %d' % invoice.internal_number,
             'company_id': invoice.company_id.id,
             'state': 'draft',
-            'tipo_operacao': 'saida',
+            'tipo_operacao': TYPE2EDOC[invoice.type],
             'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
             'numero': invoice.internal_number,
