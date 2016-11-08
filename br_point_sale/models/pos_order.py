@@ -79,11 +79,11 @@ class PosOrder(models.Model):
             ),
             # - ICMS -
             'icms_cst': pos_line.icms_cst_normal,
-            'icms_aliquota': 0,
+            'icms_aliquota': pos_line.aliquota_icms,
             'icms_tipo_base': '3',
             'icms_aliquota_reducao_base': pos_line.icms_aliquota_reducao_base,
             'icms_base_calculo': pos_line.price_subtotal_incl,
-            'icms_valor': 0,
+            'icms_valor': pos_line.valor_icms,
             # - ICMS ST -
             'icms_st_aliquota': 0,
             'icms_st_aliquota_mva': 0,
@@ -101,14 +101,14 @@ class PosOrder(models.Model):
             'ii_valor_iof': 0,
             # - PIS -
             'pis_cst': pos_line.pis_cst,
-            'pis_aliquota': 0,
-            'pis_base_calculo': 0,
-            'pis_valor': 0,
+            'pis_aliquota': pos_line.aliquota_pis,
+            'pis_base_calculo': pos_line.base_pis,
+            'pis_valor': pos_line.valor_pis,
             # - COFINS -
             'cofins_cst': pos_line.cofins_cst,
-            'cofins_aliquota': 0,
-            'cofins_base_calculo': 0,
-            'cofins_valor': 0,
+            'cofins_aliquota': pos_line.aliquota_cofins,
+            'cofins_base_calculo': pos_line.base_cofins,
+            'cofins_valor': pos_line.valor_cofins,
             # - ISSQN -
             'issqn_codigo': 0,
             'issqn_aliquota': 0,
@@ -139,6 +139,8 @@ class PosOrder(models.Model):
             'fiscal_position_id': pos.fiscal_position_id.id,
             'ind_final': pos.fiscal_position_id.ind_final,
             'ind_pres': pos.fiscal_position_id.ind_pres,
+            'metodo_pagamento': pos.statement_ids[0].journal_id.
+            metodo_pagamento
         }
 
         eletronic_items = []
@@ -148,9 +150,8 @@ class PosOrder(models.Model):
 
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = pos.total_icms
-        vals['valor_ipi'] = 0
-        vals['valor_pis'] = 0
-        vals['valor_cofins'] = 0
+        vals['valor_pis'] = pos.total_pis
+        vals['valor_cofins'] = pos.total_cofins
         vals['valor_ii'] = 0
         vals['valor_bruto'] = pos.amount_total - pos.amount_tax
         vals['valor_desconto'] = pos.amount_tax
@@ -267,11 +268,16 @@ class PosOrderLine(models.Model):
                 tax_id = self.env['account.tax'].browse(tax['id'])
                 if tax_id.domain == 'icms':
                     line.valor_icms = tax.get('amount', 0.00)
-                    line.base_icms = taxes.get('base', 0.00)
+                    line.base_icms = tax.get('base', 0.00)
+                    line.aliquota_icms = tax_id.amount
                 if tax_id.domain == 'pis':
                     line.valor_pis = tax.get('amount', 0.00)
+                    line.base_pis = tax.get('base', 0.00)
+                    line.aliquota_pis = tax_id.amount
                 if tax_id.domain == 'cofins':
                     line.valor_cofins = tax.get('amount', 0.00)
+                    line.base_cofins = tax.get('base', 0.00)
+                    line.aliquota_cofins = tax_id.amount
 
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
@@ -292,11 +298,18 @@ class PosOrderLine(models.Model):
     valor_bruto = fields.Float(
         string='Vlr. Bruto', store=True, compute=_compute_amount_line_all,
         digits=dp.get_precision('Sale Price'))
-    base_icms = fields.Float(string='Base ICMS', store=True,
-                             compute=_compute_amount_line_all)
     valor_icms = fields.Float(string='Valor ICMS', store=True,
                               compute=_compute_amount_line_all)
     valor_pis = fields.Float(string='Valor PIS', store=True,
                              compute=_compute_amount_line_all)
     valor_cofins = fields.Float(string='Valor COFINS', store=True,
                                 compute=_compute_amount_line_all)
+    base_icms = fields.Float(string='Base ICMS', store=True,
+                             compute=_compute_amount_line_all)
+    base_pis = fields.Float(string='Base PIS', store=True,
+                            compute=_compute_amount_line_all)
+    base_cofins = fields.Float(string='Base COFINS', store=True,
+                               compute=_compute_amount_line_all)
+    aliquota_icms = fields.Float()
+    aliquota_pis = fields.Float()
+    aliquota_cofins = fields.Float()

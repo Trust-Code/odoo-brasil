@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
+from .account_journal import metodos
 
 
 class InvoiceEletronic(models.Model):
@@ -10,6 +11,7 @@ class InvoiceEletronic(models.Model):
 
     qrcode_hash = fields.Char(string='QR-Code hash')
     qrcode_url = fields.Char(string='QR-Code URL')
+    metodo_pagamento = fields.Selection(metodos, string='Método de Pagamento')
 
     @api.multi
     def _hook_validation(self):
@@ -26,7 +28,8 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
-        vals = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+        vals = super(InvoiceEletronic, self)\
+               ._prepare_eletronic_invoice_values()
         if self.model != '65':
             return vals
         codigo_seguranca = {
@@ -34,4 +37,6 @@ class InvoiceEletronic(models.Model):
             'csc': self.company_id.csc,
         }
         vals['codigo_seguranca'] = codigo_seguranca
+        if self.model == '65':
+            vals['pagamento'] = self.metodo_pagamento
         return vals
