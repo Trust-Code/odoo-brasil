@@ -108,7 +108,7 @@
                                 <span>1-SAÍDA</span>
                             </div>
                             <div class="col-xs-4" style="margin-top: 5px;">
-                                <span class="enfase" style="border:1px solid black; padding:4px;">1</span>
+                                <span class="enfase" style="border:1px solid black; padding:4px;" t-esc="'0' if o.tipo_operacao == 'entrada' else '1'"></span>
                             </div>
                         </div>
                         <div class="row center" style="margin-top:5px;">

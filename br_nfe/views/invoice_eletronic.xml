@@ -35,8 +35,8 @@
                 </page>
             </page>
             <field name="mensagem_retorno" position="after">
-                <b>Chave NFe:</b> <field name="chave_nfe" class="oe_inline"/><br />
-                <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline"/>
+                <br /><b>Chave NFe:</b> <field name="chave_nfe" class="oe_inline" readonly="1"/><br />
+                <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline" readonly="1"/>
             </field>
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe" />
