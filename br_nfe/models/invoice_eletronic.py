@@ -80,9 +80,9 @@ class InvoiceEletronic(models.Model):
 
     # Cobrança
     numero_fatura = fields.Char(string="Fatura")
-    valor_original = fields.Monetary(string="Valor Original")
-    valor_desconto = fields.Monetary(string="Desconto")
-    valor_liquido = fields.Monetary(string="Valor Líquido")
+    fatura_bruto = fields.Monetary(string="Valor Original")
+    fatura_desconto = fields.Monetary(string="Desconto")
+    fatura_liquido = fields.Monetary(string="Valor Líquido")
 
     duplicata_ids = fields.One2many('nfe.duplicata', 'invoice_eletronic_id',
                                     string="Duplicatas")
@@ -372,13 +372,21 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'pesoB': item.peso_bruto or '',
             })
         transp['vol'] = volumes
-        vencimento = fields.Datetime.from_string(self.data_emissao)
+
+        duplicatas = []
+        for dup in self.duplicata_ids:
+            vencimento = fields.Datetime.from_string(dup.data_vencimento)
+            duplicatas.append({
+                'nDup': dup.numero_duplicata,
+                'dVenc':  vencimento.strftime('%Y-%m-%d'),
+                'vDup': "%.02f" % dup.valor
+            })
         cobr = {
-            'dup': [{
-                'nDup': '1',
-                'dVenc': vencimento.strftime('%Y-%m-%d'),
-                'vDup': "%.02f" % self.valor_final
-            }]
+            'nFat': self.numero_fatura,
+            'vOrig': self.fatura_bruto,
+            'vDesc': self.fatura_desconto,
+            'vLiq': self.fatura_liquido,
+            'dup': duplicatas
         }
         infAdic = {
             'infCpl': self.informacoes_complementares,

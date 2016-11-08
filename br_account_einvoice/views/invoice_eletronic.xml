@@ -154,6 +154,7 @@
                                 <field name="partner_shipping_id"/>
                             </group>
                             <group>
+                                <field name="tipo_operacao" />
                                 <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
                             </group>

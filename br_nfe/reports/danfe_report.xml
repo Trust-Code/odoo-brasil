@@ -144,7 +144,7 @@
                     </div>
                     <div class="bt br bb col-xs-5 line">
                         <span class="small">Protocolo de autorização de uso</span><br />
-                        <span t-field="o.protocolo_nfe"></span> -
+                        <span t-field="o.protocolo_nfe"></span> |
                         <span t-field="o.data_autorizacao"></span><br />
                     </div>
                 </div>
@@ -214,7 +214,12 @@
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">UF</span><br />
-                        <span t-field="o.partner_id.state_id.code"></span>
+                        <t t-if="o.ind_dest == '3'">
+                            <span>EX</span>
+                        </t>
+                        <t t-if="o.ind_dest != '3'">
+                            <span t-field="o.partner_id.state_id.code"></span>
+                        </t>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Inscrição Estadual</span><br />
