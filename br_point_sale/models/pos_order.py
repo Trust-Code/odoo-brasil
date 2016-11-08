@@ -2,11 +2,9 @@
 # © 2016 Alessandro Fernandes Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import csv
 from datetime import datetime
 from random import SystemRandom
 from odoo.addons import decimal_precision as dp
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo import api, models, fields
 
 
@@ -20,10 +18,20 @@ class PosOrder(models.Model):
 #    total_tax = fields.Float() TODO
 #    total_desconto = fields.Float() TODO
 
+    @api.depends('statement_ids', 'lines.price_subtotal_incl',
+                 'lines.discount')
+    def _compute_amount_all(self):
+        super(PosOrder, self)._compute_amount_all()
+        for order in self:
+            for product in order.lines:
+                order.total_icms += product.valor_icms
+                order.total_pis += product.valor_pis
+                order.total_cofins += product.valor_cofins
+
     @api.model
     def _process_order(self, pos_order):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
-                           for i in range(8)]))
+                                    for i in range(8)]))
         res = super(PosOrder, self)._process_order(pos_order)
         res.numero_controle = str(num_controle)
         if not res.fiscal_position_id:
@@ -79,7 +87,8 @@ class PosOrder(models.Model):
             # - ICMS ST -
             'icms_st_aliquota': 0,
             'icms_st_aliquota_mva': 0,
-            'icms_st_aliquota_reducao_base': pos_line.icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base': pos_line.\
+            icms_st_aliquota_reducao_base,
             'icms_st_base_calculo': 0,
             'icms_st_valor': 0,
             # - Simples Nacional -
@@ -138,7 +147,7 @@ class PosOrder(models.Model):
                                     self._prepare_edoc_item_vals(pos_line)))
 
         vals['eletronic_item_ids'] = eletronic_items
-        vals['valor_icms'] = 30
+        vals['valor_icms'] = pos.total_icms
         vals['valor_ipi'] = 0
         vals['valor_pis'] = 0
         vals['valor_cofins'] = 0
@@ -146,7 +155,7 @@ class PosOrder(models.Model):
         vals['valor_bruto'] = pos.amount_total - pos.amount_tax
         vals['valor_desconto'] = pos.amount_tax
         vals['valor_final'] = pos.amount_total
-        vals['valor_bc_icms'] = 0
+        vals['valor_bc_icms'] = pos.amount_total
         vals['valor_bc_icmsst'] = 0
         return vals
 
@@ -183,12 +192,21 @@ class PosOrder(models.Model):
 
     @api.model
     def _amount_line_tax(self, line, fiscal_position_id):
-        taxes = line.tax_ids.filtered(lambda t: t.company_id.id == line.order_id.company_id.id)
+        taxes = line.tax_ids.filtered(
+                lambda t: t.company_id.id == line.order_id.company_id.id)
         if fiscal_position_id:
-            taxes = fiscal_position_id.map_tax(taxes, line.product_id, line.order_id.partner_id)
+            taxes = fiscal_position_id.map_tax(
+                    taxes, line.product_id, line.order_id.partner_id)
         price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-        taxes = taxes.compute_all(price, line.order_id.pricelist_id.currency_id, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)
+        taxes = taxes.compute_all(
+                price, line.order_id.pricelist_id.currency_id, line.qty,
+                product=line.product_id,
+                partner=line.order_id.partner_id or False)
         return taxes['total_included'] - taxes['total_excluded']
+
+    total_icms = fields.Float(string='ICMS', compute=_compute_amount_all)
+    total_pis = fields.Float(string='PIS', compute=_compute_amount_all)
+    total_cofins = fields.Float(string='COFINS', compute=_compute_amount_all)
 
 
 class PosOrderLine(models.Model):
@@ -196,8 +214,9 @@ class PosOrderLine(models.Model):
 
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
     def _compute_amount_line_all(self):
-        return super(PosOrderLine, self)._compute_amount_line_all()
+        super(PosOrderLine, self)._compute_amount_line_all()
         for line in self:
+            currency = line.order_id.pricelist_id.currency_id
             values = line.order_id.fiscal_position_id.map_tax_extra_values(
                 line.company_id, line.product_id,
                 line.order_id.partner_id)
@@ -231,6 +250,28 @@ class PosOrderLine(models.Model):
             line.cofins_cst = values.get('cofins_cst', False)
             line.valor_bruto = line.qty * line.price_unit
             line.valor_desconto = line.valor_bruto * line.discount / 100
+            taxes = line.tax_ids.filtered(
+                    lambda tax: tax.company_id.id == line.order_id.
+                    company_id.id)
+            fiscal_position_id = line.order_id.fiscal_position_id
+            if fiscal_position_id:
+                taxes = fiscal_position_id.map_tax(taxes, line.product_id,
+                                                   line.order_id.partner_id)
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            line.price_subtotal = line.price_subtotal_incl = price * line.qty
+            if taxes:
+                taxes = taxes.compute_all(
+                        price, currency, line.qty, product=line.product_id,
+                        partner=line.order_id.partner_id or False)
+            for tax in taxes['taxes']:
+                tax_id = self.env['account.tax'].browse(tax['id'])
+                if tax_id.domain == 'icms':
+                    line.valor_icms = tax.get('amount', 0.00)
+                    line.base_icms = taxes.get('base', 0.00)
+                if tax_id.domain == 'pis':
+                    line.valor_pis = tax.get('amount', 0.00)
+                if tax_id.domain == 'cofins':
+                    line.valor_cofins = tax.get('amount', 0.00)
 
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
@@ -249,5 +290,13 @@ class PosOrderLine(models.Model):
         string='Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
     valor_bruto = fields.Float(
-        string='Vlr. Bruto', store=True,
+        string='Vlr. Bruto', store=True, compute=_compute_amount_line_all,
         digits=dp.get_precision('Sale Price'))
+    base_icms = fields.Float(string='Base ICMS', store=True,
+                             compute=_compute_amount_line_all)
+    valor_icms = fields.Float(string='Valor ICMS', store=True,
+                              compute=_compute_amount_line_all)
+    valor_pis = fields.Float(string='Valor PIS', store=True,
+                             compute=_compute_amount_line_all)
+    valor_cofins = fields.Float(string='Valor COFINS', store=True,
+                                compute=_compute_amount_line_all)

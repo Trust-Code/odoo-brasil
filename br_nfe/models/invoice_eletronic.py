@@ -141,7 +141,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     def _prepare_eletronic_invoice_item(self, item, invoice):
         xprod = item.product_id.name if self.company_id.\
                 tipo_ambiente != '2' else\
-'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
+                'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
+FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
@@ -267,41 +268,45 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
-        dest = {
-            'tipo': self.partner_id.company_type,
-            'cnpj_cpf': re.sub('[^0-9]', '', self.partner_id.cnpj_cpf or ''),
-            'xNome': self.partner_id.legal_name or self.partner_id.name,
-            'enderDest': {
-                'xLgr': self.partner_id.street,
-                'nro': self.partner_id.number,
-                'xBairro': self.partner_id.district,
-                'cMun': '%s%s' % (self.partner_id.state_id.ibge_code,
-                                  self.partner_id.city_id.ibge_code),
-                'xMun': self.partner_id.city_id.name,
-                'UF': self.partner_id.state_id.code,
-                'CEP': re.sub('[^0-9]', '', self.partner_id.zip or ''),
-                'cPais': (self.partner_id.country_id.bc_code or '')[-4:],
-                'xPais': self.partner_id.country_id.name,
-                'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
-            },
-            'indIEDest': self.ind_ie_dest,
-            'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
-        }
+        dest = None
         exporta = None
-        if self.ambiente == 'homologacao':
-            dest['xNome'] = \
-                'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
-        if self.partner_id.country_id.id != self.company_id.country_id.id:
-            dest['idEstrangeiro'] = re.sub(
-                '[^0-9]', '', self.partner_id.cnpj_cpf or '')
-            dest['enderDest']['UF'] = 'EX'
-            dest['enderDest']['xMun'] = 'Exterior'
-            dest['enderDest']['cMun'] = '9999999'
-            exporta = {
-                'UFSaidaPais': self.uf_saida_pais_id.code or '',
-                'xLocExporta': self.local_embarque or '',
-                'xLocDespacho': self.local_despacho or '',
+        if self.partner_id:
+            dest = {
+                'tipo': self.partner_id.company_type,
+                'cnpj_cpf': re.sub('[^0-9]', '',
+                                   self.partner_id.cnpj_cpf or ''),
+                'xNome': self.partner_id.legal_name or self.partner_id.name,
+                'enderDest': {
+                    'xLgr': self.partner_id.street,
+                    'nro': self.partner_id.number,
+                    'xBairro': self.partner_id.district,
+                    'cMun': '%s%s' % (self.partner_id.state_id.ibge_code,
+                                      self.partner_id.city_id.ibge_code),
+                    'xMun': self.partner_id.city_id.name,
+                    'UF': self.partner_id.state_id.code,
+                    'CEP': re.sub('[^0-9]', '', self.partner_id.zip or ''),
+                    'cPais': (self.partner_id.country_id.bc_code or '')[-4:],
+                    'xPais': self.partner_id.country_id.name,
+                    'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
+                },
+                'indIEDest': self.ind_ie_dest,
+                'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
             }
+            if self.ambiente == 'homologacao':
+                dest['xNome'] = \
+                    'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
+ SEM VALOR FISCAL'
+            if self.partner_id.country_id.id != self.company_id.country_id.id:
+                dest['idEstrangeiro'] = re.sub(
+                    '[^0-9]', '', self.partner_id.cnpj_cpf or '')
+                dest['enderDest']['UF'] = 'EX'
+                dest['enderDest']['xMun'] = 'Exterior'
+                dest['enderDest']['cMun'] = '9999999'
+                exporta = {
+                    'UFSaidaPais': self.uf_saida_pais_id.code or '',
+                    'xLocExporta': self.local_embarque or '',
+                    'xLocDespacho': self.local_despacho or '',
+                }
 
         eletronic_items = []
         for item in self.eletronic_item_ids:
@@ -334,14 +339,15 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'modFrete': self.modalidade_frete,
             'transporta': {
                 'CNPJ': re.sub(
-                    '[^0-9]', '', self.transportadora_id.cnpj_cpf),
+                    '[^0-9]', '', self.transportadora_id.cnpj_cpf or ''),
                 'xNome': self.transportadora_id.legal_name or
-                self.transportadora_id.name,
+                self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
                              self.transportadora_id.inscr_est or ''),
                 'xEnder': "%s - %s, %s" % (self.transportadora_id.street,
                                            self.transportadora_id.number,
-                                           self.transportadora_id.district),
+                                           self.transportadora_id.district)
+                if self.transportadora_id else '',
                 'xMun': self.transportadora_id.city_id.name or '',
                 'UF': self.transportadora_id.state_id.code or ''
             },
@@ -451,6 +457,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     def action_send_eletronic_invoice(self):
         self.ambiente = 'homologacao'  # Evita esquecimentos
         self.state = 'error'
+        self.data_emissao = datetime.now()
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
         if self.model not in ('55', '65'):
