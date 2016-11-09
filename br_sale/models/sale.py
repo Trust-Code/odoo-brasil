@@ -149,9 +149,23 @@ class SaleOrderLine(models.Model):
     detalhes_calculo = fields.Text(
         string="Detalhes Cálculo", compute='_compute_detalhes', store=True)
 
+    def _update_tax_from_ncm(self):
+        if self.product_id:
+            ncm = self.product_id.fiscal_classification_id
+            taxes = ncm.tax_icms_st_id | ncm.tax_ipi_id
+            self.update({
+                'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
+                'icms_st_aliquota_reducao_base':
+                ncm.icms_st_aliquota_reducao_base,
+                'ipi_cst': ncm.ipi_cst,
+                'ipi_reducao_bc': ncm.ipi_reducao_bc,
+                'tax_id': [(6, None, [x.id for x in taxes if x])]
+            })
+
     @api.multi
     def _compute_tax_id(self):
         res = super(SaleOrderLine, self)._compute_tax_id()
+        self._update_tax_from_ncm()
         for line in self:
             fpos = line.order_id.fiscal_position_id or \
                 line.order_id.partner_id.property_account_position_id
@@ -163,16 +177,20 @@ class SaleOrderLine(models.Model):
                     if value and key in line._fields:
                         line.update({key: value})
 
-                tax_ids = [vals.get('tax_icms_id', False),
-                           vals.get('tax_icms_st_id', False),
-                           vals.get('tax_icms_inter_id', False),
-                           vals.get('tax_icms_intra_id', False),
-                           vals.get('tax_icms_fcp_id', False),
-                           vals.get('tax_ipi_id', False),
-                           vals.get('tax_pis_id', False),
-                           vals.get('tax_cofins_id', False),
-                           vals.get('tax_ii_id', False),
-                           vals.get('tax_issqn_id', False)]
+                empty = self.env['account.tax'].browse()
+                ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
+                icmsst = self.tax_id.filtered(lambda x: x.domain == 'icms_st')
+                tax_ids = vals.get('tax_icms_id', empty) | \
+                    vals.get('tax_icms_st_id', icmsst) | \
+                    vals.get('tax_icms_inter_id', empty) | \
+                    vals.get('tax_icms_intra_id', empty) | \
+                    vals.get('tax_icms_fcp_id', empty) | \
+                    vals.get('tax_ipi_id', ipi) | \
+                    vals.get('tax_pis_id', empty) | \
+                    vals.get('tax_cofins_id', empty) | \
+                    vals.get('tax_ii_id', empty) | \
+                    vals.get('tax_issqn_id', empty)
+
                 line.update({
                     'tax_id': [(6, None, [x.id for x in tax_ids if x])]
                 })

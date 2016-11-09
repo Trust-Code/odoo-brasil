@@ -26,9 +26,9 @@ class ProductFiscalClassification(models.Model):
     municipal_imposto = fields.Float(u'Imposto Municipal')
 
     # IPI
-    classe_enquadramento = fields.Char(string="Classe Enquadramento", size=5)
+    classe_enquadramento = fields.Char(string="Classe Enquadr.", size=5)
     codigo_enquadramento = fields.Char(
-        string="Classe Enquadramento", size=3, default='999')
+        string="Cód. Enquadramento", size=3, default='999')
     tax_ipi_id = fields.Many2one('account.tax', string="Alíquota IPI",
                                  domain=[('domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
