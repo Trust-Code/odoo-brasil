@@ -361,8 +361,22 @@ class AccountInvoiceLine(models.Model):
         'Depesas Atuaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
 
+    def _update_tax_from_ncm(self):
+        if self.product_id:
+            ncm = self.product_id.fiscal_classification_id
+            self.update({
+                'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
+                'icms_st_aliquota_reducao_base':
+                ncm.icms_st_aliquota_reducao_base,
+                'ipi_cst': ncm.ipi_cst,
+                'ipi_reducao_bc': ncm.ipi_reducao_bc,
+                'tax_icms_st_id': ncm.tax_icms_st_id.id,
+                'tax_ipi_id': ncm.tax_ipi_id.id,
+            })
+
     def _set_taxes(self):
         super(AccountInvoiceLine, self)._set_taxes()
+        self._update_tax_from_ncm()
         fpos = self.invoice_id.fiscal_position_id
         if fpos:
             vals = fpos.map_tax_extra_values(
@@ -381,12 +395,18 @@ class AccountInvoiceLine(models.Model):
     def _br_account_onchange_product_id(self):
         self.service_type_id = self.product_id.service_type_id.id
         self.product_type = self.product_id.fiscal_type
-        self.fiscal_classification_id = \
-            self.product_id.fiscal_classification_id.id
-        self.tributos_estimados = self.price_subtotal * (
-            self.fiscal_classification_id.federal_nacional +
-            self.fiscal_classification_id.estadual_imposto +
-            self.fiscal_classification_id.municipal_imposto) / 100
+        self.icms_origem = self.product_id.origin
+
+        ncm = self.product_id.fiscal_classification_id
+        self.fiscal_classification_id = ncm.id
+
+        nacional = ncm.federal_nacional if self.icms_origem in \
+            ('1', '2', '3', '8') else ncm.federal_importado
+        valor = self.product_id.lst_price * (
+            nacional + ncm.estadual_imposto +
+            ncm.municipal_imposto) / 100
+
+        self.tributos_estimados = valor
 
     def _update_invoice_line_ids(self):
         other_taxes = self.invoice_line_tax_ids.filtered(

@@ -104,8 +104,6 @@ class AccountInvoice(models.Model):
             'icms_aliquota_credito': line.icms_aliquota_credito,
             'icms_valor_credito': line.icms_valor_credito,
             # - IPI -
-            'classe_enquadramento': '',
-            'codigo_enquadramento': '999',
             'ipi_cst': line.ipi_cst,
             'ipi_aliquota': line.ipi_aliquota,
             'ipi_base_calculo': line.ipi_base_calculo,

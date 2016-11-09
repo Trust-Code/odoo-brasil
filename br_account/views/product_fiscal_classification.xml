@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_br_account_product_fiscal_classification_form" model="ir.ui.view">
+        <field name="name">br_account.product.fiscal.classification.form</field>
+        <field name="model">product.fiscal.classification</field>
+        <field name="arch" type="xml">
+            <form string="Classificações Fiscais (NCM)">
+                <group name="general">
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="type"/>
+                        <field name="parent_id"/>
+                        <field name="company_id"/>
+                    </group>
+                    <group>
+                        <field name="federal_nacional" />
+                        <field name="federal_importado" />
+                        <field name="estadual_imposto" />
+                        <field name="municipal_imposto" />
+                    </group>
+                </group>
+                <group>
+                    <group name="icms_st" string="ICMS ST">
+                        <field name="cest"/>
+                        <field name="tax_icms_st_id"/>
+                        <field name="icms_st_aliquota_reducao_base"/>
+                        <field name="icms_st_aliquota_mva"/>
+                    </group>
+                    <group name="ipi" string="IPI">
+                        <field name="classe_enquadramento" />
+                        <field name="codigo_enquadramento" />
+                        <field name="tax_ipi_id" />
+                        <field name="ipi_tipo" />
+                        <field name="ipi_cst" />
+                        <field name="ipi_reducao_bc" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
     <record id="view_br_account_product_fiscal_classification_tree" model="ir.ui.view">
         <field name="name">br_account.product.fiscal.classification.tree</field>
         <field name="model">product.fiscal.classification</field>

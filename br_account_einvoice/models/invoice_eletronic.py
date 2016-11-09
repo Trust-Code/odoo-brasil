@@ -367,11 +367,7 @@ class InvoiceEletronicItem(models.Model):
         u'Valor Desonerado', digits=dp.get_precision('Account'))
 
     # ----------- IPI -------------------
-    classe_enquadramento = fields.Char(u'Classe enq.', size=5,
-                                       help="Classe Enquadramento no IPI")
-    codigo_enquadramento = fields.Char(u'Código enq.', size=4,
-                                       help="Código Enquadramento no IPI")
-    ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária do ICMS')
+    ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária')
     ipi_aliquota = fields.Float(
         u'Alíquota', digits=dp.get_precision('Account'))
     ipi_base_calculo = fields.Float(

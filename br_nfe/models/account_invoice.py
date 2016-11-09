@@ -118,6 +118,10 @@ class AccountInvoice(models.Model):
             _prepare_edoc_item_vals(invoice_line)
         vals['cest'] = invoice_line.product_id.cest or \
             invoice_line.fiscal_classification_id.cest or ''
+        vals['classe_enquadramento_ipi'] = \
+            invoice_line.fiscal_classification_id.classe_enquadramento or ''
+        vals['codigo_enquadramento_ipi'] = \
+            invoice_line.fiscal_classification_id.codigo_enquadramento or ''
         vals['tem_difal'] = invoice_line.tem_difal
         vals['icms_bc_uf_dest'] = invoice_line.icms_bc_uf_dest
         vals['icms_aliquota_interestadual'] = \
