@@ -6,6 +6,7 @@ import re
 import base64
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from pytrustnfe.nfe import autorizar_nfe
 from pytrustnfe.nfe import retorno_autorizar_nfe
@@ -86,6 +87,11 @@ class InvoiceEletronic(models.Model):
 
     duplicata_ids = fields.One2many('nfe.duplicata', 'invoice_eletronic_id',
                                     string="Duplicatas")
+
+    # Compras
+    nota_empenho = fields.Char(string="Nota de Empenho", size=22)
+    pedido_compra = fields.Char(string="Pedido Compra", size=60)
+    contrato_compra = fields.Char(string="Contrato Compra", size=60)
 
     sequencial_evento = fields.Integer(string="Sequêncial Evento", default=1)
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
@@ -388,15 +394,25 @@ FISCAL'
                 'vDup': "%.02f" % dup.valor
             })
         cobr = {
-            'nFat': self.numero_fatura,
-            'vOrig': self.fatura_bruto,
-            'vDesc': self.fatura_desconto,
-            'vLiq': self.fatura_liquido,
+            'fat': {
+                'nFat': self.numero_fatura or '',
+                'vOrig': "%.02f" % self.fatura_bruto
+                if self.fatura_bruto else '',
+                'vDesc': "%.02f" % self.fatura_desconto
+                if self.fatura_desconto else '',
+                'vLiq': "%.02f" % self.fatura_liquido
+                if self.fatura_liquido else '',
+            },
             'dup': duplicatas
         }
         infAdic = {
-            'infCpl': self.informacoes_complementares,
-            'infAdFisco': self.informacoes_legais,
+            'infCpl': self.informacoes_complementares or '',
+            'infAdFisco': self.informacoes_legais or '',
+        }
+        compras = {
+            'xNEmp': self.nota_empenho or '',
+            'xPed': self.pedido_compra or '',
+            'xCont': self.contrato_compra or '',
         }
         vals = {
             'Id': '',
@@ -408,7 +424,8 @@ FISCAL'
             'transp': transp,
             'cobr': cobr,
             'infAdic': infAdic,
-            'exporta': exporta
+            'exporta': exporta,
+            'compra': compras,
         }
         return vals
 

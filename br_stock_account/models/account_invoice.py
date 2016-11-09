@@ -38,34 +38,28 @@ class AccountInvoice(models.Model):
         string='Frete ( + )', digits=dp.get_precision('Account'),
         compute="_compute_amount")
 
-    carrier_name = fields.Char('Transportadora', size=32)
+    # Transporte
+    freight_responsibility = fields.Selection(
+        [('0', '0 - Emitente'),
+         ('1', '1 - Destinatário'),
+         ('2', '2 - Terceiros'),
+         ('9', '9 - Sem Frete')],
+        u'Modalidade do frete', default="9")
+    carrier_id = fields.Many2one('res.partner', 'Transportadora')
     vehicle_plate = fields.Char('Placa do Veiculo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
-    vehicle_city_id = fields.Many2one(
-        'res.state.city',
-        'Municipio',
-        domain="[('state_id', '=', vehicle_state_id)]")
+    vehicle_rntc = fields.Char('RNTC', size=20)
 
-    weight = fields.Float(
-        string='Gross weight', states={'draft': [('readonly', False)]},
-        help="The gross weight in Kg.", readonly=True)
-    weight_net = fields.Float(
-        'Net weight', help="The net weight in Kg.",
-        readonly=True, states={'draft': [('readonly', False)]})
-    number_of_packages = fields.Integer(
-        'Volume', readonly=True, states={'draft': [('readonly', False)]})
-    kind_of_packages = fields.Char(
-        'Espécie', size=60, readonly=True, states={
-            'draft': [
-                ('readonly', False)]})
-    brand_of_packages = fields.Char(
-        'Brand', size=60, readonly=True, states={
-            'draft': [
-                ('readonly', False)]})
-    notation_of_packages = fields.Char(
-        'Numeração', size=60, readonly=True, states={
-            'draft': [
-                ('readonly', False)]})
+    tow_plate = fields.Char('Placa do Reboque', size=7)
+    tow_state_id = fields.Many2one('res.country.state', 'UF da Placa')
+    tow_rntc = fields.Char('RNTC Reboque', size=20)
+
+    weight = fields.Float(string='Peso Bruto', help="O peso bruto em Kg.")
+    weight_net = fields.Float('Peso Líquido', help="O peso liquido em Kg.")
+    number_of_packages = fields.Integer('Nº Volumes')
+    kind_of_packages = fields.Char('Espécie', size=60)
+    brand_of_packages = fields.Char('Marca', size=60)
+    notation_of_packages = fields.Char('Numeração', size=60)
 
     # Exportação
     uf_saida_pais_id = fields.Many2one(
@@ -80,10 +74,30 @@ class AccountInvoice(models.Model):
         res['valor_despesas'] = inv.total_despesas
         res['valor_seguro'] = inv.total_seguro
 
+        res['modalidade_frete'] = inv.freight_responsibility
+        res['transportadora_id'] = inv.carrier_id.id
+        res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
+        res['uf_veiculo'] = inv.vehicle_state_id.code
+        res['rntc'] = inv.vehicle_rntc
+
+        res['reboque_ids'] = [(0, None, {
+            'uf_veiculo': inv.tow_state_id.code,
+            'rntc': inv.tow_rntc,
+            'placa_veiculo': (inv.tow_plate or '').upper(),
+        })]
+
+        res['volume_ids'] = [(0, None, {
+            'peso_bruto': inv.weight,
+            'peso_liquido': inv.weight_net,
+            'quantidade_volumes': inv.number_of_packages,
+            'especie': inv.kind_of_packages,
+            'marca': inv.brand_of_packages,
+            'numeracao': inv.notation_of_packages,
+        })]
+
         res['uf_saida_pais_id'] = inv.uf_saida_pais_id.id
         res['local_embarque'] = inv.local_embarque
         res['local_despacho'] = inv.local_despacho
-        # TODO Passar as informações de transporte
 
         return res
 

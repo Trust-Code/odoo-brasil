@@ -26,11 +26,29 @@
                         <field name="volume_ids" nolabel="1" context="{'default_invoice_eletronic_id': id}" />
                     </group>
                 </page>
+                <page name="cobranca" string="Cobrança">
+                    <group>
+                        <field name="numero_fatura" />
+                        <field name="fatura_bruto" />
+                        <field name="fatura_desconto" />
+                        <field name="fatura_liquido" />
+                    </group>
+                    <group string="Duplicatas">
+                        <field name="duplicata_ids" nolabel="1" context="{'default_invoice_eletronic_id': id}" />
+                    </group>
+                </page>
                 <page name="exportacao" string="Exportação/Compras">
                     <group>
-                        <field name="uf_saida_pais_id" />
-                        <field name="local_embarque" />
-                        <field name="local_despacho" />
+                        <group string="Exportação">
+                            <field name="uf_saida_pais_id" />
+                            <field name="local_embarque" />
+                            <field name="local_despacho" />
+                        </group>
+                        <group string="Compras">
+                            <field name="nota_empenho" />
+                            <field name="pedido_compra" />
+                            <field name="contrato_compra" />
+                        </group>
                     </group>
                 </page>
             </page>

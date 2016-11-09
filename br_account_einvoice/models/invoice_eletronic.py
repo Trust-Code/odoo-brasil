@@ -20,8 +20,8 @@ class InvoiceEletronic(models.Model):
     code = fields.Char(u'Código', size=100, required=True)
     name = fields.Char(u'Name', size=100, required=True)
     company_id = fields.Many2one('res.company', u'Company', index=True)
-    state = fields.Selection([('draft', 'Draft'), ('error', 'Erro'),
-                              ('done', 'Done'), ('cancel', 'Cancelado')],
+    state = fields.Selection([('draft', 'Provisório'), ('error', 'Erro'),
+                              ('done', 'Enviado'), ('cancel', 'Cancelado')],
                              string=u'State', default='draft')
 
     tipo_operacao = fields.Selection([('entrada', 'Entrada'),
@@ -59,7 +59,7 @@ class InvoiceEletronic(models.Model):
 
     eletronic_event_ids = fields.One2many('invoice.eletronic.event',
                                           'invoice_eletronic_id',
-                                          string=u"Eventos")
+                                          string=u"Eventos", readonly=True)
 
     valor_bruto = fields.Monetary(u'Total Produtos')
     valor_frete = fields.Monetary(u'Total frete')
@@ -246,6 +246,14 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_back_to_draft(self):
         self.state = 'draft'
+
+    @api.multi
+    def unlink(self):
+        for item in self:
+            if item.state == 'done':
+                raise UserError(
+                    'Documento Eletrônico enviado - Proibido excluir')
+        super(InvoiceEletronic, self).unlink()
 
     def log_exception(self, exc):
         self.codigo_retorno = -1

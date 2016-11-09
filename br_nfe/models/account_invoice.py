@@ -54,8 +54,24 @@ class AccountInvoice(models.Model):
 
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
+
+        res['ind_pres'] = inv.fiscal_position_id.ind_pres
+        res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
+        res['informacoes_legais'] = inv.fiscal_comment
+        res['informacoes_complementares'] = inv.comment
+        res['numero_fatura'] = inv.number
+        res['fatura_bruto'] = inv.total_bruto
+        res['fatura_desconto'] = inv.total_desconto
+        res['fatura_liquido'] = inv.amount_total
+        res['pedido_compra'] = inv.name
+        res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
+        res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
+        res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
+
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
+
+        # Indicador Consumidor Final
         if inv.partner_id.is_company:
             res['ind_final'] = '0'
         else:
@@ -67,11 +83,8 @@ class AccountInvoice(models.Model):
             res['ind_dest'] = '3'
         if inv.fiscal_position_id.ind_final:
             res['ind_final'] = inv.fiscal_position_id.ind_final
-        res['ind_pres'] = inv.fiscal_position_id.ind_pres
-        res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
-        res['informacoes_legais'] = inv.fiscal_comment
-        res['informacoes_complementares'] = inv.comment
 
+        # Indicador IE Destinatário
         ind_ie_dest = False
         if inv.partner_id.is_company:
             if inv.partner_id.inscr_est:
@@ -87,9 +100,17 @@ class AccountInvoice(models.Model):
         if inv.partner_id.indicador_ie_dest:
             ind_ie_dest = inv.partner_id.indicador_ie_dest
         res['ind_ie_dest'] = ind_ie_dest
-        res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
-        res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
-        res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
+
+        # Duplicatas
+        duplicatas = []
+        for parcela in inv.receivable_move_line_ids:
+            duplicatas.append((0, None, {
+                'numero_duplicata': parcela.name,
+                'data_vencimento': parcela.date_maturity,
+                'valor': parcela.credit or parcela.debit,
+            }))
+        res['duplicata_ids'] = duplicatas
+
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):

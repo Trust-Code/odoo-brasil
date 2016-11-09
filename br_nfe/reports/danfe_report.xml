@@ -236,19 +236,19 @@
                 <div class="row line">
                     <div class="borda-completa col-xs-6 line">
                         <span class="small">Número da Fatura</span><br />
-                        <span t-field="o.payment_term_id.name"></span>
+                        <span t-field="o.numero_fatura"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Original</span><br />
-                        <span t-field="o.invoice_id.total_bruto"></span>
+                        <span t-field="o.fatura_bruto"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Desconto</span><br />
-                        <span t-field="o.invoice_id.total_desconto"></span>
+                        <span t-field="o.fatura_desconto"></span>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Valor Líquido</span><br />
-                        <span t-field="o.invoice_id.amount_total"></span>
+                        <span t-field="o.fatura_liquido"></span>
                     </div>
                 </div>
 

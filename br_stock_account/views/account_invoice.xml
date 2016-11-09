@@ -19,12 +19,16 @@
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
-                            <field name="carrier_name"/>
+                            <field name="freight_responsibility"/>
+                            <field name="carrier_id"/>
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id"/>
-                            <field name="vehicle_city_id"/>
+                            <field name="vehicle_rntc"/>
+                            <field name="tow_plate"/>
+                            <field name="tow_state_id"/>
+                            <field name="tow_rntc"/>
                         </group>
-                        <group name="package_info">
+                        <group name="package_info" string="Volume">
                             <field name="weight"/>
                             <field name="weight_net"/>
                             <field name="number_of_packages"/>
@@ -34,7 +38,7 @@
                         </group>
                     </group>
                     <group>
-                        <group name="exporta">
+                        <group name="exporta" string="Exportação">
                             <field name="uf_saida_pais_id"/>
                             <field name="local_embarque"/>
                             <field name="local_despacho"/>
@@ -67,12 +71,16 @@
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
-                            <field name="carrier_name"/>
+                            <field name="freight_responsibility"/>
+                            <field name="carrier_id"/>
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id"/>
-                            <field name="vehicle_city_id"/>
+                            <field name="vehicle_rntc"/>
+                            <field name="tow_plate"/>
+                            <field name="tow_state_id"/>
+                            <field name="tow_rntc"/>
                         </group>
-                        <group name="package_info">
+                        <group name="package_info" string="Volume">
                             <field name="weight"/>
                             <field name="weight_net"/>
                             <field name="number_of_packages"/>

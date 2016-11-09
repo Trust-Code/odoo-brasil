@@ -35,4 +35,4 @@ class NFeCobrancaDuplicata(models.Model):
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
     numero_duplicata = fields.Char(string="Número Duplicata", size=60)
     data_vencimento = fields.Date(string="Data Vencimento")
-    valor = fields.Char(string="Valor Duplicata")
+    valor = fields.Float(string="Valor Duplicata")

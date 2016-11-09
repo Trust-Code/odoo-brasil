@@ -197,6 +197,7 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:
                 if edoc.state == 'done':
-                    raise UserError('NF-e já enviada')
+                    raise UserError('NF-e já enviada - Cancele o documento \
+                                    eletrônico para poder cancelar a fatura')
                 edoc.unlink()
         return res
