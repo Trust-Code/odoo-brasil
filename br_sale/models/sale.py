@@ -179,7 +179,7 @@ class SaleOrderLine(models.Model):
 
                 empty = self.env['account.tax'].browse()
                 ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
-                icmsst = self.tax_id.filtered(lambda x: x.domain == 'icms_st')
+                icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')
                 tax_ids = vals.get('tax_icms_id', empty) | \
                     vals.get('tax_icms_st_id', icmsst) | \
                     vals.get('tax_icms_inter_id', empty) | \
@@ -231,9 +231,17 @@ class SaleOrderLine(models.Model):
         res['tax_issqn_id'] = issqn and issqn.id or False
 
         res['cfop_id'] = self.cfop_id.id
-        res['fiscal_classification_id'] = \
-            self.product_id.fiscal_classification_id.id
+        ncm = self.product_id.fiscal_classification_id
+        res['fiscal_classification_id'] = ncm.id
         res['service_type_id'] = self.product_id.service_type_id.id
+        res['icms_origem'] = self.product_id.origin
+
+        nacional = ncm.federal_nacional if self.product_id.origin in \
+            ('1', '2', '3', '8') else ncm.federal_importado
+        valor = self.price_subtotal * (
+            nacional + ncm.estadual_imposto +
+            ncm.municipal_imposto) / 100
+        res['tributos_estimados'] = valor
 
         res['incluir_ipi_base'] = self.incluir_ipi_base
         res['icms_aliquota'] = icms.amount or 0.0
