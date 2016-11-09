@@ -5,6 +5,13 @@
         <field name="model">invoice.eletronic.item</field>
         <field name="inherit_id" ref="br_account_einvoice.invoice_eletronic_item_form" />
         <field name="arch" type="xml">
+            <field name="icms_st_tipo_base" position="before">
+                <field name="cest" />
+            </field>
+            <field name="ipi_cst" position="after">
+                <field name="classe_enquadramento_ipi" />
+                <field name="codigo_enquadramento_ipi" />
+            </field>
             <group name="icms_substituicao" position="after">
                 <group name="icms_interestaual">
                     <!-- ICMS Difal -->

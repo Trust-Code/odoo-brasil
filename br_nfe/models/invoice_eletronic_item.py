@@ -18,6 +18,10 @@ class InvoiceEletronicItem(models.Model):
 
     cest = fields.Char(string="CEST", size=10,
                        help="Código Especificador da Substituição Tributária")
+    classe_enquadramento_ipi = fields.Char(
+        string="Classe Enquadramento", size=5)
+    codigo_enquadramento_ipi = fields.Char(
+        string="Classe Enquadramento", size=3, default='999')
 
     # ----------- ICMS INTERESTADUAL -----------
     tem_difal = fields.Boolean(u'Difal?')

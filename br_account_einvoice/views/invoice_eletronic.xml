@@ -27,7 +27,6 @@
                                     <field name="tipo_produto" />
                                     <field name="cfop" />
                                     <field name="ncm" />
-                                    <field name="origem" />
                                 </group>
                             </group>
                         </page>
@@ -75,8 +74,6 @@
                             <group string="Detalhes do IPI">
                                 <group>
                                     <field name="ipi_cst" />
-                                    <field name="classe_enquadramento" />
-                                    <field name="codigo_enquadramento" />
                                 </group>
                                 <group>
                                     <field name="ipi_valor" />
