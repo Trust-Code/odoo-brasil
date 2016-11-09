@@ -251,20 +251,22 @@ class PosOrderLine(models.Model):
             line.cofins_cst = values.get('cofins_cst', False)
             line.valor_bruto = line.qty * line.price_unit
             line.valor_desconto = line.valor_bruto * line.discount / 100
-            taxes = line.tax_ids.filtered(
-                    lambda tax: tax.company_id.id == line.order_id.
-                    company_id.id)
+            taxes_ids = line.tax_ids.filtered(
+                lambda tax: tax.company_id.id == line.order_id.
+                company_id.id)
             fiscal_position_id = line.order_id.fiscal_position_id
             if fiscal_position_id:
-                taxes = fiscal_position_id.map_tax(taxes, line.product_id,
-                                                   line.order_id.partner_id)
+                taxes_ids = fiscal_position_id.map_tax(
+                    taxes_ids, line.product_id,
+                    line.order_id.partner_id)
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             line.price_subtotal = line.price_subtotal_incl = price * line.qty
-            if taxes:
-                taxes = taxes.compute_all(
-                        price, currency, line.qty, product=line.product_id,
-                        partner=line.order_id.partner_id or False)
-            for tax in taxes['taxes'] if taxes['taxes'] else []:
+            taxes = {'taxes': []}
+            if taxes_ids:
+                taxes = taxes_ids.compute_all(
+                    price, currency, line.qty, product=line.product_id,
+                    partner=line.order_id.partner_id or False)
+            for tax in taxes['taxes']:
                 tax_id = self.env['account.tax'].browse(tax['id'])
                 if tax_id.domain == 'icms':
                     line.valor_icms = tax.get('amount', 0.00)
