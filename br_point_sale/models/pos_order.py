@@ -264,7 +264,7 @@ class PosOrderLine(models.Model):
                 taxes = taxes.compute_all(
                         price, currency, line.qty, product=line.product_id,
                         partner=line.order_id.partner_id or False)
-            for tax in taxes['taxes']:
+            for tax in taxes.get('taxes', []):
                 tax_id = self.env['account.tax'].browse(tax['id'])
                 if tax_id.domain == 'icms':
                     line.valor_icms = tax.get('amount', 0.00)
