@@ -25,10 +25,9 @@ Odoo Brasil
 
 This is a repository from Trustcode.
 
-[![Build Status](https://travis-ci.org/Trust-Code/scrum.svg?branch=master)](https://travis-ci.org/Trust-Code/scrum)
-[![Coverage Status](https://coveralls.io/repos/Trust-Code/scrum/badge.svg?branch=master)](https://coveralls.io/r/Trust-Code/scrum?branch=master)
-[![Code Climate](https://codeclimate.com/github/Trust-Code/scrum/badges/gpa.svg)](https://codeclimate.com/github/Trust-Code/scrum)
-[![Code Health](https://landscape.io/github/Trust-Code/scrum/master/landscape.svg?style=flat)](https://landscape.io/github/Trust-Code/scrum/master)
+[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=10.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
+[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=10.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=10.0)
+
 
 
 ## Introdução
@@ -92,7 +91,7 @@ Contributors
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-## Licence [!(https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
+## Licence [![Licence](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
 
 Este projeto é open source sob licença AGPL v3 http://www.gnu.org/licenses/agpl-3.0.html
 

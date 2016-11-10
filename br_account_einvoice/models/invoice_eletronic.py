@@ -18,8 +18,8 @@ class InvoiceEletronic(models.Model):
     _inherit = ['mail.thread']
 
     code = fields.Char(u'Código', size=100, required=True)
-    name = fields.Char(u'Name', size=100, required=True)
-    company_id = fields.Many2one('res.company', u'Company', index=True)
+    name = fields.Char(u'Nome', size=100, required=True)
+    company_id = fields.Many2one('res.company', u'Empresa', index=True)
     state = fields.Selection([('draft', 'Provisório'), ('error', 'Erro'),
                               ('done', 'Enviado'), ('cancel', 'Cancelado')],
                              string=u'State', default='draft')
