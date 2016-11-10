@@ -138,9 +138,10 @@ class AccountBankStatementImport(models.TransientModel):
         final = datetime.strptime(str(trailer.data_saldo_final), '%d%m%Y')
 
         vals_bank_statement = {
-            'name': u"%s - %s até %s" % (arquivo.header.nome_do_banco,
-                                         inicio.strftime('%d/%m/%Y'),
-                                         final.strftime('%d/%m/%Y')),
+            'name': u"%s - %s até %s" % (
+                arquivo.header.nome_do_banco,
+                inicio.strftime('%d/%m/%Y'),
+                final.strftime('%d/%m/%Y')),
             'date': inicio,
             'balance_start': arquivo.lotes[0].header.valor_saldo_inicial,
             'balance_end_real': arquivo.lotes[0].trailer.valor_saldo_final,

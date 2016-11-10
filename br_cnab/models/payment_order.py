@@ -2,12 +2,11 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
-import re
 import time
 import base64
 from ..febraban.cnab import Cnab
 from datetime import datetime
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 

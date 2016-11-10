@@ -2,9 +2,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import os
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class TestCrm(TransactionCase):

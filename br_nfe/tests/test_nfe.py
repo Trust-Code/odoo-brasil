@@ -398,7 +398,7 @@ class TestNFeBrasil(TransactionCase):
 
             invoice_eletronic.cron_send_nfe()
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento') # noqa
     def test_nfe_cancel(self, cancelar):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico

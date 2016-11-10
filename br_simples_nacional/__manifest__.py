@@ -23,6 +23,6 @@
         'views/account_tax.xml',
         'views/account_invoice.xml',
     ],
-    'instalable': True,
+    'instalable': False,
     'application': True,
 }

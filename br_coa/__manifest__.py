@@ -23,7 +23,7 @@
         'data/account.account.template.csv',
         'data/account_tax_template_data.xml',
         # TODO Achar uma forma de carregar o template
-        #'data/account_chart_template_data.yml',
+        # 'data/account_chart_template_data.yml',
     ],
     'active': False,
 }

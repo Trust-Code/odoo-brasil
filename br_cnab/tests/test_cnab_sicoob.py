@@ -2,12 +2,8 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import re
 import base64
 
-from datetime import datetime
-from odoo import fields
-from odoo.exceptions import UserError
 from odoo.addons.br_cnab.tests.test_cnab_common import TestCnab
 
 

@@ -137,8 +137,7 @@ class Cnab240(Cnab):
         """
         prefixo, sulfixo = self.cep(line.partner_id.zip)
 
-        aceite = u'N'
-        #if not self.order.payment_mode_id.boleto_aceite == 'S':
+        # if not self.order.payment_mode_id.boleto_aceite == 'S':
         #    aceite = u'A'
 
         # Código agencia do cedente
@@ -169,8 +168,6 @@ class Cnab240(Cnab):
             bra_number_dig,
             'cedente_nome':
             self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
             # DV ag e cc
             'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
                                  bra_number_dig),
@@ -194,8 +191,8 @@ class Cnab240(Cnab):
             'juros_mora_data': self.format_date(
                 line.date_maturity),
             'juros_mora_taxa':  Decimal(
-                str(self.order.payment_mode_id.late_payment_interest)).quantize(
-                    Decimal('1.00')),
+                str(self.order.payment_mode_id.late_payment_interest)
+                ).quantize(Decimal('1.00')),
             # Multa padrão em percentual no Odoo, valor '2'
             'codigo_multa': '2',
             'data_multa': self.format_date(
@@ -219,11 +216,13 @@ class Cnab240(Cnab):
             'sacado_cidade': line.partner_id.city_id.name,
             'sacado_uf': line.partner_id.state_id.code,
             'codigo_protesto': int(self.order.payment_mode_id.boleto_protesto),
-            'prazo_protesto': int(self.order.payment_mode_id.boleto_protesto_prazo),
+            'prazo_protesto': int(
+                self.order.payment_mode_id.boleto_protesto_prazo),
             'codigo_baixa': 2,
             'prazo_baixa': 0,  # De 5 a 120 dias.
             'controlecob_data_gravacao': self.data_hoje(),
-            'cobranca_carteira': int(self.order.payment_mode_id.boleto_carteira[:2]),
+            'cobranca_carteira': int(
+                self.order.payment_mode_id.boleto_carteira[:2]),
         }
 
     def remessa(self, order):

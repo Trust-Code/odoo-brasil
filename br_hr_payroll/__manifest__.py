@@ -33,10 +33,10 @@
     'version': '10.0.1.0.0',
     'depends': ['hr_payroll', 'hr_contract', 'br_hr'],
     'data': [
-             'data/br_hr_payroll_data.xml',
-             'view/hr_contract_view.xml',
-             'view/hr_employee.xml'
-             ],
+        'data/br_hr_payroll_data.xml',
+        'view/hr_contract_view.xml',
+        'view/hr_employee.xml'
+    ],
     'installable': True,
     'application': True,
 }

@@ -18,6 +18,11 @@
     'depends': [
         'account_bank_statement_import'
     ],
+    'external_dependencies': {
+        'python': [
+            'cnab240', 'cnab240.bancos', 'cnab240.tipos', 'ofxparse'
+        ],
+    },
     'data': [
         'views/account_bank_statement_import.xml',
     ],
