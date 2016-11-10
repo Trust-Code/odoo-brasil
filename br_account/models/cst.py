@@ -33,7 +33,7 @@ ORIGEM_PROD = [
     ('0', '0 - Nacional'),
     ('1', '1 - Estrangeira - Importação direta'),
     ('2', '2 - Estrangeira - Adquirida no mercado interno'),
-    ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% \e inferior ou igual a 70%'),  # noqa
+    ('3', '3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%'),  # noqa
     ('4', '4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes'),  # noqa
     ('5', '5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%'),  # noqa
     ('6', '6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural'),  # noqa

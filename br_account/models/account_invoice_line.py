@@ -71,10 +71,12 @@ class AccountInvoiceLine(models.Model):
                  if x['id'] == self.tax_icms_id.id]) if taxes else []
         icmsst = ([x for x in taxes['taxes']
                    if x['id'] == self.tax_icms_st_id.id]) if taxes else []
-        icms_inter = ([x for x in taxes['taxes']
-                      if x['id'] == self.tax_icms_inter_id.id]) if taxes else []
-        icms_intra = ([x for x in taxes['taxes']
-                      if x['id'] == self.tax_icms_intra_id.id]) if taxes else []
+        icms_inter = (
+            [x for x in taxes['taxes']
+             if x['id'] == self.tax_icms_inter_id.id]) if taxes else []
+        icms_intra = (
+            [x for x in taxes['taxes']
+             if x['id'] == self.tax_icms_intra_id.id]) if taxes else []
         icms_fcp = ([x for x in taxes['taxes']
                     if x['id'] == self.tax_icms_fcp_id.id]) if taxes else []
         ipi = ([x for x in taxes['taxes']
@@ -89,8 +91,10 @@ class AccountInvoiceLine(models.Model):
                if x['id'] == self.tax_ii_id.id]) if taxes else []
 
         price_subtotal_signed = taxes['total_excluded'] if taxes else subtotal
-        if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
-            price_subtotal_signed = self.invoice_id.currency_id.compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
+        if self.invoice_id.currency_id and self.invoice_id.currency_id != \
+           self.invoice_id.company_id.currency_id:
+            price_subtotal_signed = self.invoice_id.currency_id.compute(
+                price_subtotal_signed, self.invoice_id.company_id.currency_id)
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         price_subtotal_signed = price_subtotal_signed * sign

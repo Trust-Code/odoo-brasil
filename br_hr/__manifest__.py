@@ -7,7 +7,6 @@
     'name': 'Brazilian Localization HR',
     'description': """Brazilian Localization HR with informations
         refered to the national context of HR""",
-    'description': 'Brazilian Localization HR',
     'category': 'Localization',
     'author': 'KMEE',
     'sequence': 45,

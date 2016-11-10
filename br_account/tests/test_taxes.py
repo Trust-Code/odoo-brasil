@@ -68,7 +68,6 @@ class TestTaxBrasil(TransactionCase):
             'name': "ICMS ST",
             'amount_type': 'icmsst',
             'domain': 'icmsst',
-            'amount': 0,
             'amount': 18,
             'price_include': False,
         })
@@ -76,7 +75,6 @@ class TestTaxBrasil(TransactionCase):
             'name': "ICMS Difal Inter",
             'amount_type': 'division',
             'domain': 'icms_inter',
-            'amount': 0,
             'amount': 7,
             'price_include': True,
         })
@@ -84,7 +82,6 @@ class TestTaxBrasil(TransactionCase):
             'name': "ICMS Difal Intra",
             'amount_type': 'division',
             'domain': 'icms_intra',
-            'amount': 0,
             'amount': 17,
             'price_include': True,
         })
@@ -92,7 +89,6 @@ class TestTaxBrasil(TransactionCase):
             'name': "FCP",
             'amount_type': 'division',
             'domain': 'fcp',
-            'amount': 0,
             'amount': 2,
             'price_include': True,
         })
@@ -100,7 +96,6 @@ class TestTaxBrasil(TransactionCase):
             'name': "ISSQN",
             'amount_type': 'division',
             'domain': 'issqn',
-            'amount': 0,
             'amount': 5,
             'price_include': True,
         })
@@ -108,7 +103,6 @@ class TestTaxBrasil(TransactionCase):
             'name': "II",
             'amount_type': 'division',
             'domain': 'ii',
-            'amount': 0,
             'amount': 60,
             'price_include': True,
         })

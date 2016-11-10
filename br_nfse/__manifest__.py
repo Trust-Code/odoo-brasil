@@ -18,9 +18,14 @@
     'depends': [
         'br_account_einvoice',
     ],
+    'external_dependencies': {
+        'python': [
+            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado'
+        ],
+    },
     'data': [
         'views/res_company.xml',
     ],
-    'instalable': True,
+    'instalable': False,
     'application': True,
 }

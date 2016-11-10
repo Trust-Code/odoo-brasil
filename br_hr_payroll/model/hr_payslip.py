@@ -46,7 +46,7 @@ class HrPayslip(models.Model):
                 'code': 'DSR',
                 'number_of_days': len(dsr),
                 'contract_id': contract.id,
-             }
+            }
             if dsr_dict['number_of_days'] != 0:
                 res += [dsr_dict]
             return res

@@ -20,4 +20,5 @@
     'data': [
         # 'views/website_sale_view.xml',
     ],
+    'instalable': False,
 }

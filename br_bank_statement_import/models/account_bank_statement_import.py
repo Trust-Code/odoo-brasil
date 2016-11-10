@@ -6,16 +6,18 @@ import logging
 import tempfile
 import StringIO
 
-from cnab240.bancos import sicoob
-from cnab240.tipos import Arquivo
-from ofxparse import OfxParser
-
 from datetime import datetime
 from odoo import fields, models
 from odoo.exceptions import UserError
 
-
 _logger = logging.getLogger(__name__)
+
+try:
+    from cnab240.bancos import sicoob
+    from cnab240.tipos import Arquivo
+    from ofxparse import OfxParser
+except ImportError:
+    _logger.debug('Cannot import cnab240 or ofxparse dependencies.')
 
 
 class AccountBankStatementImport(models.TransientModel):
@@ -138,9 +140,10 @@ class AccountBankStatementImport(models.TransientModel):
         final = datetime.strptime(str(trailer.data_saldo_final), '%d%m%Y')
 
         vals_bank_statement = {
-            'name': u"%s - %s até %s" % (arquivo.header.nome_do_banco,
-                                         inicio.strftime('%d/%m/%Y'),
-                                         final.strftime('%d/%m/%Y')),
+            'name': u"%s - %s até %s" % (
+                arquivo.header.nome_do_banco,
+                inicio.strftime('%d/%m/%Y'),
+                final.strftime('%d/%m/%Y')),
             'date': inicio,
             'balance_start': arquivo.lotes[0].header.valor_saldo_inicial,
             'balance_end_real': arquivo.lotes[0].trailer.valor_saldo_final,

@@ -21,8 +21,15 @@
 ##############################################################################
 
 import re
+import logging
 from datetime import datetime, date
-from pyboleto import bank
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pyboleto import bank
+except ImportError:
+    _logger.debug('Cannot import pyboleto')
 
 try:
     from cStringIO import StringIO
@@ -203,7 +210,7 @@ class BoletoCecred(Boleto):
         self.branch_digit = conta.bra_number_dig
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.codigo_beneficiario = re.sub(
-            '\D', '', conta.codigo_convenio)
+            r'\D', '', conta.codigo_convenio)
         self.boleto.nosso_numero = self.nosso_numero
 
     def getAccountNumber(self):

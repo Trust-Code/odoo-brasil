@@ -9,12 +9,19 @@
 
 import re
 import base64
+import logging
 
 from odoo import models, fields, api, _
 from odoo.addons.br_base.tools import fiscal
 from odoo.exceptions import UserError
-from pytrustnfe.nfe import consulta_cadastro
-from pytrustnfe.certificado import Certificado
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.nfe import consulta_cadastro
+    from pytrustnfe.certificado import Certificado
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe')
 
 
 class ResPartner(models.Model):

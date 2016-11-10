@@ -7,16 +7,16 @@ from odoo import fields, models
 
 
 metodos = [
-        ('01', 'Dinheiro'),
-        ('02', 'Cheque'),
-        ('03', 'Cartão de Crédito'),
-        ('04', 'Cartão de Débito'),
-        ('05', 'Crédito Loja'),
-        ('10', 'Vale Alimentacão'),
-        ('11', 'Vale Presente'),
-        ('13', 'Vale Combustível'),
-        ('99', 'Outros'),
-        ]
+    ('01', 'Dinheiro'),
+    ('02', 'Cheque'),
+    ('03', 'Cartão de Crédito'),
+    ('04', 'Cartão de Débito'),
+    ('05', 'Crédito Loja'),
+    ('10', 'Vale Alimentacão'),
+    ('11', 'Vale Presente'),
+    ('13', 'Vale Combustível'),
+    ('99', 'Outros'),
+]
 
 
 class AccountJournal(models.Model):

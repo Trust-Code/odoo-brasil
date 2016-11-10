@@ -4,15 +4,21 @@
 
 import re
 import base64
+import logging
 from datetime import datetime
 from odoo import api, fields, models
-from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
-from pytrustnfe.nfe import autorizar_nfe
-from pytrustnfe.nfe import retorno_autorizar_nfe
-from pytrustnfe.nfe import recepcao_evento_cancelamento
-from pytrustnfe.certificado import Certificado
-from pytrustnfe.utils import ChaveNFe, gerar_chave
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.nfe import autorizar_nfe
+    from pytrustnfe.nfe import retorno_autorizar_nfe
+    from pytrustnfe.nfe import recepcao_evento_cancelamento
+    from pytrustnfe.certificado import Certificado
+    from pytrustnfe.utils import ChaveNFe, gerar_chave
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe')
 
 
 class InvoiceEletronic(models.Model):
@@ -146,8 +152,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
         xprod = item.product_id.name if self.company_id.\
-                tipo_ambiente != '2' else\
-                'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
+            tipo_ambiente != '2' else\
+            'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
 FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
@@ -171,7 +177,7 @@ FISCAL'
             if item.outras_despesas else '',
             'indTot': item.indicador_total,
             'cfop': item.cfop,
-            'CEST': re.sub('\D', '', item.cest or ''),
+            'CEST': re.sub('[^0-9]', '', item.cest or ''),
         }
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,

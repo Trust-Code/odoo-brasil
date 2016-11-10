@@ -194,15 +194,15 @@ class PosOrder(models.Model):
     @api.model
     def _amount_line_tax(self, line, fiscal_position_id):
         taxes = line.tax_ids.filtered(
-                lambda t: t.company_id.id == line.order_id.company_id.id)
+            lambda t: t.company_id.id == line.order_id.company_id.id)
         if fiscal_position_id:
             taxes = fiscal_position_id.map_tax(
-                    taxes, line.product_id, line.order_id.partner_id)
+                taxes, line.product_id, line.order_id.partner_id)
         price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
         taxes = taxes.compute_all(
-                price, line.order_id.pricelist_id.currency_id, line.qty,
-                product=line.product_id,
-                partner=line.order_id.partner_id or False)
+            price, line.order_id.pricelist_id.currency_id, line.qty,
+            product=line.product_id,
+            partner=line.order_id.partner_id or False)
         return taxes['total_included'] - taxes['total_excluded']
 
     total_icms = fields.Float(string='ICMS', compute=_compute_amount_all)

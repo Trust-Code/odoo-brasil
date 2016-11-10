@@ -18,6 +18,11 @@
         'point_of_sale',
         'br_nfe',
     ],
+    'external_dependencies': {
+        'python': [
+            'pytrustnfe',
+        ],
+    },
     'data': [
         'views/account_journal.xml',
         'views/pos_order.xml',

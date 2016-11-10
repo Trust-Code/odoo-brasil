@@ -5,7 +5,7 @@
 import os
 import base64
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
 class TestImportStatement(TransactionCase):

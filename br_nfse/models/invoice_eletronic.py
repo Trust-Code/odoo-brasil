@@ -5,11 +5,19 @@
 import re
 import pytz
 import base64
+import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
-from pytrustnfe.nfse.paulistana import envio_lote_rps
-from pytrustnfe.certificado import Certificado
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.nfse.paulistana import envio_lote_rps
+    from pytrustnfe.certificado import Certificado
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe')
+
 
 FIELD_STATE = {'draft': [('readonly', False)]}
 
