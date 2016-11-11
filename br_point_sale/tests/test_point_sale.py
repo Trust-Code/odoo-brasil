@@ -4,10 +4,7 @@
 
 import os
 import base64
-from mock import patch
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import UserError
-from pytrustnfe.xml import sanitize_response
 
 
 class TestPointSaleBR(TransactionCase):

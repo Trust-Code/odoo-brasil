@@ -210,6 +210,7 @@ class SaleOrderLine(models.Model):
         icms_inter = self.tax_id.filtered(lambda x: x.domain == 'icms_inter')
         icms_intra = self.tax_id.filtered(lambda x: x.domain == 'icms_intra')
         icms_fcp = self.tax_id.filtered(lambda x: x.domain == 'icms_fcp')
+        simples = self.tax_id.filtered(lambda x: x.domain == 'simples')
         ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
         pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
@@ -224,6 +225,7 @@ class SaleOrderLine(models.Model):
         res['tax_icms_inter_id'] = icms_inter and icms_inter.id or False
         res['tax_icms_intra_id'] = icms_intra and icms_intra.id or False
         res['tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
+        res['tax_simples_id'] = simples and simples.id or False
         res['tax_ipi_id'] = ipi and ipi.id or False
         res['tax_pis_id'] = pis and pis.id or False
         res['tax_cofins_id'] = cofins and cofins.id or False

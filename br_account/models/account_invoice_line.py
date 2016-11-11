@@ -116,7 +116,8 @@ class AccountInvoiceLine(models.Model):
             'icms_uf_remet': sum([x['amount'] for x in icms_inter]),
             'icms_uf_dest': sum([x['amount'] for x in icms_intra]),
             'icms_fcp_uf_dest': sum([x['amount'] for x in icms_fcp]),
-            'icms_valor_credito': sum([x['base'] for x in simples]) * (self.icms_aliquota_credito / 100),
+            'icms_valor_credito': sum([x['base'] for x in simples]) *
+            (self.icms_aliquota_credito / 100),
             'ipi_base_calculo': sum([x['base'] for x in ipi]),
             'ipi_valor': sum([x['amount'] for x in ipi]),
             'pis_base_calculo': sum([x['base'] for x in pis]),
