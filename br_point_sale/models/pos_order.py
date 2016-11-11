@@ -41,16 +41,25 @@ class PosOrder(models.Model):
             values = line.order_id.fiscal_position_id.map_tax_extra_values(
                 line.company_id, line.product_id,
                 line.order_id.partner_id)
-            tax_ids = [values.get('tax_icms_id', False),
-                       values.get('tax_icms_st_id', False),
-                       values.get('tax_ipi_id', False),
-                       values.get('tax_pis_id', False),
-                       values.get('tax_cofins_id', False),
-                       values.get('tax_ii_id', False),
-                       values.get('tax_issqn_id', False)]
+
+            empty = self.env['account.tax'].browse()
+            tax_ids = values.get('tax_icms_id', empty) | \
+                values.get('tax_icms_st_id', empty) | \
+                values.get('tax_icms_inter_id', empty) | \
+                values.get('tax_icms_intra_id', empty) | \
+                values.get('tax_icms_fcp_id', empty) | \
+                values.get('tax_ipi_id', empty) | \
+                values.get('tax_pis_id', empty) | \
+                values.get('tax_cofins_id', empty) | \
+                values.get('tax_ii_id', empty) | \
+                values.get('tax_issqn_id', empty)
+
+            other_taxes = line.tax_ids.filtered(lambda x: not x.domain)
+            tax_ids |= other_taxes
             line.update({
                 'tax_ids': [(6, None, [x.id for x in tax_ids if x])]
             })
+
             for key, value in values.iteritems():
                 if value and key in line._fields:
                     line.update({key: value})
@@ -228,9 +237,9 @@ class PosOrderLine(models.Model):
                        values.get('tax_cofins_id', False),
                        values.get('tax_ii_id', False),
                        values.get('tax_issqn_id', False)]
-            line.update({'tax_ids': [(5, 0, 0)]})
+
             line.update({
-                'tax_ids': [(6, None, [x.id for x in tax_ids if x])]
+                'tax_ids': [(4, None, [x.id for x in tax_ids if x])]
             })
             line.cfop_id = values['cfop_id'].code if values.get(
                 'cfop_id', False) else False
@@ -260,7 +269,6 @@ class PosOrderLine(models.Model):
                     taxes_ids, line.product_id,
                     line.order_id.partner_id)
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            line.price_subtotal = line.price_subtotal_incl = price * line.qty
             taxes = {'taxes': []}
             if taxes_ids:
                 taxes = taxes_ids.compute_all(
