@@ -22,13 +22,20 @@
 ##############################################################################
 
 from ..cnab import Cnab
-from cnab240.tipos import Arquivo
 from decimal import Decimal
 import datetime
 import re
 import string
 import unicodedata
 import time
+import logging
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from cnab240.tipos import Arquivo
+except ImportError:
+    _logger.debug('Cannot import cnab240')
 
 
 class Cnab240(Cnab):

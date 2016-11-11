@@ -21,8 +21,15 @@
 ##############################################################################
 
 import re
+import logging
 from datetime import datetime, date
-from pyboleto import bank
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pyboleto import bank
+except ImportError:
+    _logger.debug('Cannot import pyboleto')
 
 try:
     from cStringIO import StringIO

@@ -38,6 +38,7 @@ class AccountTaxTemplate(models.Model):
         'account.account.template', string="Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
+                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -65,6 +66,7 @@ class AccountTax(models.Model):
         'account.account', string="Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
+                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -209,6 +211,18 @@ class AccountTax(models.Model):
             taxes += [vals_fcp]
         return taxes
 
+    def _compute_simples(self, price_base):
+        simples_tax = self.filtered(lambda x: x.domain == 'simples')
+        if not simples_tax:
+            return []
+        taxes = []
+        for tax in simples_tax:
+            vals = self._tax_vals(tax)
+            vals['amount'] = tax._compute_amount(price_base, 1.0)
+            vals['base'] = price_base
+            taxes.append(vals)
+        return taxes
+
     def _compute_pis_cofins(self, price_base):
         pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
         if not pis_cofins_tax:
@@ -255,17 +269,18 @@ class AccountTax(models.Model):
         icms = self._compute_icms(
             price_base,
             ipi[0]['amount'] if ipi else 0.0)
-        icms_st = self._compute_icms_st(
+        icmsst = self._compute_icms_st(
             price_base,
             ipi[0]['amount'] if ipi else 0.0,
             icms[0]['amount'] if icms else 0.0)
         difal = self._compute_difal(
             price_base, ipi[0]['amount'] if ipi else 0.0)
+        simples = self._compute_simples(price_base)
         pis_cofins = self._compute_pis_cofins(price_base)
         issqn = self._compute_issqn(price_base)
         ii = self._compute_ii(price_base)
 
-        taxes = icms + icms_st + difal + ipi + pis_cofins + issqn + ii
+        taxes = icms + icmsst + simples + difal + ipi + pis_cofins + issqn + ii
 
         total_included = total_excluded = price_base
         for tax in taxes:

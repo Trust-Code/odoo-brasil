@@ -6,16 +6,18 @@ import logging
 import tempfile
 import StringIO
 
-from cnab240.bancos import sicoob
-from cnab240.tipos import Arquivo
-from ofxparse import OfxParser
-
 from datetime import datetime
 from odoo import fields, models
 from odoo.exceptions import UserError
 
-
 _logger = logging.getLogger(__name__)
+
+try:
+    from cnab240.bancos import sicoob
+    from cnab240.tipos import Arquivo
+    from ofxparse import OfxParser
+except ImportError:
+    _logger.debug('Cannot import cnab240 or ofxparse dependencies.')
 
 
 class AccountBankStatementImport(models.TransientModel):

@@ -211,7 +211,8 @@ class AccountInvoice(models.Model):
                 lambda x: not x.domain)
             line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
                 line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
-                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id
+                line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id | \
+                line.tax_simples_id
 
         return super(AccountInvoice, self).get_taxes_values()
 

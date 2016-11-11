@@ -9,12 +9,19 @@
 
 import re
 import base64
+import logging
 
 from odoo import models, fields, api, _
 from odoo.addons.br_base.tools import fiscal
 from odoo.exceptions import UserError
-from pytrustnfe.nfe import consulta_cadastro
-from pytrustnfe.certificado import Certificado
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.nfe import consulta_cadastro
+    from pytrustnfe.certificado import Certificado
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe')
 
 
 class ResPartner(models.Model):
@@ -176,6 +183,8 @@ class ResPartner(models.Model):
     @api.one
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
+            if self.state_id.code == 'AL':
+                raise UserError('Alagoas não possui consulta de cadastro')
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
                 raise UserError(u'Configure o certificado e senha na empresa')

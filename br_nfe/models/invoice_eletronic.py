@@ -4,14 +4,21 @@
 
 import re
 import base64
+import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
-from pytrustnfe.nfe import autorizar_nfe
-from pytrustnfe.nfe import retorno_autorizar_nfe
-from pytrustnfe.nfe import recepcao_evento_cancelamento
-from pytrustnfe.certificado import Certificado
-from pytrustnfe.utils import ChaveNFe, gerar_chave
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.nfe import autorizar_nfe
+    from pytrustnfe.nfe import retorno_autorizar_nfe
+    from pytrustnfe.nfe import recepcao_evento_cancelamento
+    from pytrustnfe.certificado import Certificado
+    from pytrustnfe.utils import ChaveNFe, gerar_chave
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe')
 
 
 class InvoiceEletronic(models.Model):
