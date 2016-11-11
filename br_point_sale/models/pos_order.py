@@ -91,7 +91,7 @@ class PosOrder(models.Model):
             'icms_aliquota': pos_line.aliquota_icms,
             'icms_tipo_base': '3',
             'icms_aliquota_reducao_base': pos_line.icms_aliquota_reducao_base,
-            'icms_base_calculo': pos_line.price_subtotal_incl,
+            'icms_base_calculo': pos_line.base_icms,
             'icms_valor': pos_line.valor_icms,
             # - ICMS ST -
             'icms_st_aliquota': 0,
@@ -152,20 +152,26 @@ class PosOrder(models.Model):
             metodo_pagamento
         }
 
+        base_icms = 0
+        base_cofins = 0
+        base_pis = 0
         eletronic_items = []
         for pos_line in pos.lines:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(pos_line)))
+            base_icms += pos_line.base_icms
+            base_pis += pos_line.base_pis
+            base_cofins += pos_line.base_cofins
 
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = pos.total_icms
-        vals['valor_pis'] = pos.total_pis
-        vals['valor_cofins'] = pos.total_cofins
+        vals['valor_pis'] = base_pis
+        vals['valor_cofins'] = base_cofins
         vals['valor_ii'] = 0
         vals['valor_bruto'] = pos.amount_total - pos.amount_tax
         vals['valor_desconto'] = pos.amount_tax
         vals['valor_final'] = pos.amount_total
-        vals['valor_bc_icms'] = pos.amount_total
+        vals['valor_bc_icms'] = base_icms
         vals['valor_bc_icmsst'] = 0
         return vals
 
