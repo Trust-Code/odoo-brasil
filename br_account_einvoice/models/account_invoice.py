@@ -163,6 +163,7 @@ class AccountInvoice(models.Model):
 
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = invoice.icms_value
+        vals['valor_icmsst'] = invoice.icms_st_value
         vals['valor_ipi'] = invoice.ipi_value
         vals['valor_pis'] = invoice.pis_value
         vals['valor_cofins'] = invoice.cofins_value

@@ -5,9 +5,9 @@
 
 from openerp import api, fields, models
 from odoo.addons.br_account.models.cst import CST_ICMS
+from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
 from odoo.addons.br_account.models.cst import CST_IPI
 from odoo.addons.br_account.models.cst import CST_PIS_COFINS
-from odoo.addons.br_account.models.cst import ORIGEM_PROD
 
 
 class AccountFiscalPositionTaxRule(models.Model):
@@ -17,6 +17,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     sequence = fields.Integer(string="Sequência")
     name = fields.Char(string="Descrição", size=100)
     domain = fields.Selection([('icms', 'ICMS'),
+                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -30,17 +31,15 @@ class AccountFiscalPositionTaxRule(models.Model):
                                  domain=[('country_id.code', '=', 'BR')])
     product_category_ids = fields.Many2many(
         'product.category', string="Categoria de Produtos")
-    origem_produto = fields.Selection(ORIGEM_PROD, string="Origem do Produto")
     tipo_produto = fields.Selection([('product', 'Produto'),
                                      ('service', 'Serviço')],
                                     string="Tipo produto", default="product")
-    consumidor_final = fields.Selection([('0', u'Não'), ('1', u'Sim')],
-                                        string="Consumidor Final")
 
     product_ids = fields.Many2many('product.product', string="Produtos")
     partner_ids = fields.Many2many('res.partner', string="Parceiros")
 
     cst_icms = fields.Selection(CST_ICMS, string="CST ICMS")
+    csosn_icms = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
     cst_pis = fields.Selection(CST_PIS_COFINS, string="CST PIS")
     cst_cofins = fields.Selection(CST_PIS_COFINS, string="CST COFINS")
     cst_ipi = fields.Selection(CST_IPI, string="CST IPI")
@@ -48,6 +47,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     tax_id = fields.Many2one('account.tax', string="Imposto")
     tax_icms_st_id = fields.Many2one('account.tax', string="ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
+    icms_aliquota_credito = fields.Float(string="% Crédito de ICMS")
     incluir_ipi_base = fields.Boolean(string="Incl. IPI na base ICMS")
     reducao_icms = fields.Float(string="Redução de base")
     reducao_icms_st = fields.Float(string="Redução de base ST")
@@ -72,6 +72,9 @@ class AccountFiscalPosition(models.Model):
     icms_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras ICMS", domain=[('domain', '=', 'icms')])
+    simples_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string="Regras Simples Nacional", domain=[('domain', '=', 'simples')])
     ipi_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras IPI", domain=[('domain', '=', 'ipi')])
@@ -126,6 +129,9 @@ class AccountFiscalPosition(models.Model):
                 'tax_icms_inter_id': rules[0].tax_icms_inter_id,
                 'tax_icms_intra_id': rules[0].tax_icms_intra_id,
                 'tax_icms_fcp_id': rules[0].tax_icms_fcp_id,
+                # Simples
+                'icms_csosn_simples': rules[0].csosn_icms,
+                'icms_aliquota_credito': rules[0].icms_aliquota_credito,
                 # IPI
                 'ipi_cst': rules[0].cst_ipi,
                 'ipi_reducao_bc': rules[0].reducao_ipi,
@@ -144,6 +150,10 @@ class AccountFiscalPosition(models.Model):
         res = {}
         vals = self._filter_rules(
             self.id, 'icms', partner, product, to_state)
+        res.update({k: v for k, v in vals.items() if v})
+
+        vals = self._filter_rules(
+            self.id, 'simples', partner, product, to_state)
         res.update({k: v for k, v in vals.items() if v})
 
         vals = self._filter_rules(

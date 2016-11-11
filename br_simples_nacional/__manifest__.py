@@ -16,13 +16,13 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'br_nfe',
+        'br_sale',
     ],
     'data': [
         'data/br_simples_nacional.xml',
-        'views/account_tax.xml',
         'views/account_invoice.xml',
+        'views/account_fiscal_position.xml',
     ],
-    'instalable': False,
+    'instalable': True,
     'application': True,
 }

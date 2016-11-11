@@ -121,7 +121,7 @@ class AccountInvoice(models.Model):
         vals['classe_enquadramento_ipi'] = \
             invoice_line.fiscal_classification_id.classe_enquadramento or ''
         vals['codigo_enquadramento_ipi'] = \
-            invoice_line.fiscal_classification_id.codigo_enquadramento or ''
+            invoice_line.fiscal_classification_id.codigo_enquadramento or '999'
         vals['tem_difal'] = invoice_line.tem_difal
         vals['icms_bc_uf_dest'] = invoice_line.icms_bc_uf_dest
         vals['icms_aliquota_interestadual'] = \

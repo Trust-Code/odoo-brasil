@@ -47,7 +47,7 @@ class AccountInvoiceLine(models.Model):
                  'tax_icms_intra_id', 'tax_icms_fcp_id', 'tax_ipi_id',
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
-                 'ipi_reducao_bc', 'icms_st_aliquota_mva',
+                 'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
@@ -79,6 +79,8 @@ class AccountInvoiceLine(models.Model):
              if x['id'] == self.tax_icms_intra_id.id]) if taxes else []
         icms_fcp = ([x for x in taxes['taxes']
                     if x['id'] == self.tax_icms_fcp_id.id]) if taxes else []
+        simples = ([x for x in taxes['taxes']
+                    if x['id'] == self.tax_simples_id.id]) if taxes else []
         ipi = ([x for x in taxes['taxes']
                 if x['id'] == self.tax_ipi_id.id]) if taxes else []
         pis = ([x for x in taxes['taxes']
@@ -114,6 +116,7 @@ class AccountInvoiceLine(models.Model):
             'icms_uf_remet': sum([x['amount'] for x in icms_inter]),
             'icms_uf_dest': sum([x['amount'] for x in icms_intra]),
             'icms_fcp_uf_dest': sum([x['amount'] for x in icms_fcp]),
+            'icms_valor_credito': sum([x['base'] for x in simples]) * (self.icms_aliquota_credito / 100),
             'ipi_base_calculo': sum([x['base'] for x in ipi]),
             'ipi_valor': sum([x['amount'] for x in ipi]),
             'pis_base_calculo': sum([x['base'] for x in pis]),
@@ -253,9 +256,13 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # ICMS Simples Nacional
     # =========================================================================
+    tax_simples_id = fields.Many2one(
+        'account.tax', help="Alíquota utilizada no Simples Nacional",
+        string="Alíquota Simples", domain=[('domain', '=', 'simples')])
     icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
     icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
-    icms_valor_credito = fields.Float(u"Valor de Crédito")
+    icms_valor_credito = fields.Float(
+        u"Valor de Crédito", compute='_compute_price')
 
     # =========================================================================
     # ISSQN
@@ -392,8 +399,9 @@ class AccountInvoiceLine(models.Model):
 
         self.invoice_line_tax_ids = self.tax_icms_id | self.tax_icms_st_id | \
             self.tax_icms_inter_id | self.tax_icms_intra_id | \
-            self.tax_icms_fcp_id | self.tax_ipi_id | self.tax_pis_id | \
-            self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id
+            self.tax_icms_fcp_id | self.tax_simples_id | self.tax_ipi_id | \
+            self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
+            self.tax_ii_id
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
@@ -418,8 +426,8 @@ class AccountInvoiceLine(models.Model):
         self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
-            self.tax_ipi_id | self.tax_pis_id | self.tax_cofins_id | \
-            self.tax_issqn_id | self.tax_ii_id
+            self.tax_simples_id | self.tax_ipi_id | self.tax_pis_id | \
+            self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id
 
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
@@ -446,6 +454,11 @@ class AccountInvoiceLine(models.Model):
     @api.onchange('tax_icms_fcp_id')
     def _onchange_tax_icms_fcp_id(self):
         if self.tax_icms_fcp_id:
+            self._update_invoice_line_ids()
+
+    @api.onchange('tax_simples_id')
+    def _onchange_tax_simples_id(self):
+        if self.tax_simples_id:
             self._update_invoice_line_ids()
 
     @api.onchange('tax_pis_id')
