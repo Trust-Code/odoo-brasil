@@ -213,14 +213,24 @@ class PosOrder(models.Model):
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
 
+    def _prepare_tax_context(self):
+        return {
+            'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
+            'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base':
+            self.icms_st_aliquota_reducao_base,
+            'icms_base_calculo': self.base_icms,
+            'pis_base_calculo': self.base_pis,
+            'cofins_base_calculo': self.base_cofins,
+        }
+
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
     def _compute_amount_line_all(self):
         super(PosOrderLine, self)._compute_amount_line_all()
         for line in self:
             currency = line.order_id.pricelist_id.currency_id
             values = line.order_id.fiscal_position_id.map_tax_extra_values(
-                line.company_id, line.product_id,
-                line.order_id.partner_id)
+                line.company_id, line.product_id, line.order_id.partner_id)
             tax_ids = [values.get('tax_icms_id', False),
                        values.get('tax_icms_st_id', False),
                        values.get('tax_ipi_id', False),
@@ -263,6 +273,8 @@ class PosOrderLine(models.Model):
             line.price_subtotal = line.price_subtotal_incl = price * line.qty
             taxes = {'taxes': []}
             if taxes_ids:
+                ctx = line._prepare_tax_context()
+                taxes_ids = taxes_ids.with_context(**ctx)
                 taxes = taxes_ids.compute_all(
                     price, currency, line.qty, product=line.product_id,
                     partner=line.order_id.partner_id or False)
