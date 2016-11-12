@@ -46,12 +46,8 @@ class TestSaleOrder(TransactionCase):
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'fiscal_classification_id': self.default_ncm.id,
-            'list_price': 15.0
-        })
-        self.st_product = self.env['product.product'].create({
-            'name': 'Product for ICMS ST',
-            'fiscal_classification_id': self.default_ncm.id,
-            'list_price': 25.0
+            'list_price': 15.0,
+            'property_account_income_id': self.revenue_account.id,
         })
         default_partner = {
             'name': 'Nome Parceiro',

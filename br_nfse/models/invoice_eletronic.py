@@ -16,7 +16,6 @@ try:
     from pytrustnfe.nfse.paulistana import envio_lote_rps
     from pytrustnfe.nfse.paulistana import teste_envio_lote_rps
     from pytrustnfe.nfse.paulistana import cancelamento_nfe
-    from pytrustnfe.nfse.paulistana import consulta_nfe
     from pytrustnfe.certificado import Certificado
 except ImportError:
     _logger.debug('Cannot import pytrustnfe')

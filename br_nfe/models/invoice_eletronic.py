@@ -156,6 +156,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
+        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_item(
+            item, invoice)
+        if self.model not in ('55', '65'):
+            return res
+
         xprod = item.product_id.name if self.company_id.\
             tipo_ambiente != '2' else\
             'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
@@ -238,6 +243,10 @@ FISCAL'
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
+        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+        if self.model not in ('55', '65'):
+            return res
+
         dt_emissao = datetime.strptime(self.data_emissao, DTFT)
 
         ide = {

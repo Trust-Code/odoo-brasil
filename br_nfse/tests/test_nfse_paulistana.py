@@ -4,10 +4,16 @@
 
 import os
 import base64
+import logging
 from mock import patch
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import UserError
-from pytrustnfe.xml import sanitize_response
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.xml import sanitize_response
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe')
 
 
 class TestNFeBrasil(TransactionCase):
@@ -175,7 +181,7 @@ class TestNFeBrasil(TransactionCase):
             }
             invoice_eletronic = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.cron_send_nfe()
+            invoice_eletronic.action_send_eletronic_invoice()
             self.assertEqual(invoice_eletronic.state, 'done')
             self.assertEqual(invoice_eletronic.codigo_retorno, '100')
             self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
