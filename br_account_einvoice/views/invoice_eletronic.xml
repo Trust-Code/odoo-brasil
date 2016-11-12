@@ -134,7 +134,7 @@
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
-                    <div class="alert alert-info" role="alert" style="margin-bottom:0px;">
+                    <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
                         <div class="row">
                             <div class="col-md-6 col-md-offset-1">
                                 <b>Situação: </b><field name="codigo_retorno" class="oe_inline" readonly="1"/><br />

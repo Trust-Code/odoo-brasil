@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_br_nfse_invoice_eletronic_form" model="ir.ui.view">
+        <field name="name">view.br_nfse.invoice.eletronic.form</field>
+        <field name="model">invoice.eletronic</field>
+        <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
+        <field name="arch" type="xml">
+            <div name="alertas" position="before">
+                <field name="ambiente_nfse" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('model', '!=', '001')]}">
+                    A Nota Fiscal Paulistana está em ambiente de homologação
+                </div>
+            </div>
+            <field name="numero" position="after">
+                <field name="numero_nfse" />
+            </field>
+            <field name="mensagem_retorno" position="after">
+                <span attrs="{'invisible': [('model', 'not in', ('001'))]}">
+                    <br /><b>Código Verificação:</b> <field name="verify_code" class="oe_inline" readonly="1"/>
+                </span>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_br_nfse_invoice_eletronic_item_form" model="ir.ui.view">
+        <field name="name">br_nfse.invoice.eletronic.item.form</field>
+        <field name="model">invoice.eletronic.item</field>
+        <field name="inherit_id" ref="br_account_einvoice.invoice_eletronic_item_form" />
+        <field name="arch" type="xml">
+            <field name="issqn_codigo" position="after">
+                <field name="codigo_servico_paulistana" />
+            </field>
+        </field>
+    </record>
+</odoo>

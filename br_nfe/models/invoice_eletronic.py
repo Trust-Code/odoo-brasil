@@ -31,6 +31,8 @@ class InvoiceEletronic(models.Model):
             item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
                                           item.chave_nfe, 10, re.DOTALL)
 
+    ambiente_nfe = fields.Selection(
+        string="Ambiente NFe", related="company_id.tipo_ambiente")
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Sim')
@@ -126,26 +128,29 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if not self.fiscal_position_id:
-            errors.append(u'Configure a posição fiscal')
+        if self.model == '55':
+            if not self.company_id.partner_id.inscr_est:
+                errors.append(u'Emitente / Inscrição Estadual')
+            if not self.fiscal_position_id:
+                errors.append(u'Configure a posição fiscal')
 
-        for eletr in self.eletronic_item_ids:
-            prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
-                                          eletr.product_id.name)
-            if not eletr.cfop:
-                errors.append(u'%s - CFOP' % prod)
-            if eletr.tipo_produto == 'product':
-                if not eletr.icms_cst:
-                    errors.append(u'%s - CST do ICMS' % prod)
-                if not eletr.ipi_cst:
-                    errors.append(u'%s - CST do IPI' % prod)
-            if eletr.tipo_produto == 'service':
-                if not eletr.issqn_codigo:
-                    errors.append(u'%s - Código de Serviço' % prod)
-            if not eletr.pis_cst:
-                errors.append(u'%s - CST do PIS' % prod)
-            if not eletr.cofins_cst:
-                errors.append(u'%s - CST do Cofins' % prod)
+            for eletr in self.eletronic_item_ids:
+                prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
+                                              eletr.product_id.name)
+                if not eletr.cfop:
+                    errors.append(u'%s - CFOP' % prod)
+                if eletr.tipo_produto == 'product':
+                    if not eletr.icms_cst:
+                        errors.append(u'%s - CST do ICMS' % prod)
+                    if not eletr.ipi_cst:
+                        errors.append(u'%s - CST do IPI' % prod)
+                if eletr.tipo_produto == 'service':
+                    if not eletr.issqn_codigo:
+                        errors.append(u'%s - Código de Serviço' % prod)
+                if not eletr.pis_cst:
+                    errors.append(u'%s - CST do PIS' % prod)
+                if not eletr.cofins_cst:
+                    errors.append(u'%s - CST do Cofins' % prod)
 
         return errors
 
@@ -446,19 +451,6 @@ FISCAL'
                 'infNFe': nfe_values
             }]
         }
-
-    def _create_attachment(self, prefix, event, data):
-        file_name = '%s-%s.xml' % (
-            prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
-        self.env['ir.attachment'].create(
-            {
-                'name': file_name,
-                'datas': base64.b64encode(data),
-                'datas_fname': file_name,
-                'description': u'',
-                'res_model': 'invoice.eletronic',
-                'res_id': event.id
-            })
 
     @api.multi
     def action_post_validate(self):

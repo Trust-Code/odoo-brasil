@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="br_nfe.view_br_nfe_invoice_eletronic_form" />
         <field name="arch" type="xml">
             <field name="recibo_nfe" position="after">
-                <field name="qrcode_hash" />
-                <field name="qrcode_url" />
+                <field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
+                <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
             </field>
             <field name="informacoes_complementares" position="after">
                 <field name="metodo_pagamento" />
@@ -15,4 +15,3 @@
         </field>
     </record>
 </odoo>
-

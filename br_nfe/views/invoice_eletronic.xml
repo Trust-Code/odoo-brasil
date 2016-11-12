@@ -6,8 +6,15 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
+            <div name="alertas" position="before">
+                <field name="ambiente_nfe" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('model', '!=', '55')]}">
+                    A NFe está em ambiente de homologação
+                </div>
+            </div>
             <page name="totais" position="after">
-                <page name="transporte" string="Transportes">
+                <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>
                         <group>
                             <field name="modalidade_frete" />
@@ -37,7 +44,7 @@
                         <field name="duplicata_ids" nolabel="1" context="{'default_invoice_eletronic_id': id}" />
                     </group>
                 </page>
-                <page name="exportacao" string="Exportação/Compras">
+                <page name="exportacao" string="Exportação/Compras" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>
                         <group string="Exportação">
                             <field name="uf_saida_pais_id" />
@@ -53,22 +60,24 @@
                 </page>
             </page>
             <field name="mensagem_retorno" position="after">
-                <br /><b>Chave NFe:</b> <field name="chave_nfe" class="oe_inline" readonly="1"/><br />
-                <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline" readonly="1"/>
+                <span attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
+                    <br /><b>Chave NFe:</b> <field name="chave_nfe" class="oe_inline" readonly="1"/><br />
+                    <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline" readonly="1"/>
+                </span>
             </field>
             <field name="numero_controle" position="after">
-                <field name="recibo_nfe" />
+                <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
             </field>
             <field name="finalidade_emissao" position="after">
-                <field name="ind_final" />
-                <field name="ind_pres" />
-                <field name="ind_dest" />
-                <field name="ind_ie_dest" />
+                <field name="ind_final" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="ind_ie_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
             </field>
             <field name="valor_cofins" position="after">
-                <field name="valor_icms_fcp_uf_dest" />
-                <field name="valor_icms_uf_dest" />
-                <field name="valor_icms_uf_remet" />
+                <field name="valor_icms_fcp_uf_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="valor_icms_uf_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="valor_icms_uf_remet" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
             </field>
         </field>
     </record>

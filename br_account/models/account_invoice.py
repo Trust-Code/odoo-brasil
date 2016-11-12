@@ -181,6 +181,12 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    @api.onchange('fiscal_document_id')
+    def _onchange_fiscal_document_id(self):
+        series = self.env['br_account.document.serie'].search(
+            [('fiscal_document_id', '=', self.fiscal_document_id.id)])
+        self.document_serie_id = series and series[0].id or False
+
     @api.model
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()

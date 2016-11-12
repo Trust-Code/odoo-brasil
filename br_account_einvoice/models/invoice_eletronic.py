@@ -2,6 +2,8 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import base64
+from datetime import datetime
 from odoo.exceptions import UserError
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
@@ -104,6 +106,19 @@ class InvoiceEletronic(models.Model):
     mensagem_retorno = fields.Char(string=u'Mensagem Retorno')
     numero_nfe = fields.Char(string="Numero Formatado NFe")
 
+    def _create_attachment(self, prefix, event, data):
+        file_name = '%s-%s.xml' % (
+            prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
+        self.env['ir.attachment'].create(
+            {
+                'name': file_name,
+                'datas': base64.b64encode(data),
+                'datas_fname': file_name,
+                'description': u'',
+                'res_model': 'invoice.eletronic',
+                'res_id': event.id
+            })
+
     @api.multi
     def _hook_validation(self):
         """
@@ -133,8 +148,6 @@ class InvoiceEletronic(models.Model):
             errors.append(u'Emitente / Endereço - Número')
         if not self.company_id.partner_id.zip:
             errors.append(u'Emitente / Endereço - CEP')
-        if not self.company_id.partner_id.inscr_est:
-            errors.append(u'Emitente / Inscrição Estadual')
         if not self.company_id.partner_id.state_id:
             errors.append(u'Emitente / Endereço - Estado')
         else:
@@ -239,7 +252,7 @@ class InvoiceEletronic(models.Model):
         pass
 
     @api.multi
-    def action_cancel_document(self):
+    def action_cancel_document(self, context=None, justificativa=None):
         self.state = 'cancel'
 
     @api.multi

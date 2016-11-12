@@ -24,8 +24,12 @@
         ],
     },
     'data': [
+        'data/br_nfse.xml',
+        'views/br_account_service.xml',
+        'views/account_invoice.xml',
+        'views/invoice_eletronic.xml',
         'views/res_company.xml',
     ],
-    'instalable': False,
+    'instalable': True,
     'application': True,
 }

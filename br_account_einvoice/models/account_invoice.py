@@ -26,9 +26,10 @@ class AccountInvoice(models.Model):
             item.total_edocs = self.env['invoice.eletronic'].search_count(
                 [('invoice_id', '=', item.id)])
 
+    invoice_model = fields.Char(
+        string="Modelo de Fatura", related="fiscal_document_id.code")
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
-
     internal_number = fields.Integer(
         'Invoice Number', readonly=True,
         states={'draft': [('readonly', False)]},
@@ -75,8 +76,6 @@ class AccountInvoice(models.Model):
             'product_id': line.product_id.id,
             'tipo_produto': line.product_type,
             'cfop': line.cfop_id.code,
-            'cest': line.product_id.cest or
-            line.fiscal_classification_id.cest or '',
             'uom_id': line.uom_id.id,
             'quantidade': line.quantity,
             'preco_unitario': line.price_unit,
@@ -196,7 +195,7 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:
                 if edoc.state == 'done':
-                    raise UserError('NF-e já enviada - Cancele o documento \
-                                    eletrônico para poder cancelar a fatura')
+                    raise UserError('Documento eletrônico emitido - Cancele o \
+                                    documento para poder cancelar a fatura')
                 edoc.unlink()
         return res

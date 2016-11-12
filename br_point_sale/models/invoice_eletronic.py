@@ -18,6 +18,8 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model != '65':
             return errors
+        if not self.company_id.partner_id.inscr_est:
+            errors.append(u'Emitente / Inscrição Estadual')
         if len(self.company_id.id_token_csc or '') != 6:
             errors.append(u"Identificador do CSC inválido")
         if not len(self.company_id.csc or ''):

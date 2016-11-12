@@ -22,6 +22,8 @@ class AccountInvoice(models.Model):
                 item.nfe_status = '%s - %s' % (
                     docs[0].codigo_retorno, docs[0].mensagem_retorno)
 
+    ambiente_nfe = fields.Selection(
+        string="Ambiente NFe", related="company_id.tipo_ambiente")
     sending_nfe = fields.Boolean(
         string="Enviando NFe?", compute="_compute_nfe_number")
     nfe_exception = fields.Boolean(
