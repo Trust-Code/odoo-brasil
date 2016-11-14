@@ -27,7 +27,8 @@
         'views/account_journal.xml',
         'views/pos_order.xml',
         'views/res_company.xml',
-        'views/invoice_eletronic.xml'
+        'views/invoice_eletronic.xml',
+        'views/account_fiscal_position.xml',
     ],
     'application': True,
 }

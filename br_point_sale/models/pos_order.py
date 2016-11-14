@@ -136,7 +136,7 @@ class PosOrder(models.Model):
             'state': 'draft',
             'tipo_operacao': 'saida',
             'model': '65',
-            'serie': 1,
+            'serie': pos.fiscal_position_id.nfe_serie.id,
             'numero': pos.sequence_number,
             'numero_controle': pos.numero_controle,
             'numero_nfe': pos.sequence_number,
@@ -165,8 +165,8 @@ class PosOrder(models.Model):
 
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = pos.total_icms
-        vals['valor_pis'] = base_pis
-        vals['valor_cofins'] = base_cofins
+        vals['valor_pis'] = pos.total_pis
+        vals['valor_cofins'] = pos.total_cofins
         vals['valor_ii'] = 0
         vals['valor_bruto'] = pos.amount_total - pos.amount_tax
         vals['valor_desconto'] = pos.amount_tax

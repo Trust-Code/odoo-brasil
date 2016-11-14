@@ -6,3 +6,4 @@ from . import pos_order
 from . import invoice_eletronic
 from . import res_company
 from . import account_journal
+from . import account_fiscal_position

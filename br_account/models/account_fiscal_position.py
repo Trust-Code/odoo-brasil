@@ -112,34 +112,48 @@ class AccountFiscalPosition(models.Model):
             domain.pop()
             rules = rule_obj.search(domain)
         if rules:
-            return {
-                ('%s_rule_id' % type_tax): rules[0],
-                'cfop_id': rules[0].cfop_id,
-                ('tax_%s_id' % type_tax): rules[0].tax_id,
-                # ICMS
-                'icms_cst_normal': rules[0].cst_icms,
-                'icms_aliquota_reducao_base': rules[0].reducao_icms,
-                'incluir_ipi_base': rules[0].incluir_ipi_base,
-                # ICMS ST
-                'tax_icms_st_id': rules[0].tax_icms_st_id,
-                'icms_st_aliquota_mva': rules[0].aliquota_mva,
-                'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
-                # ICMS Difal
-                'tem_difal': rules[0].tem_difal,
-                'tax_icms_inter_id': rules[0].tax_icms_inter_id,
-                'tax_icms_intra_id': rules[0].tax_icms_intra_id,
-                'tax_icms_fcp_id': rules[0].tax_icms_fcp_id,
-                # Simples
-                'icms_csosn_simples': rules[0].csosn_icms,
-                'icms_aliquota_credito': rules[0].icms_aliquota_credito,
-                # IPI
-                'ipi_cst': rules[0].cst_ipi,
-                'ipi_reducao_bc': rules[0].reducao_ipi,
-                # PIS
-                'pis_cst': rules[0].cst_pis,
-                # PIS
-                'cofins_cst': rules[0].cst_cofins,
-            }
+            for rule in rules:
+                if product in rule.product_ids:
+                    rules = [rule]
+                elif product.categ_id in rule.product_category_ids:
+                    rules = [rule]
+                elif state in rule.state_ids:
+                    rules = [rule]
+                elif len(rule.product_ids) == 0 and\
+                        len(rule.product_category_ids) == 0 and\
+                        len(rule.state_ids) == 0:
+                    rules = [rule]
+                else:
+                    continue
+
+                return {
+                    ('%s_rule_id' % type_tax): rules[0],
+                    'cfop_id': rules[0].cfop_id,
+                    ('tax_%s_id' % type_tax): rules[0].tax_id,
+                    # ICMS
+                    'icms_cst_normal': rules[0].cst_icms,
+                    'icms_aliquota_reducao_base': rules[0].reducao_icms,
+                    'incluir_ipi_base': rules[0].incluir_ipi_base,
+                    # ICMS ST
+                    'tax_icms_st_id': rules[0].tax_icms_st_id,
+                    'icms_st_aliquota_mva': rules[0].aliquota_mva,
+                    'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
+                    # ICMS Difal
+                    'tem_difal': rules[0].tem_difal,
+                    'tax_icms_inter_id': rules[0].tax_icms_inter_id,
+                    'tax_icms_intra_id': rules[0].tax_icms_intra_id,
+                    'tax_icms_fcp_id': rules[0].tax_icms_fcp_id,
+                    # Simples
+                    'icms_csosn_simples': rules[0].csosn_icms,
+                    'icms_aliquota_credito': rules[0].icms_aliquota_credito,
+                    # IPI
+                    'ipi_cst': rules[0].cst_ipi,
+                    'ipi_reducao_bc': rules[0].reducao_ipi,
+                    # PIS
+                    'pis_cst': rules[0].cst_pis,
+                    # PIS
+                    'cofins_cst': rules[0].cst_cofins,
+                }
         else:
             return {}
 
