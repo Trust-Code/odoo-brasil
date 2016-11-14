@@ -198,7 +198,6 @@ class InvoiceEletronic(models.Model):
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
         if self.model == '001':
-            self.ambiente = 'homologacao'  # Evita esquecimentos
             self.state = 'error'
 
             nfse_values = self._prepare_eletronic_invoice_values()
@@ -261,10 +260,10 @@ class InvoiceEletronic(models.Model):
         resposta = cancelamento_nfe(certificado, cancelamento=canc)
         retorno = resposta['object']
         if retorno.Cabecalho.Sucesso:
+            self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
         else:
-            self.state = 'done'
             self.codigo_retorno = retorno.Erro.Codigo
             self.mensagem_retorno = retorno.Erro.Descricao
 

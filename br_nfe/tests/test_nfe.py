@@ -364,7 +364,9 @@ class TestNFeBrasil(TransactionCase):
 
             invoice_eletronic = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.cron_send_nfe()
+            invoice_eletronic.action_send_eletronic_invoice()
+            self.assertEquals(invoice_eletronic.state, 'error')
+            self.assertEquals(invoice_eletronic.codigo_retorno, '225')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
@@ -396,10 +398,12 @@ class TestNFeBrasil(TransactionCase):
             invoice_eletronic = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
-            invoice_eletronic.cron_send_nfe()
+            invoice_eletronic.action_send_eletronic_invoice()
+            self.assertEquals(invoice_eletronic.state, 'error')
+            self.assertEquals(invoice_eletronic.codigo_retorno, '694')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento') # noqa
-    def test_nfe_cancel(self, cancelar):
+    def test_nfe_cancelamento_ok(self, cancelar):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -419,6 +423,7 @@ class TestNFeBrasil(TransactionCase):
             invoice_eletronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
 
+            self.assertEquals(invoice_eletronic.state, 'cancel')
             self.assertEquals(invoice_eletronic.codigo_retorno, "155")
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Cancelamento homologado fora de prazo")

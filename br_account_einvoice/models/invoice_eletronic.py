@@ -244,6 +244,10 @@ class InvoiceEletronic(models.Model):
         pass
 
     @api.multi
+    def _prepare_eletronic_invoice_item(self, item, invoice):
+        return {}
+
+    @api.multi
     def _prepare_eletronic_invoice_values(self):
         return {}
 
@@ -253,7 +257,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        self.state = 'cancel'
+        pass
 
     @api.multi
     def action_back_to_draft(self):

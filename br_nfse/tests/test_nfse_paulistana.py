@@ -237,7 +237,8 @@ class TestNFeBrasil(TransactionCase):
             invoice_eletronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
 
-            self.assertEquals(invoice_eletronic.state, 'done')
+            # Draft because I didn't send it
+            self.assertEquals(invoice_eletronic.state, 'draft')
             self.assertEquals(invoice_eletronic.codigo_retorno, u"1305")
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Assinatura de cancelamento da NFS-e incorreta.")

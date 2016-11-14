@@ -479,7 +479,6 @@ FISCAL'
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        self.ambiente = 'homologacao'  # Evita esquecimentos
         self.state = 'error'
         self.data_emissao = datetime.now()
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
@@ -548,6 +547,10 @@ FISCAL'
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
+        super(InvoiceEletronic, self).action_cancel_document()
+        if self.model not in ('55', '65'):
+            return
+
         if not justificativa:
             return {
                 'name': 'Cancelamento NFe',
@@ -560,10 +563,6 @@ FISCAL'
                     'default_edoc_id': self.id
                 }
             }
-
-        super(InvoiceEletronic, self).action_cancel_document()
-        if self.model not in ('55', '65'):
-            return
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
@@ -591,11 +590,11 @@ FISCAL'
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
         if resposta.cStat == 128 and \
            resposta.retEvento.infEvento.cStat in (135, 136, 155):
+            self.state = 'cancel'
             self.codigo_retorno = resposta.retEvento.infEvento.cStat
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
             self.sequencial_evento += 1
         else:
-            self.state = 'done'
             if resposta.cStat == 128:
                 self.codigo_retorno = resposta.retEvento.infEvento.cStat
                 self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
