@@ -4,6 +4,7 @@
 
 import os
 import base64
+from datetime import datetime
 from odoo.tests.common import TransactionCase
 
 
@@ -33,6 +34,34 @@ class TestPointSaleBR(TransactionCase):
             'nfe_a1_file': base64.b64encode(
                 open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
         })
+
+        # NCM
+        self.default_ncm = self.env['product.fiscal.classification'].create({
+            'code': '0201.20.20',
+            'name': 'Furniture',
+            'federal_nacional': 10.0,
+            'estadual_imposto': 10.0,
+            'municipal_imposto': 10.0,
+            'cest': '123'
+        })
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # PRODUTOS
+        self.product_a = self.env['product.product'].create({
+            'name': 'PRODUTO A',
+            'list_price': 10.00,
+            'default_code': '1',
+            'fiscal_classification_id': self.default_ncm.id,
+        })
+        self.product_b = self.env['product.product'].create({
+            'name': 'PRODUTO B',
+            'list_price': 5.00,
+            'default_code': '2',
+            'fiscal_classification_id': self.default_ncm.id,
+        })
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # CONTAS
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
@@ -48,216 +77,208 @@ class TestPointSaleBR(TransactionCase):
                 'account.data_account_type_receivable').id,
             'company_id': self.main_company.id
         })
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-        self.default_ncm = self.env['product.fiscal.classification'].create({
-            'code': '0201.20.20',
-            'name': 'Furniture',
-            'federal_nacional': 10.0,
-            'estadual_imposto': 10.0,
-            'municipal_imposto': 10.0,
-            'cest': '123'
-        })
-        self.default_product = self.env['product.product'].create({
-            'name': 'Normal Product',
-            'default_code': '12',
-            'fiscal_classification_id': self.default_ncm.id,
-            'list_price': 15.0
-        })
-        self.service = self.env['product.product'].create({
-            'name': 'Normal Service',
-            'default_code': '25',
-            'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
-                'br_data_account.service_type_101').id,
-            'list_price': 50.0
-        })
-        self.st_product = self.env['product.product'].create({
-            'name': 'Product for ICMS ST',
-            'default_code': '15',
-            'fiscal_classification_id': self.default_ncm.id,
-            'list_price': 25.0
-        })
-        default_partner = {
-            'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
-            'zip': '88037-240',
-            'street': 'Endereço Rua',
-            'number': '42',
-            'district': 'Centro',
-            'phone': '(48) 9801-6226',
-            'property_account_receivable_id': self.receivable_account.id,
-        }
-        self.partner_fisica = self.env['res.partner'].create(dict(
-            default_partner.items(),
-            cnpj_cpf='545.770.154-98',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id
-        ))
-        self.partner_juridica = self.env['res.partner'].create(dict(
-            default_partner.items(),
-            cnpj_cpf='05.075.837/0001-13',
-            company_type='company',
-            is_company=True,
-            inscr_est='433.992.727',
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
-        ))
-        self.partner_fisica_inter = self.env['res.partner'].create(dict(
-            default_partner.items(),
-            cnpj_cpf='793.493.171-92',
-            company_type='person',
-            is_company=False,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4304606').id,
-        ))
-        self.partner_juridica_inter = self.env['res.partner'].create(dict(
-            default_partner.items(),
-            cnpj_cpf='08.326.476/0001-29',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4300406').id,
-        ))
-        self.partner_juridica_sp = self.env['res.partner'].create(dict(
-            default_partner.items(),
-            cnpj_cpf='37.484.824/0001-94',
-            company_type='company',
-            is_company=True,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sp').id,
-            city_id=self.env.ref('br_base.city_3501608').id,
-        ))
-        self.partner_exterior = self.env['res.partner'].create(dict(
-            default_partner.items(),
-            cnpj_cpf='12345670',
-            company_type=True,
-            is_company=True,
-            country_id=self.env.ref('base.us').id,
-        ))
-
+        # JOURNAIS CONTABEIS
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
             'code': 'INV',
             'type': 'sale',
             'default_debit_account_id': self.revenue_account.id,
-            'default_credit_account_id': self.revenue_account.id,
+            'default_credit_account_id': self.receivable_account.id,
+        })
+        self.journalpos = self.env['account.journal'].create({
+            'name': 'POS SALE JOURNAL',
+            'code': 'POSS',
+            'type': 'sale',
+        })
+        cash_journal = [
+            (0, 0,
+                {
+                    'name': 'CASH',
+                    'code': 'CASH',
+                    'type': 'cash',
+                    'metodo_pagamento': '01',
+                    'default_debit_account_id': self.revenue_account.id,
+                    'default_credit_account_id': self.receivable_account.id,
+                })]
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # IMPOSTOS - PIS, COFINS E ICMS(COM E SEM REDUCAO)
+        self.tax_model = self.env['account.tax']
+        self.pis = self.tax_model.create({
+            'name': "PIS",
+            'amount_type': 'division',
+            'domain': 'pis',
+            'amount': 0.65,
+            'sequence': 1,
+            'price_include': True,
+        })
+        self.cofins = self.tax_model.create({
+            'name': "Cofins",
+            'amount_type': 'division',
+            'domain': 'cofins',
+            'amount': 3,
+            'sequence': 2,
+            'price_include': True,
+        })
+        self.icms_inter = self.tax_model.create({
+            'name': "ICMS Inter",
+            'amount_type': 'division',
+            'domain': 'icms',
+            'amount': 12,
+            'sequence': 4,
+            'price_include': True,
+        })
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # REGRA ICMS (COM E SEM REDUCAO)
+        icms_rule = [
+            (0, 0,
+                {
+                    'name': 'ICMS SEM REDUCAO',
+                    'tax_id': self.icms_inter.id,
+                    'cfop_id': self.env.ref(
+                        'br_data_account_product.cfop_5101').id,
+                    'tipo_produto': 'product',
+                    'domain': 'icms'
+                }),
+            (0, 0,
+                {
+                    'name': 'ICMS SEM REDUCAO',
+                    'tax_id': self.icms_inter.id,
+                    'cfop_id': self.env.ref(
+                        'br_data_account_product.cfop_5101').id,
+                    'tipo_produto': 'product',
+                    'reducao_icms': 5.00,
+                    'product_ids': [(4, self.product_b.id, 0)],
+                    'domain': 'icms'
+                })]
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # REGRA PIS
+        pis_rule = [
+            (0, 0,
+                {
+                    'name': 'PIS',
+                    'tax_id': self.pis.id,
+                    'cfop_id': self.env.ref(
+                        'br_data_account_product.cfop_5101').id,
+                    'tipo_produto': 'product',
+                    'domain': 'pis'
+                })]
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # REGRA PIS
+        cofins_rule = [
+            (0, 0,
+                {
+                    'name': 'COFINS',
+                    'tax_id': self.cofins.id,
+                    'cfop_id': self.env.ref(
+                        'br_data_account_product.cfop_5101').id,
+                    'tipo_produto': 'product',
+                    'domain': 'cofins'
+                })]
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # NFC-E <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        self.nfe_seq = self.env['ir.sequence'].create({
+            'name': 'Série 1 - Nota Fiscal Eletrônica',
+            'implementation': 'no_gap',
+            'padding': 1,
+            'number_increment': 1,
+            'number_next_actual': 1,
+        })
+        self.nfe_doc = self.env['br_account.fiscal.document'].create({
+            'code': '55',
+            'name': 'Nota Fiscal Eletronica',
+        })
+        self.nfe_serie = self.env['br_account.document.serie'].create({
+            'code': '1',
+            'active': True,
+            'name': 'Série 1 - Nota Fiscal Eletrônica',
+            'fiscal_document_id': self.nfe_doc.id,
+            'fiscal_type': 'product',
+            'internal_sequence_id': self.nfe_seq.id,
+            'company_id': self.main_company.id,
         })
 
-        self.fpos = self.env['account.fiscal.position'].create({
-            'name': 'Venda'
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        # POSICAO FISCAL
+        self.pos_fiscal_position = self.env['account.fiscal.position'].create({
+            'name': 'FISCAL POS', 'ind_final': '1', 'ind_pres': '4',
+            'nfe_serie': self.nfe_serie.id,
+            'icms_tax_rule_ids': icms_rule,
+            'pis_tax_rule_ids': pis_rule,
+            'cofins_tax_rule_ids': cofins_rule,
         })
-        self.fpos_consumo = self.env['account.fiscal.position'].create({
-            'name': 'Venda Consumo',
-            'ind_final': '1'
+        self.pos_config = self.env['pos.config'].create({
+            'name': 'POS CONFIG',
+            'journal_id': self.journalpos.id,
+            'invoice_journal_id': self.journalrec.id,
+            'fiscal_position_ids': [(4, self.pos_fiscal_position.id, 0)],
+            'default_fiscal_position_id': self.pos_fiscal_position.id,
+            'journal_ids': cash_journal,
         })
-        invoice_line_incomplete = [
-            (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                }
-             ),
-            (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                }
-             )
-        ]
-        invoice_line_data = [
-            (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
-             ),
-            (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'quantity': 10.0,
-                    'account_id': self.revenue_account.id,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
-             )
-        ]
-        default_invoice = {
-            'name': "Teste Validação",
-            'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
-                'br_data_account.fiscal_document_55').id,
-            'journal_id': self.journalrec.id,
-            'account_id': self.receivable_account.id,
-            'fiscal_position_id': self.fpos.id,
-            'invoice_line_ids': invoice_line_data
+        self.pos_session = self.env['pos.session'].create({
+            'user_id': self.env.user.id,
+            'config_id': self.pos_config.id,
+            'start_at': datetime.now(),
+        })
+        self.bank_stt = self.env['account.bank.statement'].create({
+            'balance_start': 0.00,
+            'journal_id': self.journalpos.id,
+            'company_id': self.main_company.id,
+            'state': 'open',
+            'name': '2016-11-14 18:28:31'
+        })
+
+    def test_right_tax(self):
+        """
+        Vender dois de R$10 produtos com ICMS 17, PIS 0.65, e COFINS 3
+        sem reducao, e um de R$5 com ICMS 17, PIS 0.65, e COFINS 3 e
+        reducao de 5%, os totais devem ser:
+             TOTAL: R$25.00
+            COFINS: R$00.75
+              ICMS: R$04.21
+               PIS: R$00.16
+        """
+        order_1 = {'to_invoice': False}
+        data_1 = {
+            'user_id': self.env.user.id,
+            'name': u'Order 00002-085-0083',
+            'partner_id': False,
+            'amount_paid': 25.00,
+            'pos_session_id': self.pos_session.id,
+            'lines': [
+                (0, 0, {'product_id': self.product_a.id, 'qty': 2,
+                        'price_unit': 10,
+                        'tax_ids': [(4, self.pis.id, 0),
+                                    (4, self.cofins.id, 0),
+                                    (4, self.icms_inter.id, 0)]}),
+                (0, 0, {'product_id': self.product_b.id, 'qty': 1,
+                        'price_unit': 5,
+                        'tax_ids': [(4, self.pis.id, 0),
+                                    (4, self.cofins.id, 0),
+                                    (4, self.icms_inter.id, 0)]}),
+            ],
+            'creation_date': datetime.now(),
+            'statement_ids': [[0, 0, {'journal_id': self.journalpos.id,
+                                      'amount': 25,
+                                      'name': u'2016-11-14 18:28:31',
+                                      'account_id': self.receivable_account.id,
+                                      u'statement_id': self.bank_stt.id}]],
+            'fiscal_position_id': self.pos_fiscal_position.id,
+            'sequence_number': 1,
+            'amount_return': 0,
         }
-        self.inv_incomplete = self.env['account.invoice'].create(dict(
-            name="Teste Validação",
-            reference_type="none",
-            fiscal_document_id=self.env.ref(
-                'br_data_account.fiscal_document_55').id,
-            journal_id=self.journalrec.id,
-            partner_id=self.partner_fisica.id,
-            account_id=self.receivable_account.id,
-            invoice_line_ids=invoice_line_incomplete
-        ))
-
-        self.invoices = self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_fisica.id
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_juridica.id
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_juridica.id,
-            fiscal_position_id=self.fpos_consumo.id
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_fisica_inter.id
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_juridica_inter.id
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_juridica_sp.id
-        ))
-        self.invoices |= self.env['account.invoice'].create(dict(
-            default_invoice.items(),
-            partner_id=self.partner_exterior.id
-        ))
+        order_1['data'] = data_1
+        order = self.env['pos.order'].create_from_ui([order_1])
+        order = self.env['pos.order'].browse(order[0])
+        order_edoc = self.env['invoice.eletronic'].search(
+            [('numero_controle', '=', order.numero_controle)])
+        #self.assertEquals(order_edoc.valor_icms, 4.21)
+        #self.assertEquals(order_edoc.valor_pis, 0.16)
+        #self.assertEquals(order_edoc.valor_cofins, 0.75)
