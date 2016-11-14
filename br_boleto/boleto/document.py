@@ -277,6 +277,7 @@ class BoletoSicoob(Boleto):
     def getBranchNumber(self):
         return self.branch_number.encode('utf-8')
 
+
 dict_boleto = {
     u'1': (BoletoBB, 'Banco do Brasil'),
     u'2': (BoletoBanrisul, 'Banrisul'),
