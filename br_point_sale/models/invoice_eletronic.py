@@ -26,6 +26,8 @@ class InvoiceEletronic(models.Model):
             errors.append(u"CSC Inválido")
         if self.partner_id.cnpj_cpf is None:
             errors.append(u"CNPJ/CPF do Parceiro inválido")
+        if len(self.serie) == 0:
+            errors.append(u"Número de Série da NFe Inválido")
         return errors
 
     @api.multi
