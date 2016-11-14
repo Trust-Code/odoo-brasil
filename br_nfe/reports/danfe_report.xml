@@ -476,10 +476,36 @@
                     </table>
                 </div>
 
+                <t t-if="o.valor_issqn > 0.0">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="enfase">Cálculo do ISSQN</span>
+                        </div>
+                    </div>
+
+                    <div class="row line">
+                        <div class="borda-completa col-xs-3 line">
+                            <span class="small">Inscrição Municipal</span><br />
+                            <span t-field="o.company_id.inscr_mun"></span>
+                        </div>
+                        <div class="bb br bt col-xs-3 line">
+                            <span class="small">Valor Total dos Serviços</span><br />
+                            <span t-field="o.valor_servicos"></span>
+                        </div>
+                        <div class="br bb bt col-xs-3 line">
+                            <span class="small">Base de Cálculo do ISSQN</span><br />
+                            <span t-field="o.valor_bc_issqn"></span>
+                        </div>
+                        <div class="br bb bt col-xs-3 line">
+                            <span class="small">Valor do ISSQN</span><br />
+                            <span t-field="o.valor_issqn"></span>
+                        </div>
+                    </div>
+                </t>
+
                 <div class="row">
                     <div class="col-xs-12">
                         <span class="enfase">Dados Adicionais</span>
-
                     </div>
                 </div>
 
