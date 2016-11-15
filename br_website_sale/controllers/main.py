@@ -9,12 +9,17 @@ import openerp.addons.website_sale.controllers.main as main
 
 class L10nBrWebsiteSale(main.WebsiteSale):
 
-    mandatory_billing_fields = ["name", "phone", "email", "cnpj_cpf", "zip",
-                                "street", "number", "district", "country_id",
-                                "state_id", "city_id"]
-    mandatory_shipping_fields = ["name", "phone", "zip",
-                                 "street", "number", "district", "country_id",
-                                 "state_id", "city_id"]
+    def _get_mandatory_billing_fields(self):
+        res = super(L10nBrWebsiteSale, self)._get_mandatory_billing_fields()
+        res.remove('city')
+        return res + ["cnpj_cpf", "zip", "number", "district",
+                      "state_id", "city_id"]
+
+    def _get_mandatory_shipping_fields(self):
+        res = super(L10nBrWebsiteSale, self)._get_mandatory_shipping_fields()
+        res.remove('city')
+        return res + ["cnpj_cpf", "zip", "number", "district",
+                      "state_id", "city_id"]
 
     @http.route(['/shop/get_cities'], type='json', auth="public",
                 methods=['POST'], website=True)
@@ -44,6 +49,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             val['shipping_city_id'] = data['city_id']
         return val
 
-    def checkout_form_validate(self, data):
-        error = super(L10nBrWebsiteSale, self).checkout_form_validate(data)
+    def checkout_form_validate(self, mode, all_form_values, data):
+        error = super(L10nBrWebsiteSale, self).checkout_form_validate(
+            mode, all_form_values, data)
         return error

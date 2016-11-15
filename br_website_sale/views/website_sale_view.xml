@@ -3,28 +3,19 @@
     <data>
         <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop BR">
             <xpath expr="." position="inside">
-              <script type="text/javascript" src="/l10n_br_website_sale/static/src/js/jquery.mask.min.js"></script>
-              <script type="text/javascript" src="/l10n_br_website_sale/static/src/js/website_sale.js"></script>
+              <script type="text/javascript" src="/br_website_sale/static/src/js/jquery.mask.min.js"></script>
+              <script type="text/javascript" src="/br_website_sale/static/src/js/website_sale.js"></script>
           </xpath>
         </template>
 
-        <template id="l10n_br_website_sale_checkout" inherit_id="website_sale.checkout"
-            name="Website Sale Checkout BR">
-
-            <xpath expr="//label[@for='street']/parent::div" position="replace">
-            </xpath>
-            <xpath expr="//label[@for='street2']/parent::div" position="replace">
-            </xpath>
-            <xpath expr="//label[@for='city']/parent::div" position="replace">
-            </xpath>
-            <xpath expr="//label[@for='zip']/parent::div" position="replace">
-            </xpath>
+        <template id="br_website_sale_address" inherit_id="website_sale.address"
+            name="Website Sale Address">
 
             <xpath expr="//label[@for='state_id']/parent::div" position="after">
-                <div t-attf-class="form-group #{error.get('l10n_br_city_id') and 'has-error' or ''} col-lg-6">
-                     <label class="control-label" for="l10n_br_city_id">Cidade</label>
-                     <input id="input_l10n_br_city_id" type="hidden" t-att-value="checkout.get('l10n_br_city_id')" />
-                     <select id="select_l10n_br_city_id" name="l10n_br_city_id" class="form-control">
+                <div t-attf-class="form-group #{error.get('city_id') and 'has-error' or ''} col-lg-6">
+                     <label class="control-label" for="city_id">Cidade</label>
+                     <input id="input_city_id" type="hidden" t-att-value="'city_id' in checkout and checkout['city_id']" />
+                     <select id="select_city_id" name="city_id" class="form-control">
                          <option value="">Cidade...</option>
                      </select>
                  </div>
@@ -33,68 +24,27 @@
             <xpath expr="//label[@for='phone']/parent::div" position="after">
                 <div t-attf-class="form-group #{error.get('cnpj_cpf') and 'has-error' or ''} col-lg-6">
                     <label class="control-label" for="contact_name">CPF</label>
-                    <input type="text" name="cnpj_cpf" class="form-control" t-att-value="checkout.get('cnpj_cpf')"/>
+                    <input type="text" name="cnpj_cpf" class="form-control" t-att-value="'cnpj_cpf' in checkout and checkout['cnpj_cpf']"/>
                 </div>
                 <div t-attf-class="form-group #{error.get('zip') and 'has-error' or ''} col-lg-6">
                     <label class="control-label" for="zip">CEP</label>
-                    <input type="text" name="zip" class="form-control" t-att-value="checkout.get('zip')"/>
+                    <input type="text" name="zip" class="form-control" t-att-value="'zip' in checkout and checkout['zip']"/>
                 </div>
                 <div t-attf-class="form-group #{error.get('street') and 'has-error' or ''} col-lg-6">
                     <label class="control-label" for="number">Endereço</label>
-                    <input type="text" name="street" class="form-control" t-att-value="checkout.get('street')"/>
+                    <input type="text" name="street" class="form-control" t-att-value="'street' in checkout and checkout['street']"/>
                 </div>
                 <div t-attf-class="form-group #{error.get('number') and 'has-error' or ''} col-lg-6">
                     <label class="control-label" for="number">Número</label>
-                    <input type="text" name="number" class="form-control" t-att-value="checkout.get('number')"/>
+                    <input type="text" name="number" class="form-control" t-att-value="'number' in checkout and checkout['number']"/>
                 </div>
                 <div t-attf-class="form-group #{error.get('district') and 'has-error' or ''} col-lg-6">
                     <label class="control-label" for="district">Bairro</label>
-                    <input type="text" name="district" class="form-control" t-att-value="checkout.get('district')"/>
+                    <input type="text" name="district" class="form-control" t-att-value="'district' in checkout and checkout['district']"/>
                 </div>
                 <div t-attf-class="form-group #{error.get('street2') and 'has-error' or ''} col-lg-6">
                     <label class="control-label" for="street2">Complemento</label>
-                    <input type="text" name="street2" class="form-control" t-att-value="checkout.get('street2')"/>
-                </div>
-            </xpath>
-
-
-            <!--  Shipping Form -->
-            <xpath expr="//label[@for='shipping_city']/parent::div" position="replace">
-            </xpath>
-            <xpath expr="//label[@for='shipping_zip']/parent::div" position="replace">
-            </xpath>
-            <xpath expr="//div[@class='js_shipping row mb16']/div[4]" position="replace">
-            </xpath>
-
-            <xpath expr="//label[@for='shipping_phone']/parent::div" position="after">
-                <div t-attf-class="form-group #{error.get('shipping_zip') and 'has-error' or ''} col-lg-6">
-                    <label class="control-label" for="shipping_zip">CEP</label>
-                    <input type="text" name="shipping_zip" class="form-control" t-att-value="checkout.get('shipping_zip')"/>
-                </div>
-            </xpath>
-
-            <xpath expr="//label[@for='shipping_street']/parent::div" position="after">
-                <div t-attf-class="form-group #{error.get('shipping_number') and 'has-error' or ''} col-lg-6">
-                    <label class="control-label" for="shipping_number">Número</label>
-                    <input type="text" name="shipping_number" class="form-control" t-att-value="checkout.get('shipping_number')"/>
-                </div>
-                <div t-attf-class="form-group #{error.get('shipping_district') and 'has-error' or ''} col-lg-6">
-                    <label class="control-label" for="shipping_district">Bairro</label>
-                    <input type="text" name="shipping_district" class="form-control" t-att-value="checkout.get('shipping_district')"/>
-                </div>
-                <div t-attf-class="form-group #{error.get('shipping_street2') and 'has-error' or ''} col-lg-6">
-                    <label class="control-label" for="shipping_street2">Complemento</label>
-                    <input type="text" name="shipping_street2" class="form-control" t-att-value="checkout.get('shipping_street2')"/>
-                </div>
-            </xpath>
-
-            <xpath expr="//label[@for='shipping_state_id']/parent::div" position="after">
-                <div t-attf-class="form-group #{error.get('shipping_l10n_br_city_id') and 'has-error' or ''} col-lg-6">
-                    <label class="control-label" for="shipping_l10n_br_city_id">Cidade</label>
-                    <input id="input_shipping_l10n_br_city_id" type="hidden" t-att-value="checkout.get('shipping_l10n_br_city_id')" />
-                    <select id="select_shipping_l10n_br_city_id" name="shipping_l10n_br_city_id" class="form-control">
-                        <option value="">Cidade...</option>
-                    </select>
+                    <input type="text" name="street2" class="form-control" t-att-value="'street2' in checkout and checkout['street2']"/>
                 </div>
             </xpath>
 
