@@ -56,15 +56,6 @@ class CashFlowReport(models.TransientModel):
         liquidity_lines = []
         for acc in accs:
             continue
-            if acc.balance != 0:
-                liquidity_lines.append({
-                    'name': acc.name,
-                    'cashflow_id': self.id,
-                    'account_id': acc.id,
-                    'debit': acc.credit,
-                    'credit': acc.debit,
-                    'amount': acc.balance,
-                })
         return liquidity_lines
 
     @api.multi
