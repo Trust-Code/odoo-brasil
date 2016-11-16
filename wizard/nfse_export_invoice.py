@@ -21,8 +21,8 @@ class NfseExportInvoice(models.TransientModel):
     name = fields.Char('Nome', size=255)
     file = fields.Binary('Arquivo', readonly=True)
     state = fields.Selection(
-       [('init', 'init'), ('done', 'done'), ],
-       'state', readonly=True, default='init')
+        [('init', 'init'), ('done', 'done')],
+        'state', readonly=True, default='init')
 
     def _invoice_vals(self, inv):
         tomador = {
