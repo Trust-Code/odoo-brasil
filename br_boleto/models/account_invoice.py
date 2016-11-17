@@ -16,27 +16,44 @@ class AccountInvoice(models.Model):
         for item in self:
             if item.payment_mode_id and item.payment_mode_id.boleto_type != '':
                 if not self.company_id.partner_id.legal_name:
-                    error += u'Razão Social\n'
+                    error += u'Empresa - Razão Social\n'
                 if not self.company_id.cnpj_cpf:
-                    error += u'CNPJ\n'
+                    error += u'Empresa - CNPJ\n'
                 if not self.company_id.district:
-                    error += u'Bairro\n'
+                    error += u'Empresa - Bairro\n'
                 if not self.company_id.zip:
-                    error += u'CEP\n'
+                    error += u'Empresa - CEP\n'
                 if not self.company_id.city_id.name:
-                    error += u'Cidade\n'
+                    error += u'Empresa - Cidade\n'
                 if not self.company_id.street:
-                    error += u'Logradouro\n'
+                    error += u'Empresa - Logradouro\n'
                 if not self.company_id.number:
-                    error += u'Número\n'
+                    error += u'Empresa - Número\n'
                 if not self.company_id.state_id.code:
-                    error += u'Estado\n'
+                    error += u'Empresa - Estado\n'
+
+                if not self.partner_id.name:
+                    error += u'Cliente - Razão Social\n'
+                if not self.partner_id.cnpj_cpf:
+                    error += u'Cliente - CNPJ/CPF \n'
+                if not self.partner_id.district:
+                    error += u'Cliente - Bairro\n'
+                if not self.partner_id.zip:
+                    error += u'Cliente - CEP\n'
+                if not self.partner_id.city_id.name:
+                    error += u'Cliente - Cidade\n'
+                if not self.partner_id.street:
+                    error += u'Cliente - Logradouro\n'
+                if not self.partner_id.number:
+                    error += u'Cliente - Número\n'
+                if not self.partner_id.state_id.code:
+                    error += u'Cliente - Estado\n'
+
                 if not self.payment_mode_id.bank_account_id.codigo_convenio:
                     error += u'Código de Convênio\n'
                 if len(error) > 0:
                     raise UserError(u"""Ação Bloqueada!
-Para prosseguir é necessário preencher os seguintes campos nas configurações \
-da empresa:\n""" + error)
+Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
         return res
 
     @api.multi

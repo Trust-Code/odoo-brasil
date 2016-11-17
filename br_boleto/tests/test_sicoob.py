@@ -56,8 +56,19 @@ class TestBoletoSicoob(TestBoleto):
             'phone': '(48) 9801-6226',
         })
 
+    def _update_partner_fisica(self):
+        self.partner_fisica.write({
+            'cnpj_cpf': '075.932.961-30',
+            'district': 'Centro',
+            'zip': '88032-050',
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+        })
+
     def test_raise_error_if_not_payment(self):
         self._update_main_company()
+        self._update_partner_fisica()
         self.invoices.action_invoice_open()
 
         self.assertEquals(len(self.invoices.receivable_move_line_ids), 1)
