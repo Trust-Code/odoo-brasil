@@ -5,6 +5,7 @@
 
 {
     'name': 'Cash Flow Report - Base Account',
+    'description': "Cash Flow Report and Graph",
     'summary': """Create the base for the cash flow""",
     'version': '10.0.1.0.0',
     'category': 'Tools',
