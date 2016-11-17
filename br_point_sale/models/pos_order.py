@@ -327,10 +327,13 @@ class PosOrderLine(models.Model):
         string='Vlr. Bruto', store=True, compute=_compute_amount_line_all,
         digits=dp.get_precision('Sale Price'))
     valor_icms = fields.Float(string='Valor ICMS', store=True,
+                              digits=dp.get_precision('Sale Price'),
                               compute=_compute_amount_line_all)
     valor_pis = fields.Float(string='Valor PIS', store=True,
+                             digits=dp.get_precision('Sale Price'),
                              compute=_compute_amount_line_all)
     valor_cofins = fields.Float(string='Valor COFINS', store=True,
+                                digits=dp.get_precision('Sale Price'),
                                 compute=_compute_amount_line_all)
     base_icms = fields.Float(string='Base ICMS', store=True,
                              compute=_compute_amount_line_all)
