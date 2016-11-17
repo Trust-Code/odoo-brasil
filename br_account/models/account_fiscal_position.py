@@ -132,7 +132,6 @@ class AccountFiscalPosition(models.Model):
                 if len(rule.state_ids) > 0:
                     rules_points[rule.id] -= 1
 
-
             greater_rule = max([(v, k) for k, v in rules_points.items()])
             rules = [rules.browse(greater_rule[1])]
 
