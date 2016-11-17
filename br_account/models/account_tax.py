@@ -78,6 +78,19 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
+    @api.onchange('domain')
+    def _onchange_domain_tax(self):
+        if self.domain in ('icms', 'simples', 'pis', 'cofins', 'issqn', 'ii',
+                           'icms_inter', 'icms_intra', 'fcp'):
+            self.price_include = True
+            self.amount_type = 'division'
+        if self.domain in ('icmsst', 'ipi'):
+            self.price_include = False
+            self.include_base_amount = False
+            self.amount_type = 'division'
+        if self.domain == 'icmsst':
+            self.amount_type = 'icmsst'
+
     @api.onchange('deduced_account_id')
     def _onchange_deduced_account_id(self):
         self.refund_deduced_account_id = self.deduced_account_id

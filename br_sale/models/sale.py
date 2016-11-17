@@ -165,8 +165,8 @@ class SaleOrderLine(models.Model):
     @api.multi
     def _compute_tax_id(self):
         res = super(SaleOrderLine, self)._compute_tax_id()
-        self._update_tax_from_ncm()
         for line in self:
+            line._update_tax_from_ncm()
             fpos = line.order_id.fiscal_position_id or \
                 line.order_id.partner_id.property_account_position_id
             if fpos:
@@ -177,9 +177,9 @@ class SaleOrderLine(models.Model):
                     if value and key in line._fields:
                         line.update({key: value})
 
-                empty = self.env['account.tax'].browse()
-                ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
-                icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')
+                empty = line.env['account.tax'].browse()
+                ipi = line.tax_id.filtered(lambda x: x.domain == 'ipi')
+                icmsst = line.tax_id.filtered(lambda x: x.domain == 'icmsst')
                 tax_ids = vals.get('tax_icms_id', empty) | \
                     vals.get('tax_icms_st_id', icmsst) | \
                     vals.get('tax_icms_inter_id', empty) | \

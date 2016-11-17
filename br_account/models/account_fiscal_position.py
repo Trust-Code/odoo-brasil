@@ -94,23 +94,9 @@ class AccountFiscalPosition(models.Model):
     def _filter_rules(self, fpos_id, type_tax, partner,
                       product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
-        domain = ['|', ('tipo_produto', '=', product.fiscal_type),
-                  ('tipo_produto', '=', False),
-                  ('fiscal_position_id', '=', fpos_id),
+        domain = [('fiscal_position_id', '=', fpos_id),
                   ('domain', '=', type_tax)]
-        domain += [('partner_ids', '=', partner.id)]
         rules = rule_obj.search(domain)
-        if not rules:
-            domain.pop()
-            domain += [('product_ids', '=', product.id)]
-            rules = rule_obj.search(domain)
-        if not rules:
-            domain.pop()
-            domain += [('state_ids', '=', state.id)]
-            rules = rule_obj.search(domain)
-        if not rules:
-            domain.pop()
-            rules = rule_obj.search(domain)
         if rules:
             rules_points = {}
             for rule in rules:
@@ -125,7 +111,7 @@ class AccountFiscalPosition(models.Model):
                     rules_points[rule.id] += 1
                 if len(rule.product_ids) > 0:
                     rules_points[rule.id] -= 1
-                if len(rule.tipo_produto) > 0:
+                if not rule.tipo_produto:
                     rules_points[rule.id] -= 1
                 if len(rule.product_category_ids) > 0:
                     rules_points[rule.id] -= 1
