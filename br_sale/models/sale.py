@@ -232,6 +232,8 @@ class SaleOrderLine(models.Model):
         res['tax_ii_id'] = ii and ii.id or False
         res['tax_issqn_id'] = issqn and issqn.id or False
 
+        res['product_type'] = self.product_id.fiscal_type
+        res['company_fiscal_type'] = self.company_id.fiscal_type
         res['cfop_id'] = self.cfop_id.id
         ncm = self.product_id.fiscal_classification_id
         res['fiscal_classification_id'] = ncm.id
