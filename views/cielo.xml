@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+    	<template id="cielo_acquirer_button">
+            <form t-if="acquirer.cielo_merchant_id" t-att-action="tx_url" method="post" target="_self">
+				<input type="hidden" name="merchant_id" t-att-value="merchant_id" />
+                <!--				<input type="hidden" name="order_number" t-att-value="tx_values['order_id']" />
+				<input type="hidden" name="shipping_type" t-att-value="tx_values['shipping_type']" />
+			
+				<t t-foreach="tx_values['sale_lines']" t-as="line">						
+					<input type="hidden" t-att-name="'cart_' + line['index'] + '_name'" t-att-value="line['name']" />
+					<input type="hidden" t-att-name="'cart_' + line['index'] + '_unitprice'" t-att-value="line['price']" />
+					<input type="hidden" t-att-name="'cart_' + line['index'] + '_quantity'" t-att-value="line['quantity']" />					
+					<input type="hidden" t-att-name="'cart_' + line['index'] + '_type'" t-att-value="2" />
+				</t>
+				
+				<div id="delivery-options">
+					 Exemplo para implementar tipos de envio 
+					<input type="hidden" name="shipping_1_name" value="Servico da Loja" />
+					<input type="hidden" name="shipping_1_price" value="500" />
+					<input type="hidden" name="shipping_2_name" value="Motoboy" />
+					<input type="hidden" name="shipping_2_price" value="800" />
+				</div>
+
+				<input type="hidden" name="Shipping_Zipcode" t-att-value="tx_values['zip_code']" />
+				<input type="hidden" name="Shipping_Address_Name" t-att-value="tx_values['street']" />
+				<input type="hidden" name="Shipping_Address_Number" t-att-value="tx_values['street_number']" />
+				<input t-if="tx_values['complement']" type="hidden" name="Shipping_Address_Complement"	t-att-value="tx_values['complement']" />
+				<input type="hidden" name="Shipping_Address_District" t-att-value="tx_values['district']" />
+				<input type="hidden" name="Shipping_Address_City" t-att-value="tx_values['city']" />
+				<input type="hidden" name="Shipping_Address_State" t-att-value="tx_values['state']" />
+		
+        		<input type="hidden" name="customer_name" t-att-value="tx_values['partner_name']" />
+				<input t-if="tx_values['partner_email']" type="hidden" name="customer_email" t-att-value="tx_values['partner_email']" />
+				<input t-if="tx_values['partner_cpf']" type="hidden" name="customer_identity" t-att-value="tx_values['partner_cpf']" />
+				<input t-if="tx_values['partner_phone']" type="hidden" name="customer_phone" t-att-value="tx_values['partner_phone']" />
+                -->
+				<button type="submit" width="100px" t-att-class="submit_class">
+                <img t-if="not submit_txt" src="/payment_cielo/static/src/img/cielo_icon.png"/>
+                <span t-if="submit_txt"><t t-esc="submit_txt"/> <span class="fa fa-long-arrow-right"/></span>
+            </button>
+        </form>
+    	</template>
+
+    </data>
+</openerp>
