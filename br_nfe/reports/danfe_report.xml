@@ -259,18 +259,20 @@
                 </div>
 
                 <div class="row line">
-                    <div class="borda-completa col-xs-1 line">
-                        <span class="small">Número</span><br />
-                        <span style="font-size:11px;">151/1</span>
-                    </div>
-                    <div class="bt br bb col-xs-1 line">
-                        <span class="small">Vencimento</span><br />
-                        <span style="font-size:11px;">08/10/2016</span>
-                    </div>
-                    <div class="bt br bb col-xs-1 line">
-                        <span class="small">Valor</span><br />
-                        <span style="font-size:11px;">15,00</span>
-                    </div>
+                    <t t-foreach="o.duplicata_ids" t-as="dupl">
+                        <div class="borda-completa col-xs-1 line">
+                            <span class="small">Número</span><br />
+                            <span style="font-size:11px;" t-field="dupl.numero_duplicata"></span>
+                        </div>
+                        <div class="bt br bb col-xs-1 line">
+                            <span class="small">Vencimento</span><br />
+                            <span style="font-size:11px;" t-field="dupl.data_vencimento"></span>
+                        </div>
+                        <div class="bt br bb col-xs-1 line">
+                            <span class="small">Valor</span><br />
+                            <span style="font-size:11px;" t-field="dupl.valor"></span>
+                        </div>
+                    </t>
                 </div>
 
                 <div class="row">
@@ -512,8 +514,8 @@
                 <div class="row line">
                     <div class="borda-completa col-xs-7 line4">
                         <span class="small">Informações Complementares</span><br />
-                        <span t-field="o.informacoes_complementares"></span>
-                        <span t-field="o.informacoes_legais"></span>
+                        <span class="small" t-field="o.informacoes_complementares"></span>
+                        <span class="small" t-field="o.informacoes_legais"></span>
                     </div>
                     <div class="bt br bb col-xs-5 line4">
                         <span class="small">Reservado ao Fisco</span><br />
