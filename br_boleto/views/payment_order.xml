@@ -10,6 +10,8 @@
                 <field name="name" />
                 <field name="user_id" />
                 <field name="payment_mode_id" />
+                <field name="amount_total" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -28,6 +30,7 @@
                         <group name='references'>
                             <field name="name"/>
                             <field name="user_id" />
+                            <field name="amount_total" />
                         </group>
 
                         <group name='data'>
@@ -39,6 +42,7 @@
                         <field name="line_ids" nolabel='1'>
                             <tree name='account_move_line'>
                                 <field name="move_id" />
+                                <field name="state" />
                                 <field name="name" />
                                 <field name="date_maturity" />
                                 <field name="value" />

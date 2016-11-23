@@ -16,6 +16,19 @@
                 <field name="cnab_file" />
                 <field name="file_number" />
                 <field name="cnab_valido" />
+                <field name="data_emissao_cnab" />
+            </field>
+        </field>
+    </record>
+
+    <record id="br_cnab_payment_order_tree_view" model="ir.ui.view">
+        <field name="name">trustcode.payment_order.tree.view</field>
+        <field name="model">payment.order</field>
+        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_tree_view" />
+        <field name="type">tree</field>
+        <field name="arch" type="xml" >
+            <field name="state" position="after" >
+                <field name="data_emissao_cnab" />
             </field>
         </field>
     </record>
