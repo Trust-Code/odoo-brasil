@@ -1,31 +1,15 @@
-# -*- encoding: utf-8 -*-
-###############################################################################
-#                                                                             #
-# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
-#              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
-#                                                                             #
-# This program is free software: you can redistribute it and/or modify        #
-# it under the terms of the GNU Affero General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or           #
-# (at your option) any later version.                                         #
-#                                                                             #
-# This program is distributed in the hope that it will be useful,             #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU General Public License for more details.                                #
-#                                                                             #
-# You should have received a copy of the GNU General Public License           #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
-#                                                                             #
-###############################################################################
+# -*- coding: utf-8 -*-
+# © 2016 Danimar Ribeiro, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import re
+import json
 import logging
+import requests
 
 from odoo import api, models, fields
 from odoo.http import request
 from datetime import datetime
-from urllib2 import Request, urlopen
-from json import dumps
 
 _logger = logging.getLogger(__name__)
 
@@ -35,18 +19,30 @@ odoo_request = request
 class AcquirerCielo(models.Model):
     _inherit = 'payment.acquirer'
 
+    def _default_return_url(self):
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        return "%s%s" % (base_url, '/shop/confirmation')
+
+    provider = fields.Selection(selection_add=[('cielo', 'Cielo')])
     cielo_merchant_id = fields.Char(string='Cielo Merchant Id')
+    return_url = fields.Char(string="Url de Retorno",
+                             default=_default_return_url, size=300)
 
     @api.multi
     def cielo_form_generate_values(self, values):
         """ Função para gerar HTML POST da Cielo """
         order = odoo_request.website.sale_get_order()
+        if not order.payment_tx_id:
+            return {
+                'checkout_url': '/shop/payment',
+            }
+
         total_desconto = 0
         items = []
         for line in order.order_line:
-            if line.product_id.type == 'service':
+            if line.product_id.fiscal_type == 'service':
                 tipo = 'Service'
-            elif line.product_id.type in ['consu', 'product']:
+            elif line.product_id.fiscal_type == 'product':
                 tipo = 'Asset'
             else:
                 tipo = 'Payment'
@@ -54,36 +50,40 @@ class AcquirerCielo(models.Model):
             item = {
                 "Name": line.product_id.name,
                 "Description": line.name,
-                "UnitPrice": line.price_unit,
-                "Quantity": line.product_uom_qty,
+                "UnitPrice": "%d" % round(line.price_unit * 100),
+                "Quantity": "%d" % line.product_uom_qty,
                 "Type": tipo,
-                "Sku": line.product_id.default_code,
             }
+            if line.product_id.default_code:
+                item["Sku"] = line.product_id.default_code
             if line.product_id.weight:
                 item['Weight'] = line.product_id.weight
             items.append(item)
-        service = {"Name": "Grátis", "Price": 0}
-        shipping = {"Type": "Free", "Services": service}
+        shipping = {
+            "Type": "WithoutShipping",
+            "TargetZipCode": re.sub('[^0-9]', '', order.partner_id.zip),
+        }
         address = {
             "Street": order.partner_id.street,
             "Number": order.partner_id.number,
+            "Complement": order.partner_id.street2,
             "District": order.partner_id.district,
             "City": order.partner_id.city_id.name,
-            "State": order.partner_id.state_id.name,
+            "State": order.partner_id.state_id.code,
         }
         if (order.partner_id.street2) > 0:
             address['Complement'] = order.partner_id.street2
         payment = {"BoletoDiscount": 0, "DebitDiscount": 0}
         customer = {
-            "Identity": order.partner_id.cnpj_cpf,
+            "Identity": re.sub('[^0-9]', '', order.partner_id.cnpj_cpf or ''),
             "FullName": order.partner_id.name,
             "Email": order.partner_id.email,
-            "Phone": order.partner_id.phone,
+            "Phone": re.sub('[^0-9]', '', order.partner_id.phone or ''),
         }
         total_desconto *= 100
         discount = {'Type': 'Amount', 'Value': int(total_desconto)}
-        options = {"AntifraudEnabled": False}
-        order_jason = {
+        options = {"AntifraudEnabled": False, "ReturnUrl": self.return_url}
+        order_json = {
             "OrderNumber": values['reference'],
             "SoftDescriptor": "FOOBARBAZ",
             "Cart": {
@@ -95,14 +95,21 @@ class AcquirerCielo(models.Model):
             "Customer": customer,
             "Options": options,
         }
-        json = dumps(order_jason)
+        json_send = json.dumps(order_json)
         headers = {"Content-Type": "application/json",
-                   "MerchantId": "00000000-0000-0000-0000-000000000000"}
-        request = Request(
+                   "MerchantId": self.cielo_merchant_id}
+        request = requests.post(
             "https://cieloecommerce.cielo.com.br/api/public/v1/orders",
-            data=json, headers=headers)
-        response = urlopen(request).read()
-        print response
+            data=json_send, headers=headers)
+        response = request.text
+
+        resposta = json.loads(response)
+        if "message" in resposta:
+            raise Exception("Erro ao comunicar com a CIELO")
+
+        return {
+            'checkout_url': resposta["settings"]["checkoutUrl"],
+        }
 
 
 class TransactionCielo(models.Model):
@@ -129,6 +136,7 @@ class TransactionCielo(models.Model):
         default="https://www.cielo.com.br/VOL/areaProtegida/index.jsp")
 
     def _cielo_form_get_tx_from_data(self, cr, uid, data, context=None):
+        print "chamou esse cara aqui"
         acquirer_id = self.pool['payment.acquirer'].search(
             cr, uid, [('provider', '=', 'cielo')], context=context)
         acquirer = self.pool['payment.acquirer'].browse(
