@@ -136,7 +136,6 @@ class TransactionCielo(models.Model):
         default="https://www.cielo.com.br/VOL/areaProtegida/index.jsp")
 
     def _cielo_form_get_tx_from_data(self, cr, uid, data, context=None):
-        print "chamou esse cara aqui"
         acquirer_id = self.pool['payment.acquirer'].search(
             cr, uid, [('provider', '=', 'cielo')], context=context)
         acquirer = self.pool['payment.acquirer'].browse(
