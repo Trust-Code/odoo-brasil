@@ -10,9 +10,10 @@ class PaymentOrderLine(models.Model):
 
     @api.multi
     def _compute_state(self):
-        self.state = 'open'
-        if self.move_id.reconciled:
-            self.state = 'payed'
+        for item in self:
+            item.state = 'open'
+            if item.move_line_id.reconciled:
+                item.state = 'paid'
 
     name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
@@ -28,7 +29,7 @@ class PaymentOrderLine(models.Model):
         'payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
-    state = fields.Selection([("open", "Aberto"), ("payed", "Pago")],
+    state = fields.Selection([("open", "Aberto"), ("paid", "Pago")],
                              string="Situação",
                              compute="_compute_state")
 
@@ -38,10 +39,11 @@ class PaymentOrder(models.Model):
 
     @api.depends('line_ids')
     def _compute_amount_total(self):
-        amount_total = 0
-        for line in self.line_ids:
-            amount_total += line.value
-        self.amount_total = amount_total
+        for item in self:
+            amount_total = 0
+            for line in item.line_ids:
+                amount_total += line.value
+            item.amount_total = amount_total
 
     name = fields.Char(max_length=30, string="Nome", required=True)
     user_id = fields.Many2one('res.users', string='Responsável',
@@ -50,7 +52,8 @@ class PaymentOrder(models.Model):
                                       string='Modo de Pagamento',
                                       required=True)
     state = fields.Selection([('draft', 'Rascunho'), ('cancel', 'Cancelado'),
-                              ('open', 'Confirmado'), ('done', 'Fechado')])
+                              ('open', 'Confirmado'), ('done', 'Fechado')],
+                             string="Situação")
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
     currency_id = fields.Many2one('res.currency', string='Moeda')
