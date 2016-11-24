@@ -6,7 +6,7 @@
 import logging
 import pprint
 
-from odoo import http, SUPERUSER_ID
+from odoo import http
 from odoo.http import request
 
 from odoo.addons.website_sale.controllers.main import WebsiteSale
@@ -73,14 +73,44 @@ class CieloController(http.Controller):
         payment_status    7
         tid    200920152219370767
         """
-        cr, context = request.cr, request.context
-        request.registry['payment.transaction'].form_feedback(
-            cr, SUPERUSER_ID, post, 'cielo', context=context)
+        res = request.env['payment.transaction'].sudo().form_feedback(
+            post, 'cielo')
+        return res
 
     @http.route(
-        '/cielo/notificacao/', type='http', auth="none", methods=['POST'])
+        '/cielo/notificacao/', type='http', auth="none",
+        methods=['GET', 'POST'])
     def cielo_notify(self, **post):
-        """ Cielo Notificação - Parametros
+        """ Cielo Notificação"""
+        _logger.info('Iniciando retorno de notificação cielo post-data: %s',
+                     pprint.pformat(post))
+        post["order_number"] = "SO026"
+        post["amount"] = "200"
+        post["discount_amount"] = "0"
+        post["checkout_cielo_order_number"] = \
+            "f11ff6f582f0468f8063d9d716c55e25"
+        post["created_date"] = "24/11/2016 16:46:37"
+        post["customer_name"] = "Trustcode Suporte"
+        post["customer_phone"] = "4898016226"
+        post["customer_identity"] = "06621204930"
+        post["customer_email"] = "admin@example.com"
+        post["shipping_type"] = "5"
+        post["shipping_price"] = "0"
+        post["payment_method_type"] = "1"
+        post["payment_method_brand"] = "1"
+        post["payment_maskedcreditcard"] = "401200******3335"
+        post["payment_installments"] = "1"
+        post["payment_status"] = "3"
+        post["tid"] = "241120161646374098"
+        post["test_transaction"] = "True"
+
+        self.cielo_validate_data(**post)
+        return "<status>OK</status>"
+
+    @http.route('/cielo/status/', type='http', auth="none",
+                methods=['GET', 'POST'])
+    def cielo_status(self, **post):
+        """ Quando o status de uma transação modifica essa url é chamada
         checkout_cielo_order_number 708da2506ec44d64aade742c11509459
         amount 1600
         order_number SO00
@@ -94,17 +124,16 @@ class CieloController(http.Controller):
             7 - Autorizado (somente para Cartão de Crédito)
             8 - Chargeback (somente para Cartão de Crédito)
         """
-        _logger.info('Iniciando retorno de notificação cielo post-data: %s',
-                     pprint.pformat(post))
-
-        self.cielo_validate_data(**post)
-        return "<status>OK</status>"
-
-    @http.route('/cielo/status/', type='http', auth="none")
-    def cielo_cancel(self, **post):
-        """ Quando o status de uma transação modifica essa url é chamada """
         _logger.info(
             'Iniciando mudança de status de transação post-data: %s',
             pprint.pformat(post))  # debug
 
+        post["checkout_cielo_order_number"] = \
+            "01eae1656d59445ab34c9dcfee0db37e"
+        post["amount"] = "200"
+        post["order_number"] = "SO026"
+        post["payment_status"] = "2"
+        post["test_transaction"] = "True"
+
+        self.cielo_validate_data(**post)
         return "<status>OK</status>"

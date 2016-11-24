@@ -98,13 +98,15 @@ class AcquirerCielo(models.Model):
         json_send = json.dumps(order_json)
         headers = {"Content-Type": "application/json",
                    "MerchantId": self.cielo_merchant_id}
-        request = requests.post(
+        request_post = requests.post(
             "https://cieloecommerce.cielo.com.br/api/public/v1/orders",
             data=json_send, headers=headers)
-        response = request.text
-
+        response = request_post.text
         resposta = json.loads(response)
         if "message" in resposta:
+            request.session.update({
+                'sale_transaction_id': False,
+            })
             raise Exception("Erro ao comunicar com a CIELO")
 
         return {
@@ -135,48 +137,46 @@ class TransactionCielo(models.Model):
         string=u"Cielo", size=60,
         default="https://www.cielo.com.br/VOL/areaProtegida/index.jsp")
 
-    def _cielo_form_get_tx_from_data(self, cr, uid, data, context=None):
-        acquirer_id = self.pool['payment.acquirer'].search(
-            cr, uid, [('provider', '=', 'cielo')], context=context)
-        acquirer = self.pool['payment.acquirer'].browse(
-            cr, uid, acquirer_id, context=context)
+    @api.model
+    def _cielo_form_get_tx_from_data(self, data):
+        reference = data.get('order_number')
+        txs = self.env['payment.transaction'].search(
+            [('reference', '=', reference)])
+        return txs[0]
 
+    @api.multi
+    def _cielo_form_validate(self, data):
         reference = data.get('order_number')
         txn_id = data.get('checkout_cielo_order_number')
-        cielo_id = data.get('tid')
+        cielo_id = data.get('tid', False)
         payment_type = data.get('payment_method_type')
-        amount = float(data.get('amount')) / 100.0
+        amount = float(data.get('amount', '0')) / 100.0
         state_cielo = data.get('payment_status')
 
-        sale_id = self.pool['sale.order'].search(
-            cr, uid, [('name', '=', reference)], context=context)
-        sale_order = self.pool['sale.order'].browse(
-            cr, uid, sale_id, context=context)
-        state = 'pending' if state_cielo == '1' else 'done'
+        # 1 - Pendente (Para todos os meios de pagamento)
+        # 2 - Pago (Para todos os meios de pagamento)
+        # 3 - Negado (Somente para Cartão Crédito)
+        # 4 - Expirado (Cartões de Crédito e Boleto)
+        # 5 - Cancelado (Para cartões de crédito)
+        # 6 - Não Finalizado (Todos os meios de pagamento)
+        # 7 - Autorizado (somente para Cartão de Crédito)
+        # 8 - Chargeback (somente para Cartão de Crédito)
+        state = 'pending' if state_cielo == '1' else 'error'
+        state = 'done' if state_cielo in ('2', '7') else state
 
         values = {
             'reference': reference,
             'amount': amount,
-            'currency_id': acquirer.company_id.currency_id.id,
-            'acquirer_id': acquirer.id,
             'acquirer_reference': txn_id,
-            'partner_name': sale_order.partner_id.name,
-            'partner_address': sale_order.partner_id.street,
-            'partner_email': sale_order.partner_id.email,
-            'partner_lang': sale_order.partner_id.lang,
-            'partner_zip': sale_order.partner_id.zip,
-            'partner_city': sale_order.partner_id.l10n_br_city_id.name,
-            'partner_country_id': sale_order.partner_id.country_id.id,
             'state': state,
-            'partner_id': sale_order.partner_id.id,
             'date_validate': datetime.now(),
             'transaction_type': payment_type,
             'cielo_transaction_id': cielo_id,
-            'payment_installments': int(data.get('payment_installments', '1')),
-            'payment_boletonumber': data.get('payment_boletonumber', ''),
-            'payment_method_brand': data.get('payment_method_brand', None),
+            'payment_installments': data.get('payment_installments', False),
+            'payment_boletonumber': data.get('payment_boletonumber', False),
+            'payment_method_brand': data.get('payment_method_brand', False),
             'state_cielo': state_cielo
         }
-
-        payment_id = self.create(cr, uid, values, context=context)
-        return self.browse(cr, uid, payment_id, context=context)
+        res = {}
+        res.update({k: v for k, v in values.items() if v})
+        return self.write(res)
