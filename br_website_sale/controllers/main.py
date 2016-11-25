@@ -66,6 +66,26 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             mode, all_form_values, data)
         return error
 
+    def values_preprocess(self, order, mode, values):
+        values = super(L10nBrWebsiteSale, self).values_preprocess(order, mode,
+                                                                  values)
+        # TODO: Validações dos dados
+        return values
+
+    def values_postprocess(self, order, mode, values, errors, error_msg):
+        new_values, errors, error_msg = super(L10nBrWebsiteSale, self).\
+                values_postprocess(order, mode, values, errors, error_msg)
+        new_values['cnpj_cpf'] = values.get('cnpj_cpf', None)
+        new_values['company_type'] = values.get('company_type', None)
+        is_comp = False if values.get('company_type', None) == 'person'\
+            else True
+        new_values['is_company'] = is_comp
+        new_values['country_id'] = int(new_values.get('country_id', None))
+        new_values['city_id'] = int(values.get('city_id', None))
+        new_values['number'] = values.get('number', None)
+        new_values['street2'] = values.get('street2', '')
+        return new_values, errors, error_msg
+
     @http.route()
     def address(self, **kw):
         result = super(L10nBrWebsiteSale, self).address(**kw)
