@@ -4,9 +4,9 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, api
-from openerp.tools.translate import _
-from openerp.exceptions import Warning
+from odoo import models, api
+from odoo.tools.translate import _
+from odoo.exceptions import UserError
 
 
 class ResPartner(models.Model):
@@ -53,4 +53,4 @@ class ResPartner(models.Model):
                     zip_ids=[zip.id for zip in zip_ids]
                 )
             else:
-                raise Warning(_('Nenhum registro encontrado'))
+                raise UserError(_('Nenhum registro encontrado'))
