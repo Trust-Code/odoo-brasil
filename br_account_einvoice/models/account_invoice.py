@@ -172,6 +172,7 @@ class AccountInvoice(models.Model):
         vals['valor_final'] = invoice.amount_total
         vals['valor_bc_icms'] = invoice.icms_base
         vals['valor_bc_icmsst'] = invoice.icms_st_base
+        vals['valor_estimado_tributos'] = invoice.total_tributos_estimados
         return vals
 
     @api.multi

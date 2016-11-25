@@ -69,10 +69,13 @@ class L10nBrWebsiteSale(main.WebsiteSale):
     @http.route()
     def address(self, **kw):
         result = super(L10nBrWebsiteSale, self).address(**kw)
-        partner_id = result.qcontext['partner_id']
-        partner_id = request.env['res.partner'].browse(partner_id)
-        result.qcontext['city'] = partner_id.city_id.id
-        result.qcontext['state'] = partner_id.state_id.id
+        partner_id = 0
+        if "partner_id" in result.qcontext:
+            partner_id = result.qcontext['partner_id']
+        if partner_id > 0:
+            partner_id = request.env['res.partner'].browse(partner_id)
+            result.qcontext['city'] = partner_id.city_id.id
+            result.qcontext['state'] = partner_id.state_id.id
         return result
 
     @http.route(['/shop/zip_search'], type='json', auth="public",

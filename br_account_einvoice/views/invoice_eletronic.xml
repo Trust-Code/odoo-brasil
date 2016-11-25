@@ -27,6 +27,7 @@
                                     <field name="tipo_produto" />
                                     <field name="cfop" />
                                     <field name="ncm" />
+                                    <field name="tributos_estimados" />
                                 </group>
                             </group>
                         </page>

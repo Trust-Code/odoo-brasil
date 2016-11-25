@@ -109,13 +109,13 @@ class InvoiceEletronic(models.Model):
     protocolo_nfe = fields.Char(string="Protocolo", size=50,
                                 help="Protocolo de autorização da NFe")
 
-    valor_icms_uf_remet = fields.Float(
+    valor_icms_uf_remet = fields.Monetary(
         string="ICMS Remetente",
         help='Valor total do ICMS Interestadual para a UF do Remetente')
-    valor_icms_uf_dest = fields.Float(
+    valor_icms_uf_dest = fields.Monetary(
         string="ICMS Destino",
         help='Valor total do ICMS Interestadual para a UF de destino')
-    valor_icms_fcp_uf_dest = fields.Float(
+    valor_icms_fcp_uf_dest = fields.Monetary(
         string="Total ICMS FCP",
         help='Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
