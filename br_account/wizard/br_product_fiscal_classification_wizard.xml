@@ -37,7 +37,7 @@
     <menuitem sequence="3" action="br_product_fiscal_classification_action"
               id="menu_br_account_product_fiscal_classification_wizard"
               parent="menu_br_account"
-              name="Importar Classificações Fiscais (NCM)"/>
+              name="Importar Tabela IBPT"/>
 
 
 </odoo>

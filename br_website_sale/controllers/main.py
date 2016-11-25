@@ -25,7 +25,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
     @http.route(['/shop/get_cities'], type='json', auth="public",
                 methods=['POST'], website=True)
     def get_cities_json(self, state_id):
-        if state_id.isdigit():
+        if state_id and state_id.isdigit():
             cities = request.env['res.state.city'].sudo().search(
                 [('state_id', '=', int(state_id))])
             return [(city.id, city.name) for city in cities]
@@ -34,7 +34,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
     @http.route(['/shop/get_states'], type='json', auth="public",
                 methods=['POST'], website=True)
     def get_states_json(self, country_id):
-        if country_id.isdigit():
+        if country_id and country_id.isdigit():
             states = request.env['res.country.state'].sudo().search(
                 [('country_id', '=', int(country_id))])
             return [(state.id, state.name) for state in states]
@@ -73,7 +73,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
         if "partner_id" in result.qcontext:
             partner_id = result.qcontext['partner_id']
         if partner_id > 0:
-            partner_id = request.env['res.partner'].browse(partner_id)
+            partner_id = request.env['res.partner'].sudo().browse(partner_id)
             result.qcontext['city'] = partner_id.city_id.id
             result.qcontext['state'] = partner_id.state_id.id
         return result
