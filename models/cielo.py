@@ -32,7 +32,7 @@ class AcquirerCielo(models.Model):
     def cielo_form_generate_values(self, values):
         """ Função para gerar HTML POST da Cielo """
         order = odoo_request.website.sale_get_order()
-        if not order.payment_tx_id:
+        if not order or not order.payment_tx_id:
             return {
                 'checkout_url': '/shop/payment',
             }
