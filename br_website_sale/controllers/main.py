@@ -3,9 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
-from openerp import http
-from openerp.http import request
-import openerp.addons.website_sale.controllers.main as main
+from odoo import http
+from odoo.http import request
+import odoo.addons.website_sale.controllers.main as main
+from odoo.addons.br_base.tools.fiscal import validate_cnpj, validate_cpf
 
 
 class L10nBrWebsiteSale(main.WebsiteSale):
@@ -40,48 +41,42 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             return [(state.id, state.name) for state in states]
         return []
 
-    def checkout_parse(self, address_type, data, remove_prefix=False):
-        val = super(L10nBrWebsiteSale, self).checkout_parse(
-            address_type, data, remove_prefix)
-        if address_type == 'billing':
-            val['cnpj_cpf'] = data['cnpj_cpf']
-            val['number'] = data['number']
-            val['district'] = data['district']
-            val['street2'] = data['street2']
-            val['zip'] = data['zip']
-            val['city_id'] = data['city_id']
-            val['company_type'] = data['company_type']
-        if address_type == 'shipping':
-            val['shipping_cnpj_cpf'] = data['cnpj_cpf']
-            val['shipping_number'] = data['number']
-            val['shipping_district'] = data['district']
-            val['shipping_street2'] = data['street2']
-            val['shipping_zip'] = data['zip']
-            val['shipping_city_id'] = data['city_id']
-            val['company_type'] = data['company_type']
-        return val
-
     def checkout_form_validate(self, mode, all_form_values, data):
-        error = super(L10nBrWebsiteSale, self).checkout_form_validate(
-            mode, all_form_values, data)
-        return error
-
-    def values_preprocess(self, order, mode, values):
-        values = super(L10nBrWebsiteSale, self).values_preprocess(order, mode,
-                                                                  values)
-        # TODO: Validações dos dados
-        return values
+        errors, error_msg = super(L10nBrWebsiteSale, self).\
+            checkout_form_validate(mode, all_form_values, data)
+        cnpj_cpf = data.get('cnpj_cpf', '0')
+        if cnpj_cpf and len(cnpj_cpf) == 18:
+            if not validate_cnpj(cnpj_cpf):
+                errors["cnpj_cpf"] = u"invalid"
+                error_msg.append(('CNPJ Inválido!'))
+        elif cnpj_cpf and len(cnpj_cpf) == 14:
+            if not validate_cpf(cnpj_cpf):
+                errors["cnpj_cpf"] = u"invalid"
+                error_msg.append(('CPF Inválido!'))
+        if cnpj_cpf:
+            existe = request.env["res.partner"].sudo().search_count(
+                [('cnpj_cpf', '=', cnpj_cpf)])
+            if existe > 0:
+                errors["cnpj_cpf"] = u"invalid"
+                error_msg.append(('CPF/CNPJ já cadastrado'))
+        if 'city_id' in data and not data['city_id']:
+            errors["city_id"] = u"missing"
+            error_msg.append('Selecione uma cidade')
+        if 'phone' in data and not data['phone']:
+            errors["phone"] = u"missing"
+            error_msg.append('Informe o seu número de telefone')
+        return errors, error_msg
 
     def values_postprocess(self, order, mode, values, errors, error_msg):
         new_values, errors, error_msg = super(L10nBrWebsiteSale, self).\
-                values_postprocess(order, mode, values, errors, error_msg)
+            values_postprocess(order, mode, values, errors, error_msg)
         new_values['cnpj_cpf'] = values.get('cnpj_cpf', None)
         new_values['company_type'] = values.get('company_type', None)
         is_comp = False if values.get('company_type', None) == 'person'\
             else True
         new_values['is_company'] = is_comp
-        new_values['country_id'] = int(new_values.get('country_id', None))
-        new_values['city_id'] = int(values.get('city_id', None))
+        if 'city_id' in values and values['city_id'] != '':
+            new_values['city_id'] = int(values.get('city_id', 0))
         new_values['number'] = values.get('number', None)
         new_values['street2'] = values.get('street2', '')
         return new_values, errors, error_msg
@@ -96,6 +91,8 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             partner_id = request.env['res.partner'].sudo().browse(partner_id)
             result.qcontext['city'] = partner_id.city_id.id
             result.qcontext['state'] = partner_id.state_id.id
+        if 'city_id' in kw and kw['city_id']:
+            result.qcontext['city'] = kw['city_id']
         return result
 
     @http.route(['/shop/zip_search'], type='json', auth="public",

@@ -26,6 +26,7 @@ odoo.define('br_website_sale.address', function (require) {
                             arguments), options);
             }
         };
+        $('#select_state_id').trigger('change');
         $('input[type=text][name=zip]').mask('00000-000');
 
         $('#id_country').change(function() {
@@ -42,6 +43,7 @@ odoo.define('br_website_sale.address', function (require) {
                             selected: item[0]==selected?true:false,
                         }));
                     });
+                    $('#select_state_id').trigger('change');
                 });
         });
 
@@ -76,7 +78,6 @@ odoo.define('br_website_sale.address', function (require) {
                         $('select[name="state_id"]').val(data.state_id);
                         $('#input_state_id').val(data.state_id);
                         $('#input_city_id').val(data.city_id);
-                        $('select[name="state_id"]').change();
                     }else{
                         alert('Nenhum cep encontrado');
                     }
