@@ -107,6 +107,7 @@ class AcquirerCielo(models.Model):
             request.session.update({
                 'sale_transaction_id': False,
             })
+            _logger.error(resposta["message"])
             raise Exception("Erro ao comunicar com a CIELO")
 
         return {

@@ -13,13 +13,12 @@ _logger = logging.getLogger(__name__)
 
 
 class CieloController(http.Controller):
-    _return_url = '/cielo/retorno/'
     _notify_url = '/cielo/notificacao/'
     _status_url = '/cielo/status/'
 
     @http.route(
         '/cielo/notificacao/', type='http', auth="none",
-        methods=['GET', 'POST'])
+        methods=['GET', 'POST'], csrf=False)
     def cielo_notify(self, **post):
         """ Cielo Notificação"""
         _logger.info(u'Iniciando retorno de notificação cielo post-data: %s',
@@ -29,7 +28,7 @@ class CieloController(http.Controller):
         return "<status>OK</status>"
 
     @http.route('/cielo/status/', type='http', auth="none",
-                methods=['GET', 'POST'])
+                methods=['GET', 'POST'], csrf=False)
     def cielo_status(self, **post):
         """ Quando o status de uma transação modifica essa url é chamada
         checkout_cielo_order_number 708da2506ec44d64aade742c11509459
