@@ -81,7 +81,7 @@ class ResPartner(models.Model):
             return address_format % args
 
     @api.one
-    @api.constrains('cnpj_cpf', 'country_id')
+    @api.constrains('cnpj_cpf', 'country_id', 'is_company')
     def _check_cnpj_cpf(self):
         country_code = self.country_id.code or ''
         if self.cnpj_cpf and country_code.upper() == 'BR':

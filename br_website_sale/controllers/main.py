@@ -5,6 +5,7 @@
 import re
 from odoo import http
 from odoo.http import request
+from werkzeug.exceptions import Forbidden
 import odoo.addons.website_sale.controllers.main as main
 from odoo.addons.br_base.tools.fiscal import validate_cnpj, validate_cpf
 
@@ -54,8 +55,11 @@ class L10nBrWebsiteSale(main.WebsiteSale):
                 errors["cnpj_cpf"] = u"invalid"
                 error_msg.append(('CPF Inválido!'))
         if cnpj_cpf:
-            existe = request.env["res.partner"].sudo().search_count(
-                [('cnpj_cpf', '=', cnpj_cpf)])
+            partner_id = data.get('partner_id', False)
+            domain = [('cnpj_cpf', '=', cnpj_cpf)]
+            if partner_id and mode[0] == 'edit':
+                domain.append(('id', '!=', partner_id))
+            existe = request.env["res.partner"].sudo().search_count(domain)
             if existe > 0:
                 errors["cnpj_cpf"] = u"invalid"
                 error_msg.append(('CPF/CNPJ já cadastrado'))
@@ -77,9 +81,33 @@ class L10nBrWebsiteSale(main.WebsiteSale):
         new_values['is_company'] = is_comp
         if 'city_id' in values and values['city_id'] != '':
             new_values['city_id'] = int(values.get('city_id', 0))
+        if 'state_id' in values and values['state_id'] != '':
+            new_values['state_id'] = int(values.get('state_id', 0))
+        if 'country_id' in values and values['country_id'] != '':
+            new_values['country_id'] = int(values.get('country_id', 0))
         new_values['number'] = values.get('number', None)
-        new_values['street2'] = values.get('street2', '')
+        new_values['street2'] = values.get('street2', None)
+        new_values['district'] = values.get('district', None)
         return new_values, errors, error_msg
+
+    def _checkout_form_save(self, mode, checkout, all_values):
+        Partner = request.env['res.partner']
+        if mode[0] == 'new':
+            partner_id = Partner.sudo().create(checkout)
+        elif mode[0] == 'edit':
+            partner_id = int(all_values.get('partner_id', 0))
+            if partner_id:
+                # double check
+                order = request.website.sale_get_order()
+                shippings = Partner.sudo().search(
+                    [("id", "child_of",
+                      order.partner_id.commercial_partner_id.ids)])
+                if partner_id not in shippings.mapped('id') and \
+                   partner_id != order.partner_id.id:
+                    return Forbidden()
+
+                Partner.browse(partner_id).sudo().write(checkout)
+        return partner_id
 
     @http.route()
     def address(self, **kw):
