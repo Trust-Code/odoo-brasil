@@ -69,7 +69,7 @@ class TestPointSaleBR(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
-        self.receivable_account = self.env['account.account'].create({
+        self.receivable_acc = self.env['account.account'].create({
             'code': '1.0.0',
             'name': 'Conta de Recebiveis',
             'reconcile': True,
@@ -77,6 +77,17 @@ class TestPointSaleBR(TransactionCase):
                 'account.data_account_type_receivable').id,
             'company_id': self.main_company.id
         })
+        field = self.env['ir.model.fields'].search([
+            ('name', '=', 'property_account_receivable_id'),
+            ('model_id.model', '=', 'res.partner')])
+
+        self.env['ir.property'].create({
+            'name': 'property_account_receivable_id',
+            'type': 'many2one',
+            'fields_id': field.id,
+            'value_reference': 'account.account,%d' % self.receivable_acc.id,
+        })
+
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # JOURNAIS CONTABEIS
@@ -85,7 +96,7 @@ class TestPointSaleBR(TransactionCase):
             'code': 'INV',
             'type': 'sale',
             'default_debit_account_id': self.revenue_account.id,
-            'default_credit_account_id': self.receivable_account.id,
+            'default_credit_account_id': self.receivable_acc.id,
         })
         self.journalpos = self.env['account.journal'].create({
             'name': 'POS SALE JOURNAL',
@@ -100,7 +111,7 @@ class TestPointSaleBR(TransactionCase):
                     'type': 'cash',
                     'metodo_pagamento': '01',
                     'default_debit_account_id': self.revenue_account.id,
-                    'default_credit_account_id': self.receivable_account.id,
+                    'default_credit_account_id': self.receivable_acc.id,
                 })]
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -268,7 +279,7 @@ class TestPointSaleBR(TransactionCase):
             'statement_ids': [[0, 0, {'journal_id': self.journalpos.id,
                                       'amount': 25,
                                       'name': u'2016-11-14 18:28:31',
-                                      'account_id': self.receivable_account.id,
+                                      'account_id': self.receivable_acc.id,
                                       u'statement_id': self.bank_stt.id}]],
             'fiscal_position_id': self.pos_fiscal_position.id,
             'sequence_number': 1,

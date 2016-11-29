@@ -41,7 +41,8 @@ class TestSaleOrder(TransactionCase):
             'fiscal_type': 'service',
             'service_type_id': self.env.ref(
                 'br_data_account.service_type_101').id,
-            'list_price': 50.0
+            'list_price': 50.0,
+            'property_account_income_id': self.revenue_account.id,
         })
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
