@@ -4,29 +4,42 @@
     <record model="ir.ui.view" id="br_crm_case_form_view_oppor1">
         <field name="name">br_crm.opportunities1</field>
         <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_case_form_view_oppor" />
+        <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
         <field name="arch" type="xml">
-            <field name="city" position="replace">
+
+             <field name="city" position="replace">
                 <field name="city" invisible="1" />
             </field>
-            <field name="state_id" position="replace">
-                <field name="state_id" placeholder="estado"/>
-                <field name="city_id" placeholder="municipio" />
+            <field name="zip" position="replace" />
+            <field name="street" position="replace">
+                <field name="zip" placeholder="CEP" class="o_address_zip oe_inline" />
+                <field name="street" class="o_address_street" placeholder="Logradouro" />
+                <field name="number" class="o_address_street" placeholder="Número" />
+                <field name="district" class="o_address_street" placeholder="Bairro" />
             </field>
             <field name="street2" position="replace">
-                <field name="district" placeholder="bairro"/>
-                <field name="number" placeholder="numero" />
-                <field name="street2" placeholder="complemento" />
+                <field name="street2" placeholder="Complemento" class="o_address_street" />
             </field>
+            <field name="state_id" position="attributes">
+                <attribute name="domain">[('country_id','=',country_id)]</attribute>
+            </field>
+            <field name="state_id" position="after">
+                <field name="city_id" class="o_address_country" placeholder="Cidade" />
+            </field>
+            <field name="country_id" position="replace" />
+            <field name="state_id" position="before">
+                <field name="country_id" placeholder="País" class="o_address_country" />
+            </field>
+
             <field name="partner_name" position="after">
-                <field name="legal_name" />
+                <field name="legal_name"/>
                 <field name="cnpj"/>
-                <field name="inscr_est" />
-                <field name="inscr_mun" />
-                <field name="suframa" />
+                <field name="inscr_est"/>
+                <field name="inscr_mun"/>
+                <field name="suframa"/>
             </field>
             <field name="email_from" position="before">
-                <field name="name_surname" />
+                <field name="name_surname"/>
                 <field name="cpf"/>
                 <field name="rg"/>
             </field>
