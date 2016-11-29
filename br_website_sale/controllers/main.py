@@ -46,6 +46,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
         errors, error_msg = super(L10nBrWebsiteSale, self).\
             checkout_form_validate(mode, all_form_values, data)
         cnpj_cpf = data.get('cnpj_cpf', '0')
+        email = data.get('email', False)
         if cnpj_cpf and len(cnpj_cpf) == 18:
             if not validate_cnpj(cnpj_cpf):
                 errors["cnpj_cpf"] = u"invalid"
@@ -54,8 +55,8 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             if not validate_cpf(cnpj_cpf):
                 errors["cnpj_cpf"] = u"invalid"
                 error_msg.append(('CPF Inválido!'))
+        partner_id = data.get('partner_id', False)
         if cnpj_cpf:
-            partner_id = data.get('partner_id', False)
             domain = [('cnpj_cpf', '=', cnpj_cpf)]
             if partner_id and mode[0] == 'edit':
                 domain.append(('id', '!=', partner_id))
@@ -63,6 +64,14 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             if existe > 0:
                 errors["cnpj_cpf"] = u"invalid"
                 error_msg.append(('CPF/CNPJ já cadastrado'))
+        if email:
+            domain = [('email', '=', email)]
+            if partner_id and mode[0] == 'edit':
+                domain.append(('id', '!=', partner_id))
+            existe = request.env["res.partner"].sudo().search_count(domain)
+            if existe > 0:
+                errors["email"] = u"invalid"
+                error_msg.append(('E-mail já cadastrado'))
         if 'city_id' in data and not data['city_id']:
             errors["city_id"] = u"missing"
             error_msg.append('Selecione uma cidade')
