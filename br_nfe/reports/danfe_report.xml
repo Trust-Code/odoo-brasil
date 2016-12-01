@@ -172,11 +172,11 @@
                 <div class="row line">
                     <div class="bt bl br col-xs-8 line">
                         <span class="small">Nome/Razão Social</span><br />
-                        <span t-raw="o.partner_id.legal_name or o.partner_id.name"></span>
+                        <span t-raw="o.commercial_partner_id.legal_name or o.commercial_partner_id.name"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">CNPJ/CPF</span><br />
-                        <span t-field="o.partner_id.cnpj_cpf"></span>
+                        <span t-field="o.commercial_partner_id.cnpj_cpf"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Data da Emissão</span><br />
@@ -187,15 +187,15 @@
                 <div class="row line">
                     <div class="bt bl br col-xs-6 line">
                         <span class="small">Endereço</span><br />
-                        <span t-field="o.partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.street"></span>
                     </div>
                     <div class="bt br col-xs-3 line">
                         <span class="small">Bairro/Distrito</span><br />
-                        <span t-field="o.partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.street"></span>
                     </div>
                     <div class="bt br col-xs-1 line">
                         <span class="small">CEP</span><br />
-                        <span t-field="o.partner_id.zip" style="font-size:11px;"></span>
+                        <span t-field="o.commercial_partner_id.zip" style="font-size:11px;"></span>
                     </div>
                     <div class="bt br col-xs-2 line">
                         <span class="small">Data da Entrada/Saída</span><br />
@@ -206,11 +206,11 @@
                 <div class="row line">
                     <div class="bt bl br bb col-xs-6 line">
                         <span class="small">Município</span><br />
-                        <span t-field="o.partner_id.city_id.name"></span>
+                        <span t-field="o.commercial_partner_id.city_id.name"></span>
                     </div>
                     <div class="bt br bb col-xs-3 line">
                         <span class="small">Fone</span><br />
-                        <span t-raw="o.partner_id.phone or o.partner_id.mobile"></span>
+                        <span t-raw="o.commercial_partner_id.phone or o.commercial_partner_id.mobile"></span>
                     </div>
                     <div class="bt br bb col-xs-1 line">
                         <span class="small">UF</span><br />
@@ -218,12 +218,12 @@
                             <span>EX</span>
                         </t>
                         <t t-if="o.ind_dest != '3'">
-                            <span t-field="o.partner_id.state_id.code"></span>
+                            <span t-field="o.commercial_partner_id.state_id.code"></span>
                         </t>
                     </div>
                     <div class="bt br bb col-xs-2 line">
                         <span class="small">Inscrição Estadual</span><br />
-                        <span t-field="o.partner_id.inscr_est"></span>
+                        <span t-field="o.commercial_partner_id.inscr_est"></span>
                     </div>
                 </div>
 
