@@ -49,6 +49,9 @@ class InvoiceEletronic(models.Model):
         u'Finalidade', help="Finalidade da emissão de NFe")
     invoice_id = fields.Many2one('account.invoice', u'Fatura')
     partner_id = fields.Many2one('res.partner', u'Parceiro')
+    commercial_partner_id = fields.Many2one(
+        'res.partner', string='Commercial Entity',
+        related='partner_id.commercial_partner_id', store=True, readonly=True)
     partner_shipping_id = fields.Many2one('res.partner', u'Entrega')
     payment_term_id = fields.Many2one('account.payment.term',
                                       string=u'Forma pagamento')
@@ -172,7 +175,7 @@ class InvoiceEletronic(models.Model):
             if not self.company_id.partner_id.country_id.bc_code:
                 errors.append(u'Emitente / Endereço - Código do BC do país')
 
-        partner = self.partner_id
+        partner = self.partner_id.commercial_partner_id
         company = self.company_id
         # Destinatário
         if partner.is_company and not partner.legal_name:

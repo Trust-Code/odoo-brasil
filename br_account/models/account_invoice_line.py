@@ -404,20 +404,45 @@ class AccountInvoiceLine(models.Model):
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
             self.tax_ii_id
 
+    @api.onchange('quantity')
+    def _br_account_onchange_quantity(self):
+        service = self.product_id.service_type_id
+        ncm = self.product_id.fiscal_classification_id
+
+        valor = 0
+        if self.product_type == 'service':
+            valor = self.price_subtotal * (
+                service.federal_nacional + service.estadual_imposto +
+                ncm.municipal_imposto) / 100
+        else:
+            nacional = ncm.federal_nacional if self.icms_origem in \
+                ('1', '2', '3', '8') else ncm.federal_importado
+            valor = self.price_subtotal * (
+                nacional + ncm.estadual_imposto +
+                ncm.municipal_imposto) / 100
+        self.tributos_estimados = valor
+
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
-        self.service_type_id = self.product_id.service_type_id.id
+        service = self.product_id.service_type_id
         self.product_type = self.product_id.fiscal_type
         self.icms_origem = self.product_id.origin
 
         ncm = self.product_id.fiscal_classification_id
         self.fiscal_classification_id = ncm.id
+        self.service_type_id = service.id
 
-        nacional = ncm.federal_nacional if self.icms_origem in \
-            ('1', '2', '3', '8') else ncm.federal_importado
-        valor = self.product_id.lst_price * (
-            nacional + ncm.estadual_imposto +
-            ncm.municipal_imposto) / 100
+        valor = 0
+        if self.product_type == 'service':
+            valor = self.product_id.lst_price * (
+                service.federal_nacional + service.estadual_imposto +
+                ncm.municipal_imposto) / 100
+        else:
+            nacional = ncm.federal_nacional if self.icms_origem in \
+                ('1', '2', '3', '8') else ncm.federal_importado
+            valor = self.product_id.lst_price * (
+                nacional + ncm.estadual_imposto +
+                ncm.municipal_imposto) / 100
 
         self.tributos_estimados = valor
 

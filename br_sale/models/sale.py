@@ -236,15 +236,23 @@ class SaleOrderLine(models.Model):
         res['company_fiscal_type'] = self.company_id.fiscal_type
         res['cfop_id'] = self.cfop_id.id
         ncm = self.product_id.fiscal_classification_id
+        service = self.product_id.service_type_id
         res['fiscal_classification_id'] = ncm.id
-        res['service_type_id'] = self.product_id.service_type_id.id
+        res['service_type_id'] = service.id
         res['icms_origem'] = self.product_id.origin
 
-        nacional = ncm.federal_nacional if self.product_id.origin in \
-            ('1', '2', '3', '8') else ncm.federal_importado
-        valor = self.price_subtotal * (
-            nacional + ncm.estadual_imposto +
-            ncm.municipal_imposto) / 100
+        valor = 0
+        if self.product_id.fiscal_type == 'service':
+            valor = self.product_id.lst_price * (
+                service.federal_nacional + service.estadual_imposto +
+                ncm.municipal_imposto) / 100
+        else:
+            nacional = ncm.federal_nacional if self.product_id.origin in \
+                ('1', '2', '3', '8') else ncm.federal_importado
+            valor = self.product_id.lst_price * (
+                nacional + ncm.estadual_imposto +
+                ncm.municipal_imposto) / 100
+
         res['tributos_estimados'] = valor
 
         res['incluir_ipi_base'] = self.incluir_ipi_base

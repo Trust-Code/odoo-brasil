@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models
+from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -16,3 +17,13 @@ class AccountInvoice(models.Model):
         res['codigo_servico_paulistana'] = \
             line.service_type_id.codigo_servico_paulistana
         return res
+
+    def action_preview_danfse(self):
+        docs = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)])
+        if not docs:
+            raise UserError('Não existe um E-Doc relacionado à esta fatura')
+        action = self.env['report'].get_action(
+            docs.ids, 'br_nfse.main_template_br_nfse_danfe')
+        action['report_type'] = 'qweb-html'
+        return action

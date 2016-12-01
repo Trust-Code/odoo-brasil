@@ -79,9 +79,9 @@ class AccountInvoice(models.Model):
         else:
             res['ind_final'] = '1'
         res['ind_dest'] = '1'
-        if inv.company_id.state_id != inv.partner_id.state_id:
+        if inv.company_id.state_id != inv.commercial_partner_id.state_id:
             res['ind_dest'] = '2'
-        if inv.company_id.country_id != inv.partner_id.country_id:
+        if inv.company_id.country_id != inv.commercial_partner_id.country_id:
             res['ind_dest'] = '3'
         if inv.fiscal_position_id.ind_final:
             res['ind_final'] = inv.fiscal_position_id.ind_final

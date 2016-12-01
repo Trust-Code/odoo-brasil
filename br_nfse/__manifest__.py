@@ -29,6 +29,7 @@
         'views/account_invoice.xml',
         'views/invoice_eletronic.xml',
         'views/res_company.xml',
+        'reports/danfse_sao_paulo.xml',
     ],
     'instalable': True,
     'application': True,

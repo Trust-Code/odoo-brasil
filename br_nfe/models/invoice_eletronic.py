@@ -296,35 +296,35 @@ FISCAL'
         }
         dest = None
         exporta = None
-        if self.partner_id:
+        if self.commercial_partner_id:
+            partner = self.commercial_partner_id
             dest = {
-                'tipo': self.partner_id.company_type,
-                'cnpj_cpf': re.sub('[^0-9]', '',
-                                   self.partner_id.cnpj_cpf or ''),
-                'xNome': self.partner_id.legal_name or self.partner_id.name,
+                'tipo': partner.company_type,
+                'cnpj_cpf': re.sub('[^0-9]', '', partner.cnpj_cpf or ''),
+                'xNome': partner.legal_name or partner.name,
                 'enderDest': {
-                    'xLgr': self.partner_id.street,
-                    'nro': self.partner_id.number,
-                    'xBairro': self.partner_id.district,
-                    'cMun': '%s%s' % (self.partner_id.state_id.ibge_code,
-                                      self.partner_id.city_id.ibge_code),
-                    'xMun': self.partner_id.city_id.name,
-                    'UF': self.partner_id.state_id.code,
-                    'CEP': re.sub('[^0-9]', '', self.partner_id.zip or ''),
-                    'cPais': (self.partner_id.country_id.bc_code or '')[-4:],
-                    'xPais': self.partner_id.country_id.name,
-                    'fone': re.sub('[^0-9]', '', self.partner_id.phone or '')
+                    'xLgr': partner.street,
+                    'nro': partner.number,
+                    'xBairro': partner.district,
+                    'cMun': '%s%s' % (partner.state_id.ibge_code,
+                                      partner.city_id.ibge_code),
+                    'xMun': partner.city_id.name,
+                    'UF': partner.state_id.code,
+                    'CEP': re.sub('[^0-9]', '', partner.zip or ''),
+                    'cPais': (partner.country_id.bc_code or '')[-4:],
+                    'xPais': partner.country_id.name,
+                    'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
                 'indIEDest': self.ind_ie_dest,
-                'IE':  re.sub('[^0-9]', '', self.partner_id.inscr_est or ''),
+                'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
                     'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
-            if self.partner_id.country_id.id != self.company_id.country_id.id:
+            if partner.country_id.id != self.company_id.country_id.id:
                 dest['idEstrangeiro'] = re.sub(
-                    '[^0-9]', '', self.partner_id.cnpj_cpf or '')
+                    '[^0-9]', '', partner.cnpj_cpf or '')
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'

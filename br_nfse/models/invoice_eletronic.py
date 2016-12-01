@@ -6,7 +6,8 @@ import re
 import pytz
 import base64
 import logging
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
@@ -52,6 +53,17 @@ class InvoiceEletronic(models.Model):
                               readonly=True, states=FIELD_STATE)
     numero_nfse = fields.Char(string="Número NFSe", size=50)
 
+    def issqn_due_date(self):
+        date_emition = datetime.strptime(self.data_emissao, DTFT)
+        next_month = date_emition + relativedelta(months=1)
+        due_date = date(next_month.year, next_month.month, 10)
+        if due_date.weekday() >= 5:
+            while due_date.weekday() != 0:
+                due_date = due_date + timedelta(days=1)
+        format = "%d/%m/%Y"
+        due_date = datetime.strftime(due_date, format)
+        return due_date
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
@@ -87,25 +99,26 @@ class InvoiceEletronic(models.Model):
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
             dt_emissao = dt_emissao.strftime('%Y-%m-%d')
 
-            city_tomador = self.partner_id.city_id
+            partner = self.commercial_partner_id
+            city_tomador = partner.city_id
             tomador = {
-                'tipo_cpfcnpj': 2 if self.partner_id.is_company else 1,
+                'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
-                                   self.partner_id.cnpj_cpf or ''),
-                'razao_social': self.partner_id.legal_name or '',
-                'logradouro': self.partner_id.street or '',
-                'numero': self.partner_id.number or '',
-                'complemento': self.partner_id.street2 or '',
-                'bairro': self.partner_id.district or 'Sem Bairro',
+                                   partner.cnpj_cpf or ''),
+                'razao_social': partner.legal_name or '',
+                'logradouro': partner.street or '',
+                'numero': partner.number or '',
+                'complemento': partner.street2 or '',
+                'bairro': partner.district or 'Sem Bairro',
                 'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
                                     city_tomador.ibge_code),
                 'cidade_descricao': city_tomador.name or '',
-                'uf': self.partner_id.state_id.code,
-                'cep': re.sub('[^0-9]', '', self.partner_id.zip),
-                'telefone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
+                'uf': partner.state_id.code,
+                'cep': re.sub('[^0-9]', '', partner.zip),
+                'telefone': re.sub('[^0-9]', '', partner.phone or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', self.partner_id.inscr_mun or ''),
-                'email': self.partner_id.email or '',
+                    '[^0-9]', '', partner.inscr_mun or ''),
+                'email': self.partner_id.email or partner.email or '',
             }
             city_prestador = self.company_id.partner_id.city_id
             prestador = {
