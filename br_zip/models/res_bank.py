@@ -19,4 +19,4 @@ class ResBank(models.Model):
                                             district=self.district,
                                             street=self.street,
                                             zip_code=self.zip)
-        self.update(res)
+        return res

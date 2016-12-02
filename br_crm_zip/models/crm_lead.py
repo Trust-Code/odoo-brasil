@@ -18,4 +18,6 @@ class CrmLead(models.Model):
                                             district=self.district,
                                             street=self.street,
                                             zip_code=self.zip)
-        self.update(res)
+        if 'zip' in res:
+            self.update(res)
+        return res
