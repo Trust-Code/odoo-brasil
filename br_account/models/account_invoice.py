@@ -92,11 +92,11 @@ class AccountInvoice(models.Model):
         [('0', 'Terceiros'), ('1', u'Emissão própria')], 'Emitente',
         default='0', readonly=True, states={'draft': [('readonly', False)]})
     vendor_number = fields.Char(
-        'Número NF Entrada', size=18, readonly=True,
+        u'Número NF Entrada', size=18, readonly=True,
         states={'draft': [('readonly', False)]},
         help=u"Número da Nota Fiscal do Fornecedor")
     vendor_serie = fields.Char(
-        'Série NF Entrada', size=12, readonly=True,
+        u'Série NF Entrada', size=12, readonly=True,
         states={'draft': [('readonly', False)]},
         help=u"Série do número da Nota Fiscal do Fornecedor")
     document_serie_id = fields.Many2one(
@@ -111,7 +111,7 @@ class AccountInvoice(models.Model):
         default=_default_fiscal_document)
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
-        store=True, string='Electronic')
+        store=True, string=u'Electrônico')
     fiscal_comment = fields.Text(u'Observação Fiscal')
 
     total_bruto = fields.Float(
@@ -135,7 +135,7 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'))
     valor_icms_fcp_uf_dest = fields.Float(
         string="Total ICMS FCP", store=True, compute='_compute_amount',
-        help='Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
+        help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
     valor_icms_uf_dest = fields.Float(
         string="ICMS Destino", store=True, compute='_compute_amount',

@@ -18,8 +18,8 @@ class ProductFiscalClassificationWizard(models.TransientModel):
     product_fiscal_class_csv = fields.Binary(string="Arquivo CSV")
     ncm_csv_delimiter = fields.Char(string='Delimitador', size=3,
                                     required=True)
-    has_quote_char = fields.Boolean(string="Possui caracter de citação?")
-    ncm_quote_char = fields.Char(string='Caracter de Citação', size=3)
+    has_quote_char = fields.Boolean(string=u'Possui caracter de citação?')
+    ncm_quote_char = fields.Char(string=u'Caracter de Citação', size=3)
 
     @api.multi
     def import_ncm(self):
@@ -35,7 +35,7 @@ class ProductFiscalClassificationWizard(models.TransientModel):
                     csvfile, delimiter=str(self.ncm_csv_delimiter))
             else:
                 if not self.ncm_quote_char:
-                    raise UserError('Se o campo indicador de caracter de \
+                    raise UserError(u'Se o campo indicador de caracter de \
 citação estiver marcado é necessário informá-lo!')
                 ncm_lines = csv.DictReader(
                     csvfile, delimiter=str(self.ncm_csv_delimiter),

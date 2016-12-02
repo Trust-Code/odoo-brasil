@@ -17,7 +17,8 @@ class BrAccountCFOP(models.Model):
     name = fields.Char('Nome', size=256, required=True)
     small_name = fields.Char('Nome Reduzido', size=32, required=True)
     description = fields.Text(u'Descrição')
-    type = fields.Selection([('input', u'Entrada'), ('output', 'Saída')],
+    type = fields.Selection([('input', u'Entrada'),
+                             ('output', u'Saída')],
                             'Tipo', required=True)
     parent_id = fields.Many2one(
         'br_account.cfop', 'CFOP Pai')
@@ -57,7 +58,7 @@ class BrAccountServiceType(models.Model):
     code = fields.Char(u'Código', size=16, required=True)
     name = fields.Char(u'Descrição', size=256, required=True)
     parent_id = fields.Many2one(
-        'br_account.service.type', 'Tipo de Serviço Pai')
+        'br_account.service.type', u'Tipo de Serviço Pai')
     child_ids = fields.One2many(
         'br_account.service.type', 'parent_id',
         u'Tipo de Serviço Filhos')
@@ -98,7 +99,7 @@ class BrAccountFiscalDocument(models.Model):
 
 class BrAccountDocumentSerie(models.Model):
     _name = 'br_account.document.serie'
-    _description = 'Serie de documentos fiscais'
+    _description = u'Série de documentos fiscais'
 
     code = fields.Char(u'Código', size=3, required=True)
     name = fields.Char(u'Descrição', required=True)
