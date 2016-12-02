@@ -23,13 +23,13 @@ except ImportError:
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    force_format = fields.Boolean(string='Forçar formato', default=False)
+    force_format = fields.Boolean(string=u'Forçar formato', default=False)
     file_format = fields.Selection([('cnab240', 'Extrato CNAB 240'),
                                     ('ofx', 'Extrato OFX')],
                                    string="Formato do Arquivo",
                                    default='cnab240')
-    force_journal_account = fields.Boolean(string="Forçar conta bancária?")
-    journal_id = fields.Many2one('account.journal', string="Conta Bancária",
+    force_journal_account = fields.Boolean(string=u"Forçar conta bancária?")
+    journal_id = fields.Many2one('account.journal', string=u"Conta Bancária",
                                  domain=[('type', '=', 'bank')])
 
     def _parse_file(self, data_file):
@@ -57,7 +57,7 @@ class AccountBankStatementImport(models.TransientModel):
             return True
         except Exception as e:
             if raise_error:
-                raise UserError("Arquivo formato inválido:\n%s" % str(e))
+                raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
             return False
 
     def _check_ofx(self, data_file, raise_error=False):
@@ -67,7 +67,7 @@ class AccountBankStatementImport(models.TransientModel):
             return True
         except Exception as e:
             if raise_error:
-                raise UserError("Arquivo formato inválido:\n%s" % str(e))
+                raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
             return False
 
     def _parse_ofx(self, data_file):

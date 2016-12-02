@@ -5,16 +5,16 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, fields
+from odoo import models, fields
 
 
 class ResStateCity(models.Model):
     """ Este objeto persite todos os municípios relacionado a um estado.
-    No Brasil é necesário em alguns documentos fiscais informar o código
+    No Brasil é necessário em alguns documentos fiscais informar o código
     do IBGE dos município envolvidos da transação.
     """
     _name = 'res.state.city'
-    _description = u'Municipio'
+    _description = u'Município'
 
     name = fields.Char(string='Nome', size=64, required=True)
     state_id = fields.Many2one(comodel_name='res.country.state',

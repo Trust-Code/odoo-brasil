@@ -31,15 +31,15 @@ class AccountInvoice(models.Model):
     nfe_status = fields.Char(
         string="Mensagem NFe", compute="_compute_nfe_number")
     nfe_number = fields.Integer(
-        string="Número NFe", compute="_compute_nfe_number")
+        string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
-        string="Número NFe", compute="_compute_nfe_number")
+        string=u"Número NFe", compute="_compute_nfe_number")
 
     def action_preview_danfe(self):
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])
         if not docs:
-            raise UserError('Não existe um E-Doc relacionado à esta fatura')
+            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
         action = self.env['report'].get_action(
             docs.ids, 'br_nfe.main_template_br_nfe_danfe')
         action['report_type'] = 'qweb-html'

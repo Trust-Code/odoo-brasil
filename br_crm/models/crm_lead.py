@@ -15,13 +15,13 @@ class CrmLead(models.Model):
     legal_name = fields.Char(u'Razão Social', size=60,
                              help="Nome utilizado em documentos fiscais")
     cnpj = fields.Char('CNPJ', size=18)
-    inscr_est = fields.Char('Inscr. Estadual', size=16)
-    inscr_mun = fields.Char('Inscr. Municipal', size=18)
+    inscr_est = fields.Char(u'Inscrição Estadual', size=16)
+    inscr_mun = fields.Char(u'Inscrição Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    city_id = fields.Many2one('res.state.city', 'Municipio',
+    city_id = fields.Many2one('res.state.city', u'Município',
                               domain="[('state_id','=',state_id)]")
     district = fields.Char('Bairro', size=32)
-    number = fields.Char('Número', size=10)
+    number = fields.Char(u'Número', size=10)
     name_surname = fields.Char(u'Nome e Sobrenome', size=128,
                                help="Nome utilizado em documentos fiscais")
     cpf = fields.Char('CPF', size=18)
@@ -64,10 +64,9 @@ class CrmLead(models.Model):
         this method call others methods because this validation is State wise
 
         :Return: True or False."""
-        if (not self.inscr_est or self.inscr_est == 'ISENTO'):
+        if not self.inscr_est or self.inscr_est == 'ISENTO':
             return True
-        uf = (self.state_id and
-              self.state_id.code.lower() or '')
+        uf = self.state_id and self.state_id.code.lower() or ''
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
             raise Warning(_(u'Inscrição Estadual inválida!'))

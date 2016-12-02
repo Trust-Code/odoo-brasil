@@ -27,7 +27,7 @@ class TestBoleto(TransactionCase):
         })
         self.receivable_account = self.env['account.account'].create({
             'code': '1.0.0',
-            'name': 'Conta de Recebiveis',
+            'name': u'Conta de Recebíveis',
             'reconcile': True,
             'user_type_id': self.env.ref(
                 'account.data_account_type_receivable').id,

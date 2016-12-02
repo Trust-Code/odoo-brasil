@@ -8,7 +8,7 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    tipo_ambiente = fields.Selection([('1', 'Produção'), ('2', 'Homologação')],
+    tipo_ambiente = fields.Selection([('1', u'Produção'), ('2', u'Homologação')],
                                      string="Ambiente NFe", default='2')
 
     cabecalho_danfe = fields.Selection([('vertical', 'Modelo Vertical'),

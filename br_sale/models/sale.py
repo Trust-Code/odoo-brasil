@@ -118,20 +118,20 @@ class SaleOrderLine(models.Model):
 
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
     icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
-    icms_st_aliquota_mva = fields.Float(string='Alíquota MVA (%)',
+    icms_st_aliquota_mva = fields.Float(string=u'Alíquota MVA (%)',
                                         digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
-        string='Alíquota ICMS Próprio (%)', digits=dp.get_precision('Account'))
-    incluir_ipi_base = fields.Boolean(string="Incluir Ipi na Base ICMS")
+        string=u'Alíquota ICMS Próprio (%)', digits=dp.get_precision('Account'))
+    incluir_ipi_base = fields.Boolean(string="Incluir IPI na Base ICMS")
     icms_aliquota_reducao_base = fields.Float(
-        string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
+        string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
-        string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+        string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
     tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
     ipi_reducao_bc = fields.Float(
-        string='Redução Base IPI (%)', digits=dp.get_precision('Account'))
+        string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'))
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
@@ -143,11 +143,11 @@ class SaleOrderLine(models.Model):
         compute='_compute_amount', string='Vlr. Bruto', store=True,
         digits=dp.get_precision('Sale Price'))
     price_without_tax = fields.Float(
-        compute='_compute_amount', string='Preço Base', store=True,
+        compute='_compute_amount', string=u'Preço Base', store=True,
         digits=dp.get_precision('Sale Price'))
 
     detalhes_calculo = fields.Text(
-        string="Detalhes Cálculo", compute='_compute_detalhes', store=True)
+        string=u"Detalhes Cálculo", compute='_compute_detalhes', store=True)
 
     def _update_tax_from_ncm(self):
         if self.product_id:

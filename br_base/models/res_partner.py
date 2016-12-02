@@ -33,7 +33,7 @@ class ResPartner(models.Model):
     inscr_mun = fields.Char('Inscr. Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
     legal_name = fields.Char(
-        u'Razão Social', size=60, help="nome utilizado em documentos fiscais")
+        u'Razão Social', size=60, help="Nome utilizado em documentos fiscais")
     city_id = fields.Many2one(
         'res.state.city', u'Município',
         domain="[('state_id','=',state_id)]")
@@ -113,11 +113,10 @@ class ResPartner(models.Model):
         this method call others methods because this validation is State wise
 
         :Return: True or False."""
-        if (not self.inscr_est or self.inscr_est == 'ISENTO' or
-           not self.is_company):
+        if not self.inscr_est or self.inscr_est == 'ISENTO' \
+                or not self.is_company:
             return True
-        uf = (self.state_id and
-              self.state_id.code.lower() or '')
+        uf = self.state_id and self.state_id.code.lower() or ''
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
             raise UserError(_(u'Inscrição Estadual inválida!'))
@@ -128,7 +127,7 @@ class ResPartner(models.Model):
     def _check_ie_duplicated(self):
         """ Check if the field inscr_est has duplicated value
         """
-        if (not self.inscr_est or self.inscr_est == 'ISENTO'):
+        if not self.inscr_est or self.inscr_est == 'ISENTO':
             return True
         partner_ids = self.search(
             ['&', ('inscr_est', '=', self.inscr_est), ('id', '!=', self.id)])
@@ -184,10 +183,10 @@ class ResPartner(models.Model):
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
             if self.state_id.code == 'AL':
-                raise UserError('Alagoas não possui consulta de cadastro')
+                raise UserError(u'Alagoas não possui consulta de cadastro')
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
-                raise UserError(u'Configure o certificado e senha na empresa')
+                raise UserError(u'Configurar o certificado e senha na empresa')
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)
@@ -243,10 +242,10 @@ class ResBank(models.Model):
     _inherit = 'res.bank'
 
     number = fields.Char(u'Número', size=10)
-    street2 = fields.Char('Street2', size=128)
+    street2 = fields.Char('Complemento', size=128)
     district = fields.Char('Bairro', size=32)
     city_id = fields.Many2one(comodel_name='res.state.city',
-                              string='Municipio',
+                              string=u'Município',
                               domain="[('state_id','=',state_id)]")
 
     @api.onchange('city_id')
