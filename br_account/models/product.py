@@ -4,7 +4,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, fields
+from odoo import models, fields, api
 from .cst import ORIGEM_PROD
 
 
@@ -25,3 +25,11 @@ class ProductTemplate(models.Model):
 
     cest = fields.Char(string="CEST", size=10,
                        help=u"Código Especificador da Substituição Tributária")
+
+    @api.onchange('type')
+    def onchange_product_type(self):
+        self.fiscal_type = 'service' if self.type == 'service' else 'product'
+
+    @api.onchange('fiscal_type')
+    def onchange_product_fiscal_type(self):
+        self.type = 'service' if self.fiscal_type == 'service' else 'consu'
