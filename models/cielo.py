@@ -100,7 +100,7 @@ class AcquirerCielo(models.Model):
                    "MerchantId": self.cielo_merchant_id}
         request_post = requests.post(
             "https://cieloecommerce.cielo.com.br/api/public/v1/orders",
-            data=json_send, headers=headers)
+            data=json_send, headers=headers, verify=False)
         response = request_post.text
         resposta = json.loads(response)
         if "message" in resposta:
