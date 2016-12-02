@@ -38,7 +38,7 @@
         <field name="model">br.zip.result</field>
         <field name="arch" type="xml">
             <tree string="CEPs">
-                <button name="zip_select" string="Selecionar" type="object" icon="gtk-apply"/>
+                <button name="zip_select" string="Selecionar" type="object" icon="fa fa-check"/>
                 <field name="zip" select="1"/>
                 <field name="district" select="1"/>
                 <field name="street" select="1"/>
