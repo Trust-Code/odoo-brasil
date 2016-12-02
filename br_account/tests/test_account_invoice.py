@@ -79,7 +79,7 @@ class TestAccountInvoice(TransactionCase):
              )
         ]
         default_invoice = {
-            'name': "Teste Validação",
+            'name': u"Teste Validação",
             'reference_type': "none",
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,

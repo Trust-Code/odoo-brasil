@@ -33,9 +33,9 @@ class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
     deduced_account_id = fields.Many2one(
-        'account.account.template', string="Conta de Dedução da Venda")
+        'account.account.template', string=u"Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
-        'account.account.template', string="Conta de Dedução do Reembolso")
+        'account.account.template', string=u"Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('simples', 'Simples Nacional'),
@@ -44,8 +44,8 @@ class AccountTaxTemplate(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('icms_inter', 'Difal - Alíquota Inter'),
-                               ('icms_intra', 'Difal - Alíquota Intra'),
+                               ('icms_inter', u'Difal - Alíquota Inter'),
+                               ('icms_intra', u'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
@@ -61,9 +61,9 @@ class AccountTax(models.Model):
     _inherit = 'account.tax'
 
     deduced_account_id = fields.Many2one(
-        'account.account', string="Conta de Dedução da Venda")
+        'account.account', string=u"Conta de Dedução da Venda")
     refund_deduced_account_id = fields.Many2one(
-        'account.account', string="Conta de Dedução do Reembolso")
+        'account.account', string=u"Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('simples', 'Simples Nacional'),
@@ -72,8 +72,8 @@ class AccountTax(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('icms_inter', 'Difal - Alíquota Inter'),
-                               ('icms_intra', 'Difal - Alíquota Intra'),
+                               ('icms_inter', u'Difal - Alíquota Inter'),
+                               ('icms_intra', u'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
@@ -149,7 +149,7 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_icms += self.env.context["outras_despesas"]
 
-        base_icms = base_icms * (1 - (reducao_icms / 100.0))
+        base_icms *= 1 - (reducao_icms / 100.0)
         vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
         vals['base'] = base_icms
         return [vals]
@@ -174,8 +174,8 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_icmsst += self.env.context["outras_despesas"]
 
-        base_icmsst = base_icmsst * (1 - (reducao_icmsst / 100.0))  # Redução
-        base_icmsst = base_icmsst * (1 + aliquota_mva / 100.0)  # Aplica MVA
+        base_icmsst *= 1 - (reducao_icmsst / 100.0)  # Redução
+        base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
 
         icmsst = round(
             (base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
@@ -207,7 +207,7 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_icms += self.env.context["outras_despesas"]
 
-        base_icms = base_icms * (1 - (reducao_icms / 100.0))
+        base_icms *= 1 - (reducao_icms / 100.0)
         interestadual = icms_inter._compute_amount(base_icms, 1.0)
         interno = icms_intra._compute_amount(base_icms, 1.0)
 

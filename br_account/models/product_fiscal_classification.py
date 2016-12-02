@@ -19,7 +19,7 @@ class ProductFiscalClassification(models.Model):
                              ('extension', u'Extensão')], 'Tipo')
     parent_id = fields.Many2one('product.fiscal.classification', string="Pai")
     cest = fields.Char(string="CEST", size=10,
-                       help="Código Especificador da Substituição Tributária")
+                       help=u"Código Especificador da Substituição Tributária")
     federal_nacional = fields.Float(u'Imposto Fed. Sobre Produto Nacional')
     federal_importado = fields.Float(u'Imposto Fed. Sobre Produto Importado')
     estadual_imposto = fields.Float(u'Imposto Estadual')
@@ -28,19 +28,19 @@ class ProductFiscalClassification(models.Model):
     # IPI
     classe_enquadramento = fields.Char(string="Classe Enquadr.", size=5)
     codigo_enquadramento = fields.Char(
-        string="Cód. Enquadramento", size=3, default='999')
-    tax_ipi_id = fields.Many2one('account.tax', string="Alíquota IPI",
+        string=u"Cód. Enquadramento", size=3, default='999')
+    tax_ipi_id = fields.Many2one('account.tax', string=u"Alíquota IPI",
                                  domain=[('domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
         [('percent', 'Percentual')],
         'Tipo do IPI', required=True, default='percent')
     ipi_reducao_bc = fields.Float(
-        '% Redução Base', required=True, digits=dp.get_precision('Account'),
+        u'% Redução Base', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     ipi_cst = fields.Selection(CST_IPI, string='CST IPI')
 
     # ICMS ST
-    tax_icms_st_id = fields.Many2one('account.tax', string="Alíquota ICMS ST",
+    tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
     icms_st_aliquota_reducao_base = fields.Float(
         '% Red. Base ST',

@@ -14,8 +14,8 @@ class AccountFiscalPositionTaxRule(models.Model):
     _name = 'account.fiscal.position.tax.rule'
     _order = 'sequence'
 
-    sequence = fields.Integer(string="Sequência")
-    name = fields.Char(string="Descrição", size=100)
+    sequence = fields.Integer(string=u"Sequência")
+    name = fields.Char(string=u"Descrição", size=100)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
@@ -25,14 +25,14 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('ii', 'II'),
                                ('outros', 'Outros')], string="Tipo")
     fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', string="Posição Fiscal")
+        'account.fiscal.position', string=u"Posição Fiscal")
 
-    state_ids = fields.Many2many('res.country.state', string="Estado destino",
+    state_ids = fields.Many2many('res.country.state', string="Estado Destino",
                                  domain=[('country_id.code', '=', 'BR')])
     product_category_ids = fields.Many2many(
         'product.category', string="Categoria de Produtos")
     tipo_produto = fields.Selection([('product', 'Produto'),
-                                     ('service', 'Serviço')],
+                                     ('service', u'Serviço')],
                                     string="Tipo produto", default="product")
 
     product_ids = fields.Many2many('product.product', string="Produtos")
@@ -47,18 +47,18 @@ class AccountFiscalPositionTaxRule(models.Model):
     tax_id = fields.Many2one('account.tax', string="Imposto")
     tax_icms_st_id = fields.Many2one('account.tax', string="ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
-    icms_aliquota_credito = fields.Float(string="% Crédito de ICMS")
+    icms_aliquota_credito = fields.Float(string=u"% Crédito de ICMS")
     incluir_ipi_base = fields.Boolean(string="Incl. IPI na base ICMS")
-    reducao_icms = fields.Float(string="Redução de base")
-    reducao_icms_st = fields.Float(string="Redução de base ST")
-    reducao_ipi = fields.Float(string="Redução de base IPI")
-    aliquota_mva = fields.Float(string="Alíquota MVA")
+    reducao_icms = fields.Float(string=u"Redução de base")
+    reducao_icms_st = fields.Float(string=u"Redução de base ST")
+    reducao_ipi = fields.Float(string=u"Redução de base IPI")
+    aliquota_mva = fields.Float(string=u"Alíquota MVA")
     tem_difal = fields.Boolean(string="Aplicar Difal?")
     tax_icms_inter_id = fields.Many2one(
-        'account.tax', help="Alíquota utilizada na operação Interestadual",
+        'account.tax', help=u"Alíquota utilizada na operação Interestadual",
         string="ICMS Inter", domain=[('domain', '=', 'icms_inter')])
     tax_icms_intra_id = fields.Many2one(
-        'account.tax', help="Alíquota interna do produto no estado destino",
+        'account.tax', help=u"Alíquota interna do produto no estado destino",
         string="ICMS Intra", domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
@@ -67,7 +67,7 @@ class AccountFiscalPositionTaxRule(models.Model):
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
-    note = fields.Text('Observações')
+    note = fields.Text(u'Observações')
 
     icms_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
