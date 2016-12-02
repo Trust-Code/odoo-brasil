@@ -84,7 +84,7 @@ class BrZipSearch(models.TransientModel):
 
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'l10n_br.zip.search',
+            'res_model': 'br.zip.search',
             'view_mode': 'form',
             'view_type': 'form',
             'res_id': self.id,
