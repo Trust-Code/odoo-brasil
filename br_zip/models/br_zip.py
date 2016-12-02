@@ -150,7 +150,7 @@ class BrZip(models.Model):
             _logger.error(e.message, exc_info=True)
 
     @api.multi
-    def zip_search(self, country_id=False, state_id=False,
+    def zip_search(self, obj_name, country_id=False, state_id=False,
                    city_id=False, district=False,
                    street=False, zip_code=False):
 
@@ -160,22 +160,24 @@ class BrZip(models.Model):
             street, zip_code)
 
         if len(zip_ids) == 1:
-            return self.set_result(zip_ids[0])
+            res = self.set_result(zip_ids[0])
+            obj_name.update(res)
+            return True
         else:
             if len(zip_ids) > 1:
                 obj_zip_result = self.env['br.zip.result']
                 zip_ids = obj_zip_result.map_to_zip_result(
-                    zip_ids, self._name, self.id)
+                    zip_ids, obj_name._name, obj_name.id)
 
                 return self.create_wizard(
-                    self._name,
-                    self.id,
-                    country_id=self.country_id.id,
-                    state_id=self.state_id.id,
-                    city_id=self.city_id.id,
-                    district=self.district,
-                    street=self.street,
-                    zip_code=self.zip,
+                    obj_name._name,
+                    obj_name.id,
+                    country_id=obj_name.country_id.id,
+                    state_id=obj_name.state_id.id,
+                    city_id=obj_name.city_id.id,
+                    district=obj_name.district,
+                    street=obj_name.street,
+                    zip_code=obj_name.zip,
                     zip_ids=[z.id for z in zip_ids]
                 )
             else:

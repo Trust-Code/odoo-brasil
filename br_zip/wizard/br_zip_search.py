@@ -131,8 +131,9 @@ class BrZipResult(models.TransientModel):
             result.append(zip_result_id)
         return result
 
-    @api.one
+    @api.multi
     def zip_select(self):
+        self.ensure_one()
         data = self
         address_id = data['address_id']
         object_name = data['object_name']

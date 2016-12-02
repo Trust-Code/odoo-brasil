@@ -7,13 +7,13 @@ from odoo import api, models
 
 
 class ResBank(models.Model):
-
     _inherit = 'res.bank'
 
     @api.multi
     def zip_search(self):
         self.ensure_one()
-        res = self.env['br.zip'].zip_search(country_id=self.country_id.id,
+        res = self.env['br.zip'].zip_search(obj_name=self,
+                                            country_id=self.country_id.id,
                                             state_id=self.state_id.id,
                                             city_id=self.city_id.id,
                                             district=self.district,
