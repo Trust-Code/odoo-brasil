@@ -196,7 +196,7 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:
                 if edoc.state == 'done':
-                    raise UserError('Documento eletrônico emitido - Cancele o \
+                    raise UserError(u'Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
                 edoc.unlink()
         return res

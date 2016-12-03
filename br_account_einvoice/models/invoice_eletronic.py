@@ -22,8 +22,10 @@ class InvoiceEletronic(models.Model):
     code = fields.Char(u'Código', size=100, required=True)
     name = fields.Char(u'Nome', size=100, required=True)
     company_id = fields.Many2one('res.company', u'Empresa', index=True)
-    state = fields.Selection([('draft', 'Provisório'), ('error', 'Erro'),
-                              ('done', 'Enviado'), ('cancel', 'Cancelado')],
+    state = fields.Selection([('draft', u'Provisório'),
+                              ('error', 'Erro'),
+                              ('done', 'Enviado'),
+                              ('cancel', 'Cancelado')],
                              string=u'State', default='draft')
 
     tipo_operacao = fields.Selection([('entrada', 'Entrada'),
@@ -39,14 +41,14 @@ class InvoiceEletronic(models.Model):
     data_fatura = fields.Datetime(u'Data Entrada/Saída')
     data_autorizacao = fields.Char(u'Data de autorização', size=30)
 
-    ambiente = fields.Selection([('homologacao', 'Homologação'),
-                                 ('producao', 'Produção')], u'Ambiente')
+    ambiente = fields.Selection([('homologacao', u'Homologação'),
+                                 ('producao', u'Produção')], u'Ambiente')
     finalidade_emissao = fields.Selection(
-        [('1', '1 - Normal'),
-         ('2', '2 - Complementar'),
-         ('3', '3 - Ajuste'),
-         ('4', '4 - Devolução')],
-        u'Finalidade', help="Finalidade da emissão de NFe")
+        [('1', u'1 - Normal'),
+         ('2', u'2 - Complementar'),
+         ('3', u'3 - Ajuste'),
+         ('4', u'4 - Devolução')],
+        u'Finalidade', help=u"Finalidade da emissão de NFe")
     invoice_id = fields.Many2one('account.invoice', u'Fatura')
     partner_id = fields.Many2one('res.partner', u'Parceiro')
     commercial_partner_id = fields.Many2one(
@@ -67,21 +69,21 @@ class InvoiceEletronic(models.Model):
                                           string=u"Eventos", readonly=True)
 
     valor_bruto = fields.Monetary(u'Total Produtos')
-    valor_frete = fields.Monetary(u'Total frete')
-    valor_seguro = fields.Monetary(u'Total seguro')
-    valor_desconto = fields.Monetary(u'Total desconto')
-    valor_despesas = fields.Monetary(u'Total despesas')
-    valor_bc_icms = fields.Monetary(u"Base de Cálc ICMS")
+    valor_frete = fields.Monetary(u'Total Frete')
+    valor_seguro = fields.Monetary(u'Total Seguro')
+    valor_desconto = fields.Monetary(u'Total Desconto')
+    valor_despesas = fields.Monetary(u'Total Despesas')
+    valor_bc_icms = fields.Monetary(u"Base de Cálculo ICMS")
     valor_icms = fields.Monetary(u"Total do ICMS")
     valor_icms_deson = fields.Monetary(u'ICMS Desoneração')
     valor_bc_icmsst = fields.Monetary(
-        u'Total Base ST', help="Total da base de cálculo do ICMS ST")
+        u'Total Base ST', help=u"Total da base de cálculo do ICMS ST")
     valor_icmsst = fields.Monetary(u'Total ST')
     valor_ii = fields.Monetary(u'Total II')
     valor_ipi = fields.Monetary(u"Total IPI")
     valor_pis = fields.Monetary(u"Total PIS")
     valor_cofins = fields.Monetary(u"Total COFINS")
-    valor_estimado_tributos = fields.Monetary(u"Tributos estimados")
+    valor_estimado_tributos = fields.Monetary(u"Tributos Estimados")
 
     valor_servicos = fields.Monetary(u"Total Serviços")
     valor_bc_issqn = fields.Monetary(u"Base ISS")
@@ -95,7 +97,7 @@ class InvoiceEletronic(models.Model):
     valor_retencao_irrf = fields.Monetary(u"Retenção IRRF")
     valor_retencao_csll = fields.Monetary(u"Retenção CSLL")
     valor_retencao_previdencia = fields.Monetary(
-        u"Retenção Prev.", help="Retenção Previdência Social")
+        u"Retenção Prev.", help=u"Retenção Previdência Social")
 
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
@@ -271,7 +273,7 @@ class InvoiceEletronic(models.Model):
         for item in self:
             if item.state == 'done':
                 raise UserError(
-                    'Documento Eletrônico enviado - Proibido excluir')
+                    u'Documento Eletrônico enviado - Proibido excluir')
         super(InvoiceEletronic, self).unlink()
 
     def log_exception(self, exc):
@@ -312,12 +314,12 @@ class InvoiceEletronicItem(models.Model):
 
     product_id = fields.Many2one('product.product', string=u'Produto')
     tipo_produto = fields.Selection([('product', 'Produto'),
-                                     ('service', 'Serviço')],
+                                     ('service', u'Serviço')],
                                     string="Tipo Produto")
     cfop = fields.Char(u'CFOP', size=5)
     ncm = fields.Char(u'NCM', size=10)
 
-    uom_id = fields.Many2one('product.uom', u'Unidade de medida')
+    uom_id = fields.Many2one('product.uom', u'Unidade de Medida')
     quantidade = fields.Float(u'Quantidade')
     preco_unitario = fields.Monetary(
         u'Preço Unitário', digits=dp.get_precision('Account'))
@@ -334,21 +336,21 @@ class InvoiceEletronicItem(models.Model):
     valor_bruto = fields.Monetary(
         u'Valor Bruto', digits=dp.get_precision('Account'))
     valor_liquido = fields.Monetary(
-        u'Valor Liquido', digits=dp.get_precision('Account'))
+        u'Valor Líquido', digits=dp.get_precision('Account'))
     indicador_total = fields.Selection(
         [('0', '0 - Não'), ('1', '1 - Sim')],
         string="Compõe Total da Nota?", default='1')
 
-    origem = fields.Selection(ORIGEM_PROD, u'Origem mercadoria')
+    origem = fields.Selection(ORIGEM_PROD, u'Origem Mercadoria')
     icms_cst = fields.Selection(
-        CST_ICMS + CSOSN_SIMPLES, u'Situação tributária')
+        CST_ICMS + CSOSN_SIMPLES, u'Situação Tributária')
     icms_aliquota = fields.Float(
         u'Alíquota', digits=dp.get_precision('Account'))
     icms_tipo_base = fields.Selection(
-        [('0', '0 - Margem Valor Agregado (%)'),
-         ('1', '1 - Pauta (Valor)'),
-         ('2', '2 - Preço Tabelado Máx. (valor)'),
-         ('3', '3 - Valor da operação')],
+        [('0', u'0 - Margem Valor Agregado (%)'),
+         ('1', u'1 - Pauta (Valor)'),
+         ('2', u'2 - Preço Tabelado Máx. (valor)'),
+         ('3', u'3 - Valor da operação')],
         u'Modalidade BC do ICMS')
     icms_base_calculo = fields.Monetary(
         u'Base de cálculo', digits=dp.get_precision('Account'))
@@ -362,11 +364,11 @@ class InvoiceEletronicItem(models.Model):
         u'% de Crédito', digits=dp.get_precision('Account'))
 
     icms_st_tipo_base = fields.Selection(
-        [('0', '0- Preço tabelado ou máximo  sugerido'),
-         ('1', '1 - Lista Negativa (valor)'),
-         ('2', '2 - Lista Positiva (valor)'),
-         ('3', '3 - Lista Neutra (valor)'),
-         ('4', '4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
+        [('0', u'0- Preço tabelado ou máximo  sugerido'),
+         ('1', u'1 - Lista Negativa (valor)'),
+         ('2', u'2 - Lista Positiva (valor)'),
+         ('3', u'3 - Lista Neutra (valor)'),
+         ('4', u'4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
         'Tipo Base ICMS ST', required=True, default='4')
     icms_st_aliquota_mva = fields.Float(
         u'% MVA', digits=dp.get_precision('Account'))
@@ -401,30 +403,30 @@ class InvoiceEletronicItem(models.Model):
 
     # ----------- II ----------------------
     ii_base_calculo = fields.Monetary(
-        u'Base de cálculo', digits=dp.get_precision('Account'))
+        u'Base de Cálculo', digits=dp.get_precision('Account'))
     ii_aliquota = fields.Float(
         u'Alíquota II', digits=dp.get_precision('Account'))
     ii_valor_despesas = fields.Monetary(
-        u'Despesas aduaneiras', digits=dp.get_precision('Account'))
+        u'Despesas Aduaneiras', digits=dp.get_precision('Account'))
     ii_valor = fields.Monetary(
-        u'Imposto de importação', digits=dp.get_precision('Account'))
+        u'Imposto de Importação', digits=dp.get_precision('Account'))
     ii_valor_iof = fields.Monetary(u'IOF', digits=dp.get_precision('Account'))
 
     # ------------ PIS ---------------------
-    pis_cst = fields.Selection(CST_PIS_COFINS, u'Situação tributária')
+    pis_cst = fields.Selection(CST_PIS_COFINS, u'Situação Tributária')
     pis_aliquota = fields.Float(
         u'Alíquota', digits=dp.get_precision('Account'))
     pis_base_calculo = fields.Monetary(
-        u'Base de cálculo', digits=dp.get_precision('Account'))
+        u'Base de Cálculo', digits=dp.get_precision('Account'))
     pis_valor = fields.Monetary(
         u'Valor Total', digits=dp.get_precision('Account'))
 
     # ------------ COFINS ------------
-    cofins_cst = fields.Selection(CST_PIS_COFINS, u'Situação tributária')
+    cofins_cst = fields.Selection(CST_PIS_COFINS, u'Situação Tributária')
     cofins_aliquota = fields.Float(
         u'Alíquota', digits=dp.get_precision('Account'))
     cofins_base_calculo = fields.Monetary(
-        u'Base de cálculo', digits=dp.get_precision('Account'))
+        u'Base de Cálculo', digits=dp.get_precision('Account'))
     cofins_valor = fields.Monetary(
         u'Valor Total', digits=dp.get_precision('Account'))
 
@@ -433,8 +435,8 @@ class InvoiceEletronicItem(models.Model):
     issqn_aliquota = fields.Float(
         u'Alíquota', digits=dp.get_precision('Account'))
     issqn_base_calculo = fields.Monetary(
-        u'Base de cálculo', digits=dp.get_precision('Account'))
+        u'Base de Cálculo', digits=dp.get_precision('Account'))
     issqn_valor = fields.Monetary(
         u'Valor Total', digits=dp.get_precision('Account'))
     issqn_valor_retencao = fields.Monetary(
-        u'Valor retenção', digits=dp.get_precision('Account'))
+        u'Valor Retenção', digits=dp.get_precision('Account'))

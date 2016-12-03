@@ -11,7 +11,7 @@ class InvoiceEletronic(models.Model):
 
     qrcode_hash = fields.Char(string='QR-Code hash')
     qrcode_url = fields.Char(string='QR-Code URL')
-    metodo_pagamento = fields.Selection(metodos, string='Método de Pagamento')
+    metodo_pagamento = fields.Selection(metodos, string=u'Método de Pagamento')
 
     @api.multi
     def _hook_validation(self):

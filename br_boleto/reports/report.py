@@ -64,7 +64,7 @@ class ReportCustom(report_int):
         boleto_list = aml_obj.browse(ids_move_lines).action_register_boleto()
         if not boleto_list:
             raise UserError(
-                """Error
+                u"""Error
 Não é possível gerar os boletos
 Certifique-se que a fatura esteja confirmada e o
 forma de pagamento seja duplicatas""")

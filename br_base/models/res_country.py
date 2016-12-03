@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, fields
+from odoo import models, fields
 
 
 class ResCountry(models.Model):
@@ -17,4 +17,4 @@ class ResCountry(models.Model):
 class ResCountryState(models.Model):
     _inherit = 'res.country.state'
 
-    ibge_code = fields.Char(u'Cód. IBGE', size=2)
+    ibge_code = fields.Char(u'Código IBGE', size=2)

@@ -282,7 +282,7 @@ dict_boleto = {
     u'1': (BoletoBB, 'Banco do Brasil'),
     u'2': (BoletoBanrisul, 'Banrisul'),
     u'3': (BoletoBradesco, 'Bradesco'),
-    u'4': (BoletoCaixa, 'Caixa Econômica'),
+    u'4': (BoletoCaixa, u'Caixa Econômica'),
     u'5': (BoletoHsbc, 'HSBC'),
     u'6': (BoletoItau, 'Itaú'),
     u'7': (BoletoSantander, 'Santander'),

@@ -100,7 +100,7 @@ class PaymentMode(models.Model):
 
         if self.boleto_type == u'9' and len(self.boleto_carteira) != 1:
             vals['warning'] = {
-                'title': 'Ação Bloqueada!',
+                'title': u'Ação Bloqueada!',
                 'message': 'A carteira deste banco possui apenas um digito!'
                 }
 

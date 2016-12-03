@@ -22,15 +22,16 @@ class PaymentOrderLine(models.Model):
         'account.move.line', string=u'Linhas de Cobrança')
     partner_id = fields.Many2one(
         'res.partner', related='move_line_id.partner_id', string="Parceiro")
-    move_id = fields.Many2one('account.move', string="Lançamento de Diário",
+    move_id = fields.Many2one('account.move', string=u"Lançamento de Diário",
                               related='move_line_id.move_id')
-    nosso_numero = fields.Char(string="Nosso Número", size=20)
+    nosso_numero = fields.Char(string=u"Nosso Número", size=20)
     payment_mode_id = fields.Many2one(
         'payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
-    state = fields.Selection([("open", "Aberto"), ("paid", "Pago")],
-                             string="Situação",
+    state = fields.Selection([("open", "Aberto"),
+                              ("paid", "Pago")],
+                             string=u"Situação",
                              compute="_compute_state")
 
 
@@ -46,14 +47,14 @@ class PaymentOrder(models.Model):
             item.amount_total = amount_total
 
     name = fields.Char(max_length=30, string="Nome", required=True)
-    user_id = fields.Many2one('res.users', string='Responsável',
+    user_id = fields.Many2one('res.users', string=u'Responsável',
                               required=True)
     payment_mode_id = fields.Many2one('payment.mode',
                                       string='Modo de Pagamento',
                                       required=True)
     state = fields.Selection([('draft', 'Rascunho'), ('cancel', 'Cancelado'),
                               ('open', 'Confirmado'), ('done', 'Fechado')],
-                             string="Situação")
+                             string=u"Situação")
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
     currency_id = fields.Many2one('res.currency', string='Moeda')

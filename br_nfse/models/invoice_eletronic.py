@@ -51,7 +51,7 @@ class InvoiceEletronic(models.Model):
         default='T', readonly=True)
     verify_code = fields.Char(u'Código Autorização', size=20,
                               readonly=True, states=FIELD_STATE)
-    numero_nfse = fields.Char(string="Número NFSe", size=50)
+    numero_nfse = fields.Char(string=u"Número NFSe", size=50)
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
@@ -81,7 +81,7 @@ class InvoiceEletronic(models.Model):
                     if not issqn_codigo:
                         issqn_codigo = eletr.issqn_codigo
                     if issqn_codigo != eletr.issqn_codigo:
-                        errors.append('%s - Apenas itens com o mesmo código \
+                        errors.append(u'%s - Apenas itens com o mesmo código \
                                       de serviço podem ser enviados' % prod)
                 if not eletr.pis_cst:
                     errors.append(u'%s - CST do PIS' % prod)
@@ -175,7 +175,7 @@ class InvoiceEletronic(models.Model):
             codigo_atividade = rps['codigo_atividade']
             tipo_recolhimento = self.operation  # T – Tributado em São Paulo
 
-            assinatura = ('%s%s%s%s%sN%s%s%s%s%s%s') % (
+            assinatura = '%s%s%s%s%sN%s%s%s%s%s%s' % (
                 str(inscr).zfill(8),
                 self.serie.code.ljust(5),
                 str(self.numero).zfill(12),

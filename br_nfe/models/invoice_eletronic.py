@@ -36,7 +36,7 @@ class InvoiceEletronic(models.Model):
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Sim')
-    ], u'Consumidor final', readonly=True,
+    ], u'Consumidor Final', readonly=True,
         states={'draft': [('readonly', False)]}, required=False,
         help=u'Indica operação com Consumidor final.', default='0')
     ind_pres = fields.Selection([
@@ -52,25 +52,25 @@ class InvoiceEletronic(models.Model):
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
     ind_dest = fields.Selection([
-        ('1', '1 - Operação Interna'),
-        ('2', '2 - Operação Interestadual'),
-        ('3', '3 - Operação com exterior')],
-        string="Indicador Destinatário", readonly=True,
+        ('1', u'1 - Operação Interna'),
+        ('2', u'2 - Operação Interestadual'),
+        ('3', u'3 - Operação com exterior')],
+        string=u"Indicador Destinatário", readonly=True,
         states={'draft': [('readonly', False)]})
     ind_ie_dest = fields.Selection([
-        ('1', '1 - Contribuinte ICMS'),
-        ('2', '2 - Contribuinte Isento de Cadastro'),
-        ('9', '9 - Não Contribuinte')],
+        ('1', u'1 - Contribuinte ICMS'),
+        ('2', u'2 - Contribuinte Isento de Cadastro'),
+        ('9', u'9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário")
 
     # Transporte
-    modalidade_frete = fields.Selection([('0', '0 - Emitente'),
-                                         ('1', '1 - Destinatário'),
-                                         ('2', '2 - Terceiros'),
-                                         ('9', '9 - Sem Frete')],
+    modalidade_frete = fields.Selection([('0', u'0 - Emitente'),
+                                         ('1', u'1 - Destinatário'),
+                                         ('2', u'2 - Terceiros'),
+                                         ('9', u'9 - Sem Frete')],
                                         u'Modalidade do frete', default="9")
     transportadora_id = fields.Many2one('res.partner', string="Transportadora")
-    placa_veiculo = fields.Char('Placa do Veiculo', size=7)
+    placa_veiculo = fields.Char(u'Placa do Veículo', size=7)
     uf_veiculo = fields.Char(string='UF da Placa', size=2)
     rntc = fields.Char(string="RNTC", size=20,
                        help="Registro Nacional de Transportador de Carga")
@@ -85,13 +85,13 @@ class InvoiceEletronic(models.Model):
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
         string="UF Saída do País")
     local_embarque = fields.Char('Local de Embarque', size=60)
-    local_despacho = fields.Char('Local despacho', size=60)
+    local_despacho = fields.Char('Local de Despacho', size=60)
 
     # Cobrança
     numero_fatura = fields.Char(string="Fatura")
     fatura_bruto = fields.Monetary(string="Valor Original")
     fatura_desconto = fields.Monetary(string="Desconto")
-    fatura_liquido = fields.Monetary(string="Valor Líquido")
+    fatura_liquido = fields.Monetary(string=u"Valor Líquido")
 
     duplicata_ids = fields.One2many('nfe.duplicata', 'invoice_eletronic_id',
                                     string="Duplicatas")
@@ -101,13 +101,13 @@ class InvoiceEletronic(models.Model):
     pedido_compra = fields.Char(string="Pedido Compra", size=60)
     contrato_compra = fields.Char(string="Contrato Compra", size=60)
 
-    sequencial_evento = fields.Integer(string="Sequêncial Evento", default=1)
+    sequencial_evento = fields.Integer(string=u"Sequêncial Evento", default=1)
     recibo_nfe = fields.Char(string="Recibo NFe", size=50)
     chave_nfe = fields.Char(string="Chave NFe", size=50)
     chave_nfe_danfe = fields.Char(string="Chave Formatado",
                                   compute="_format_danfe_key")
     protocolo_nfe = fields.Char(string="Protocolo", size=50,
-                                help="Protocolo de autorização da NFe")
+                                help=u"Protocolo de autorização da NFe")
 
     valor_icms_uf_remet = fields.Monetary(
         string="ICMS Remetente",
@@ -117,7 +117,7 @@ class InvoiceEletronic(models.Model):
         help='Valor total do ICMS Interestadual para a UF de destino')
     valor_icms_fcp_uf_dest = fields.Monetary(
         string="Total ICMS FCP",
-        help='Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
+        help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
 
     def barcode_url(self):

@@ -9,4 +9,4 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     id_token_csc = fields.Char(string="Identificador do CSC")
-    csc = fields.Char(string='Código de Segurança do Contribuinte')
+    csc = fields.Char(string=u'Código de Segurança do Contribuinte')

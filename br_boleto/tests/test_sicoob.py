@@ -11,7 +11,7 @@ class TestBoletoSicoob(TestBoleto):
     def _return_payment_mode(self):
         super(TestBoletoSicoob, self)._return_payment_mode()
         sequencia = self.env['ir.sequence'].create({
-            'name': "Nosso Numero"
+            'name': u"Nosso Número"
         })
         sicoob = self.env['res.bank'].search([('bic', '=', '756')])
         conta = self.env['res.partner.bank'].create({
@@ -43,13 +43,13 @@ class TestBoletoSicoob(TestBoleto):
     def _update_main_company(self):
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
+            'legal_name': u'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': 'Córrego Grande',
+            'district': u'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,

@@ -62,6 +62,6 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
             raise UserError(u'Código de Convênio Inválido!')
         if self.state in ('draft', 'cancel'):
             raise UserError(
-                'Fatura provisória ou cancelada não permite emitir boleto')
+                u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
         return self.env['report'].get_action(self.id, 'br_boleto.report.print')

@@ -10,4 +10,4 @@ class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
     nfe_serie = fields.Many2one('br_account.document.serie',
-                                string='Série da Nota Fiscal')
+                                string=u'Série da Nota Fiscal')
