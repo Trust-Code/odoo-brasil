@@ -2,49 +2,13 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo.tests.common import TransactionCase
+from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
-class TestAccountInvoice(TransactionCase):
+class TestAccountInvoice(TestBaseBr):
 
     def setUp(self):
         super(TestAccountInvoice, self).setUp()
-
-        self.main_company = self.env.ref('base.main_company')
-        self.currency_real = self.env.ref('base.BRL')
-
-        self.revenue_account = self.env['account.account'].create({
-            'code': '3.0.0',
-            'name': 'Receita de Vendas',
-            'user_type_id': self.env.ref(
-                'account.data_account_type_revenue').id,
-            'company_id': self.main_company.id
-        })
-        self.receivable_account = self.env['account.account'].create({
-            'code': '1.0.0',
-            'name': 'Conta de Recebiveis',
-            'reconcile': True,
-            'user_type_id': self.env.ref(
-                'account.data_account_type_receivable').id,
-            'company_id': self.main_company.id
-        })
-        self.default_product = self.env['product.product'].create({
-            'name': 'Normal Product',
-            'default_code': '12',
-            'list_price': 15.0
-        })
-        self.service = self.env['product.product'].create({
-            'name': 'Normal Service',
-            'default_code': '25',
-            'type': 'service',
-            'fiscal_type': 'service',
-            'list_price': 50.0
-        })
-        self.st_product = self.env['product.product'].create({
-            'name': 'Product for ICMS ST',
-            'default_code': '15',
-            'list_price': 25.0
-        })
         self.partner = self.env['res.partner'].create({
             'name': 'Nome Parceiro',
             'is_company': False,
@@ -106,3 +70,42 @@ class TestAccountInvoice(TransactionCase):
 
             # Verifico as linhas recebiveis
             self.assertEquals(len(invoice.receivable_move_line_ids), 1)
+
+    def test_invoice_simple_taxes(self):
+        for invoice in self.invoices:
+
+            first_item = invoice.invoice_line_ids[0]
+
+            # PIS
+            first_item.tax_pis_id = self.pis_500
+            first_item._onchange_tax_pis_id()
+            self.assertEquals(first_item.price_total, 150.0)
+            self.assertEquals(first_item.pis_base_calculo, 150.0)
+            self.assertEquals(first_item.pis_valor, 7.5)
+            self.assertEquals(first_item.pis_aliquota, 5.0)
+
+            # COFINS
+            first_item.tax_cofins_id = self.cofins_1500
+            first_item._onchange_tax_cofins_id()
+            self.assertEquals(first_item.price_total, 150.0)
+            self.assertEquals(first_item.cofins_base_calculo, 150.0)
+            self.assertEquals(first_item.cofins_valor, 22.5)
+            self.assertEquals(first_item.cofins_aliquota, 15.0)
+
+            for item in invoice.invoice_line_ids:
+                item.tax_pis_id = self.pis_500
+                item._onchange_tax_pis_id()
+                self.assertEquals(item.pis_base_calculo, item.price_total)
+                self.assertEquals(item.pis_aliquota, 5.0)
+                self.assertEquals(item.pis_valor, item.price_total * 0.05)
+
+                item.tax_cofins_id = self.cofins_1500
+                item._onchange_tax_cofins_id()
+                self.assertEquals(item.cofins_base_calculo, item.price_total)
+                self.assertEquals(item.cofins_aliquota, 15.0)
+                self.assertEquals(item.cofins_valor, item.price_total * 0.15)
+
+            self.assertEquals(invoice.pis_base, 650.0)
+            self.assertEquals(invoice.cofins_base, 650.0)
+            self.assertEquals(invoice.pis_value, 32.5)
+            self.assertEquals(invoice.cofins_value, 97.5)
