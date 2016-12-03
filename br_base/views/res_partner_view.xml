@@ -44,7 +44,7 @@
             </xpath>
             <field name="zip" position="replace" />
             <field name="street" position="replace">
-                <field name="zip" placeholder="Cep" class="o_address_zip oe_inline" />
+                <field name="zip" placeholder="CEP" class="o_address_zip oe_inline" />
                 <field name="street" class="o_address_street" placeholder="Logradouro" />
                 <field name="number" class="o_address_city" placeholder="Número" />
                 <field name="district" class="o_address_state" placeholder="Bairro" />
@@ -95,56 +95,6 @@
             <xpath expr="//div[@name='div_address']/field[@name='state_id']" potition="after">
                 <field name="city_id" placeholder="Município" />
             </xpath>
-        </field>
-    </record>
-
-    <!-- res.partner.bank -->
-    <record id="view_br_base_partner_bank_form" model="ir.ui.view">
-        <field name="name">view_br_base.partner.bank.form</field>
-        <field name="model">res.partner.bank</field>
-        <field name="inherit_id" ref="base.view_partner_bank_form" />
-        <field name="arch" type="xml">
-            <field name="acc_number" position="replace">
-                <newline />
-                <field name="acc_number" select="1" />
-                <field name="acc_number_dig" select="1" />
-                <newline />
-                <field name="bra_number" select="1" />
-                <field name="bra_number_dig" select="1" />
-            </field>
-        </field>
-    </record>
-
-
-    <record id="view_br_base_res_bank_form" model="ir.ui.view">
-        <field name="name">view_br_base.res.bank.form</field>
-        <field name="model">res.bank</field>
-        <field name="inherit_id" ref="base.view_res_bank_form" />
-        <field name="arch" type="xml">
-            <field name="street" position="after">
-                <field name="number" placeholder="Número..." />
-                <field name="district" placeholder="Bairro..." />
-            </field>
-            <field name="state" position="after">
-                <field name="city_id" placeholder="Cidade" />
-            </field>
-            <field name="city" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
-        </field>
-    </record>
-
-    <record id="view_br_base_partner_bank_tree" model="ir.ui.view">
-        <field name="name">view_br_base.partner.bank.tree</field>
-        <field name="model">res.partner.bank</field>
-        <field name="inherit_id" ref="base.view_partner_bank_tree" />
-        <field name="arch" type="xml">
-            <field name="acc_number" position="replace">
-                <field name="acc_number" />
-                <field name="acc_number_dig" />
-                <field name="bra_number" />
-                <field name="bra_number_dig" />
-            </field>
         </field>
     </record>
 

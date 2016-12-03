@@ -24,6 +24,7 @@
         'views/br_base_view.xml',
         'views/res_country_view.xml',
         'views/res_partner_view.xml',
+        'views/res_bank_view.xml',
         'views/res_company_view.xml',
         'security/ir.model.access.csv',
     ],
