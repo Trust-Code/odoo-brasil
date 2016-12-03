@@ -513,3 +513,9 @@ class AccountInvoiceLine(models.Model):
         if self.tax_ii_id:
             self.ii_aliquota = self.tax_ii_id.amount
             self._update_invoice_line_ids()
+
+    @api.onchange('tax_issqn_id')
+    def _onchange_tax_issqn_id(self):
+        if self.tax_issqn_id:
+            self.issqn_aliquota = self.tax_issqn_id.amount
+            self._update_invoice_line_ids()
