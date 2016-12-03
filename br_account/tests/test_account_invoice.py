@@ -95,15 +95,19 @@ class TestAccountInvoice(TestBaseBr):
             for item in invoice.invoice_line_ids:
                 item.tax_pis_id = self.pis_500
                 item._onchange_tax_pis_id()
+                item._onchange_product_id()
                 self.assertEquals(item.pis_base_calculo, item.price_total)
                 self.assertEquals(item.pis_aliquota, 5.0)
                 self.assertEquals(item.pis_valor, item.price_total * 0.05)
 
                 item.tax_cofins_id = self.cofins_1500
                 item._onchange_tax_cofins_id()
+                item._onchange_product_id()
                 self.assertEquals(item.cofins_base_calculo, item.price_total)
                 self.assertEquals(item.cofins_aliquota, 15.0)
                 self.assertEquals(item.cofins_valor, item.price_total * 0.15)
+
+                self.assertEquals(len(item.invoice_line_tax_ids), 2)
 
             self.assertEquals(invoice.pis_base, 650.0)
             self.assertEquals(invoice.cofins_base, 650.0)
@@ -170,10 +174,13 @@ class TestAccountInvoice(TestBaseBr):
             for item in invoice.invoice_line_ids:
                 item.tax_icms_id = self.icms_1700
                 item._onchange_tax_icms_id()
+                item._onchange_product_id()
                 self.assertEquals(item.icms_base_calculo, item.price_total)
                 self.assertEquals(
                     item.icms_valor, round(item.price_total * 0.17, 2))
                 self.assertEquals(item.icms_aliquota, 17.0)
+
+                self.assertEquals(len(item.invoice_line_tax_ids), 1)
 
             self.assertEquals(invoice.icms_base, 650.0)
             self.assertEquals(invoice.icms_value, 110.5)
@@ -203,11 +210,14 @@ class TestAccountInvoice(TestBaseBr):
                 item.tax_icms_id = self.icms_1700
                 item.icms_aliquota_reducao_base = 10.0
                 item._onchange_tax_icms_id()
+                item._onchange_product_id()
                 self.assertEquals(
                     item.icms_base_calculo, round(item.price_total * 0.9, 2))
                 self.assertEquals(
                     item.icms_valor, round(item.price_total * 0.9 * 0.17, 2))
                 self.assertEquals(item.icms_aliquota, 17.0)
+
+                self.assertEquals(len(item.invoice_line_tax_ids), 1)
 
             self.assertEquals(invoice.icms_base, 585.0)
             self.assertEquals(invoice.icms_value, 99.45)
