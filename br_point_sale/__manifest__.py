@@ -31,4 +31,5 @@
         'views/account_fiscal_position.xml',
     ],
     'application': True,
+    'instalable': False
 }

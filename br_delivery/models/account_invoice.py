@@ -15,9 +15,10 @@ class AccountInvoice(models.Model):
     vehicle_id = fields.Many2one(
         'br_delivery.carrier.vehicle', u'Veículo', readonly=True,
         states={'draft': [('readonly', False)]})
-    incoterm = fields.Many2one(
-        'stock.incoterms', 'Tipo do Frete', readonly=True,
-        states={'draft': [('readonly', False)]},
-        help="Incoterm which stands for 'International Commercial terms' "
-        "implies its a series of sales terms which are used in the "
-        "commercial transaction.")
+    incoterm = fields.Many2one('stock.incoterms', 'Tipo do Frete',
+                               readonly=True,
+                               states={'draft': [('readonly', False)]},
+                               help="Incoterm which stands for 'International "
+                                    "Commercial terms' implies its a series "
+                                    "of sales terms which are used in the "
+                                    "commercial transaction.")

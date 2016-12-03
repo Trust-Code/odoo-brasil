@@ -17,7 +17,7 @@ class InvoiceEletronicItem(models.Model):
     cst_danfe = fields.Char(string="CST Danfe", compute="_compute_cst_danfe")
 
     cest = fields.Char(string="CEST", size=10,
-                       help="Código Especificador da Substituição Tributária")
+                       help=u"Código Especificador da Substituição Tributária")
     classe_enquadramento_ipi = fields.Char(
         string="Classe Enquadramento", size=5)
     codigo_enquadramento_ipi = fields.Char(

@@ -9,5 +9,5 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     tipo_ambiente_nfse = fields.Selection(
-        [('1', 'Produção'), ('2', 'Homologação')],
+        [('1', u'Produção'), ('2', u'Homologação')],
         string="Ambiente NFSe", default='2')

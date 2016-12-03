@@ -310,14 +310,15 @@ class PosOrderLine(models.Model):
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
     icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
-    icms_st_aliquota_mva = fields.Float(string='Alíquota MVA (%)',
+    icms_st_aliquota_mva = fields.Float(string=u'Alíquota MVA (%)',
                                         digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
-        string='Alíquota ICMS Próprio (%)', digits=dp.get_precision('Account'))
+        string=u'Alíquota ICMS Próprio (%)',
+        digits=dp.get_precision('Account'))
     icms_aliquota_reducao_base = fields.Float(
-        string='Redução Base ICMS (%)', digits=dp.get_precision('Account'))
+        string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
-        string='Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+        string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
     valor_desconto = fields.Float(

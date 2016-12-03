@@ -12,13 +12,13 @@ class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
     boleto_emitido = fields.Boolean(string=u"Emitido")
-    nosso_numero = fields.Char(string=u"Nosso número", size=30)
+    nosso_numero = fields.Char(string=u"Nosso Número", size=30)
 
     @api.multi
     def action_print_boleto(self):
         if self.move_id.state in ('draft', 'cancel'):
             raise UserError(
-                'Fatura provisória ou cancelada não permite emitir boleto')
+                u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
         return self.env['report'].get_action(self.id, 'br_boleto.report.print')
 
@@ -58,13 +58,14 @@ class AccountMoveLine(models.Model):
         boleto_list = []
         for move in self:
             if not move.payment_mode_id:
-                raise UserError('O modo de pagamento configurado não é boleto')
+                raise UserError(
+                    u'O modo de pagamento configurado não é boleto')
             if not move.payment_mode_id.nosso_numero_sequence.id:
-                raise UserError('Cadastre a sequência do nosso número no modo \
+                raise UserError(u'Cadastre a sequência do nosso número no modo \
                                 de pagamento')
             vencimento = fields.Date.from_string(move.date_maturity)
             if vencimento < datetime.today().date() and not move.reconciled:
-                raise UserError('A data de vencimento deve ser maior que a \
+                raise UserError(u'A data de vencimento deve ser maior que a \
                                 data atual. Altere a data de vencimento!')
             if not move.boleto_emitido:
                 move.boleto_emitido = True

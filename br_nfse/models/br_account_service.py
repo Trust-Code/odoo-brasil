@@ -9,4 +9,4 @@ class BrAccountServiceType(models.Model):
     _inherit = 'br_account.service.type'
 
     codigo_servico_paulistana = fields.Char(
-        string='Código NFSe Paulistana', size=5)
+        string=u'Código NFSe Paulistana', size=5)
