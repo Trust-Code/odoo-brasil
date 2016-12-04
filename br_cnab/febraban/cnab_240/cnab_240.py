@@ -60,6 +60,9 @@ class Cnab240(Cnab):
         elif bank == '0851':
             from .bancos.cecred import Cecred240
             return Cecred240
+        elif bank == '341':
+            from bancos.itau import Itau240
+            return Itau240 
         else:
             return Cnab240
 
