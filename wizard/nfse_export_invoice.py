@@ -29,7 +29,8 @@ class NfseExportInvoice(models.TransientModel):
             'cnpj_cpf': re.sub(
                 '[^0-9]', '', inv.commercial_partner_id.cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
-                '[^0-9]', '', inv.commercial_partner_id.inscr_mun or '0000000'),
+                '[^0-9]', '', inv.commercial_partner_id.inscr_mun or
+                '0000000'),
             'name': inv.commercial_partner_id.legal_name,
             'street': inv.commercial_partner_id.street,
             'number': inv.commercial_partner_id.number,
