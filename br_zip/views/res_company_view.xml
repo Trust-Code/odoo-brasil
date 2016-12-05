@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="br_base.view_company_form_inherited"/>
         <field name="arch" type="xml">
             <field name="zip" position="after">
-                <button name="zip_search" type="object" class="oe_inline">
+                <button name="zip_search" type="object" class="oe_inline" invisible="1">
                     <i class="fa fa-search"></i>
                 </button>
             </field>
