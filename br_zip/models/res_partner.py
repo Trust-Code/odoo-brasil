@@ -12,7 +12,7 @@ class ResPartner(models.Model):
 
     @api.onchange('zip')
     def _onchange_field(self):
-        if self.type != 'contact':
+        if self.zip and len(self.zip.replace('-', '')) == 8:
             self.zip_search()
 
     @api.multi

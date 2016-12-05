@@ -10,6 +10,11 @@ from odoo import models, api
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    @api.onchange('zip')
+    def _onchange_field(self):
+        if self.zip and len(self.zip.replace('-', '')) == 8:
+            self.zip_search()
+
     @api.multi
     def zip_search(self):
         self.ensure_one()

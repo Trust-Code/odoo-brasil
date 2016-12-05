@@ -9,6 +9,11 @@ from odoo import api, models
 class ResBank(models.Model):
     _inherit = 'res.bank'
 
+    @api.onchange('zip')
+    def _onchange_field(self):
+        if self.zip and len(self.zip.replace('-', '')) == 8:
+            self.zip_search()
+
     @api.multi
     def zip_search(self):
         self.ensure_one()
