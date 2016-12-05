@@ -58,6 +58,7 @@ class TestNFeBrasil(TransactionCase):
             'company_id': self.main_company.id
         })
         self.service_type = self.env.ref('br_data_account.service_type_101')
+        self.service_type.codigo_servico_paulistana = '07498'
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'default_code': '25',

@@ -69,6 +69,8 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '001':
             issqn_codigo = ''
+            if not self.company_id.inscr_mun:
+                errors.append(u'Inscrição municipal obrigatória')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                               eletr.product_id.name)
@@ -83,6 +85,9 @@ class InvoiceEletronic(models.Model):
                     if issqn_codigo != eletr.issqn_codigo:
                         errors.append(u'%s - Apenas itens com o mesmo código \
                                       de serviço podem ser enviados' % prod)
+                    if not eletr.codigo_servico_paulistana:
+                        errors.append(u'%s - Código da NFSe paulistana não \
+                                      configurado' % prod)
                 if not eletr.pis_cst:
                     errors.append(u'%s - CST do PIS' % prod)
                 if not eletr.cofins_cst:
