@@ -103,7 +103,7 @@ class Cnab240(Cnab):
             bank_account_id.bra_number_dig,
             'cedente_nome': self.order.user_id.company_id.legal_name,
             # DV ag e conta
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.
+            'cedente_dv_ag_cc': int(self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
@@ -179,7 +179,7 @@ class Cnab240(Cnab):
             'cedente_nome':
             self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
             # DV ag e cc
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
+            'cedente_dv_ag_cc': int(self.order.payment_mode_id.bank_account_id.
                                  bra_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
