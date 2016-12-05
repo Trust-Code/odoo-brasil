@@ -92,7 +92,9 @@ class Boleto:
         self.boleto.especie = \
             move_line.currency_id and move_line.currency_id.symbol or 'R$'
         self.boleto.quantidade = '1'  # str("%.2f" % move_line.amount_currency)
-        self.boleto.numero_documento = move_line.move_id.name.encode('utf-8')
+        self.boleto.numero_documento = "%s/%s" % (
+            move_line.move_id.name.encode('utf-8'), 
+            move_line.name.encode('utf-8'))
 
     def _payment_mode(self, payment_mode_id):
         """
