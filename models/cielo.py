@@ -57,7 +57,7 @@ class AcquirerCielo(models.Model):
             if line.product_id.default_code:
                 item["Sku"] = line.product_id.default_code
             if line.product_id.weight:
-                item['Weight'] = line.product_id.weight
+                item['Weight'] = "%d" % (line.product_id.weight * 1000)
             items.append(item)
         shipping = {
             "Type": "WithoutShipping",
@@ -107,7 +107,7 @@ class AcquirerCielo(models.Model):
             request.session.update({
                 'sale_transaction_id': False,
             })
-            _logger.error(resposta["message"])
+            _logger.error(resposta)
             raise Exception("Erro ao comunicar com a CIELO")
 
         return {
