@@ -16,8 +16,6 @@
         'br_crm',
     ],
     'data': [
-        'views/crm_lead_view.xml',
-        'views/crm_opportunity_view.xml',
     ],
     'test': [
         'test/crm_zip_test.yml'
