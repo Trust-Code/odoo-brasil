@@ -150,14 +150,20 @@ class BrZip(models.Model):
             _logger.error(e.message, exc_info=True)
 
     @api.multi
-    def zip_search(self, obj_name, country_id=False, state_id=False,
-                   city_id=False, district=False,
-                   street=False, zip_code=False):
+    def search_by_zip(self, zip_code):
+        zip_ids = self.zip_search_multi(zip_code=zip_code)
+        if len(zip_ids) == 1:
+            return self.set_result(zip_ids[0])
+        else:
+            raise UserError(_('Nenhum CEP encontrado'))
+
+    @api.multi
+    def seach_by_address(self, obj, country_id=False, state_id=False,
+                         city_id=False, district=False, street=False):
 
         zip_ids = self.zip_search_multi(
-            country_id, state_id,
-            city_id, district,
-            street, zip_code)
+            country_id=country_id, state_id=state_id,
+            city_id=city_id, district=district, street=street)
 
         if len(zip_ids) == 1:
             res = self.set_result(zip_ids[0])
@@ -166,17 +172,17 @@ class BrZip(models.Model):
             if len(zip_ids) > 1:
                 obj_zip_result = self.env['br.zip.result']
                 zip_ids = obj_zip_result.map_to_zip_result(
-                    zip_ids, obj_name._name, obj_name.id)
+                    zip_ids, obj._name, obj.id)
 
                 return self.create_wizard(
-                    obj_name._name,
-                    obj_name.id,
-                    country_id=obj_name.country_id.id,
-                    state_id=obj_name.state_id.id,
-                    city_id=obj_name.city_id.id,
-                    district=obj_name.district,
-                    street=obj_name.street,
-                    zip_code=obj_name.zip,
+                    obj._name,
+                    obj.id,
+                    country_id=obj.country_id.id,
+                    state_id=obj.state_id.id,
+                    city_id=obj.city_id.id,
+                    district=obj.district,
+                    street=obj.street,
+                    zip_code=obj.zip,
                     zip_ids=[z.id for z in zip_ids]
                 )
             else:
