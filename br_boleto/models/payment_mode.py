@@ -92,6 +92,15 @@ class PaymentMode(models.Model):
             self.boleto_carteira = u'1'
             self.boleto_modalidade = u'01'
 
+        if self.boleto_type == u'10':
+            if self.bank_account_id.bank_id.bic != '0851':
+                vals['warning'] = {
+                    'title': u'Ação Bloqueada!',
+                    'message': u'Este boleto não combina com a conta bancária!'
+                }
+            self.boleto_carteira = '01'
+            self.boleto_protesto = '3'
+
         return vals
 
     @api.onchange("boleto_carteira")
