@@ -32,21 +32,24 @@ class AccountInvoice(models.Model):
                 if not self.company_id.state_id.code:
                     error += u'Empresa - Estado\n'
 
-                if not self.partner_id.name:
+                if not self.commercial_partner_id.name:
+                    error += u'Cliente - Nome\n'
+                if self.commercial_partner_id.is_company and \
+                   not self.commercial_partner_id.legal_name:
                     error += u'Cliente - Razão Social\n'
-                if not self.partner_id.cnpj_cpf:
+                if not self.commercial_partner_id.cnpj_cpf:
                     error += u'Cliente - CNPJ/CPF \n'
-                if not self.partner_id.district:
+                if not self.commercial_partner_id.district:
                     error += u'Cliente - Bairro\n'
-                if not self.partner_id.zip:
+                if not self.commercial_partner_id.zip:
                     error += u'Cliente - CEP\n'
-                if not self.partner_id.city_id.name:
+                if not self.commercial_partner_id.city_id.name:
                     error += u'Cliente - Cidade\n'
-                if not self.partner_id.street:
+                if not self.commercial_partner_id.street:
                     error += u'Cliente - Logradouro\n'
-                if not self.partner_id.number:
+                if not self.commercial_partner_id.number:
                     error += u'Cliente - Número\n'
-                if not self.partner_id.state_id.code:
+                if not self.commercial_partner_id.state_id.code:
                     error += u'Cliente - Estado\n'
 
                 if not self.payment_mode_id.bank_account_id.codigo_convenio:
