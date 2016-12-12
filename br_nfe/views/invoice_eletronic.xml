@@ -13,6 +13,13 @@
                     A NFe está em ambiente de homologação
                 </div>
             </div>
+            <div name="alertas" position="after">
+                <div name="button_box">
+                    <button name="generate_correction_letter" type="object" class="oe_stat_button" icon="fa-envelope"
+                        string="Carta de Correção" attrs="{'invisible': [('state', '=', 'draft')]}">
+                    </button>
+                </div>
+            </div>
             <page name="totais" position="after">
                 <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>

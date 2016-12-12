@@ -31,6 +31,17 @@ class InvoiceEletronic(models.Model):
             item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
                                           item.chave_nfe, 10, re.DOTALL)
 
+    @api.multi
+    def generate_correction_letter(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "wizard.carta.correcao.eletronica",
+            "views": [[False, "form"]],
+            "name": "Carta de Correção",
+            "target": "new",
+            "context": {'invoice_id': self.id},
+        }
+
     ambiente_nfe = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente")
     ind_final = fields.Selection([
