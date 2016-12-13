@@ -5,6 +5,9 @@
         <field name="model">wizard.carta.correcao.eletronica</field>
         <field name="arch" type="xml">
             <form string="Carta de Correção Eletrônica">
+                <div>
+                    Não devem ser alterados dados que influenciem nos valores das notas, como base de cálculo, valores de impostos, etc...
+                </div>
                 <group>
                     <field name="correcao"/>
                 </group>

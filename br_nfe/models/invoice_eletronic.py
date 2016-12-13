@@ -131,6 +131,11 @@ class InvoiceEletronic(models.Model):
         help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
 
+    #CARTA DE CORRECAO
+    cartas_correcao_ids = fields.One2many('carta.correcao.eletronica.evento',
+                                          'invoice_id',
+                                          string="Cartas de Correção")
+
     def barcode_url(self):
         url = '<img style="width:470px;height:50px;margin-top:5px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'

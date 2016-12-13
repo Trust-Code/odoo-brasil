@@ -16,7 +16,7 @@
             <div name="alertas" position="after">
                 <div name="button_box">
                     <button name="generate_correction_letter" type="object" class="oe_stat_button" icon="fa-envelope"
-                        string="Carta de Correção" attrs="{'invisible': [('state', '=', 'draft')]}">
+                        string="Carta de Correção" attrs="{'invisible': [('state', '!=', 'done')]}">
                     </button>
                 </div>
             </div>
@@ -64,6 +64,18 @@
                             <field name="contrato_compra" />
                         </group>
                     </group>
+                </page>
+                <page name="carta_correcao" string="Cartas de Correção">
+                    <field name="cartas_correcao_ids" >
+                        <tree>
+                            <field name="Id" />
+                            <field name="tpAmb" />
+                            <field name="CNPJ" />
+                            <field name="CPF" />
+                            <field name="dhEvento" />
+                            <field name="xCorrecao" />
+                        </tree>
+                    </field>
                 </page>
             </page>
             <field name="mensagem_retorno" position="after">
