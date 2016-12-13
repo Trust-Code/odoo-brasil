@@ -63,6 +63,5 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         carta['estado'] = self.env.user.company_id.state_id.ibge_code
         carta['ambiente'] = int(invoice_id.company_id.tipo_ambiente)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
-        import ipdb; ipdb.set_trace()
         invoice_id._create_attachment('carta_correcao', invoice_id,
                                       resposta['sent_xml'])
