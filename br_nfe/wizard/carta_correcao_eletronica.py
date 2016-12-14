@@ -3,12 +3,17 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
+import logging
 import re
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from pytrustnfe.nfe import recepcao_evento_carta_correcao
-from pytrustnfe.certificado import Certificado
+_logger = logging.getLogger(__name__)
+try:
+    from pytrustnfe.nfe import recepcao_evento_carta_correcao
+    from pytrustnfe.certificado import Certificado
+except (ImportError, IOError) as err:
+    _logger.debug(err)
 
 
 class WizardCartaCorrecaoEletronica(models.TransientModel):
