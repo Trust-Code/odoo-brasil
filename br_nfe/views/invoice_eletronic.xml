@@ -65,15 +65,13 @@
                         </group>
                     </group>
                 </page>
-                <page name="carta_correcao" string="Cartas de Correção">
+                <page name="carta_correcao" string="Cartas de Correção" >
                     <field name="cartas_correcao_ids" >
                         <tree>
                             <field name="Id" />
                             <field name="tpAmb" />
                             <field name="CNPJ" />
-                            <field name="CPF" />
                             <field name="dhEvento" />
-                            <field name="xCorrecao" />
                         </tree>
                     </field>
                 </page>

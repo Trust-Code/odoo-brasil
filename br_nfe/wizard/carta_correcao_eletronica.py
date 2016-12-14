@@ -31,14 +31,9 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             self._context['invoice_id'])
         carta['invoice_id'] = invoice_id.id
         eventos = self.env['carta.correcao.eletronica.evento']
-        cnpj_cpf = re.sub(r"\D", '', self.env.user.cnpj_cpf)
-        if len(cnpj_cpf) == 11:
-            carta['CPF'] = cnpj_cpf
-            carta['CNPJ'] = ''
-        elif len(cnpj_cpf) == 14:
-            carta['CNPJ'] = cnpj_cpf
-            carta['CPF'] = ''
-
+        cnpj_cpf = re.sub(r"\D", '', self.env.user.company_id.cnpj_cpf)
+        carta['CNPJ'] = cnpj_cpf
+        carta['CPF'] = ''
         carta['cOrgao'] = self.env.user.state_id.ibge_code
         carta['tpAmb'] = invoice_id.company_id.tipo_ambiente
         now = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')

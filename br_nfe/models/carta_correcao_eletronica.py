@@ -14,7 +14,7 @@ class CartaCorrecaoEletronicaEvento(models.Model):
     Id = fields.Char(string="Id")
     idLote = fields.Integer("Identificador de controle do Lote")
     cOrgao = fields.Char(string="Código do Orgão")
-    tpAmb = fields.Selection([('1', 'Homologação'), ('2', 'Produção')],
+    tpAmb = fields.Selection([('2', 'Homologação'), ('1', 'Produção')],
                              string="Ambiente")
     CNPJ = fields.Char(string="CNPJ")
     CPF = fields.Char(string="CPF")

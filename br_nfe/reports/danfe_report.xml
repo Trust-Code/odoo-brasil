@@ -524,57 +524,57 @@
 
                 <t t-if="len(o.cartas_correcao_ids) > 0">
                     <t t-foreach="o.cartas_correcao_ids" t-as="c">
-                        <div class="row">
-                            <div class="col-xs-12">
+                        <div class="row borda-completa">
+                            <div class="col-xs-12 br bb bt text-center">
                                 <span class="enfase">Cartas de Correção</span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
-                                <span class="enfase">RAZÃO SOCIAL DO EMITENTE</span>
+                            <div class="br bb bt col-xs-4">
+                                <span style="font-size:10px;">RAZÃO SOCIAL DO EMITENTE</span>
                             </div>
-                            <div class="col-xs-6">
-                                <span class="enfase" t-field="o.company_id.legal_name"></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <span class="enfase">CNPJ DO EMITENTE</span>
-                            </div>
-                            <div class="col-xs-6">
-                                <span class="enfase" t-field="o.company_id.cnpj_cpf"></span>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="o.company_id.legal_name"></span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
-                                <span class="enfase">CHAVE DE ACESSO DA NF-E</span>
+                            <div class="br bb bt col-xs-4">
+                                <span style="font-size:10px;">CNPJ DO EMITENTE</span>
                             </div>
-                            <div class="col-xs-6">
-                                <span class="enfase" t-field="c.chNFe"></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <span class="enfase">DATA DA CORREÇÃO</span>
-                            </div>
-                            <div class="col-xs-6">
-                                <span class="enfase" t-field="c.dhEvento"></span>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="o.company_id.cnpj_cpf"></span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
-                                <span class="enfase">ID</span>
+                            <div class="br bb bt col-xs-4">
+                                <span style="font-size:10px;">CHAVE DE ACESSO DA NF-E</span>
                             </div>
-                            <div class="col-xs-6">
-                                <span class="enfase" t-field="c.Id"></span>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="c.chNFe"></span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
-                                <span class="enfase">CORREÇÃO</span>
+                            <div class="br bb bt col-xs-4">
+                                <span style="font-size:10px;">DATA DA CORREÇÃO</span>
                             </div>
-                            <div class="col-xs-6">
-                                <span class="enfase" t-field="c.xCorrecao"></span>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="c.dhEvento"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="br bb bt col-xs-4">
+                                <span style="font-size:10px;">ID</span>
+                            </div>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="c.Id"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="br bb bt col-xs-12 text-center">
+                                <span style="font-size:10px;">CORREÇÃO</span>
+                            </div>
+                            <div class="br bb bt col-xs-12" style="height: 120px;">
+                                <span style="font-size:10px;" t-field="c.xCorrecao"></span>
                             </div>
                         </div>
                     </t>
