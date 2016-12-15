@@ -6,9 +6,6 @@ import base64
 import os
 import re
 
-from mock import patch
-from pytrustnfe.xml import sanitize_response
-
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 
