@@ -166,7 +166,7 @@ class TestCartaCorrecao(TransactionCase):
         invoice_eletronic = {
             'model': '55',
             'invoice_id': self.account_invoice.id,
-            'partner_id': self.partner_fisica,
+            'partner_id': self.partner_fisica.id,
             'tipo_operacao': 'saida',
             'fiscal_position_id': self.fpos_consumo,
             'code': '1',
