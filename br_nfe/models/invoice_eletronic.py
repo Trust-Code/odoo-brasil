@@ -39,7 +39,7 @@ class InvoiceEletronic(models.Model):
             "views": [[False, "form"]],
             "name": "Carta de Correção",
             "target": "new",
-            "context": {'invoice_id': self.id},
+            "context": {'default_invoice_id': self.id},
         }
 
     ambiente_nfe = fields.Selection(

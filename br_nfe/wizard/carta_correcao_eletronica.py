@@ -20,6 +20,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
     _name = 'wizard.carta.correcao.eletronica'
 
     correcao = fields.Text(string="Correção", max_length=1000)
+    invoice_id = fields.Many2one('invoice.eletronic', string="Cobrança")
 
     def valida_carta_correcao_eletronica(self, **kwargs):
         if len(kwargs.get('xCorrecao', '')) < 15:
@@ -32,22 +33,21 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
     @api.multi
     def send_letter(self):
         carta = {}
-        invoice_id = self.env['invoice.eletronic'].browse(
-            self._context['invoice_id'])
+        invoice_id = self.invoice_id
         carta['invoice_id'] = invoice_id.id
         eventos = self.env['carta.correcao.eletronica.evento']
         cnpj_cpf = re.sub(r"\D", '', self.env.user.company_id.cnpj_cpf)
         carta['CNPJ'] = cnpj_cpf
         carta['CPF'] = ''
-        carta['cOrgao'] = self.env.user.state_id.ibge_code
+        carta['cOrgao'] = self.env.user.company_id.state_id.ibge_code
         carta['tpAmb'] = invoice_id.company_id.tipo_ambiente
         now = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
         carta['dhEvento'] = fields.Datetime.from_string(now)
         carta['chNFe'] = invoice_id.chave_nfe
         carta['xCorrecao'] = self.correcao
+        carta['tpEvento'] = '110110'
         self.valida_carta_correcao_eletronica(**carta)
         evento = eventos.create(carta)
-        carta['tpEvento'] = '110110'
         carta['idLote'] = evento.id
         carta['nSeqEvento'] = str(evento.search_count(
             [('invoice_id', '=', invoice_id.id)]))
