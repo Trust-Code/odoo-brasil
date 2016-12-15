@@ -168,7 +168,7 @@ class TestCartaCorrecao(TransactionCase):
             'invoice_id': self.account_invoice.id,
             'partner_id': self.partner_fisica.id,
             'tipo_operacao': 'saida',
-            'fiscal_position_id': self.fpos_consumo,
+            'fiscal_position_id': self.fpos_consumo.id,
             'code': '1',
             'name': 'Teste Carta Correção',
             'company_id': self.main_company.id,
