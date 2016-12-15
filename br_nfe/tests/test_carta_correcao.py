@@ -182,7 +182,7 @@ class TestCartaCorrecao(TransactionCase):
             'invoice_id': self.invoice.id,
         }
         carta_wizard_right = {
-            'correcao': 'Teste de Carta de Correção' * 10,
+            'correcao': 'Teste de Carta de Correcao' * 10,
             'invoice_id': self.invoice.id,
         }
         self.carta_wizard_short = self.\
@@ -208,7 +208,7 @@ class TestCartaCorrecao(TransactionCase):
         self.assertEquals(carta.CNPJ, re.sub(r"\D", '',
                                              self.main_company.cnpj_cpf))
         self.assertEquals(carta.cOrgao, self.main_company.state_id.ibge_code)
-        self.assertEquals(carta.xCorrecao, 'Teste de Carta de Correção' * 10)
+        self.assertEquals(carta.xCorrecao, 'Teste de Carta de Correcao' * 10)
         self.assertEquals(carta.tpAmb, self.main_company.tipo_ambiente)
         self.assertEquals(carta.tpEvento, '110110')
         self.assertEquals(carta.Id, Id)
