@@ -4,6 +4,7 @@
 
 import base64
 import os
+import re
 
 from mock import patch
 from pytrustnfe.xml import sanitize_response
@@ -207,7 +208,8 @@ class TestCartaCorrecao(TransactionCase):
         Id = "ID11011042161017350787000114550010000001021512635251"
         carta = self.env['carta.correcao.eletronica.evento'].search([])
         self.assertEquals(len(carta), 1)
-        self.assertEquals(carta.CNPJ, self.main_company.cnpj_cpf)
+        self.assertEquals(carta.CNPJ, re.sub(r"\D", '',
+                                             self.main_company.cnpj_cpf))
         self.assertEquals(carta.cOrgao, self.main_company.state_id.ibge_code)
         self.assertEquals(carta.xCorrecao, 'Teste de Carta de Correção' * 10)
         self.assertEquals(carta.tpAmb, self.main_company.tipo_ambiente)
