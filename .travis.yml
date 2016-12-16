@@ -13,6 +13,7 @@ addons:
       - libxml2-dev
       - libxmlsec1-dev
       - libxslt-dev
+      - pandoc
 
 env:
   - VERSION="10.0" LINT_CHECK="1"
