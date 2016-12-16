@@ -1,4 +1,3 @@
-pypandoc
 ofxparse==0.14
 suds_requests
 pytrustnfe
