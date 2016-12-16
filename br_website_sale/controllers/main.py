@@ -10,6 +10,7 @@ import odoo.addons.website_sale.controllers.main as main
 from odoo.addons.br_base.tools.fiscal import validate_cnpj, validate_cpf
 from odoo.addons.website_portal.controllers.main import website_account
 
+
 class L10nBrWebsiteSale(main.WebsiteSale):
 
     def _get_mandatory_billing_fields(self):
@@ -154,8 +155,9 @@ class L10nBrWebsiteSale(main.WebsiteSale):
 class BrWebsiteMyAccount(website_account):
 
     MANDATORY_BILLING_FIELDS = ["name", "phone", "email", "street", "cnpj_cpf",
-                                "number", "district", "zipcode", "company_type",
-                                "city_id", "state_id", "country_id"]
+                                "number", "district", "zipcode",
+                                "company_type", "city_id", "state_id",
+                                "country_id"]
     OPTIONAL_BILLING_FIELDS = ["street2"]
 
     @http.route(['/my/account'], type='http', auth='user', website=True)
