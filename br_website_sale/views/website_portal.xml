@@ -9,6 +9,11 @@
                 <form action="/my/account" method="post">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <div class="row o_website_portal_details">
+                        <div class="col-md-12">
+                            <div t-if="error_message" class="alert alert-danger">
+                                <t t-foreach="error_message" t-as="err"><t t-esc="err"/><br/></t>
+                            </div>
+                        </div>
                         <div class="form-group col-lg-12" style="margin-bottom: 0px;">
                             <label class="control-label" for="person_type">Tipo de Pessoa</label>
                         </div>
@@ -38,7 +43,7 @@
                         </div>
                         <div t-attf-class="form-group #{error.get('zip') and 'has-error' or ''} col-sm-5">
                             <label class="control-label" for="zip">CEP</label>
-                            <input type="text" name="zip" class="form-control" t-att-value="zip or partner.zip"/>
+                            <input type="text" name="zip" class="form-control" t-att-value="zipcode or partner.zip"/>
                         </div>
                         <div class="form-group col-md-1 zip-search" style="margin-top: 25px; padding-left: 0px;">
                             <a id="btn_search_zip" class="btn btn-primary">
@@ -66,7 +71,7 @@
                             <select id="id_country" name="country_id" class="form-control">
                                 <option value="">Country...</option>
                                 <t t-foreach="countries" t-as="c">
-                                    <option t-att-value="c.id" t-att-selected="c.id == (country and country.id or -1)">
+                                    <option t-att-value="c.id" t-att-selected="c.id == (country_id or partner.country_id.id or -1)">
                                         <t t-esc="c.name"/>
                                     </option>
                                 </t>
@@ -77,25 +82,21 @@
                             <input id="input_state_id" type="hidden" t-att-value="state or partner.state_id.id" />
                             <select id="select_state_id" name="state_id" class="form-control">
                                 <option value="">Estado...</option>
-                                <t t-foreach="country and country.state_ids or []" t-as="s">
-                                    <option t-att-value="s.id" t-att-selected="s.id == (state and partner.state_id.id or -1)">
-                                        <t t-esc="s.name"/>
+                                <t t-foreach="states or []" t-as="state">
+                                    <option t-att-value="state.id" t-att-data-country_id="state.country_id.id" t-att-selected="state.id == (state_id or partner.state_id.id or -1)">
+                                        <t t-esc="state.name"/>
                                     </option>
                                 </t>
                             </select>
                         </div>
                         <div t-attf-class="form-group #{error.get('city_id') and 'has-error' or ''} col-lg-6">
                             <label class="control-label" for="city_id">Cidade</label>
-                            <input id="input_city_id" type="hidden" t-att-value="city" />
+                            <input id="input_city_id" type="hidden" t-att-value="city_id or partner.city_id.id" />
                             <select id="select_city_id" name="city_id" class="form-control">
                                 <option value="">Cidade...</option>
                             </select>
                         </div>
-                        <input type="hidden" name="submitted" value="1"/>
-                        <input type="hidden" name="partner_id" t-att-value="partner_id or '0'"/>
-                        <input type="hidden" name="callback" t-att-value="callback"/>
-                        <!-- Example -->
-
+                        <input type="hidden" name="redirect" t-att-value="redirect"/>
                         <div class="clearfix"/>
                         <div>
                             <button class="btn btn-default btn-primary pull-right mb32 a-submit">
