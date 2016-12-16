@@ -8,7 +8,7 @@ from odoo.http import request
 from werkzeug.exceptions import Forbidden
 import odoo.addons.website_sale.controllers.main as main
 from odoo.addons.br_base.tools.fiscal import validate_cnpj, validate_cpf
-
+from odoo.addons.website_portal.controllers.main import website_account
 
 class L10nBrWebsiteSale(main.WebsiteSale):
 
@@ -149,3 +149,18 @@ class L10nBrWebsiteSale(main.WebsiteSale):
                         'country_id': zip_ids[0].country_id.id}
 
         return {'sucesso': False}
+
+
+class BrWebsiteMyAccount(website_account):
+
+    MANDATORY_BILLING_FIELDS = ["name", "phone", "email", "street", "cnpj_cpf",
+                                "number", "district", "zipcode", "company_type",
+                                "city_id", "state_id", "country_id"]
+    OPTIONAL_BILLING_FIELDS = ["street2"]
+
+    @http.route(['/my/account'], type='http', auth='user', website=True)
+    def details(self, redirect=None, **post):
+        if "zip" in post:
+            post["zipcode"] = post.pop("zip")
+        return super(BrWebsiteMyAccount, self).details(
+            redirect=redirect, **post)
