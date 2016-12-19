@@ -185,7 +185,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         xprod = item.product_id.name if self.company_id.\
             tipo_ambiente != '2' else\
-            'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
+            u'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
 FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
@@ -342,7 +342,7 @@ FISCAL'
             }
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
-                    'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
+                    u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
             if partner.country_id.id != self.company_id.country_id.id:
                 dest['idEstrangeiro'] = re.sub(

@@ -322,6 +322,10 @@ class InvoiceEletronic(models.Model):
         self.state = 'draft'
 
     @api.multi
+    def action_edit_edoc(self):
+        self.state = 'edit'
+
+    @api.multi
     def unlink(self):
         for item in self:
             if item.state == 'done':
@@ -354,6 +358,8 @@ class InvoiceEletronicEvent(models.Model):
     invoice_eletronic_id = fields.Many2one(
         'invoice.eletronic', string=u"Fatura Eletrônica",
         readonly=True, states=STATE)
+    state = fields.Selection(
+        related='invoice_eletronic_id.state', string="State")
 
 
 class InvoiceEletronicItem(models.Model):
@@ -367,6 +373,8 @@ class InvoiceEletronicItem(models.Model):
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency")
+    state = fields.Selection(
+        related='invoice_eletronic_id.state', string="State")
 
     product_id = fields.Many2one(
         'product.product', string=u'Produto', readonly=True, states=STATE)
