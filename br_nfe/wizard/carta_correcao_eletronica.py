@@ -35,6 +35,9 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         if len(self.correcao) < 15:
             raise UserError('Motivo de Correção deve ter mais de ' +
                             '15 caracteres')
+        if len(self.correcao) > 1000:
+            raise UserError('Motivo de Correção deve ter menos de ' +
+                            '1000 caracteres')
 
     @api.multi
     def send_letter(self):
@@ -65,7 +68,6 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             cert_pfx, self.eletronic_doc_id.company_id.nfe_a1_password)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
 
-        # TODO Checar a resposta antes de criar a carta
         retorno = resposta['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
 
         if retorno.cStat == 128 and retorno.retEvento.infEvento.cStat in (135,
