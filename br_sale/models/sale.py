@@ -246,7 +246,7 @@ class SaleOrderLine(models.Model):
         if self.product_id.fiscal_type == 'service':
             valor = self.product_id.lst_price * (
                 service.federal_nacional + service.estadual_imposto +
-                ncm.municipal_imposto) / 100
+                service.municipal_imposto) / 100
         else:
             nacional = ncm.federal_nacional if self.product_id.origin in \
                 ('1', '2', '3', '8') else ncm.federal_importado
