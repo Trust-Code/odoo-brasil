@@ -68,10 +68,10 @@
                 <page name="carta_correcao" string="Cartas de Correção" >
                     <field name="cartas_correcao_ids" >
                         <tree>
-                            <field name="Id" />
-                            <field name="tpAmb" />
-                            <field name="CNPJ" />
-                            <field name="dhEvento" />
+                            <field name="sequencial_evento" />
+                            <field name="message" />
+                            <field name="protocolo" />
+                            <field name="datahora_evento" />
                         </tree>
                     </field>
                 </page>

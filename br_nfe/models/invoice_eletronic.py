@@ -18,7 +18,7 @@ try:
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+    _logger.debug('Cannot import pytrustnfe', exc_info=True)
 
 STATE = {'edit': [('readonly', False)]}
 
@@ -41,7 +41,7 @@ class InvoiceEletronic(models.Model):
             "views": [[False, "form"]],
             "name": "Carta de Correção",
             "target": "new",
-            "context": {'default_invoice_id': self.id},
+            "context": {'default_eletronic_doc_id': self.id},
         }
 
     ambiente_nfe = fields.Selection(
@@ -154,9 +154,9 @@ class InvoiceEletronic(models.Model):
         da UF de destino')
 
     # CARTA DE CORRECAO
-    cartas_correcao_ids = fields.One2many('carta.correcao.eletronica.evento',
-                                          'invoice_id',
-                                          string="Cartas de Correção")
+    cartas_correcao_ids = fields.One2many(
+        'carta.correcao.eletronica.evento', 'eletronic_doc_id',
+        string="Cartas de Correção", readonly=True, states=STATE)
 
     def barcode_url(self):
         url = '<img style="width:470px;height:50px;margin-top:5px;"\
@@ -502,6 +502,8 @@ FISCAL'
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
+        if self.model not in ('55', '65'):
+            return
         for item in self:
             chave_dict = {
                 'cnpj': re.sub('[^0-9]', '', item.company_id.cnpj_cpf),

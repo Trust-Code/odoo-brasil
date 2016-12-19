@@ -12,56 +12,99 @@ _logger = logging.getLogger(__name__)
 try:
     from pytrustnfe.nfe import recepcao_evento_carta_correcao
     from pytrustnfe.certificado import Certificado
-except (ImportError, IOError) as err:
-    _logger.debug(err)
+except ImportError:
+    _logger.debug('Cannot import pytrustnfe', exc_info=True)
 
 
 class WizardCartaCorrecaoEletronica(models.TransientModel):
     _name = 'wizard.carta.correcao.eletronica'
 
-    correcao = fields.Text(string="Correção", max_length=1000)
-    invoice_id = fields.Many2one('invoice.eletronic', string="Cobrança")
+    state = fields.Selection([('drat', 'Provisório'), ('error', 'Erro')],
+                             string="Situação")
+    correcao = fields.Text(string="Correção", max_length=1000, required=True)
+    eletronic_doc_id = fields.Many2one(
+        'invoice.eletronic', string="Documento Eletrônico")
+    message = fields.Char(string="Mensagem", size=300, readonly=True)
+    sent_xml = fields.Binary(string="Xml Envio", readonly=True)
+    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
+    received_xml_name = fields.Char(
+        string="Xml Recebimento", size=30, readonly=True)
 
-    def valida_carta_correcao_eletronica(self, **kwargs):
-        if len(kwargs.get('xCorrecao', '')) < 15:
+    def valida_carta_correcao_eletronica(self):
+        if len(self.correcao) < 15:
             raise UserError('Motivo de Correção deve ter mais de ' +
                             '15 caracteres')
-        if len(kwargs.get('xCorrecao', '')) > 1000:
-            raise UserError('Motivo de Correção deve ter menos de ' +
-                            '1000 caracteres')
 
     @api.multi
     def send_letter(self):
-        carta = {}
-        invoice_id = self.invoice_id
-        carta['invoice_id'] = invoice_id.id
-        eventos = self.env['carta.correcao.eletronica.evento']
-        cnpj_cpf = re.sub(r"\D", '', self.env.user.company_id.cnpj_cpf)
-        carta['CNPJ'] = cnpj_cpf
-        carta['CPF'] = ''
-        carta['cOrgao'] = self.env.user.company_id.state_id.ibge_code
-        carta['tpAmb'] = invoice_id.company_id.tipo_ambiente
-        now = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-        carta['dhEvento'] = fields.Datetime.from_string(now)
-        carta['chNFe'] = invoice_id.chave_nfe
-        carta['xCorrecao'] = self.correcao
-        carta['tpEvento'] = '110110'
-        self.valida_carta_correcao_eletronica(**carta)
-        evento = eventos.create(carta)
-        carta['idLote'] = evento.id
-        carta['nSeqEvento'] = str(evento.search_count(
-            [('invoice_id', '=', invoice_id.id)]))
-        carta['Id'] = "ID" + carta['tpEvento'] + carta['chNFe'] +\
-            carta['nSeqEvento']
-        evento.update(carta)
+        self.valida_carta_correcao_eletronica()
 
-        cert = invoice_id.company_id.with_context({'bin_size': False}).\
-            nfe_a1_file
+        numero_evento = len(self.eletronic_doc_id.cartas_correcao_ids) + 1
+        carta = {
+            'invoice_id': self.eletronic_doc_id.id,
+            'CNPJ': re.sub(
+                "[^0-9]", "", self.eletronic_doc_id.company_id.cnpj_cpf or ''),
+            'cOrgao':  self.eletronic_doc_id.company_id.state_id.ibge_code,
+            'tpAmb': self.eletronic_doc_id.company_id.tipo_ambiente,
+            'estado':  self.eletronic_doc_id.company_id.state_id.ibge_code,
+            'ambiente': int(self.eletronic_doc_id.company_id.tipo_ambiente),
+            'dhEvento': datetime.now().strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'chNFe': self.eletronic_doc_id.chave_nfe,
+            'xCorrecao': self.correcao,
+            'tpEvento': '110110',
+            'nSeqEvento': numero_evento,
+            'idLote': self.id,
+            'Id': "ID110110%s%02d" % (self.eletronic_doc_id.chave_nfe,
+                                      numero_evento)
+        }
+        cert = self.eletronic_doc_id.company_id.with_context(
+            {'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx,
-                                  invoice_id.company_id.nfe_a1_password)
-        carta['estado'] = self.env.user.company_id.state_id.ibge_code
-        carta['ambiente'] = int(invoice_id.company_id.tipo_ambiente)
+        certificado = Certificado(
+            cert_pfx, self.eletronic_doc_id.company_id.nfe_a1_password)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
-        invoice_id._create_attachment('carta_correcao', invoice_id,
-                                      resposta['sent_xml'])
+
+        # TODO Checar a resposta antes de criar a carta
+        retorno = resposta['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+
+        if retorno.cStat == 128 and retorno.retEvento.infEvento.cStat in (135,
+                                                                          136):
+            eventos = self.env['carta.correcao.eletronica.evento']
+            eventos.create({
+                'id_cce': carta['Id'],
+                'eletronic_doc_id': self.eletronic_doc_id.id,
+                'datahora_evento': datetime.now(),
+                'tipo_evento': carta['tpEvento'],
+                'sequencial_evento': carta['nSeqEvento'],
+                'correcao': carta['xCorrecao'],
+                'message': retorno.retEvento.infEvento.xEvento,
+                'protocolo': retorno.retEvento.infEvento.nProt,
+            })
+            self.eletronic_doc_id._create_attachment(
+                'cce', self.eletronic_doc_id, resposta['sent_xml'])
+            self.eletronic_doc_id._create_attachment(
+                'cce_ret', self.eletronic_doc_id, resposta['received_xml'])
+
+        else:
+            mensagem = "%s - %s" % (retorno.cStat, retorno.xMotivo)
+            if retorno.cStat == 128:
+                mensagem = "%s - %s" % (retorno.retEvento.infEvento.cStat,
+                                        retorno.retEvento.infEvento.xMotivo)
+            self.write({
+                'state': 'error',
+                'message': mensagem,
+                'sent_xml': base64.b64encode(resposta['sent_xml']),
+                'sent_xml_name': 'cce-envio.xml',
+                'received_xml': base64.b64encode(resposta['received_xml']),
+                'received_xml_name': 'cce-retorno.xml',
+            })
+
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "wizard.carta.correcao.eletronica",
+                "views": [[False, "form"]],
+                "name": "Carta de Correção",
+                "target": "new",
+                "res_id": self.id,
+            }
