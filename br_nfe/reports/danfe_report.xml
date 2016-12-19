@@ -511,7 +511,7 @@
                     </div>
                 </div>
 
-                <div class="row line">
+                <div class="row">
                     <div class="borda-completa col-xs-7 line4">
                         <span class="small">Informações Complementares</span><br />
                         <span class="small" t-field="o.informacoes_complementares"></span>
@@ -521,6 +521,66 @@
                         <span class="small">Reservado ao Fisco</span><br />
                     </div>
                 </div>
+
+                <t t-if="len(o.cartas_correcao_ids) > 0">
+                    <p style="page-break-after:always;"></p>
+                    <t t-foreach="o.cartas_correcao_ids" t-as="c">
+                        <div class="row" style="clear:both; margin-top:20px;">
+                            <div class="col-xs-12 text-center">
+                                <span class="enfase">Cartas de Correção</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="borda-completa col-xs-4">
+                                <span style="font-size:10px;">RAZÃO SOCIAL DO EMITENTE</span>
+                            </div>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="o.company_id.legal_name"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">CNPJ DO EMITENTE</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="o.company_id.cnpj_cpf"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">CHAVE DE ACESSO DA NF-E</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="o.chave_nfe"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">DATA DA CORREÇÃO</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="c.datahora_evento"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">ID</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="c.id_cce"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-12 text-center">
+                                <span style="font-size:10px;">CORREÇÃO</span>
+                            </div>
+                            <div class="bl bb br col-xs-12">
+                                <p t-field="c.correcao"></p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
             </div>
         </div>
         <div class="footer">
