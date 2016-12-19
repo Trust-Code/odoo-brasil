@@ -4,7 +4,6 @@
 
 import base64
 import os
-import re
 
 from mock import patch
 from odoo.exceptions import UserError
