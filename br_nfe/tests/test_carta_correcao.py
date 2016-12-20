@@ -4,10 +4,11 @@
 
 import base64
 import os
-import re
 
+from mock import patch
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
+from pytrustnfe.xml import sanitize_response
 
 
 class TestCartaCorrecao(TransactionCase):
@@ -170,20 +171,21 @@ class TestCartaCorrecao(TransactionCase):
             'code': '1',
             'name': 'Teste Carta Correção',
             'company_id': self.main_company.id,
-            'chave_nfe': '4216101735078700011455001000000102151263525',
+            'chave_nfe': '35161221332917000163550010000000041158176721',
         }
-        self.invoice = self.env['invoice.eletronic'].create(invoice_eletronic)
+        self.eletronic_doc = self.env['invoice.eletronic'].create(
+            invoice_eletronic)
         carta_wizard_short = {
             'correcao': 'short',
-            'invoice_id': self.invoice.id,
+            'eletronic_doc_id': self.eletronic_doc.id,
         }
         carta_wizard_long = {
             'correcao': 'long' * 1000,
-            'invoice_id': self.invoice.id,
+            'eletronic_doc_id': self.eletronic_doc.id,
         }
         carta_wizard_right = {
             'correcao': 'Teste de Carta de Correcao' * 10,
-            'invoice_id': self.invoice.id,
+            'eletronic_doc_id': self.eletronic_doc.id,
         }
         self.carta_wizard_short = self.\
             env['wizard.carta.correcao.eletronica']. create(carta_wizard_short)
@@ -200,15 +202,25 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    def test_carta_correca_eletronica(self):
+    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao') # noqa
+    def test_carta_correca_eletronica(self, recepcao):
+        # Mock o retorno da CCE
+        xml_recebido = open(os.path.join(
+            self.caminho, 'xml/cce-retorno.xml'), 'r').read()
+        resp = sanitize_response(xml_recebido)
+        recepcao.return_value = {
+            'object': resp[1],
+            'sent_xml': '<xml />',
+            'received_xml': xml_recebido
+        }
         self.carta_wizard_right.send_letter()
-        Id = "ID11011042161017350787000114550010000001021512635251"
+
+        Id = "ID1101103516122133291700016355001000000004115817672101"
         carta = self.env['carta.correcao.eletronica.evento'].search([])
         self.assertEquals(len(carta), 1)
-        self.assertEquals(carta.CNPJ, re.sub(r"\D", '',
-                                             self.main_company.cnpj_cpf))
-        self.assertEquals(carta.cOrgao, self.main_company.state_id.ibge_code)
-        self.assertEquals(carta.xCorrecao, 'Teste de Carta de Correcao' * 10)
-        self.assertEquals(carta.tpAmb, self.main_company.tipo_ambiente)
-        self.assertEquals(carta.tpEvento, '110110')
-        self.assertEquals(carta.Id, Id)
+        self.assertEquals(carta.message, "Carta de Correcao registrada")
+        self.assertEquals(carta.protocolo, "135160008802236")
+        self.assertEquals(carta.correcao, 'Teste de Carta de Correcao' * 10)
+        self.assertEquals(carta.sequencial_evento, 1)
+        self.assertEquals(carta.tipo_evento, '110110')
+        self.assertEquals(carta.id_cce, Id)

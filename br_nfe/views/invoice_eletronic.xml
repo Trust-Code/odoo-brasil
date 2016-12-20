@@ -13,13 +13,11 @@
                     A NFe está em ambiente de homologação
                 </div>
             </div>
-            <div name="alertas" position="after">
-                <div name="button_box">
-                    <button name="generate_correction_letter" type="object" class="oe_stat_button" icon="fa-envelope"
-                        string="Carta de Correção" attrs="{'invisible': [('state', '!=', 'done')]}">
-                    </button>
-                </div>
-            </div>
+            <button name="action_cancel_document" position="after">
+                <button name="generate_correction_letter" type="object" class="oe_stat_button" icon="fa-envelope"
+                    string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('55', '65'))]}">
+                </button>
+            </button>
             <page name="totais" position="after">
                 <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>
@@ -68,10 +66,10 @@
                 <page name="carta_correcao" string="Cartas de Correção" >
                     <field name="cartas_correcao_ids" >
                         <tree>
-                            <field name="Id" />
-                            <field name="tpAmb" />
-                            <field name="CNPJ" />
-                            <field name="dhEvento" />
+                            <field name="sequencial_evento" />
+                            <field name="message" />
+                            <field name="protocolo" />
+                            <field name="datahora_evento" />
                         </tree>
                     </field>
                 </page>
