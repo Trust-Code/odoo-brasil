@@ -325,6 +325,12 @@ class TestNFeBrasil(TransactionCase):
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
+    def test_nfe_cep_validation(self):
+        invoice = self.invoices[0]
+        invoice.company_id.zip = '88090100'
+        with self.assertRaises(UserError):
+            invoice.action_invoice_open()
+
     def test_send_nfe(self):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico

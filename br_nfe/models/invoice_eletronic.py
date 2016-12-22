@@ -3,10 +3,12 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import requests
 import base64
 import logging
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -163,9 +165,24 @@ class InvoiceEletronic(models.Model):
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return url
 
+    def valida_cep(self, cep):
+        if not (isinstance(cep, unicode) or isinstance(cep, str)):
+            return False
+        cep = re.sub(r"\D", "", cep)
+        cep_url = "https://viacep.com.br/ws/{}/json/".format(cep)
+        cep_request = requests.get(cep_url)
+        cep_json = cep_request.json()
+        return not cep_json.get('erro', False)
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
+        if not self.valida_cep(self.company_id.zip):
+            print self.company_id.zip
+            errors.append(u'CEP da empresa inválido: %s' % self.company_id.zip)
+        if not self.valida_cep(self.partner_id.zip):
+            print self.partner_id.zip
+            errors.append(u'CEP do parceiro inválido: %s' % self.partner_id.zip)
         if self.model == '55':
             if not self.company_id.partner_id.inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
