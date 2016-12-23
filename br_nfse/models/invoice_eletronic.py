@@ -3,12 +3,14 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import requests
 import pytz
 import base64
 import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -65,9 +67,31 @@ class InvoiceEletronic(models.Model):
         due_date = datetime.strftime(due_date, format)
         return due_date
 
+    def valida_cep(self, cep):
+        cep = re.sub(r"\D", "", cep)
+        if len(cep) != 8:
+            return False
+        url = "\
+http://cep.republicavirtual.com.br/web_cep.php?cep={}&formato=json"
+        cep_url = url.format(cep)
+        try:
+            cep_request = requests.get(cep_url)
+            cep_json = cep_request.json()
+            if cep_json.get('resultado_txt',
+                            False) == u'sucesso - cep completo':
+                return True
+            return False
+        except requests.exceptions.Timeout:
+            raise UserError(u"Desculpe, o serviço não está respondendo" +
+                            u", este CEP não será validado agora.")
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
+        if not self.valida_cep(self.company_id.zip):
+            errors.append('CEP da empresa inválido: %s' % self.company_id.zip)
+        if not self.valida_cep(self.partner_id.zip):
+            errors.append('CEP do parceiro inválido: %s' % self.partner_id.zip)
         if self.model == '001':
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
