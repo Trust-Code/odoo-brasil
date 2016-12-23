@@ -175,13 +175,13 @@ http://cep.republicavirtual.com.br/web_cep.php?cep={}&formato=json"
         try:
             cep_request = requests.get(cep_url)
             cep_json = cep_request.json()
-            if cep_json.get('resultado_txt', False) == u'sucesso - cep completo':
+            if cep_json.get('resultado_txt',
+                            False) == u'sucesso - cep completo':
                 return True
             return False
         except requests.exceptions.Timeout:
             raise UserError(u"Desculpe, o serviço não está respondendo" +
                             u", este CEP não será validado agora.")
-
 
     @api.multi
     def _hook_validation(self):
@@ -189,7 +189,8 @@ http://cep.republicavirtual.com.br/web_cep.php?cep={}&formato=json"
         if not self.valida_cep(self.company_id.zip):
             errors.append(u'CEP da empresa inválido: %s' % self.company_id.zip)
         if not self.valida_cep(self.partner_id.zip):
-            errors.append(u'CEP do parceiro inválido: %s' % self.partner_id.zip)
+            errors.append(
+                u'CEP do parceiro inválido: %s' % self.partner_id.zip)
         if self.model == '55':
             if not self.company_id.partner_id.inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
