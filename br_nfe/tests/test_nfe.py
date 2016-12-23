@@ -10,6 +10,36 @@ from odoo.exceptions import UserError
 from pytrustnfe.xml import sanitize_response
 
 
+def mocked_requests_get_good(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    return MockResponse(
+        {"resultado": "1", "resultado_txt": "sucesso - cep completo",
+         "uf": "RS", "cidade": "Porto Alegre", "bairro": "Passo D'Areia",
+         "tipo_logradouro": "Avenida", "logradouro": "Assis Brasil"}, 200)
+
+
+def mocked_requests_get_bad(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    return MockResponse(
+        {"resultado": "0", "resultado_txt": "sucesso - cep nao encontrado",
+         "uf": "", "cidade": "", "bairro": "", "tipo_logradouro": "",
+         "logradouro": ""}, 200)
+
+
 class TestNFeBrasil(TransactionCase):
 
     caminho = os.path.dirname(__file__)
@@ -265,10 +295,9 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_exterior.id
         ))
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     def test_computed_fields(self, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             self.assertEquals(invoice.total_edocs, 0)
             self.assertEquals(invoice.nfe_number, 0)
@@ -286,10 +315,9 @@ valida_cep')
             self.assertEquals(invoice.nfe_exception, False)
             self.assertEquals(invoice.sending_nfe, True)
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     def test_print_actions(self, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             # Antes de confirmar a fatura
             with self.assertRaises(UserError):
@@ -315,10 +343,9 @@ valida_cep')
                 danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
             self.assertEquals(danfe['report_type'], 'qweb-pdf')
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     def test_check_invoice_eletronic_values(self, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -330,29 +357,40 @@ valida_cep')
             # documento eletronico
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
-    def test_nfe_validation(self):
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
+    def test_nfe_validation(self, mock_get):
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
+            self.assertTrue(mock_get.called)
 
-    def test_nfe_short_cep_validation(self):
-        cep = "123"
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
+    def test_nfe_short_cep_validation(self, mock_get):
+        cep = "88888"
         cep_val = self.env['invoice.eletronic'].valida_cep(cep)
+        self.assertFalse(mock_get.called)
         self.assertFalse(cep_val)
 
-    def test_nfe_bad_cep_validation(self):
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_bad)
+    def test_nfe_bad_cep_validation(self, mock_get):
         cep = "88888888"
         cep_val = self.env['invoice.eletronic'].valida_cep(cep)
         self.assertFalse(cep_val)
+        self.assertTrue(mock_get.called)
 
-    def test_nfe_good_cep_validation(self):
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
+    def test_nfe_good_cep_validation(self, mock_get):
         cep = "88037-240"
         cep_val = self.env['invoice.eletronic'].valida_cep(cep)
         self.assertTrue(cep_val)
+        self.assertTrue(mock_get.called)
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     def test_send_nfe(self, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -362,12 +400,11 @@ valida_cep')
             with self.assertRaises(Exception):
                 invoice_eletronic.action_send_eletronic_invoice()
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
     def test_wrong_xml_schema(self, autorizar, ret_autorizar, cep_val):
-        cep_val.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -398,12 +435,11 @@ valida_cep')
             self.assertEquals(invoice_eletronic.state, 'error')
             self.assertEquals(invoice_eletronic.codigo_retorno, '225')
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
     def test_nfe_with_concept_error(self, autorizar, ret_autorizar, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -435,11 +471,10 @@ valida_cep')
             self.assertEquals(invoice_eletronic.state, 'error')
             self.assertEquals(invoice_eletronic.codigo_retorno, '694')
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento') # noqa
     def test_nfe_cancelamento_ok(self, cancelar, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -464,10 +499,9 @@ valida_cep')
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Cancelamento homologado fora de prazo")
 
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic.\
-valida_cep')
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     def test_invoice_eletronic_functions(self, cep):
-        cep.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()

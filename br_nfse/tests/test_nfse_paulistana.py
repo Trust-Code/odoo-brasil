@@ -16,6 +16,21 @@ except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
 
+def mocked_requests_get_good(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    return MockResponse(
+        {"resultado": "1", "resultado_txt": "sucesso - cep completo",
+         "uf": "RS", "cidade": "Porto Alegre", "bairro": "Passo D'Areia",
+         "tipo_logradouro": "Avenida", "logradouro": "Assis Brasil"}, 200)
+
+
 class TestNFeBrasil(TransactionCase):
 
     caminho = os.path.dirname(__file__)
@@ -145,7 +160,9 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_juridica.id
         ))
 
-    def test_computed_fields(self):
+    @patch('odoo.addons.br_nfse.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
+    def test_computed_fields(self, mock_get):
         for invoice in self.invoices:
             self.assertEquals(invoice.total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
@@ -153,7 +170,9 @@ class TestNFeBrasil(TransactionCase):
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.total_edocs, 1)
 
-    def test_check_invoice_eletronic_values(self):
+    @patch('odoo.addons.br_nfse.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
+    def test_check_invoice_eletronic_values(self, mock_get):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -165,8 +184,10 @@ class TestNFeBrasil(TransactionCase):
             # documento eletronico
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
+    @patch('odoo.addons.br_nfse.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     @patch('odoo.addons.br_nfse.models.invoice_eletronic.teste_envio_lote_rps')
-    def test_nfse_sucesso_homologacao(self, envio_lote):
+    def test_nfse_sucesso_homologacao(self, envio_lote, mock_get):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -187,8 +208,10 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(invoice_eletronic.codigo_retorno, '100')
             self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
 
+    @patch('odoo.addons.br_nfse.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     @patch('odoo.addons.br_nfse.models.invoice_eletronic.cancelamento_nfe')
-    def test_nfse_cancel(self, cancelar):
+    def test_nfse_cancel(self, cancelar, mock_get):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -215,8 +238,10 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Nota Fiscal Paulistana Cancelada")
 
+    @patch('odoo.addons.br_nfse.models.invoice_eletronic.requests.get',
+           side_effect=mocked_requests_get_good)
     @patch('odoo.addons.br_nfse.models.invoice_eletronic.cancelamento_nfe')
-    def test_nfse_cancelamento_erro(self, cancelar):
+    def test_nfse_cancelamento_erro(self, cancelar, mock_get):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
