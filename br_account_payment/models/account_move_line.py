@@ -31,6 +31,7 @@ class AccountMoveLine(models.Model):
             'default_partner_type': 'customer' if receivable else 'supplier',
             'default_partner_id': self.partner_id.id,
             'default_communication': self.name,
-            'default_payment_type': 'inbound' if receivable else 'outbound'
+            'default_payment_type': 'inbound' if receivable else 'outbound',
+            'default_invoice_ids': [(4, self.invoice_id.id, None)],
         }
         return vals
