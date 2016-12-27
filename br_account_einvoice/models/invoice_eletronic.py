@@ -4,6 +4,7 @@
 
 import base64
 from datetime import datetime
+import re
 from odoo.exceptions import UserError
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
@@ -204,7 +205,8 @@ class InvoiceEletronic(models.Model):
             errors.append(u'Emitente / Endereço - Logradouro')
         if not self.company_id.partner_id.number:
             errors.append(u'Emitente / Endereço - Número')
-        if not self.company_id.partner_id.zip:
+        if not self.company_id.partner_id.zip or len(
+                re.sub(r"\D", "", self.company_id.partner_id.zip)) != 8:
             errors.append(u'Emitente / Endereço - CEP')
         if not self.company_id.partner_id.state_id:
             errors.append(u'Emitente / Endereço - Estado')
@@ -247,7 +249,8 @@ class InvoiceEletronic(models.Model):
             errors.append(u'Destinatário / Endereço - Número')
 
         if partner.country_id.id == company.partner_id.country_id.id:
-            if not partner.zip:
+            if not partner.zip or len(
+                    re.sub(r"\D", "", partner.zip)) != 8:
                 errors.append(u'Destinatário / Endereço - CEP')
 
         if partner.country_id.id == company.partner_id.country_id.id:

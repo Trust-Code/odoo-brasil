@@ -20,6 +20,5 @@
     'data': [
         'views/account_invoice.xml',
     ],
-    'instalable': True,
     'auto_install': True,
 }
