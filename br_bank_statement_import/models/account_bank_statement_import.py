@@ -75,6 +75,7 @@ class AccountBankStatementImport(models.TransientModel):
         ofx = OfxParser.parse(StringIO.StringIO(data_file))
         transacoes = []
         total = 0.0
+        index = 1  # Some banks don't use a unique transaction id, we make one
         for transacao in ofx.account.statement.transactions:
             transacoes.append({
                 'date': transacao.date,
@@ -82,9 +83,13 @@ class AccountBankStatementImport(models.TransientModel):
                     transacao.memo and ': ' + transacao.memo or ''),
                 'ref': transacao.id,
                 'amount': transacao.amount,
-                'unique_import_id': transacao.id
+                'unique_import_id': "%s-%s" % (transacao.id, index)
             })
             total += float(transacao.amount)
+            index += 1
+        # Really? Still using Brazilian Cruzeiros :/
+        if ofx.account.statement.currency.upper() == "BRC":
+            ofx.account.statement.currency = "BRL"
 
         journal = self.journal_id
         if not self.force_journal_account:
