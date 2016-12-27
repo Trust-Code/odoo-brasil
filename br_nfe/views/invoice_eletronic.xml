@@ -14,7 +14,7 @@
                 </div>
             </div>
             <button name="action_cancel_document" position="after">
-                <button name="generate_correction_letter" type="object" class="oe_stat_button" icon="fa-envelope"
+                <button name="generate_correction_letter" type="object" class="oe_highlight" icon="fa-envelope"
                     string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('55', '65'))]}">
                 </button>
             </button>
