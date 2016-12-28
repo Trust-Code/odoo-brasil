@@ -31,6 +31,7 @@ class AccountInvoiceLine(models.Model):
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
             self.icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_base_calculo': self.icms_base_calculo,
             'ipi_base_calculo': self.ipi_base_calculo,
@@ -48,7 +49,8 @@ class AccountInvoiceLine(models.Model):
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
-                 'icms_st_aliquota_reducao_base')
+                 'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
+                 'icms_st_aliquota_deducao')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -265,6 +267,10 @@ class AccountInvoiceLine(models.Model):
     icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
     icms_valor_credito = fields.Float(
         u"Valor de Crédito", compute='_compute_price')
+    icms_st_aliquota_deducao = fields.Float(
+        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
+         do Simples Nacional")
 
     # =========================================================================
     # ISSQN
@@ -462,60 +468,56 @@ class AccountInvoiceLine(models.Model):
     def _onchange_tax_icms_id(self):
         if self.tax_icms_id:
             self.icms_aliquota = self.tax_icms_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_st_id')
     def _onchange_tax_icms_st_id(self):
         if self.tax_icms_st_id:
             self.icms_st_aliquota = self.tax_icms_st_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_inter_id')
     def _onchange_tax_icms_inter_id(self):
-        if self.tax_icms_inter_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_intra_id')
     def _onchange_tax_icms_intra_id(self):
-        if self.tax_icms_intra_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_fcp_id')
     def _onchange_tax_icms_fcp_id(self):
-        if self.tax_icms_fcp_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_simples_id')
     def _onchange_tax_simples_id(self):
-        if self.tax_simples_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
         if self.tax_pis_id:
             self.pis_aliquota = self.tax_pis_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):
         if self.tax_cofins_id:
             self.cofins_aliquota = self.tax_cofins_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
         if self.tax_ipi_id:
             self.ipi_aliquota = self.tax_ipi_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_ii_id')
     def _onchange_tax_ii_id(self):
         if self.tax_ii_id:
             self.ii_aliquota = self.tax_ii_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_issqn_id')
     def _onchange_tax_issqn_id(self):
         if self.tax_issqn_id:
             self.issqn_aliquota = self.tax_issqn_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
