@@ -48,13 +48,14 @@ class SaleOrderLine(models.Model):
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
             self.icms_st_aliquota_reducao_base,
-            'ipi_reducao_bc': self.ipi_reducao_bc
+            'ipi_reducao_bc': self.ipi_reducao_bc,
+            'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
         }
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
                  'icms_st_aliquota_mva', 'incluir_ipi_base',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
-                 'ipi_reducao_bc')
+                 'ipi_reducao_bc', 'icms_st_aliquota_deducao')
     def _compute_amount(self):
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
@@ -78,7 +79,8 @@ class SaleOrderLine(models.Model):
 
     @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
                  'incluir_ipi_base', 'icms_aliquota_reducao_base', 'tem_difal',
-                 'icms_st_aliquota_reducao_base', 'ipi_reducao_bc')
+                 'icms_st_aliquota_reducao_base', 'ipi_reducao_bc',
+                 'icms_st_aliquota_deducao')
     def _compute_detalhes(self):
         for line in self:
             msg = []
@@ -128,6 +130,10 @@ class SaleOrderLine(models.Model):
         string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
         string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
+    icms_st_aliquota_deducao = fields.Float(
+        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
+         do Simples Nacional", digits=dp.get_precision('Account'))
     tem_difal = fields.Boolean(string="Possui Difal")
 
     ipi_cst = fields.Char(string='CST IPI', size=5)
@@ -263,6 +269,7 @@ class SaleOrderLine(models.Model):
         res['icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
         res['icms_st_aliquota_reducao_base'] = \
             self.icms_st_aliquota_reducao_base
+        res['icms_st_aliquota_deducao'] = self.icms_st_aliquota_deducao
         res['tem_difal'] = self.tem_difal
         res['icms_uf_remet'] = icms_inter.amount or 0.0
         res['icms_uf_dest'] = icms_intra.amount or 0.0
