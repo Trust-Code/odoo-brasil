@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_account_journal_form" model="ir.ui.view">
+        <field name="name">view.br_account_journal.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="bank_id" position="before">
+                <field name="bank_agency_number" />
+                <field name="acc_partner_id" />
+            </field>
+            <field name="bank_statements_source" position="before">
+                <field name="acc_number_dig" />
+                <field name="bank_agency_dig" />
+                <field name="bank_currency_id" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
