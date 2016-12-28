@@ -175,6 +175,14 @@ class AccountTax(models.Model):
             base_icmsst += self.env.context["outras_despesas"]
 
         base_icmsst *= 1 - (reducao_icmsst / 100.0)  # Redução
+
+        deducao_st_simples = 0.0
+        if "icms_st_aliquota_deducao" in self.env.context:
+            deducao_st_simples = self.env.context["icms_st_aliquota_deducao"]
+
+        if deducao_st_simples:
+            icms_value = base_icmsst * (deducao_st_simples / 100.0)
+
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
 
         icmsst = round(
