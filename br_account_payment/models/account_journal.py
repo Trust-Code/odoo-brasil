@@ -13,5 +13,5 @@ class AccountJournal(models.Model):
     bank_agency_dig = fields.Char(related='bank_account_id.bra_number_dig')
     acc_partner_id = fields.Many2one('res.partner',
                                      related='bank_account_id.partner_id')
-    bank_currency_id = fields.Many2one('res.currency',
+    bank_currency_id = fields.Many2one('res.currency', string="Bank Account",
                                        related='bank_account_id.currency_id')
