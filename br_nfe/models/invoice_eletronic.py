@@ -587,9 +587,9 @@ FISCAL'
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        super(InvoiceEletronic, self).action_cancel_document()
         if self.model not in ('55', '65'):
-            return
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa)
 
         if not justificativa:
             return {
