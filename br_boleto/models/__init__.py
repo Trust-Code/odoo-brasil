@@ -7,3 +7,4 @@ from . import account_invoice
 from . import res_partner_bank
 from . import payment_order
 from . import payment_mode
+from . import account_journal
