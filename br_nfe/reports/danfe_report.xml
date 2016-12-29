@@ -55,8 +55,8 @@
                 </div>
                 <hr style="border-top:1px dashed black; margin:5px;" />
 
-                <div class="row line">
-                    <div class="bl bt br col-xs-5 line3 center" style="line-height:14px;">
+                <div class="row">
+                    <div class="bl bt br col-xs-5 center" style="line-height:14px;">
 
                         <t t-if="o.company_id.cabecalho_danfe == 'horizontal'">
                             <div class="row">
@@ -97,7 +97,7 @@
                         </t>
 
                     </div>
-                    <div class="bt br col-xs-2 line3" style="line-height:16px;">
+                    <div class="bt br col-xs-2" style="line-height:16px;">
                         <div class="row center">
                             <span class="enfase">DANFE</span><br />
                             <span style="font-size:10px;text-transform:uppercase;">Documento Auxiliar da Nota Fiscal Eletrônica</span>
@@ -117,14 +117,14 @@
                             <span>FOLHA 01/01</span>
                         </div>
                     </div>
-                    <div class="br bt col-xs-5 line3">
-                        <div class="row bb line60">
+                    <div class="br bt col-xs-5">
+                        <div class="row bb">
                             <t t-raw="o.barcode_url()" />
                         </div>
                         <div class="row bb">
                             <div class="col-xs-12">
                                 <span class="small">Chave de Acesso</span><br />
-                                <span t-field="o.chave_nfe_danfe" style="font-size:12px;"></span><br />
+                                <span t-field="o.chave_nfe_danfe" style="font-size:11px;"></span><br />
                             </div>
                         </div>
                         <div class="row">
@@ -191,7 +191,7 @@
                     </div>
                     <div class="bt br col-xs-3 line">
                         <span class="small">Bairro/Distrito</span><br />
-                        <span t-field="o.commercial_partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.district"></span>
                     </div>
                     <div class="bt br col-xs-1 line">
                         <span class="small">CEP</span><br />

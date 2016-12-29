@@ -159,7 +159,7 @@ class InvoiceEletronic(models.Model):
         string="Cartas de Correção", readonly=True, states=STATE)
 
     def barcode_url(self):
-        url = '<img style="width:470px;height:50px;margin-top:5px;"\
+        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return url
 
