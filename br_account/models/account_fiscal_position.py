@@ -95,8 +95,7 @@ class AccountFiscalPosition(models.Model):
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras II", domain=[('domain', '=', 'ii')])
 
-    def _filter_rules(self, fpos_id, type_tax, partner,
-                      product, state):
+    def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
         domain = [('fiscal_position_id', '=', fpos_id),
                   ('domain', '=', type_tax)]
@@ -121,8 +120,9 @@ class AccountFiscalPosition(models.Model):
                     rules_points[rule.id] -= 1
                 if len(rule.state_ids) > 0:
                     rules_points[rule.id] -= 1
-
             greater_rule = max([(v, k) for k, v in rules_points.items()])
+            if greater_rule[0] <= 0:
+                return {}
             rules = [rules.browse(greater_rule[1])]
 
             return {
