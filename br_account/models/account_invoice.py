@@ -181,6 +181,12 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    @api.onchange('issuer')
+    def _onchange_issuer(self):
+        if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
+            self.fiscal_document_id = None
+            self.document_serie_id = None
+
     @api.onchange('fiscal_document_id')
     def _onchange_fiscal_document_id(self):
         series = self.env['br_account.document.serie'].search(
