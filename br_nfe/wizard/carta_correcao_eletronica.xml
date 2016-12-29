@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record model="ir.ui.view" id="view_wizard_cancel_nfe">
+    <record model="ir.ui.view" id="view_wizard_carta_correcao_nfe">
         <field name="name">wizard.carta.correcao.eletronica</field>
         <field name="model">wizard.carta.correcao.eletronica</field>
         <field name="arch" type="xml">
