@@ -331,7 +331,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def unlink(self):
         for item in self:
-            if item.state == 'done':
+            if item.state in ('done', 'cancel'):
                 raise UserError(
                     u'Documento Eletrônico enviado - Proibido excluir')
         super(InvoiceEletronic, self).unlink()
