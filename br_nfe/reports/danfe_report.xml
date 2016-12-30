@@ -461,7 +461,13 @@
                             <t t-foreach="o.eletronic_item_ids" t-as="e">
                                 <tr>
                                     <td><span t-esc="e.product_id.default_code.replace('.', '')"></span></td>
-                                    <td><span t-field="e.product_id.name"></span></td>
+                                    <td>
+                                        <span t-field="e.product_id.name"></span>
+                                        <t t-if="e.informacao_adicional">
+                                            <br />
+                                            <span t-field="e.informacao_adicional"></span>
+                                        </t>
+                                    </td>
                                     <td><span t-field="e.product_id.fiscal_classification_id.code"></span></td>
                                     <td><span t-field="e.cst_danfe"></span></td>
                                     <td><span t-field="e.cfop"></span></td>

@@ -26,6 +26,11 @@
                     <field name="icms_uf_remet" />
                 </group>
             </group>
+            <xpath expr="//form/notebook/page/group" position="after">
+                <label for="informacao_adicional" />
+                <field name="informacao_adicional" />
+            </xpath>
         </field>
     </record>
+
 </odoo>

@@ -135,4 +135,5 @@ class AccountInvoice(models.Model):
         vals['icms_uf_remet'] = invoice_line.icms_uf_remet or 0.0
         vals['icms_uf_dest'] = invoice_line.icms_uf_dest or 0.0
         vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
+        vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
