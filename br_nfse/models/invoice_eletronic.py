@@ -257,9 +257,9 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        super(InvoiceEletronic, self).action_cancel_document()
         if self.model not in ('001'):
-            return
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa)
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
