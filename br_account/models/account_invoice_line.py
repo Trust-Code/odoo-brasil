@@ -381,6 +381,9 @@ class AccountInvoiceLine(models.Model):
     ii_valor_despesas = fields.Float(
         'Despesas Aduaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
+    import_declaration_ids = fields.One2many(
+        'br_account.import.declaration',
+        'invoice_line_id', u'Declaração de Importação')
 
     def _update_tax_from_ncm(self):
         if self.product_id:

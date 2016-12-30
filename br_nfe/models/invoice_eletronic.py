@@ -8,6 +8,7 @@ import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -227,6 +228,39 @@ FISCAL'
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
         }
+        di_vals = []
+        for di in item.import_declaration_ids:
+            adicoes = []
+            for adi in di.line_ids:
+                adicoes.append({
+                    'nAdicao': adi.name,
+                    'nSeqAdic': adi.sequence,
+                    'cFabricante': adi.manufacturer_code,
+                    'vDescDI': "%.02f" % adi.amount_discount
+                    if adi.amount_discount else '',
+                    'nDraw': adi.drawback_number or '',
+                })
+
+            dt_registration = datetime.strptime(
+                di.date_registration, DATE_FORMAT)
+            dt_release = datetime.strptime(di.date_release, DATE_FORMAT)
+            di_vals.append({
+                'nDI': di.name,
+                'dDI': dt_registration.strftime('%Y-%m-%d'),
+                'xLocDesemb': di.location,
+                'UFDesemb': di.state_id.code,
+                'dDesemb': dt_release.strftime('%Y-%m-%d'),
+                'tpViaTransp': di.type_transportation,
+                'vAFRMM': "%.02f" % di.afrmm_value if di.afrmm_value else '',
+                'tpIntermedio': di.type_import,
+                'CNPJ': di.thirdparty_cnpj or '',
+                'UFTerceiro': di.thirdparty_state_id.code or '',
+                'cExportador': di.exporting_code,
+                'adi': adicoes,
+            })
+
+        prod["DI"] = di_vals
+
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
