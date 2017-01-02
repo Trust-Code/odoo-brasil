@@ -29,6 +29,16 @@
                   <div  style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Sem Valor Fiscal</div>
                 </div>
             </t>
+            <t t-if="o.state in ('cancel')">
+                <div style="width:100%;position:fixed;top:500px;">
+                  <div  style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Nota Cancelada</div>
+                </div>
+            </t>
+            <t t-if="o.state not in ('done', 'cancel')">
+                <div style="width:100%;position:fixed;top:650px;">
+                  <div  style="width:84%; margin: 0 auto; font-size:48px; color:red;">Impresso para simples conferência</div>
+                </div>
+            </t>
 
             <div class="oe_structure container">
                 <div class="row">
@@ -144,8 +154,13 @@
                     </div>
                     <div class="bt br bb col-xs-5 line">
                         <span class="small">Protocolo de autorização de uso</span><br />
-                        <span t-field="o.protocolo_nfe"></span> |
-                        <span t-field="o.data_autorizacao"></span><br />
+                        <t t-if="o.state in ('done', 'cancel')">
+                            <span t-field="o.protocolo_nfe"></span> |
+                            <span t-field="o.data_autorizacao"></span><br />
+                        </t>
+                        <t t-if="o.state not in ('done', 'cancel')">
+                            <span>Informações ainda não transmitidas a nenhuma SEFAZ</span>
+                        </t>
                     </div>
                 </div>
                 <div class="row line">

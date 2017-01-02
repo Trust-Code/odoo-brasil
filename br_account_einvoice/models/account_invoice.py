@@ -60,14 +60,15 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         for invoice in self:
-            if not invoice.document_serie_id.internal_sequence_id.id:
-                raise UserError(
-                    u'Configure a sequência para a numeração da nota')
-            seq_number = \
-                invoice.document_serie_id.internal_sequence_id.next_by_id()
+            if invoice.is_eletronic:
+                if not invoice.document_serie_id.internal_sequence_id.id:
+                    raise UserError(
+                        u'Configure a sequência para a numeração da nota')
 
-            self.write(
-                {'internal_number': seq_number})
+                seq_number = \
+                    invoice.document_serie_id.internal_sequence_id.next_by_id()
+                self.write(
+                    {'internal_number': seq_number})
         return True
 
     def _prepare_edoc_item_vals(self, line):
@@ -198,5 +199,6 @@ class AccountInvoice(models.Model):
                 if edoc.state == 'done':
                     raise UserError(u'Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
-                edoc.unlink()
+                if edoc.state != 'cancel':
+                    edoc.unlink()
         return res

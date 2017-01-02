@@ -14,7 +14,7 @@ class InvoiceEletronicItem(models.Model):
     @api.depends('icms_cst', 'origem')
     def _compute_cst_danfe(self):
         for item in self:
-            item.cst_danfe = item.origem + item.icms_cst
+            item.cst_danfe = (item.origem or '') + (item.icms_cst or '')
 
     cst_danfe = fields.Char(string="CST Danfe", compute="_compute_cst_danfe")
 
