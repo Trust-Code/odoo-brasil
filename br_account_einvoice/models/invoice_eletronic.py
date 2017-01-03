@@ -39,7 +39,7 @@ class InvoiceEletronic(models.Model):
     tipo_operacao = fields.Selection(
         [('entrada', 'Entrada'),
          ('saida', 'Saída')],
-        string=u'Tipo emissão', readonly=True, states=STATE)
+        string=u'Tipo de Operação', readonly=True, states=STATE)
     model = fields.Selection(
         [('55', '55 - NFe'),
          ('65', '65 - NFCe'),
