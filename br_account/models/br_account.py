@@ -217,5 +217,4 @@ class ImportDeclarationLine(models.Model):
         u'Código do Fabricante', size=60, required=True)
     amount_discount = fields.Float(
         string=u'Valor', digits=dp.get_precision('Account'), default=0.00)
-    drawback_number = fields.Char(
-            u'Número Drawback', size=11)
+    drawback_number = fields.Char(u'Número Drawback', size=11)
