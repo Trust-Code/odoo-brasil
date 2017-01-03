@@ -378,6 +378,9 @@ FISCAL'
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
+            'IM': re.sub('[^0-9]', '', self.company_id.inscr_mun or ''),
+            'CNAE': re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         }
         if self.company_id.inscr_mun:
             emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun)
