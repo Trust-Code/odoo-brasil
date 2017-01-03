@@ -332,10 +332,10 @@ FISCAL'
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
+            'IM': re.sub('[^0-9]', '', self.company_id.inscr_mun or ''),
+            'CNAE': re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         }
-        if self.company_id.inscr_mun:
-            emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun)
-            emit['CNAE'] = re.sub('[^0-9]', '', self.company_id.inscr_mun)
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -476,12 +476,6 @@ FISCAL'
             'xPed': self.pedido_compra or '',
             'xCont': self.contrato_compra or '',
         }
-        aut_xml = [{
-            'CNPJ': partner.cnpj_cpf if len(
-                re.sub(r"\D", '', partner.cnpj_cpf)) == 14 else '',
-            'CPF': partner.cnpj_cpf if len(
-                re.sub(r"\D", '', partner.cnpj_cpf)) == 11 else '',
-        }]
         vals = {
             'Id': '',
             'ide': ide,
@@ -494,7 +488,6 @@ FISCAL'
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
-            'autXML': aut_xml,
         }
         return vals
 
