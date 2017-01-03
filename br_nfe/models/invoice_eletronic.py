@@ -59,7 +59,7 @@ class InvoiceEletronic(models.Model):
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
         ('9', u'Operação não presencial, outros'),
-    ], u'Tipo de operação', readonly=True, states=STATE, required=False,
+    ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
@@ -74,6 +74,18 @@ class InvoiceEletronic(models.Model):
         ('9', u'9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário",
         readonly=True, states=STATE)
+    tipo_emissao = fields.Selection([
+        ('1', u'1 - Emissão normal'),
+        ('2', u'2 - Contingência FS-IA, com impressão do DANFE em formulário \
+         de segurança'),
+        ('3', u'3 - Contingência SCAN'),
+        ('4', u'4 - Contingência DPEC'),
+        ('5', u'5 - Contingência FS-DA, com impressão do DANFE em \
+         formulário de segurança'),
+        ('6', u'6 - Contingência SVC-AN'),
+        ('7', u'7 - Contingência SVC-RS'),
+        ('9', u'9 - Contingência off-line da NFC-e')],
+        string="Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
     modalidade_frete = fields.Selection(
@@ -338,7 +350,7 @@ FISCAL'
                                 self.company_id.city_id.ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
             'tpImp': '1' if self.model == '55' else '4',
-            'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
+            'tpEmis': int(self.tipo_emissao),
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
@@ -547,7 +559,7 @@ FISCAL'
                 'modelo': item.model,
                 'numero': item.numero,
                 'serie': item.serie.code.zfill(3),
-                'tipo': 0 if item.tipo_operacao == 'entrada' else 1,
+                'tipo': int(item.tipo_emissao),
                 'codigo': item.numero_controle
             }
             item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
