@@ -10,7 +10,7 @@ class ImportDeclaration(models.Model):
 
     invoice_eletronic_line_id = fields.Many2one(
         'invoice.eletronic', u'Linha de Documento Eletrônico',
-        ondelete='cascade', select=True)
+        ondelete='cascade', index=True)
 
 
 class NfeReboque(models.Model):

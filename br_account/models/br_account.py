@@ -167,7 +167,7 @@ class ImportDeclaration(models.Model):
 
     invoice_line_id = fields.Many2one(
         'account.invoice.line', u'Linha de Documento Fiscal',
-        ondelete='cascade', select=True)
+        ondelete='cascade', index=True)
     name = fields.Char(u'Número da DI', size=10, required=True)
     date_registration = fields.Date(u'Data de Registro', required=True)
     state_id = fields.Many2one(
@@ -209,8 +209,7 @@ class ImportDeclarationLine(models.Model):
     _name = 'br_account.import.declaration.line'
 
     import_declaration_id = fields.Many2one(
-        'br_account.import.declaration', u'DI',
-        ondelete='cascade', select=True)
+        'br_account.import.declaration', u'DI', ondelete='cascade')
     sequence = fields.Integer(u'Sequência', default=1, required=True)
     name = fields.Char(u'Adição', size=3, required=True)
     manufacturer_code = fields.Char(
