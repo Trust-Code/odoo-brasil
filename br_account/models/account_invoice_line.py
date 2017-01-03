@@ -382,6 +382,8 @@ class AccountInvoiceLine(models.Model):
         'Despesas Aduaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
 
+    informacao_adicional = fields.Text(string="Informações Adicionais")
+
     def _update_tax_from_ncm(self):
         if self.product_id:
             ncm = self.product_id.fiscal_classification_id
