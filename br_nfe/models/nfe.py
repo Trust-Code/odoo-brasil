@@ -5,6 +5,14 @@
 from odoo import fields, models
 
 
+class ImportDeclaration(models.Model):
+    _inherit = 'br_account.import.declaration'
+
+    invoice_eletronic_line_id = fields.Many2one(
+        'invoice.eletronic', u'Linha de Documento Eletrônico',
+        ondelete='cascade', index=True)
+
+
 class NfeReboque(models.Model):
     _name = 'nfe.reboque'
 

@@ -6,6 +6,8 @@
 "access_br_account_cfop","access_br_account_cfop","model_br_account_cfop","account.group_account_manager",1,1,1,1
 "access_product_fiscal_classification","access_product_fiscal_classification","model_product_fiscal_classification","account.group_account_manager",1,1,1,1
 "access_account_fiscal_position_tax_rule","access_account_fiscal_position_tax_rule","model_account_fiscal_position_tax_rule","account.group_account_manager",1,1,1,1
+"access_br_account_import_declaration_line","access_br_account_import_declaration_line","model_br_account_import_declaration_line","account.group_account_manager",1,1,1,1
+"access_br_account_import_declaration","access_br_account_import_declaration","model_br_account_import_declaration","account.group_account_manager",1,1,1,1
 "br_account_fiscal_document_user","br_account.fiscal.document","model_br_account_fiscal_document","account.group_account_user",1,0,0,0
 "br_account_document_serie_user","br_account.document.serie","model_br_account_document_serie","account.group_account_user",1,0,0,0
 "br_account_cnae_user","br_account.cnae","model_br_account_cnae","account.group_account_user",1,0,0,0
@@ -13,6 +15,8 @@
 "access_br_account_cfop_user","access_br_account_cfop","model_br_account_cfop","account.group_account_user",1,0,0,0
 "access_product_fiscal_classification_user","access_product_fiscal_classification","model_product_fiscal_classification","account.group_account_user",1,0,0,0
 "access_account_fiscal_position_tax_rule_user","access_account_fiscal_position_tax_rule","model_account_fiscal_position_tax_rule","account.group_account_user",1,0,0,0
+"access_br_account_import_declaration_line_user","access_br_account_import_declaration_line","model_br_account_import_declaration_line","account.group_account_user",1,0,0,0
+"access_br_account_import_declaration_user","access_br_account_import_declaration","model_br_account_import_declaration","account.group_account_user",1,0,0,0
 "br_account_fiscal_document_invoice","br_account.fiscal.document","model_br_account_fiscal_document","account.group_account_invoice",1,0,0,0
 "br_account_document_serie_invoice","br_account.document.serie","model_br_account_document_serie","account.group_account_invoice",1,0,0,0
 "br_account_cnae_invoice","br_account.cnae","model_br_account_cnae","account.group_account_invoice",1,0,0,0
@@ -20,3 +24,5 @@
 "access_br_account_cfop_invoice","access_br_account_cfop","model_br_account_cfop","account.group_account_invoice",1,0,0,0
 "access_product_fiscal_classification_invoice","access_product_fiscal_classification","model_product_fiscal_classification","account.group_account_invoice",1,0,0,0
 "access_account_fiscal_position_tax_rule_invoice","access_account_fiscal_position_tax_rule","model_account_fiscal_position_tax_rule","account.group_account_invoice",1,0,0,0
+"access_br_account_import_declaration_line_invoice","access_br_account_import_declaration_line","model_br_account_import_declaration_line","account.group_account_invoice",1,0,0,0
+"access_br_account_import_declaration_invoice","access_br_account_import_declaration","model_br_account_import_declaration","account.group_account_invoice",1,0,0,0

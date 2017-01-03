@@ -8,6 +8,7 @@ import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class InvoiceEletronic(models.Model):
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
         ('9', u'Operação não presencial, outros'),
-    ], u'Tipo de operação', readonly=True, states=STATE, required=False,
+    ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
@@ -73,6 +74,18 @@ class InvoiceEletronic(models.Model):
         ('9', u'9 - Não Contribuinte')],
         string="Indicador IE Dest.", help="Indicador da IE do desinatário",
         readonly=True, states=STATE)
+    tipo_emissao = fields.Selection([
+        ('1', u'1 - Emissão normal'),
+        ('2', u'2 - Contingência FS-IA, com impressão do DANFE em formulário \
+         de segurança'),
+        ('3', u'3 - Contingência SCAN'),
+        ('4', u'4 - Contingência DPEC'),
+        ('5', u'5 - Contingência FS-DA, com impressão do DANFE em \
+         formulário de segurança'),
+        ('6', u'6 - Contingência SVC-AN'),
+        ('7', u'7 - Contingência SVC-RS'),
+        ('9', u'9 - Contingência off-line da NFC-e')],
+        string="Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
     modalidade_frete = fields.Selection(
@@ -227,6 +240,39 @@ FISCAL'
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
         }
+        di_vals = []
+        for di in item.import_declaration_ids:
+            adicoes = []
+            for adi in di.line_ids:
+                adicoes.append({
+                    'nAdicao': adi.name,
+                    'nSeqAdic': adi.sequence,
+                    'cFabricante': adi.manufacturer_code,
+                    'vDescDI': "%.02f" % adi.amount_discount
+                    if adi.amount_discount else '',
+                    'nDraw': adi.drawback_number or '',
+                })
+
+            dt_registration = datetime.strptime(
+                di.date_registration, DATE_FORMAT)
+            dt_release = datetime.strptime(di.date_release, DATE_FORMAT)
+            di_vals.append({
+                'nDI': di.name,
+                'dDI': dt_registration.strftime('%Y-%m-%d'),
+                'xLocDesemb': di.location,
+                'UFDesemb': di.state_id.code,
+                'dDesemb': dt_release.strftime('%Y-%m-%d'),
+                'tpViaTransp': di.type_transportation,
+                'vAFRMM': "%.02f" % di.afrmm_value if di.afrmm_value else '',
+                'tpIntermedio': di.type_import,
+                'CNPJ': di.thirdparty_cnpj or '',
+                'UFTerceiro': di.thirdparty_state_id.code or '',
+                'cExportador': di.exporting_code,
+                'adi': adicoes,
+            })
+
+        prod["DI"] = di_vals
+
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
@@ -304,7 +350,7 @@ FISCAL'
                                 self.company_id.city_id.ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
             'tpImp': '1' if self.model == '55' else '4',
-            'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
+            'tpEmis': int(self.tipo_emissao),
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
@@ -523,7 +569,7 @@ FISCAL'
                 'modelo': item.model,
                 'numero': item.numero,
                 'serie': item.serie.code.zfill(3),
-                'tipo': 0 if item.tipo_operacao == 'entrada' else 1,
+                'tipo': int(item.tipo_emissao),
                 'codigo': item.numero_controle
             }
             item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
