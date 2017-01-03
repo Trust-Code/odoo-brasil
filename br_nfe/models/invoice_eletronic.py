@@ -311,7 +311,8 @@ FISCAL'
                 'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
                 'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
-        return {'prod': prod, 'imposto': imposto}
+        return {'prod': prod, 'imposto': imposto,
+                'infAdProd': item.informacao_adicional}
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):

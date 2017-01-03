@@ -163,4 +163,5 @@ class AccountInvoice(models.Model):
                 'line_ids': adicoes,
             }))
         vals['import_declaration_ids'] = di_importacao
+        vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals

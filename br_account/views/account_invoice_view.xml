@@ -193,6 +193,8 @@
                             </group>
                             <label for="name"/>
                             <field name="name"/>
+                            <label for="informacao_adicional"/>
+                            <field name="informacao_adicional"/>
                         </page>
                         <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">

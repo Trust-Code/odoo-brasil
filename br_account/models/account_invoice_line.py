@@ -385,6 +385,8 @@ class AccountInvoiceLine(models.Model):
         'br_account.import.declaration',
         'invoice_line_id', u'Declaração de Importação')
 
+    informacao_adicional = fields.Text(string="Informações Adicionais")
+
     def _update_tax_from_ncm(self):
         if self.product_id:
             ncm = self.product_id.fiscal_classification_id
