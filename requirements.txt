@@ -1,3 +1,4 @@
+pillow==3.4.2
 ofxparse==0.14
 suds_requests
 pytrustnfe
