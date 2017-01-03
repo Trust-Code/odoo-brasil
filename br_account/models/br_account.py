@@ -6,6 +6,7 @@
 
 
 from odoo import api, fields, models
+from odoo.addons import decimal_precision as dp
 
 
 class BrAccountCFOP(models.Model):
@@ -161,12 +162,58 @@ class BrAccountCNAE(models.Model):
         return result
 
 
-class BrTaxDefinition(object):
-    _name = 'br_tax.definition'
+class ImportDeclaration(models.Model):
+    _name = 'br_account.import.declaration'
 
-    tax_id = fields.Many2one('account.tax', string='Imposto', required=True)
-    tax_domain = fields.Char('Tax Domain', store=True)
-    tax_cst = fields.Char(u'Código de Imposto')
-    company_id = fields.Many2one('res.company', string='Company',
-                                 related='tax_id.company_id',
-                                 store=True, readonly=True)
+    invoice_line_id = fields.Many2one(
+        'account.invoice.line', u'Linha de Documento Fiscal',
+        ondelete='cascade', index=True)
+    name = fields.Char(u'Número da DI', size=10, required=True)
+    date_registration = fields.Date(u'Data de Registro', required=True)
+    state_id = fields.Many2one(
+        'res.country.state', u'Estado',
+        domain="[('country_id.code', '=', 'BR')]", required=True)
+    location = fields.Char(u'Local', required=True, size=60)
+    date_release = fields.Date(u'Data de Liberação', required=True)
+    type_transportation = fields.Selection([
+        ('1', u'1 - Marítima'),
+        ('2', u'2 - Fluvial'),
+        ('3', u'3 - Lacustre'),
+        ('4', u'4 - Aérea'),
+        ('5', u'5 - Postal'),
+        ('6', u'6 - Ferroviária'),
+        ('7', u'7 - Rodoviária'),
+        ('8', u'8 - Conduto / Rede Transmissão'),
+        ('9', u'9 - Meios Próprios'),
+        ('10', u'10 - Entrada / Saída ficta'),
+    ], u'Transporte Internacional', required=True, default="1")
+    afrmm_value = fields.Float(
+        'Valor da AFRMM', digits=dp.get_precision('Account'), default=0.00)
+    type_import = fields.Selection([
+        ('1', u'1 - Importação por conta própria'),
+        ('2', u'2 - Importação por conta e ordem'),
+        ('3', u'3 - Importação por encomenda'),
+    ], u'Tipo de Importação', default='1', required=True)
+    thirdparty_cnpj = fields.Char('CNPJ', size=18)
+    thirdparty_state_id = fields.Many2one(
+        'res.country.state', u'Estado',
+        domain="[('country_id.code', '=', 'BR')]")
+    exporting_code = fields.Char(
+        u'Código do Exportador', required=True, size=60)
+    line_ids = fields.One2many(
+        'br_account.import.declaration.line',
+        'import_declaration_id', 'Linhas da DI')
+
+
+class ImportDeclarationLine(models.Model):
+    _name = 'br_account.import.declaration.line'
+
+    import_declaration_id = fields.Many2one(
+        'br_account.import.declaration', u'DI', ondelete='cascade')
+    sequence = fields.Integer(u'Sequência', default=1, required=True)
+    name = fields.Char(u'Adição', size=3, required=True)
+    manufacturer_code = fields.Char(
+        u'Código do Fabricante', size=60, required=True)
+    amount_discount = fields.Float(
+        string=u'Valor', digits=dp.get_precision('Account'), default=0.00)
+    drawback_number = fields.Char(u'Número Drawback', size=11)
