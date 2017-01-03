@@ -329,22 +329,7 @@
                                                 <field name="date_release"/>
                                             </group>
                                             <group string="Adições" colspan="4">
-                                                <field name="line_ids" nolabel="1">
-                                                    <tree>
-                                                        <field name="sequence"/>
-                                                        <field name="name"/>
-                                                        <field name="manufacturer_code"/>
-                                                        <field name="amount_discount"/>
-                                                    </tree>
-                                                    <form string="Adições">
-                                                        <group>
-                                                            <field name="sequence"/>
-                                                            <field name="name"/>
-                                                            <field name="manufacturer_code"/>
-                                                            <field name="amount_discount"/>
-                                                        </group>
-                                                    </form>
-                                                </field>
+                                                <field name="line_ids" nolabel="1"></field>
                                             </group>
                                         </group>
                                     </form>
