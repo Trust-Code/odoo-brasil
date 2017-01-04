@@ -228,7 +228,7 @@ class InvoiceEletronic(models.Model):
                 cert_pfx, self.company_id.nfe_a1_password)
 
             if self.ambiente == 'producao':
-                resposta = envio_lote_rps(certificado, **nfse_values)
+                resposta = envio_lote_rps(certificado, nfse=nfse_values)
             else:
                 resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
             retorno = resposta['object']
