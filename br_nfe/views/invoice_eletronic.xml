@@ -84,6 +84,7 @@
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
             </field>
             <field name="finalidade_emissao" position="after">
+                <field name="tipo_emissao" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_final" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />

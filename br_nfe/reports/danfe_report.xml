@@ -202,7 +202,8 @@
                 <div class="row line">
                     <div class="bt bl br col-xs-6 line">
                         <span class="small">Endereço</span><br />
-                        <span t-field="o.commercial_partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.street"></span>,
+                        <span t-field="o.commercial_partner_id.number"></span>
                     </div>
                     <div class="bt br col-xs-3 line">
                         <span class="small">Bairro/Distrito</span><br />
