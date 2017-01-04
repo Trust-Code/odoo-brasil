@@ -17,5 +17,5 @@
         'data/cielo.xml',
     ],
     'application': True,
-    'instalable': True,
+    'installable': True,
 }
