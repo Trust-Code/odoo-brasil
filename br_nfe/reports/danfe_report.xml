@@ -202,7 +202,8 @@
                 <div class="row line">
                     <div class="bt bl br col-xs-6 line">
                         <span class="small">Endereço</span><br />
-                        <span t-field="o.commercial_partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.street"></span>,
+                        <span t-field="o.commercial_partner_id.number"></span>
                     </div>
                     <div class="bt br col-xs-3 line">
                         <span class="small">Bairro/Distrito</span><br />
@@ -599,6 +600,22 @@
                             </div>
                             <div class="bl bb br col-xs-12">
                                 <p t-field="c.correcao"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-12 text-center">
+                                <span style="font-size:10px;">CONDIÇÃO DE USO</span>
+                            </div>
+                            <div class="bl bb br col-xs-12">
+                                <span>
+                                    A Carta de Correcao é disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de
+                                    dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de
+                                    documento fiscal, desde que o erro nao esteja relacionado com: <br />
+                                    I   - as variaveis que determinam o valor do imposto tais com: base de calculo, aliquota,
+                                    diferenca de preco, quantidade, valor da operacao ou prestacao; <br />
+                                    II  - a correcao de dados cadastrais que implica mudanca do remetente ou do destinatario; <br />
+                                    III - a data de emissao ou de saida.
+                                </span>
                             </div>
                         </div>
                     </t>
