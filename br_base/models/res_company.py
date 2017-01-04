@@ -8,7 +8,14 @@
 
 
 import re
+import logging
+import base64
+from OpenSSL import crypto
+from datetime import datetime
 from odoo import models, fields, api
+
+
+_logger = logging.getLogger(__name__)
 
 
 class ResCompany(models.Model):
@@ -70,6 +77,29 @@ class ResCompany(models.Model):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.city_id = self.city_id
 
+    @api.one
+    def _compute_expiry_date(self):
+        try:
+            pfx = base64.decodestring(
+                self.with_context(bin_size=False).nfe_a1_file)
+            pfx = crypto.load_pkcs12(pfx, self.nfe_a1_password)
+            cert = pfx.get_certificate()
+            end = datetime.strptime(cert.get_notAfter(), '%Y%m%d%H%M%SZ')
+            subj = cert.get_subject()
+            self.cert_expire_date = end
+            if datetime.now() < end:
+                self.cert_state = 'valid'
+            else:
+                self.cert_state = 'expired'
+            self.cert_information = "%s\n%s\n%s\n%s" % (
+                subj.CN, subj.L, subj.O, subj.OU)
+        except crypto.Error:
+            self.cert_state = 'invalid_password'
+        except:
+            self.cert_state = 'unknown'
+            _logger.error(
+                'Erro desconhecido ao consultar certificado', exc_info=True)
+
     cnpj_cpf = fields.Char(
         compute=_get_br_data, inverse=_set_br_cnpj_cpf, size=18,
         string='CNPJ')
@@ -104,6 +134,19 @@ class ResCompany(models.Model):
 
     nfe_a1_file = fields.Binary('Arquivo NFe A1')
     nfe_a1_password = fields.Char('Senha NFe A1', size=64)
+
+    cert_state = fields.Selection(
+        [('not_loaded', 'Não carregado'),
+         ('expired', 'Expirado'),
+         ('invalid_password', 'Senha Inválida'),
+         ('unknown', 'Desconhecido'),
+         ('valid', 'Válido')],
+        string="Situação Cert.", compute=_compute_expiry_date,
+        default='not_loaded')
+    cert_information = fields.Text(
+        string="Informações Cert.", compute=_compute_expiry_date)
+    cert_expire_date = fields.Date(
+        string="Validade Cert.", compute=_compute_expiry_date)
 
     @api.onchange('cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):
