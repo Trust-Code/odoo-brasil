@@ -24,5 +24,5 @@
     ],
     'category': 'Localisation',
     'application': True,
-    'instalable': False,
+    'installable': False,
 }

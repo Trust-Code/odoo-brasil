@@ -38,6 +38,6 @@
         'wizard/cancel_nfe.xml',
         'wizard/carta_correcao_eletronica.xml',
     ],
-    'instalable': True,
+    'installable': True,
     'application': True,
 }

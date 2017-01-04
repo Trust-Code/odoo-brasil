@@ -31,6 +31,6 @@
         'views/res_company.xml',
         'reports/danfse_sao_paulo.xml',
     ],
-    'instalable': True,
+    'installable': True,
     'application': True,
 }

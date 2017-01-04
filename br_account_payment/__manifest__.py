@@ -27,6 +27,6 @@
         'views/account_payment.xml',
         'views/account_journal.xml',
     ],
-    'instalable': True,
+    'installable': True,
     'application': True,
 }
