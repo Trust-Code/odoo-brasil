@@ -43,6 +43,9 @@
                 <group string="Certificado Digital">
                     <field name="nfe_a1_file" />
                     <field name="nfe_a1_password" password="True" />
+                    <field name="cert_state" />
+                    <field name="cert_expire_date" />
+                    <field name="cert_information" />
                 </group>
             </group>
         </field>
