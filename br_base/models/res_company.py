@@ -10,12 +10,15 @@
 import re
 import logging
 import base64
-from OpenSSL import crypto
 from datetime import datetime
 from odoo import models, fields, api
 
-
 _logger = logging.getLogger(__name__)
+
+try:
+    from OpenSSL import crypto
+except ImportError:
+    _logger.debug('Cannot import OpenSSL.crypto', exc_info=True)
 
 
 class ResCompany(models.Model):
