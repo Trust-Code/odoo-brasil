@@ -234,5 +234,8 @@ class ResPartner(models.Model):
                 else:
                     msg = "%s - %s" % (info.cStat, info.xMotivo)
                     raise UserError(msg)
+            else:
+                raise UserError(u"Nenhuma resposta - verificou se seu \
+                                certificado é válido?")
         else:
             raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
