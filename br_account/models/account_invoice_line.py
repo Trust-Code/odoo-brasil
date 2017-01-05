@@ -153,7 +153,7 @@ class AccountInvoiceLine(models.Model):
         string='Vlr. Bruto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
     tributos_estimados = fields.Float(
-        string='Total Estimado de Tributos', requeried=True, default=0.00,
+        string='Total Est. Tributos', requeried=True, default=0.00,
         digits=dp.get_precision('Account'))
 
     rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
@@ -379,7 +379,7 @@ class AccountInvoiceLine(models.Model):
         'Valor IOF', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     ii_valor_despesas = fields.Float(
-        'Despesas Aduaneiras', required=True,
+        'Desp. Aduaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     import_declaration_ids = fields.One2many(
         'br_account.import.declaration',
