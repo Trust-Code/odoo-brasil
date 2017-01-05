@@ -211,7 +211,8 @@ class AccountInvoice(models.Model):
         for invoice_line in res:
             line = invoice_line[2]
             line['ref'] = self.origin
-            if line['name'] == '/':
+            if line['name'] == '/' or (
+               line['name'] == self.name and self.name):
                 line['name'] = "%02d" % count
                 count += 1
         return res
