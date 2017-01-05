@@ -311,22 +311,27 @@
                                     <tree>
                                         <field name="name"/>
                                         <field name="date_registration"/>
-                                        <field name="exporting_code"/>
-                                        <field name="state_id"/>
                                         <field name="location"/>
+                                        <field name="state_id"/>
                                         <field name="date_release"/>
+                                        <field name="type_transportation"/>
                                     </tree>
                                     <form string="Declaração de Importação">
                                         <group>
                                             <group>
                                                 <field name="name"/>
                                                 <field name="date_registration"/>
-                                                <field name="exporting_code"/>
-                                            </group>
-                                            <group>
                                                 <field name="state_id"/>
                                                 <field name="location"/>
                                                 <field name="date_release"/>
+                                                <field name="type_transportation" />
+                                            </group>
+                                            <group>
+                                                <field name="afrmm_value" />
+                                                <field name="type_import" />
+                                                <field name="thirdparty_cnpj" />
+                                                <field name="thirdparty_state_id"/>
+                                                <field name="exporting_code"/>
                                             </group>
                                             <group string="Adições" colspan="4">
                                                 <field name="line_ids" nolabel="1"></field>
