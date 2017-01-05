@@ -186,7 +186,7 @@ class ImportDeclaration(models.Model):
         ('8', u'8 - Conduto / Rede Transmissão'),
         ('9', u'9 - Meios Próprios'),
         ('10', u'10 - Entrada / Saída ficta'),
-    ], u'Transporte Internacional', required=True, default="1")
+    ], u'Transporte Inter.', required=True, default="1")
     afrmm_value = fields.Float(
         'Valor da AFRMM', digits=dp.get_precision('Account'), default=0.00)
     type_import = fields.Selection([
@@ -199,7 +199,7 @@ class ImportDeclaration(models.Model):
         'res.country.state', u'Estado',
         domain="[('country_id.code', '=', 'BR')]")
     exporting_code = fields.Char(
-        u'Código do Exportador', required=True, size=60)
+        u'Cód. do Exportador', required=True, size=60)
     line_ids = fields.One2many(
         'br_account.import.declaration.line',
         'import_declaration_id', 'Linhas da DI')

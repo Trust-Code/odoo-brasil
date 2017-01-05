@@ -13,6 +13,7 @@
                     <field name="name"/>
                     <field name="manufacturer_code"/>
                     <field name="amount_discount"/>
+                    <field name="drawback_number"/>
                 </group>
             </form>
         </field>
@@ -27,6 +28,7 @@
                 <field name="name"/>
                 <field name="manufacturer_code"/>
                 <field name="amount_discount"/>
+                <field name="drawback_number" />
             </tree>
         </field>
     </record>
