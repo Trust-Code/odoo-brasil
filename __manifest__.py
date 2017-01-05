@@ -6,10 +6,14 @@
     'name': 'Cielo Checkout Payment Acquirer',
     'category': 'Payment Acquirer',
     'summary': 'Payment Acquirer: Cielo Checkout Implementation',
-    'version': '1.0',
-    'description': """Cielo Checkout Payment Acquirer""",
+    'version': '10.0.1.0.0',
+    'license': 'AGPL-3',
     'author': 'Trustcode',
-    'depends': ['payment', 'website_sale', 'br_base'],
+    'depends': [
+        'payment',
+        'website_sale',
+        'br_base',
+    ],
     'data': [
         'views/cielo.xml',
         'views/payment_acquirer.xml',
