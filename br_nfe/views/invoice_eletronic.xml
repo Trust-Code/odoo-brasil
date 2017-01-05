@@ -63,6 +63,17 @@
                         </group>
                     </group>
                 </page>
+                <page name="documentos_relacionados" string="Doc. Relacionados" >
+                    <field name="fiscal_document_related_ids" >
+                        <tree>
+                            <field name="invoice_related_id" />
+                            <field name="document_type" />
+                            <field name="access_key" />
+                            <field name="serie" />
+                            <field name="internal_number" />
+                        </tree>
+                    </field>
+                </page>
                 <page name="carta_correcao" string="Cartas de Correção" >
                     <field name="cartas_correcao_ids" >
                         <tree>

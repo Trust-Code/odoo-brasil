@@ -166,6 +166,11 @@ class InvoiceEletronic(models.Model):
         help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
 
+    # Documentos Relacionados
+    fiscal_document_related_ids = fields.One2many(
+        'br_account.document.related', 'invoice_eletronic_id',
+        'Documentos Fiscais Relacionados', readonly=True, states=STATE)
+
     # CARTA DE CORRECAO
     cartas_correcao_ids = fields.One2many(
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
@@ -357,6 +362,54 @@ FISCAL'
             'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
+        # Documentos Relacionados
+        documentos = []
+        for doc in self.fiscal_document_related_ids:
+            data = fields.Datetime.from_string(doc.date)
+            if doc.document_type == 'nfe':
+                documentos.append({
+                    'refNFe': doc.access_key
+                })
+            elif doc.document_type == 'nf':
+                documentos.append({
+                    'refNF': {
+                        'cUF': doc.state_id.ibge_code,
+                        'AAMM': data.strftime("%y%m"),
+                        'CNPJ': re.sub('[^0-9]', '', doc.cnpj_cpf),
+                        'mod': doc.fiscal_document_id.code,
+                        'serie': doc.serie,
+                        'nNF': doc.internal_number,
+                    }
+                })
+
+            elif doc.document_type == 'cte':
+                documentos.append({
+                    'refCTe': doc.access_key
+                })
+            elif doc.document_type == 'nfrural':
+                cnpj_cpf = re.sub('[^0-9]', '', doc.cnpj_cpf)
+                documentos.append({
+                    'refNFP': {
+                        'cUF': doc.state_id.ibge_code,
+                        'AAMM': data.strftime("%y%m"),
+                        'CNPJ': cnpj_cpf if len(cnpj_cpf) == 14 else '',
+                        'CPF': cnpj_cpf if len(cnpj_cpf) == 11 else '',
+                        'IE': doc.inscr_est,
+                        'mod': doc.fiscal_document_id.code,
+                        'serie': doc.serie,
+                        'nNF': doc.internal_number,
+                    }
+                })
+            elif doc.document_type == 'cf':
+                documentos.append({
+                    'refECF': {
+                        'mod': doc.fiscal_document_id.code,
+                        'nECF': doc.serie,
+                        'nCOO': doc.internal_number,
+                    }
+                })
+
+        ide['NFref'] = documentos
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),

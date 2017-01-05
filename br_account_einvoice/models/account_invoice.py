@@ -26,6 +26,9 @@ class AccountInvoice(models.Model):
             item.total_edocs = self.env['invoice.eletronic'].search_count(
                 [('invoice_id', '=', item.id)])
 
+    invoice_eletronic_ids = fields.One2many(
+        'invoice.eletronic', 'invoice_id',
+        'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
         string="Modelo de Fatura", related="fiscal_document_id.code")
     total_edocs = fields.Integer(string="Total NFe",
