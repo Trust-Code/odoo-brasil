@@ -71,6 +71,9 @@ class AccountFiscalPositionTaxRule(models.Model):
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
+    account_id = fields.Many2one(
+        'account.account', string="Conta Contábil",
+        help="Conta Contábil a ser utilizada na fatura.")
     note = fields.Text(u'Observações')
 
     icms_tax_rule_ids = fields.One2many(

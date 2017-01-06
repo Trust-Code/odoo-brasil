@@ -193,6 +193,11 @@ class AccountInvoice(models.Model):
             [('fiscal_document_id', '=', self.fiscal_document_id.id)])
         self.document_serie_id = series and series[0].id or False
 
+    @api.onchange('fiscal_position_id')
+    def _onchange_br_account_fiscal_position_id(self):
+        if self.fiscal_position_id and self.fiscal_position_id.account_id:
+            self.account_id = self.fiscal_position_id.account_id.id
+
     @api.model
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()

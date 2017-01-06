@@ -25,6 +25,13 @@ class SaleOrder(models.Model):
                                    for l in order.order_line),
             })
 
+    @api.multi
+    def _prepare_invoice(self):
+        res = super(SaleOrder, self)._prepare_invoice()
+        if self.fiscal_position_id and self.fiscal_position_id.account_id:
+            res['account_id'] = self.fiscal_position_id.account_id.id
+        return res
+
     total_bruto = fields.Float(
         string='Total Bruto ( = )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
@@ -288,5 +295,4 @@ class SaleOrderLine(models.Model):
         res['issqn_aliquota'] = issqn.amount or 0.0
 
         res['ii_aliquota'] = ii.amount or 0.0
-
         return res
