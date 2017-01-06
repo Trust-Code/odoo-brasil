@@ -83,6 +83,11 @@
         <field name="model">account.fiscal.position</field>
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='account_mapping']/group" position="before">
+                <group>
+                    <field name="account_id" placeholder="Esta conta vai ser usada para faturamento" />
+                </group>
+            </xpath>
             <field name="vat_required" position="attributes" >
                 <attribute name="invisible">1</attribute>
             </field>
