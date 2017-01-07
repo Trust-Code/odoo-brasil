@@ -113,6 +113,24 @@ class AccountInvoice(models.Model):
             }))
         res['duplicata_ids'] = duplicatas
 
+        # Documentos Relacionados
+        documentos = []
+        for doc in inv.fiscal_document_related_ids:
+            documentos.append((0, None, {
+                'invoice_related_id': doc.invoice_related_id.id,
+                'document_type': doc.document_type,
+                'access_key': doc.access_key,
+                'serie': doc.serie,
+                'internal_number': doc.internal_number,
+                'state_id': doc.state_id.id,
+                'cnpj_cpf': doc.cnpj_cpf,
+                'cpfcnpj_type': doc.cpfcnpj_type,
+                'inscr_est': doc.inscr_est,
+                'date': doc.date,
+                'fiscal_document_id': doc.fiscal_document_id.id,
+            }))
+
+        res['fiscal_document_related_ids'] = documentos
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):
