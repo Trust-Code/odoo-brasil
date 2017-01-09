@@ -3,6 +3,36 @@
 
     <menuitem id="menu_br_account" name="Brasil" parent="account.menu_finance_configuration" sequence="0"/>
 
+    <record id="view_br_account_import_declaration_line_form" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.line.form</field>
+        <field name="model">br_account.import.declaration.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="manufacturer_code"/>
+                    <field name="amount_discount"/>
+                    <field name="drawback_number"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_br_account_import_declaration_line_tree" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.line.tree</field>
+        <field name="model">br_account.import.declaration.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="manufacturer_code"/>
+                <field name="amount_discount"/>
+                <field name="drawback_number" />
+            </tree>
+        </field>
+    </record>
+
     <record id="view_br_account_fiscal_document_form" model="ir.ui.view">
         <field name="name">br_account.fiscal.document</field>
         <field name="model">br_account.fiscal.document</field>

@@ -113,6 +113,24 @@ class AccountInvoice(models.Model):
             }))
         res['duplicata_ids'] = duplicatas
 
+        # Documentos Relacionados
+        documentos = []
+        for doc in inv.fiscal_document_related_ids:
+            documentos.append((0, None, {
+                'invoice_related_id': doc.invoice_related_id.id,
+                'document_type': doc.document_type,
+                'access_key': doc.access_key,
+                'serie': doc.serie,
+                'internal_number': doc.internal_number,
+                'state_id': doc.state_id.id,
+                'cnpj_cpf': doc.cnpj_cpf,
+                'cpfcnpj_type': doc.cpfcnpj_type,
+                'inscr_est': doc.inscr_est,
+                'date': doc.date,
+                'fiscal_document_id': doc.fiscal_document_id.id,
+            }))
+
+        res['fiscal_document_related_ids'] = documentos
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):
@@ -135,4 +153,33 @@ class AccountInvoice(models.Model):
         vals['icms_uf_remet'] = invoice_line.icms_uf_remet or 0.0
         vals['icms_uf_dest'] = invoice_line.icms_uf_dest or 0.0
         vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
+
+        di_importacao = []
+        for di in invoice_line.import_declaration_ids:
+            adicoes = []
+            for di_line in di.line_ids:
+                adicoes.append((0, None, {
+                    'sequence': di_line.sequence,
+                    'name': di_line.name,
+                    'manufacturer_code': di_line.manufacturer_code,
+                    'amount_discount': di_line.amount_discount,
+                    'drawback_number': di_line.drawback_number,
+                }))
+
+            di_importacao.append((0, None, {
+                'name': di.name,
+                'date_registration': di.date_registration,
+                'state_id': di.state_id.id,
+                'location': di.location,
+                'date_release': di.date_release,
+                'type_transportation': di.type_transportation,
+                'afrmm_value': di.afrmm_value,
+                'type_import': di.type_import,
+                'thirdparty_cnpj': di.thirdparty_cnpj,
+                'thirdparty_state_id': di.thirdparty_state_id.id,
+                'exporting_code': di.exporting_code,
+                'line_ids': adicoes,
+            }))
+        vals['import_declaration_ids'] = di_importacao
+        vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals

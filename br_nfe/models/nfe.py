@@ -2,7 +2,28 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import api, fields, models
+
+
+class ImportDeclaration(models.Model):
+    _inherit = 'br_account.import.declaration'
+
+    invoice_eletronic_line_id = fields.Many2one(
+        'invoice.eletronic.item', u'Linha de Documento Eletrônico',
+        ondelete='cascade', index=True)
+
+
+class AccountDocumentRelated(models.Model):
+    _inherit = 'br_account.document.related'
+
+    invoice_eletronic_id = fields.Many2one(
+        'invoice.eletronic', 'Documento Eletrônico', ondelete='cascade')
+
+    @api.onchange('invoice_related_id')
+    def onchange_br_nfe_invoice_related_id(self):
+        if len(self.invoice_related_id.invoice_eletronic_ids) > 0:
+            self.access_key = \
+                self.invoice_related_id.invoice_eletronic_ids[0].chave_nfe
 
 
 class NfeReboque(models.Model):

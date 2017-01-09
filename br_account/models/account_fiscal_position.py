@@ -53,6 +53,10 @@ class AccountFiscalPositionTaxRule(models.Model):
     reducao_icms_st = fields.Float(string=u"Redução de base ST")
     reducao_ipi = fields.Float(string=u"Redução de base IPI")
     aliquota_mva = fields.Float(string=u"Alíquota MVA")
+    icms_st_aliquota_deducao = fields.Float(
+        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
+         do Simples Nacional")
     tem_difal = fields.Boolean(string="Aplicar Difal?")
     tax_icms_inter_id = fields.Many2one(
         'account.tax', help=u"Alíquota utilizada na operação Interestadual",
@@ -67,6 +71,9 @@ class AccountFiscalPositionTaxRule(models.Model):
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
+    account_id = fields.Many2one(
+        'account.account', string="Conta Contábil",
+        help="Conta Contábil a ser utilizada na fatura.")
     note = fields.Text(u'Observações')
 
     icms_tax_rule_ids = fields.One2many(
@@ -91,8 +98,7 @@ class AccountFiscalPosition(models.Model):
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras II", domain=[('domain', '=', 'ii')])
 
-    def _filter_rules(self, fpos_id, type_tax, partner,
-                      product, state):
+    def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
         domain = [('fiscal_position_id', '=', fpos_id),
                   ('domain', '=', type_tax)]
@@ -117,8 +123,9 @@ class AccountFiscalPosition(models.Model):
                     rules_points[rule.id] -= 1
                 if len(rule.state_ids) > 0:
                     rules_points[rule.id] -= 1
-
             greater_rule = max([(v, k) for k, v in rules_points.items()])
+            if greater_rule[0] <= 0:
+                return {}
             rules = [rules.browse(greater_rule[1])]
 
             return {
@@ -133,6 +140,7 @@ class AccountFiscalPosition(models.Model):
                 'tax_icms_st_id': rules[0].tax_icms_st_id,
                 'icms_st_aliquota_mva': rules[0].aliquota_mva,
                 'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
+                'icms_st_aliquota_deducao': rules[0].icms_st_aliquota_deducao,
                 # ICMS Difal
                 'tem_difal': rules[0].tem_difal,
                 'tax_icms_inter_id': rules[0].tax_icms_inter_id,

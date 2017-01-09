@@ -18,6 +18,14 @@ class TestSaleOrder(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
+        self.journalrec = self.env['account.journal'].create({
+            'name': 'Faturas',
+            'code': 'INV',
+            'type': 'sale',
+            'default_debit_account_id': self.revenue_account.id,
+            'default_credit_account_id': self.revenue_account.id,
+            'company_id': self.main_company.id,
+        })
         self.receivable_account = self.env['account.account'].create({
             'code': '1.0.0',
             'name': 'Conta de Recebiveis',

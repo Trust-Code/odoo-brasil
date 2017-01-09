@@ -112,7 +112,13 @@ class AccountInvoice(models.Model):
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
         store=True, string=u'Electrônico')
-    fiscal_comment = fields.Text(u'Observação Fiscal')
+    fiscal_document_related_ids = fields.One2many(
+        'br_account.document.related', 'invoice_id',
+        'Documento Fiscal Relacionado', readonly=True,
+        states={'draft': [('readonly', False)]})
+    fiscal_comment = fields.Text(
+        u'Observação Fiscal', readonly=True,
+        states={'draft': [('readonly', False)]})
 
     total_bruto = fields.Float(
         string='Total Bruto ( = )', store=True,
@@ -181,11 +187,22 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    @api.onchange('issuer')
+    def _onchange_issuer(self):
+        if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
+            self.fiscal_document_id = None
+            self.document_serie_id = None
+
     @api.onchange('fiscal_document_id')
     def _onchange_fiscal_document_id(self):
         series = self.env['br_account.document.serie'].search(
             [('fiscal_document_id', '=', self.fiscal_document_id.id)])
         self.document_serie_id = series and series[0].id or False
+
+    @api.onchange('fiscal_position_id')
+    def _onchange_br_account_fiscal_position_id(self):
+        if self.fiscal_position_id and self.fiscal_position_id.account_id:
+            self.account_id = self.fiscal_position_id.account_id.id
 
     @api.model
     def invoice_line_move_line_get(self):
@@ -205,7 +222,8 @@ class AccountInvoice(models.Model):
         for invoice_line in res:
             line = invoice_line[2]
             line['ref'] = self.origin
-            if line['name'] == '/':
+            if line['name'] == '/' or (
+               line['name'] == self.name and self.name):
                 line['name'] = "%02d" % count
                 count += 1
         return res

@@ -23,8 +23,10 @@
         'security/ir.model.access.csv',
         'views/account_invoice.xml',
         'views/br_account_payment.xml',
-        'views/payment_mode.xml'
+        'views/payment_mode.xml',
+        'views/account_payment.xml',
+        'views/account_journal.xml',
     ],
-    'instalable': True,
+    'installable': True,
     'application': True,
 }

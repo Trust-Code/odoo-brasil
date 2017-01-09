@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_carta_correcao_nfe">
+        <field name="name">wizard.carta.correcao.eletronica</field>
+        <field name="model">wizard.carta.correcao.eletronica</field>
+        <field name="arch" type="xml">
+            <form string="Carta de Correção Eletrônica">
+                <div>
+                    Não devem ser alterados dados que influenciem nos valores das notas, como base de cálculo, valores de impostos, etc...
+                </div>
+                <group>
+                    <field name="state" invisible="1"/>
+                    <field name="correcao"/>
+                </group>
+                <group states="error" string="Resultado Envio">
+                    <field name="message" />
+                    <field name="sent_xml_name" invisible="1"/>
+                    <field name="sent_xml" filename="sent_xml_name"/>
+                    <field name="received_xml_name" invisible="1"/>
+                    <field name="received_xml" filename="received_xml_name"/>
+                </group>
+                <footer>
+                    <button name="send_letter"
+                        string="Enviar Carta de Correção" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="carta_correcao_wizard"
+        name="Carta de Correção Eletrônica"
+        src_model="invoice.eletronic"
+        res_model="wizard.carta.correcao.eletronica"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"/>
+
+</odoo>

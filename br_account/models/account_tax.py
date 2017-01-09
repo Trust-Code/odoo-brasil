@@ -175,6 +175,14 @@ class AccountTax(models.Model):
             base_icmsst += self.env.context["outras_despesas"]
 
         base_icmsst *= 1 - (reducao_icmsst / 100.0)  # Redução
+
+        deducao_st_simples = 0.0
+        if "icms_st_aliquota_deducao" in self.env.context:
+            deducao_st_simples = self.env.context["icms_st_aliquota_deducao"]
+
+        if deducao_st_simples:
+            icms_value = base_icmsst * (deducao_st_simples / 100.0)
+
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
 
         icmsst = round(
@@ -211,9 +219,9 @@ class AccountTax(models.Model):
         interestadual = icms_inter._compute_amount(base_icms, 1.0)
         interno = icms_intra._compute_amount(base_icms, 1.0)
 
-        vals_inter['amount'] = round((interno - interestadual) * 0.6, 2)
+        vals_inter['amount'] = round((interno - interestadual) * 0.4, 2)
         vals_inter['base'] = base_icms
-        vals_intra['amount'] = round((interno - interestadual) * 0.4, 2)
+        vals_intra['amount'] = round((interno - interestadual) * 0.6, 2)
         vals_intra['base'] = base_icms
 
         taxes = [vals_inter, vals_intra]
