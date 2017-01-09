@@ -218,7 +218,8 @@ class TestCartaCorrecao(TransactionCase):
         Id = "ID1101103516122133291700016355001000000004115817672101"
         carta = self.env['carta.correcao.eletronica.evento'].search([])
         self.assertEquals(len(carta), 1)
-        self.assertEquals(carta.message, "Carta de Correcao registrada")
+        self.assertEquals(
+            carta.message, u"Evento registrado e vinculado a NF-e")
         self.assertEquals(carta.protocolo, "135160008802236")
         self.assertEquals(carta.correcao, 'Teste de Carta de Correcao' * 10)
         self.assertEquals(carta.sequencial_evento, 1)
