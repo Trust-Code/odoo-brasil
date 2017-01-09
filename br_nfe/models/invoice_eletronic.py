@@ -217,14 +217,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if self.model not in ('55', '65'):
             return res
 
-        xprod = item.product_id.name if self.company_id.\
-            tipo_ambiente != '2' else\
-            u'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
-FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': xprod,
+            'xProd': item.product_id.name,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,

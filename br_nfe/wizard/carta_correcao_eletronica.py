@@ -80,7 +80,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 'tipo_evento': carta['tpEvento'],
                 'sequencial_evento': carta['nSeqEvento'],
                 'correcao': carta['xCorrecao'],
-                'message': retorno.retEvento.infEvento.xEvento,
+                'message': retorno.retEvento.infEvento.xMotivo,
                 'protocolo': retorno.retEvento.infEvento.nProt,
             })
             self.eletronic_doc_id._create_attachment(
