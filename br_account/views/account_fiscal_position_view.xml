@@ -85,6 +85,7 @@
         <field name="arch" type="xml">
             <xpath expr="//page[@name='account_mapping']/group" position="before">
                 <group>
+                    <field name="journal_id" placeholder="Este diário vai ser usado no faturamento" />
                     <field name="account_id" placeholder="Esta conta vai ser usada para faturamento" />
                 </group>
             </xpath>

@@ -30,6 +30,8 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self)._prepare_invoice()
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
             res['account_id'] = self.fiscal_position_id.account_id.id
+        if self.fiscal_position_id and self.fiscal_position_id.journal_id:
+            res['journal_id'] = self.fiscal_position_id.journal_id.id
         return res
 
     total_bruto = fields.Float(
