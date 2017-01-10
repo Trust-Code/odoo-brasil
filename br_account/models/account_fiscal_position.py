@@ -71,6 +71,9 @@ class AccountFiscalPositionTaxRule(models.Model):
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
+    journal_id = fields.Many2one(
+        'account.journal', string="Diário Contábil",
+        help="Diário Contábil a ser utilizado na fatura.")
     account_id = fields.Many2one(
         'account.account', string="Conta Contábil",
         help="Conta Contábil a ser utilizada na fatura.")
