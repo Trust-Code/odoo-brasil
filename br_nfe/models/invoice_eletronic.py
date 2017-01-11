@@ -579,11 +579,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'detalhes': eletronic_items,
             'total': total,
             'transp': transp,
-            'cobr': cobr,
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
         }
+        if len(duplicatas) > 0:
+            vals['cobr'] = cobr
         return vals
 
     @api.multi
