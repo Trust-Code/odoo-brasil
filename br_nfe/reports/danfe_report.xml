@@ -243,53 +243,55 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-12">
-                        <span class="enfase">Faturas</span>
-                    </div>
-                </div>
-
-                <div class="row line">
-                    <div class="borda-completa col-xs-6 line">
-                        <span class="small">Número da Fatura</span><br />
-                        <span t-field="o.numero_fatura"></span>
-                    </div>
-                    <div class="bt br bb col-xs-2 line">
-                        <span class="small">Valor Original</span><br />
-                        <span t-field="o.fatura_bruto"></span>
-                    </div>
-                    <div class="bt br bb col-xs-2 line">
-                        <span class="small">Desconto</span><br />
-                        <span t-field="o.fatura_desconto"></span>
-                    </div>
-                    <div class="bt br bb col-xs-2 line">
-                        <span class="small">Valor Líquido</span><br />
-                        <span t-field="o.fatura_liquido"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <span class="enfase">Duplicatas</span>
-                    </div>
-                </div>
-
-                <div class="row line">
-                    <t t-foreach="o.duplicata_ids" t-as="dupl">
-                        <div class="borda-completa col-xs-1 line">
-                            <span class="small">Número</span><br />
-                            <span style="font-size:11px;" t-field="dupl.numero_duplicata"></span>
+                <t t-if="len(o.duplicata_ids) > 0">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="enfase">Faturas</span>
                         </div>
-                        <div class="bt br bb col-xs-1 line">
-                            <span class="small">Vencimento</span><br />
-                            <span style="font-size:11px;" t-field="dupl.data_vencimento"></span>
+                    </div>
+
+                    <div class="row line">
+                        <div class="borda-completa col-xs-6 line">
+                            <span class="small">Número da Fatura</span><br />
+                            <span t-field="o.numero_fatura"></span>
                         </div>
-                        <div class="bt br bb col-xs-1 line">
-                            <span class="small">Valor</span><br />
-                            <span style="font-size:11px;" t-field="dupl.valor"></span>
+                        <div class="bt br bb col-xs-2 line">
+                            <span class="small">Valor Original</span><br />
+                            <span t-field="o.fatura_bruto"></span>
                         </div>
-                    </t>
-                </div>
+                        <div class="bt br bb col-xs-2 line">
+                            <span class="small">Desconto</span><br />
+                            <span t-field="o.fatura_desconto"></span>
+                        </div>
+                        <div class="bt br bb col-xs-2 line">
+                            <span class="small">Valor Líquido</span><br />
+                            <span t-field="o.fatura_liquido"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="enfase">Duplicatas</span>
+                        </div>
+                    </div>
+
+                    <div class="row line">
+                        <t t-foreach="o.duplicata_ids" t-as="dupl">
+                            <div class="borda-completa col-xs-1 line">
+                                <span class="small">Número</span><br />
+                                <span style="font-size:11px;" t-field="dupl.numero_duplicata"></span>
+                            </div>
+                            <div class="bt br bb col-xs-1 line">
+                                <span class="small">Vencimento</span><br />
+                                <span style="font-size:11px;" t-field="dupl.data_vencimento"></span>
+                            </div>
+                            <div class="bt br bb col-xs-1 line">
+                                <span class="small">Valor</span><br />
+                                <span style="font-size:11px;" t-field="dupl.valor"></span>
+                            </div>
+                        </t>
+                    </div>
+                </t>
 
                 <div class="row">
                     <div class="col-xs-12">
