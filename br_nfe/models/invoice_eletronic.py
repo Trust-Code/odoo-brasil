@@ -612,7 +612,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'numero': item.numero,
                 'serie': item.serie.code.zfill(3),
                 'tipo': int(item.tipo_emissao),
-                'codigo': item.numero_controle
+                'codigo': "%08d" % item.numero_controle
             }
             item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
 
