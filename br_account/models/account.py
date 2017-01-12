@@ -47,7 +47,7 @@ class AccountJournal(models.Model):
         """ Disabled to create an Brazilian Bank Account """
         return
     
-    def set_brl_bank__account(self, brl_acc_number, brl_acc_number_digit=None,
+    def set_brl_bank_account(self, brl_acc_number, brl_acc_number_digit=None,
         brl_bra_number=None, brl_bra_number_digit=None, bank_id=None):
         """ Create a res.partner.bank and set it as value of the field bank_account_id """
         self.ensure_one()
