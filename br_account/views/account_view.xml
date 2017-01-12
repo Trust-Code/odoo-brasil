@@ -27,6 +27,7 @@
                 <span class="oe_read_only"> - </span>
                 <label for="bank_acc_number_dig" required="1" class="oe_edit_only"/>
                 <field name="bank_acc_number_dig" />
+                <newline />
                 <label for="bank_ofx_acc_number" class="oe_read_only"/>
                 <field name="bank_ofx_acc_number" class="oe_read_only"/>
             </field>
