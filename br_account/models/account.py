@@ -19,14 +19,25 @@ class AccountJournal(models.Model):
                                      related='bank_account_id.partner_id')
     bank_currency_id = fields.Many2one('res.currency', string="Bank Account",
                                        related='bank_account_id.currency_id')
-                                       
+
+    @api.multi
+    def write(self, vals):
+        result = super(AccountJournal, self).write(vals)
+        # Create the bank_account_id if necessary
+        if 'bank_acc_number' in vals:
+            for journal in self.filtered(lambda r: r.type == 'bank' and not r.bank_account_id):
+                journal.set_brl_bank_account(vals.get('bank_acc_number'), 
+                    vals.get('bank_acc_number_dig'), 
+                    vals.get('bank_agency_number'), vals.get('bank_agency_dig'),
+                    vals.get('bank_id'))
+
+        return result
+    
     @api.model
     def create(self, vals):
         journal = super(AccountJournal, self).create(vals)
         # Create the bank_account_id if necessary
-        if ((journal.type == 'bank') and 
-            (not journal.bank_account_id) and 
-            (vals.get('bank_acc_number'))):
+        if ((journal.type == 'bank') and (not journal.bank_account_id) and (vals.get('bank_acc_number'))):
             journal.set_brl_bank_account(vals.get('bank_acc_number'), 
                 vals.get('bank_acc_number_dig'), vals.get('bank_agency_number'), 
                 vals.get('bank_agency_dig'), vals.get('bank_id'))
