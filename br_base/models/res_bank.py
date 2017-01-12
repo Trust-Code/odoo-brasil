@@ -78,5 +78,5 @@ class ResPartnerBank(models.Model):
                 'brl_acc_number': self.brl_acc_number or '',
                 'brl_acc_number_digit': self.brl_acc_number_digit or ''
             }
-            return acc_number_format % args
-        return False
+            self.acc_number = acc_number_format % args
+    

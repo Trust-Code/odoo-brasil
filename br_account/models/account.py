@@ -27,7 +27,7 @@ class AccountJournal(models.Model):
         if ((journal.type == 'bank') and 
             (not journal.bank_account_id) and 
             (vals.get('bank_acc_number'))):
-            journal.set_bank_account(vals.get('bank_agency_number'), 
+            journal.set_brl_bank_account(vals.get('bank_agency_number'), 
                 vals.get('bank_agency_dig'), vals.get('bank_acc_number'), 
                 vals.get('bank_acc_number_dig'), vals.get('bank_id'))
         return journal
@@ -36,8 +36,8 @@ class AccountJournal(models.Model):
         """ Disabled to create an Brazilian Bank Account """
         return
     
-    def set_bank_account(self, brl_bra_number, brl_bra_number_digit, 
-        brl_acc_number, brl_acc_number_digit, bank_id=None):
+    def set_brl_bank__account(self, brl_bra_number=None, brl_bra_number_digit=None, 
+        brl_acc_number, brl_acc_number_digit=None, bank_id=None):
         """ Create a res.partner.bank and set it as value of the field bank_account_id """
         self.ensure_one()
         self.bank_account_id = self.env['res.partner.bank'].create({
