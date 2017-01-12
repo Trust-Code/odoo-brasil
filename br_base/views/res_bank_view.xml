@@ -31,8 +31,8 @@
             <field name="city" position="replace">
                 <field name="city" invisible="1"/>
             </field>
-            <group position="inside">
-                <group string="Configuration" class="oe_edit_only">
+            <group position="after">
+                <group string="Configuration">
                     <field name="acc_number_format" placeholder="OFX Account Number Format"/>
                 </group>
             </group>
@@ -52,6 +52,8 @@
                 <newline />
                 <field name="brl_bra_number" select="1" />
                 <field name="brl_bra_number_digit" select="1" />
+                <newline />
+                <field name="acc_number" readonly="True" />
             </field>
         </field>
     </record>
@@ -66,6 +68,7 @@
                 <field name="brl_acc_number_digit" />
                 <field name="brl_bra_number" />
                 <field name="brl_bra_number_digit" />
+                <field name="acc_number" />
             </field>
         </field>
     </record>

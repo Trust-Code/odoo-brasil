@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
+# © 2017 Carlos Alberto Cipriano Korovsky, UKTech
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
