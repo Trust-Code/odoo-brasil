@@ -56,8 +56,8 @@ class ResPartnerBank(models.Model):
     bancárias no Brasil."""
     _inherit = 'res.partner.bank'
 
-    acc_number = fields.Char(string='Account Number', size=256, required=True,
-        store=True, readonly=True, compute='_compute_acc_number')
+    acc_number = fields.Char(string='Account Number', size=256, required=False,
+        store=True, readonly=False, compute='_compute_acc_number')
 
     brl_bra_number = fields.Char(oldname='bra_number', 
         string='Bank Branch Number', size=32, required=False)
