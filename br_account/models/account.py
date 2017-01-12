@@ -24,9 +24,9 @@ class AccountJournal(models.Model):
     def create(self, vals):
         journal = super(AccountJournal, self).create(vals)
         # Create the bank_account_id if necessary
-        if journal.type == 'bank' and 
-            not journal.bank_account_id and 
-            vals.get('bank_acc_number'):
+        if ((journal.type == 'bank') and 
+            (not journal.bank_account_id) and 
+            (vals.get('bank_acc_number'))):
             journal.set_bank_account(vals.get('bank_agency_number'), 
                 vals.get('bank_agency_dig'), vals.get('bank_acc_number'), 
                 vals.get('bank_acc_number_dig'), vals.get('bank_id'))

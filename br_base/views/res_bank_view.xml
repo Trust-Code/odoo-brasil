@@ -32,6 +32,11 @@
                    <field name="city" invisible="1"/>
                </field>
         </field>
+        <group string="Communication" position="after">
+            <group string="Configuration">
+                <field name="acc_number_format" placeholder="OFX Account Number Format"/>
+            </group>
+        </group>
     </record>
 
     <!-- res.partner.bank -->
