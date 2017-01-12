@@ -11,12 +11,13 @@
                 <field name="acc_partner_id" />
             </field>
             <field name="bank_statements_source" position="before">
-                <field name="acc_number_dig" />
+                <field name="bank_acc_number_dig" />
                 <field name="bank_agency_dig" />
                 <field name="bank_currency_id" />
             </field>
         </field>
     </record>
+    
     <record id="view_br_account_journal_config_form" model="ir.ui.view">
         <field name="name">view.br_account_journal.config.form</field>
         <field name="model">account.journal</field>
@@ -24,8 +25,10 @@
         <field name="arch" type="xml">
             <field name="bank_acc_number" position="after">
                 <span class="oe_read_only"> - </span>
-                <label for="acc_number_dig" required="1" class="oe_edit_only"/>
-                <field name="acc_number_dig" />
+                <label for="bank_acc_number_dig" required="1" class="oe_edit_only"/>
+                <field name="bank_acc_number_dig" />
+                <label for="bank_ofx_acc_number" class="oe_read_only"/>
+                <field name="bank_ofx_acc_number" class="oe_read_only"/>
             </field>
             <field name="bank_id" position="after">
                 <field name="acc_partner_id" />

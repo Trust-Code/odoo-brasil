@@ -42,11 +42,11 @@
         <field name="arch" type="xml">
             <field name="acc_number" position="replace">
                 <newline />
-                <field name="acc_number" select="1" />
-                <field name="acc_number_dig" select="1" />
+                <field name="brl_acc_number" select="1" />
+                <field name="brl_acc_number_digit" select="1" />
                 <newline />
-                <field name="bra_number" select="1" />
-                <field name="bra_number_dig" select="1" />
+                <field name="brl_bra_number" select="1" />
+                <field name="brl_bra_number_digit" select="1" />
             </field>
         </field>
     </record>
@@ -57,10 +57,10 @@
         <field name="inherit_id" ref="base.view_partner_bank_tree" />
         <field name="arch" type="xml">
             <field name="acc_number" position="replace">
-                <field name="acc_number" />
-                <field name="acc_number_dig" />
-                <field name="bra_number" />
-                <field name="bra_number_dig" />
+                <field name="brl_acc_number" />
+                <field name="brl_acc_number_digit" />
+                <field name="brl_bra_number" />
+                <field name="brl_bra_number_digit" />
             </field>
         </field>
     </record>

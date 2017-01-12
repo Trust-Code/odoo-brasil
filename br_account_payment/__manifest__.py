@@ -25,7 +25,6 @@
         'views/br_account_payment.xml',
         'views/payment_mode.xml',
         'views/account_payment.xml',
-        'views/account_journal.xml',
     ],
     'installable': True,
     'application': True,
