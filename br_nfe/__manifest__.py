@@ -37,6 +37,7 @@
         'reports/danfe_report.xml',
         'wizard/cancel_nfe.xml',
         'wizard/carta_correcao_eletronica.xml',
+        'wizard/inutilize_nfe_numeration.xml',
     ],
     'installable': True,
     'application': True,
