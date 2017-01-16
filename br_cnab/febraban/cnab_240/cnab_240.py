@@ -60,6 +60,9 @@ class Cnab240(Cnab):
         elif bank == '0851':
             from .bancos.cecred import Cecred240
             return Cecred240
+        elif bank == '341':
+            from bancos.itau import Itau240
+            return Itau240 
         else:
             return Cnab240
 
@@ -78,9 +81,6 @@ class Cnab240(Cnab):
         """
         cnpj_cpf = re.sub('[^0-9]', '',
                           self.order.payment_mode_id.company_id.cnpj_cpf)
-        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
-            acc_number_dig
-        cedente_conta_dv = str(cedente_conta_dv)
         return {
             'controle_banco': int(self.order.payment_mode_id.
                                   bank_account_id.bank_bic),
@@ -93,14 +93,15 @@ class Cnab240(Cnab):
                 self.order.payment_mode_id.bank_account_id.bra_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
-            'cedente_conta_dv': cedente_conta_dv,
+            'cedente_conta_dv': int(self.order.payment_mode_id.bank_account_id.
+                                 acc_number_dig),
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
-            'cedente_agencia_dv': self.order.payment_mode_id.
-            bank_account_id.bra_number_dig,
+            'cedente_agencia_dv': int(self.order.payment_mode_id.
+                                 bank_account_id.acc_number_dig),
             'cedente_nome': self.order.user_id.company_id.legal_name,
             # DV ag e conta
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.
+            'cedente_dv_ag_cc': int(self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
@@ -169,19 +170,20 @@ class Cnab240(Cnab):
                                    bra_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
-            'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
-            acc_number_dig,
+            'cedente_conta_dv': int(self.order.payment_mode_id.bank_account_id.
+                                 acc_number_dig),
             'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
             bra_number_dig,
             'cedente_nome':
             self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
             # DV ag e cc
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
+            'cedente_dv_ag_cc': int(self.order.payment_mode_id.bank_account_id.
                                  bra_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
             'numero_documento': "%s/%s" % (line.move_id.name, line.name),
+            'nosso_numero': int(line.nosso_numero),
             'vencimento_titulo': self.format_date(
                 line.date_maturity),
             'valor_titulo': Decimal(str(line.debit)).quantize(
@@ -228,8 +230,8 @@ class Cnab240(Cnab):
             'codigo_baixa': 2,
             'prazo_baixa': 0,  # De 5 a 120 dias.
             'controlecob_data_gravacao': self.data_hoje(),
-            'cobranca_carteira': int(
-                self.order.payment_mode_id.boleto_carteira[:2]),
+            'carteira_numero': int(
+                self.order.payment_mode_id.boleto_carteira),
         }
 
     def remessa(self, order):
