@@ -1,25 +1,9 @@
-# coding: utf-8
-# ###########################################################################
-#
-#    Author: Luis Felipe Mileo
-#            Fernando Marcato Rodrigues
-#            Daniel Sadamo Hirayama
-#    Copyright 2015 KMEE - www.kmee.com.br
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# -*- coding: utf-8 -*-
+# © 2015 Luis Felipe Mileo
+#        Fernando Marcato Rodrigues
+#        Daniel Sadamo Hirayama
+#        KMEE - www.kmee.com.br
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from ..cnab import Cnab
 from decimal import Decimal
@@ -61,8 +45,8 @@ class Cnab240(Cnab):
             from .bancos.cecred import Cecred240
             return Cecred240
         elif bank == '341':
-            from bancos.itau import Itau240
-            return Itau240 
+            from .bancos.itau import Itau240
+            return Itau240
         else:
             return Cnab240
 
@@ -81,6 +65,9 @@ class Cnab240(Cnab):
         """
         cnpj_cpf = re.sub('[^0-9]', '',
                           self.order.payment_mode_id.company_id.cnpj_cpf)
+        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
+            acc_number_dig
+        cedente_conta_dv = str(cedente_conta_dv)
         return {
             'controle_banco': int(self.order.payment_mode_id.
                                   bank_account_id.bank_bic),
@@ -93,15 +80,14 @@ class Cnab240(Cnab):
                 self.order.payment_mode_id.bank_account_id.bra_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
-            'cedente_conta_dv': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number_dig),
+            'cedente_conta_dv': cedente_conta_dv,
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
-            'cedente_agencia_dv': int(self.order.payment_mode_id.
-                                 bank_account_id.acc_number_dig),
+            'cedente_agencia_dv': self.order.payment_mode_id.
+            bank_account_id.bra_number_dig,
             'cedente_nome': self.order.user_id.company_id.legal_name,
             # DV ag e conta
-            'cedente_dv_ag_cc': int(self.order.payment_mode_id.
+            'cedente_dv_ag_cc': (self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
@@ -170,20 +156,19 @@ class Cnab240(Cnab):
                                    bra_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
-            'cedente_conta_dv': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number_dig),
+            'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
+            acc_number_dig,
             'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
             bra_number_dig,
             'cedente_nome':
             self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
             # DV ag e cc
-            'cedente_dv_ag_cc': int(self.order.payment_mode_id.bank_account_id.
+            'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
                                  bra_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
             'numero_documento': "%s/%s" % (line.move_id.name, line.name),
-            'nosso_numero': int(line.nosso_numero),
             'vencimento_titulo': self.format_date(
                 line.date_maturity),
             'valor_titulo': Decimal(str(line.debit)).quantize(
@@ -230,8 +215,8 @@ class Cnab240(Cnab):
             'codigo_baixa': 2,
             'prazo_baixa': 0,  # De 5 a 120 dias.
             'controlecob_data_gravacao': self.data_hoje(),
-            'carteira_numero': int(
-                self.order.payment_mode_id.boleto_carteira),
+            'cobranca_carteira': int(
+                self.order.payment_mode_id.boleto_carteira[:2]),
         }
 
     def remessa(self, order):

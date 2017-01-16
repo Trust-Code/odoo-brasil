@@ -1,58 +1,29 @@
-# coding: utf-8
-# ###########################################################################
-#
-#    Author: Luis Felipe Mileo
-#            Fernando Marcato Rodrigues
-#            Daniel Sadamo Hirayama
-#    Copyright 2015 KMEE - www.kmee.com.br
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# -*- coding: utf-8 -*-
+# © 2015 Luis Felipe Mileo
+#        Fernando Marcato Rodrigues
+#        Daniel Sadamo Hirayama
+#        KMEE - www.kmee.com.br
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 
 from ..cnab_240 import Cnab240
 
 
 class Itau240(Cnab240):
-    """
-
-    """
 
     def __init__(self):
-        """
-
-        :return:
-        """
         super(Cnab240, self).__init__()
         from cnab240.bancos import itau
         self.bank = itau
 
     def _prepare_header(self):
-        """
-
-        :param order:
-        :return:
-        """
         vals = super(Itau240, self)._prepare_header()
+        vals['cedente_conta_dv'] = int(vals['cedente_conta_dv'])
+        vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
+        vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
         return vals
 
     def _prepare_segmento(self, line):
-        """
-
-        :param line:
-        :return:
-        """
         vals = super(Itau240, self)._prepare_segmento(line)
         dv = self.dv_nosso_numero(
             line.payment_mode_id.bank_account_id.bra_number,
@@ -60,7 +31,13 @@ class Itau240(Cnab240):
             line.payment_mode_id.boleto_carteira,
             line.nosso_numero
         )
+        vals['nosso_numero'] = int(line.nosso_numero)
         vals['nosso_numero_dv'] = dv
+        vals['carteira_numero'] = int(
+            self.order.payment_mode_id.boleto_carteira)
+        vals['cedente_conta_dv'] = int(vals['cedente_conta_dv'])
+        vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
+        vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
         return vals
 
     def dv_nosso_numero(self, agencia, conta, carteira, nosso_numero):
