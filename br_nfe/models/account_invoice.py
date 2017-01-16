@@ -38,13 +38,11 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         super(AccountInvoice, self).action_number()
-        number = self.env['invoice.eletronic.inutilized'].search([(
-            'numero', '=', self.internal_number)])
-        if number:
-            next_number = self.env['invoice.eletronic.inutilized'].search(
-                [], order='numero desc', limit=1)
-            next_number = next_number.numero + 1
-            self.internal_number = next_number
+        sequences = self.env['invoice.eletronic.inutilized'].search([])
+        for sequence in sequences:
+            if self.internal_number >= sequence.numero_inicial or \
+                    self.internal_number <= sequence.numero_final:
+                self.internal_number = sequence.numero_final + 1
         return True
 
     def action_preview_danfe(self):

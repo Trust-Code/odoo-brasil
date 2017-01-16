@@ -146,6 +146,19 @@ class TestInutilizacao(TransactionCase):
             [('invoice_id', '=', invoice.id)])
         self.assertEqual(inv_eletr.numero, 6)
 
+    def test_inutilizacao_wrong_sqnc(self):
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=10,
+            numeration_end=5,
+        ))
+        invoice = self.env['account.invoice'].create(dict(
+            self.default_invoice.items(),
+            partner_id=self.partner_fisica.id
+        ))
+        invoice.action_invoice_open()
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
+
     def test_inutilizacao_user_error(self):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,

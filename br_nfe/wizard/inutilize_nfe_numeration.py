@@ -17,13 +17,14 @@ class InutilizationNFeNumeration(models.TransientModel):
         if self.numeration_start > self.numeration_end:
             raise UserError('O Começo da Numeração deve ser menor que o Fim '
                             'da Numeração')
-        inutilized_serie = range(self.numeration_start,
-                                 self.numeration_end + 1)
-        docs = self.env['invoice.eletronic'].search([(
-            'numero', 'in', inutilized_serie)])
+        docs = self.env['invoice.eletronic'].search([
+            ('numero', '>=', self.numeration_start),
+            ('numero', '<=', self.numeration_end)
+        ])
         if docs:
             raise UserError('Não é possível cancelar essa série pois já '
                             'existem documentos com essa numeração.')
-        for number in inutilized_serie:
-            self.env['invoice.eletronic.inutilized'].create(
-                dict(numero=number))
+        self.env['invoice.eletronic.inutilized'].create(dict(
+            numero_inicial=self.numeration_start,
+            numero_final=self.numeration_end
+        ))

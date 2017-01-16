@@ -8,4 +8,5 @@ from odoo import fields, models
 class InutilizedNfe(models.Model):
     _name = 'invoice.eletronic.inutilized'
 
-    numero = fields.Integer('Numero')
+    numero_inicial = fields.Integer('Numero Inicial')
+    numero_final = fields.Integer('Numero Final')
