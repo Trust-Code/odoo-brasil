@@ -4,10 +4,8 @@
 
 import os
 import base64
-from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
-from pytrustnfe.xml import sanitize_response
 
 
 class TestInutilizacao(TransactionCase):
@@ -135,8 +133,8 @@ class TestInutilizacao(TransactionCase):
 
     def test_inutilizacao_ok(self):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start = 0,
-            numeration_end = 5,
+            numeration_start=0,
+            numeration_end=5,
         ))
         wizard.action_inutilize_nfe()
         invoice = self.env['account.invoice'].create(dict(
@@ -150,8 +148,8 @@ class TestInutilizacao(TransactionCase):
 
     def test_inutilizacao_user_error(self):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
-            numeration_start = 0,
-            numeration_end = 5,
+            numeration_start=0,
+            numeration_end=5,
         ))
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
