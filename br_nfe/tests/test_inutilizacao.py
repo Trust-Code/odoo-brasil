@@ -123,6 +123,17 @@ class TestInutilizacao(TransactionCase):
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data
         }
+        self.fiscal_doc = self.env['br_account.fiscal.document'].create(dict(
+            code='1',
+        ))
+        self.serie = self.env['br_account.document.serie'].create(dict(
+            code='1',
+            active=True,
+            name='serie teste',
+            fiscal_document_id=self.fiscal_doc.id,
+            fiscal_type='product',
+            company_id=self.main_company.id,
+        ))
 
     def tearDown(self):
         inutilized = self.env['invoice.eletronic.inutilized'].search([])
@@ -135,6 +146,9 @@ class TestInutilizacao(TransactionCase):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
         wizard.action_inutilize_nfe()
         invoice = self.env['account.invoice'].create(dict(
@@ -150,11 +164,17 @@ class TestInutilizacao(TransactionCase):
         wizard1 = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
         wizard1.action_inutilize_nfe()
         wizard2 = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=6,
             numeration_end=9,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
         wizard2.action_inutilize_nfe()
         invoice = self.env['account.invoice'].create(dict(
@@ -170,6 +190,9 @@ class TestInutilizacao(TransactionCase):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
             numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
@@ -183,6 +206,9 @@ class TestInutilizacao(TransactionCase):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         ))
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),

@@ -7,6 +7,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Séries Inutilizadas">
+                <field name="name" />
                 <field name="numero_inicial" />
                 <field name="numero_final" />
                 <field name="justificativa" />
@@ -23,6 +24,9 @@
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="done,error" />
                 </header>
+                <h1>
+                    <field name="name" readonly="1" class="oe_inline" />
+                </h1>
                 <group>
                     <group name="numeracao">
                         <field name="numero_inicial" />
