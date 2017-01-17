@@ -12,12 +12,19 @@ class InutilizedNfe(models.Model):
     _name = 'invoice.eletronic.inutilized'
 
     name = fields.Char('Nome', readonly=True, required=True)
-    numero_inicial = fields.Integer('Numero Inicial')
-    numero_final = fields.Integer('Numero Final')
-    justificativa = fields.Text('Justificativa')
+    numero_inicial = fields.Integer('Numero Inicial', readonly=True)
+    numero_final = fields.Integer('Numero Final', readonly=True)
+    justificativa = fields.Text('Justificativa', readonly=True)
+    erro = fields.Text('Erros', readonly=True)
     state = fields.Selection([
         ('draft', 'Provisório'), ('done', 'Enviado'), ('error', 'Erro')],
         string=u'State', default='draft', readonly=True)
+    modelo = fields.Selection([
+        ('55', '55 - NFe'),
+        ('65', '65 - NFCe'), ],
+        string='Modelo', readonly=True)
+    serie = fields.Many2one('br_account.document.serie', string='Série',
+                            readonly=True)
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
@@ -31,4 +38,3 @@ class InutilizedNfe(models.Model):
                 'res_model': 'invoice.eletronic.inutilized',
                 'res_id': event.id
             })
-

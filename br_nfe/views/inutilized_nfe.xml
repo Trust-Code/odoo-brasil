@@ -32,9 +32,16 @@
                         <field name="numero_inicial" />
                         <field name="numero_final" />
                     </group>
+                    <group name="dados">
+                        <field name="modelo" />
+                        <field name="serie" />
+                    </group>
                 </group>
                 <group name="justificativa">
                     <field name="justificativa" />
+                </group>
+                <group name="erro">
+                    <field name="erro"  attrs="{'invisible': [('state', '!=', 'error')]}" />
                 </group>
             </form>
         </field>

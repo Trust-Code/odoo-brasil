@@ -4,8 +4,10 @@
 
 import os
 import base64
+from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
+from pytrustnfe.xml import sanitize_response
 
 
 class TestInutilizacao(TransactionCase):
@@ -142,7 +144,18 @@ class TestInutilizacao(TransactionCase):
                 (2, number.id, 0),
             ])
 
-    def test_inutilizacao_ok(self):
+    @patch('odoo.addons.br_nfe.wizard.inutilize_nfe_numeration.inutilizar_nfe')
+    def test_inutilizacao_ok(self, inutilizar):
+        with open(os.path.join(self.caminho,
+                               'xml/inutilizacao_sent_xml.xml')) as f:
+            sent_xml = f.read()
+        with open(os.path.join(self.caminho,
+                               'xml/inutilizacao_received_xml.xml')) as f:
+            received_xml = f.read()
+        _, obj = sanitize_response(received_xml)
+        inutilizar.return_value = {'received_xml': received_xml,
+                                   'sent_xml': sent_xml,
+                                   'object': obj}
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
@@ -160,7 +173,18 @@ class TestInutilizacao(TransactionCase):
             [('invoice_id', '=', invoice.id)])
         self.assertEqual(inv_eletr.numero, 6)
 
-    def test_inutilizacao_2_sequences(self):
+    @patch('odoo.addons.br_nfe.wizard.inutilize_nfe_numeration.inutilizar_nfe')
+    def test_inutilizacao_2_sequences(self, inutilizar):
+        with open(os.path.join(self.caminho,
+                               'xml/inutilizacao_sent_xml.xml')) as f:
+            sent_xml = f.read()
+        with open(os.path.join(self.caminho,
+                               'xml/inutilizacao_received_xml.xml')) as f:
+            received_xml = f.read()
+        _, obj = sanitize_response(received_xml)
+        inutilizar.return_value = {'received_xml': received_xml,
+                                   'sent_xml': sent_xml,
+                                   'object': obj}
         wizard1 = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,

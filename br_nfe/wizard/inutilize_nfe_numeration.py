@@ -61,6 +61,8 @@ class InutilizationNFeNumeration(models.TransientModel):
             numero_inicial=self.numeration_start,
             numero_final=self.numeration_end,
             justificativa=self.justificativa,
+            modelo=self.modelo,
+            serie=self.serie.id,
         ))
 
     def _prepare_obj(self, company, estado, ambiente):
@@ -96,6 +98,14 @@ class InutilizationNFeNumeration(models.TransientModel):
         inutilized_obj._create_attachment('inutilizacao-recibo',
                                           inutilized_obj,
                                           resposta['received_xml'])
+        inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result.\
+            retInutNFe.infInut
+        status = inf_inut.cStat
+        if status == 102:
+            inutilized_obj.state = 'done'
+        else:
+            inutilized_obj.state = 'error'
+            inutilized_obj.erro = inf_inut.xMotivo
 
     def send_sefaz(self):
         company = self.env.user.company_id
