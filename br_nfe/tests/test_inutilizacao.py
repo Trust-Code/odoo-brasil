@@ -156,14 +156,22 @@ class TestInutilizacao(TransactionCase):
         inutilizar.return_value = {'received_xml': received_xml,
                                    'sent_xml': sent_xml,
                                    'object': obj}
+        justif = 'Sed lorem nibh, sodales ut ex a, tristique ullamcor'
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,
             numeration_end=5,
             serie=self.serie.id,
             modelo='55',
-            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+            justificativa=justif
         ))
         wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 1)
+        self.assertEqual(inut_inv.numero_inicial, 0)
+        self.assertEqual(inut_inv.numero_final, 5)
+        self.assertEqual(inut_inv.serie, self.serie)
+        self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
+        self.assertEqual(inut_inv.justificativa, justif)
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
@@ -222,6 +230,8 @@ class TestInutilizacao(TransactionCase):
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
@@ -239,5 +249,7 @@ class TestInutilizacao(TransactionCase):
             partner_id=self.partner_fisica.id
         ))
         invoice.action_invoice_open()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
