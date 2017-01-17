@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="invoice_eletronic_inutilized_tree">
+        <field name="name">invoice_eletronic.inutilized.tree</field>
+        <field name="model">invoice.eletronic.inutilized</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Séries Inutilizadas">
+                <field name="numero_inicial" />
+                <field name="numero_final" />
+                <field name="justificativa" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="invoice_eletronic_inutilized_form">
+        <field name="name">invoice_eletronic.inutilized.form</field>
+        <field name="model">invoice.eletronic.inutilized</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Séries Inutilizadas">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="done,error" />
+                </header>
+                <group>
+                    <group name="numeracao">
+                        <field name="numero_inicial" />
+                        <field name="numero_final" />
+                    </group>
+                </group>
+                <group name="justificativa">
+                    <field name="justificativa" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_invoice_eletronic_inutilized">
+        <field name="name">Séries Inutilizadas</field>
+        <field name="res_model">invoice.eletronic.inutilized</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_invoice_eletronic_inutilized"
+        name="Séries Inutilizadas"
+        parent="br_account.menu_br_account"
+        action="action_invoice_eletronic_inutilized"
+        sequence="21" />
+
+</odoo>

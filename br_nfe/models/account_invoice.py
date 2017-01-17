@@ -38,10 +38,12 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         super(AccountInvoice, self).action_number()
-        sequences = self.env['invoice.eletronic.inutilized'].search([])
-        for sequence in sequences:
-            if self.internal_number >= sequence.numero_inicial or \
-                    self.internal_number <= sequence.numero_final:
+        sequence = True
+        while sequence:
+            sequence = self.env['invoice.eletronic.inutilized'].search([
+                ('numero_inicial', '<=', self.internal_number),
+                ('numero_final', '>=', self.internal_number)], limit=1)
+            if sequence:
                 self.internal_number = sequence.numero_final + 1
         return True
 

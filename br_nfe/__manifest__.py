@@ -32,6 +32,7 @@
         'views/res_company.xml',
         'views/res_partner.xml',
         'views/invoice_eletronic_item.xml',
+        'views/inutilized_nfe.xml',
         'views/br_nfe.xml',
         'reports/br_nfe_reports.xml',
         'reports/danfe_report.xml',
