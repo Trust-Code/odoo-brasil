@@ -172,6 +172,7 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.serie, self.serie)
         self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
         self.assertEqual(inut_inv.justificativa, justif)
+        self.assertEqual(inut_inv.state, 'error')
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
@@ -218,6 +219,45 @@ class TestInutilizacao(TransactionCase):
             [('invoice_id', '=', invoice.id)])
         self.assertEqual(inv_eletr.numero, 10)
 
+    @patch('odoo.addons.br_nfe.wizard.inutilize_nfe_numeration.inutilizar_nfe')
+    def test_inutilizacao_return_ok(self, inutilizar):
+        with open(os.path.join(self.caminho,
+                               'xml/inutilizacao_sent_xml.xml')) as f:
+            sent_xml = f.read()
+        with open(os.path.join(self.caminho,
+                               'xml/inutilizacao_received_ok_xml.xml')) as f:
+            received_xml = f.read()
+        _, obj = sanitize_response(received_xml)
+        inutilizar.return_value = {'received_xml': received_xml,
+                                   'sent_xml': sent_xml,
+                                   'object': obj}
+        justif = 'Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=0,
+            numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa=justif
+        ))
+        wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 1)
+        self.assertEqual(inut_inv.numero_inicial, 0)
+        self.assertEqual(inut_inv.numero_final, 5)
+        self.assertEqual(inut_inv.serie, self.serie)
+        self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
+        self.assertEqual(inut_inv.justificativa, justif)
+        self.assertEqual(inut_inv.state, 'done')
+        invoice = self.env['account.invoice'].create(dict(
+            self.default_invoice.items(),
+            partner_id=self.partner_fisica.id
+        ))
+        invoice.action_invoice_open()
+        inv_eletr = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', invoice.id)])
+        self.assertEqual(inv_eletr.numero, 6)
+
+
     def test_inutilizacao_wrong_sqnc(self):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=10,
@@ -230,11 +270,77 @@ class TestInutilizacao(TransactionCase):
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id
         ))
-        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
-        self.assertEqual(len(inut_inv), 0)
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
+
+    def test_inutilizacao_justificativa_short(self):
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=10,
+            numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem'
+        ))
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
+
+    def test_inutilizacao_justificativa_long(self):
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=10,
+            numeration_end=5,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem' * 255,
+        ))
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
+
+    def test_inutilizacao_negative(self):
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=-10,
+            numeration_end=-1,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+        ))
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
+
+    def test_inutilizacao_sequence_too_long(self):
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=1,
+            numeration_end=10005,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+        ))
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
+
+    def test_inutilizacao_no_cnpj(self):
+        self.main_company.cnpj_cpf = None
+        wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
+            numeration_start=10,
+            numeration_end=100,
+            serie=self.serie.id,
+            modelo='55',
+            justificativa='Sed lorem nibh, sodales ut ex a, tristique ullamcor'
+        ))
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
+        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(len(inut_inv), 0)
 
     def test_inutilizacao_user_error(self):
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
