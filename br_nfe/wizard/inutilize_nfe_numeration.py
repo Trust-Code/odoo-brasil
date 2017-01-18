@@ -4,6 +4,7 @@
 
 import base64
 import logging
+import re
 from datetime import datetime
 
 from odoo import api, fields, models
@@ -68,18 +69,20 @@ class InutilizationNFeNumeration(models.TransientModel):
     def _prepare_obj(self, company, estado, ambiente):
         ano = str(datetime.now().year)[2:]
         serie = self.serie.code.zfill(3)
+        cnpj = re.sub(r'\D', '', company.cnpj_cpf)
         ID = ('ID{ambiente:.1}{estado:.2}{ano:.2}{cnpj:.14}{modelo:.2}'
               '{serie:.3}{num_inicial:09}{num_final:09}')
-        ID = ID.format(ambiente=ambiente, estado=estado, ano=ano,
-                       cnpj=company.cnpj_cpf, modelo=self.modelo, serie=serie,
-                       num_inicial=self.numeration_start,
-                       num_final=self.numeration_end)
+        ID = ID.format(ambiente=str(ambiente), estado=str(estado),
+                       ano=str(ano), cnpj=str(cnpj), modelo=str(self.modelo),
+                       serie=str(serie),
+                       num_inicial=int(self.numeration_start),
+                       num_final=int(self.numeration_end))
         return {
             'id': ID,
             'ambiente': ambiente,
             'estado': estado,
             'ano': ano,
-            'cnpj': company.cnpj_cpf,
+            'cnpj': cnpj,
             'modelo': self.modelo,
             'serie': serie,
             'numero_inicio': self.numeration_start,
