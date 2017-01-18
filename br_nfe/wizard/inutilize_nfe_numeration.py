@@ -46,10 +46,17 @@ class InutilizationNFeNumeration(models.TransientModel):
         if self.numeration_start > self.numeration_end:
             errors.append('O Começo da Numeração deve ser menor que o '
                           'Fim da Numeração')
+        if self.numeration_start < 0 or self.numeration_end < 0:
+            errors.append('Não é possível cancelar uma série negativa.')
+        if self.numeration_end - self.numeration_start >= 10000:
+            errors.append('Número máximo de numeração a inutilizar ultrapassou'
+                          ' o limite.')
         if len(self.justificativa) < 15:
             errors.append('A Justificativa deve ter no mínimo 15 caracteres')
         if len(self.justificativa) > 255:
             errors.append('A Justificativa deve ter no máximo 255 caracteres')
+        if not self.env.user.company_id.cnpj_cpf:
+            errors.append('Cadastre o CNPJ da empresa.')
         if len(errors):
             raise UserError('\n'.join(errors))
 
@@ -68,15 +75,13 @@ class InutilizationNFeNumeration(models.TransientModel):
 
     def _prepare_obj(self, company, estado, ambiente):
         ano = str(datetime.now().year)[2:]
-        serie = self.serie.code.zfill(3)
+        serie = self.serie.code
         cnpj = re.sub(r'\D', '', company.cnpj_cpf)
-        ID = ('ID{ambiente:.1}{estado:.2}{ano:.2}{cnpj:.14}{modelo:.2}'
-              '{serie:.3}{num_inicial:09}{num_final:09}')
-        ID = ID.format(ambiente=str(ambiente), estado=str(estado),
-                       ano=str(ano), cnpj=str(cnpj), modelo=str(self.modelo),
-                       serie=str(serie),
-                       num_inicial=int(self.numeration_start),
-                       num_final=int(self.numeration_end))
+        ID = ('ID{estado:.2}{ano:.2}{cnpj:.14}{modelo:.2}'
+              '{serie:03}{num_inicial:09}{num_final:09}')
+        ID = ID.format(estado=estado, ano=ano, cnpj=cnpj, modelo=self.modelo,
+                       serie=int(serie), num_inicial=self.numeration_start,
+                       num_final=self.numeration_end)
         return {
             'id': ID,
             'ambiente': ambiente,
