@@ -2,21 +2,7 @@
 # © 2016 Alessandro Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import base64
-import logging
-import re
-from datetime import datetime
-
 from odoo import api, fields, models
-from odoo.exceptions import UserError
-
-_logger = logging.getLogger(__name__)
-
-try:
-    from pytrustnfe.nfe import inutilizar_nfe
-    from pytrustnfe.certificado import Certificado
-except ImportError:
-    _logger.debug('Cannot import pytrustnfe', exc_info=True)
 
 
 class InutilizationNFeNumeration(models.TransientModel):
@@ -34,105 +20,18 @@ class InutilizationNFeNumeration(models.TransientModel):
         'Justificativa', required=True,
         help='Mínimo: 15 caracteres;\nMáximo: 255 caracteres.')
 
-    def validate_hook(self):
-        errors = []
-        docs = self.env['invoice.eletronic'].search([
-            ('numero', '>=', self.numeration_start),
-            ('numero', '<=', self.numeration_end)
-        ])
-        if docs:
-            errors.append('Não é possível invalidar essa série pois já existem'
-                          ' documentos com essa numeração.')
-        if self.numeration_start > self.numeration_end:
-            errors.append('O Começo da Numeração deve ser menor que o '
-                          'Fim da Numeração')
-        if self.numeration_start < 0 or self.numeration_end < 0:
-            errors.append('Não é possível cancelar uma série negativa.')
-        if self.numeration_end - self.numeration_start >= 10000:
-            errors.append('Número máximo de numeração a inutilizar ultrapassou'
-                          ' o limite.')
-        if len(self.justificativa) < 15:
-            errors.append('A Justificativa deve ter no mínimo 15 caracteres')
-        if len(self.justificativa) > 255:
-            errors.append('A Justificativa deve ter no máximo 255 caracteres')
-        if not self.env.user.company_id.cnpj_cpf:
-            errors.append('Cadastre o CNPJ da empresa.')
-        if len(errors):
-            raise UserError('\n'.join(errors))
-
-    def create_inutilized(self):
+    @api.multi
+    def action_inutilize_nfe(self):
         name = 'Série Inutilizada {inicio} - {fim}'.format(
             inicio=self.numeration_start, fim=self.numeration_end
         )
-        self.env['invoice.eletronic.inutilized'].create(dict(
+        inut_inv = self.env['invoice.eletronic.inutilized'].create(dict(
             name=name,
-            numero_inicial=self.numeration_start,
-            numero_final=self.numeration_end,
+            numeration_start=self.numeration_start,
+            numeration_end=self.numeration_end,
             justificativa=self.justificativa,
             modelo=self.modelo,
             serie=self.serie.id,
+            state='error',
         ))
-
-    def _prepare_obj(self, company, estado, ambiente):
-        ano = str(datetime.now().year)[2:]
-        serie = self.serie.code
-        cnpj = re.sub(r'\D', '', company.cnpj_cpf)
-        ID = ('ID{estado:.2}{ano:.2}{cnpj:.14}{modelo:.2}'
-              '{serie:03}{num_inicial:09}{num_final:09}')
-        ID = ID.format(estado=estado, ano=ano, cnpj=cnpj, modelo=self.modelo,
-                       serie=int(serie), num_inicial=self.numeration_start,
-                       num_final=self.numeration_end)
-        return {
-            'id': ID,
-            'ambiente': ambiente,
-            'estado': estado,
-            'ano': ano,
-            'cnpj': cnpj,
-            'modelo': self.modelo,
-            'serie': serie,
-            'numero_inicio': self.numeration_start,
-            'numero_fim': self.numeration_end,
-            'justificativa': self.justificativa,
-        }
-
-    def _handle_resposta(self, resposta):
-        inutilized_obj = self.env['invoice.eletronic.inutilized'].search([
-            ('numero_inicial', '=', self.numeration_start),
-            ('numero_final', '=', self.numeration_end),
-            ('justificativa', '=', self.justificativa)
-        ], limit=1)
-        inutilized_obj._create_attachment('inutilizacao-envio', inutilized_obj,
-                                          resposta['sent_xml'])
-        inutilized_obj._create_attachment('inutilizacao-recibo',
-                                          inutilized_obj,
-                                          resposta['received_xml'])
-        inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result.\
-            retInutNFe.infInut
-        status = inf_inut.cStat
-        if status == 102:
-            inutilized_obj.state = 'done'
-        else:
-            inutilized_obj.state = 'error'
-            inutilized_obj.erro = inf_inut.xMotivo
-
-    def send_sefaz(self):
-        company = self.env.user.company_id
-        ambiente = company.tipo_ambiente
-        estado = company.state_id.ibge_code
-
-        obj = self._prepare_obj(company=company, estado=estado,
-                                ambiente=ambiente)
-
-        cert = company.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, company.nfe_a1_password)
-
-        resposta = inutilizar_nfe(certificado, obj=obj, estado=estado,
-                                  ambiente=int(ambiente))
-        self._handle_resposta(resposta=resposta)
-
-    @api.multi
-    def action_inutilize_nfe(self):
-        self.validate_hook()
-        self.create_inutilized()
-        self.send_sefaz()
+        inut_inv.action_send_inutilization()
