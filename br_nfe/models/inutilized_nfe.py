@@ -71,8 +71,14 @@ class InutilizedNfe(models.Model):
             errors.append('A Justificativa deve ter no mínimo 15 caracteres')
         if len(self.justificativa) > 255:
             errors.append('A Justificativa deve ter no máximo 255 caracteres')
+        if not self.env.user.company_id.nfe_a1_file:
+            errors.append('A empresa não possui um certificado de NFe '
+                          'cadastrado')
         if not self.env.user.company_id.cnpj_cpf:
             errors.append('Cadastre o CNPJ da empresa.')
+        estado = self.env.user.company_id.state_id
+        if not estado or not estado.ibge_code:
+            errors.append('Cadastre o Estado da empresa.')
         if len(errors):
             raise UserError('\n'.join(errors))
         return True
@@ -104,6 +110,8 @@ class InutilizedNfe(models.Model):
                                 resposta['sent_xml'])
         self._create_attachment('inutilizacao-recibo', self,
                                 resposta['received_xml'])
+        if hasattr(resposta['object'].Body, 'Fault'):
+            raise UserError('Não foi possível concluir a operação.')
         inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result.\
             retInutNFe.infInut
         status = inf_inut.cStat
