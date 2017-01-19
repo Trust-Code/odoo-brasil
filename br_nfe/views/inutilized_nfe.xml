@@ -7,6 +7,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Séries Inutilizadas">
+                <field name="state" invisible="1" />
                 <field name="name" />
                 <field name="numeration_start" />
                 <field name="numeration_end" />
