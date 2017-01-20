@@ -35,10 +35,9 @@ class ResBank(models.Model):
           %(bra_number_dig): Bank Branch Number's Digit\n
           %(acc_number): Bank Account Number\n
           %(acc_number_dig): Bank Account Number's Digit\n
-    For example, use '%(brl_acc_number)s' to display the field 'Bank Account \
-    Number' plus '%(brl_bra_number_digit)s' to display the field 'Bank Account \
-    Number s Digit'.""",
-                                    default='%(brl_acc_number)s')
+    For example, use '%(acc_number)s' to display the field 'Bank Account \
+    Number' plus '%(acc_number_dig)s' to display the field 'Bank Account \
+    Number s Digit'.""", default='%(acc_number)s')
 
     @api.onchange('city_id')
     def onchange_city_id(self):
