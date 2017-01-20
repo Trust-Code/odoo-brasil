@@ -22,10 +22,10 @@
                             <field name="freight_responsibility"/>
                             <field name="carrier_id"/>
                             <field name="vehicle_plate"/>
-                            <field name="vehicle_state_id"/>
+                            <field name="vehicle_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="vehicle_rntc"/>
                             <field name="tow_plate"/>
-                            <field name="tow_state_id"/>
+                            <field name="tow_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="tow_rntc"/>
                         </group>
                         <group name="package_info" string="Volume">
@@ -39,7 +39,7 @@
                     </group>
                     <group>
                         <group name="exporta" string="Exportação">
-                            <field name="uf_saida_pais_id"/>
+                            <field name="uf_saida_pais_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="local_embarque"/>
                             <field name="local_despacho"/>
                         </group>
@@ -74,10 +74,10 @@
                             <field name="freight_responsibility"/>
                             <field name="carrier_id"/>
                             <field name="vehicle_plate"/>
-                            <field name="vehicle_state_id"/>
+                            <field name="vehicle_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="vehicle_rntc"/>
                             <field name="tow_plate"/>
-                            <field name="tow_state_id"/>
+                            <field name="tow_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="tow_rntc"/>
                         </group>
                         <group name="package_info" string="Volume">
