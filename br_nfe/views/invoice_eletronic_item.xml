@@ -33,7 +33,7 @@
                             <field name="name"/>
                             <field name="date_registration"/>
                             <field name="location"/>
-                            <field name="state_id"/>
+                            <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="date_release"/>
                             <field name="type_transportation"/>
                         </tree>
@@ -42,7 +42,7 @@
                                 <group>
                                     <field name="name"/>
                                     <field name="date_registration"/>
-                                    <field name="state_id"/>
+                                    <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                                     <field name="location"/>
                                     <field name="date_release"/>
                                     <field name="type_transportation" />
@@ -51,7 +51,7 @@
                                     <field name="afrmm_value" />
                                     <field name="type_import" />
                                     <field name="thirdparty_cnpj" />
-                                    <field name="thirdparty_state_id"/>
+                                    <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                                     <field name="exporting_code"/>
                                 </group>
                                 <group string="Adições" colspan="4">
