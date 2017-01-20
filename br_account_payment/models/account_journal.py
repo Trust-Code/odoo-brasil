@@ -15,3 +15,18 @@ class AccountJournal(models.Model):
                                      related='bank_account_id.partner_id')
     bank_currency_id = fields.Many2one('res.currency', string="Bank Account",
                                        related='bank_account_id.currency_id')
+
+    def set_bank_account(self, acc_number, bank_id=None):
+        self.ensure_one()
+        vals = {
+            'acc_number': acc_number,
+            'acc_number_dig': self.acc_number_dig,
+            'bra_number': self.bank_agency_number,
+            'bra_number_dig': self.bank_agency_dig,
+            'bank_id': bank_id,
+            'company_id': self.company_id.id,
+            'currency_id': self.currency_id.id,
+            'partner_id': self.company_id.partner_id.id,
+        }
+        super(AccountJournal, self).set_bank_account(acc_number, bank_id)
+        self.bank_account_id.write(vals)
