@@ -12,4 +12,23 @@
         </field>
     </record>
 
+    <record id="view_br_account_payment_payment_form_inherit" model="ir.ui.view">
+        <field name="name">view.br.account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_type" position="replace"/>
+            <field name="partner_id" position="replace"/>
+
+            <xpath expr="//field[@name='payment_type']" position="after">
+                <field name="partner_type" widget="selection"
+                       string=""
+                       attrs="{'required': [('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="partner_id"
+                       attrs="{'required': [('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"
+                       context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound'}"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
