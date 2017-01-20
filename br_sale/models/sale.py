@@ -32,6 +32,9 @@ class SaleOrder(models.Model):
             res['account_id'] = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             res['journal_id'] = self.fiscal_position_id.journal_id.id
+        if self.fiscal_position_id.fiscal_observation_ids:
+            res['fiscal_observation_ids'] = [
+                (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
         return res
 
     total_bruto = fields.Float(

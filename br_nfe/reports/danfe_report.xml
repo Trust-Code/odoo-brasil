@@ -540,8 +540,8 @@
                 <div class="row">
                     <div class="borda-completa col-xs-7 line4">
                         <span class="small">Informações Complementares</span><br />
-                        <span class="small" t-field="o.informacoes_complementares"></span>
                         <span class="small" t-field="o.informacoes_legais"></span>
+                        <span class="small" t-field="o.informacoes_complementares"></span>
                     </div>
                     <div class="bt br bb col-xs-5 line4">
                         <span class="small">Reservado ao Fisco</span><br />
