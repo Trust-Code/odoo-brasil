@@ -75,7 +75,7 @@
                                 <field name="serie" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
                                 <field name="internal_number" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
                                 <field name="fiscal_document_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
-                                <field name="state_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                                <field name="state_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}" options="{'no_create': True, 'no_create_edit': True}" />
                                 <field name="date" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
                                 <field name="cpfcnpj_type" attrs="{'required': [('document_type', 'in', ('nfrural'))], 'invisible': [('document_type', '!=', 'nfrural')]}"/>
                                 <field name="cnpj_cpf" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
@@ -343,7 +343,7 @@
                                         <field name="name"/>
                                         <field name="date_registration"/>
                                         <field name="location"/>
-                                        <field name="state_id"/>
+                                        <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                                         <field name="date_release"/>
                                         <field name="type_transportation"/>
                                     </tree>
@@ -352,7 +352,7 @@
                                             <group>
                                                 <field name="name"/>
                                                 <field name="date_registration"/>
-                                                <field name="state_id"/>
+                                                <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                                                 <field name="location"/>
                                                 <field name="date_release"/>
                                                 <field name="type_transportation" />
@@ -361,7 +361,7 @@
                                                 <field name="afrmm_value" />
                                                 <field name="type_import" />
                                                 <field name="thirdparty_cnpj" />
-                                                <field name="thirdparty_state_id"/>
+                                                <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                                                 <field name="exporting_code"/>
                                             </group>
                                             <group string="Adições" colspan="4">
