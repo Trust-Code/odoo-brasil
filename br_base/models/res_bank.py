@@ -65,7 +65,7 @@ class ResPartnerBank(models.Model):
         self.ensure_one()
         if self.bank_id and self.bank_id.acc_number_format:
             acc_number_format = self.bank_id.acc_number_format\
-                                or '%(acc_number)s'
+                or '%(acc_number)s'
             args = {
                 'bra_number': self.bra_number or '',
                 'bra_number_dig': self.bra_number_dig or '',
