@@ -43,6 +43,10 @@ class AccountInvoice(models.Model):
             sequence = self.env['invoice.eletronic.inutilized'].search([
                 ('numeration_start', '<=', self.internal_number),
                 ('numeration_end', '>=', self.internal_number)], limit=1)
+            if not sequence:
+                sequence = self.env['invoice.eletronic'].search([
+                    ('numero', '=', self.internal_number)
+                ], order='numero desc', limit=1)
             if sequence:
                 self.internal_number = sequence.numeration_end + 1
         return True
