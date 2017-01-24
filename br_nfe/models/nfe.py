@@ -46,8 +46,8 @@ class NfeVolume(models.Model):
     especie = fields.Char(string=u"Espécie", size=60)
     marca = fields.Char(string="Marca", size=60)
     numeracao = fields.Char(string=u"Numeração", size=60)
-    peso_liquido = fields.Integer(string=u"Peso Líquido")
-    peso_bruto = fields.Integer(string="Peso Bruto")
+    peso_liquido = fields.Float(string=u"Peso Líquido")
+    peso_bruto = fields.Float(string="Peso Bruto")
 
 
 class NFeCobrancaDuplicata(models.Model):
