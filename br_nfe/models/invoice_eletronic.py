@@ -501,8 +501,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'CNPJ': re.sub(
-                    '[^0-9]', '', self.transportadora_id.cnpj_cpf or ''),
                 'xNome': self.transportadora_id.legal_name or
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
@@ -520,6 +518,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'RNTC': self.rntc or '',
             }
         }
+        cnpj_cpf = re.sub('[^0-9]', '', self.transportadora_id.cnpj_cpf or '')
+        if self.transportadora_id.is_company:
+            transp['transporta']['CNPJ'] = cnpj_cpf
+        else:
+            transp['transporta']['CPF'] = cnpj_cpf
+
         reboques = []
         for item in self.reboque_ids:
             reboques.append({
@@ -537,8 +541,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'esp': item.especie or '',
                 'marca': item.marca or '',
                 'nVol': item.numeracao or '',
-                'pesoL': item.peso_liquido or '',
-                'pesoB': item.peso_bruto or '',
+                'pesoL': "%.03f" % item.peso_liquido
+                if item.peso_liquido else '',
+                'pesoB': "%.03f" % item.peso_bruto if item.peso_bruto else '',
             })
         transp['vol'] = volumes
 
