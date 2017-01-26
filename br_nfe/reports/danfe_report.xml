@@ -386,7 +386,7 @@
                     </div>
                 </div>
 
-                <t t-if="o.finalidade_emissao == '1'">
+                <t t-if="o.modalidade_frete != '9'">
 
                     <div class="row line">
                         <div class="bl br bb col-xs-5 line">

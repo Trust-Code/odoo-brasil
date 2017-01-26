@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_inutilize_nfe">
+        <field name="name">wizard.inutilize.nfe.numeration.form</field>
+        <field name="model">wizard.inutilization.nfe.numeration</field>
+        <field name="arch" type="xml">
+            <form string="Inutilizar Numeração NFe">
+                <group name='container'>
+                    <group name='numeration'>
+                        <field name="numeration_start"/>
+                        <field name="numeration_end"/>
+                    </group>
+                    <group name='modelo-serie'>
+                        <field name="modelo" />
+                        <field name="serie" />
+                    </group>
+                </group>
+                <group name='justificativa'>
+                    <field name="justificativa" />
+                </group>
+                <footer>
+                    <button name="action_inutilize_nfe"
+                        string="Inutilizar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inutilize_nfe_wizard" model="ir.actions.act_window">
+        <field name="name">Inutilizar Numeração NFe</field>
+        <field name="res_model">wizard.inutilization.nfe.numeration</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_nfe_inutilization"
+        name="Inutilizar Numeração NFe"
+        parent="br_account.menu_br_account"
+        action="action_inutilize_nfe_wizard"
+        sequence="13" />
+
+</odoo>
