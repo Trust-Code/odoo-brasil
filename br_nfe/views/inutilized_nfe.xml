@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="invoice_eletronic_inutilized_tree">
+        <field name="name">invoice_eletronic.inutilized.tree</field>
+        <field name="model">invoice.eletronic.inutilized</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Séries Inutilizadas">
+                <field name="state" invisible="1" />
+                <field name="name" />
+                <field name="numeration_start" />
+                <field name="numeration_end" />
+                <field name="justificativa" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="invoice_eletronic_inutilized_form">
+        <field name="name">invoice_eletronic.inutilized.form</field>
+        <field name="model">invoice.eletronic.inutilized</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Séries Inutilizadas">
+                <header>
+                    <button name="action_send_inutilization" type="object" class="oe_highlight" icon="fa-paper-plane"
+                        string="Enviar" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done,error" />
+                </header>
+                <h1>
+                    <field name="name" class="oe_inline"/>
+                </h1>
+                <group>
+                    <group name="numeracao">
+                        <field name="numeration_start" />
+                        <field name="numeration_end" />
+                    </group>
+                    <group name="dados">
+                        <field name="modelo" />
+                        <field name="serie" />
+                    </group>
+                </group>
+                <group name="justificativa">
+                    <field name="justificativa" />
+                </group>
+                <group name="erro">
+                    <field name="erro"  attrs="{'invisible': [('state', '!=', 'error')]}"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_invoice_eletronic_inutilized">
+        <field name="name">Séries Inutilizadas</field>
+        <field name="res_model">invoice.eletronic.inutilized</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_invoice_eletronic_inutilized"
+        name="Séries Inutilizadas"
+        parent="br_account.menu_br_account"
+        action="action_invoice_eletronic_inutilized"
+        sequence="21" />
+
+</odoo>
