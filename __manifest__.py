@@ -10,6 +10,7 @@
     'license': 'AGPL-3',
     'author': 'Trustcode',
     'depends': [
+        'account',
         'payment',
         'website_sale',
         'br_base',
