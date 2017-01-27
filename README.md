@@ -27,6 +27,8 @@ This is a repository from Trustcode.
 
 [![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=10.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
 [![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=10.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=10.0)
+[![Code Climate](https://codeclimate.com/github/Trust-Code/odoo-brasil/badges/gpa.svg)](https://codeclimate.com/github/Trust-Code/odoo-brasil)
+[![Licence](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
 
 
 
@@ -91,7 +93,7 @@ Contributors
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-## Licence [![Licence](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
+## Licence 
 
 Este projeto é open source sob licença AGPL v3 http://www.gnu.org/licenses/agpl-3.0.html
 
