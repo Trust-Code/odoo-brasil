@@ -2,7 +2,11 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import re
+import requests
+
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from .account_journal import metodos
 
 
@@ -13,9 +17,31 @@ class InvoiceEletronic(models.Model):
     qrcode_url = fields.Char(string='QR-Code URL')
     metodo_pagamento = fields.Selection(metodos, string=u'Método de Pagamento')
 
+    def valida_cep(self, cep):
+        cep = re.sub(r"\D", "", cep)
+        if len(cep) != 8:
+            return False
+        url = "\
+http://cep.republicavirtual.com.br/web_cep.php?cep={}&formato=json"
+        cep_url = url.format(cep)
+        try:
+            cep_request = requests.get(cep_url)
+            cep_json = cep_request.json()
+            if cep_json.get('resultado_txt',
+                            False) == u'sucesso - cep completo':
+                return True
+            return False
+        except requests.exceptions.Timeout:
+            raise UserError(u"Desculpe, o serviço não está respondendo" +
+                            u", este CEP não será validado agora.")
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
+        if not self.valida_cep(self.company_id.zip):
+            errors.append('CEP da empresa inválido: %s' % self.company_id.zip)
+        if not self.valida_cep(self.partner_id.zip):
+            errors.append('CEP do parceiro inválido: %s' % self.partner_id.zip)
         if self.model != '65':
             return errors
         if not self.company_id.partner_id.inscr_est:
