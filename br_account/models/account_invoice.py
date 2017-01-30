@@ -116,6 +116,9 @@ class AccountInvoice(models.Model):
         'br_account.document.related', 'invoice_id',
         'Documento Fiscal Relacionado', readonly=True,
         states={'draft': [('readonly', False)]})
+    fiscal_observation_ids = fields.Many2many(
+        'br_account.fiscal.observation', string="Observações Fiscais",
+        readonly=True, states={'draft': [('readonly', False)]})
     fiscal_comment = fields.Text(
         u'Observação Fiscal', readonly=True,
         states={'draft': [('readonly', False)]})
@@ -205,6 +208,9 @@ class AccountInvoice(models.Model):
             self.account_id = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
+        if self.fiscal_position_id.fiscal_observation_ids:
+            self.fiscal_observation_ids |= \
+                self.fiscal_position_id.fiscal_observation_ids
 
     @api.model
     def invoice_line_move_line_get(self):

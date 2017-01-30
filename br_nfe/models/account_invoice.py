@@ -35,6 +35,21 @@ class AccountInvoice(models.Model):
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
 
+    @api.multi
+    def action_number(self):
+        super(AccountInvoice, self).action_number()
+        sequence = True
+        while sequence:
+            sequence = self.env['invoice.eletronic.inutilized'].search([
+                ('numeration_start', '<=', self.internal_number),
+                ('numeration_end', '>=', self.internal_number)], limit=1) or \
+                self.env['invoice.eletronic'].search([
+                    ('numero', '=', self.internal_number)
+                ], order='numero desc', limit=1)
+            if sequence:
+                self.internal_number += 1
+        return True
+
     def action_preview_danfe(self):
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])
