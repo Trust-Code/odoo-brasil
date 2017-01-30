@@ -13,6 +13,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 _logger = logging.getLogger(__name__)
 
 try:
+    from pytrustnfe.exceptions import NFeValidationException
     from pytrustnfe.nfe import autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
@@ -639,52 +640,59 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
         resposta_recibo = None
-        resposta = autorizar_nfe(certificado, **lote)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe
-        if retorno.cStat == 103:
-            obj = {
-                'estado': self.company_id.partner_id.state_id.ibge_code,
-                'ambiente': 1 if self.ambiente == 'producao' else 2,
-                'obj': {
+        try:
+            resposta = autorizar_nfe(certificado, validate=True, **lote)
+            retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.\
+                retEnviNFe
+            if retorno.cStat == 103:
+                obj = {
+                    'estado': self.company_id.partner_id.state_id.ibge_code,
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
-                    'numero_recibo': retorno.infRec.nRec
+                    'obj': {
+                        'ambiente': 1 if self.ambiente == 'producao' else 2,
+                        'numero_recibo': retorno.infRec.nRec
+                    }
                 }
-            }
-            self.recibo_nfe = obj['obj']['numero_recibo']
-            import time
-            while True:
-                time.sleep(2)
-                resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
-                if retorno.cStat != 105:
-                    break
+                self.recibo_nfe = obj['obj']['numero_recibo']
+                import time
+                while True:
+                    time.sleep(2)
+                    resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
+                    retorno = resposta_recibo['object'].Body.\
+                        nfeRetAutorizacaoLoteResult.retConsReciNFe
+                    if retorno.cStat != 105:
+                        break
 
-        if retorno.cStat != 104:
-            self.codigo_retorno = retorno.cStat
-            self.mensagem_retorno = retorno.xMotivo
-        else:
-            self.codigo_retorno = retorno.protNFe.infProt.cStat
-            self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
-            if self.codigo_retorno == '100':
-                self.write({
-                    'state': 'done', 'nfe_exception': False,
-                    'protocolo_nfe': retorno.protNFe.infProt.nProt,
-                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
-            # Duplicidade de NF-e significa que a nota já está emitida
-            # TODO Buscar o protocolo de autorização, por hora só finalizar
-            if self.codigo_retorno == '204':
-                self.write({'state': 'done', 'codigo_retorno': '100',
-                            'nfe_exception': False,
-                            'mensagem_retorno': 'Autorizado o uso da NF-e'})
-
+            if retorno.cStat != 104:
+                self.codigo_retorno = retorno.cStat
+                self.mensagem_retorno = retorno.xMotivo
+            else:
+                self.codigo_retorno = retorno.protNFe.infProt.cStat
+                self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
+                if self.codigo_retorno == '100':
+                    self.write({
+                        'state': 'done', 'nfe_exception': False,
+                        'protocolo_nfe': retorno.protNFe.infProt.nProt,
+                        'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
+                # Duplicidade de NF-e significa que a nota já está emitida
+                # TODO Buscar o protocolo de autorização, por hora só finalizar
+                if self.codigo_retorno == '204':
+                    self.write(
+                        {'state': 'done', 'codigo_retorno': '100',
+                         'nfe_exception': False,
+                         'mensagem_retorno': 'Autorizado o uso da NF-e'})
+        except NFeValidationException as e:
+            self.codigo_retorno = -1
+            self.mensagem_retorno = e.erros
+            resposta = {'sent_xml': e.sent_xml}
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
-        self._create_attachment('nfe-ret', self, resposta['received_xml'])
+        if 'received_xml' in resposta:
+            self._create_attachment('nfe-ret', self, resposta['received_xml'])
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
