@@ -427,10 +427,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
-            'IM': re.sub('[^0-9]', '', self.company_id.inscr_mun or ''),
-            'CNAE': re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         }
+        if self.company_id.cnae_main_id and self.company_id.inscr_mun:
+            emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun or '')
+            emit['CNAE'] = re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
