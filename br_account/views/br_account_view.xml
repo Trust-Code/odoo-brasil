@@ -252,6 +252,31 @@
         </field>
     </record>
 
+    <record id="br_account_fiscal_observation_form" model="ir.ui.view">
+        <field name="name">br_account.fiscal.observation.form</field>
+        <field name="model">br_account.fiscal.observation</field>
+        <field name="arch" type="xml">
+            <form string="Observações Fiscais">
+                <group>
+                    <field name="name" placeholder="Utilize ${invoice.origin} para campos dinâmicos" />
+                    <field name="document_id"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="br_account_fiscal_observation_tree" model="ir.ui.view">
+        <field name="name">br_account.fiscal.observation.tree</field>
+        <field name="model">br_account.fiscal.observation</field>
+        <field name="arch" type="xml">
+            <tree string="Observações Fiscais">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="document_id"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="br_account_cfop_action" model="ir.actions.act_window">
         <field name="name">CFOP</field>
         <field name="type">ir.actions.act_window</field>

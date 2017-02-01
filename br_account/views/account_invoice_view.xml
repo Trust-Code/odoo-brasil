@@ -84,6 +84,9 @@
                         </form>
                     </field>
                 </group>
+                <group string="Observações Fiscais">
+                    <field name="fiscal_observation_ids" nolabel="1"/>
+                </group>
                 <group string="Observações">
                     <field name="comment" nolabel="1"/>
                 </group>
@@ -151,6 +154,9 @@
                 </page>
             </xpath>
             <xpath expr="//notebook/page[last()]/group" position="after">
+                <group string="Observações Fiscais">
+                    <field name="fiscal_observation_ids" nolabel="1"/>
+                </group>
                 <group string="Observações">
                     <field name="comment" nolabel="1"/>
                 </group>
