@@ -47,6 +47,9 @@ class Cnab240(Cnab):
         elif bank == '341':
             from .bancos.itau import Itau240
             return Itau240
+        elif bank == '033':
+            from .bancos.santander import Santander240
+            return Santander240
         else:
             return Cnab240
 

@@ -7,7 +7,7 @@ from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
 
 selection = getBoletoSelection()
-IMPLEMENTADOS = (u'1', u'3', u'9', u'10')
+IMPLEMENTADOS = (u'1', u'3', u'7', u'9', u'10')
 
 
 class PaymentMode(models.Model):
@@ -82,6 +82,14 @@ class PaymentMode(models.Model):
                     'message': u'Este boleto não combina com a conta bancária!'
                 }
             self.boleto_carteira = u'9'
+
+        if self.boleto_type == u'7':
+            if self.bank_account_id.bank_id.bic != '033':
+                vals['warning'] = {
+                    'title': u'Ação Bloqueada!',
+                    'message': u'Este boleto não combina com a conta bancária!'
+                }
+            self.boleto_carteira = u'101'
 
         if self.boleto_type == u'9':
             if self.bank_account_id.bank_id.bic != '756':
