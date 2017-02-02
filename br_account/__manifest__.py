@@ -11,7 +11,8 @@
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': [
-        'Danimar Ribeiro <danimaribeiro@gmail.com>'
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br>',
     ],
     'depends': [
         'account', 'br_base',
@@ -20,6 +21,7 @@
         'views/account_fiscal_position_view.xml',
         'views/account_invoice_view.xml',
         'views/account.xml',
+        'views/account_view.xml',
         'views/br_account_view.xml',
         'views/product_view.xml',
         'views/res_company_view.xml',
