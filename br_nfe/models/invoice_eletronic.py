@@ -7,6 +7,7 @@ import base64
 import logging
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
@@ -17,9 +18,9 @@ try:
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe', exc_info=True)
+    _logger.info('Cannot import pytrustnfe', exc_info=True)
 
 STATE = {'edit': [('readonly', False)]}
 
@@ -154,6 +155,9 @@ class InvoiceEletronic(models.Model):
     protocolo_nfe = fields.Char(
         string="Protocolo", size=50, readonly=True, states=STATE,
         help=u"Protocolo de autorização da NFe")
+    nfe_processada = fields.Binary(string="Xml da NFe", readonly=True)
+    nfe_processada_name = fields.Char(
+        string="Xml da NFe", size=100, readonly=True)
 
     valor_icms_uf_remet = fields.Monetary(
         string="ICMS Remetente", readonly=True, states=STATE,
@@ -427,10 +431,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
-            'IM': re.sub('[^0-9]', '', self.company_id.inscr_mun or ''),
-            'CNAE': re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         }
+        if self.company_id.cnae_main_id and self.company_id.inscr_mun:
+            emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun or '')
+            emit['CNAE'] = re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -685,10 +690,42 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
+        recibo_xml = resposta['received_xml']
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
+            recibo_xml = resposta_recibo['received_xml']
+
+        if self.codigo_retorno == '100':
+            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+
+    @api.multi
+    def generate_nfe_proc(self):
+        if self.state == 'done':
+            recibo = self.env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', self.id),
+                ('datas_fname', 'like', 'rec-ret')])
+            if not recibo:
+                recibo = self.env['ir.attachment'].search([
+                    ('res_model', '=', 'invoice.eletronic'),
+                    ('res_id', '=', self.id),
+                    ('datas_fname', 'like', 'nfe-ret')])
+            nfe_envio = self.env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', self.id),
+                ('datas_fname', 'like', 'nfe-envio')])
+            nfe_proc = gerar_nfeproc(
+                base64.decodestring(nfe_envio.datas),
+                base64.decodestring(recibo.datas)
+            )
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+        else:
+            raise UserError('A NFe não está validada')
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
