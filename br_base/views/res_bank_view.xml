@@ -31,6 +31,11 @@
                <field name="city" position="replace">
                    <field name="city" invisible="1"/>
                </field>
+               <group position="after">
+                   <group string="Configuration">
+                       <field name="acc_number_format" placeholder="OFX Account Number Format"/>
+                   </group>
+               </group>
         </field>
     </record>
 
