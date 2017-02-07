@@ -89,7 +89,7 @@ class AccountInvoice(models.Model):
             if inv.company_id.tipo_ambiente == '2' else 'producao'
 
         # Indicador Consumidor Final
-        if inv.partner_id.is_company:
+        if inv.commercial_partner_id.is_company:
             res['ind_final'] = '0'
         else:
             res['ind_final'] = '1'
@@ -103,19 +103,20 @@ class AccountInvoice(models.Model):
 
         # Indicador IE Destinatário
         ind_ie_dest = False
-        if inv.partner_id.is_company:
-            if inv.partner_id.inscr_est:
+        if inv.commercial_partner_id.is_company:
+            if inv.commercial_partner_id.inscr_est:
                 ind_ie_dest = '1'
-            elif inv.partner_id.state_id.code in ('AM', 'BA', 'CE', 'GO',
-                                                  'MG', 'MS', 'MT', 'PE',
-                                                  'RN', 'SP'):
+            elif inv.commercial_partner_id.state_id.code in ('AM', 'BA', 'CE',
+                                                             'GO', 'MG', 'MS',
+                                                             'MT', 'PE', 'RN',
+                                                             'SP'):
                 ind_ie_dest = '9'
             else:
                 ind_ie_dest = '2'
         else:
             ind_ie_dest = '9'
-        if inv.partner_id.indicador_ie_dest:
-            ind_ie_dest = inv.partner_id.indicador_ie_dest
+        if inv.commercial_partner_id.indicador_ie_dest:
+            ind_ie_dest = inv.commercial_partner_id.indicador_ie_dest
         res['ind_ie_dest'] = ind_ie_dest
 
         # Duplicatas
