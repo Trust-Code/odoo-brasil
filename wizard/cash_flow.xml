@@ -8,7 +8,6 @@
             <field name="arch" type="xml">
                 <form string="Generate Cash Flow">
                     <group>
-                        <field name="start_date"/>
                         <field name="end_date"/>
                         <field name="start_amount"/>
                         <field name="print_report"/>
@@ -28,7 +27,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem id="menu_cash_flow_wizard" name="Cash Flow" parent="account.account_reports_business_intelligence_menu"
+        <menuitem id="menu_cash_flow_wizard" name="Cash Flow" parent="br_account_payment.menu_br_payments"
             action="action_account_cash_flow_wizard_form" sequence="20"/>
 
     </data>

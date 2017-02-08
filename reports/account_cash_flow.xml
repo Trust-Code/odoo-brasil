@@ -5,97 +5,61 @@
         <template id="account_cash_flow_template_html_report">
              <t t-call="report.html_container">
                 <t t-call="report.external_layout">
-                    <script type="text/javascript" src="/account_cash_flow/static/src/js/Chart.bundle.js" />
-                    <script type="text/javascript">
-                        window.onload = function() {
-                            var dados = JSON.parse('<t t-raw="docs[0].json_list()"></t>');
-                            var label = [];
-                            var saldos = [];
-                            var totais = []
-                            for (var k in dados) {
-                                label.push(dados[k].data);
-                                saldos.push(dados[k].amount);
-                                totais.push(dados[k].balance);
-                            }
-                            var ctx = document.getElementById("myChart");
-                            var myChart = new Chart(ctx, {
-                                type: 'bar',
-                                data: {
-                                    labels: label,
-                                    datasets: [
-                                        {
-                                            type: 'bar',
-                                            label: 'Saldo do dia',
-                                            yAxisID: 'y-axis-saldo',
-                                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                                            data: saldos,
-                                        },
-                                        {
-                                            type: 'line',
-                                            fill: false,
-                                            yAxisID: 'y-axis-total',
-                                            label: 'Total Acumulado',
-                                            borderColor: 'green',
-                                            pointBackgroundColor: 'red',
-                                            pointHoverRadius: 15,
-                                            pointRadius: 5,
-                                            data: totais,
-                                        }
-                                    ]
-                                },
-                                options: {
-                                    scales: {
-                                        xAxes: [{
-                                            type: 'time',
-                                            parser: 'YYYY-MM-DD',
-                                            barThickness: 8,
-                                        }],
-                                        yAxes: [{
-                                            id: 'y-axis-saldo'
-                                        },{
-                                            id: 'y-axis-total',
-                                            position: 'right',
-                                            gridLines: {
-                                                display: true,
-                                                color: 'rgba(254, 200, 150, 0.3)'
-                                            }
-                                        }],
-                                    }
-                                }
-                            });
-                        }
-                    </script>
+                    <script type="text/javascript" src="/dashboard/static/src/js/plotly-latest.min.js"></script>
                     <h2>Gráfico</h2>
                     <div class="row">
-                        <div class="col-xs-12" style="width:1300px;height:400px;">
-                            <canvas id="myChart" width="1300" height="400"></canvas>
-                        </div>
+                        <t t-raw="docs[0].draw_chart()" />
                     </div>
                     <div class="page">
                         <h2>Cash Flow Report</h2>
-                        <table class="table table-condensed table-bordered table-striped">
-                            <thead>
+                        <table class="table table-hover">
+                            <tbody>
                                 <tr>
-                                    <th>Description</th>
-                                    <th>Partner</th>
-                                    <th>Account</th>
-                                    <th>Journal</th>
-                                    <th class="text-right">Date</th>
-                                    <th class="text-right">Debit</th>
-                                    <th class="text-right">Credit</th>
-                                    <th class="text-right">Balance (C-D)</th>
-                                    <th class="text-right">Accumulated balance</th>
+                                    <td>Saldo de Caixa e Bancos</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].start_balance" /></td>
+                                </tr>
+                                <tr class="active" t-foreach="docs[0].line_ids.filtered(lambda x: x.liquidity)" t-as="o">
+                                    <td style="padding-left: 50px;"><span t-field="o.name" /></td>
+                                    <td style="text-align: right;"><span t-field="o.amount" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Total de Recebimentos no Período</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].total_receivables" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Total de Despesas no Período</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].total_payables" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Balanço no Período</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].period_balance" /></td>
+                                </tr>
+                                <tr class="info">
+                                    <td>Saldo Final</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].final_amount" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-condensed table-bordered table-striped">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th style="font-size:12px;">Description</th>
+                                    <th style="font-size:12px;">Partner</th>
+                                    <th style="font-size:12px;" class="text-right">Date</th>
+                                    <th style="font-size:12px;" class="text-right">A Receber</th>
+                                    <th style="font-size:12px;" class="text-right">A pagar</th>
+                                    <th style="font-size:12px;" class="text-right">Saldo da linha</th>
+                                    <th style="font-size:12px;" class="text-right">Accumulated balance</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="docs[0].line_ids" t-as="o">
+                                <tr t-foreach="docs[0].line_ids.filtered(lambda x: not x.liquidity)" t-as="o">
                                     <td><span t-field="o.name" /></td>
                                     <td><span t-field="o.partner_id" /></td>
-                                    <td><span t-field="o.account_id" /></td>
-                                    <td><span t-field="o.journal_id" /></td>
                                     <td><span t-field="o.date" /></td>
-                                    <td><span t-field="o.debit" /></td>
                                     <td><span t-field="o.credit" /></td>
+                                    <td><span t-field="o.debit" /></td>
                                     <td><span t-field="o.amount" /></td>
                                     <td><span t-field="o.balance" /></td>
                                 </tr>

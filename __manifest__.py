@@ -16,7 +16,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account',
+        'account', 'br_account_payment'
     ],
     'data': [
         'views/cash_flow_view.xml',
