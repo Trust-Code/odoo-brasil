@@ -181,7 +181,15 @@
                 <div class="col-xs-12">
                     <br />
                     <t t-foreach="doc.eletronic_item_ids" t-as="line">
-                        <p t-field="line.product_id.name"></p>
+                        <p>
+                            <span t-field="line.product_id.name"></span>
+                            <strong> : </strong>
+                            <span t-field="line.product_id.default_code"></span>
+                            <strong> (</strong>
+                            <span t-field="line.product_id.attribute_id.name"></span>
+                            <strong>)</strong>
+                            
+                        </p>
                     </t>
                     <span t-field="doc.informacoes_complementares"></span>
                 </div>
