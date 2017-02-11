@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, api
+from odoo import models
 
 
 class AccountInvoice(models.Model):
@@ -80,14 +80,18 @@ class AccountInvoice(models.Model):
         res['ipi_cst'] = line.ipi_cst
         res['ipi_aliquota'] = ipi.amount or 0.0
         res['ipi_reducao_bc'] = line.ipi_reducao_bc
+        res['ipi_tipo'] = 'percent'
 
         res['pis_cst'] = line.pis_cst
         res['pis_aliquota'] = pis.amount or 0.0
+        res['pis_tipo'] = 'percent'
 
         res['cofins_cst'] = line.cofins_cst
         res['cofins_aliquota'] = cofins.amount or 0.0
+        res['cofins_tipo'] = 'percent'
 
         res['issqn_aliquota'] = issqn.amount or 0.0
+        res['issqn_tipo'] = 'N'
 
         res['ii_aliquota'] = ii.amount or 0.0
         return res

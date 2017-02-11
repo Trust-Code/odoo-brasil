@@ -211,8 +211,29 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
         contador = 0
         for line in self.invoice_line_ids:
-            res[contador]['price'] = line.price_total + line.price_tax
+            res[contador]['price'] = line.price_total
+
+            price = line.price_unit * (1 - (
+                line.discount or 0.0) / 100.0)
+
+            ctx = line._prepare_tax_context()
+            tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
+
+            taxes_dict = tax_ids.compute_all(
+                price, self.currency_id, line.quantity,
+                product=line.product_id, partner=self.partner_id)
+
+            for tax in line.invoice_line_tax_ids:
+                tax_dict = next(
+                    x for x in taxes_dict['taxes'] if x['id'] == tax.id)
+                if not tax.price_include and tax.account_id:
+                    res[contador]['price'] += tax_dict['amount']
+                if tax.price_include and (not tax.account_id or
+                                          not tax.deduced_account_id):
+                    res[contador]['price'] -= tax_dict['amount']
+
             contador += 1
+
         return res
 
     @api.multi
@@ -232,6 +253,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def get_taxes_values(self):
+        tax_grouped = {}
         for line in self.invoice_line_ids:
             other_taxes = line.invoice_line_tax_ids.filtered(
                 lambda x: not x.domain)
@@ -240,7 +262,24 @@ class AccountInvoice(models.Model):
                 line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id | \
                 line.tax_simples_id
 
-        return super(AccountInvoice, self).get_taxes_values()
+            ctx = line._prepare_tax_context()
+            tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
+
+            price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            taxes = tax_ids.compute_all(
+                price_unit, self.currency_id, line.quantity,
+                line.product_id, self.partner_id)['taxes']
+            for tax in taxes:
+                val = self._prepare_tax_line_vals(line, tax)
+                key = self.env['account.tax'].browse(
+                    tax['id']).get_grouping_key(val)
+
+                if key not in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['base'] += val['base']
+        return tax_grouped
 
     @api.model
     def tax_line_move_line_get(self):

@@ -43,10 +43,10 @@
                 <attribute name="invisible">0</attribute>
             </xpath>
             <field name="amount_untaxed" position="attributes">
-                <attribute name="invisible">0</attribute>
+                <attribute name="invisible">1</attribute>
             </field>
             <field name="amount_tax" position="attributes">
-                <attribute name="invisible">0</attribute>
+                <attribute name="invisible">1</attribute>
             </field>
             <field name="amount_tax" position="before">
                 <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />

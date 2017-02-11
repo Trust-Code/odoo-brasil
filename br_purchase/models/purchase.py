@@ -16,6 +16,9 @@ class PurchaseOrder(models.Model):
             price_total = sum(l.price_total for l in order.order_line)
             price_subtotal = sum(l.price_subtotal for l in order.order_line)
             order.update({
+                'amount_untaxed': price_subtotal,
+                'amount_tax': price_total - price_subtotal,
+                'amount_total': price_total,
                 'total_tax': price_total - price_subtotal,
                 'total_bruto': sum(l.valor_bruto
                                    for l in order.order_line),
@@ -61,10 +64,10 @@ class PurchaseOrderLine(models.Model):
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
         }
 
-    @api.depends('taxes_id', 'price_unit', 'icms_st_aliquota_mva',
+    @api.depends('taxes_id', 'product_qty',  'price_unit',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao',
-                 'incluir_ipi_base')
+                 'incluir_ipi_base', 'icms_st_aliquota_mva')
     def _compute_amount(self):
         for line in self:
             price = line.price_unit
@@ -75,7 +78,6 @@ class PurchaseOrderLine(models.Model):
                 line.product_qty, product=line.product_id,
                 partner=line.order_id.partner_id)
 
-            print taxes
             valor_bruto = line.price_unit * line.product_qty
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
@@ -127,6 +129,11 @@ class PurchaseOrderLine(models.Model):
                 'ipi_reducao_bc': ncm.ipi_reducao_bc,
                 'taxes_id': [(6, None, [x.id for x in taxes if x])]
             })
+
+    def _onchange_quantity(self):
+        res = super(PurchaseOrderLine, self)._onchange_quantity()
+        self._compute_tax_id()
+        return res
 
     @api.multi
     def _compute_tax_id(self):
