@@ -645,7 +645,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         resposta_recibo = None
         resposta = autorizar_nfe(certificado, **lote)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe
+        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
