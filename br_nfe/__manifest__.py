@@ -25,6 +25,7 @@
         ],
     },
     'data': [
+        'data/send_nfe_mail.xml',
         'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',
         'views/invoice_eletronic.xml',

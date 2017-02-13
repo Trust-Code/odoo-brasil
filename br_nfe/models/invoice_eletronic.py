@@ -180,6 +180,8 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string="Cartas de Correção", readonly=True, states=STATE)
 
+    email_sent = fields.Boolean(string="Email enviado", default=False)
+
     def barcode_url(self):
         url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
@@ -792,3 +794,17 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
+
+    @api.multi
+    def send_email_nfe(self):
+        nfe_queue = self.env['invoice.eletronic'].search(
+            [('email_sent', '=', False)])
+        mail = self.env['mail.template'].search(
+            [('model_id.model', '=', 'account.invoice')])
+        template_txt = mail.body_html
+        model = 'account.invoice'
+        for nfe in nfe_queue:
+            res_id = self.invoice_id.id
+            email = mail.render_template(template_txt, model, res_id)
+            invoice = nfe.invoice_id
+            danfe = invoice.action_preview_danfe()
