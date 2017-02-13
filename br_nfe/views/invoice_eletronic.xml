@@ -6,6 +6,9 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
+            <field name="fiscal_position_id" position="after" >
+                <field name="email_sent" />
+            </field>
             <div name="alertas" position="before">
                 <field name="ambiente_nfe" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
