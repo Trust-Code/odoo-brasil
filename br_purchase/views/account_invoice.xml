@@ -31,10 +31,12 @@
                 <field name="incluir_ipi_base" invisible="1"/>
                 <field name="icms_aliquota" invisible="1"/>
 
+                <field name="icms_tipo_base" invisible="1"/>
                 <field name="icms_base_calculo" invisible="1"/>
                 <field name="icms_valor" invisible="1"/>
                 <field name="icms_valor_credito" invisible="1"/>
 
+                <field name="icms_st_tipo_base" invisible="1"/>
                 <field name="icms_st_base_calculo" invisible="1"/>
                 <field name="icms_st_aliquota_mva" invisible="1"/>
                 <field name="icms_st_aliquota" invisible="1"/>

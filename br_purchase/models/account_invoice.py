@@ -65,7 +65,9 @@ class AccountInvoice(models.Model):
         res['tributos_estimados'] = valor
 
         res['incluir_ipi_base'] = line.incluir_ipi_base
+        res['icms_tipo_base'] = '3'
         res['icms_aliquota'] = icms.amount or 0.0
+        res['icms_st_tipo_base'] = '4'
         res['icms_st_aliquota_mva'] = line.icms_st_aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0
         res['icms_aliquota_reducao_base'] = line.icms_aliquota_reducao_base
