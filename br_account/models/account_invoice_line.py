@@ -153,7 +153,16 @@ class AccountInvoiceLine(models.Model):
         string='Vlr. Bruto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
     tributos_estimados = fields.Float(
-        string='Total Est. Tributos', requeried=True, default=0.00,
+        string='Total Est. Tributos', default=0.00,
+        digits=dp.get_precision('Account'))
+    tributos_estimados_federais = fields.Float(
+        string='Tributos Federais', default=0.00,
+        digits=dp.get_precision('Account'))
+    tributos_estimados_estaduais = fields.Float(
+        string='Tributos Estaduais', default=0.00,
+        digits=dp.get_precision('Account'))
+    tributos_estimados_municipais = fields.Float(
+        string='Tributos Municipais', default=0.00,
         digits=dp.get_precision('Account'))
 
     rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
@@ -418,47 +427,45 @@ class AccountInvoiceLine(models.Model):
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
             self.tax_ii_id
 
-    @api.onchange('quantity')
-    def _br_account_onchange_quantity(self):
+    def _set_extimated_taxes(self, price):
         service = self.product_id.service_type_id
         ncm = self.product_id.fiscal_classification_id
 
-        valor = 0
         if self.product_type == 'service':
-            valor = self.price_subtotal * (
-                service.federal_nacional + service.estadual_imposto +
-                ncm.municipal_imposto) / 100
+            self.tributos_estimados_federais = \
+                price * (service.federal_nacional / 100)
+            self.tributos_estimados_estaduais = \
+                price * (service.estadual_imposto / 100)
+            self.tributos_estimados_municipais = \
+                price * (service.municipal_imposto / 100)
         else:
-            nacional = ncm.federal_nacional if self.icms_origem in \
+            federal = ncm.federal_nacional if self.icms_origem in \
                 ('1', '2', '3', '8') else ncm.federal_importado
-            valor = self.price_subtotal * (
-                nacional + ncm.estadual_imposto +
-                ncm.municipal_imposto) / 100
-        self.tributos_estimados = valor
+
+            self.tributos_estimados_federais = price * (federal / 100)
+            self.tributos_estimados_estaduais = \
+                price * (ncm.estadual_imposto / 100)
+            self.tributos_estimados_municipais = \
+                price * (ncm.municipal_imposto / 100)
+
+        self.tributos_estimados = self.tributos_estimados_federais + \
+            self.tributos_estimados_estaduais + \
+            self.tributos_estimados_municipais
+
+    @api.onchange('quantity')
+    def _br_account_onchange_quantity(self):
+        self._set_extimated_taxes(self.price_subtotal)
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
-        service = self.product_id.service_type_id
         self.product_type = self.product_id.fiscal_type
         self.icms_origem = self.product_id.origin
-
         ncm = self.product_id.fiscal_classification_id
+        service = self.product_id.service_type_id
         self.fiscal_classification_id = ncm.id
         self.service_type_id = service.id
 
-        valor = 0
-        if self.product_type == 'service':
-            valor = self.product_id.lst_price * (
-                service.federal_nacional + service.estadual_imposto +
-                ncm.municipal_imposto) / 100
-        else:
-            nacional = ncm.federal_nacional if self.icms_origem in \
-                ('1', '2', '3', '8') else ncm.federal_importado
-            valor = self.product_id.lst_price * (
-                nacional + ncm.estadual_imposto +
-                ncm.municipal_imposto) / 100
-
-        self.tributos_estimados = valor
+        self._set_extimated_taxes(self.product_id.lst_price)
 
     def _update_invoice_line_ids(self):
         other_taxes = self.invoice_line_tax_ids.filtered(
