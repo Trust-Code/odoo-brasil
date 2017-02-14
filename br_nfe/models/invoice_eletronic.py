@@ -800,10 +800,30 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             [('email_sent', '=', False)])
         mail = self.env['mail.template'].search(
             [('model_id.model', '=', 'account.invoice')])
+        attachments = self.env['ir.attachment']
         template_txt = mail.body_html
         model = 'account.invoice'
+        danfe_report = self.env['ir.actions.report.xml'].search(
+            [('name', '=', 'Impressão de Danfe')])
         for nfe in nfe_queue:
             res_id = self.invoice_id.id
-            email = mail.render_template(template_txt, model, res_id)
-            invoice = nfe.invoice_id
-            danfe = invoice.action_preview_danfe()
+            mail.render_template(template_txt, model, res_id)
+            nfe_xml = nfe.nfe_processada
+            danfe, ext = danfe_report.render_report(
+                [nfe.id], 'br_nfe.main_template_br_nfe_danfe', None)
+            danfe_id = attachments.create(dict(
+                name='Danfe.pdf',
+                datas_fname='Danfe.pdf',
+                datas=danfe,
+                res_model='mail.message',
+                res_id=mail.id,
+            ))
+            xml_id = attachments.create(dict(
+                name='NFe.xml',
+                datas_fname='NFe.xml',
+                datas=nfe_xml,
+                res_model='mail.message',
+                res_id=mail.id,
+            ))
+            mail.attachment_ids = [(6, 0, (danfe_id.id, xml_id.id))]
+            mail.send_mail(res_id)
