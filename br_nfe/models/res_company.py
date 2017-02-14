@@ -16,3 +16,6 @@ class ResCompany(models.Model):
                                         ('horizontal', 'Modelo Horizontal')],
                                        string=u"Cabeçalho Danfe",
                                        default='vertical')
+
+    nfe_email_template = fields.Many2one('mail.template',
+                                         string="Template de Email para NFe")

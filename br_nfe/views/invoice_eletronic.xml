@@ -6,6 +6,9 @@
         <field name="model">invoice.eletronic</field>
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
+            <button name="action_back_to_draft" position="after">
+              <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '=', 'done')]}"/>
+            </button>
             <field name="fiscal_position_id" position="after" >
                 <field name="email_sent" />
             </field>
