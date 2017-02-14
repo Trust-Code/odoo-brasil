@@ -795,36 +795,47 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
 
-    @api.multi
+    @api.one
     def send_email_nfe(self):
-        nfe_queue = self.env['invoice.eletronic'].search(
-            [('email_sent', '=', False)])
-        mail = self.env['mail.template'].search(
-            [('model_id.model', '=', 'account.invoice')])
+        mail = self.env.user.company_id.nfe_email_template
         attachments = self.env['ir.attachment']
         template_txt = mail.body_html
         model = 'account.invoice'
         danfe_report = self.env['ir.actions.report.xml'].search(
             [('name', '=', 'Impressão de Danfe')])
-        for nfe in nfe_queue:
-            res_id = self.invoice_id.id
-            mail.render_template(template_txt, model, res_id)
-            nfe_xml = nfe.nfe_processada
-            danfe, ext = danfe_report.render_report(
-                [nfe.id], 'br_nfe.main_template_br_nfe_danfe', None)
+        atts = []
+        res_id = self.invoice_id.id
+        mail.render_template(template_txt, model, res_id)
+        nfe_xml = self.nfe_processada
+        danfe, ext = danfe_report.render_report(
+            [self.id], 'br_nfe.main_template_br_nfe_danfe', None)
+        if danfe:
             danfe_id = attachments.create(dict(
                 name='Danfe.pdf',
                 datas_fname='Danfe.pdf',
-                datas=danfe,
+                datas=base64.b64encode(danfe),
+                mimetype='application/pdf',
                 res_model='mail.message',
                 res_id=mail.id,
             ))
+            atts.append(danfe_id.id)
+        if nfe_xml:
             xml_id = attachments.create(dict(
                 name='NFe.xml',
                 datas_fname='NFe.xml',
-                datas=nfe_xml,
+                datas=base64.b64encode(nfe_xml),
+                mimetype='application/xml',
                 res_model='mail.message',
                 res_id=mail.id,
             ))
-            mail.attachment_ids = [(6, 0, (danfe_id.id, xml_id.id))]
-            mail.send_mail(res_id)
+            atts.append(xml_id.id)
+        if len(atts):
+            mail.attachment_ids = [(6, 0, atts)]
+        mail.send_mail(res_id)
+
+    @api.multi
+    def send_email_nfe_queue(self):
+        nfe_queue = self.env['invoice.eletronic'].search(
+            [('email_sent', '=', False)])
+        for nfe in nfe_queue:
+            nfe.send_email_nfe()

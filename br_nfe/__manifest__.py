@@ -28,6 +28,7 @@
         #  'data/send_nfe_mail.xml',
         'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',
+        'views/account_config_settings.xml',
         'views/invoice_eletronic.xml',
         'views/account_invoice.xml',
         'views/res_company.xml',
