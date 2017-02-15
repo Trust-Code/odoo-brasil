@@ -225,7 +225,14 @@ class BoletoItau(Boleto):
 
 
 class BoletoSantander(Boleto):
-    pass
+    def __init__(self, move_line, nosso_numero):
+        self.boleto = Boleto.getBoletoClass(move_line)()
+        self.account_number = \
+            move_line.payment_mode_id.bank_account_id.acc_number[:7]
+        self.branch_number = \
+            move_line.payment_mode_id.bank_account_id.bra_number
+        Boleto.__init__(self, move_line, nosso_numero)
+        self.boleto.nosso_numero = self.nosso_numero
 
 
 class BoletoSicredi(Boleto):
