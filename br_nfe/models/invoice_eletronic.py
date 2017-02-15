@@ -180,8 +180,6 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string="Cartas de Correção", readonly=True, states=STATE)
 
-    email_sent = fields.Boolean(string="Email enviado", default=False)
-
     def barcode_url(self):
         url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
@@ -611,6 +609,40 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             }]
         }
 
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+
+        attachment_obj = self.env['ir.attachment']
+        danfe_report = self.env['ir.actions.report.xml'].search(
+            [('name', '=', 'Impressão de Danfe')])
+
+        nfe_xml = self.nfe_processada
+        report_service = danfe_report.report_name
+
+        danfe = self.env['report'].get_pdf([self.id], report_service)
+
+        if danfe:
+            danfe_id = attachment_obj.create(dict(
+                name='Danfe.pdf',
+                datas_fname='Danfe.pdf',
+                datas=base64.b64encode(danfe),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+        if nfe_xml:
+            xml_id = attachment_obj.create(dict(
+                name='NFe.xml',
+                datas_fname='NFe.xml',
+                datas=nfe_xml,
+                mimetype='application/xml',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(xml_id.id)
+        return atts
+
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
@@ -793,48 +825,3 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
-
-    @api.one
-    def send_email_nfe(self):
-        mail = self.env.user.company_id.nfe_email_template
-        attachments = self.env['ir.attachment']
-        template_txt = mail.body_html
-        model = 'account.invoice'
-        danfe_report = self.env['ir.actions.report.xml'].search(
-            [('name', '=', 'Impressão de Danfe')])
-        atts = []
-        res_id = self.invoice_id.id
-        mail.render_template(template_txt, model, res_id)
-        nfe_xml = self.nfe_processada
-        danfe, ext = danfe_report.render_report(
-            [self.id], 'br_nfe.main_template_br_nfe_danfe', None)
-        if danfe:
-            danfe_id = attachments.create(dict(
-                name='Danfe.pdf',
-                datas_fname='Danfe.pdf',
-                datas=base64.b64encode(danfe),
-                mimetype='application/pdf',
-                res_model='mail.message',
-                res_id=mail.id,
-            ))
-            atts.append(danfe_id.id)
-        if nfe_xml:
-            xml_id = attachments.create(dict(
-                name='NFe.xml',
-                datas_fname='NFe.xml',
-                datas=base64.b64encode(nfe_xml),
-                mimetype='application/xml',
-                res_model='mail.message',
-                res_id=mail.id,
-            ))
-            atts.append(xml_id.id)
-        if len(atts):
-            mail.attachment_ids = [(6, 0, atts)]
-        mail.send_mail(res_id)
-
-    @api.multi
-    def send_email_nfe_queue(self):
-        nfe_queue = self.env['invoice.eletronic'].search(
-            [('email_sent', '=', False)])
-        for nfe in nfe_queue:
-            nfe.send_email_nfe()

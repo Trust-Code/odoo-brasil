@@ -167,6 +167,9 @@ class InvoiceEletronic(models.Model):
     numero_nfe = fields.Char(
         string="Numero Formatado NFe", readonly=True, states=STATE)
 
+    email_sent = fields.Boolean(string="Email enviado", default=False,
+                                readonly=True, states=STATE)
+
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
             prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
@@ -403,6 +406,26 @@ class InvoiceEletronic(models.Model):
                 item.action_send_eletronic_invoice()
             except Exception as e:
                 item.log_exception(e)
+
+    def _find_attachment_ids_email(self):
+        return []
+
+    @api.multi
+    def send_email_nfe(self):
+        mail = self.env.user.company_id.nfe_email_template
+        atts = self._find_attachment_ids_email()
+
+        if len(atts):
+            mail.attachment_ids = [(6, 0, atts)]
+        mail.send_mail(self.invoice_id.id)
+
+    @api.multi
+    def send_email_nfe_queue(self):
+        nfe_queue = self.env['invoice.eletronic'].search(
+            [('email_sent', '=', False)], limit=5)
+        for nfe in nfe_queue:
+            nfe.send_email_nfe()
+            nfe.email_sent = True
 
 
 class InvoiceEletronicEvent(models.Model):

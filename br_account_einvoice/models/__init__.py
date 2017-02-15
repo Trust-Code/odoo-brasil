@@ -6,3 +6,4 @@
 from . import invoice_eletronic
 from . import res_company
 from . import account_invoice
+from . import account_config_settings

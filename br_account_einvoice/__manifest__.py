@@ -26,6 +26,7 @@
         'security/ir.model.access.csv',
         'views/invoice_eletronic.xml',
         'views/account_invoice.xml',
+        'views/account_config_settings.xml',
     ],
     'installable': True
 }

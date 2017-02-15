@@ -135,6 +135,7 @@
                         <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
+                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
@@ -157,6 +158,7 @@
                                 <field name="tipo_operacao" />
                                 <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
+                                <field name="email_sent" />
                             </group>
                         </group>
                         <notebook>
