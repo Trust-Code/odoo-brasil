@@ -76,17 +76,18 @@ class AccountBankStatementImport(models.TransientModel):
         transacoes = []
         total = 0.0
         index = 1  # Some banks don't use a unique transaction id, we make one
-        for transacao in ofx.account.statement.transactions:
-            transacoes.append({
-                'date': transacao.date,
-                'name': transacao.payee + (
-                    transacao.memo and ': ' + transacao.memo or ''),
-                'ref': transacao.id,
-                'amount': transacao.amount,
-                'unique_import_id': "%s-%s" % (transacao.id, index)
-            })
-            total += float(transacao.amount)
-            index += 1
+        for account in ofx.accounts:
+            for transacao in account.statement.transactions:
+                transacoes.append({
+                    'date': transacao.date,
+                    'name': transacao.payee + (
+                        transacao.memo and ': ' + transacao.memo or ''),
+                    'ref': transacao.id,
+                    'amount': transacao.amount,
+                    'unique_import_id': "%s-%s" % (transacao.id, index)
+                })
+                total += float(transacao.amount)
+                index += 1
         # Really? Still using Brazilian Cruzeiros :/
         if ofx.account.statement.currency.upper() == "BRC":
             ofx.account.statement.currency = "BRL"

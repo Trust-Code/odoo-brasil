@@ -6,9 +6,8 @@
         <field name="inherit_id" ref="base.module_form"/>
         <field name="arch" type="xml">
             <field name="summary" position="after">
-            	<field name="contributors" />
+                <field name="contributors" />
             </field>
         </field>
     </record>
-
 </odoo>
