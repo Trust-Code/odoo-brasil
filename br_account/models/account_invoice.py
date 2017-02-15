@@ -37,6 +37,12 @@ class AccountInvoice(models.Model):
         self.ii_value = sum(l.ii_valor for l in lines)
         self.total_bruto = sum(l.valor_bruto for l in lines)
         self.total_desconto = sum(l.valor_desconto for l in lines)
+        self.total_tributos_federais = sum(
+            l.tributos_estimados_federais for l in lines)
+        self.total_tributos_estaduais = sum(
+            l.tributos_estimados_estaduais for l in lines)
+        self.total_tributos_municipais = sum(
+            l.tributos_estimados_municipais for l in lines)
         self.total_tributos_estimados = sum(
             l.tributos_estimados for l in lines)
         # TOTAL
@@ -184,6 +190,21 @@ class AccountInvoice(models.Model):
         string='Valor II', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
+    total_tributos_federais = fields.Float(
+        string='Total de Tributos Federais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
+    total_tributos_estaduais = fields.Float(
+        string='Total de Tributos Estaduais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
+    total_tributos_municipais = fields.Float(
+        string='Total de Tributos Municipais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
     total_tributos_estimados = fields.Float(
         string='Total de Tributos',
         store=True,
