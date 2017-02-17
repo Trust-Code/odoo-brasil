@@ -84,7 +84,7 @@
                         </form>
                     </field>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Mensagens Documento Eletrônico">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>
                 <group string="Observações">
