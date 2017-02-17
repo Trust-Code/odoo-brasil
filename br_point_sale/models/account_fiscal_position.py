@@ -9,5 +9,5 @@ from odoo import fields, models
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
-    nfe_serie = fields.Many2one('br_account.document.serie',
-                                string=u'Série da Nota Fiscal')
+    nfe_serie = fields.Many2one(
+        'br_account.document.serie', string=u'Série da NFCe')
