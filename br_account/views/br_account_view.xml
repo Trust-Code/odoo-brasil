@@ -258,8 +258,12 @@
         <field name="arch" type="xml">
             <form string="Observações Fiscais">
                 <group>
-                    <field name="name" placeholder="Utilize ${invoice.origin} para campos dinâmicos" />
+                    <field name="name" />
                     <field name="document_id"/>
+                    <field name="tipo"/>
+                </group>
+                <group string="Mensagem a ser destacada no documento eletrônico">
+                    <field name="message" nolabel="1" placeholder="Utilize ${invoice.origin} para campos dinâmicos"/>
                 </group>
             </form>
         </field>
