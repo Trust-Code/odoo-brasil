@@ -38,6 +38,7 @@ class AccountInvoiceLine(models.Model):
             'pis_base_calculo': self.pis_base_calculo,
             'cofins_base_calculo': self.cofins_base_calculo,
             'ii_base_calculo': self.ii_base_calculo,
+            'pis_new_base_calculo': self.pis_new_base_calculo,
         }
 
     @api.one
@@ -50,7 +51,7 @@ class AccountInvoiceLine(models.Model):
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
-                 'icms_st_aliquota_deducao')
+                 'icms_st_aliquota_deducao', 'pis_new_base_calculo')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -339,6 +340,9 @@ class AccountInvoiceLine(models.Model):
     pis_tipo = fields.Selection([('percent', 'Percentual')],
                                 string='Tipo do PIS', required=True,
                                 default='percent')
+    pis_new_base_calculo = fields.Float(
+    'Base de Cálculo PIS/COFINS', required=True, #store=True, #compute='_compute_price',
+    digits=dp.get_precision('Account'), default=0.00)
     pis_base_calculo = fields.Float(
         'Base PIS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
@@ -509,6 +513,12 @@ class AccountInvoiceLine(models.Model):
         if self.tax_pis_id:
             self.pis_aliquota = self.tax_pis_id.amount
         self._update_invoice_line_ids()
+
+    @api.onchange('pis_new_base_calculo')
+    def _onchange_pis_new_base_calculo(self):
+        if self.pis_new_base_calculo:
+            self.pis_base_calculo = self.pis_new_base_calculo
+        self._compute_price()
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):

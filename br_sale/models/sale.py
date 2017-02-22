@@ -62,12 +62,13 @@ class SaleOrderLine(models.Model):
             self.icms_st_aliquota_reducao_base,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
+            'pis_new_base_calculo': self.pis_new_base_calculo,
         }
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
                  'icms_st_aliquota_mva', 'incluir_ipi_base',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
-                 'ipi_reducao_bc', 'icms_st_aliquota_deducao')
+                 'ipi_reducao_bc', 'icms_st_aliquota_deducao', 'pis_new_base_calculo')
     def _compute_amount(self):
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
@@ -92,7 +93,7 @@ class SaleOrderLine(models.Model):
     @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
                  'incluir_ipi_base', 'icms_aliquota_reducao_base', 'tem_difal',
                  'icms_st_aliquota_reducao_base', 'ipi_reducao_bc',
-                 'icms_st_aliquota_deducao')
+                 'icms_st_aliquota_deducao', 'pis_new_base_calculo')
     def _compute_detalhes(self):
         for line in self:
             msg = []
@@ -154,7 +155,9 @@ class SaleOrderLine(models.Model):
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
-
+    pis_new_base_calculo = fields.Float(
+        string=u'Base PIS New', digits=dp.get_precision('Account'))
+		
     valor_desconto = fields.Float(
         compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
@@ -287,6 +290,7 @@ class SaleOrderLine(models.Model):
         res['icms_aliquota'] = icms.amount or 0.0
         res['icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0
+        res['icms_tipo_base'] = self.product_id.icms_tipo_base
         res['icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
         res['icms_st_aliquota_reducao_base'] = \
             self.icms_st_aliquota_reducao_base
@@ -302,6 +306,7 @@ class SaleOrderLine(models.Model):
 
         res['pis_cst'] = self.pis_cst
         res['pis_aliquota'] = pis.amount or 0.0
+        res['pis_new_base_calculo'] = self.pis_new_base_calculo
 
         res['cofins_cst'] = self.cofins_cst
         res['cofins_aliquota'] = cofins.amount or 0.0

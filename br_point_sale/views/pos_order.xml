@@ -21,6 +21,7 @@
                     <field name="icms_aliquota_reducao_base" />
                     <field name="icms_st_aliquota_reducao_base" />
                     <field name="pis_cst" />
+					<field name="pis_new_base_calculo" />
                     <field name="cofins_cst" />
                     <field name="valor_desconto" />
                     <field name="valor_bruto" />
