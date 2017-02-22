@@ -167,6 +167,9 @@ class InvoiceEletronic(models.Model):
     numero_nfe = fields.Char(
         string="Numero Formatado NFe", readonly=True, states=STATE)
 
+    email_sent = fields.Boolean(string="Email enviado", default=False,
+                                readonly=True, states=STATE)
+
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
             prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
@@ -295,6 +298,27 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _compute_legal_information(self):
+        fiscal_ids = self.invoice_id.fiscal_observation_ids.filtered(
+            lambda x: x.tipo == 'fiscal')
+        obs_ids = self.invoice_id.fiscal_observation_ids.filtered(
+            lambda x: x.tipo == 'observacao')
+
+        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
+        for item in self.invoice_id.invoice_line_ids:
+            prod_obs_ids |= item.product_id.fiscal_observation_ids
+
+        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
+        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
+
+        fiscal = self._compute_msg(fiscal_ids) + (
+            self.invoice_id.fiscal_comment or '')
+        observacao = self._compute_msg(obs_ids) + (
+            self.invoice_id.comment or '')
+
+        self.informacoes_legais = fiscal
+        self.informacoes_complementares = observacao
+
+    def _compute_msg(self, observation_ids):
         from jinja2.sandbox import SandboxedEnvironment
         mako_template_env = SandboxedEnvironment(
             block_start_string="<%",
@@ -331,10 +355,10 @@ class InvoiceEletronic(models.Model):
         mako_safe_env.autoescape = False
 
         result = ''
-        for item in self.invoice_id.fiscal_observation_ids:
+        for item in observation_ids:
             if item.document_id and item.document_id.code != self.model:
                 continue
-            template = mako_safe_env.from_string(tools.ustr(item.name))
+            template = mako_safe_env.from_string(tools.ustr(item.message))
             variables = {
                 'user': self.env.user,
                 'ctx': self._context,
@@ -342,7 +366,7 @@ class InvoiceEletronic(models.Model):
             }
             render_result = template.render(variables)
             result += render_result + '\n'
-        self.informacoes_legais = result
+        return result
 
     @api.multi
     def validate_invoice(self):
@@ -403,6 +427,26 @@ class InvoiceEletronic(models.Model):
                 item.action_send_eletronic_invoice()
             except Exception as e:
                 item.log_exception(e)
+
+    def _find_attachment_ids_email(self):
+        return []
+
+    @api.multi
+    def send_email_nfe(self):
+        mail = self.env.user.company_id.nfe_email_template
+        atts = self._find_attachment_ids_email()
+
+        if len(atts):
+            mail.attachment_ids = [(6, 0, atts)]
+        mail.send_mail(self.invoice_id.id)
+
+    @api.multi
+    def send_email_nfe_queue(self):
+        nfe_queue = self.env['invoice.eletronic'].search(
+            [('email_sent', '=', False)], limit=5)
+        for nfe in nfe_queue:
+            nfe.send_email_nfe()
+            nfe.email_sent = True
 
 
 class InvoiceEletronicEvent(models.Model):

@@ -312,10 +312,13 @@ class AccountDocumentRelated(models.Model):
 
 class BrAccountFiscalObservation(models.Model):
     _name = 'br_account.fiscal.observation'
-    _description = u'Observação Fiscal'
+    _description = u'Mensagen Documento Eletrônico'
     _order = 'sequence'
 
     sequence = fields.Integer(u'Sequência', default=1, required=True)
-    name = fields.Text(u'Descrição', required=True)
+    name = fields.Char(u'Descrição', required=True, size=50)
+    message = fields.Text(u'Mensagem', required=True)
+    tipo = fields.Selection([('fiscal', 'Observação Fiscal'),
+                             ('observacao', 'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")

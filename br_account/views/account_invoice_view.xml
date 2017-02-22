@@ -84,7 +84,7 @@
                         </form>
                     </field>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Mensagens Documento Eletrônico">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>
                 <group string="Observações">
@@ -224,6 +224,9 @@
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1" />
                                     <field name="tax_simples_id" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="tributos_estimados_federais" />
+                                    <field name="tributos_estimados_estaduais" />
+                                    <field name="tributos_estimados_municipais" />
                                     <field name="tributos_estimados" />
                                     <field name="calculate_tax" invisible="1" />
                                 </group>
