@@ -24,7 +24,7 @@ class PaymentMode(models.Model):
     boleto_carteira = fields.Char('Carteira', size=3)
     boleto_modalidade = fields.Char('Modalidade', size=2)
     boleto_variacao = fields.Char(u'Variação', size=2)
-    boleto_cnab_code = fields.Char(u'Código Cnab', size=20)
+    boleto_cnab_code = fields.Char(u'Código Convênio', size=20)
     boleto_aceite = fields.Selection(
         [('S', 'Sim'), ('N', 'Não')], string='Aceite', default='N')
     boleto_type = fields.Selection(
