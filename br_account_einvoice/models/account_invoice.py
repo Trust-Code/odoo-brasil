@@ -202,6 +202,6 @@ class AccountInvoice(models.Model):
                 if edoc.state == 'done':
                     raise UserError(u'Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
-                if edoc.state != 'cancel':
+                if edoc.can_unlink():
                     edoc.unlink()
         return res

@@ -405,10 +405,15 @@ class InvoiceEletronic(models.Model):
     def action_edit_edoc(self):
         self.state = 'edit'
 
+    def can_unlink(self):
+        if self.state not in ('done', 'cancel'):
+            return True
+        return False
+
     @api.multi
     def unlink(self):
         for item in self:
-            if item.state in ('done', 'cancel'):
+            if not item.can_unlink():
                 raise UserError(
                     u'Documento Eletrônico enviado - Proibido excluir')
         super(InvoiceEletronic, self).unlink()
