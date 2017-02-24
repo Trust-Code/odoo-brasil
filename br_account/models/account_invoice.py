@@ -3,7 +3,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
 
 
@@ -232,6 +233,14 @@ class AccountInvoice(models.Model):
         if self.fiscal_position_id.fiscal_observation_ids:
             self.fiscal_observation_ids |= \
                 self.fiscal_position_id.fiscal_observation_ids
+
+    @api.multi
+    def action_invoice_cancel_paid(self):
+        if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft',
+                                                       'open', 'paid']):
+            raise UserError(_("Invoice must be in draft, Pro-forma or open \
+                              state in order to be cancelled."))
+        return self.action_cancel()
 
     @api.model
     def invoice_line_move_line_get(self):
