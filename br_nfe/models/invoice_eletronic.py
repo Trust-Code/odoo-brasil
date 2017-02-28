@@ -46,6 +46,7 @@ class InvoiceEletronic(models.Model):
             "context": {'default_eletronic_doc_id': self.id},
         }
 
+    state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente")
     ind_final = fields.Selection([
@@ -184,6 +185,20 @@ class InvoiceEletronic(models.Model):
         url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return url
+
+    def can_unlink(self):
+        res = super(InvoiceEletronic, self).can_unlink()
+        if self.state == 'denied':
+            return False
+        return res
+
+    @api.multi
+    def unlink(self):
+        for item in self:
+            if item.state in ('denied'):
+                raise UserError(
+                    u'Documento Eletrônico Denegado - Proibido excluir')
+        super(InvoiceEletronic, self).unlink()
 
     @api.multi
     def _hook_validation(self):
@@ -717,6 +732,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 self.write({'state': 'done', 'codigo_retorno': '100',
                             'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
+
+            # Denegada e nota já está denegada
+            if self.codigo_retorno in ('302', '205'):
+                self.write({'state': 'denied',
+                            'nfe_exception': True})
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
