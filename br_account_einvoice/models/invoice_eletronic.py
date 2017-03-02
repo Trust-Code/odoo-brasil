@@ -45,7 +45,10 @@ class InvoiceEletronic(models.Model):
     model = fields.Selection(
         [('55', '55 - NFe'),
          ('65', '65 - NFCe'),
-         ('001', 'NFS-e - Nota Fiscal Paulistana')],
+         ('001', 'NFS-e - Nota Fiscal Paulistana'),
+         ('002', 'NFS-e - Provedor GINFES'),
+         ('008', 'NFS-e - Provedor SIMPLISS'),
+         ('009', 'NFS-e - Provedor SUSESU')],
         string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
@@ -166,6 +169,10 @@ class InvoiceEletronic(models.Model):
         string=u'Mensagem Retorno', readonly=True, states=STATE)
     numero_nfe = fields.Char(
         string="Numero Formatado NFe", readonly=True, states=STATE)
+
+    xml_to_send = fields.Binary(string="Xml a Enviar", readonly=True)
+    xml_to_send_name = fields.Char(
+        string="Nome xml a ser enviado", size=100, readonly=True)
 
     email_sent = fields.Boolean(string="Email enviado", default=False,
                                 readonly=True, states=STATE)

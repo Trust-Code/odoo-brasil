@@ -11,3 +11,6 @@ class ResCompany(models.Model):
     tipo_ambiente_nfse = fields.Selection(
         [('1', u'Produção'), ('2', u'Homologação')],
         string="Ambiente NFSe", default='2')
+
+    senha_nfd_susesu = fields.Char(string=u'Senha NFD', size=30,
+                                   help=u'Senha Nota Fiscal Digital - Susesu')

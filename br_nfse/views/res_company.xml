@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <field name="nfe_a1_password" position="after" >
                 <field name="tipo_ambiente_nfse" />
+                <field name="senha_nfd_susesu" />
             </field>
         </field>
     </record>
