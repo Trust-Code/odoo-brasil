@@ -172,6 +172,8 @@
                                         <field name="serie"/>
                                         <field name="numero"/>
                                         <field name="numero_controle"/>
+                                        <field name="xml_to_send_name" invisible="1"/>
+                                        <field name="xml_to_send" filename="xml_to_send_name"/>
                                     </group>
                                     <group>
                                         <field name="data_emissao"/>
