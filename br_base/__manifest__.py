@@ -19,7 +19,7 @@
         ],
     },
     'data': [
-        'views/br_base.xml',
+        #'views/br_base.xml',
         'views/ir_module.xml',
         'views/br_base_view.xml',
         'views/res_country_view.xml',
