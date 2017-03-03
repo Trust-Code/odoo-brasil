@@ -15,16 +15,20 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br',
     ],
     'depends': [
         'br_account',
+        'account_accountant',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/account_invoice.xml',
         'views/br_account_payment.xml',
-        'views/payment_mode.xml'
+        'views/payment_mode.xml',
+        'views/account_payment.xml',
+        'views/account_journal.xml',
     ],
-    'instalable': True,
+    'installable': True,
     'application': True,
 }

@@ -11,6 +11,7 @@
                         <page string="Dados do produto">
                             <group>
                                 <group>
+                                    <field name="state" invisible="1" />
                                     <field name="product_id" />
                                     <field name="uom_id" />
                                     <field name="quantidade" />
@@ -131,8 +132,10 @@
                 <form string="Documento Eletrônico">
                     <header>
                         <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
-                        <button name="action_back_to_draft" states="error" string="Rascunho" type="object"/>
+                        <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
+                        <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
+                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
@@ -155,6 +158,7 @@
                                 <field name="tipo_operacao" />
                                 <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
+                                <field name="email_sent" />
                             </group>
                         </group>
                         <notebook>
@@ -182,6 +186,7 @@
                                 <group>
                                     <field name="eletronic_item_ids" nolabel="1">
                                         <tree name="eletronic_items">
+                                            <field name="state" invisible="1" />
                                             <field name="product_id" />
                                             <field name="uom_id" />
                                             <field name="cfop" />
@@ -243,6 +248,7 @@
                                 <group>
                                     <field name="eletronic_event_ids" nolabel="1">
                                         <tree name="Eventos">
+                                            <field name="state" invisible="1" />
                                             <field name="code" />
                                             <field name="name" />
                                             <field name="create_date" />

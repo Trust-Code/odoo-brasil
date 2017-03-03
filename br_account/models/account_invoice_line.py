@@ -31,6 +31,7 @@ class AccountInvoiceLine(models.Model):
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
             self.icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_base_calculo': self.icms_base_calculo,
             'ipi_base_calculo': self.ipi_base_calculo,
@@ -48,7 +49,8 @@ class AccountInvoiceLine(models.Model):
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
-                 'icms_st_aliquota_reducao_base')
+                 'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
+                 'icms_st_aliquota_deducao')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -151,7 +153,16 @@ class AccountInvoiceLine(models.Model):
         string='Vlr. Bruto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
     tributos_estimados = fields.Float(
-        string='Total Estimado de Tributos', requeried=True, default=0.00,
+        string='Total Est. Tributos', default=0.00,
+        digits=dp.get_precision('Account'))
+    tributos_estimados_federais = fields.Float(
+        string='Tributos Federais', default=0.00,
+        digits=dp.get_precision('Account'))
+    tributos_estimados_estaduais = fields.Float(
+        string='Tributos Estaduais', default=0.00,
+        digits=dp.get_precision('Account'))
+    tributos_estimados_municipais = fields.Float(
+        string='Tributos Municipais', default=0.00,
         digits=dp.get_precision('Account'))
 
     rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
@@ -265,6 +276,10 @@ class AccountInvoiceLine(models.Model):
     icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
     icms_valor_credito = fields.Float(
         u"Valor de Crédito", compute='_compute_price')
+    icms_st_aliquota_deducao = fields.Float(
+        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
+         do Simples Nacional")
 
     # =========================================================================
     # ISSQN
@@ -373,8 +388,13 @@ class AccountInvoiceLine(models.Model):
         'Valor IOF', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     ii_valor_despesas = fields.Float(
-        'Despesas Aduaneiras', required=True,
+        'Desp. Aduaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
+    import_declaration_ids = fields.One2many(
+        'br_account.import.declaration',
+        'invoice_line_id', u'Declaração de Importação')
+
+    informacao_adicional = fields.Text(string="Informações Adicionais")
 
     def _update_tax_from_ncm(self):
         if self.product_id:
@@ -407,47 +427,45 @@ class AccountInvoiceLine(models.Model):
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
             self.tax_ii_id
 
-    @api.onchange('quantity')
-    def _br_account_onchange_quantity(self):
+    def _set_extimated_taxes(self, price):
         service = self.product_id.service_type_id
         ncm = self.product_id.fiscal_classification_id
 
-        valor = 0
         if self.product_type == 'service':
-            valor = self.price_subtotal * (
-                service.federal_nacional + service.estadual_imposto +
-                ncm.municipal_imposto) / 100
+            self.tributos_estimados_federais = \
+                price * (service.federal_nacional / 100)
+            self.tributos_estimados_estaduais = \
+                price * (service.estadual_imposto / 100)
+            self.tributos_estimados_municipais = \
+                price * (service.municipal_imposto / 100)
         else:
-            nacional = ncm.federal_nacional if self.icms_origem in \
+            federal = ncm.federal_nacional if self.icms_origem in \
                 ('1', '2', '3', '8') else ncm.federal_importado
-            valor = self.price_subtotal * (
-                nacional + ncm.estadual_imposto +
-                ncm.municipal_imposto) / 100
-        self.tributos_estimados = valor
+
+            self.tributos_estimados_federais = price * (federal / 100)
+            self.tributos_estimados_estaduais = \
+                price * (ncm.estadual_imposto / 100)
+            self.tributos_estimados_municipais = \
+                price * (ncm.municipal_imposto / 100)
+
+        self.tributos_estimados = self.tributos_estimados_federais + \
+            self.tributos_estimados_estaduais + \
+            self.tributos_estimados_municipais
+
+    @api.onchange('quantity')
+    def _br_account_onchange_quantity(self):
+        self._set_extimated_taxes(self.price_subtotal)
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
-        service = self.product_id.service_type_id
         self.product_type = self.product_id.fiscal_type
         self.icms_origem = self.product_id.origin
-
         ncm = self.product_id.fiscal_classification_id
+        service = self.product_id.service_type_id
         self.fiscal_classification_id = ncm.id
         self.service_type_id = service.id
 
-        valor = 0
-        if self.product_type == 'service':
-            valor = self.product_id.lst_price * (
-                service.federal_nacional + service.estadual_imposto +
-                ncm.municipal_imposto) / 100
-        else:
-            nacional = ncm.federal_nacional if self.icms_origem in \
-                ('1', '2', '3', '8') else ncm.federal_importado
-            valor = self.product_id.lst_price * (
-                nacional + ncm.estadual_imposto +
-                ncm.municipal_imposto) / 100
-
-        self.tributos_estimados = valor
+        self._set_extimated_taxes(self.product_id.lst_price)
 
     def _update_invoice_line_ids(self):
         other_taxes = self.invoice_line_tax_ids.filtered(
@@ -462,60 +480,56 @@ class AccountInvoiceLine(models.Model):
     def _onchange_tax_icms_id(self):
         if self.tax_icms_id:
             self.icms_aliquota = self.tax_icms_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_st_id')
     def _onchange_tax_icms_st_id(self):
         if self.tax_icms_st_id:
             self.icms_st_aliquota = self.tax_icms_st_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_inter_id')
     def _onchange_tax_icms_inter_id(self):
-        if self.tax_icms_inter_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_intra_id')
     def _onchange_tax_icms_intra_id(self):
-        if self.tax_icms_intra_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_icms_fcp_id')
     def _onchange_tax_icms_fcp_id(self):
-        if self.tax_icms_fcp_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_simples_id')
     def _onchange_tax_simples_id(self):
-        if self.tax_simples_id:
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_pis_id')
     def _onchange_tax_pis_id(self):
         if self.tax_pis_id:
             self.pis_aliquota = self.tax_pis_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_cofins_id')
     def _onchange_tax_cofins_id(self):
         if self.tax_cofins_id:
             self.cofins_aliquota = self.tax_cofins_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_ipi_id')
     def _onchange_tax_ipi_id(self):
         if self.tax_ipi_id:
             self.ipi_aliquota = self.tax_ipi_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_ii_id')
     def _onchange_tax_ii_id(self):
         if self.tax_ii_id:
             self.ii_aliquota = self.tax_ii_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()
 
     @api.onchange('tax_issqn_id')
     def _onchange_tax_issqn_id(self):
         if self.tax_issqn_id:
             self.issqn_aliquota = self.tax_issqn_id.amount
-            self._update_invoice_line_ids()
+        self._update_invoice_line_ids()

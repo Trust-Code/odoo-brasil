@@ -22,14 +22,14 @@ except ImportError:
     _logger.debug('Cannot import pytrustnfe')
 
 
-FIELD_STATE = {'draft': [('readonly', False)]}
+STATE = {'edit': [('readonly', False)]}
 
 
 class InvoiceEletronicItem(models.Model):
     _inherit = 'invoice.eletronic.item'
 
     codigo_servico_paulistana = fields.Char(
-        string='Código NFSe Paulistana', size=5)
+        string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
 
 
 class InvoiceEletronic(models.Model):
@@ -48,10 +48,11 @@ class InvoiceEletronic(models.Model):
          ('V', u"Tributado Fora de São Paulo, porém Exigibilidade Suspensa"),
          ('P', u"Exportação de Serviços"),
          ('C', u"Cancelado")], u"Operação",
-        default='T', readonly=True)
-    verify_code = fields.Char(u'Código Autorização', size=20,
-                              readonly=True, states=FIELD_STATE)
-    numero_nfse = fields.Char(string=u"Número NFSe", size=50)
+        default='T', readonly=True, states=STATE)
+    verify_code = fields.Char(
+        string=u'Código Autorização', size=20, readonly=True, states=STATE)
+    numero_nfse = fields.Char(
+        string=u"Número NFSe", size=50, readonly=True, states=STATE)
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
@@ -227,7 +228,7 @@ class InvoiceEletronic(models.Model):
                 cert_pfx, self.company_id.nfe_a1_password)
 
             if self.ambiente == 'producao':
-                resposta = envio_lote_rps(certificado, **nfse_values)
+                resposta = envio_lote_rps(certificado, nfse=nfse_values)
             else:
                 resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
             retorno = resposta['object']
@@ -256,9 +257,9 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        super(InvoiceEletronic, self).action_cancel_document()
         if self.model not in ('001'):
-            return
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa)
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)

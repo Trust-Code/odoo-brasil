@@ -227,8 +227,8 @@ class TestTaxBrasil(TestBaseBr):
         self.assertEquals(res['total_excluded'], 100.0)
         self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 2)
-        self.assertEquals(res['taxes'][0]['amount'], 6.0)  # Remetente
-        self.assertEquals(res['taxes'][1]['amount'], 4.0)  # Destinatário
+        self.assertEquals(res['taxes'][0]['amount'], 4.0)  # Remetente
+        self.assertEquals(res['taxes'][1]['amount'], 6.0)  # Destinatário
 
     def test_difal_fcp(self):
         taxes = self.icms_difal_inter_700 | self.icms_difal_intra_1700 | \
@@ -237,8 +237,8 @@ class TestTaxBrasil(TestBaseBr):
         self.assertEquals(res['total_excluded'], 100.0)
         self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 3)
-        self.assertEquals(res['taxes'][0]['amount'], 6.0)  # Remetente
-        self.assertEquals(res['taxes'][1]['amount'], 4.0)  # Destinatário
+        self.assertEquals(res['taxes'][0]['amount'], 4.0)  # Remetente
+        self.assertEquals(res['taxes'][1]['amount'], 6.0)  # Destinatário
         self.assertEquals(res['taxes'][2]['amount'], 2.0)  # FCP
 
     def test_difal_fcp_reducao_frete_seguro_despesas(self):
@@ -251,6 +251,6 @@ class TestTaxBrasil(TestBaseBr):
         self.assertEquals(res['total_excluded'], 100.0)
         self.assertEquals(res['total_included'], 100.0)
         self.assertEquals(len(res['taxes']), 3)
-        self.assertEquals(res['taxes'][0]['amount'], 6.72)  # Remetente
-        self.assertEquals(res['taxes'][1]['amount'], 4.48)  # Destinatário
+        self.assertEquals(res['taxes'][0]['amount'], 4.48)  # Remetente
+        self.assertEquals(res['taxes'][1]['amount'], 6.72)  # Destinatário
         self.assertEquals(res['taxes'][2]['amount'], 2.24)  # FCP

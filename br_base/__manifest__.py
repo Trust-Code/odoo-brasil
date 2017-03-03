@@ -5,11 +5,15 @@
 {
     'name': 'Odoo Brasil - Módulo Base',
     'description': 'Brazilian Localization Base',
+    'version': '10.0.1.0.0',
     'category': 'Localisation',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://www.trustcode.com,br',
-    'version': '10.0.1.0.0',
+    'contributors': [
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br',
+    ],
     'depends': [
         'base', 'web',
     ],

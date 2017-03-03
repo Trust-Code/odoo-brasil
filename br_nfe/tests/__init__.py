@@ -4,3 +4,5 @@
 
 
 from . import test_nfe
+from . import test_carta_correcao
+from . import test_inutilizacao

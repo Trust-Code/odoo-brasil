@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_account_journal_form" model="ir.ui.view">
+        <field name="name">view.br_account_journal.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="bank_id" position="after">
+                <field name="acc_codigo_convenio" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_br_account_journal_config_form" model="ir.ui.view">
+        <field name="name">view.br_account_journal.config.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="outbound_payment_method_ids" position="after">
+                <field name="acc_codigo_convenio" />
+            </field>
+        </field>
+    </record>
+ 
+</odoo>

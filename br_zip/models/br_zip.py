@@ -109,7 +109,7 @@ class BrZip(models.Model):
                 zip_code + '/json/unicode/'
             obj_viacep = requests.get(url_viacep)
             res = obj_viacep.json()
-            if res:
+            if not res.get('erro', False):
                 city = self.env['res.state.city'].search(
                     [('ibge_code', '=', res['ibge'][2:]),
                      ('state_id.code', '=', res['uf'])])

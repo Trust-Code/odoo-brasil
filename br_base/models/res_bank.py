@@ -7,6 +7,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, fields, api
+from odoo.addons.base.res.res_bank import sanitize_account_number
 
 
 class ResBank(models.Model):
@@ -25,6 +26,18 @@ class ResBank(models.Model):
     state_id = fields.Many2one(comodel_name='res.country.state',
                                related='state',
                                string='Estado')
+
+    acc_number_format = fields.Text(help="""You can enter here the format as\
+    the bank accounts are referenced in ofx files for the import of bank\
+    statements.\nYou can use the python patern string with the entire bank \
+    account field.\nValid Fields:\n
+          %(bra_number): Bank Branch Number\n
+          %(bra_number_dig): Bank Branch Number's Digit\n
+          %(acc_number): Bank Account Number\n
+          %(acc_number_dig): Bank Account Number's Digit\n
+    For example, use '%(acc_number)s' to display the field 'Bank Account \
+    Number' plus '%(acc_number_dig)s' to display the field 'Bank Account \
+    Number s Digit'.""", default='%(acc_number)s')
 
     @api.onchange('city_id')
     def onchange_city_id(self):
@@ -46,3 +59,20 @@ class ResPartnerBank(models.Model):
     acc_number_dig = fields.Char(u'Digito Conta', size=8)
     bra_number = fields.Char(u'Agência', size=8)
     bra_number_dig = fields.Char(u'Dígito Agência', size=8)
+
+    @api.depends('acc_number')
+    def _compute_sanitized_acc_number(self):
+        self.ensure_one()
+        if self.bank_id and self.bank_id.acc_number_format:
+            acc_number_format = self.bank_id.acc_number_format\
+                or '%(acc_number)s'
+            args = {
+                'bra_number': self.bra_number or '',
+                'bra_number_dig': self.bra_number_dig or '',
+                'acc_number': self.acc_number or '',
+                'acc_number_dig': self.acc_number_dig or ''
+            }
+            self.sanitized_acc_number = sanitize_account_number(
+                acc_number_format % args)
+        else:
+            super(ResPartnerBank, self)._compute_sanitized_acc_number()

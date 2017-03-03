@@ -7,7 +7,9 @@ import base64
 import logging
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -16,9 +18,11 @@ try:
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+    _logger.info('Cannot import pytrustnfe', exc_info=True)
+
+STATE = {'edit': [('readonly', False)]}
 
 
 class InvoiceEletronic(models.Model):
@@ -31,13 +35,24 @@ class InvoiceEletronic(models.Model):
             item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
                                           item.chave_nfe, 10, re.DOTALL)
 
+    @api.multi
+    def generate_correction_letter(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "wizard.carta.correcao.eletronica",
+            "views": [[False, "form"]],
+            "name": "Carta de Correção",
+            "target": "new",
+            "context": {'default_eletronic_doc_id': self.id},
+        }
+
+    state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente")
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Sim')
-    ], u'Consumidor Final', readonly=True,
-        states={'draft': [('readonly', False)]}, required=False,
+    ], u'Consumidor Final', readonly=True, states=STATE, required=False,
         help=u'Indica operação com Consumidor final.', default='0')
     ind_pres = fields.Selection([
         ('0', u'Não se aplica'),
@@ -46,8 +61,7 @@ class InvoiceEletronic(models.Model):
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
         ('9', u'Operação não presencial, outros'),
-    ], u'Tipo de operação', readonly=True,
-        states={'draft': [('readonly', False)]}, required=False,
+    ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
@@ -55,75 +69,136 @@ class InvoiceEletronic(models.Model):
         ('1', u'1 - Operação Interna'),
         ('2', u'2 - Operação Interestadual'),
         ('3', u'3 - Operação com exterior')],
-        string=u"Indicador Destinatário", readonly=True,
-        states={'draft': [('readonly', False)]})
+        string=u"Indicador Destinatário", readonly=True, states=STATE)
     ind_ie_dest = fields.Selection([
         ('1', u'1 - Contribuinte ICMS'),
         ('2', u'2 - Contribuinte Isento de Cadastro'),
         ('9', u'9 - Não Contribuinte')],
-        string="Indicador IE Dest.", help="Indicador da IE do desinatário")
+        string="Indicador IE Dest.", help="Indicador da IE do desinatário",
+        readonly=True, states=STATE)
+    tipo_emissao = fields.Selection([
+        ('1', u'1 - Emissão normal'),
+        ('2', u'2 - Contingência FS-IA, com impressão do DANFE em formulário \
+         de segurança'),
+        ('3', u'3 - Contingência SCAN'),
+        ('4', u'4 - Contingência DPEC'),
+        ('5', u'5 - Contingência FS-DA, com impressão do DANFE em \
+         formulário de segurança'),
+        ('6', u'6 - Contingência SVC-AN'),
+        ('7', u'7 - Contingência SVC-RS'),
+        ('9', u'9 - Contingência off-line da NFC-e')],
+        string="Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
-    modalidade_frete = fields.Selection([('0', u'0 - Emitente'),
-                                         ('1', u'1 - Destinatário'),
-                                         ('2', u'2 - Terceiros'),
-                                         ('9', u'9 - Sem Frete')],
-                                        u'Modalidade do frete', default="9")
-    transportadora_id = fields.Many2one('res.partner', string="Transportadora")
-    placa_veiculo = fields.Char(u'Placa do Veículo', size=7)
-    uf_veiculo = fields.Char(string='UF da Placa', size=2)
-    rntc = fields.Char(string="RNTC", size=20,
-                       help="Registro Nacional de Transportador de Carga")
+    modalidade_frete = fields.Selection(
+        [('0', u'0 - Emitente'),
+         ('1', u'1 - Destinatário'),
+         ('2', u'2 - Terceiros'),
+         ('9', u'9 - Sem Frete')],
+        string=u'Modalidade do frete', default="9",
+        readonly=True, states=STATE)
+    transportadora_id = fields.Many2one(
+        'res.partner', string="Transportadora", readonly=True, states=STATE)
+    placa_veiculo = fields.Char(
+        string=u'Placa do Veículo', size=7, readonly=True, states=STATE)
+    uf_veiculo = fields.Char(
+        string='UF da Placa', size=2, readonly=True, states=STATE)
+    rntc = fields.Char(
+        string="RNTC", size=20, readonly=True, states=STATE,
+        help="Registro Nacional de Transportador de Carga")
 
-    reboque_ids = fields.One2many('nfe.reboque', 'invoice_eletronic_id',
-                                  string="Reboques")
-    volume_ids = fields.One2many('nfe.volume', 'invoice_eletronic_id',
-                                 string="Volumes")
+    reboque_ids = fields.One2many(
+        'nfe.reboque', 'invoice_eletronic_id',
+        string="Reboques", readonly=True, states=STATE)
+    volume_ids = fields.One2many(
+        'nfe.volume', 'invoice_eletronic_id',
+        string="Volumes", readonly=True, states=STATE)
 
     # Exportação
     uf_saida_pais_id = fields.Many2one(
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
-        string="UF Saída do País")
-    local_embarque = fields.Char('Local de Embarque', size=60)
-    local_despacho = fields.Char('Local de Despacho', size=60)
+        string="UF Saída do País", readonly=True, states=STATE)
+    local_embarque = fields.Char(
+        string='Local de Embarque', size=60, readonly=True, states=STATE)
+    local_despacho = fields.Char(
+        string='Local de Despacho', size=60, readonly=True, states=STATE)
 
     # Cobrança
-    numero_fatura = fields.Char(string="Fatura")
-    fatura_bruto = fields.Monetary(string="Valor Original")
-    fatura_desconto = fields.Monetary(string="Desconto")
-    fatura_liquido = fields.Monetary(string=u"Valor Líquido")
+    numero_fatura = fields.Char(
+        string="Fatura", readonly=True, states=STATE)
+    fatura_bruto = fields.Monetary(
+        string="Valor Original", readonly=True, states=STATE)
+    fatura_desconto = fields.Monetary(
+        string="Desconto", readonly=True, states=STATE)
+    fatura_liquido = fields.Monetary(
+        string=u"Valor Líquido", readonly=True, states=STATE)
 
-    duplicata_ids = fields.One2many('nfe.duplicata', 'invoice_eletronic_id',
-                                    string="Duplicatas")
+    duplicata_ids = fields.One2many(
+        'nfe.duplicata', 'invoice_eletronic_id',
+        string="Duplicatas", readonly=True, states=STATE)
 
     # Compras
-    nota_empenho = fields.Char(string="Nota de Empenho", size=22)
-    pedido_compra = fields.Char(string="Pedido Compra", size=60)
-    contrato_compra = fields.Char(string="Contrato Compra", size=60)
+    nota_empenho = fields.Char(
+        string="Nota de Empenho", size=22, readonly=True, states=STATE)
+    pedido_compra = fields.Char(
+        string="Pedido Compra", size=60, readonly=True, states=STATE)
+    contrato_compra = fields.Char(
+        string="Contrato Compra", size=60, readonly=True, states=STATE)
 
-    sequencial_evento = fields.Integer(string=u"Sequêncial Evento", default=1)
-    recibo_nfe = fields.Char(string="Recibo NFe", size=50)
-    chave_nfe = fields.Char(string="Chave NFe", size=50)
-    chave_nfe_danfe = fields.Char(string="Chave Formatado",
-                                  compute="_format_danfe_key")
-    protocolo_nfe = fields.Char(string="Protocolo", size=50,
-                                help=u"Protocolo de autorização da NFe")
+    sequencial_evento = fields.Integer(
+        string=u"Sequêncial Evento", default=1, readonly=True, states=STATE)
+    recibo_nfe = fields.Char(
+        string="Recibo NFe", size=50, readonly=True, states=STATE)
+    chave_nfe = fields.Char(
+        string="Chave NFe", size=50, readonly=True, states=STATE)
+    chave_nfe_danfe = fields.Char(
+        string="Chave Formatado", compute="_format_danfe_key")
+    protocolo_nfe = fields.Char(
+        string="Protocolo", size=50, readonly=True, states=STATE,
+        help=u"Protocolo de autorização da NFe")
+    nfe_processada = fields.Binary(string="Xml da NFe", readonly=True)
+    nfe_processada_name = fields.Char(
+        string="Xml da NFe", size=100, readonly=True)
 
     valor_icms_uf_remet = fields.Monetary(
-        string="ICMS Remetente",
+        string="ICMS Remetente", readonly=True, states=STATE,
         help='Valor total do ICMS Interestadual para a UF do Remetente')
     valor_icms_uf_dest = fields.Monetary(
-        string="ICMS Destino",
+        string="ICMS Destino", readonly=True, states=STATE,
         help='Valor total do ICMS Interestadual para a UF de destino')
     valor_icms_fcp_uf_dest = fields.Monetary(
-        string="Total ICMS FCP",
+        string="Total ICMS FCP", readonly=True, states=STATE,
         help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
 
+    # Documentos Relacionados
+    fiscal_document_related_ids = fields.One2many(
+        'br_account.document.related', 'invoice_eletronic_id',
+        'Documentos Fiscais Relacionados', readonly=True, states=STATE)
+
+    # CARTA DE CORRECAO
+    cartas_correcao_ids = fields.One2many(
+        'carta.correcao.eletronica.evento', 'eletronic_doc_id',
+        string="Cartas de Correção", readonly=True, states=STATE)
+
     def barcode_url(self):
-        url = '<img style="width:470px;height:50px;margin-top:5px;"\
+        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return url
+
+    def can_unlink(self):
+        res = super(InvoiceEletronic, self).can_unlink()
+        if self.state == 'denied':
+            return False
+        return res
+
+    @api.multi
+    def unlink(self):
+        for item in self:
+            if item.state in ('denied'):
+                raise UserError(
+                    u'Documento Eletrônico Denegado - Proibido excluir')
+        super(InvoiceEletronic, self).unlink()
 
     @api.multi
     def _hook_validation(self):
@@ -161,14 +236,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if self.model not in ('55', '65'):
             return res
 
-        xprod = item.product_id.name if self.company_id.\
-            tipo_ambiente != '2' else\
-            'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR \
-FISCAL'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': xprod,
+            'xProd': item.product_id.name,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
@@ -189,6 +260,39 @@ FISCAL'
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
         }
+        di_vals = []
+        for di in item.import_declaration_ids:
+            adicoes = []
+            for adi in di.line_ids:
+                adicoes.append({
+                    'nAdicao': adi.name,
+                    'nSeqAdic': adi.sequence,
+                    'cFabricante': adi.manufacturer_code,
+                    'vDescDI': "%.02f" % adi.amount_discount
+                    if adi.amount_discount else '',
+                    'nDraw': adi.drawback_number or '',
+                })
+
+            dt_registration = datetime.strptime(
+                di.date_registration, DATE_FORMAT)
+            dt_release = datetime.strptime(di.date_release, DATE_FORMAT)
+            di_vals.append({
+                'nDI': di.name,
+                'dDI': dt_registration.strftime('%Y-%m-%d'),
+                'xLocDesemb': di.location,
+                'UFDesemb': di.state_id.code,
+                'dDesemb': dt_release.strftime('%Y-%m-%d'),
+                'tpViaTransp': di.type_transportation,
+                'vAFRMM': "%.02f" % di.afrmm_value if di.afrmm_value else '',
+                'tpIntermedio': di.type_import,
+                'CNPJ': di.thirdparty_cnpj or '',
+                'UFTerceiro': di.thirdparty_state_id.code or '',
+                'cExportador': di.exporting_code,
+                'adi': adicoes,
+            })
+
+        prod["DI"] = di_vals
+
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
@@ -239,7 +343,8 @@ FISCAL'
                 'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
                 'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
-        return {'prod': prod, 'imposto': imposto}
+        return {'prod': prod, 'imposto': imposto,
+                'infAdProd': item.informacao_adicional}
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
@@ -265,13 +370,61 @@ FISCAL'
                                 self.company_id.city_id.ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
             'tpImp': '1' if self.model == '55' else '4',
-            'tpEmis': 1,  # Tipo de Emissão da NF-e - 1 - Emissão Normal
+            'tpEmis': int(self.tipo_emissao),
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
+        # Documentos Relacionados
+        documentos = []
+        for doc in self.fiscal_document_related_ids:
+            data = fields.Datetime.from_string(doc.date)
+            if doc.document_type == 'nfe':
+                documentos.append({
+                    'refNFe': doc.access_key
+                })
+            elif doc.document_type == 'nf':
+                documentos.append({
+                    'refNF': {
+                        'cUF': doc.state_id.ibge_code,
+                        'AAMM': data.strftime("%y%m"),
+                        'CNPJ': re.sub('[^0-9]', '', doc.cnpj_cpf),
+                        'mod': doc.fiscal_document_id.code,
+                        'serie': doc.serie,
+                        'nNF': doc.internal_number,
+                    }
+                })
+
+            elif doc.document_type == 'cte':
+                documentos.append({
+                    'refCTe': doc.access_key
+                })
+            elif doc.document_type == 'nfrural':
+                cnpj_cpf = re.sub('[^0-9]', '', doc.cnpj_cpf)
+                documentos.append({
+                    'refNFP': {
+                        'cUF': doc.state_id.ibge_code,
+                        'AAMM': data.strftime("%y%m"),
+                        'CNPJ': cnpj_cpf if len(cnpj_cpf) == 14 else '',
+                        'CPF': cnpj_cpf if len(cnpj_cpf) == 11 else '',
+                        'IE': doc.inscr_est,
+                        'mod': doc.fiscal_document_id.code,
+                        'serie': doc.serie,
+                        'nNF': doc.internal_number,
+                    }
+                })
+            elif doc.document_type == 'cf':
+                documentos.append({
+                    'refECF': {
+                        'mod': doc.fiscal_document_id.code,
+                        'nECF': doc.serie,
+                        'nCOO': doc.internal_number,
+                    }
+                })
+
+        ide['NFref'] = documentos
         emit = {
             'tipo': self.company_id.partner_id.company_type,
             'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
@@ -294,6 +447,10 @@ FISCAL'
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
+        if self.company_id.cnae_main_id and self.company_id.inscr_mun:
+            emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun or '')
+            emit['CNAE'] = re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -320,7 +477,7 @@ FISCAL'
             }
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
-                    'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
+                    u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
             if partner.country_id.id != self.company_id.country_id.id:
                 dest['idEstrangeiro'] = re.sub(
@@ -364,8 +521,6 @@ FISCAL'
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'CNPJ': re.sub(
-                    '[^0-9]', '', self.transportadora_id.cnpj_cpf or ''),
                 'xNome': self.transportadora_id.legal_name or
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
@@ -383,6 +538,12 @@ FISCAL'
                 'RNTC': self.rntc or '',
             }
         }
+        cnpj_cpf = re.sub('[^0-9]', '', self.transportadora_id.cnpj_cpf or '')
+        if self.transportadora_id.is_company:
+            transp['transporta']['CNPJ'] = cnpj_cpf
+        else:
+            transp['transporta']['CPF'] = cnpj_cpf
+
         reboques = []
         for item in self.reboque_ids:
             reboques.append({
@@ -400,8 +561,9 @@ FISCAL'
                 'esp': item.especie or '',
                 'marca': item.marca or '',
                 'nVol': item.numeracao or '',
-                'pesoL': item.peso_liquido or '',
-                'pesoB': item.peso_bruto or '',
+                'pesoL': "%.03f" % item.peso_liquido
+                if item.peso_liquido else '',
+                'pesoB': "%.03f" % item.peso_bruto if item.peso_bruto else '',
             })
         transp['vol'] = volumes
 
@@ -442,11 +604,12 @@ FISCAL'
             'detalhes': eletronic_items,
             'total': total,
             'transp': transp,
-            'cobr': cobr,
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
         }
+        if len(duplicatas) > 0:
+            vals['cobr'] = cobr
         return vals
 
     @api.multi
@@ -461,9 +624,45 @@ FISCAL'
             }]
         }
 
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+
+        attachment_obj = self.env['ir.attachment']
+        danfe_report = self.env['ir.actions.report.xml'].search(
+            [('name', '=', 'Impressão de Danfe')])
+
+        nfe_xml = self.nfe_processada
+        report_service = danfe_report.report_name
+
+        danfe = self.env['report'].get_pdf([self.id], report_service)
+
+        if danfe:
+            danfe_id = attachment_obj.create(dict(
+                name='Danfe.pdf',
+                datas_fname='Danfe.pdf',
+                datas=base64.b64encode(danfe),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+        if nfe_xml:
+            xml_id = attachment_obj.create(dict(
+                name='NFe.xml',
+                datas_fname='NFe.xml',
+                datas=nfe_xml,
+                mimetype='application/xml',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(xml_id.id)
+        return atts
+
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
+        if self.model not in ('55', '65'):
+            return
         for item in self:
             chave_dict = {
                 'cnpj': re.sub('[^0-9]', '', item.company_id.cnpj_cpf),
@@ -472,8 +671,8 @@ FISCAL'
                 'modelo': item.model,
                 'numero': item.numero,
                 'serie': item.serie.code.zfill(3),
-                'tipo': 0 if item.tipo_operacao == 'entrada' else 1,
-                'codigo': item.numero_controle
+                'tipo': int(item.tipo_emissao),
+                'codigo': "%08d" % item.numero_controle
             }
             item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
 
@@ -495,7 +694,8 @@ FISCAL'
 
         resposta_recibo = None
         resposta = autorizar_nfe(certificado, **lote)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe
+        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
@@ -533,6 +733,11 @@ FISCAL'
                             'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
+            # Denegada e nota já está denegada
+            if self.codigo_retorno in ('302', '205'):
+                self.write({'state': 'denied',
+                            'nfe_exception': True})
+
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
@@ -540,16 +745,48 @@ FISCAL'
         })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
+        recibo_xml = resposta['received_xml']
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
+            recibo_xml = resposta_recibo['received_xml']
+
+        if self.codigo_retorno == '100':
+            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+
+    @api.multi
+    def generate_nfe_proc(self):
+        if self.state == 'done':
+            recibo = self.env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', self.id),
+                ('datas_fname', 'like', 'rec-ret')])
+            if not recibo:
+                recibo = self.env['ir.attachment'].search([
+                    ('res_model', '=', 'invoice.eletronic'),
+                    ('res_id', '=', self.id),
+                    ('datas_fname', 'like', 'nfe-ret')])
+            nfe_envio = self.env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', self.id),
+                ('datas_fname', 'like', 'nfe-envio')])
+            nfe_proc = gerar_nfeproc(
+                base64.decodestring(nfe_envio.datas),
+                base64.decodestring(recibo.datas)
+            )
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+        else:
+            raise UserError('A NFe não está validada')
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        super(InvoiceEletronic, self).action_cancel_document()
         if self.model not in ('55', '65'):
-            return
+            return super(InvoiceEletronic, self).action_cancel_document(
+                justificativa=justificativa)
 
         if not justificativa:
             return {

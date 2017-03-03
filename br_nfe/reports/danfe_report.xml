@@ -29,6 +29,16 @@
                   <div  style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Sem Valor Fiscal</div>
                 </div>
             </t>
+            <t t-if="o.state in ('cancel')">
+                <div style="width:100%;position:fixed;top:500px;">
+                  <div  style="width:64%; margin: 0 auto; font-size:60px; color:red; ">Nota Cancelada</div>
+                </div>
+            </t>
+            <t t-if="o.state not in ('done', 'cancel')">
+                <div style="width:100%;position:fixed;top:650px;">
+                  <div  style="width:84%; margin: 0 auto; font-size:48px; color:red;">Impresso para simples conferência</div>
+                </div>
+            </t>
 
             <div class="oe_structure container">
                 <div class="row">
@@ -55,8 +65,8 @@
                 </div>
                 <hr style="border-top:1px dashed black; margin:5px;" />
 
-                <div class="row line">
-                    <div class="bl bt br col-xs-5 line3 center" style="line-height:14px;">
+                <div class="row">
+                    <div class="bl bt br col-xs-5 center" style="line-height:14px;">
 
                         <t t-if="o.company_id.cabecalho_danfe == 'horizontal'">
                             <div class="row">
@@ -97,7 +107,7 @@
                         </t>
 
                     </div>
-                    <div class="bt br col-xs-2 line3" style="line-height:16px;">
+                    <div class="bt br col-xs-2" style="line-height:16px;">
                         <div class="row center">
                             <span class="enfase">DANFE</span><br />
                             <span style="font-size:10px;text-transform:uppercase;">Documento Auxiliar da Nota Fiscal Eletrônica</span>
@@ -117,14 +127,14 @@
                             <span>FOLHA 01/01</span>
                         </div>
                     </div>
-                    <div class="br bt col-xs-5 line3">
-                        <div class="row bb line60">
+                    <div class="br bt col-xs-5">
+                        <div class="row bb">
                             <t t-raw="o.barcode_url()" />
                         </div>
                         <div class="row bb">
                             <div class="col-xs-12">
                                 <span class="small">Chave de Acesso</span><br />
-                                <span t-field="o.chave_nfe_danfe" style="font-size:12px;"></span><br />
+                                <span t-field="o.chave_nfe_danfe" style="font-size:11px;"></span><br />
                             </div>
                         </div>
                         <div class="row">
@@ -144,8 +154,13 @@
                     </div>
                     <div class="bt br bb col-xs-5 line">
                         <span class="small">Protocolo de autorização de uso</span><br />
-                        <span t-field="o.protocolo_nfe"></span> |
-                        <span t-field="o.data_autorizacao"></span><br />
+                        <t t-if="o.state in ('done', 'cancel')">
+                            <span t-field="o.protocolo_nfe"></span> |
+                            <span t-field="o.data_autorizacao"></span><br />
+                        </t>
+                        <t t-if="o.state not in ('done', 'cancel')">
+                            <span>Informações ainda não transmitidas a nenhuma SEFAZ</span>
+                        </t>
                     </div>
                 </div>
                 <div class="row line">
@@ -187,11 +202,12 @@
                 <div class="row line">
                     <div class="bt bl br col-xs-6 line">
                         <span class="small">Endereço</span><br />
-                        <span t-field="o.commercial_partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.street"></span>,
+                        <span t-field="o.commercial_partner_id.number"></span>
                     </div>
                     <div class="bt br col-xs-3 line">
                         <span class="small">Bairro/Distrito</span><br />
-                        <span t-field="o.commercial_partner_id.street"></span>
+                        <span t-field="o.commercial_partner_id.district"></span>
                     </div>
                     <div class="bt br col-xs-1 line">
                         <span class="small">CEP</span><br />
@@ -227,53 +243,55 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-12">
-                        <span class="enfase">Faturas</span>
-                    </div>
-                </div>
-
-                <div class="row line">
-                    <div class="borda-completa col-xs-6 line">
-                        <span class="small">Número da Fatura</span><br />
-                        <span t-field="o.numero_fatura"></span>
-                    </div>
-                    <div class="bt br bb col-xs-2 line">
-                        <span class="small">Valor Original</span><br />
-                        <span t-field="o.fatura_bruto"></span>
-                    </div>
-                    <div class="bt br bb col-xs-2 line">
-                        <span class="small">Desconto</span><br />
-                        <span t-field="o.fatura_desconto"></span>
-                    </div>
-                    <div class="bt br bb col-xs-2 line">
-                        <span class="small">Valor Líquido</span><br />
-                        <span t-field="o.fatura_liquido"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <span class="enfase">Duplicatas</span>
-                    </div>
-                </div>
-
-                <div class="row line">
-                    <t t-foreach="o.duplicata_ids" t-as="dupl">
-                        <div class="borda-completa col-xs-1 line">
-                            <span class="small">Número</span><br />
-                            <span style="font-size:11px;" t-field="dupl.numero_duplicata"></span>
+                <t t-if="len(o.duplicata_ids) > 0">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="enfase">Faturas</span>
                         </div>
-                        <div class="bt br bb col-xs-1 line">
-                            <span class="small">Vencimento</span><br />
-                            <span style="font-size:11px;" t-field="dupl.data_vencimento"></span>
+                    </div>
+
+                    <div class="row line">
+                        <div class="borda-completa col-xs-6 line">
+                            <span class="small">Número da Fatura</span><br />
+                            <span t-field="o.numero_fatura"></span>
                         </div>
-                        <div class="bt br bb col-xs-1 line">
-                            <span class="small">Valor</span><br />
-                            <span style="font-size:11px;" t-field="dupl.valor"></span>
+                        <div class="bt br bb col-xs-2 line">
+                            <span class="small">Valor Original</span><br />
+                            <span t-field="o.fatura_bruto"></span>
                         </div>
-                    </t>
-                </div>
+                        <div class="bt br bb col-xs-2 line">
+                            <span class="small">Desconto</span><br />
+                            <span t-field="o.fatura_desconto"></span>
+                        </div>
+                        <div class="bt br bb col-xs-2 line">
+                            <span class="small">Valor Líquido</span><br />
+                            <span t-field="o.fatura_liquido"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="enfase">Duplicatas</span>
+                        </div>
+                    </div>
+
+                    <div class="row line">
+                        <t t-foreach="o.duplicata_ids" t-as="dupl">
+                            <div class="borda-completa col-xs-1 line">
+                                <span class="small">Número</span><br />
+                                <span style="font-size:11px;" t-field="dupl.numero_duplicata"></span>
+                            </div>
+                            <div class="bt br bb col-xs-1 line">
+                                <span class="small">Vencimento</span><br />
+                                <span style="font-size:11px;" t-field="dupl.data_vencimento"></span>
+                            </div>
+                            <div class="bt br bb col-xs-1 line">
+                                <span class="small">Valor</span><br />
+                                <span style="font-size:11px;" t-field="dupl.valor"></span>
+                            </div>
+                        </t>
+                    </div>
+                </t>
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -368,7 +386,7 @@
                     </div>
                 </div>
 
-                <t t-if="o.finalidade_emissao == '1'">
+                <t t-if="o.modalidade_frete != '9'">
 
                     <div class="row line">
                         <div class="bl br bb col-xs-5 line">
@@ -458,22 +476,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="o.eletronic_item_ids" t-as="e">
-                                <td><span t-esc="e.product_id.default_code.replace('.', '')"></span></td>
-                                <td><span t-field="e.product_id.name"></span></td>
-                                <td><span t-field="e.product_id.fiscal_classification_id.code"></span></td>
-                                <td><span t-field="e.cst_danfe"></span></td>
-                                <td><span t-field="e.cfop"></span></td>
-                                <td><span t-field="e.uom_id"></span></td>
-                                <td><span t-field="e.quantidade"></span></td>
-                                <td><span t-field="e.preco_unitario"></span></td>
-                                <td><span t-field="e.valor_liquido"></span></td>
-                                <td><span t-field="e.icms_base_calculo"></span></td>
-                                <td><span t-field="e.icms_valor"></span></td>
-                                <td><span t-field="e.ipi_valor"></span></td>
-                                <td><span t-field="e.icms_aliquota_reducao_base"></span></td>
-                                <td><span t-field="e.ipi_reducao_bc"></span></td>
-                            </tr>
+                            <t t-foreach="o.eletronic_item_ids" t-as="e">
+                                <tr>
+                                    <td><span t-esc="e.product_id.default_code.replace('.', '')"></span></td>
+                                    <td>
+                                        <span t-field="e.product_id.name"></span>
+                                        <t t-if="e.informacao_adicional">
+                                            <br />
+                                            <span t-field="e.informacao_adicional"></span>
+                                        </t>
+                                    </td>
+                                    <td><span t-field="e.product_id.fiscal_classification_id.code"></span></td>
+                                    <td><span t-field="e.cst_danfe"></span></td>
+                                    <td><span t-field="e.cfop"></span></td>
+                                    <td><span t-field="e.uom_id"></span></td>
+                                    <td><span t-field="e.quantidade"></span></td>
+                                    <td><span t-field="e.preco_unitario" t-options='{"widget": "monetary", "display_currency": o.currency_id}'></span></td>
+                                    <td><span t-field="e.valor_liquido" t-options='{"widget": "monetary", "display_currency": o.currency_id}'></span></td>
+                                    <td><span t-field="e.icms_base_calculo" t-options='{"widget": "monetary", "display_currency": o.currency_id}'></span></td>
+                                    <td><span t-field="e.icms_valor" t-options='{"widget": "monetary", "display_currency": o.currency_id}'></span></td>
+                                    <td><span t-field="e.ipi_valor" t-options='{"widget": "monetary", "display_currency": o.currency_id}'></span></td>
+                                    <td><span t-field="e.icms_aliquota"></span></td>
+                                    <td><span t-field="e.ipi_aliquota"></span></td>
+                                </tr>
+                            </t>
                         </tbody>
                     </table>
                 </div>
@@ -511,16 +537,92 @@
                     </div>
                 </div>
 
-                <div class="row line">
+                <div class="row">
                     <div class="borda-completa col-xs-7 line4">
                         <span class="small">Informações Complementares</span><br />
-                        <span class="small" t-field="o.informacoes_complementares"></span>
-                        <span class="small" t-field="o.informacoes_legais"></span>
+                        <span class="small" t-field="o.informacoes_legais" style="text-transform: none;"></span><br />
+                        <span class="small" t-field="o.informacoes_complementares" style="text-transform: none;"></span>
                     </div>
                     <div class="bt br bb col-xs-5 line4">
                         <span class="small">Reservado ao Fisco</span><br />
                     </div>
                 </div>
+
+                <t t-if="len(o.cartas_correcao_ids) > 0">
+                    <p style="page-break-after:always;"></p>
+                    <t t-foreach="o.cartas_correcao_ids" t-as="c">
+                        <div class="row" style="clear:both; margin-top:20px;">
+                            <div class="col-xs-12 text-center">
+                                <span class="enfase">Cartas de Correção</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="borda-completa col-xs-4">
+                                <span style="font-size:10px;">RAZÃO SOCIAL DO EMITENTE</span>
+                            </div>
+                            <div class="br bb bt col-xs-8">
+                                <span style="font-size:10px;" t-field="o.company_id.legal_name"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">CNPJ DO EMITENTE</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="o.company_id.cnpj_cpf"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">CHAVE DE ACESSO DA NF-E</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="o.chave_nfe"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">DATA DA CORREÇÃO</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="c.datahora_evento"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-4">
+                                <span style="font-size:10px;">ID</span>
+                            </div>
+                            <div class="br bb col-xs-8">
+                                <span style="font-size:10px;" t-field="c.id_cce"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-12 text-center">
+                                <span style="font-size:10px;">CORREÇÃO</span>
+                            </div>
+                            <div class="bl bb br col-xs-12">
+                                <p t-field="c.correcao"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="bl bb br col-xs-12 text-center">
+                                <span style="font-size:10px;">CONDIÇÃO DE USO</span>
+                            </div>
+                            <div class="bl bb br col-xs-12">
+                                <span>
+                                    A Carta de Correcao é disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de
+                                    dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de
+                                    documento fiscal, desde que o erro nao esteja relacionado com: <br />
+                                    I   - as variaveis que determinam o valor do imposto tais com: base de calculo, aliquota,
+                                    diferenca de preco, quantidade, valor da operacao ou prestacao; <br />
+                                    II  - a correcao de dados cadastrais que implica mudanca do remetente ou do destinatario; <br />
+                                    III - a data de emissao ou de saida.
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
             </div>
         </div>
         <div class="footer">

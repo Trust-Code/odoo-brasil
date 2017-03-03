@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <!-- Parceiro -->
-    <record id="view_br_base_partner_tree" model="ir.ui.view">
+    <record id="view_br_base_partner_filter" model="ir.ui.view">
         <field name="name">br_base.partner.filter</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_res_partner_filter" />
         <field name="arch" type="xml">
             <field name="name" position="after">
+                <field name="legal_name"/>
                 <field name="cnpj_cpf" />
             </field>
         </field>
@@ -54,16 +56,19 @@
             </field>
             <field name="state_id" position="attributes">
                 <attribute name="domain">[('country_id','=',country_id)]</attribute>
+                <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
             </field>
             <field name="state_id" position="after">
-                <field name="city_id" class="o_address_city" placeholder="Cidade" />
+                <field name="city_id" class="o_address_city" placeholder="Cidade"
+                    options="{'no_create': True, 'no_create_edit': True}" />
             </field>
             <field name="city" position="replace">
                 <field name="city" invisible="1" />
             </field>
             <field name="country_id" position="replace" />
             <field name="state_id" position="before">
-                <field name="country_id" placeholder="País" class="o_address_country" />
+                <field name="country_id" placeholder="País" class="o_address_country"
+                    options="{'no_create': True, 'no_create_edit': True}" />
             </field>
             <notebook position="inside">
                 <page string="Dados Fiscais">

@@ -1,4 +1,5 @@
-ofxparse==0.14
+pillow==3.4.2
+ofxparse==0.16
 suds_requests
 pytrustnfe
 unidecode

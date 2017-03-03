@@ -13,7 +13,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '10.0.1.0.0',
     'depends': [
-        'sale_stock', 'br_sale'
+        'sale_stock', 'br_sale', 'br_stock_account'
     ],
     'data': [
         'views/sale_stock_view.xml',

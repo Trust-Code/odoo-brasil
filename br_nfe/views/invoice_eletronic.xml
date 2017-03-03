@@ -13,6 +13,11 @@
                     A NFe está em ambiente de homologação
                 </div>
             </div>
+            <button name="action_cancel_document" position="after">
+                <button name="generate_correction_letter" type="object" class="oe_highlight" icon="fa-envelope"
+                    string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('55', '65'))]}">
+                </button>
+            </button>
             <page name="totais" position="after">
                 <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>
@@ -47,7 +52,7 @@
                 <page name="exportacao" string="Exportação/Compras" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>
                         <group string="Exportação">
-                            <field name="uf_saida_pais_id" />
+                            <field name="uf_saida_pais_id" options="{'no_create': True, 'no_create_edit': True}" />
                             <field name="local_embarque" />
                             <field name="local_despacho" />
                         </group>
@@ -58,6 +63,27 @@
                         </group>
                     </group>
                 </page>
+                <page name="documentos_relacionados" string="Doc. Relacionados" >
+                    <field name="fiscal_document_related_ids" >
+                        <tree>
+                            <field name="invoice_related_id" />
+                            <field name="document_type" />
+                            <field name="access_key" />
+                            <field name="serie" />
+                            <field name="internal_number" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="carta_correcao" string="Cartas de Correção" >
+                    <field name="cartas_correcao_ids" >
+                        <tree>
+                            <field name="sequencial_evento" />
+                            <field name="message" />
+                            <field name="protocolo" />
+                            <field name="datahora_evento" />
+                        </tree>
+                    </field>
+                </page>
             </page>
             <field name="mensagem_retorno" position="after">
                 <span attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
@@ -67,8 +93,12 @@
             </field>
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="nfe_processada_name" invisible="1"/>
+                <field name="nfe_processada" filename="nfe_processada_name"/>
+                <button name="generate_nfe_proc" type="object" string="Gerar NFe Processada" />
             </field>
             <field name="finalidade_emissao" position="after">
+                <field name="tipo_emissao" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_final" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />

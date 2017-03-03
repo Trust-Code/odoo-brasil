@@ -40,18 +40,53 @@
             </xpath>
             <page name="other_info" position="before">
                 <page name="vencimentos" string="Vencimentos">
-                    <field nolabel="1" name="receivable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos">
+                    <field nolabel="1" name="receivable_move_line_ids" >
+                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
+                            <field name="reconciled" string="Pago" />
                         </tree>
                     </field>
                 </page>
             </page>
             <field name="tax_line_ids" position="after">
+                <group name="documentos_relacionados" string="Documentos Relacionados">
+                    <field colspan="4" nolabel="1" name="fiscal_document_related_ids">
+                        <tree>
+                            <field name="document_type"/>
+                            <field name="access_key"/>
+                            <field name="serie"/>
+                            <field name="internal_number"/>
+                        </tree>
+                        <form string="Documentos Fiscais">
+                            <group>
+                                <field name="invoice_related_id" />
+                            </group>
+                            <group>
+                                <field name="document_type"/>
+                            </group>
+                            <group string="NF-e/CT-e" attrs="{'invisible': [('document_type','in', ('nf', 'nfrural', 'cf', False))]}">
+                                <field name="access_key"/>
+                            </group>
+                            <group string="Nota Fiscal/Produtor/Cupom Fiscal" attrs="{'invisible': [('document_type', 'in', ('nfe','cte', False))]}">
+                                <field name="serie" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="internal_number" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="fiscal_document_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="state_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}" options="{'no_create': True, 'no_create_edit': True}" />
+                                <field name="date" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                                <field name="cpfcnpj_type" attrs="{'required': [('document_type', 'in', ('nfrural'))], 'invisible': [('document_type', '!=', 'nfrural')]}"/>
+                                <field name="cnpj_cpf" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                                <field name="inscr_est" attrs="{'invisible': [('document_type', '!=', 'nfrural')]}"/>
+                            </group>
+                        </form>
+                    </field>
+                </group>
+                <group string="Mensagens Documento Eletrônico">
+                    <field name="fiscal_observation_ids" nolabel="1"/>
+                </group>
                 <group string="Observações">
                     <field name="comment" nolabel="1"/>
                 </group>
@@ -70,6 +105,17 @@
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
+        </field>
+    </record>
+
+    <record id="view_br_account_invoice_cancel_form" model="ir.ui.view">
+        <field name="name">br_account.invoice.cancel.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account_cancel.invoice_form_cancel_inherit"/>
+        <field name="arch" type="xml">
+            <button name="action_invoice_cancel" position="replace">
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/>
+            </button>
         </field>
     </record>
 
@@ -94,6 +140,9 @@
                 <field name="vendor_number" attrs="{'invisible': [('issuer','=', '1')]}" />
                 <field name="vendor_serie" attrs="{'invisible': [('issuer','=', '1')]}" />
             </field>
+            <field name="payment_term_id" position="attributes">
+                <attribute name="attrs"></attribute>
+            </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
@@ -107,17 +156,21 @@
             <xpath expr="//notebook/page" position="after">
                 <page name="vencimentos" string="Vencimentos">
                     <field nolabel="1" name="payable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos">
+                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
+                            <field name="reconciled" string="Pago" />
                         </tree>
                     </field>
                 </page>
             </xpath>
             <xpath expr="//notebook/page[last()]/group" position="after">
+                <group string="Observações Fiscais">
+                    <field name="fiscal_observation_ids" nolabel="1"/>
+                </group>
                 <group string="Observações">
                     <field name="comment" nolabel="1"/>
                 </group>
@@ -136,6 +189,17 @@
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_tax"  widget='monetary' options="{'currency_field': 'currency_id'}"/>
             </field>
+        </field>
+    </record>
+
+    <record id="view_br_account_invoice_supplier_cancel_form" model="ir.ui.view">
+        <field name="name">br_account.invoice.supplier.cancel.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account_cancel.invoice_supplier_cancel_form_inherit"/>
+        <field name="arch" type="xml">
+            <button name="action_invoice_cancel" position="replace">
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/>
+            </button>
         </field>
     </record>
 
@@ -181,16 +245,21 @@
                                     <field name="cfop_id"/>
                                     <field name="fiscal_classification_id" />
                                     <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
-                                    <field domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
+                                    <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1" />
                                     <field name="tax_simples_id" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="tributos_estimados_federais" />
+                                    <field name="tributos_estimados_estaduais" />
+                                    <field name="tributos_estimados_municipais" />
                                     <field name="tributos_estimados" />
                                     <field name="calculate_tax" invisible="1" />
                                 </group>
                             </group>
                             <label for="name"/>
                             <field name="name"/>
+                            <label for="informacao_adicional"/>
+                            <field name="informacao_adicional"/>
                         </page>
                         <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
@@ -221,6 +290,7 @@
                                     <field name="icms_st_aliquota_reducao_base"/>
                                     <field name="tax_icms_st_id" />
                                     <field name="icms_st_aliquota" invisible="1"/>
+                                    <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                     <field name="icms_st_valor"/>
                                 </group>
                                 <group name="icms_interestaual" attrs="{'invisible': [('tem_difal', '==', False)] }">
@@ -300,6 +370,40 @@
                                 <field name="ii_valor_despesas"/>
                                 <field name="ii_valor_iof"/>
                                 <field name="ii_valor"/>
+                            </group>
+                            <group string="Declaração de Importação">
+                                <field name="import_declaration_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="date_registration"/>
+                                        <field name="location"/>
+                                        <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="date_release"/>
+                                        <field name="type_transportation"/>
+                                    </tree>
+                                    <form string="Declaração de Importação">
+                                        <group>
+                                            <group>
+                                                <field name="name"/>
+                                                <field name="date_registration"/>
+                                                <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                <field name="location"/>
+                                                <field name="date_release"/>
+                                                <field name="type_transportation" />
+                                            </group>
+                                            <group>
+                                                <field name="afrmm_value" />
+                                                <field name="type_import" />
+                                                <field name="thirdparty_cnpj" />
+                                                <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                <field name="exporting_code"/>
+                                            </group>
+                                            <group string="Adições" colspan="4">
+                                                <field name="line_ids" nolabel="1"></field>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
                             </group>
                         </page>
                     </notebook>

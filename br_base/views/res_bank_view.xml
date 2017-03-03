@@ -14,9 +14,9 @@
                    <field name="number" placeholder="Número"/>
                    <field name="street2" placeholder="Complemento"/>
                    <field name="district" placeholder="Bairro"/>
-                   <field name="country_id" placeholder="País"/>
-                   <field name="state_id" placeholder="Estado"/>
-                   <field name="city_id" placeholder="Cidade"/>
+                   <field name="country_id" placeholder="País" options="{'no_create': True, 'no_create_edit': True}" />
+                   <field name="state_id" placeholder="Estado" options="{'no_create': True, 'no_create_edit': True}" />
+                   <field name="city_id" placeholder="Cidade" options="{'no_create': True, 'no_create_edit': True}" />
                </field>
                <field name="state_id" position="attributes">
                    <attribute name="domain">[('country_id','=',country_id)]</attribute>
@@ -31,6 +31,11 @@
                <field name="city" position="replace">
                    <field name="city" invisible="1"/>
                </field>
+               <group position="after">
+                   <group string="Configuration">
+                       <field name="acc_number_format" placeholder="OFX Account Number Format"/>
+                   </group>
+               </group>
         </field>
     </record>
 

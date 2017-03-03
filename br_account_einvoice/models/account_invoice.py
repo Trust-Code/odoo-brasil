@@ -26,6 +26,9 @@ class AccountInvoice(models.Model):
             item.total_edocs = self.env['invoice.eletronic'].search_count(
                 [('invoice_id', '=', item.id)])
 
+    invoice_eletronic_ids = fields.One2many(
+        'invoice.eletronic', 'invoice_id',
+        'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
         string="Modelo de Fatura", related="fiscal_document_id.code")
     total_edocs = fields.Integer(string="Total NFe",
@@ -60,14 +63,15 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         for invoice in self:
-            if not invoice.document_serie_id.internal_sequence_id.id:
-                raise UserError(
-                    u'Configure a sequência para a numeração da nota')
-            seq_number = \
-                invoice.document_serie_id.internal_sequence_id.next_by_id()
+            if invoice.is_eletronic:
+                if not invoice.document_serie_id.internal_sequence_id.id:
+                    raise UserError(
+                        u'Configure a sequência para a numeração da nota')
 
-            self.write(
-                {'internal_number': seq_number})
+                seq_number = \
+                    invoice.document_serie_id.internal_sequence_id.next_by_id()
+                self.write(
+                    {'internal_number': seq_number})
         return True
 
     def _prepare_edoc_item_vals(self, line):
@@ -198,5 +202,6 @@ class AccountInvoice(models.Model):
                 if edoc.state == 'done':
                     raise UserError(u'Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
-                edoc.unlink()
+                if edoc.can_unlink():
+                    edoc.unlink()
         return res

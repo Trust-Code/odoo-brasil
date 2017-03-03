@@ -3,6 +3,36 @@
 
     <menuitem id="menu_br_account" name="Brasil" parent="account.menu_finance_configuration" sequence="0"/>
 
+    <record id="view_br_account_import_declaration_line_form" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.line.form</field>
+        <field name="model">br_account.import.declaration.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="manufacturer_code"/>
+                    <field name="amount_discount"/>
+                    <field name="drawback_number"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_br_account_import_declaration_line_tree" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.line.tree</field>
+        <field name="model">br_account.import.declaration.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="manufacturer_code"/>
+                <field name="amount_discount"/>
+                <field name="drawback_number" />
+            </tree>
+        </field>
+    </record>
+
     <record id="view_br_account_fiscal_document_form" model="ir.ui.view">
         <field name="name">br_account.fiscal.document</field>
         <field name="model">br_account.fiscal.document</field>
@@ -218,6 +248,35 @@
                 <field name="code"/>
                 <field name="name"/>
                 <field name="internal_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="br_account_fiscal_observation_form" model="ir.ui.view">
+        <field name="name">br_account.fiscal.observation.form</field>
+        <field name="model">br_account.fiscal.observation</field>
+        <field name="arch" type="xml">
+            <form string="Observações Fiscais">
+                <group>
+                    <field name="name" />
+                    <field name="document_id"/>
+                    <field name="tipo"/>
+                </group>
+                <group string="Mensagem a ser destacada no documento eletrônico">
+                    <field name="message" nolabel="1" placeholder="Utilize ${invoice.origin} para campos dinâmicos"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="br_account_fiscal_observation_tree" model="ir.ui.view">
+        <field name="name">br_account.fiscal.observation.tree</field>
+        <field name="model">br_account.fiscal.observation</field>
+        <field name="arch" type="xml">
+            <tree string="Observações Fiscais">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="document_id"/>
             </tree>
         </field>
     </record>

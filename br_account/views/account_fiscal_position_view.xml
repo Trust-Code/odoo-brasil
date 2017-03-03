@@ -36,6 +36,7 @@
                         <field name="icms_aliquota_credito" attrs="{'invisible': [('domain', '!=', 'simples')]}" />
                         <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}" />
                         <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
+                        <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
                         <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
                     </group>
@@ -82,6 +83,19 @@
         <field name="model">account.fiscal.position</field>
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='account_mapping']/group" position="before">
+                <group>
+                    <field name="journal_id" placeholder="Este diário vai ser usado no faturamento" />
+                    <field name="account_id" placeholder="Esta conta vai ser usada para faturamento" />
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='account_mapping']" position="after">
+                <page name="notes" string="Observações Fiscais">
+                    <group string="Observações">
+                        <field name="fiscal_observation_ids" nolabel="1" />
+                    </group>
+                </page>
+            </xpath>
             <field name="vat_required" position="attributes" >
                 <attribute name="invisible">1</attribute>
             </field>

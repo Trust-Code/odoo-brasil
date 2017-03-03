@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# -*- coding: utf-8 -*- © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
@@ -31,6 +30,10 @@ class AccountMoveLine(models.Model):
             'default_partner_type': 'customer' if receivable else 'supplier',
             'default_partner_id': self.partner_id.id,
             'default_communication': self.name,
-            'default_payment_type': 'inbound' if receivable else 'outbound'
+            'default_payment_type': 'inbound' if receivable else 'outbound',
+            'default_move_line_id': self.id,
         }
+        if self.invoice_id:
+            vals['context']['default_invoice_ids'] = [
+                (4, self.invoice_id.id, None)],
         return vals

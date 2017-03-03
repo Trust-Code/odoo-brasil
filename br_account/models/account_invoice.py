@@ -3,7 +3,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 from odoo.addons import decimal_precision as dp
 
 
@@ -37,6 +38,12 @@ class AccountInvoice(models.Model):
         self.ii_value = sum(l.ii_valor for l in lines)
         self.total_bruto = sum(l.valor_bruto for l in lines)
         self.total_desconto = sum(l.valor_desconto for l in lines)
+        self.total_tributos_federais = sum(
+            l.tributos_estimados_federais for l in lines)
+        self.total_tributos_estaduais = sum(
+            l.tributos_estimados_estaduais for l in lines)
+        self.total_tributos_municipais = sum(
+            l.tributos_estimados_municipais for l in lines)
         self.total_tributos_estimados = sum(
             l.tributos_estimados for l in lines)
         # TOTAL
@@ -112,7 +119,16 @@ class AccountInvoice(models.Model):
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
         store=True, string=u'Electrônico')
-    fiscal_comment = fields.Text(u'Observação Fiscal')
+    fiscal_document_related_ids = fields.One2many(
+        'br_account.document.related', 'invoice_id',
+        'Documento Fiscal Relacionado', readonly=True,
+        states={'draft': [('readonly', False)]})
+    fiscal_observation_ids = fields.Many2many(
+        'br_account.fiscal.observation', string="Observações Fiscais",
+        readonly=True, states={'draft': [('readonly', False)]})
+    fiscal_comment = fields.Text(
+        u'Observação Fiscal', readonly=True,
+        states={'draft': [('readonly', False)]})
 
     total_bruto = fields.Float(
         string='Total Bruto ( = )', store=True,
@@ -175,17 +191,56 @@ class AccountInvoice(models.Model):
         string='Valor II', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
+    total_tributos_federais = fields.Float(
+        string='Total de Tributos Federais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
+    total_tributos_estaduais = fields.Float(
+        string='Total de Tributos Estaduais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
+    total_tributos_municipais = fields.Float(
+        string='Total de Tributos Municipais',
+        store=True,
+        digits=dp.get_precision('Account'),
+        compute='_compute_amount')
     total_tributos_estimados = fields.Float(
         string='Total de Tributos',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    @api.onchange('issuer')
+    def _onchange_issuer(self):
+        if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
+            self.fiscal_document_id = None
+            self.document_serie_id = None
+
     @api.onchange('fiscal_document_id')
     def _onchange_fiscal_document_id(self):
         series = self.env['br_account.document.serie'].search(
             [('fiscal_document_id', '=', self.fiscal_document_id.id)])
         self.document_serie_id = series and series[0].id or False
+
+    @api.onchange('fiscal_position_id')
+    def _onchange_br_account_fiscal_position_id(self):
+        if self.fiscal_position_id and self.fiscal_position_id.account_id:
+            self.account_id = self.fiscal_position_id.account_id.id
+        if self.fiscal_position_id and self.fiscal_position_id.journal_id:
+            self.journal_id = self.fiscal_position_id.journal_id
+        if self.fiscal_position_id.fiscal_observation_ids:
+            self.fiscal_observation_ids |= \
+                self.fiscal_position_id.fiscal_observation_ids
+
+    @api.multi
+    def action_invoice_cancel_paid(self):
+        if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft',
+                                                       'open', 'paid']):
+            raise UserError(_("Invoice must be in draft, Pro-forma or open \
+                              state in order to be cancelled."))
+        return self.action_cancel()
 
     @api.model
     def invoice_line_move_line_get(self):
@@ -205,7 +260,8 @@ class AccountInvoice(models.Model):
         for invoice_line in res:
             line = invoice_line[2]
             line['ref'] = self.origin
-            if line['name'] == '/':
+            if line['name'] == '/' or (
+               line['name'] == self.name and self.name):
                 line['name'] = "%02d" % count
                 count += 1
         return res
