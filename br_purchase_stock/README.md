@@ -1,2 +1,2 @@
-Módulo de Vendas e Estoque
+Módulo de Compras e Estoque
 ==========================

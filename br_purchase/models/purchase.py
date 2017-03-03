@@ -166,3 +166,25 @@ class PurchaseOrderLine(models.Model):
                 line.update({
                     'taxes_id': [(6, None, [x.id for x in tax_ids if x])]
                 })
+
+    # Calcula o custo da mercadoria comprada
+    @api.multi
+    def _get_stock_move_price_unit(self):
+        price = self.price_unit
+        ctx = self._prepare_tax_context()
+        tax_ids = self.taxes_id.with_context(**ctx)
+        taxes = tax_ids.compute_all(
+            price, self.order_id.currency_id,
+            self.product_qty, product=self.product_id,
+            partner=self.order_id.partner_id)
+
+        price = taxes['total_included']
+
+        for tax in taxes['taxes']:
+            # Quando o imposto não tem conta contábil, deduzimos que ele não é
+            # recuperável e portanto somamos ao custo, como partimos do valor
+            # já com imposto se existir conta diminuimos o valor deste imposto
+            if tax['account_id']:
+                price -= tax['amount']
+
+        return price
