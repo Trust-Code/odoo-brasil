@@ -5,8 +5,11 @@
 import re
 import base64
 import logging
+from lxml import etree
+from StringIO import StringIO
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
@@ -17,9 +20,10 @@ try:
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
+    from pytrustnfe.nfe.danfe import danfe
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe', exc_info=True)
+    _logger.info('Cannot import pytrustnfe', exc_info=True)
 
 STATE = {'edit': [('readonly', False)]}
 
@@ -45,6 +49,7 @@ class InvoiceEletronic(models.Model):
             "context": {'default_eletronic_doc_id': self.id},
         }
 
+    state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente")
     ind_final = fields.Selection([
@@ -154,6 +159,9 @@ class InvoiceEletronic(models.Model):
     protocolo_nfe = fields.Char(
         string="Protocolo", size=50, readonly=True, states=STATE,
         help=u"Protocolo de autorização da NFe")
+    nfe_processada = fields.Binary(string="Xml da NFe", readonly=True)
+    nfe_processada_name = fields.Char(
+        string="Xml da NFe", size=100, readonly=True)
 
     valor_icms_uf_remet = fields.Monetary(
         string="ICMS Remetente", readonly=True, states=STATE,
@@ -180,6 +188,20 @@ class InvoiceEletronic(models.Model):
         url = '<img style="width:380px;height:50px;margin:2px 1px;"\
 src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         return url
+
+    def can_unlink(self):
+        res = super(InvoiceEletronic, self).can_unlink()
+        if self.state == 'denied':
+            return False
+        return res
+
+    @api.multi
+    def unlink(self):
+        for item in self:
+            if item.state in ('denied'):
+                raise UserError(
+                    u'Documento Eletrônico Denegado - Proibido excluir')
+        super(InvoiceEletronic, self).unlink()
 
     @api.multi
     def _hook_validation(self):
@@ -427,10 +449,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
-            'IM': re.sub('[^0-9]', '', self.company_id.inscr_mun or ''),
-            'CNAE': re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         }
+        if self.company_id.cnae_main_id and self.company_id.inscr_mun:
+            emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun or '')
+            emit['CNAE'] = re.sub(
+                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -604,6 +627,45 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             }]
         }
 
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        attachment_obj = self.env['ir.attachment']
+
+        nfe_xml = base64.decodestring(self.nfe_processada)
+        logo = base64.decodestring(self.invoice_id.company_id.logo)
+
+        tmpLogo = StringIO()
+        tmpLogo.write(logo)
+        tmpLogo.seek(0)
+
+        xml_element = etree.fromstring(nfe_xml)
+        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+
+        tmpDanfe = StringIO()
+        oDanfe.writeto_pdf(tmpDanfe)
+
+        if danfe:
+            danfe_id = attachment_obj.create(dict(
+                name="Danfe-%08d.pdf" % self.numero,
+                datas_fname="Danfe-%08d.pdf" % self.numero,
+                datas=base64.b64encode(tmpDanfe.getvalue()),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+        if nfe_xml:
+            xml_id = attachment_obj.create(dict(
+                name=self.nfe_processada_name,
+                datas_fname=self.nfe_processada_name,
+                datas=base64.encodestring(nfe_xml),
+                mimetype='application/xml',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(xml_id.id)
+        return atts
+
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
@@ -640,7 +702,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         resposta_recibo = None
         resposta = autorizar_nfe(certificado, **lote)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe
+        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
@@ -678,6 +741,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                             'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
+            # Denegada e nota já está denegada
+            if self.codigo_retorno in ('302', '205'):
+                self.write({'state': 'denied',
+                            'nfe_exception': True})
+
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
@@ -685,10 +753,42 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
+        recibo_xml = resposta['received_xml']
         if resposta_recibo:
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
+            recibo_xml = resposta_recibo['received_xml']
+
+        if self.codigo_retorno == '100':
+            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+
+    @api.multi
+    def generate_nfe_proc(self):
+        if self.state == 'done':
+            recibo = self.env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', self.id),
+                ('datas_fname', 'like', 'rec-ret')])
+            if not recibo:
+                recibo = self.env['ir.attachment'].search([
+                    ('res_model', '=', 'invoice.eletronic'),
+                    ('res_id', '=', self.id),
+                    ('datas_fname', 'like', 'nfe-ret')])
+            nfe_envio = self.env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', self.id),
+                ('datas_fname', 'like', 'nfe-envio')])
+            nfe_proc = gerar_nfeproc(
+                base64.decodestring(nfe_envio.datas),
+                base64.decodestring(recibo.datas)
+            )
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+        else:
+            raise UserError('A NFe não está validada')
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):

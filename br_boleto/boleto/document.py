@@ -21,6 +21,16 @@ except ImportError:
     from StringIO import StringIO
 BoletoException = bank.BoletoException
 
+especie = {
+    '01': 'DM',
+    '02': 'NP',
+    '03': 'NS',
+    '04': 'ME',
+    '05': 'REC',
+    '08': 'DS',
+    '13': 'ND',
+}
+
 
 class Boleto:
     boleto = object
@@ -84,8 +94,8 @@ class Boleto:
         :param payment_mode:
         :return:
         """
-        self.boleto.convenio = payment_mode_id.bank_account_id.codigo_convenio
-        self.boleto.especie_documento = payment_mode_id.boleto_modalidade
+        self.boleto.convenio = payment_mode_id.boleto_cnab_code
+        self.boleto.especie_documento = especie[payment_mode_id.boleto_especie]
         self.boleto.aceite = payment_mode_id.boleto_aceite
         self.boleto.carteira = payment_mode_id.boleto_carteira
         self.boleto.instrucoes = payment_mode_id.instrucoes or ''
@@ -225,7 +235,16 @@ class BoletoItau(Boleto):
 
 
 class BoletoSantander(Boleto):
-    pass
+    def __init__(self, move_line, nosso_numero):
+        self.boleto = Boleto.getBoletoClass(move_line)()
+        self.account_number = \
+            move_line.payment_mode_id.bank_account_id.acc_number[:7]
+        self.branch_number = \
+            move_line.payment_mode_id.bank_account_id.bra_number
+        Boleto.__init__(self, move_line, nosso_numero)
+        self.boleto.nosso_numero = self.nosso_numero
+        self.boleto.conta_cedente = \
+            move_line.payment_mode_id.bank_account_id.codigo_convenio
 
 
 class BoletoSicredi(Boleto):

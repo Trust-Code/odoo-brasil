@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
             if docs:
                 item.nfe_number = docs[0].numero
                 item.nfe_exception_number = docs[0].numero
-                item.nfe_exception = docs[0].state == 'error'
+                item.nfe_exception = (docs[0].state in ('error', 'denied'))
                 item.sending_nfe = docs[0].state == 'draft'
                 item.nfe_status = '%s - %s' % (
                     docs[0].codigo_retorno, docs[0].mensagem_retorno)
@@ -34,6 +34,17 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
+
+    @api.multi
+    def action_invoice_draft(self):
+        for item in self:
+            docs = self.env['invoice.eletronic'].search(
+                [('invoice_id', '=', item.id)])
+            for doc in docs:
+                if doc.state in ('done', 'denied', 'cancel'):
+                    raise UserError('Nota fiscal já emitida para esta fatura - \
+                                    Duplique a fatura para continuar')
+        return super(AccountInvoice, self).action_invoice_draft()
 
     @api.multi
     def action_number(self):
@@ -89,7 +100,7 @@ class AccountInvoice(models.Model):
             if inv.company_id.tipo_ambiente == '2' else 'producao'
 
         # Indicador Consumidor Final
-        if inv.partner_id.is_company:
+        if inv.commercial_partner_id.is_company:
             res['ind_final'] = '0'
         else:
             res['ind_final'] = '1'
@@ -103,29 +114,32 @@ class AccountInvoice(models.Model):
 
         # Indicador IE Destinatário
         ind_ie_dest = False
-        if inv.partner_id.is_company:
-            if inv.partner_id.inscr_est:
+        if inv.commercial_partner_id.is_company:
+            if inv.commercial_partner_id.inscr_est:
                 ind_ie_dest = '1'
-            elif inv.partner_id.state_id.code in ('AM', 'BA', 'CE', 'GO',
-                                                  'MG', 'MS', 'MT', 'PE',
-                                                  'RN', 'SP'):
+            elif inv.commercial_partner_id.state_id.code in ('AM', 'BA', 'CE',
+                                                             'GO', 'MG', 'MS',
+                                                             'MT', 'PE', 'RN',
+                                                             'SP'):
                 ind_ie_dest = '9'
             else:
                 ind_ie_dest = '2'
         else:
             ind_ie_dest = '9'
-        if inv.partner_id.indicador_ie_dest:
-            ind_ie_dest = inv.partner_id.indicador_ie_dest
+        if inv.commercial_partner_id.indicador_ie_dest:
+            ind_ie_dest = inv.commercial_partner_id.indicador_ie_dest
         res['ind_ie_dest'] = ind_ie_dest
 
         # Duplicatas
         duplicatas = []
-        for parcela in inv.receivable_move_line_ids:
+        count = 1
+        for parcela in inv.receivable_move_line_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
-                'numero_duplicata': parcela.name,
+                'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
                 'data_vencimento': parcela.date_maturity,
                 'valor': parcela.credit or parcela.debit,
             }))
+            count += 1
         res['duplicata_ids'] = duplicatas
 
         # Documentos Relacionados

@@ -14,25 +14,21 @@ class BancoBrasil240(Cnab240):
 
     def _prepare_header(self):
         vals = super(BancoBrasil240, self)._prepare_header()
+        vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(
+            self.order.payment_mode_id)
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         return vals
 
     def _prepare_segmento(self, line):
         vals = super(BancoBrasil240, self)._prepare_segmento(line)
-
-        nossonumero, digito = self.nosso_numero(
-            line.nosso_numero)
-        try:
-            parcela = line.name.split('/')[1]
-        except:
-            parcela = line.name
-        vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(line)
+        vals['numero_documento'] = (u"%s/%s" % (
+            line.move_id.name, line.name))[-15:]
+        vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(
+            line.payment_mode_id)
         vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira[:2])
         vals['nosso_numero'] = self.format_nosso_numero(
-            nossonumero, digito, parcela,
-            line.payment_mode_id.boleto_modalidade)
-        vals['nosso_numero_dv'] = int(digito)
+            line.payment_mode_id.boleto_cnab_code, line.nosso_numero)
         vals['prazo_baixa'] = '0'
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
@@ -43,12 +39,11 @@ class BancoBrasil240(Cnab240):
         nosso_numero = format[2:-2]
         return nosso_numero, digito
 
-    def format_nosso_numero(self, nosso_numero, digito, parcela, modalidade):
-        return "%s%s%s%s4     " % (nosso_numero.zfill(9), digito,
-                                   parcela.zfill(2), modalidade)
+    def format_nosso_numero(self, convenio, nosso_numero):
+        return "%s%s" % (convenio.zfill(7), nosso_numero.ljust(10))
 
-    def format_codigo_convenio_banco(self, line):
-        num_convenio = line.payment_mode_id.bank_account_id.codigo_convenio
-        carteira = line.payment_mode_id.boleto_carteira[:2]
-        boleto = line.payment_mode_id.boleto_variacao.zfill(3)
+    def format_codigo_convenio_banco(self, payment_mode):
+        num_convenio = payment_mode.boleto_cnab_code
+        carteira = payment_mode.boleto_carteira[:2]
+        boleto = payment_mode.boleto_variacao.zfill(3)
         return "%s0014%s%s  " % (num_convenio, carteira, boleto)

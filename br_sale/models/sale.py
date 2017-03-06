@@ -32,6 +32,9 @@ class SaleOrder(models.Model):
             res['account_id'] = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             res['journal_id'] = self.fiscal_position_id.journal_id.id
+        if self.fiscal_position_id.fiscal_observation_ids:
+            res['fiscal_observation_ids'] = [
+                (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
         return res
 
     total_bruto = fields.Float(
@@ -201,6 +204,7 @@ class SaleOrderLine(models.Model):
                     vals.get('tax_icms_inter_id', empty) | \
                     vals.get('tax_icms_intra_id', empty) | \
                     vals.get('tax_icms_fcp_id', empty) | \
+                    vals.get('tax_simples_id', empty) | \
                     vals.get('tax_ipi_id', ipi) | \
                     vals.get('tax_pis_id', empty) | \
                     vals.get('tax_cofins_id', empty) | \
@@ -257,19 +261,27 @@ class SaleOrderLine(models.Model):
         res['service_type_id'] = service.id
         res['icms_origem'] = self.product_id.origin
 
-        valor = 0
         if self.product_id.fiscal_type == 'service':
-            valor = self.product_id.lst_price * (
-                service.federal_nacional + service.estadual_imposto +
-                service.municipal_imposto) / 100
+            res['tributos_estimados_federais'] = \
+                self.product_id.lst_price * (service.federal_nacional / 100)
+            res['tributos_estimados_estaduais'] = \
+                self.product_id.lst_price * (service.estadual_imposto / 100)
+            res['tributos_estimados_municipais'] = \
+                self.product_id.lst_price * (service.municipal_imposto / 100)
         else:
-            nacional = ncm.federal_nacional if self.product_id.origin in \
+            federal = ncm.federal_nacional if self.product_id.origin in \
                 ('1', '2', '3', '8') else ncm.federal_importado
-            valor = self.product_id.lst_price * (
-                nacional + ncm.estadual_imposto +
-                ncm.municipal_imposto) / 100
 
-        res['tributos_estimados'] = valor
+            res['tributos_estimados_federais'] = \
+                self.product_id.lst_price * (federal / 100)
+            res['tributos_estimados_estaduais'] = \
+                self.product_id.lst_price * (ncm.estadual_imposto / 100)
+            res['tributos_estimados_municipais'] = \
+                self.product_id.lst_price * (ncm.municipal_imposto / 100)
+
+        res['tributos_estimados'] = res['tributos_estimados_federais'] + \
+            res['tributos_estimados_estaduais'] + \
+            res['tributos_estimados_municipais']
 
         res['incluir_ipi_base'] = self.incluir_ipi_base
         res['icms_aliquota'] = icms.amount or 0.0

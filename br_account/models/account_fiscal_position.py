@@ -77,6 +77,8 @@ class AccountFiscalPosition(models.Model):
     account_id = fields.Many2one(
         'account.account', string="Conta Contábil",
         help="Conta Contábil a ser utilizada na fatura.")
+    fiscal_observation_ids = fields.Many2many(
+        'br_account.fiscal.observation', string="Mensagens Doc. Eletrônico")
     note = fields.Text(u'Observações')
 
     icms_tax_rule_ids = fields.One2many(

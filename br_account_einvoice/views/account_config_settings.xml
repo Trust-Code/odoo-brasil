@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="account_config_settings_email" model="ir.ui.view">
+    <field name="name">account_config_settings.email</field>
+    <field name="model">account.config.settings</field>
+    <field name="inherit_id" ref="account.view_account_config_settings"/>
+    <field name="arch" type="xml">
+      <group name="followup" position="after" >
+        <group string="Email NFe" name="nfe_mail">
+          <field name="nfe_email_template" />
+        </group>
+      </group>
+    </field>
+  </record>
+</odoo>

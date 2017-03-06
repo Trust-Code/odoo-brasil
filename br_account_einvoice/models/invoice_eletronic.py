@@ -2,17 +2,20 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import base64
-from datetime import datetime
 import re
+import base64
+import copy
+from datetime import datetime, timedelta
+import dateutil.relativedelta as relativedelta
 from odoo.exceptions import UserError
-from odoo import api, fields, models
+from odoo import api, fields, models, tools
 from odoo.addons import decimal_precision as dp
 from odoo.addons.br_account.models.cst import CST_ICMS
 from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
 from odoo.addons.br_account.models.cst import CST_IPI
 from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
 
 STATE = {'edit': [('readonly', False)]}
@@ -165,6 +168,9 @@ class InvoiceEletronic(models.Model):
     numero_nfe = fields.Char(
         string="Numero Formatado NFe", readonly=True, states=STATE)
 
+    email_sent = fields.Boolean(string="Email enviado", default=False,
+                                readonly=True, states=STATE)
+
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
             prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
@@ -292,6 +298,78 @@ class InvoiceEletronic(models.Model):
         return errors
 
     @api.multi
+    def _compute_legal_information(self):
+        fiscal_ids = self.invoice_id.fiscal_observation_ids.filtered(
+            lambda x: x.tipo == 'fiscal')
+        obs_ids = self.invoice_id.fiscal_observation_ids.filtered(
+            lambda x: x.tipo == 'observacao')
+
+        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
+        for item in self.invoice_id.invoice_line_ids:
+            prod_obs_ids |= item.product_id.fiscal_observation_ids
+
+        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
+        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
+
+        fiscal = self._compute_msg(fiscal_ids) + (
+            self.invoice_id.fiscal_comment or '')
+        observacao = self._compute_msg(obs_ids) + (
+            self.invoice_id.comment or '')
+
+        self.informacoes_legais = fiscal
+        self.informacoes_complementares = observacao
+
+    def _compute_msg(self, observation_ids):
+        from jinja2.sandbox import SandboxedEnvironment
+        mako_template_env = SandboxedEnvironment(
+            block_start_string="<%",
+            block_end_string="%>",
+            variable_start_string="${",
+            variable_end_string="}",
+            comment_start_string="<%doc>",
+            comment_end_string="</%doc>",
+            line_statement_prefix="%",
+            line_comment_prefix="##",
+            trim_blocks=True,               # do not output newline after
+            autoescape=True,                # XML/HTML automatic escaping
+        )
+        mako_template_env.globals.update({
+            'str': str,
+            'datetime': datetime,
+            'len': len,
+            'abs': abs,
+            'min': min,
+            'max': max,
+            'sum': sum,
+            'filter': filter,
+            'reduce': reduce,
+            'map': map,
+            'round': round,
+            'cmp': cmp,
+            # dateutil.relativedelta is an old-style class and cannot be
+            # instanciated wihtin a jinja2 expression, so a lambda "proxy" is
+            # is needed, apparently.
+            'relativedelta': lambda *a, **kw: relativedelta.relativedelta(
+                *a, **kw),
+        })
+        mako_safe_env = copy.copy(mako_template_env)
+        mako_safe_env.autoescape = False
+
+        result = ''
+        for item in observation_ids:
+            if item.document_id and item.document_id.code != self.model:
+                continue
+            template = mako_safe_env.from_string(tools.ustr(item.message))
+            variables = {
+                'user': self.env.user,
+                'ctx': self._context,
+                'invoice': self.invoice_id,
+            }
+            render_result = template.render(variables)
+            result += render_result + '\n'
+        return result
+
+    @api.multi
     def validate_invoice(self):
         self.ensure_one()
         errors = self._hook_validation()
@@ -302,7 +380,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_post_validate(self):
-        pass
+        self._compute_legal_information()
 
     @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
@@ -328,10 +406,15 @@ class InvoiceEletronic(models.Model):
     def action_edit_edoc(self):
         self.state = 'edit'
 
+    def can_unlink(self):
+        if self.state not in ('done', 'cancel'):
+            return True
+        return False
+
     @api.multi
     def unlink(self):
         for item in self:
-            if item.state in ('done', 'cancel'):
+            if not item.can_unlink():
                 raise UserError(
                     u'Documento Eletrônico enviado - Proibido excluir')
         super(InvoiceEletronic, self).unlink()
@@ -350,6 +433,30 @@ class InvoiceEletronic(models.Model):
                 item.action_send_eletronic_invoice()
             except Exception as e:
                 item.log_exception(e)
+
+    def _find_attachment_ids_email(self):
+        return []
+
+    @api.multi
+    def send_email_nfe(self):
+        mail = self.env.user.company_id.nfe_email_template
+        if not mail:
+            raise UserError('Modelo de email padrão não configurado')
+        atts = self._find_attachment_ids_email()
+
+        if len(atts):
+            mail.attachment_ids = [(6, 0, atts)]
+        mail.send_mail(self.invoice_id.id)
+
+    @api.multi
+    def send_email_nfe_queue(self):
+        after = datetime.now() + timedelta(days=-1)
+        nfe_queue = self.env['invoice.eletronic'].search(
+            [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
+             ('email_sent', '=', False)], limit=5)
+        for nfe in nfe_queue:
+            nfe.send_email_nfe()
+            nfe.email_sent = True
 
 
 class InvoiceEletronicEvent(models.Model):
