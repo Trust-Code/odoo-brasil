@@ -5,7 +5,7 @@
 import re
 import base64
 import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 import dateutil.relativedelta as relativedelta
 from odoo.exceptions import UserError
 from odoo import api, fields, models, tools
@@ -15,6 +15,7 @@ from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
 from odoo.addons.br_account.models.cst import CST_IPI
 from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
 
 STATE = {'edit': [('readonly', False)]}
@@ -439,6 +440,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def send_email_nfe(self):
         mail = self.env.user.company_id.nfe_email_template
+        if not mail:
+            raise UserError('Modelo de email padrão não configurado')
         atts = self._find_attachment_ids_email()
 
         if len(atts):
@@ -447,8 +450,10 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def send_email_nfe_queue(self):
+        after = datetime.now() + timedelta(days=-1)
         nfe_queue = self.env['invoice.eletronic'].search(
-            [('email_sent', '=', False)], limit=5)
+            [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
+             ('email_sent', '=', False)], limit=5)
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
