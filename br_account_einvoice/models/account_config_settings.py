@@ -13,10 +13,9 @@ class AccountConfigSettings(models.TransientModel):
         domain=[('model_id.model', '=', 'account.invoice')])
 
     def get_default_nfe_email_template(self, fields):
-        mail = self.env['mail.template'].search(
-            [('model_id.model', '=', 'account.invoice')])
-        return {'nfe_email_template': mail.id}
+        return {'nfe_email_template':
+                self.env.user.company_id.nfe_email_template.id}
 
     @api.multi
-    def set_account_bool(self):
+    def set_default_nfe_email_template(self):
         self.env.user.company_id.nfe_email_template = self.nfe_email_template
