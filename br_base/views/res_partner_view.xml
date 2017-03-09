@@ -74,7 +74,7 @@
                 <page string="Dados Fiscais">
                     <group>
                         <group>
-                            <field name="inscr_est" attrs="{'invisible': [('is_company','!=', True)]}" />
+                            <field name="inscr_est" />
                             <field name="rg_fisica" attrs="{'invisible': [('is_company','=', True)]}" />
                             <field name="inscr_mun" attrs="{'invisible': [('is_company','!=', True)]}" />
                         </group>
