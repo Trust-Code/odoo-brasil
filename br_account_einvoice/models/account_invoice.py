@@ -164,6 +164,35 @@ class AccountInvoice(models.Model):
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 
+#####################Custom########################
+        issqn = 0
+        pis = 0
+        cofins = 0
+        ir = 0
+        csll = 0
+            
+        for inv_line in invoice.invoice_line_ids:
+                
+            print '================================================='
+            issqn += inv_line.price_subtotal * (inv_line.tax_issqn_id.amount / 100)
+            print issqn
+            pis += inv_line.price_subtotal * (inv_line.tax_pis_id.amount / 100)
+            print pis
+            cofins += inv_line.price_subtotal * (inv_line.tax_cofins_id.amount / 100)
+            print cofins
+            ir += inv_line.valor_ir
+            print ir
+            csll += inv_line.valor_csll
+            print csll
+            print '================================================='
+                
+        vals['valor_issqn'] = issqn
+        vals['valor_retencao_pis'] = pis
+        vals['valor_retencao_cofins'] = cofins
+        vals['valor_retencao_irrf'] = ir
+        vals['valor_retencao_csll'] = csll
+#####################Custom########################
+
         vals['eletronic_item_ids'] = eletronic_items
         vals['valor_icms'] = invoice.icms_value
         vals['valor_icmsst'] = invoice.icms_st_value

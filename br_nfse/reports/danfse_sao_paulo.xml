@@ -185,14 +185,14 @@
                     <br/>
                     <t t-as="line" t-foreach="doc.eletronic_item_ids">
                         <p>
-                            <span t-field="line.product_id.name"/>
-                            <strong> : </strong>
+                            <span t-field="line.name"/>
+                            <!-- <strong> : </strong>
                             <span t-field="line.product_id.default_code"/>
                             <t t-if="line.product_id.attribute_value_ids.name">
                                 <strong> (</strong>
                                 <span t-field="line.product_id.attribute_value_ids.name"/>
                                 <strong>)</strong>
-                            </t>
+                            </t> -->
                         </p>
                     </t>
                     <span t-field="doc.informacoes_complementares"/>
@@ -218,22 +218,22 @@
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
-                    IR(<span/>%):
+                    IR(<span t-field="doc.eletronic_item_ids[0].ir_percent"/>%):
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong
-                            t-field="doc.eletronic_item_ids[0].ir_value" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
+                            t-field="doc.valor_retencao_irrf" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
-                    CSLL(<span/>%):
+                    CSLL(<span t-field="doc.eletronic_item_ids[0].csll_aliquota"/>%):
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong
-                            t-field="doc.eletronic_item_ids[0].csll_value" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
+                            t-field="doc.valor_retencao_csll" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -245,7 +245,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong
-                            t-field="doc.eletronic_item_ids[0].cofins_valor" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
+                            t-field="doc.valor_retencao_cofins" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -257,7 +257,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong
-                            t-field="doc.eletronic_item_ids[0].pis_valor" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
+                            t-field="doc.valor_retencao_pis" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -305,7 +305,7 @@
                     <br/>
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong
-                            t-field="doc.eletronic_item_ids[0].issqn_valor" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
+                            t-field="doc.valor_issqn" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;,  &quot;display_currency&quot;: &quot;doc.currency_id&quot; }"/>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
