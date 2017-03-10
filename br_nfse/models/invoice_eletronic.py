@@ -145,6 +145,11 @@ class InvoiceEletronic(models.Model):
                 descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
 
+            if self.informacoes_legais:
+                descricao += self.informacoes_legais + '\n'
+            if self.informacoes_complementares:
+                descricao += self.informacoes_complementares
+
             rps = {
                 'tomador': tomador,
                 'prestador': prestador,
