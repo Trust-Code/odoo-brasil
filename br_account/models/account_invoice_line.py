@@ -395,6 +395,54 @@ class AccountInvoiceLine(models.Model):
         'br_account.import.declaration',
         'invoice_line_id', u'Declaração de Importação')
 
+    # =========================================================================
+    # Impostos de serviço - CSLL
+    # =========================================================================
+    csll_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
+    tax_csll_id = fields.Many2one('account.tax', string=u"Alíquota CSLL",
+                                  domain=[('domain', '=', 'csll')])
+    csll_base_calculo = fields.Float(
+        'Base CSLL', required=True, digits=dp.get_precision('Account'),
+        default=0.00, compute='_compute_price', store=True)
+    csll_valor = fields.Float(
+        'Valor CSLL', required=True, digits=dp.get_precision('Account'),
+        default=0.00, compute='_compute_price', store=True)
+    csll_aliquota = fields.Float(
+        'Perc CSLL', required=True, digits=dp.get_precision('Account'),
+        default=0.00)
+
+    # =========================================================================
+    # Impostos de serviço - IRRF
+    # =========================================================================
+    irrf_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
+    tax_irrf_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+                                  domain=[('domain', '=', 'irrf')])
+    irrf_base_calculo = fields.Float(
+        'Base IRRF', required=True, digits=dp.get_precision('Account'),
+        default=0.00, compute='_compute_price', store=True)
+    irrf_valor = fields.Float(
+        'Valor IRFF', required=True, digits=dp.get_precision('Account'),
+        default=0.00, compute='_compute_price', store=True)
+    irrf_aliquota = fields.Float(
+        'Perc IRRF', required=True, digits=dp.get_precision('Account'),
+        default=0.00)
+
+    # =========================================================================
+    # Impostos de serviço - INSS
+    # =========================================================================
+    inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
+    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+                                  domain=[('domain', '=', 'inss')])
+    inss_base_calculo = fields.Float(
+        'Base INSS', required=True, digits=dp.get_precision('Account'),
+        default=0.00, compute='_compute_price', store=True)
+    inss_valor = fields.Float(
+        'Valor INSS', required=True, digits=dp.get_precision('Account'),
+        default=0.00, compute='_compute_price', store=True)
+    inss_aliquota = fields.Float(
+        'Perc INSS', required=True, digits=dp.get_precision('Account'),
+        default=0.00)
+
     informacao_adicional = fields.Text(string="Informações Adicionais")
 
     def _update_tax_from_ncm(self):

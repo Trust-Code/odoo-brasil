@@ -406,6 +406,33 @@
                                 </field>
                             </group>
                         </page>
+                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                            <group>
+                                <group string="CSLL">
+                                    <field name="csll_rule_id" />
+                                    <field name="csll_base_calculo"/>
+                                    <field name="tax_csll_id"/>
+                                    <field name="csll_aliquota" invisible="1" />
+                                    <field name="csll_valor"/>
+                                </group>
+                                <group string="IRRF">
+                                    <field name="irrf_rule_id" />
+                                    <field name="irrf_base_calculo"/>
+                                    <field name="tax_irrf_id"/>
+                                    <field name="irrf_aliquota" invisible="1" />
+                                    <field name="irrf_valor"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="INSS">
+                                    <field name="inss_rule_id" />
+                                    <field name="inss_base_calculo"/>
+                                    <field name="tax_inss_id"/>
+                                    <field name="inss_aliquota" invisible="1" />
+                                    <field name="inss_valor"/>
+                                </group>
+                            </group>
+                        </page>
                     </notebook>
                 </form>
             </form>

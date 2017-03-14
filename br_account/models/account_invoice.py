@@ -246,6 +246,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
 
         contador = 0
+
         for line in self.invoice_line_ids:
             if line.quantity == 0:
                 continue
@@ -268,7 +269,8 @@ class AccountInvoice(models.Model):
                     res[contador]['price'] += tax_dict['amount']
                 if tax.price_include and (not tax.account_id or
                                           not tax.deduced_account_id):
-                    res[contador]['price'] -= tax_dict['amount']
+                    if tax_dict['amount'] > 0.0:  # Negativo é retido
+                        res[contador]['price'] -= tax_dict['amount']
 
             contador += 1
 
@@ -278,7 +280,6 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
-
         count = 1
         for invoice_line in res:
             line = invoice_line[2]
