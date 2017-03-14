@@ -28,14 +28,35 @@ class AccountInvoice(models.Model):
         self.valor_icms_uf_dest = sum(l.icms_uf_dest for l in lines)
         self.valor_icms_fcp_uf_dest = sum(l.icms_fcp_uf_dest for l in lines)
         self.issqn_base = sum(l.issqn_base_calculo for l in lines)
-        self.issqn_value = sum(l.issqn_valor for l in lines)
+        self.issqn_value = sum(abs(l.issqn_valor) for l in lines)
         self.ipi_base = sum(l.ipi_base_calculo for l in lines)
         self.ipi_value = sum(l.ipi_valor for l in lines)
         self.pis_base = sum(l.pis_base_calculo for l in lines)
-        self.pis_value = sum(l.pis_valor for l in lines)
+        self.pis_value = sum(abs(l.pis_valor) for l in lines)
         self.cofins_base = sum(l.cofins_base_calculo for l in lines)
-        self.cofins_value = sum(l.cofins_valor for l in lines)
+        self.cofins_value = sum(abs(l.cofins_valor) for l in lines)
         self.ii_value = sum(l.ii_valor for l in lines)
+        self.csll_base = sum(l.csll_base_calculo for l in lines)
+        self.csll_value = sum(abs(l.csll_valor) for l in lines)
+        self.irrf_base = sum(l.irrf_base_calculo for l in lines)
+        self.irrf_value = sum(abs(l.irrf_valor) for l in lines)
+        self.inss_base = sum(l.inss_base_calculo for l in lines)
+        self.inss_value = sum(abs(l.inss_valor) for l in lines)
+
+        # Retenções
+        self.issqn_retention = sum(
+            abs(l.issqn_valor) if l.issqn_valor < 0 else 0.0 for l in lines)
+        self.pis_retention = sum(
+            abs(l.pis_valor) if l.pis_valor < 0 else 0.0 for l in lines)
+        self.cofins_retention = sum(
+            abs(l.cofins_valor) if l.cofins_valor < 0 else 0.0 for l in lines)
+        self.csll_retention = sum(
+            abs(l.csll_valor) if l.csll_valor < 0 else 0 for l in lines)
+        self.irrf_retention = sum(
+            abs(l.irrf_valor) if l.irrf_valor < 0 else 0.0 for l in lines)
+        self.inss_retention = sum(
+            abs(l.inss_valor) if l.inss_valor < 0 else 0.0 for l in lines)
+
         self.total_bruto = sum(l.valor_bruto for l in lines)
         self.total_desconto = sum(l.valor_desconto for l in lines)
         self.total_tributos_federais = sum(
@@ -165,6 +186,9 @@ class AccountInvoice(models.Model):
     issqn_value = fields.Float(
         string='Valor ISSQN', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+    issqn_retention = fields.Float(
+        string='ISSQN Retido', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
     ipi_base = fields.Float(
         string='Base IPI', store=True, digits=dp.get_precision('Account'),
         compute='_compute_amount')
@@ -180,6 +204,9 @@ class AccountInvoice(models.Model):
     pis_value = fields.Float(
         string='Valor PIS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
+    pis_retention = fields.Float(
+        string='PIS Retido', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
     cofins_base = fields.Float(
         string='Base COFINS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
@@ -187,10 +214,40 @@ class AccountInvoice(models.Model):
         string='Valor COFINS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
-    ii_value = fields.Float(
-        string='Valor II', store=True,
+    cofins_retention = fields.Float(
+        string='COFINS Retido', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
+    ii_value = fields.Float(
+        string='Valor II', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    csll_base = fields.Float(
+        string='Base CSLL', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    csll_value = fields.Float(
+        string='Valor CSLL', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    csll_retention = fields.Float(
+        string='CSLL Retido', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    irrf_base = fields.Float(
+        string='Base IRRF', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    irrf_value = fields.Float(
+        string='Valor IRRF', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    irrf_retention = fields.Float(
+        string='IRRF Retido', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    inss_base = fields.Float(
+        string='Base INSS', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    inss_value = fields.Float(
+        string='Valor INSS', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
+    inss_retention = fields.Float(
+        string='INSS Retido', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
     total_tributos_federais = fields.Float(
         string='Total de Tributos Federais',
         store=True,
@@ -299,7 +356,8 @@ class AccountInvoice(models.Model):
             line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
                 line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
                 line.tax_issqn_id | line.tax_ii_id | line.tax_icms_st_id | \
-                line.tax_simples_id
+                line.tax_simples_id | line.tax_csll_id | line.tax_irrf_id | \
+                line.tax_inss_id
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)

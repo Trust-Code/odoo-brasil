@@ -47,6 +47,7 @@ class AccountInvoiceLine(models.Model):
                  'tax_icms_id', 'tax_icms_st_id', 'tax_icms_inter_id',
                  'tax_icms_intra_id', 'tax_icms_fcp_id', 'tax_ipi_id',
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
+                 'tax_csll_id', 'tax_irrf_id', 'tax_inss_id',
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
@@ -94,6 +95,12 @@ class AccountInvoiceLine(models.Model):
                   if x['id'] == self.tax_issqn_id.id]) if taxes else []
         ii = ([x for x in taxes['taxes']
                if x['id'] == self.tax_ii_id.id]) if taxes else []
+        csll = ([x for x in taxes['taxes']
+                if x['id'] == self.tax_csll_id.id]) if taxes else []
+        irrf = ([x for x in taxes['taxes']
+                if x['id'] == self.tax_irrf_id.id]) if taxes else []
+        inss = ([x for x in taxes['taxes']
+                if x['id'] == self.tax_inss_id.id]) if taxes else []
 
         price_subtotal_signed = taxes['total_excluded'] if taxes else subtotal
         if self.invoice_id.currency_id and self.invoice_id.currency_id != \
@@ -131,6 +138,12 @@ class AccountInvoiceLine(models.Model):
             'issqn_valor': sum([x['amount'] for x in issqn]),
             'ii_base_calculo': sum([x['base'] for x in ii]),
             'ii_valor': sum([x['amount'] for x in ii]),
+            'csll_base_calculo': sum([x['base'] for x in csll]),
+            'csll_valor': sum([x['amount'] for x in csll]),
+            'inss_base_calculo': sum([x['base'] for x in inss]),
+            'inss_valor': sum([x['amount'] for x in inss]),
+            'irrf_base_calculo': sum([x['base'] for x in irrf]),
+            'irrf_valor': sum([x['amount'] for x in irrf]),
         })
 
     @api.multi
@@ -474,7 +487,8 @@ class AccountInvoiceLine(models.Model):
             self.tax_icms_inter_id | self.tax_icms_intra_id | \
             self.tax_icms_fcp_id | self.tax_simples_id | self.tax_ipi_id | \
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
-            self.tax_ii_id
+            self.tax_ii_id | self.tax_csll_id | self.tax_irrf_id | \
+            self.tax_inss_id
 
     def _set_extimated_taxes(self, price):
         service = self.product_id.service_type_id
@@ -523,7 +537,8 @@ class AccountInvoiceLine(models.Model):
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
             self.tax_simples_id | self.tax_ipi_id | self.tax_pis_id | \
-            self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id
+            self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id | \
+            self.tax_csll_id | self.tax_irrf_id | self.tax_inss_id
 
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
@@ -581,4 +596,22 @@ class AccountInvoiceLine(models.Model):
     def _onchange_tax_issqn_id(self):
         if self.tax_issqn_id:
             self.issqn_aliquota = self.tax_issqn_id.amount
+        self._update_invoice_line_ids()
+
+    @api.onchange('tax_csll_id')
+    def _onchange_tax_csll_id(self):
+        if self.tax_csll_id:
+            self.csll_aliquota = self.tax_csll_id.amount
+        self._update_invoice_line_ids()
+
+    @api.onchange('tax_irrf_id')
+    def _onchange_tax_irrf_id(self):
+        if self.tax_irrf_id:
+            self.irrf_aliquota = self.tax_irrf_id.amount
+        self._update_invoice_line_ids()
+
+    @api.onchange('tax_inss_id')
+    def _onchange_tax_inss_id(self):
+        if self.tax_inss_id:
+            self.inss_aliquota = self.tax_inss_id.amount
         self._update_invoice_line_ids()
