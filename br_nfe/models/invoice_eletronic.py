@@ -634,8 +634,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        attachment_obj = self.env['ir.attachment']
+        if self.model not in ('55'):
+            return atts
 
+        attachment_obj = self.env['ir.attachment']
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 

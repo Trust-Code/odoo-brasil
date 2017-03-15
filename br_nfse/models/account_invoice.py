@@ -24,6 +24,16 @@ class AccountInvoice(models.Model):
             [('invoice_id', '=', self.id)])
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+
+        if self.invoice_model == '009':
+            if docs[0].state != 'done':
+                raise UserError('Nota Fiscal na fila de envio. Aguarde!')
+            return {
+                "type": "ir.actions.act_url",
+                "url": docs[0].url_danfe,
+                "target": "_blank",
+            }
+
         action = self.env['report'].get_action(
             docs.ids, 'br_nfse.main_template_br_nfse_danfe')
         action['report_type'] = 'qweb-html'

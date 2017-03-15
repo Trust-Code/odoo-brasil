@@ -2,14 +2,18 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import os
+import tempfile
+import subprocess
 import re
 import pytz
 import base64
 import logging
-from datetime import date, datetime, timedelta
-from dateutil.relativedelta import relativedelta
-from odoo import api, fields, models
+from datetime import datetime
+
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.addons.report.models.report import _get_wkhtmltopdf_bin
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -58,7 +62,7 @@ class InvoiceEletronic(models.Model):
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
             dt_emissao = datetime.strptime(self.data_emissao, DTFT)
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
-            dt_emissao = dt_emissao.strftime('%Y-%m-%d')
+            dt_emissao = dt_emissao.strftime('%d/%m/%Y')
 
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
@@ -88,11 +92,18 @@ class InvoiceEletronic(models.Model):
                 'cidade_descricao': city_prestador.name or '',
             }
 
+            tipo_nota = '1'  # Normal
+            if self.company_id.fiscal_type == '1':
+                tipo_nota = '4'  # Simples Nacional
+
             descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
                 descricao += item.name + '\n'
                 codigo_servico = item.issqn_codigo
+
+            def fmt_number(x):
+                return str("%.2f" % x).replace('.', ',')
 
             nfse_vals = {
                 'codigo_prefeitura': '3150',
@@ -100,28 +111,72 @@ class InvoiceEletronic(models.Model):
                 'tomador': tomador,
                 'prestador': prestador,
                 'cnpj_prestador': prestador['cnpj'],
-                'total_servicos': str("%.2f" % self.valor_final),
+                'total_servicos': fmt_number(self.valor_final),
+                'status_nota': tipo_nota,
                 'numero': self.numero,
                 'data_emissao': dt_emissao,
-                'aliquota_atividade': '0.000',
+                'aliquota_atividade':
+                fmt_number(self.eletronic_item_ids[0].issqn_aliquota),
                 'codigo_atividade': codigo_servico,
-                'valor_pis': str("%.2f" % self.valor_pis),
-                'valor_cofins': str("%.2f" % self.valor_cofins),
-                'valor_csll': str("%.2f" % 0.0),
-                'valor_inss': str("%.2f" % 0.0),
-                'valor_ir': str("%.2f" % 0.0),
-                'aliquota_pis': str("%.2f" % 0.0),
-                'aliquota_cofins': str("%.2f" % 0.0),
-                'aliquota_csll': str("%.2f" % 0.0),
-                'aliquota_inss': str("%.2f" % 0.0),
-                'aliquota_ir': str("%.2f" % 0.0),
-                'valor_deducao': '0',
+                'valor_pis': fmt_number(self.valor_pis_servicos),
+                'valor_cofins': fmt_number(self.valor_cofins_servicos),
+                'valor_csll': fmt_number(self.valor_retencao_csll),
+                'valor_inss': fmt_number(self.valor_retencao_inss),
+                'valor_ir': fmt_number(self.valor_retencao_irrf),
+                'aliquota_pis':
+                fmt_number(self.eletronic_item_ids[0].pis_aliquota),
+                'aliquota_cofins':
+                fmt_number(self.eletronic_item_ids[0].cofins_aliquota),
+                'aliquota_csll':
+                fmt_number(self.eletronic_item_ids[0].csll_aliquota),
+                'aliquota_inss':
+                fmt_number(self.eletronic_item_ids[0].inss_aliquota),
+                'aliquota_ir':
+                fmt_number(self.eletronic_item_ids[0].irrf_aliquota),
+                'valor_deducao': '0,00',
                 'descricao': descricao,
                 'observacoes': self.informacoes_complementares,
             }
-
             res.update(nfse_vals)
         return res
+
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        attachment_obj = self.env['ir.attachment']
+        if self.model not in ('009'):
+            return
+
+        tmp = tempfile._get_default_tempdir()
+        temp_name = os.path.join(tmp, next(tempfile._get_candidate_names()))
+
+        command_args = ["--dpi", "84", str(self.url_danfe), temp_name]
+        wkhtmltopdf = [_get_wkhtmltopdf_bin()] + command_args
+        process = subprocess.Popen(wkhtmltopdf, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        if process.returncode not in [0, 1]:
+            raise UserError(_('Wkhtmltopdf failed (error code: %s). '
+                              'Message: %s') % (str(process.returncode), err))
+        tmpDanfe = None
+        with open(temp_name, 'r') as f:
+            tmpDanfe = f.read()
+
+        try:
+            os.unlink(temp_name)
+        except (OSError, IOError):
+            _logger.error('Error when trying to remove file %s' % temp_name)
+
+        if tmpDanfe:
+            danfe_id = attachment_obj.create(dict(
+                name="Danfe-%08d.pdf" % self.numero,
+                datas_fname="Danfe-%08d.pdf" % self.numero,
+                datas=base64.b64encode(tmpDanfe),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+        return atts
 
     @api.multi
     def action_post_validate(self):
@@ -138,7 +193,6 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-
         if self.model == '009':
             self.state = 'error'
             xml_to_send = base64.decodestring(self.xml_to_send)

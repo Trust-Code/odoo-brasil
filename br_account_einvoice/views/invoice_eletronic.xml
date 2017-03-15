@@ -70,9 +70,31 @@
                                 <field name="issqn_aliquota"/>
                                 <field name="issqn_codigo" />
                                 <field name="issqn_valor"/>
+                                <field name="issqn_valor_retencao"/>
                             </group>
                         </page>
-                        <page name="ipi" string="IPI">
+                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
+                            <group>
+                                <group string="CSLL">
+                                    <field name="csll_base_calculo"/>
+                                    <field name="csll_aliquota"/>
+                                    <field name="csll_valor_retencao"/>
+                                </group>
+                                <group string="IRRF">
+                                    <field name="irrf_base_calculo"/>
+                                    <field name="irrf_aliquota"/>
+                                    <field name="irrf_valor_retencao"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="INSS">
+                                    <field name="inss_base_calculo"/>
+                                    <field name="inss_aliquota"/>
+                                    <field name="inss_valor_retencao"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ipi" string="IPI" attrs="{'invisible': [('tipo_produto','==', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>
                                     <field name="ipi_cst" />
@@ -95,6 +117,7 @@
                                     <field name="pis_base_calculo"/>
                                     <field name="pis_aliquota"/>
                                     <field name="pis_valor"/>
+                                    <field name="pis_valor_retencao" attrs="{'invisible': [('tipo_produto','!=', 'service')]}"/>
                                 </group>
                             </group>
 
@@ -108,10 +131,11 @@
                                     <field name="cofins_base_calculo"/>
                                     <field name="cofins_aliquota"/>
                                     <field name="cofins_valor"/>
+                                    <field name="cofins_valor_retencao" attrs="{'invisible': [('tipo_produto','!=', 'service')]}"/>
                                 </group>
                             </group>
                         </page>
-                        <page name="ii" string="II">
+                        <page name="ii" string="II" attrs="{'invisible': [('tipo_produto','==', 'service')]}">
                             <group string="Detalhes do Imposto de Importação">
                                 <field name="ii_base_calculo"/>
                                 <field name="ii_aliquota"/>
@@ -234,9 +258,12 @@
                                         <field name="valor_retencao_issqn" />
                                         <field name="valor_retencao_pis" />
                                         <field name="valor_retencao_cofins" />
+                                        <field name="valor_bc_irrf" />
                                         <field name="valor_retencao_irrf" />
+                                        <field name="valor_bc_csll" />
                                         <field name="valor_retencao_csll" />
-                                        <field name="valor_retencao_previdencia" />
+                                        <field name="valor_bc_inss" />
+                                        <field name="valor_retencao_inss" />
                                     </group>
                                 </group>
                             </page>

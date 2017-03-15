@@ -145,12 +145,18 @@ class InvoiceEletronic(models.Model):
         string=u"Retenção PIS", readonly=True, states=STATE)
     valor_retencao_cofins = fields.Monetary(
         string=u"Retenção COFINS", readonly=True, states=STATE)
+    valor_bc_irrf = fields.Monetary(
+        string=u"Base de Cálculo IRRF", readonly=True, states=STATE)
     valor_retencao_irrf = fields.Monetary(
         string=u"Retenção IRRF", readonly=True, states=STATE)
+    valor_bc_csll = fields.Monetary(
+        string=u"Base de Cálculo CSLL", readonly=True, states=STATE)
     valor_retencao_csll = fields.Monetary(
         string=u"Retenção CSLL", readonly=True, states=STATE)
-    valor_retencao_previdencia = fields.Monetary(
-        string=u"Retenção Prev.", help=u"Retenção Previdência Social",
+    valor_bc_inss = fields.Monetary(
+        string=u"Base de Cálculo INSS", readonly=True, states=STATE)
+    valor_retencao_inss = fields.Monetary(
+        string=u"Retenção INSS", help=u"Retenção Previdência Social",
         readonly=True, states=STATE)
 
     currency_id = fields.Many2one(
@@ -460,7 +466,8 @@ class InvoiceEletronic(models.Model):
         after = datetime.now() + timedelta(days=-1)
         nfe_queue = self.env['invoice.eletronic'].search(
             [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
-             ('email_sent', '=', False)], limit=5)
+             ('email_sent', '=', False),
+             ('state', '=', 'done')], limit=5)
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
@@ -650,6 +657,9 @@ class InvoiceEletronicItem(models.Model):
     pis_valor = fields.Monetary(
         string=u'Valor Total', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
+    pis_valor_retencao = fields.Monetary(
+        string=u'Valor Retido', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
 
     # ------------ COFINS ------------
     cofins_cst = fields.Selection(
@@ -663,6 +673,9 @@ class InvoiceEletronicItem(models.Model):
         readonly=True, states=STATE)
     cofins_valor = fields.Monetary(
         string=u'Valor Total', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    cofins_valor_retencao = fields.Monetary(
+        string=u'Valor Retido', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
 
     # ----------- ISSQN -------------
@@ -678,5 +691,34 @@ class InvoiceEletronicItem(models.Model):
         string=u'Valor Total', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
     issqn_valor_retencao = fields.Monetary(
+        string=u'Valor Retenção', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+
+    # ------------ RETENÇÔES ------------
+    csll_base_calculo = fields.Monetary(
+        string=u'Base de Cálculo', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    csll_aliquota = fields.Float(
+        string=u'Alíquota', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    csll_valor_retencao = fields.Monetary(
+        string=u'Valor Retenção', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    irrf_base_calculo = fields.Monetary(
+        string=u'Base de Cálculo', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    irrf_aliquota = fields.Float(
+        string=u'Alíquota', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    irrf_valor_retencao = fields.Monetary(
+        string=u'Valor Retenção', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    inss_base_calculo = fields.Monetary(
+        string=u'Base de Cálculo', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    inss_aliquota = fields.Float(
+        string=u'Alíquota', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+    inss_valor_retencao = fields.Monetary(
         string=u'Valor Retenção', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
