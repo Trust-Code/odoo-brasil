@@ -46,4 +46,4 @@ class BancoBrasil240(Cnab240):
         num_convenio = payment_mode.boleto_cnab_code
         carteira = payment_mode.boleto_carteira[:2]
         boleto = payment_mode.boleto_variacao.zfill(3)
-        return "%s0014%s%s  " % (num_convenio, carteira, boleto)
+        return "00%s0014%s%s  " % (num_convenio, carteira, boleto)
