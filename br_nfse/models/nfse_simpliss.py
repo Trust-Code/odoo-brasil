@@ -15,6 +15,7 @@ _logger = logging.getLogger(__name__)
 try:
     from pytrustnfe.nfse.simpliss import xml_recepcionar_lote_rps
     from pytrustnfe.nfse.simpliss import recepcionar_lote_rps
+    from pytrustnfe.nfse.simpliss import consultar_situacao_lote
     from pytrustnfe.nfse.simpliss import cancelar_nfse
     from pytrustnfe.certificado import Certificado
 except ImportError:
@@ -61,17 +62,17 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
-        if self.model == '001':
+        if self.model == '008':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
             dt_emissao = datetime.strptime(self.data_emissao, DTFT)
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
-            dt_emissao = dt_emissao.strftime('%Y-%m-%d')
+            dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')
 
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
             tomador = {
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
-                'cpf_cnpj': re.sub('[^0-9]', '',
+                'cnpj_cpf': re.sub('[^0-9]', '',
                                    partner.cnpj_cpf or ''),
                 'razao_social': partner.legal_name or '',
                 'logradouro': partner.street or '',
@@ -80,7 +81,6 @@ class InvoiceEletronic(models.Model):
                 'bairro': partner.district or 'Sem Bairro',
                 'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
                                     city_tomador.ibge_code),
-                'cidade_descricao': city_tomador.name or '',
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
                 'telefone': re.sub('[^0-9]', '', partner.phone or ''),
@@ -92,58 +92,65 @@ class InvoiceEletronic(models.Model):
             prestador = {
                 'cnpj': re.sub(
                     '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
-                'razao_social': self.company_id.partner_id.legal_name or '',
                 'inscricao_municipal': re.sub(
                     '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
                 'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
                                     city_prestador.ibge_code),
-                'telefone': re.sub('[^0-9]', '', self.company_id.phone or ''),
-                'email': self.company_id.partner_id.email or '',
+                'cnae': re.sub('[^0-9]', '', self.company_id.cnae_main_id.code)
             }
 
+            itens_servico = []
             descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
                 descricao += item.name + '\n'
-                codigo_servico = item.codigo_servico_paulistana
+                itens_servico.append({
+                    'descricao': item.name,
+                    'quantidade': str("%.2f" % item.quantidade),
+                    'valor_unitario': str("%.2f" % item.preco_unitario)
+                })
+                codigo_servico = item.issqn_codigo
 
             rps = {
-                'tomador': tomador,
-                'prestador': prestador,
                 'numero': self.numero,
-                'data_emissao': dt_emissao,
                 'serie': self.serie.code or '',
-                'aliquota_atividade': '0.000',
-                'codigo_atividade': re.sub('[^0-9]', '', codigo_servico or ''),
-                'municipio_prestacao': city_prestador.name or '',
-                'valor_pis': str("%.2f" % self.valor_pis),
-                'valor_cofins': str("%.2f" % self.valor_cofins),
-                'valor_csll': str("%.2f" % 0.0),
-                'valor_inss': str("%.2f" % 0.0),
-                'valor_ir': str("%.2f" % 0.0),
-                'aliquota_pis': str("%.2f" % 0.0),
-                'aliquota_cofins': str("%.2f" % 0.0),
-                'aliquota_csll': str("%.2f" % 0.0),
-                'aliquota_inss': str("%.2f" % 0.0),
-                'aliquota_ir': str("%.2f" % 0.0),
+                'tipo_rps': '1',
+                'data_emissao': dt_emissao,
+                'natureza_operacao': '1',  # Tributada no municipio
+                'regime_tributacao': '7',  # Estimativa
+                'optante_simples':  # 1 - Sim, 2 - Não
+                '2' if self.company_id.fiscal_type == '3' else '1',
+                'incentivador_cultural': '2',  # 2 - Não
+                'status': '1',  # 1 - Normal
                 'valor_servico': str("%.2f" % self.valor_final),
                 'valor_deducao': '0',
+                'valor_pis': str("%.2f" % self.valor_pis),
+                'valor_cofins': str("%.2f" % self.valor_cofins),
+                'valor_inss': str("%.2f" % 0.0),
+                'valor_ir': str("%.2f" % 0.0),
+                'valor_csll': str("%.2f" % 0.0),
+                'iss_retido': '1' if self.valor_retencao_issqn > 0 else '2',
+                'valor_iss': str("%.2f" % self.valor_issqn),
+                'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
+                'base_calculo': str("%.2f" % 0.0),
+                'aliquota_issqn': str("%.2f" % 0.0),
+                'valor_liquido_nfse': str("%.2f" % self.valor_final),
+                'codigo_servico': codigo_servico,
+                'cnae_servico': prestador['cnae'],
+                'codigo_tributacao_municipio': codigo_servico,
                 'descricao': descricao,
-                'deducoes': [],
+                'codigo_municipio': prestador['cidade'],
+                'itens_servico': itens_servico,
+                'tomador': tomador,
+                'prestador': prestador,
             }
 
             nfse_vals = {
-                'cidade': prestador['cidade'],
-                'cpf_cnpj': prestador['cnpj'],
-                'remetente': prestador['razao_social'],
-                'transacao': '',
-                'data_inicio': dt_emissao,
-                'data_fim': dt_emissao,
-                'total_rps': '1',
-                'total_servicos': str("%.2f" % self.valor_final),
-                'total_deducoes': '0',
-                'lote_id': '%s' % self.code,
-                'lista_rps': [rps]
+                'numero_lote': self.id,
+                'inscricao_municipal': prestador['inscricao_municipal'],
+                'cnpj_prestador': prestador['cnpj'],
+                'lista_rps': [rps],
+                'senha': self.company_id.senha_ambiente_nfse
             }
 
             res.update(nfse_vals)
@@ -178,17 +185,36 @@ class InvoiceEletronic(models.Model):
             resposta = recepcionar_lote_rps(
                 None, xml=xml_to_send, ambiente=self.ambiente)
 
+            recibo = None
             retorno = resposta['object']
             retorno = resposta['object'].Body.RecepcionarLoteRpsResponse
             retorno = retorno.getchildren()[0]
             if "NumeroLote" in dir(retorno):
-                self.state = 'done'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = \
-                    'Nota Fiscal Simpliss emitida com sucesso'
+                obj = {
+                    'cnpj_prestador': re.sub(
+                        '[^0-9]', '', self.company_id.cnpj_cpf),
+                    'inscricao_municipal': re.sub(
+                        '[^0-9]', '', self.company_id.inscr_mun),
+                    'protocolo': retorno.Protocolo,
+                    'senha': self.company_id.senha_ambiente_nfse
+                }
+                self.recibo_nfe = retorno.Protocolo
 
-                # Consultar o recibo aqui
+                import time
+                while True:
+                    recibo = consultar_situacao_lote(
+                        None, consulta=obj, ambiente=self.ambiente)
+                    ret_rec = recibo['object'].Body.ConsultarSituacaoLoteRpsResponse.ConsultarSituacaoLoteRpsResult
 
+                    time.sleep(2)
+                    if "ListaMensagemRetorno" in dir(ret_rec):
+                        self.codigo_retorno = ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
+                        self.mensagem_retorno = ret_rec.ListaMensagemRetorno.MensagemRetorno.Mensagem
+                        break
+                    if ret_rec.Situacao in (3, 4):
+                        if ret_rec.Situacao == 3:
+                            self.state = 'done'
+                        break
             else:
                 self.codigo_retorno = \
                     retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
@@ -201,6 +227,10 @@ class InvoiceEletronic(models.Model):
                 'invoice_eletronic_id': self.id,
             })
             self._create_attachment('nfse-ret', self, resposta['received_xml'])
+            if recibo:
+                self._create_attachment('rec', self, recibo['sent_xml'])
+                self._create_attachment(
+                    'rec-ret', self, recibo['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
