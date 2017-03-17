@@ -4,10 +4,12 @@
 
 import re
 import pytz
+import time
 import base64
 import logging
 from datetime import datetime
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -16,6 +18,7 @@ try:
     from pytrustnfe.nfse.simpliss import xml_recepcionar_lote_rps
     from pytrustnfe.nfse.simpliss import recepcionar_lote_rps
     from pytrustnfe.nfse.simpliss import consultar_situacao_lote
+    from pytrustnfe.nfse.simpliss import consultar_lote_rps
     from pytrustnfe.nfse.simpliss import cancelar_nfse
     from pytrustnfe.certificado import Certificado
 except ImportError:
@@ -25,15 +28,21 @@ except ImportError:
 STATE = {'edit': [('readonly', False)]}
 
 
-class InvoiceEletronicItem(models.Model):
-    _inherit = 'invoice.eletronic.item'
-
-    codigo_servico_paulistana = fields.Char(
-        string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
-
-
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
+
+    state = fields.Selection(
+        selection_add=[('waiting', 'Aguardando processamento')])
+
+    def can_unlink(self):
+        res = super(InvoiceEletronic, self).can_unlink()
+        if self.state in ('waiting'):
+            return False
+        return res
+
+    def _get_state_to_send(self):
+        res = super(InvoiceEletronic, self)._get_state_to_send()
+        return res + ('waiting',)
 
     @api.multi
     def _hook_validation(self):
@@ -181,56 +190,97 @@ class InvoiceEletronic(models.Model):
         if self.model == '008':
             self.state = 'error'
 
-            xml_to_send = base64.decodestring(self.xml_to_send)
-            resposta = recepcionar_lote_rps(
-                None, xml=xml_to_send, ambiente=self.ambiente)
+            consulta_lote = None
+            recebe_lote = None
 
-            recibo = None
-            retorno = resposta['object']
-            retorno = resposta['object'].Body.RecepcionarLoteRpsResponse
-            retorno = retorno.getchildren()[0]
-            if "NumeroLote" in dir(retorno):
-                obj = {
-                    'cnpj_prestador': re.sub(
-                        '[^0-9]', '', self.company_id.cnpj_cpf),
-                    'inscricao_municipal': re.sub(
-                        '[^0-9]', '', self.company_id.inscr_mun),
-                    'protocolo': retorno.Protocolo,
-                    'senha': self.company_id.senha_ambiente_nfse
-                }
-                self.recibo_nfe = retorno.Protocolo
+            # Envia o lote apenas se não existir protocolo
+            if not self.recibo_nfe:
+                xml_to_send = base64.decodestring(self.xml_to_send)
+                recebe_lote = recepcionar_lote_rps(
+                    None, xml=xml_to_send, ambiente=self.ambiente)
 
-                import time
-                while True:
-                    recibo = consultar_situacao_lote(
+                retorno = recebe_lote['object']
+                retorno = retorno.Body.RecepcionarLoteRpsResponse
+                retorno = retorno.getchildren()[0]
+                if "NumeroLote" in dir(retorno):
+                    self.recibo_nfe = retorno.Protocolo
+                else:
+                    self.codigo_retorno = \
+                        retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
+                    self.mensagem_retorno = \
+                        retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem
+                    self._create_attachment(
+                        'nfse-ret', self, recebe_lote['received_xml'])
+                    return
+            # Monta a consulta de situação do lote
+            # 1 - Não Recebido
+            # 2 - Não processado
+            # 3 - Processado com erro
+            # 4 - Processado com sucesso
+            obj = {
+                'cnpj_prestador': re.sub(
+                    '[^0-9]', '', self.company_id.cnpj_cpf),
+                'inscricao_municipal': re.sub(
+                    '[^0-9]', '', self.company_id.inscr_mun),
+                'protocolo': self.recibo_nfe,
+                'senha': self.company_id.senha_ambiente_nfse
+            }
+            time.sleep(2)
+            consulta_situacao = consultar_situacao_lote(
+                None, consulta=obj, ambiente=self.ambiente)
+            ret_rec = consulta_situacao['object'].Body
+            ret_rec = ret_rec.ConsultarSituacaoLoteRpsResponse.\
+                ConsultarSituacaoLoteRpsResult
+
+            if "Situacao" in dir(ret_rec):
+                if ret_rec.Situacao in (3, 4):
+
+                    consulta_lote = consultar_lote_rps(
                         None, consulta=obj, ambiente=self.ambiente)
-                    ret_rec = recibo['object'].Body.ConsultarSituacaoLoteRpsResponse.ConsultarSituacaoLoteRpsResult
+                    ret_lote = consulta_lote['object'].Body
+                    ret_lote = ret_lote.ConsultarLoteRpsResponse.\
+                        ConsultarLoteRpsResult
 
-                    time.sleep(2)
-                    if "ListaMensagemRetorno" in dir(ret_rec):
-                        self.codigo_retorno = ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
-                        self.mensagem_retorno = ret_rec.ListaMensagemRetorno.MensagemRetorno.Mensagem
-                        break
-                    if ret_rec.Situacao in (3, 4):
-                        if ret_rec.Situacao == 3:
-                            self.state = 'done'
-                        break
+                    if "ListaNfse" in dir(ret_lote):
+                        self.state = 'done'
+                        self.codigo_retorno = '100'
+                        self.mensagem_retorno = 'NFSe emitida com sucesso'
+                        self.verify_code = ret_lote.ListaNfse.CompNfse.Nfse.\
+                            InfNfse.CodigoVerificacao
+                        self.numero_nfse = \
+                            ret_lote.ListaNfse.CompNfse.Nfse.InfNfse.Numero
+                    else:
+                        self.codigo_retorno = \
+                            ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
+                        self.mensagem_retorno = ret_rec.ListaMensagemRetorno.\
+                            MensagemRetorno.Mensagem
+
+                elif ret_rec.Situacao == 1:  # Reenviar caso não recebido
+                    self.codigo_retorno = ''
+                    self.mensagem_retorno = 'Aguardando envio'
+                    self.state = 'draft'
+                else:
+                    self.state = 'waiting'
+                    self.codigo_retorno = '2'
+                    self.mensagem_retorno = 'Lote aguardando processamento'
             else:
                 self.codigo_retorno = \
-                    retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
+                    ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
                 self.mensagem_retorno = \
-                    retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem
+                    ret_rec.ListaMensagemRetorno.MensagemRetorno.Mensagem
 
             self.env['invoice.eletronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
                 'invoice_eletronic_id': self.id,
             })
-            self._create_attachment('nfse-ret', self, resposta['received_xml'])
-            if recibo:
-                self._create_attachment('rec', self, recibo['sent_xml'])
+            if recebe_lote:
                 self._create_attachment(
-                    'rec-ret', self, recibo['received_xml'])
+                    'nfse-ret', self, recebe_lote['received_xml'])
+            if consulta_lote:
+                self._create_attachment('rec', self, consulta_lote['sent_xml'])
+                self._create_attachment(
+                    'rec-ret', self, consulta_lote['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
@@ -238,35 +288,41 @@ class InvoiceEletronic(models.Model):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
-
         company = self.company_id
+        city_prestador = self.company_id.partner_id.city_id
         canc = {
-            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
+            'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
             'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
+                                city_prestador.ibge_code),
             'numero_nfse': self.numero_nfse,
-            'codigo_verificacao': self.verify_code,
-            'assinatura': '%s%s' % (
-                re.sub('[^0-9]', '', company.inscr_mun),
-                self.numero_nfse.zfill(12)
-            )
+            'codigo_cancelamento': '1',
+            'senha': self.company_id.senha_ambiente_nfse
         }
-        resposta = cancelar_nfse(certificado, cancelamento=canc)
-        retorno = resposta['object']
-        if retorno.Cabecalho.Sucesso:
+        cancel = cancelar_nfse(
+            None, cancelamento=canc, ambiente=self.ambiente)
+        retorno = cancel['object'].Body.CancelarNfseResponse.CancelarNfseResult
+        if "Cancelamento" in dir(retorno):
             self.state = 'cancel'
             self.codigo_retorno = '100'
-            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
         else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
+            # E79 - Nota já está cancelada
+            if retorno.ListaMensagemRetorno.MensagemRetorno.Codigo != 'E79':
+                mensagem = "%s - %s" % (
+                    retorno.ListaMensagemRetorno.MensagemRetorno.Codigo,
+                    retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem
+                )
+                raise UserError(mensagem)
+
+            self.state = 'cancel'
+            self.codigo_retorno = '100'
+            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
-        self._create_attachment('canc', self, resposta['sent_xml'])
-        self._create_attachment('canc-ret', self, resposta['received_xml'])
+        self._create_attachment('canc', self, cancel['sent_xml'])
+        self._create_attachment('canc-ret', self, cancel['received_xml'])
