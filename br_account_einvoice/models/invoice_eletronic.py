@@ -436,11 +436,15 @@ class InvoiceEletronic(models.Model):
         self.codigo_retorno = -1
         self.mensagem_retorno = exc.message
 
+    def _get_state_to_send(self):
+        return ('draft',)
+
     @api.multi
     def cron_send_nfe(self):
         inv_obj = self.env['invoice.eletronic'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
-        nfes = inv_obj.search([('state', '=', 'draft')])
+        states = self._get_state_to_send()
+        nfes = inv_obj.search([('state', 'in', states)])
         for item in nfes:
             try:
                 item.action_send_eletronic_invoice()
@@ -457,7 +461,7 @@ class InvoiceEletronic(models.Model):
             raise UserError('Modelo de email padrão não configurado')
         atts = self._find_attachment_ids_email()
 
-        if len(atts):
+        if atts and len(atts):
             mail.attachment_ids = [(6, 0, atts)]
         mail.send_mail(self.invoice_id.id)
 
