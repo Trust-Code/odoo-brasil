@@ -5,6 +5,8 @@
 import re
 import base64
 import logging
+from lxml import etree
+from StringIO import StringIO
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -19,6 +21,7 @@ try:
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
+    from pytrustnfe.nfe.danfe import danfe
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
@@ -626,21 +629,26 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-
         attachment_obj = self.env['ir.attachment']
-        danfe_report = self.env['ir.actions.report.xml'].search(
-            [('name', '=', 'Impressão de Danfe')])
 
-        nfe_xml = self.nfe_processada
-        report_service = danfe_report.report_name
+        nfe_xml = base64.decodestring(self.nfe_processada)
+        logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        danfe = self.env['report'].get_pdf([self.id], report_service)
+        tmpLogo = StringIO()
+        tmpLogo.write(logo)
+        tmpLogo.seek(0)
+
+        xml_element = etree.fromstring(nfe_xml)
+        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+
+        tmpDanfe = StringIO()
+        oDanfe.writeto_pdf(tmpDanfe)
 
         if danfe:
             danfe_id = attachment_obj.create(dict(
-                name='Danfe.pdf',
-                datas_fname='Danfe.pdf',
-                datas=base64.b64encode(danfe),
+                name="Danfe-%08d.pdf" % self.numero,
+                datas_fname="Danfe-%08d.pdf" % self.numero,
+                datas=base64.b64encode(tmpDanfe.getvalue()),
                 mimetype='application/pdf',
                 res_model='account.invoice',
                 res_id=self.invoice_id.id,
@@ -648,9 +656,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             atts.append(danfe_id.id)
         if nfe_xml:
             xml_id = attachment_obj.create(dict(
-                name='NFe.xml',
-                datas_fname='NFe.xml',
-                datas=nfe_xml,
+                name=self.nfe_processada_name,
+                datas_fname=self.nfe_processada_name,
+                datas=base64.encodestring(nfe_xml),
                 mimetype='application/xml',
                 res_model='account.invoice',
                 res_id=self.invoice_id.id,
