@@ -1,0 +1,1516 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="report_br_nfse_danfe_ginfes"
+        string="Nota de Serviço - Ginfes"
+        model="invoice.eletronic"
+        report_type="qweb-pdf"
+        file="br_nfse.main_template_br_nfse_danfe_ginfes"
+        name="br_nfse.main_template_br_nfse_danfe_ginfes" />
+
+    <record id="report_br_nfse_danfe_ginfes" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
+        <field name="name">Nota de Serviço - Ginfes</field>
+    </record>
+
+    <template id="danfse_report_template_ginfes">
+        <div id="page_1" class="page">
+
+            <style type="text/css">
+                #page_1 {position:relative; overflow: hidden;margin: 15px 0px 6px 16px;padding: 0px;border: none;width: 777px;}
+                #page_1 #p1dimg1 {position:absolute;top:0px;left:0px;z-index:-1;width:759px;height:1048px;}
+                #page_1 #p1dimg1 #p1img1 {width:759px;height:1048px;}
+                .ft0{font: 1px 'Helvetica';line-height: 1px;}
+                .ft1{font: 16px 'Helvetica';line-height: 18px;}
+                .ft2{font: 17px 'Helvetica';line-height: 19px;}
+                .ft3{font: 8px 'Helvetica';line-height: 10px;}
+                .ft4{font: 9px 'Helvetica';line-height: 12px;}
+                .ft5{font: 1px 'Helvetica';line-height: 8px;}
+                .ft6{font: 13px 'Helvetica';line-height: 16px;}
+                .ft7{font: 1px 'Helvetica';line-height: 5px;}
+                .ft8{font: 1px 'Helvetica';line-height: 7px;}
+                .ft9{font: 1px 'Helvetica';line-height: 6px;}
+                .ft10{font: 1px 'Helvetica';line-height: 11px;}
+                .ft11{font: 9px 'Helvetica';line-height: 11px;}
+                .ft12{font: 1px 'Helvetica';line-height: 9px;}
+                .ft13{font: 11px 'Helvetica';line-height: 14px;}
+                .ft14{font: 10px 'Helvetica';line-height: 13px;}
+                .ft15{font: 7px 'Helvetica';line-height: 7px;}
+                .ft16{font: 1px 'Helvetica';line-height: 10px;}
+                .ft17{font: 6px 'Helvetica';line-height: 6px;}
+
+                .p0{text-align: left;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p1{text-align: left;padding-left: 3px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p2{text-align: left;padding-left: 9px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p3{text-align: left;padding-left: 23px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p4{text-align: center;padding-right: 2px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p5{text-align: left;padding-left: 8px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p6{text-align: center;padding-right: 1px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p7{text-align: right;padding-right: 19px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p8{text-align: left;padding-left: 6px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p9{text-align: left;padding-left: 27px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p10{text-align: center;padding-right: 3px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p11{text-align: right;padding-right: 59px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p12{text-align: right;padding-right: 9px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p13{text-align: left;padding-left: 5px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p14{text-align: center;padding-left: 11px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p15{text-align: center;padding-right: 32px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p16{text-align: center;padding-left: 3px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p17{text-align: right;padding-right: 18px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p18{text-align: left;padding-left: 7px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p19{text-align: right;padding-right: 4px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p20{text-align: left;padding-left: 1px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p21{text-align: right;padding-right: 13px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p22{text-align: right;padding-right: 17px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p23{text-align: left;padding-left: 2px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p24{text-align: left;padding-left: 17px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p25{text-align: left;padding-left: 10px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p26{text-align: left;padding-left: 57px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p27{text-align: left;padding-left: 12px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p28{text-align: left;padding-left: 16px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p29{text-align: left;padding-left: 14px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p30{text-align: right;padding-right: 40px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p31{text-align: left;padding-left: 292px;margin-top: 120px;margin-bottom: 0px;}
+                .p32{text-align: left;padding-left: 37px;margin-top: 13px;margin-bottom: 0px;}
+                .p33{text-align: left;padding-left: 246px;margin-top: 12px;margin-bottom: 0px;}
+                .p34{text-align: left;padding-left: 64px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p35{text-align: left;padding-left: 71px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p36{text-align: left;padding-left: 327px;margin-top: 5px;margin-bottom: 0px;}
+                .p37{text-align: right;padding-right: 22px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p38{text-align: right;padding-right: 23px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p39{text-align: left;padding-left: 18px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p40{text-align: left;padding-left: 11px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p41{text-align: right;padding-right: 90px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p42{text-align: left;padding-left: 21px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p43{text-align: left;padding-left: 50px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p44{text-align: center;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p45{text-align: right;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p46{text-align: left;padding-left: 24px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p47{text-align: center;padding-left: 1px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p48{text-align: left;padding-left: 36px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+                .p49{text-align: left;padding-left: 20px;margin-top: 0px;margin-bottom: 0px;white-space: nowrap;}
+
+                .td0{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 1px;vertical-align: bottom;}
+                .td1{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;}
+                .td2{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;}
+                .td3{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 9px;vertical-align: bottom;}
+                .td4{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 4px;vertical-align: bottom;}
+                .td5{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 20px;vertical-align: bottom;}
+                .td6{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;}
+                .td7{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 7px;vertical-align: bottom;}
+                .td8{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 37px;vertical-align: bottom;}
+                .td9{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 12px;vertical-align: bottom;}
+                .td10{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 364px;vertical-align: bottom;}
+                .td11{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 14px;vertical-align: bottom;}
+                .td12{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 30px;vertical-align: bottom;}
+                .td13{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;}
+                .td14{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 106px;vertical-align: bottom;}
+                .td15{padding: 0px;margin: 0px;width: 1px;vertical-align: bottom;}
+                .td16{padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;}
+                .td17{padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;}
+                .td18{padding: 0px;margin: 0px;width: 9px;vertical-align: bottom;}
+                .td19{padding: 0px;margin: 0px;width: 4px;vertical-align: bottom;}
+                .td20{padding: 0px;margin: 0px;width: 20px;vertical-align: bottom;}
+                .td21{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;}
+                .td22{padding: 0px;margin: 0px;width: 7px;vertical-align: bottom;}
+                .td23{padding: 0px;margin: 0px;width: 37px;vertical-align: bottom;}
+                .td24{padding: 0px;margin: 0px;width: 12px;vertical-align: bottom;}
+                .td25{padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;}
+                .td26{padding: 0px;margin: 0px;width: 353px;vertical-align: bottom;}
+                .td27{padding: 0px;margin: 0px;width: 14px;vertical-align: bottom;}
+                .td28{padding: 0px;margin: 0px;width: 30px;vertical-align: bottom;}
+                .td29{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;}
+                .td30{padding: 0px;margin: 0px;width: 106px;vertical-align: bottom;}
+                .td31{padding: 0px;margin: 0px;width: 376px;vertical-align: bottom;}
+                .td32{padding: 0px;margin: 0px;width: 105px;vertical-align: bottom;}
+                .td33{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 1px;vertical-align: bottom;}
+                .td34{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;}
+                .td35{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 32px;vertical-align: bottom;}
+                .td36{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 4px;vertical-align: bottom;}
+                .td37{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 20px;vertical-align: bottom;}
+                .td38{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;}
+                .td39{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 7px;vertical-align: bottom;}
+                .td40{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 37px;vertical-align: bottom;}
+                .td41{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 12px;vertical-align: bottom;}
+                .td42{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;}
+                .td43{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 44px;vertical-align: bottom;}
+                .td44{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;}
+                .td45{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 14px;vertical-align: bottom;}
+                .td46{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 9px;vertical-align: bottom;}
+                .td47{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 34px;vertical-align: bottom;}
+                .td48{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 24px;vertical-align: bottom;}
+                .td49{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;}
+                .td50{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 18px;vertical-align: bottom;}
+                .td51{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 28px;vertical-align: bottom;}
+                .td52{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 26px;vertical-align: bottom;}
+                .td53{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 94px;vertical-align: bottom;}
+                .td54{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 30px;vertical-align: bottom;}
+                .td55{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;}
+                .td56{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 105px;vertical-align: bottom;}
+                .td57{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 148px;vertical-align: bottom;background: #cccccc;}
+                .td58{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 115px;vertical-align: bottom;}
+                .td59{padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #cccccc;}
+                .td60{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #cccccc;}
+                .td61{padding: 0px;margin: 0px;width: 67px;vertical-align: bottom;background: #cccccc;}
+                .td62{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 7px;vertical-align: bottom;background: #cccccc;}
+                .td63{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #cccccc;}
+                .td64{padding: 0px;margin: 0px;width: 66px;vertical-align: bottom;}
+                .td65{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 25px;vertical-align: bottom;}
+                .td66{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 111px;vertical-align: bottom;background: #cccccc;}
+                .td67{padding: 0px;margin: 0px;width: 133px;vertical-align: bottom;}
+                .td68{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #cccccc;}
+                .td69{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 31px;vertical-align: bottom;background: #cccccc;}
+                .td70{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;background: #cccccc;}
+                .td71{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #cccccc;}
+                .td72{border-right: #000000 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;background: #cccccc;}
+                .td73{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;}
+                .td74{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #cccccc;}
+                .td75{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #cccccc;}
+                .td76{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 33px;vertical-align: bottom;background: #cccccc;}
+                .td77{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 31px;vertical-align: bottom;background: #cccccc;}
+                .td78{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #cccccc;}
+                .td79{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 25px;vertical-align: bottom;}
+                .td80{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 17px;vertical-align: bottom;background: #cccccc;}
+                .td81{border-left: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 79px;vertical-align: bottom;background: #cccccc;}
+                .td82{border-right: #000000 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #cccccc;}
+                .td83{padding: 0px;margin: 0px;width: 35px;vertical-align: bottom;}
+                .td84{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;}
+                .td85{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 118px;vertical-align: bottom;background: #cccccc;}
+                .td86{padding: 0px;margin: 0px;width: 18px;vertical-align: bottom;}
+                .td87{padding: 0px;margin: 0px;width: 28px;vertical-align: bottom;}
+                .td88{padding: 0px;margin: 0px;width: 98px;vertical-align: bottom;background: #cccccc;}
+                .td89{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #cccccc;}
+                .td90{padding: 0px;margin: 0px;width: 134px;vertical-align: bottom;}
+                .td91{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #cccccc;}
+                .td92{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #cccccc;}
+                .td93{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;background: #cccccc;}
+                .td94{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #cccccc;}
+                .td95{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;background: #cccccc;}
+                .td96{border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #cccccc;}
+                .td97{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #cccccc;}
+                .td98{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #cccccc;}
+                .td99{border-right: #cccccc 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 33px;vertical-align: bottom;background: #cccccc;}
+                .td100{border-right: #000000 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #cccccc;}
+                .td101{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #999999;}
+                .td102{border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #999999;}
+                .td103{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #999999;}
+                .td104{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;background: #999999;}
+                .td105{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #999999;}
+                .td106{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;background: #999999;}
+                .td107{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 6px;vertical-align: bottom;background: #999999;}
+                .td108{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 36px;vertical-align: bottom;background: #999999;}
+                .td109{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #999999;}
+                .td110{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #999999;}
+                .td111{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;background: #999999;}
+                .td112{border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #999999;}
+                .td113{border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 299px;vertical-align: bottom;background: #999999;}
+                .td114{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #999999;}
+                .td115{border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 30px;vertical-align: bottom;background: #999999;}
+                .td116{border-right: #999999 1px solid;border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;background: #999999;}
+                .td117{border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 105px;vertical-align: bottom;background: #999999;}
+                .td118{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #999999;}
+                .td119{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #999999;}
+                .td120{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #999999;}
+                .td121{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;background: #999999;}
+                .td122{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #999999;}
+                .td123{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 36px;vertical-align: bottom;background: #999999;}
+                .td124{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #999999;}
+                .td125{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #999999;}
+                .td126{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;background: #999999;}
+                .td127{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #999999;}
+                .td128{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 33px;vertical-align: bottom;background: #999999;}
+                .td129{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 31px;vertical-align: bottom;background: #999999;}
+                .td130{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 17px;vertical-align: bottom;background: #999999;}
+                .td131{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;background: #999999;}
+                .td132{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 25px;vertical-align: bottom;background: #999999;}
+                .td133{border-left: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 79px;vertical-align: bottom;background: #999999;}
+                .td134{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #999999;}
+                .td135{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 30px;vertical-align: bottom;background: #999999;}
+                .td136{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 105px;vertical-align: bottom;background: #999999;}
+                .td137{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;}
+                .td138{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 117px;vertical-align: bottom;background: #cccccc;}
+                .td139{padding: 0px;margin: 0px;width: 240px;vertical-align: bottom;}
+                .td140{padding: 0px;margin: 0px;width: 26px;vertical-align: bottom;}
+                .td141{padding: 0px;margin: 0px;width: 80px;vertical-align: bottom;}
+                .td142{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 36px;vertical-align: bottom;background: #cccccc;}
+                .td143{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #cccccc;}
+                .td144{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #cccccc;}
+                .td145{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 80px;vertical-align: bottom;}
+                .td146{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #cccccc;}
+                .td147{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 73px;vertical-align: bottom;background: #cccccc;}
+                .td148{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #cccccc;}
+                .td149{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #cccccc;}
+                .td150{padding: 0px;margin: 0px;width: 146px;vertical-align: bottom;}
+                .td151{padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;}
+                .td152{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 72px;vertical-align: bottom;}
+                .td153{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 106px;vertical-align: bottom;}
+                .td154{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 56px;vertical-align: bottom;background: #cccccc;}
+                .td155{padding: 0px;margin: 0px;width: 91px;vertical-align: bottom;background: #cccccc;}
+                .td156{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 7px;vertical-align: bottom;background: #cccccc;}
+                .td157{padding: 0px;margin: 0px;width: 46px;vertical-align: bottom;}
+                .td158{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;}
+                .td159{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;background: #cccccc;}
+                .td160{border-left: #000000 1px solid;padding: 0px;margin: 0px;width: 79px;vertical-align: bottom;}
+                .td161{padding: 0px;margin: 0px;width: 178px;vertical-align: bottom;}
+                .td162{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 36px;vertical-align: bottom;background: #cccccc;}
+                .td163{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;}
+                .td164{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 31px;vertical-align: bottom;background: #cccccc;}
+                .td165{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;}
+                .td166{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;background: #cccccc;}
+                .td167{border-left: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 79px;vertical-align: bottom;}
+                .td168{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 93px;vertical-align: bottom;background: #cccccc;}
+                .td169{padding: 0px;margin: 0px;width: 388px;vertical-align: bottom;}
+                .td170{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;background: #cccccc;}
+                .td171{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 6px;vertical-align: bottom;background: #cccccc;}
+                .td172{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 66px;vertical-align: bottom;}
+                .td173{padding: 0px;margin: 0px;width: 24px;vertical-align: bottom;}
+                .td174{padding: 0px;margin: 0px;width: 74px;vertical-align: bottom;}
+                .td175{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;background: #cccccc;}
+                .td176{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 66px;vertical-align: bottom;}
+                .td177{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;}
+                .td178{border-bottom: #999999 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #cccccc;}
+                .td179{border-right: #cccccc 1px solid;border-bottom: #999999 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #cccccc;}
+                .td180{border-right: #cccccc 1px solid;border-bottom: #999999 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #cccccc;}
+                .td181{border-right: #000000 1px solid;border-bottom: #999999 1px solid;padding: 0px;margin: 0px;width: 33px;vertical-align: bottom;background: #cccccc;}
+                .td182{border-right: #cccccc 1px solid;border-bottom: #999999 1px solid;padding: 0px;margin: 0px;width: 25px;vertical-align: bottom;background: #cccccc;}
+                .td183{border-right: #000000 1px solid;border-bottom: #999999 1px solid;padding: 0px;margin: 0px;width: 17px;vertical-align: bottom;background: #cccccc;}
+                .td184{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #999999;}
+                .td185{padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #999999;}
+                .td186{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #999999;}
+                .td187{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 3px;vertical-align: bottom;background: #999999;}
+                .td188{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 19px;vertical-align: bottom;background: #999999;}
+                .td189{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 29px;vertical-align: bottom;background: #999999;}
+                .td190{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 6px;vertical-align: bottom;background: #999999;}
+                .td191{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 36px;vertical-align: bottom;background: #999999;}
+                .td192{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;background: #999999;}
+                .td193{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #999999;}
+                .td194{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 43px;vertical-align: bottom;background: #999999;}
+                .td195{padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #999999;}
+                .td196{padding: 0px;margin: 0px;width: 299px;vertical-align: bottom;background: #999999;}
+                .td197{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #999999;}
+                .td198{padding: 0px;margin: 0px;width: 30px;vertical-align: bottom;background: #999999;}
+                .td199{border-right: #999999 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;background: #999999;}
+                .td200{padding: 0px;margin: 0px;width: 105px;vertical-align: bottom;background: #999999;}
+                .td201{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 48px;vertical-align: bottom;background: #999999;}
+                .td202{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 22px;vertical-align: bottom;background: #999999;}
+                .td203{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 65px;vertical-align: bottom;background: #999999;}
+                .td204{padding: 0px;margin: 0px;width: 338px;vertical-align: bottom;}
+                .td205{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 23px;vertical-align: bottom;background: #cccccc;}
+                .td206{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 58px;vertical-align: bottom;}
+                .td207{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 152px;vertical-align: bottom;}
+                .td208{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #cccccc;}
+                .td209{padding: 0px;margin: 0px;width: 107px;vertical-align: bottom;}
+                .td210{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 11px;vertical-align: bottom;}
+                .td211{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 99px;vertical-align: bottom;background: #cccccc;}
+                .td212{padding: 0px;margin: 0px;width: 58px;vertical-align: bottom;}
+                .td213{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 45px;vertical-align: bottom;background: #cccccc;}
+                .td214{padding: 0px;margin: 0px;width: 258px;vertical-align: bottom;}
+                .td215{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;background: #cccccc;}
+                .td216{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 57px;vertical-align: bottom;}
+                .td217{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 48px;vertical-align: bottom;}
+                .td218{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 22px;vertical-align: bottom;background: #cccccc;}
+                .td219{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #cccccc;}
+                .td220{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 17px;vertical-align: bottom;background: #cccccc;}
+                .td221{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;background: #cccccc;}
+                .td222{padding: 0px;margin: 0px;width: 86px;vertical-align: bottom;background: #cccccc;}
+                .td223{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 8px;vertical-align: bottom;background: #cccccc;}
+                .td224{padding: 0px;margin: 0px;width: 264px;vertical-align: bottom;}
+                .td225{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 86px;vertical-align: bottom;background: #cccccc;}
+                .td226{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 75px;vertical-align: bottom;}
+                .td227{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 48px;vertical-align: bottom;}
+                .td228{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 124px;vertical-align: bottom;}
+                .td229{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;}
+                .td230{padding: 0px;margin: 0px;width: 54px;vertical-align: bottom;background: #cccccc;}
+                .td231{padding: 0px;margin: 0px;width: 95px;vertical-align: bottom;}
+                .td232{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 17px;vertical-align: bottom;}
+                .td233{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 47px;vertical-align: bottom;background: #cccccc;}
+                .td234{padding: 0px;margin: 0px;width: 168px;vertical-align: bottom;}
+                .td235{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;}
+                .td236{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #cccccc;}
+                .td237{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 13px;vertical-align: bottom;background: #cccccc;}
+                .td238{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 37px;vertical-align: bottom;}
+                .td239{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 47px;vertical-align: bottom;background: #cccccc;}
+                .td240{border-top: #999999 1px solid;padding: 0px;margin: 0px;width: 285px;vertical-align: bottom;background: #999999;}
+                .td241{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 155px;vertical-align: bottom;background: #999999;}
+                .td242{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 115px;vertical-align: bottom;background: #999999;}
+                .td243{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 91px;vertical-align: bottom;background: #999999;}
+                .td244{border-right: #999999 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 7px;vertical-align: bottom;background: #999999;}
+                .td245{padding: 0px;margin: 0px;width: 363px;vertical-align: bottom;}
+                .td246{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 193px;vertical-align: bottom;background: #cccccc;}
+                .td247{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 191px;vertical-align: bottom;}
+                .td248{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 179px;vertical-align: bottom;}
+                .td249{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 193px;vertical-align: bottom;background: #cccccc;}
+                .td250{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 191px;vertical-align: bottom;}
+                .td251{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 179px;vertical-align: bottom;}
+                .td252{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 54px;vertical-align: bottom;}
+                .td253{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;background: #cccccc;}
+                .td254{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 61px;vertical-align: bottom;}
+                .td255{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;}
+                .td256{border-right: #000000 1px solid;border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;}
+                .td257{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 129px;vertical-align: bottom;}
+                .td258{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 54px;vertical-align: bottom;}
+                .td259{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;background: #cccccc;}
+                .td260{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 61px;vertical-align: bottom;}
+                .td261{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;}
+                .td262{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 62px;vertical-align: bottom;}
+                .td263{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 129px;vertical-align: bottom;}
+                .td264{padding: 0px;margin: 0px;width: 283px;vertical-align: bottom;}
+                .td265{padding: 0px;margin: 0px;width: 166px;vertical-align: bottom;}
+                .td266{padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;}
+                .td267{padding: 0px;margin: 0px;width: 297px;vertical-align: bottom;}
+                .td268{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 64px;vertical-align: bottom;}
+                .td269{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;}
+                .td270{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 120px;vertical-align: bottom;}
+                .td271{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 166px;vertical-align: bottom;}
+                .td272{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 84px;vertical-align: bottom;}
+                .td273{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 78px;vertical-align: bottom;}
+                .td274{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 145px;vertical-align: bottom;}
+                .td275{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 71px;vertical-align: bottom;background: #cccccc;}
+                .td276{padding: 0px;margin: 0px;width: 120px;vertical-align: bottom;}
+                .td277{border-left: #cccccc 1px solid;border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 164px;vertical-align: bottom;background: #cccccc;}
+                .td278{padding: 0px;margin: 0px;width: 84px;vertical-align: bottom;background: #cccccc;}
+                .td279{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 77px;vertical-align: bottom;background: #cccccc;}
+                .td280{padding: 0px;margin: 0px;width: 145px;vertical-align: bottom;}
+                .td281{border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;background: #cccccc;}
+                .td282{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 98px;vertical-align: bottom;background: #cccccc;}
+                .td283{border-left: #cccccc 1px solid;border-right: #cccccc 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 164px;vertical-align: bottom;background: #cccccc;}
+                .td284{border-right: #000000 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 151px;vertical-align: bottom;background: #cccccc;}
+                .td285{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 162px;vertical-align: bottom;background: #cccccc;}
+                .td286{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 151px;vertical-align: bottom;background: #cccccc;}
+                .td287{border-right: #000000 1px solid;border-top: #cccccc 1px solid;padding: 0px;margin: 0px;width: 162px;vertical-align: bottom;background: #cccccc;}
+                .td288{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 120px;vertical-align: bottom;}
+                .td289{border-left: #cccccc 1px solid;border-right: #cccccc 1px solid;border-top: #cccccc 1px solid;padding: 0px;margin: 0px;width: 164px;vertical-align: bottom;background: #cccccc;}
+                .td290{border-top: #cccccc 1px solid;padding: 0px;margin: 0px;width: 10px;vertical-align: bottom;background: #cccccc;}
+                .td291{border-right: #000000 1px solid;border-top: #cccccc 1px solid;padding: 0px;margin: 0px;width: 151px;vertical-align: bottom;background: #cccccc;}
+                .td292{border-top: #000000 1px solid;padding: 0px;margin: 0px;width: 145px;vertical-align: bottom;}
+                .td293{border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 84px;vertical-align: bottom;background: #cccccc;}
+                .td294{border-right: #000000 1px solid;border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 77px;vertical-align: bottom;background: #cccccc;}
+                .td295{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;background: #cccccc;}
+                .td296{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 71px;vertical-align: bottom;background: #cccccc;}
+                .td297{border-bottom: #cccccc 1px solid;padding: 0px;margin: 0px;width: 74px;vertical-align: bottom;background: #cccccc;}
+                .td298{border-left: #000000 1px solid;border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 164px;vertical-align: bottom;}
+                .td299{border-left: #000000 1px solid;border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 164px;vertical-align: bottom;}
+                .td300{border-right: #cccccc 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;background: #cccccc;}
+                .td301{padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;background: #cccccc;}
+                .td302{padding: 0px;margin: 0px;width: 74px;vertical-align: bottom;background: #cccccc;}
+                .td303{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 74px;vertical-align: bottom;background: #cccccc;}
+                .td304{border-right: #000000 1px solid;border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 77px;vertical-align: bottom;background: #cccccc;}
+                .td305{border-right: #000000 1px solid;padding: 0px;margin: 0px;width: 63px;vertical-align: bottom;}
+                .td306{padding: 0px;margin: 0px;width: 99px;vertical-align: bottom;}
+                .td307{padding: 0px;margin: 0px;width: 286px;vertical-align: bottom;}
+                .td308{padding: 0px;margin: 0px;width: 78px;vertical-align: bottom;}
+                .td309{padding: 0px;margin: 0px;width: 469px;vertical-align: bottom;}
+                .td310{padding: 0px;margin: 0px;width: 385px;vertical-align: bottom;}
+                .td311{padding: 0px;margin: 0px;width: 27px;vertical-align: bottom;}
+                .td312{padding: 0px;margin: 0px;width: 72px;vertical-align: bottom;}
+                .td313{border-bottom: #000000 1px solid;padding: 0px;margin: 0px;width: 74px;vertical-align: bottom;}
+
+                .tr0{height: 27px;}
+                .tr1{height: 20px;}
+                .tr2{height: 25px;}
+                .tr3{height: 21px;}
+                .tr4{height: 18px;}
+                .tr5{height: 8px;}
+                .tr6{height: 17px;}
+                .tr7{height: 5px;}
+                .tr8{height: 16px;}
+                .tr9{height: 7px;}
+                .tr10{height: 6px;}
+                .tr11{height: 15px;}
+                .tr12{height: 11px;}
+                .tr13{height: 12px;}
+                .tr14{height: 9px;}
+                .tr15{height: 19px;}
+                .tr16{height: 10px;}
+                .tr17{height: 26px;}
+                .tr18{height: 32px;}
+                .tr19{height: 44px;}
+
+                .t0{width: 760px;font: 9px 'Helvetica';}
+                .t1{width: 759px;margin-top: 6px;font: 9px 'Helvetica';}
+                .t2{width: 759px;margin-top: 5px;font: 9px 'Helvetica';}
+                .t3{width: 757px;margin-left: 1px;margin-top: 4px;font: 9px 'Helvetica';}
+            </style>
+
+            <div id="p1dimg1">
+                <img src="data:image/jpg;base64,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tv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mium/4QbU/wDnvaf99t/8TR/wg2p/897T/vtv/iaAOZorpv8AhBtT/wCe9p/323/xNH/CDan/AM97T/vtv/iaAOZorpv+EG1P/nvaf99t/wDE0f8ACDan/wA97T/vtv8A4mgDmaK6b/hBtT/572n/AH23/wATR/wg2p/897T/AL7b/wCJoA5mir3inSp/CPhy71y/eOS1tdm9ICS53OqDAIA6sO9FAHceBP8Aknnhr/sFWv8A6KWugrn/AAJ/yTzw1/2CrX/0UtdBQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAef/G3/kkOu/8Abv8A+lEdFHxt/wCSQ67/ANu//pRHRQB0HgT/AJJ54a/7BVr/AOilroK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigD2aivGaKAPZqK8ZooA9morxmigDpvjb/AMkh13/t3/8ASiOiuZooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA9A/4QbTP+e93/32v/xNH/CDaZ/z3u/++1/+JrpqKAOZ/wCEG0z/AJ73f/fa/wDxNH/CDaZ/z3u/++1/+JrpqKAOZ/4QbTP+e93/AN9r/wDE0f8ACDaZ/wA97v8A77X/AOJrpqKAOZ/4QbTP+e93/wB9r/8AE0f8INpn/Pe7/wC+1/8Aia6aigDmf+EG0z/nvd/99r/8TR/wg2mf897v/vtf/ia6aigDmf8AhBtM/wCe93/32v8A8TR/wg2mf897v/vtf/ia6aigDmf+EG0z/nvd/wDfa/8AxNH/AAg2mf8APe7/AO+1/wDia6aigDmf+EG0z/nvd/8Afa//ABNH/CDaZ/z3u/8Avtf/AImumooA5n/hBtM/573f/fa//E0f8INpn/Pe7/77X/4mumooA5n/AIQbTP8Anvd/99r/APE0f8INpn/Pe7/77X/4mumooA5n/hBtM/573f8A32v/AMTR/wAINpn/AD3u/wDvtf8A4mumooA5n/hBtM/573f/AH2v/wATR/wg2mf897v/AL7X/wCJrpqKAOZ/4QbTP+e93/32v/xNH/CDaZ/z3u/++1/+JrpqKAOZ/wCEG0z/AJ73f/fa/wDxNH/CDaZ/z3u/++1/+JrpqKAOZ/4QbTP+e93/AN9r/wDE0f8A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FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHn/xt/wCSQ67/ANu//pRHRR8bf+SQ67/27/8ApRHRQB0Hh7/kOeLP+wrH/wCkVrXQVz/h7/kOeLP+wrH/AOkVrXQUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHn/wAbf+SQ67/27/8ApRHRR8bf+SQ67/27/wDpRHRQB0Hh7/kOeLP+wrH/AOkVrXQVz/h7/kOeLP8AsKx/+kVrXQUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHn/AMbf+SQ67/27/wDpRHRR8bf+SQ67/wBu/wD6UR0UAdRo1jcWmq+IZp49kd3qCTQHcDvQWsEZPHT5kYc+npitiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA4/4paJqPiP4catpOk2/wBovp/J8uLeqbtsyMeWIA4BPJooooA//9k=" alt="" />
+            </div>
+
+        <table cellpadding="0" cellspacing="0" class="t0">
+        <TR>
+            <TD class="tr0 td0"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td1"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td2"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td3"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td4"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td5"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td6"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td7"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td8"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td9"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td9"><P class="p0 ft0"></P></TD>
+            <TD colspan="15" class="tr0 td10"><P class="p1 ft1">PREFEITURA MUNICIPAL DE RIBEIRÃO PRETO</P></TD>
+            <TD class="tr0 td11"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td12"><P class="p0 ft0"></P></TD>
+            <TD class="tr0 td13"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr0 td14"><P class="p2 ft2">Número da</P></TD>
+        </TR>
+        <TR>
+            <TD class="tr1 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td16"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td17"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td18"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td19"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td21"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td22"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td23"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td24"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td24"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td25"><P class="p0 ft0"></P></TD>
+            <TD colspan="14" class="tr1 td26"><P class="p3 ft1">SECRETARIA MUNICIPAL DA FAZENDA</P></TD>
+            <TD class="tr1 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td29"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr1 td30"><P class="p4 ft2"><NOBR>NFS-e</NOBR></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr2 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td16"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td17"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td18"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td19"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td21"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td22"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td23"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td24"><P class="p0 ft0"></P></TD>
+            <TD colspan="16" class="tr2 td31"><P class="p5 ft1">NOTA FISCAL ELETRÔNICA DE SERVIÇO - <NOBR>NFS-e</NOBR></P></TD>
+            <TD class="tr2 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td29"><P class="p0 ft0"></P></TD>
+            <TD class="tr2 td32"><P class="p6 ft1">8356</P></TD>
+            <TD class="tr2 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr3 td33"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td34"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr3 td35"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td36"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td37"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td38"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td39"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td40"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td41"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td41"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td42"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td43"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td44"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td45"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td46"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td47"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td48"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td49"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td37"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td50"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td51"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td37"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td52"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td50"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr3 td53"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td54"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td55"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td56"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td33"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr4 td15"><P class="p0 ft0"></P></TD>
+            <TD colspan="6" class="tr4 td57"><P class="p6 ft3">Data e Hora da Emissão</P></TD>
+            <TD class="tr4 td22"><P class="p0 ft0"></P></TD>
+            <TD colspan="5" class="tr4 td58"><P class="p7 ft4">02/02/2017 09:19:16</P></TD>
+            <TD class="tr4 td59"><P class="p0 ft0"></P></TD>
+            <TD class="tr4 td60"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr4 td61"><P class="p8 ft4">Competência</P></TD>
+            <TD class="tr4 td62"><P class="p0 ft0"></P></TD>
+            <TD class="tr4 td63"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr4 td64"><P class="p9 ft4">1/2/2017</P></TD>
+            <TD class="tr4 td65"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr4 td66"><P class="p10 ft3">Código de Verificação</P></TD>
+            <TD class="tr4 td28"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr4 td67"><P class="p11 ft4">938185204</P></TD>
+            <TD class="tr4 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td68"><P class="p0 ft5"></P></TD>
+            <TD colspan="2" class="tr5 td69"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td70"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td71"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td72"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td39"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td40"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td41"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td41"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td42"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td73"><P class="p0 ft5"></P></TD>
+            <TD colspan="2" class="tr5 td74"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td75"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td76"><P class="p0 ft5"></P></TD>
+            <TD colspan="2" class="tr5 td77"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td78"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td50"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td51"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td37"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td79"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td80"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td81"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td82"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td54"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td51"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td56"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr6 td15"><P class="p0 ft0"></P></TD>
+            <TD colspan="6" class="tr6 td57"><P class="p6 ft3">Número do RPS</P></TD>
+            <TD class="tr6 td22"><P class="p0 ft0"></P></TD>
+            <TD class="tr6 td23"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr6 td83"><P class="p12 ft4">8356</P></TD>
+            <TD class="tr6 td84"><P class="p0 ft0"></P></TD>
+            <TD colspan="7" class="tr6 td85"><P class="p13 ft4">No. da <NOBR>NFS-e</NOBR> substituída</P></TD>
+            <TD class="tr6 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr6 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr6 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr6 td65"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr6 td88"><P class="p14 ft3">Local da Prestação</P></TD>
+            <TD class="tr6 td89"><P class="p0 ft0"></P></TD>
+            <TD class="tr6 td28"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr6 td90"><P class="p15 ft4">RIBEIRAO PRETO - SP</P></TD>
+        </TR>
+        <TR>
+            <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td91"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td92"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td75"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td93"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td94"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td95"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td39"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td40"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td41"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td41"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td42"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td73"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td96"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td97"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td98"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td99"><P class="p0 ft5"></P></TD>
+            <TD colspan="2" class="tr5 td69"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td100"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td50"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td51"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td37"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td79"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td80"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td81"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td82"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td54"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td51"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td56"><P class="p0 ft5"></P></TD>
+            <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr1 td0"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td101"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td102"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td103"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td104"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td105"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td106"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td107"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td108"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td109"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td109"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td110"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td111"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td112"><P class="p0 ft0"></P></TD>
+            <TD colspan="12" class="tr1 td113"><P class="p0 ft6">Dados do Prestador de Serviços</P></TD>
+            <TD class="tr1 td114"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td115"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td116"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td117"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td0"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td118"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td119"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td120"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td121"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td123"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td123"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td124"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td124"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td125"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td126"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td127"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td120"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td128"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td129"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td130"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td131"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td132"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td130"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td133"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td134"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td135"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td131"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td136"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td16"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td17"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td18"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td137"><P class="p0 ft0"></P></TD>
+            <TD colspan="6" class="tr8 td138"><P class="p6 ft4">Razão Social/Nome</P></TD>
+            <TD colspan="12" class="tr8 td139"><P class="p1 ft4">MORAES &amp; FONTES INFORMATICA LTDA - EPP</P></TD>
+            <TD class="tr8 td140"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td141"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr9 td15"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td16"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td17"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td18"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td137"><P class="p0 ft8"></P></TD>
+            <TD class="tr10 td94"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td142"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td142"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td143"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td144"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td42"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td43"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td48"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td46"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td47"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td48"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td49"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td52"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td145"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td45"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td54"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td56"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr11 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td16"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td17"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td18"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td137"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td146"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr11 td147"><P class="p16 ft4">Nome Fantasia</P></TD>
+            <TD class="tr11 td148"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td149"><P class="p0 ft0"></P></TD>
+            <TD colspan="7" class="tr11 td150"><P class="p1 ft4">MORAES E FONTES</P></TD>
+            <TD class="tr11 td151"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td140"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td141"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr9 td15"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td16"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td17"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td18"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td137"><P class="p0 ft8"></P></TD>
+            <TD class="tr10 td94"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td142"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td142"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td143"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td144"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td42"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td43"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td48"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td46"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td47"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td48"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td49"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td43"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td145"><P class="p0 ft9"></P></TD>
+            <TD colspan="3" class="tr10 td152"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td153"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td16"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td17"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td18"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td137"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr8 td154"><P class="p13 ft4">CNPJ/CPF</P></TD>
+            <TD colspan="5" class="tr8 td58"><P class="p17 ft4"><NOBR>03.001.329/0001-65</NOBR></P></TD>
+            <TD colspan="5" class="tr8 td155"><P class="p18 ft4">Inscrição Municipal</P></TD>
+            <TD class="tr8 td156"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td20"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr8 td157"><P class="p19 ft4">12339801</P></TD>
+            <TD class="tr8 td158"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr8 td159"><P class="p20 ft4">Município</P></TD>
+            <TD class="tr8 td160"><P class="p0 ft0"></P></TD>
+            <TD colspan="5" class="tr8 td161"><P class="p0 ft4">RIBEIRAO PRETO - SP</P></TD>
+        </TR>
+        <TR>
+            <TD class="tr9 td15"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td16"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td17"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td18"><P class="p0 ft8"></P></TD>
+            <TD class="tr9 td137"><P class="p0 ft8"></P></TD>
+            <TD class="tr10 td94"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td162"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td40"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td41"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td163"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td73"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td74"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td75"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td76"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td164"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td165"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td166"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td167"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td45"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td54"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td56"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr11 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td16"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td17"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td18"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td137"><P class="p0 ft0"></P></TD>
+            <TD colspan="4" class="tr11 td168"><P class="p21 ft4">Endereço e Cep</P></TD>
+            <TD colspan="17" class="tr11 td169"><P class="p1 ft4">AVENIDA BRAZ OLAIA ACOSTA ,727 - JARDIM CALIFÓRNIA CEP: <NOBR>14026-040</NOBR></P></TD>
+            <TD class="tr11 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr10 td15"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td16"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td17"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td18"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td137"><P class="p0 ft9"></P></TD>
+            <TD class="tr7 td94"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td170"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td171"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td162"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td41"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td163"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td43"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td44"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td45"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td46"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td47"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td48"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td49"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td37"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td50"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td51"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td37"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td52"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td50"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td145"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td45"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td54"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td51"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td56"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr12 td15"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td16"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td17"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td18"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td137"><P class="p0 ft10"></P></TD>
+            <TD colspan="4" rowspan="2" class="tr6 td168"><P class="p22 ft4">Complemento:</P></TD>
+            <TD class="tr12 td24"><P class="p0 ft10"></P></TD>
+            <TD colspan="3" class="tr12 td172"><P class="p23 ft11">TORRE B -</P></TD>
+            <TD class="tr12 td59"><P class="p0 ft10"></P></TD>
+            <TD colspan="3" rowspan="2" class="tr6 td154"><P class="p23 ft4">Telefone:</P></TD>
+            <TD class="tr12 td173"><P class="p0 ft10"></P></TD>
+            <TD colspan="4" rowspan="2" class="tr6 td174"><P class="p21 ft4">00163623882</P></TD>
+            <TD class="tr12 td158"><P class="p0 ft10"></P></TD>
+            <TD colspan="2" rowspan="2" class="tr6 td175"><P class="p13 ft4"><NOBR>e-mail:</NOBR></P></TD>
+            <TD class="tr12 td141"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td27"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td28"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td87"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td32"><P class="p0 ft10"></P></TD>
+            <TD class="tr12 td15"><P class="p0 ft10"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr10 td15"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td16"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td17"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td18"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td137"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td24"><P class="p0 ft9"></P></TD>
+            <TD colspan="3" rowspan="2" class="tr13 td176"><P class="p1 ft4">CONJ. 404</P></TD>
+            <TD class="tr10 td59"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td173"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td158"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td141"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td27"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td28"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td87"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td32"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td15"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td34"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td163"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td46"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td177"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td94"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td170"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td171"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td162"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td41"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td178"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td179"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td180"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td181"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td48"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td49"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td165"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td182"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td183"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td145"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td45"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td54"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td56"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr3 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td184"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td185"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td186"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td187"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td188"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td189"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td190"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td191"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td192"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td192"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td193"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td194"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td195"><P class="p0 ft0"></P></TD>
+            <TD colspan="12" class="tr3 td196"><P class="p1 ft6">Dados do Tomador de Serviços</P></TD>
+            <TD class="tr3 td197"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td198"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td199"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td200"><P class="p0 ft0"></P></TD>
+            <TD class="tr3 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td118"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td129"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td127"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td123"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td201"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td202"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td126"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td127"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td120"><P class="p0 ft7"></P></TD>
+            <TD colspan="3" class="tr7 td203"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td130"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td131"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td132"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td130"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td133"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td134"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td135"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td131"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td136"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+            <TD colspan="5" class="tr8 td85"><P class="p24 ft4">Razão Social/Nome</P></TD>
+            <TD colspan="17" class="tr8 td204"><P class="p1 ft4">COOPERATIVA DE PRODUTORES DE ESTANHO DO BRASIL - COOPERTIN</P></TD>
+            <TD class="tr8 td140"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td141"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td91"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td92"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td75"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td205"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td40"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td40"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td41"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td163"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td43"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td48"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td46"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td206"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td49"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td52"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD colspan="4" class="tr10 td207"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td153"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr11 td15"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td208"><P class="p5 ft4">CNPJ/CPF</P></TD>
+            <TD class="tr11 td17"><P class="p0 ft0"></P></TD>
+            <TD colspan="6" class="tr11 td209"><P class="p17 ft4"><NOBR>26.021.163/0001-44</NOBR></P></TD>
+            <TD class="tr11 td210"><P class="p0 ft0"></P></TD>
+            <TD colspan="6" class="tr11 td211"><P class="p25 ft4">Inscrição Municipal</P></TD>
+            <TD colspan="2" class="tr11 td212"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td151"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td158"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr11 td213"><P class="p0 ft4">Município</P></TD>
+            <TD class="tr11 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td140"><P class="p0 ft0"></P></TD>
+            <TD class="tr11 td86"><P class="p0 ft0"></P></TD>
+            <TD colspan="6" class="tr11 td214"><P class="p26 ft4">ARIQUEMES - RO</P></TD>
+        </TR>
+        <TR>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td215"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td163"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td46"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td36"><P class="p0 ft9"></P></TD>
+            <TD colspan="3" class="tr10 td216"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td217"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td218"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td166"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td74"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td219"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td206"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td49"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td165"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td220"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td221"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td52"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td145"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td45"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td54"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td56"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr8 td222"><P class="p27 ft4">Endereço e CEP</P></TD>
+            <TD class="tr8 td223"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td19"><P class="p0 ft0"></P></TD>
+            <TD colspan="13" class="tr8 td224"><P class="p0 ft4">ROD: BR 421 ,940 - APOIO <NOBR>BR-421</NOBR> CEP: <NOBR>76877-073</NOBR></P></TD>
+            <TD class="tr8 td151"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td140"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td141"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td225"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td219"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td36"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td40"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td40"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td41"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td41"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td42"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td43"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td44"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td45"><P class="p0 ft9"></P></TD>
+            <TD colspan="4" class="tr10 td226"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td37"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td50"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td227"><P class="p0 ft9"></P></TD>
+            <TD colspan="2" class="tr10 td43"><P class="p0 ft9"></P></TD>
+            <TD colspan="3" class="tr10 td228"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td51"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td56"><P class="p0 ft9"></P></TD>
+            <TD class="tr10 td33"><P class="p0 ft9"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr8 td222"><P class="p28 ft4">Complemento:</P></TD>
+            <TD class="tr8 td223"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td19"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td20"><P class="p0 ft0"></P></TD>
+            <TD colspan="3" class="tr8 td174"><P class="p17 ft4">KM 1,1</P></TD>
+            <TD class="tr8 td24"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td24"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td229"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr8 td230"><P class="p29 ft4">Telefone:</P></TD>
+            <TD class="tr8 td89"><P class="p0 ft0"></P></TD>
+            <TD colspan="5" class="tr8 td231"><P class="p12 ft4"><NOBR>(95)3224-3604</NOBR></P></TD>
+            <TD class="tr8 td232"><P class="p0 ft0"></P></TD>
+            <TD colspan="2" class="tr8 td233"><P class="p2 ft4"><NOBR>e-mail:</NOBR></P></TD>
+            <TD colspan="5" class="tr8 td234"><P class="p0 ft4">ROSANGELA@RRCON.COM.BR</P></TD>
+            <TD class="tr8 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr8 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td91"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td92"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td219"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td36"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td37"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td54"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td39"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td40"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td41"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td41"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td235"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td166"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td236"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td237"><P class="p0 ft7"></P></TD>
+            <TD colspan="4" class="tr7 td226"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td238"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td239"><P class="p0 ft7"></P></TD>
+            <TD colspan="2" class="tr7 td43"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td145"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td45"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td54"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td51"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td56"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr1 td0"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td101"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td102"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td103"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td104"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td105"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td106"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td107"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td108"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td109"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td109"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td110"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td111"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td112"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td114"><P class="p0 ft0"></P></TD>
+            <TD colspan="11" class="tr1 td240"><P class="p0 ft6">Discriminação dos Serviços</P></TD>
+            <TD class="tr1 td114"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td115"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td116"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td117"><P class="p0 ft0"></P></TD>
+            <TD class="tr1 td0"><P class="p0 ft0"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+            <TD colspan="7" class="tr7 td241"><P class="p0 ft7"></P></TD>
+            <TD colspan="5" class="tr7 td242"><P class="p0 ft7"></P></TD>
+            <TD colspan="5" class="tr7 td243"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td244"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td130"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td131"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td122"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td132"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td130"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td133"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td134"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td135"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td131"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td136"><P class="p0 ft7"></P></TD>
+            <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+        </TR>
+        <TR>
+            <TD class="tr13 td15"><P class="p0 ft0"></P></TD>
+            <TD colspan="17" class="tr13 td245"><P class="p30 ft4">IMPLANTACAO HOSPEDAGEM - R$ 1.000,00 - 1 - 11/02/2017 - R$ 1.000,00</P></TD>
+            <TD class="tr13 td151"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td20"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td140"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td86"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td141"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td27"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td28"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td87"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td32"><P class="p0 ft0"></P></TD>
+            <TD class="tr13 td15"><P class="p0 ft0"></P></TD>
+        </TR>
+    </table>
+        <P class="p31 ft6">Código do Serviço / Atividade</P>
+        <P class="p32 ft4">1.07 / 01.07.00 / 00010700 - SUPORTE TECNICO EM INFORMATICA, INCLUSIVE INSTALACAO, CONFIGURACAO E MANUTENCA O DE PROGRAMAS DE CO</P>
+        <P class="p33 ft6">Detalhamento Específico da Construção Civil</P>
+        <table cellpadding="0" cellspacing="0" class="t1">
+            <TR>
+                <TD class="tr6 td246"><P class="p34 ft4">Código da Obra</P></TD>
+                <TD class="tr6 td247"><P class="p0 ft0"></P></TD>
+                <TD class="tr6 td246"><P class="p35 ft4">Código ART</P></TD>
+                <TD class="tr6 td248"><P class="p0 ft0"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td249"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td250"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td249"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td251"><P class="p0 ft5"></P></TD>
+            </TR>
+        </table>
+        <P class="p36 ft6">Tributos Federais</P>
+        <table cellpadding="0" cellspacing="0" class="t2">
+            <TR>
+                <TD class="tr6 td0"><P class="p0 ft0"></P></TD>
+                <TD class="tr6 td252"><P class="p0 ft0"></P></TD>
+                <TD class="tr6 td253"><P class="p3 ft4">PIS</P></TD>
+                <TD class="tr6 td254"><P class="p37 ft4">0,00</P></TD>
+                <TD class="tr6 td253"><P class="p29 ft4">COFINS</P></TD>
+                <TD class="tr6 td255"><P class="p38 ft4">0,00</P></TD>
+                <TD class="tr6 td253"><P class="p39 ft4">IR(R$)</P></TD>
+                <TD class="tr6 td255"><P class="p38 ft4">0,00</P></TD>
+                <TD class="tr6 td253"><P class="p40 ft4">INSS(R$)</P></TD>
+                <TD class="tr6 td256"><P class="p37 ft4">0,00</P></TD>
+                <TD class="tr6 td253"><P class="p25 ft4">CSLL(R$)</P></TD>
+                <TD class="tr6 td257"><P class="p41 ft4">0,00</P></TD>
+                <TD class="tr6 td0"><P class="p0 ft0"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr14 td15"><P class="p0 ft12"></P></TD>
+                <TD class="tr5 td258"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td259"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td260"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td259"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td261"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td259"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td261"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td259"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td262"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td259"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td263"><P class="p0 ft5"></P></TD>
+                <TD class="tr14 td15"><P class="p0 ft12"></P></TD>
+            </TR>
+        </table>
+            <table cellpadding="0" cellspacing="0" class="t3">
+            <TR>
+                <TD class="tr6 td15"><P class="p0 ft0"></P></TD>
+                <TD colspan="4" class="tr6 td264"><P class="p42 ft13">Detalhamento de Valores - Prestador dos Serviços</P></TD>
+                <TD class="tr6 td265"><P class="p10 ft14">Outras Retenções</P></TD>
+                <TD class="tr6 td266"><P class="p0 ft0"></P></TD>
+                <TD colspan="3" class="tr6 td267"><P class="p43 ft13">Cálculo do ISSQN devido no Município</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td268"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td269"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td152"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td270"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td271"><P class="p0 ft7"></P></TD>
+                <TD colspan="2" class="tr7 td272"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td273"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td274"><P class="p0 ft7"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr6 td15"><P class="p0 ft0"></P></TD>
+                <TD colspan="2" class="tr6 td155"><P class="p1 ft4">Valor dos Serviços</P></TD>
+                <TD class="tr6 td275"><P class="p0 ft4">R$</P></TD>
+                <TD class="tr6 td276"><P class="p44 ft4">1.000,00</P></TD>
+                <TD class="tr6 td277"><P class="p44 ft4">Natureza Operação</P></TD>
+                <TD colspan="2" class="tr6 td278"><P class="p0 ft4">Valor dos Serviços</P></TD>
+                <TD class="tr6 td279"><P class="p0 ft4">R$</P></TD>
+                <TD class="tr6 td280"><P class="p6 ft4">1.000,00</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td281"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td282"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td270"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td283"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td96"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td284"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td274"><P class="p0 ft5"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr4 td15"><P class="p0 ft0"></P></TD>
+                <TD colspan="3" class="tr4 td285"><P class="p1 ft4"><NOBR>(-)</NOBR> Desconto Incondicionado</P></TD>
+                <TD class="tr4 td276"><P class="p0 ft0"></P></TD>
+                <TD class="tr4 td265"><P class="p6 ft4"><NOBR>1-Tributação</NOBR> no município</P></TD>
+                <TD class="tr4 td59"><P class="p45 ft15"><NOBR>(-)</NOBR></P></TD>
+                <TD colspan="2" class="tr4 td286"><P class="p1 ft4">Deduções permitidas em lei</P></TD>
+                <TD class="tr4 td280"><P class="p6 ft4">0,00</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td281"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td282"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td270"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td271"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td96"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td284"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td274"><P class="p0 ft5"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr6 td0"><P class="p0 ft0"></P></TD>
+                <TD colspan="3" class="tr6 td287"><P class="p1 ft4"><NOBR>(-)</NOBR> Desconto Condicionado</P></TD>
+                <TD class="tr6 td288"><P class="p0 ft0"></P></TD>
+                <TD class="tr6 td289"><P class="p46 ft4">Regime especial Tributação</P></TD>
+                <TD class="tr6 td290"><P class="p45 ft15"><NOBR>(-)</NOBR></P></TD>
+                <TD colspan="2" class="tr6 td291"><P class="p1 ft4">Desconto Incondicionado</P></TD>
+                <TD class="tr6 td292"><P class="p0 ft0"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td281"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td282"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td270"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td283"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td293"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td294"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td274"><P class="p0 ft5"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr6 td15"><P class="p0 ft0"></P></TD>
+                <TD colspan="3" class="tr6 td285"><P class="p1 ft4"><NOBR>(-)</NOBR> Retenções Federais</P></TD>
+                <TD class="tr6 td276"><P class="p44 ft4">0,00</P></TD>
+                <TD class="tr6 td265"><P class="p6 ft4"><NOBR>0-Nenhum</NOBR></P></TD>
+                <TD colspan="2" class="tr6 td278"><P class="p0 ft4">Base de Cálculo</P></TD>
+                <TD class="tr6 td279"><P class="p0 ft0"></P></TD>
+                <TD class="tr6 td280"><P class="p6 ft4">1.000,00</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td33"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td281"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td295"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td296"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td270"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td271"><P class="p0 ft5"></P></TD>
+                <TD colspan="2" class="tr5 td293"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td294"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td274"><P class="p0 ft5"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr15 td15"><P class="p0 ft0"></P></TD>
+                <TD colspan="2" class="tr15 td155"><P class="p1 ft4">Outras Retenções</P></TD>
+                <TD class="tr15 td275"><P class="p0 ft0"></P></TD>
+                <TD class="tr15 td276"><P class="p44 ft4">0,00</P></TD>
+                <TD class="tr15 td277"><P class="p44 ft4">Opção Simples Nacional</P></TD>
+                <TD colspan="2" class="tr15 td278"><P class="p0 ft4">(x) Alíquota %</P></TD>
+                <TD class="tr15 td279"><P class="p0 ft0"></P></TD>
+                <TD class="tr15 td280"><P class="p4 ft13">2,00</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr9 td33"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td281"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td295"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td296"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td270"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td283"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td96"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td297"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td294"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td274"><P class="p0 ft8"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr16 td15"><P class="p0 ft16"></P></TD>
+                <TD colspan="2" rowspan="2" class="tr15 td155"><P class="p1 ft4"><NOBR>(-)</NOBR> ISS Retido</P></TD>
+                <TD class="tr16 td275"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td276"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td298"><P class="p47 ft3">1 - Sim</P></TD>
+                <TD colspan="2" rowspan="2" class="tr15 td278"><P class="p0 ft4">ISS a reter:</P></TD>
+                <TD class="tr16 td279"><P class="p0 ft16"></P></TD>
+                <TD rowspan="2" class="tr15 td280"><P class="p48 ft13">( ) Sim (X) Não</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr14 td15"><P class="p0 ft12"></P></TD>
+                <TD class="tr14 td275"><P class="p0 ft12"></P></TD>
+                <TD class="tr14 td276"><P class="p0 ft12"></P></TD>
+                <TD class="tr14 td298"><P class="p0 ft12"></P></TD>
+                <TD class="tr14 td279"><P class="p0 ft12"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr9 td33"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td281"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td295"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td296"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td270"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td299"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td96"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td297"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td294"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td274"><P class="p0 ft8"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr11 td15"><P class="p0 ft0"></P></TD>
+                <TD colspan="2" rowspan="3" class="tr17 td155"><P class="p1 ft13">(=) Valor Líquido</P></TD>
+                <TD rowspan="3" class="tr17 td275"><P class="p49 ft13">R$</P></TD>
+                <TD rowspan="3" class="tr17 td276"><P class="p6 ft4">1.000,00</P></TD>
+                <TD class="tr11 td277"><P class="p47 ft3">Incentivador Cultura</P></TD>
+                <TD colspan="2" rowspan="3" class="tr17 td278"><P class="p0 ft13">(=) Valor do ISS:</P></TD>
+                <TD rowspan="3" class="tr17 td279"><P class="p40 ft13">R$</P></TD>
+                <TD rowspan="3" class="tr17 td280"><P class="p4 ft13">0,00</P></TD>
+            </TR>
+            <TR>
+                <TD class="tr10 td15"><P class="p0 ft9"></P></TD>
+                <TD class="tr7 td283"><P class="p0 ft7"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr7 td15"><P class="p0 ft7"></P></TD>
+                <TD rowspan="2" class="tr11 td298"><P class="p44 ft3"><NOBR>2-Não</NOBR></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr16 td15"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td300"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td301"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td275"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td276"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td59"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td302"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td279"><P class="p0 ft16"></P></TD>
+                <TD class="tr16 td280"><P class="p0 ft16"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr7 td33"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td281"><P class="p0 ft7"></P></TD>
+                <TD colspan="2" class="tr7 td282"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td270"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td299"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td236"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td303"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td304"><P class="p0 ft7"></P></TD>
+                <TD class="tr7 td274"><P class="p0 ft7"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr9 td15"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td305"><P class="p0 ft8"></P></TD>
+                <TD colspan="2" class="tr9 td306"><P class="p0 ft17">1- Uma via desta Nota Fiscal será</P></TD>
+                <TD colspan="2" class="tr9 td307"><P class="p23 ft15">enviada através do <NOBR>e-mail</NOBR> fornecido pelo Tomador dos Serviços.</P></TD>
+                <TD class="tr9 td266"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td174"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td308"><P class="p0 ft8"></P></TD>
+                <TD class="tr9 td280"><P class="p0 ft8"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td15"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td305"><P class="p0 ft5"></P></TD>
+                <TD colspan="6" class="tr5 td309"><P class="p0 ft15">2- A autenticidade desta Nota Fiscal poderá ser verificada no site, ribeiraopreto.ginfes.com.br com a utilização do Código de Verificação.</P></TD>
+                <TD class="tr5 td308"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td280"><P class="p0 ft5"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr5 td15"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td305"><P class="p0 ft5"></P></TD>
+                <TD colspan="4" class="tr5 td310"><P class="p0 ft15">3 - Documento emitido por ME ou EPP optante pelo Simples Nacional.Não gera direito a crédito fiscal de ISS e IPI.</P></TD>
+                <TD class="tr5 td266"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td174"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td308"><P class="p0 ft5"></P></TD>
+                <TD class="tr5 td280"><P class="p0 ft5"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr18 td15"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td305"><P class="p39 ft4">Avisos</P></TD>
+                <TD class="tr18 td311"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td312"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td276"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td265"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td266"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td174"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td308"><P class="p0 ft0"></P></TD>
+                <TD class="tr18 td280"><P class="p0 ft0"></P></TD>
+            </TR>
+            <TR>
+                <TD class="tr19 td33"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td261"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td269"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td152"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td270"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td271"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td44"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td313"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td273"><P class="p0 ft0"></P></TD>
+                <TD class="tr19 td274"><P class="p0 ft0"></P></TD>
+            </TR>
+        </table>
+    </div>
+
+    </template>
+
+    <template id="main_template_br_nfse_danfe_ginfes">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="br_nfse.danfse_report_template_ginfes" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>
