@@ -8,7 +8,7 @@ import time
 import base64
 import logging
 from datetime import datetime
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
@@ -30,6 +30,19 @@ STATE = {'edit': [('readonly', False)]}
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
+
+    @api.depends('valor_retencao_pis', 'valor_retencao_cofins',
+                 'valor_retencao_irrf', 'valor_retencao_inss',
+                 'valor_retencao_csll')
+    def _compute_total_retencoes(self):
+        for item in self:
+            total = item.valor_retencao_pis + item.valor_retencao_cofins + \
+                item.valor_retencao_irrf + item.valor_retencao_inss + \
+                item.valor_retencao_csll
+            item.retencoes_federais = total
+
+    retencoes_federais = fields.Monetary(
+        string="Retenções Federais", compute=_compute_total_retencoes)
 
     @api.multi
     def _hook_validation(self):
@@ -122,17 +135,18 @@ class InvoiceEletronic(models.Model):
                 'valor_deducao': '0',
                 'valor_pis': str("%.2f" % self.valor_pis),
                 'valor_cofins': str("%.2f" % self.valor_cofins),
-                'valor_inss': str("%.2f" % 0.0),
-                'valor_ir': str("%.2f" % 0.0),
-                'valor_csll': str("%.2f" % 0.0),
+                'valor_inss': str("%.2f" % self.valor_retencao_inss),
+                'valor_ir': str("%.2f" % self.valor_retencao_irrf),
+                'valor_csll': str("%.2f" % self.valor_retencao_csll),
                 'iss_retido': '1' if self.valor_retencao_issqn > 0 else '2',
                 'valor_iss': str("%.2f" % self.valor_issqn),
                 'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
                 'base_calculo': str("%.2f" % self.valor_final),
-                'aliquota_issqn': str("%.2f" % 0.0),
+                'aliquota_issqn': str("%.4f" % (
+                    self.eletronic_item_ids[0].issqn_aliquota / 100)),
                 'valor_liquido_nfse': str("%.2f" % self.valor_final),
-                'codigo_servico': codigo_servico,
-                'codigo_tributacao_municipio': codigo_servico,
+                'codigo_servico': str("%.2f" % float(codigo_servico)),
+                'codigo_tributacao_municipio': '01.07.00 / 00010700',
                 'descricao': descricao,
                 'codigo_municipio': prestador['cidade'],
                 'itens_servico': itens_servico,
