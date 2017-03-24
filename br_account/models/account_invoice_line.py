@@ -38,6 +38,7 @@ class AccountInvoiceLine(models.Model):
             'pis_base_calculo': self.pis_base_calculo,
             'cofins_base_calculo': self.cofins_base_calculo,
             'ii_base_calculo': self.ii_base_calculo,
+            'issqn_base_calculo': self.issqn_base_calculo,
         }
 
     @api.one
@@ -289,7 +290,7 @@ class AccountInvoiceLine(models.Model):
     icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
     icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
     icms_valor_credito = fields.Float(
-        u"Valor de Crédito", compute='_compute_price')
+        u"Valor de Crédito", compute='_compute_price', store=True)
     icms_st_aliquota_deducao = fields.Float(
         string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
