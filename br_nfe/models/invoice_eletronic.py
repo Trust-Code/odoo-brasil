@@ -51,7 +51,8 @@ class InvoiceEletronic(models.Model):
 
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente")
+        string="Ambiente NFe", related="company_id.tipo_ambiente",
+        readonly=True)
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Sim')

@@ -62,6 +62,7 @@ class AccountInvoiceLine(models.Model):
         subtotal = valor_bruto - desconto
 
         taxes = False
+        self._update_invoice_line_ids()
         if self.invoice_line_tax_ids:
             ctx = self._prepare_tax_context()
 
