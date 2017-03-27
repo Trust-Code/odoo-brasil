@@ -184,6 +184,9 @@ class ResPartner(models.Model):
         if self.cnpj_cpf and self.state_id:
             if self.state_id.code == 'AL':
                 raise UserError(u'Alagoas não possui consulta de cadastro')
+            if self.state_id.code == 'RJ':
+                raise UserError(
+                    u'Rio de Janeiro não possui consulta de cadastro')
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
                 raise UserError(u'Configurar o certificado e senha na empresa')
