@@ -118,7 +118,7 @@ class AccountInvoice(models.Model):
         default=_default_fiscal_document)
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
-        store=True, string=u'Electrônico')
+        store=True, string=u'Eletrônico', readonly=True)
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',
         'Documento Fiscal Relacionado', readonly=True,
@@ -230,9 +230,8 @@ class AccountInvoice(models.Model):
             self.account_id = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
-        if self.fiscal_position_id.fiscal_observation_ids:
-            self.fiscal_observation_ids |= \
-                self.fiscal_position_id.fiscal_observation_ids
+        self.fiscal_observation_ids = \
+            self.fiscal_position_id.fiscal_observation_ids
 
     @api.multi
     def action_invoice_cancel_paid(self):
