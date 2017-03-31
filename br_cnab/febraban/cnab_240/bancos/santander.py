@@ -47,7 +47,6 @@ class Santander240(Cnab240):
         elif vals['especie_titulo'] == '08':
             especie = 4
         vals['especie_titulo'] = especie
-        vals['juros_mora_data'] = 0
 
         return vals
 
