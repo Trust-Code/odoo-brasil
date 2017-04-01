@@ -10,7 +10,6 @@ from decimal import Decimal
 import datetime
 import re
 import string
-import unicodedata
 import time
 import logging
 
@@ -243,9 +242,7 @@ class Cnab240(Cnab):
                 Decimal(cobrancasimples_valor_titulos).quantize(
                     Decimal('1.00'))
 
-        remessa = unicode(self.arquivo)
-        return unicodedata.normalize(
-            'NFKD', remessa).encode('ascii', 'ignore')
+        return unicode(self.arquivo)
 
     def data_hoje(self):
         return (int(time.strftime("%d%m%Y")))

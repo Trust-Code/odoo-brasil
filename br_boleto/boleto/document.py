@@ -244,7 +244,7 @@ class BoletoSantander(Boleto):
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
         self.boleto.conta_cedente = \
-            move_line.payment_mode_id.bank_account_id.codigo_convenio
+            move_line.payment_mode_id.boleto_cnab_code
 
 
 class BoletoSicredi(Boleto):
