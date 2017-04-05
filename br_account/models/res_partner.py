@@ -55,7 +55,6 @@ class ResPartner(models.Model):
                    WHERE %s
                    GROUP BY partner_id
                 """ % where_clause
-        import ipdb;ipdb.set_trace()
         self.env.cr.execute(query, where_clause_params)
         price_totals = self.env.cr.dictfetchall()
         for partner, child_ids in all_partners_and_children.items():
