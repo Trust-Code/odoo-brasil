@@ -10,7 +10,8 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     ambiente_nfse = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse")
+        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
+        readonly=True)
 
     def _prepare_edoc_item_vals(self, line):
         res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)

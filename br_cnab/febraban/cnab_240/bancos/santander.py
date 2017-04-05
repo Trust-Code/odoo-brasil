@@ -16,10 +16,10 @@ class Santander240(Cnab240):
 
     def _prepare_header(self):
         vals = super(Santander240, self)._prepare_header()
-        vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
-        vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
-        vals['codigo_transmissao'] = \
-            int(self.order.payment_mode_id.boleto_cnab_code)
+        vals['cedente_agencia_dv'] = 0  # Não obrigatório
+        vals['codigo_transmissao'] = self.codigo_transmissao()
+        vals['controlecob_numero'] = self.order.id
+        vals['controlecob_data_gravacao'] = self.data_hoje()
         return vals
 
     def _prepare_segmento(self, line):
@@ -27,16 +27,16 @@ class Santander240(Cnab240):
 
         carteira, nosso_numero, digito = self.nosso_numero(line.nosso_numero)
 
-        vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
-        vals['cedente_agencia_conta_dv'] = int(vals['cedente_dv_ag_cc'])
         vals['carteira_numero'] = int(carteira)
         vals['nosso_numero'] = int(line.nosso_numero)
         vals['nosso_numero_dv'] = int(digito)
-        dig_ag = int(vals['cedente_agencia_dv'])
-        vals['cedente_agencia_dv'] = dig_ag
+        vals['cedente_agencia_dv'] = 0  # Não obrigatório
+        vals['cedente_conta_dv'] = int(vals['cedente_conta_dv'])
         vals['conta_cobranca'] = vals['cedente_conta']
         vals['conta_cobranca_dv'] = int(vals['cedente_conta_dv'])
         vals['forma_cadastramento'] = 1
+        vals['codigo_multa'] = int(vals['codigo_multa'])
+        vals['codigo_juros'] = int(vals['codigo_juros'])
         # tipo documento : 1- Tradicional , 2- Escritural
         vals['tipo_documento'] = 1
         especie = 2
@@ -47,9 +47,13 @@ class Santander240(Cnab240):
         elif vals['especie_titulo'] == '08':
             especie = 4
         vals['especie_titulo'] = especie
-        vals['juros_mora_data'] = 0
 
         return vals
+
+    def codigo_transmissao(self):
+        return int("%s%s" % (
+            self.order.payment_mode_id.bank_account_id.bra_number,
+            self.order.payment_mode_id.boleto_cnab_code.zfill(11)))
 
     def nosso_numero(self, format):
         digito = format[-1:]
