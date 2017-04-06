@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="br_point_sale_assets_backend"
+          name="br_point_sale_assets"
+          inherit_id="point_of_sale.assets_backend">
+        <xpath expr="." position="inside">
+            <script src="/br_point_sale/static/src/js/main.js"
+                type="text/javascript"></script>
+        </xpath>
+    </template>
+
+</odoo>
