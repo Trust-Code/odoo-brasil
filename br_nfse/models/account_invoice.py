@@ -34,7 +34,13 @@ class AccountInvoice(models.Model):
                 "target": "_blank",
             }
 
+        report = ''
+        if self.invoice_model == '001':
+            report = 'br_nfse.main_template_br_nfse_danfe'
+        elif self.invoice_model == '008':
+            report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
+
         action = self.env['report'].get_action(
-            docs.ids, 'br_nfse.main_template_br_nfse_danfe')
+            docs.ids, report)
         action['report_type'] = 'qweb-html'
         return action

@@ -102,7 +102,8 @@ class InvoiceEletronic(models.Model):
                     '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
                 'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
                                     city_prestador.ibge_code),
-                'cnae': re.sub('[^0-9]', '', self.company_id.cnae_main_id.code)
+                'cnae': re.sub('[^0-9]', '',
+                               self.company_id.cnae_main_id.code or '')
             }
 
             itens_servico = []
