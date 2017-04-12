@@ -36,7 +36,8 @@ class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
     ambiente_nfse = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse")
+        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
+        readonly=True)
     operation = fields.Selection(
         [('T', u"Tributado em São Paulo"),
          ('F', u"Tributado Fora de São Paulo"),
@@ -145,6 +146,11 @@ class InvoiceEletronic(models.Model):
                 descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
 
+            if self.informacoes_legais:
+                descricao += self.informacoes_legais + '\n'
+            if self.informacoes_complementares:
+                descricao += self.informacoes_complementares
+
             rps = {
                 'tomador': tomador,
                 'prestador': prestador,
@@ -181,15 +187,15 @@ class InvoiceEletronic(models.Model):
             codigo_atividade = rps['codigo_atividade']
             tipo_recolhimento = self.operation  # T – Tributado em São Paulo
 
-            assinatura = '%s%s%s%s%sN%s%s%s%s%s%s' % (
+            assinatura = '%s%s%s%s%sN%s%015d%015d%s%s%s' % (
                 str(inscr).zfill(8),
                 self.serie.code.ljust(5),
                 str(self.numero).zfill(12),
                 str(data_envio[0:4] + data_envio[5:7] + data_envio[8:10]),
                 str(tipo_recolhimento),
                 str(iss_retido),
-                str(int(valor_servico*100)).zfill(15),
-                str(int(valor_deducao*100)).zfill(15),
+                round(valor_servico*100),
+                round(valor_deducao*100),
                 str(codigo_atividade).zfill(5),
                 str(tipo_cpfcnpj),
                 str(cnpj_cpf).zfill(14)
