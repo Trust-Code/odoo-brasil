@@ -786,7 +786,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 base64.decodestring(nfe_envio.datas),
                 base64.decodestring(recibo.datas)
             )
-            import ipdb;ipdb.set_trace()
             self.nfe_processada = base64.encodestring(nfe_proc)
             self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:

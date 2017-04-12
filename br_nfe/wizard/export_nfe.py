@@ -4,7 +4,6 @@
 
 import os
 import io
-import re
 import base64
 # from datetime import date
 import os.path
@@ -14,7 +13,7 @@ from StringIO import StringIO
 from odoo import api, fields, models
 
 
-class ExportNfe(models.Model):
+class ExportNfe(models.TransientModel):
     _name = 'wizard.export.nfe'
 
     start_date = fields.Date(string=u"Data Inicial", required=True)
@@ -26,53 +25,6 @@ class ExportNfe(models.Model):
     state = fields.Selection(
         [('init', 'init'), ('done', 'done')],
         'state', readonly=True, default='init')
-
-    def _invoice_vals(self, inv):
-        tomador = {
-            'cnpj_cpf': re.sub(
-                '[^0-9]', '', inv.commercial_partner_id.cnpj_cpf or ''),
-            'inscricao_municipal': re.sub(
-                '[^0-9]', '', inv.commercial_partner_id.inscr_mun or
-                '0000000'),
-            'name': inv.commercial_partner_id.legal_name,
-            'street': inv.commercial_partner_id.street,
-            'number': inv.commercial_partner_id.number,
-            'district': inv.commercial_partner_id.district,
-            'zip': re.sub('[^0-9]', '', inv.commercial_partner_id.zip or ''),
-            'city_code': '%s%s' % (
-                inv.commercial_partner_id.state_id.ibge_code,
-                inv.commercial_partner_id.city_id.ibge_code),
-            'uf_code': inv.commercial_partner_id.state_id.code,
-            'email': inv.partner_id.email,
-            'phone': re.sub('[^0-9]', '', inv.partner_id.phone or ''),
-        }
-        items = []
-        for line in inv.invoice_line_ids:
-            items.append({
-                'name': line.product_id.name,
-                'CNAE': re.sub('[^0-9]', '',
-                               inv.company_id.cnae_main_id.code or ''),
-                'CST': '1',
-                'aliquota': line.issqn_aliquota / 100,
-                'valor_unitario': line.price_unit,
-                'quantidade': int(line.quantity),
-                'valor_total': line.price_subtotal,
-            })
-        emissao = fields.Date.from_string(inv.date_invoice)
-        cfps = '9201'
-        if inv.company_id.city_id.id != inv.commercial_partner_id.city_id.id:
-            cfps = '9202'
-        if inv.company_id.state_id.id != inv.commercial_partner_id.state_id.id:
-            cfps = '9203'
-        return {
-            'tomador': tomador,
-            'items': items,
-            'data_emissao': emissao.strftime('%Y-%m-%dZ'),
-            'cfps': cfps,
-            'base_calculo': inv.issqn_base,
-            'valor_issqn': inv.issqn_value,
-            'valor_total': inv.amount_total
-        }
 
     def _save_zip(self, xmls):
         tmp = '/tmp/odoo/nfse-export/'
