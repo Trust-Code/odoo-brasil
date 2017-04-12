@@ -7,7 +7,7 @@ from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
 
 selection = getBoletoSelection()
-IMPLEMENTADOS = (u'1', u'3', u'7', u'9', u'10')
+IMPLEMENTADOS = (u'1', u'3', u'7', u'9', u'6',u'10')
 
 
 class PaymentMode(models.Model):
