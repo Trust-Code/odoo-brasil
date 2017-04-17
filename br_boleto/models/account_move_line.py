@@ -69,8 +69,10 @@ class AccountMoveLine(models.Model):
                                 data atual. Altere a data de vencimento!')
             if not move.boleto_emitido:
                 move.boleto_emitido = True
-                move.nosso_numero = \
-                    move.payment_mode_id.nosso_numero_sequence.next_by_id()
+                #write nosso numero only if it is not set already
+                if not move.nosso_numero:
+                    move.nosso_numero = \
+                        move.payment_mode_id.nosso_numero_sequence.next_by_id()
 
             boleto = Boleto.getBoleto(move, move.nosso_numero)
             boleto_list.append(boleto.boleto)
