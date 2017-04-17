@@ -25,13 +25,14 @@ class Itau240(Cnab240):
 
     def _prepare_segmento(self, line):
         vals = super(Itau240, self)._prepare_segmento(line)
+        carteira, nosso_numero, digito = self.nosso_numero(line.nosso_numero)
         dv = self.dv_nosso_numero(
             line.payment_mode_id.bank_account_id.bra_number,
             line.payment_mode_id.bank_account_id.acc_number,
             line.payment_mode_id.boleto_carteira,
             line.nosso_numero
         )
-        vals['nosso_numero'] = int(line.nosso_numero)
+        vals['nosso_numero'] = int(nosso_numero)
         vals['nosso_numero_dv'] = dv
         vals['carteira_numero'] = int(
             self.order.payment_mode_id.boleto_carteira)
@@ -39,6 +40,14 @@ class Itau240(Cnab240):
         vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
         vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
         return vals
+
+    # Expected format
+    # 	19/00000020-1
+    def nosso_numero(self, format):
+        digito = format.split('-')[-1]
+        carteira = format.split('/')[0]
+        nosso_numero = format.split('/')[1].split('-')[0]
+        return carteira, nosso_numero, digito
 
     def dv_nosso_numero(self, agencia, conta, carteira, nosso_numero):
         composto = "%4s%5s%3s%8s" % (agencia.zfill(4), conta.zfill(5),
