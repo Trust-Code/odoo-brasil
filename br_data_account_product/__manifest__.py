@@ -13,12 +13,11 @@
         'br_data_account',
     ],
     'data': [
-       # 'data/br_account_product.xml',
+        'data/br_account_product.xml',
     ],
     'demo': [
     ],
     'post_init_hook': 'post_init',
     'category': 'Localisation',
     'auto_install': True,
-
 }
