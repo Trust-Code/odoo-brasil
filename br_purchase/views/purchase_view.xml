@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="br_purchase_order_form" model="ir.ui.view">
+        <field name="name">br_purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="before">
+                <field name="valor_bruto" widget="monetary" />
+                <field name="cfop_id" invisible="1" />
+                <field name="incluir_ipi_base" invisible="1" />
+                <field name="icms_cst_normal" invisible="1" />
+                <field name="icms_csosn_simples" invisible="1" />
+                <field name="icms_st_aliquota_mva" invisible="1" />
+                <field name="aliquota_icms_proprio" invisible="1" />
+                <field name="icms_aliquota_reducao_base" invisible="1" />
+                <field name="icms_st_aliquota_reducao_base" invisible="1" />
+                <field name="icms_st_aliquota_deducao" invisible="1" />
+                <field name="ipi_cst" invisible="1" />
+                <field name="ipi_reducao_bc" invisible="1" />
+                <field name="pis_cst" invisible="1" />
+                <field name="cofins_cst" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form/sheet/group/group/field[@name='price_unit']" position="after">
+                <field name="valor_bruto" />
+                <field name="price_subtotal" />
+                <field name="cfop_id" invisible="1" />
+                <field name="incluir_ipi_base" invisible="1" />
+                <field name="icms_cst_normal" invisible="1" />
+                <field name="icms_csosn_simples" invisible="1" />
+                <field name="icms_st_aliquota_mva" invisible="1" />
+                <field name="aliquota_icms_proprio" invisible="1" />
+                <field name="icms_aliquota_reducao_base" invisible="1" />
+                <field name="icms_st_aliquota_reducao_base" invisible="1" />
+                <field name="icms_st_aliquota_deducao" invisible="1" />
+                <field name="ipi_cst" invisible="1" />
+                <field name="ipi_reducao_bc" invisible="1" />
+                <field name="pis_cst" invisible="1" />
+                <field name="cofins_cst" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <field name="amount_untaxed" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="amount_tax" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="amount_tax" position="before">
+                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}" />
+            </field>
+        </field>
+    </record>
+
+</odoo>

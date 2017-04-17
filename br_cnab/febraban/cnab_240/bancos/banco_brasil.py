@@ -40,10 +40,10 @@ class BancoBrasil240(Cnab240):
         return nosso_numero, digito
 
     def format_nosso_numero(self, convenio, nosso_numero):
-        return "%s%s" % (convenio.zfill(7), nosso_numero.ljust(10))
+        return "%s%s" % (convenio.zfill(7), nosso_numero.zfill(10))
 
     def format_codigo_convenio_banco(self, payment_mode):
         num_convenio = payment_mode.boleto_cnab_code
         carteira = payment_mode.boleto_carteira[:2]
         boleto = payment_mode.boleto_variacao.zfill(3)
-        return "%s0014%s%s  " % (num_convenio, carteira, boleto)
+        return "00%s0014%s%s  " % (num_convenio, carteira, boleto)

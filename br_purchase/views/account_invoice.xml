@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_purchase_invoice_supplier_form" model="ir.ui.view">
+        <field name="name">br_purchase.invoice.supplier.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="icms_cst_normal" invisible="1" />
+                <field name="icms_csosn_simples" invisible="1" />
+                <field name="tax_icms_id" invisible="1"/>
+                <field name="tax_icms_st_id" invisible="1"/>
+                <field name="tax_icms_inter_id" invisible="1"/>
+                <field name="tax_icms_intra_id" invisible="1"/>
+                <field name="tax_icms_fcp_id" invisible="1"/>
+                <field name="tax_simples_id" invisible="1"/>
+                <field name="tax_ipi_id" invisible="1"/>
+                <field name="tax_pis_id" invisible="1"/>
+                <field name="tax_cofins_id" invisible="1"/>
+                <field name="tax_ii_id" invisible="1"/>
+                <field name="tax_issqn_id" invisible="1"/>
+
+                <field name="product_type" invisible="1"/>
+                <field name="company_fiscal_type" invisible="1"/>
+                <field name="cfop_id" invisible="1"/>
+                <field name="fiscal_classification_id" invisible="1"/>
+                <field name="service_type_id" invisible="1"/>
+                <field name="icms_origem" invisible="1"/>
+                <field name="tributos_estimados" invisible="1"/>
+                <field name="incluir_ipi_base" invisible="1"/>
+                <field name="icms_aliquota" invisible="1"/>
+
+                <field name="icms_tipo_base" invisible="1"/>
+                <field name="icms_base_calculo" invisible="1"/>
+                <field name="icms_valor" invisible="1"/>
+                <field name="icms_valor_credito" invisible="1"/>
+
+                <field name="icms_st_tipo_base" invisible="1"/>
+                <field name="icms_st_base_calculo" invisible="1"/>
+                <field name="icms_st_aliquota_mva" invisible="1"/>
+                <field name="icms_st_aliquota" invisible="1"/>
+                <field name="icms_st_valor" invisible="1"/>
+                <field name="icms_aliquota_reducao_base" invisible="1"/>
+                <field name="icms_st_aliquota_reducao_base" invisible="1"/>
+                <field name="icms_st_aliquota_deducao" invisible="1"/>
+                <field name="tem_difal" invisible="1"/>
+                <field name="icms_uf_remet" invisible="1"/>
+                <field name="icms_uf_dest" invisible="1"/>
+                <field name="icms_fcp_uf_dest" invisible="1"/>
+
+                <field name="ipi_cst" invisible="1"/>
+                <field name="ipi_base_calculo" invisible="1"/>
+                <field name="ipi_aliquota" invisible="1"/>
+                <field name="ipi_reducao_bc" invisible="1"/>
+                <field name="ipi_tipo" invisible="1"/>
+                <field name="ipi_valor" invisible="1"/>
+
+                <field name="pis_base_calculo" invisible="1"/>
+                <field name="pis_cst" invisible="1"/>
+                <field name="pis_aliquota" invisible="1"/>
+                <field name="pis_tipo" invisible="1"/>
+                <field name="pis_valor" invisible="1"/>
+
+                <field name="cofins_base_calculo" invisible="1"/>
+                <field name="cofins_cst" invisible="1"/>
+                <field name="cofins_aliquota" invisible="1"/>
+                <field name="cofins_tipo" invisible="1"/>
+                <field name="cofins_valor" invisible="1"/>
+
+                <field name="issqn_aliquota" invisible="1"/>
+                <field name="issqn_tipo" invisible="1"/>
+                <field name="issqn_base_calculo" invisible="1"/>
+                <field name="issqn_valor" invisible="1"/>
+
+                <field name="ii_aliquota" invisible="1"/>
+                <field name="ii_base_calculo" invisible="1"/>
+                <field name="ii_valor" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
