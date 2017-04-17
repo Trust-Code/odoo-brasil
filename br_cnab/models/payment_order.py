@@ -87,8 +87,8 @@ class PaymentOrder(models.Model):
                 # Itau code : 341 supposed not to be larger than 8 digits
                 if self.payment_mode_id.bank_account_id.bank_id.bic == '341':
                     try:
-                        int(line.move_line_id.nosso_numero[:8])
+                        int(line.move_line_id.nosso_numero.split('/')[1].split('-')[0])
                     except:
                         raise UserError(
-                            _(u"Nosso Número for move line must be integer"))
+                            _(u"Nosso Número for move line must be in format xx/xxxxxxxx-x, digits between / and - must be integers"))
 
