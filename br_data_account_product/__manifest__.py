@@ -13,7 +13,7 @@
         'br_data_account',
     ],
     'data': [
-        'data/br_account_product.xml',
+       # 'data/br_account_product.xml',
     ],
     'demo': [
     ],
