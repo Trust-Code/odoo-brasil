@@ -230,8 +230,8 @@ class AccountInvoice(models.Model):
             self.account_id = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
-        self.fiscal_observation_ids = \
-            self.fiscal_position_id.fiscal_observation_ids
+        ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
+        self.fiscal_observation_ids = [(6, False, ob_ids)]
 
     @api.multi
     def action_invoice_cancel_paid(self):
