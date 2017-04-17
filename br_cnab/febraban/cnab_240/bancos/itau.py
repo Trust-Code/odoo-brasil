@@ -30,7 +30,7 @@ class Itau240(Cnab240):
             line.payment_mode_id.bank_account_id.bra_number,
             line.payment_mode_id.bank_account_id.acc_number,
             line.payment_mode_id.boleto_carteira,
-            line.nosso_numero
+            nosso_numero
         )
         vals['nosso_numero'] = int(nosso_numero)
         vals['nosso_numero_dv'] = dv
