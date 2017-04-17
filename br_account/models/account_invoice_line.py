@@ -29,6 +29,7 @@ class AccountInvoiceLine(models.Model):
             'incluir_ipi_base': self.incluir_ipi_base,
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
+            'icms_aliquota_proprio': self.icms_aliquota_proprio,
             'icms_st_aliquota_reducao_base':
             self.icms_st_aliquota_reducao_base,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
@@ -52,7 +53,7 @@ class AccountInvoiceLine(models.Model):
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
-                 'icms_st_aliquota_deducao')
+                 'icms_st_aliquota_deducao', 'icms_aliquota_proprio')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -243,6 +244,9 @@ class AccountInvoiceLine(models.Model):
     icms_st_base_calculo = fields.Float(
         'Base ICMS ST', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
+    icms_aliquota_proprio = fields.Float(
+        '% ICMS Próprio', digits=dp.get_precision('Discount'),
+        default=0.00, help="Usado em casos onde existe apenas ST sem ICMS")
     icms_st_aliquota = fields.Float(
         '% ICMS ST', digits=dp.get_precision('Discount'),
         default=0.00)
