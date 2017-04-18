@@ -39,6 +39,7 @@
         'wizard/cancel_nfe.xml',
         'wizard/carta_correcao_eletronica.xml',
         'wizard/inutilize_nfe_numeration.xml',
+        'wizard/export_nfe.xml',
     ],
     'installable': True,
     'application': True,
