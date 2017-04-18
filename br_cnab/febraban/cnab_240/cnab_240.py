@@ -83,8 +83,6 @@ class Cnab240(Cnab):
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             'cedente_conta_dv': cedente_conta_dv,
-            'cedente_convenio': self.order.payment_mode_id.bank_account_id.
-            codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
             bank_account_id.bra_number_dig,
             'cedente_nome': self.order.user_id.company_id.legal_name,
@@ -237,7 +235,7 @@ class Cnab240(Cnab):
             self.arquivo.incluir_cobranca(header, **seg)
             self.arquivo.lotes[0].header.servico_servico = 1
             # TODO: tratar soma de tipos de cobranca
-            cobrancasimples_valor_titulos += line.move_line_id.amount_currency
+            cobrancasimples_valor_titulos += line.value
             self.arquivo.lotes[0].trailer.cobrancasimples_valor_titulos = \
                 Decimal(cobrancasimples_valor_titulos).quantize(
                     Decimal('1.00'))
