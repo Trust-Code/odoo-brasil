@@ -7,6 +7,7 @@
 
 
 from ..cnab_240 import Cnab240
+from datetime import datetime
 
 
 class Itau240(Cnab240):
@@ -44,6 +45,7 @@ class Itau240(Cnab240):
         vals['sacado_cidade'] = line.partner_id.city_id.name[:15]
         vals['sacado_bairro'] = line.partner_id.district[:15]
         vals['sacado_endereco'] = vals['sacado_endereco'][:40]
+        vals['numero_documento'] = str(datetime.now().year)[2:] + str(line.nosso_numero.split('/')[1].split('-')[0])  # 10 chars limit
         return vals
 
     # Expected format
