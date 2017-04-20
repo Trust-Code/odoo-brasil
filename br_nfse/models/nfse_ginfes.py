@@ -51,6 +51,8 @@ class InvoiceEletronic(models.Model):
             issqn_codigo = ''
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
+            if not self.company_id.cnae_main_id.code:
+                errors.append(u'CNAE Principal da empresa obrigatório')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                               eletr.product_id.name)
@@ -146,7 +148,9 @@ class InvoiceEletronic(models.Model):
                     self.eletronic_item_ids[0].issqn_aliquota / 100)),
                 'valor_liquido_nfse': str("%.2f" % self.valor_final),
                 'codigo_servico': str("%.2f" % float(codigo_servico)),
-                'codigo_tributacao_municipio': '01.07.00 / 00010700',
+                'codigo_tributacao_municipio':
+                self.eletronic_item_ids[0].codigo_tributacao_municipio,
+                # '01.07.00 / 00010700',
                 'descricao': descricao,
                 'codigo_municipio': prestador['cidade'],
                 'itens_servico': itens_servico,
