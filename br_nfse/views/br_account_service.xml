@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <field name="internal_type" position="after" >
                 <field name="codigo_servico_paulistana" />
+                <field name="codigo_tributacao_municipio" />
             </field>
         </field>
     </record>
