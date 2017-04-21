@@ -9,7 +9,7 @@ import StringIO
 from datetime import datetime
 from odoo import fields, models
 from odoo.exceptions import UserError
-
+from decimal import Decimal
 _logger = logging.getLogger(__name__)
 
 try:
@@ -148,41 +148,86 @@ class AccountBankStatementImport(models.TransientModel):
 
         arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
+        total_amt = Decimal(0.00)
         for lote in arquivo.lotes:
-            for evento in lote.eventos:
-                valor = evento.valor_lancamento
-                if evento.tipo_lancamento == 'D':
-                    valor *= -1
-                transacoes.append({
-                    'name': evento.descricao_historico,
-                    'date': datetime.strptime(
-                        str(evento.data_lancamento), '%d%m%Y'),
-                    'amount': valor,
-                    'partner_name': evento.cedente_nome,
-                    'ref': evento.numero_documento,
-                    'unique_import_id': str(evento.servico_numero_registro),
-                })
-        header = arquivo.lotes[0].header
-        trailer = arquivo.lotes[0].trailer
 
-        inicio = datetime.strptime(str(header.data_saldo_inicial), '%d%m%Y')
-        final = datetime.strptime(str(trailer.data_saldo_final), '%d%m%Y')
+            if bank != itau:
+                for evento in lote.eventos:
+                    valor = evento.valor_lancamento
+                    if evento.tipo_lancamento == 'D':
+                        valor *= -1
+                    transacoes.append({
+                        'name': evento.descricao_historico,
+                        'date': datetime.strptime(
+                            str(evento.data_lancamento), '%d%m%Y'),
+                        'amount': valor,
+                        'partner_name': evento.cedente_nome,
+                        'ref': evento.numero_documento,
+                        'unique_import_id': str(evento.servico_numero_registro),
+                    })
+                header = arquivo.lotes[0].header
+                trailer = arquivo.lotes[0].trailer
 
+                inicio = datetime.strptime(str(header.data_saldo_inicial), '%d%m%Y')
+                final = datetime.strptime(str(trailer.data_saldo_final), '%d%m%Y')
+                name = u"%s - %s até %s" % (
+                    arquivo.header.nome_do_banco,
+                    inicio.strftime('%d/%m/%Y'),
+                    final.strftime('%d/%m/%Y')),
+                start_date = inicio
+                balance_start = arquivo.lotes[0].header.valor_saldo_inicial
+                balance_end_real = arquivo.lotes[0].trailer.valor_saldo_final
+            if bank == itau:
+                for evento in lote.eventos:
+                    if evento.servico_segmento == 'T':
+                        transacoes.append({
+                            'name': evento.sacado_nome,
+                            'date': datetime.strptime(
+                                str(evento.vencimento_titulo).zfill(8), '%d%m%Y').date(),
+                            'amount': evento.valor_titulo,
+                            'ref': evento.numero_documento,
+                            'label': evento.sacado_inscricao_numero,  # cnpj
+                            'transaction_id': evento.numero_documento,
+                            # nosso numero, Alfanumérico
+                            'unique_import_id': str(arquivo.header.arquivo_sequencia) + '-' + str(
+                                evento.numero_documento),
+                            'servico_codigo_movimento': evento.servico_codigo_movimento,
+                            'errors': evento.motivo_ocorrencia  # 214-221
+                        })
+                    else:
+                        # set amount and data_ocorrencia from segment U, it has with juros
+                        # Formula:
+                        # amount = base_value + interest - (discount + rebate)
+                        base_value = transacoes[-1]['amount']
+                        interest = evento.titulo_acrescimos
+                        discount = evento.titulo_desconto
+                        rebate = evento.titulo_abatimento
+                        if evento.servico_segmento == 'U':
+                            transacoes[-1]['amount'] = base_value + interest - (discount + rebate)
+                            # replace vencimento with data_ocorrencia
+                            transacoes[-1]['date'] = datetime.strptime(
+                                str(evento.data_ocorrencia).zfill(8), '%d%m%Y')
+                total_amt += evento.titulo_liquido
+                name = u'%s - %s' % (arquivo.header.nome_do_banco,
+                                 arquivo.header.arquivo_data_de_geracao)
+                start_date = datetime.strptime(
+                str(arquivo.header.arquivo_data_de_geracao).zfill(8), '%d%m%Y')
+                balance_start = 0.0
+                balance_end_real = total_amt
         vals_bank_statement = {
-            'name': u"%s - %s até %s" % (
-                arquivo.header.nome_do_banco,
-                inicio.strftime('%d/%m/%Y'),
-                final.strftime('%d/%m/%Y')),
-            'date': inicio,
-            'balance_start': arquivo.lotes[0].header.valor_saldo_inicial,
-            'balance_end_real': arquivo.lotes[0].trailer.valor_saldo_final,
-            'transactions': transacoes
+            'name': name,
+            'date': start_date,
+            'balance_start': balance_start,
+            'balance_end_real': balance_end_real,
+            'transactions': transacoes,
+            'currency_code': u'BRL',
+            'account_number': arquivo.header.cedente_conta,
         }
         account_number = str(arquivo.header.cedente_conta)
         if self.force_journal_account:
             account_number = self.journal_id.bank_acc_number
         return (
-            arquivo.lotes[0].header.moeda,
+            u'BRL',
             account_number,
             [vals_bank_statement]
         )
