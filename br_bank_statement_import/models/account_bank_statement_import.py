@@ -14,11 +14,14 @@ _logger = logging.getLogger(__name__)
 
 try:
     from cnab240.bancos import sicoob
+    from cnab240.bancos import itau
+    from cnab240.bancos import bradesco
+    from cnab240.bancos import hsbc
+    from cnab240.bancos import cef
     from cnab240.tipos import Arquivo
     from ofxparse import OfxParser
 except ImportError:
     _logger.debug('Cannot import cnab240 or ofxparse dependencies.')
-
 
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
@@ -31,6 +34,19 @@ class AccountBankStatementImport(models.TransientModel):
     force_journal_account = fields.Boolean(string=u"Forçar conta bancária?")
     journal_id = fields.Many2one('account.journal', string=u"Conta Bancária",
                                  domain=[('type', '=', 'bank')])
+    # determin bank with codes
+    # considering 1st 3 chars of header are bank code
+    def determine_bank(self, code):
+        if code == '341':
+            return itau
+        elif code == '237':
+            return bradesco
+        elif code == '104':
+            return cef
+        elif code == '756':
+            return sicoob
+        else:
+            raise UserError(u'Bank Not supported')
 
     def _parse_file(self, data_file):
         if self.force_format:
@@ -49,16 +65,15 @@ class AccountBankStatementImport(models.TransientModel):
                 data_file)
 
     def _check_cnab(self, data_file, raise_error=False):
-        try:
-            cnab240_file = tempfile.NamedTemporaryFile()
-            cnab240_file.write(data_file)
-            cnab240_file.flush()
-            Arquivo(sicoob, arquivo=open(cnab240_file.name, 'r'))
-            return True
-        except Exception as e:
-            if raise_error:
-                raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
-            return False
+        cnab240_file = tempfile.NamedTemporaryFile()
+        cnab240_file.write(data_file)
+        cnab240_file.flush()
+        arquivo = open(cnab240_file.name, 'r')
+        # read 1st 3 chars of 1st line from file
+        bank_code =  arquivo.readline()[0:3]
+        bank = self.determine_bank(bank_code)
+        Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
+        return True
 
     def _check_ofx(self, data_file, raise_error=False):
         try:
@@ -121,9 +136,12 @@ class AccountBankStatementImport(models.TransientModel):
     def _parse_cnab(self, data_file, raise_error=False):
         cnab240_file = tempfile.NamedTemporaryFile()
         cnab240_file.write(data_file)
+        # data file is string here
+        bank_code = data_file[0:3]
+        bank = self.determine_bank(bank_code)
         cnab240_file.flush()
 
-        arquivo = Arquivo(sicoob, arquivo=open(cnab240_file.name, 'r'))
+        arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
         for lote in arquivo.lotes:
             for evento in lote.eventos:
