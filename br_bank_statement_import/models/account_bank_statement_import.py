@@ -65,15 +65,20 @@ class AccountBankStatementImport(models.TransientModel):
                 data_file)
 
     def _check_cnab(self, data_file, raise_error=False):
-        cnab240_file = tempfile.NamedTemporaryFile()
-        cnab240_file.write(data_file)
-        cnab240_file.flush()
-        arquivo = open(cnab240_file.name, 'r')
-        # read 1st 3 chars of 1st line from file
-        bank_code =  arquivo.readline()[0:3]
-        bank = self.determine_bank(bank_code)
-        Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
-        return True
+        try:
+            cnab240_file = tempfile.NamedTemporaryFile()
+            cnab240_file.write(data_file)
+            cnab240_file.flush()
+            arquivo = open(cnab240_file.name, 'r')
+            # read 1st 3 chars of 1st line from file
+            bank_code =  arquivo.readline()[0:3]
+            bank = self.determine_bank(bank_code)
+            Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
+            return True
+        except Exception as e:
+            if raise_error:
+                raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
+        return False
 
     def _check_ofx(self, data_file, raise_error=False):
         try:
