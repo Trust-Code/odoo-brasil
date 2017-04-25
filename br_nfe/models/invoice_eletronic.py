@@ -768,7 +768,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def generate_nfe_proc(self):
-        if self.state == 'done':
+        if self.state in ['cancel', 'done', 'denied']:
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
@@ -782,12 +782,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
                 ('datas_fname', 'like', 'nfe-envio')])
-            nfe_proc = gerar_nfeproc(
-                base64.decodestring(nfe_envio.datas),
-                base64.decodestring(recibo.datas)
-            )
-            self.nfe_processada = base64.encodestring(nfe_proc)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+            if nfe_envio.datas and recibo.datas:
+                nfe_proc = gerar_nfeproc(
+                    base64.decodestring(nfe_envio.datas),
+                    base64.decodestring(recibo.datas)
+                )
+                self.nfe_processada = base64.encodestring(nfe_proc)
+                self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:
             raise UserError('A NFe não está validada')
 
