@@ -480,7 +480,7 @@
                                 <tr>
                                     <td><span t-esc="e.product_id.default_code.replace('.', '')"></span></td>
                                     <td>
-                                        <span t-field="e.product_id.name"></span>
+                                        <span t-raw="e.product_id.with_context(display_default_code=False).name_get()[0][1]"></span>
                                         <t t-if="e.informacao_adicional">
                                             <br />
                                             <span t-field="e.informacao_adicional"></span>
