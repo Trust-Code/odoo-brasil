@@ -243,7 +243,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': item.product_id.name,
+            'xProd': item.product_id.with_context(
+                display_default_code=False).name_get()[0][1],
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
