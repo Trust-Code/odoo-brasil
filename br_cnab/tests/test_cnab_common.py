@@ -74,7 +74,7 @@ class TestCnab(TransactionCase):
         ))
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',
-            'code': 'INV',
+            'code': 'NF',
             'type': 'sale',
             'default_debit_account_id': self.revenue_account.id,
             'default_credit_account_id': self.revenue_account.id,

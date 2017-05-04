@@ -15,42 +15,46 @@ class AccountInvoice(models.Model):
         error = ''
         for item in self:
             if item.payment_mode_id and item.payment_mode_id.boleto_type != '':
-                if not self.company_id.partner_id.legal_name:
+                if not item.company_id.partner_id.legal_name:
                     error += u'Empresa - Razão Social\n'
-                if not self.company_id.cnpj_cpf:
+                if not item.company_id.cnpj_cpf:
                     error += u'Empresa - CNPJ\n'
-                if not self.company_id.district:
+                if not item.company_id.district:
                     error += u'Empresa - Bairro\n'
-                if not self.company_id.zip:
+                if not item.company_id.zip:
                     error += u'Empresa - CEP\n'
-                if not self.company_id.city_id.name:
+                if not item.company_id.city_id.name:
                     error += u'Empresa - Cidade\n'
-                if not self.company_id.street:
+                if not item.company_id.street:
                     error += u'Empresa - Logradouro\n'
-                if not self.company_id.number:
+                if not item.company_id.number:
                     error += u'Empresa - Número\n'
-                if not self.company_id.state_id.code:
+                if not item.company_id.state_id.code:
                     error += u'Empresa - Estado\n'
 
-                if not self.commercial_partner_id.name:
+                if not item.commercial_partner_id.name:
                     error += u'Cliente - Nome\n'
-                if self.commercial_partner_id.is_company and \
-                   not self.commercial_partner_id.legal_name:
+                if item.commercial_partner_id.is_company and \
+                   not item.commercial_partner_id.legal_name:
                     error += u'Cliente - Razão Social\n'
-                if not self.commercial_partner_id.cnpj_cpf:
+                if not item.commercial_partner_id.cnpj_cpf:
                     error += u'Cliente - CNPJ/CPF \n'
-                if not self.commercial_partner_id.district:
+                if not item.commercial_partner_id.district:
                     error += u'Cliente - Bairro\n'
-                if not self.commercial_partner_id.zip:
+                if not item.commercial_partner_id.zip:
                     error += u'Cliente - CEP\n'
-                if not self.commercial_partner_id.city_id.name:
+                if not item.commercial_partner_id.city_id.name:
                     error += u'Cliente - Cidade\n'
-                if not self.commercial_partner_id.street:
+                if not item.commercial_partner_id.street:
                     error += u'Cliente - Logradouro\n'
-                if not self.commercial_partner_id.number:
+                if not item.commercial_partner_id.number:
                     error += u'Cliente - Número\n'
-                if not self.commercial_partner_id.state_id.code:
+                if not item.commercial_partner_id.state_id.code:
                     error += u'Cliente - Estado\n'
+
+                if item.number and len(item.number) > 12:
+                    error += u'Numeração da fatura deve ser menor que 12 ' + \
+                        'caracteres quando usado boleto\n'
 
                 if len(error) > 0:
                     raise UserError(u"""Ação Bloqueada!

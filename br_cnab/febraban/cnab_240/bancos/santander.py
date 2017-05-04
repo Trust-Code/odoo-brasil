@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from ..cnab_240 import Cnab240
+from decimal import Decimal
 
 
 class Santander240(Cnab240):
@@ -32,6 +33,8 @@ class Santander240(Cnab240):
         vals['forma_cadastramento'] = 1
         vals['codigo_multa'] = int(vals['codigo_multa'])
         vals['codigo_juros'] = int(vals['codigo_juros'])
+        vals['juros_mora_taxa'] = vals['juros_mora_taxa'] * Decimal('1000')
+        vals['juros_multa'] = vals['juros_multa'] * Decimal('1000')
         # tipo documento : 1- Tradicional , 2- Escritural
         vals['tipo_documento'] = 1
         especie = 2
