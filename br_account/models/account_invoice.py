@@ -325,20 +325,21 @@ class AccountInvoice(models.Model):
             if tax_line.amount and tax_line.tax_id.deduced_account_id:
                 tax = tax_line.tax_id
                 done_taxes.append(tax.id)
-                res.append({
-                    'invoice_tax_line_id': tax_line.id,
-                    'tax_line_id': tax_line.tax_id.id,
-                    'type': 'tax',
-                    'name': tax_line.name,
-                    'price_unit': tax_line.amount*-1,
-                    'quantity': 1,
-                    'price': tax_line.amount*-1,
-                    'account_id': tax_line.tax_id.deduced_account_id.id,
-                    'account_analytic_id': tax_line.account_analytic_id.id,
-                    'invoice_id': self.id,
-                    'tax_ids': [(6, 0, done_taxes)]
-                    if tax_line.tax_id.include_base_amount else []
-                })
+                if tax.tax_discount:
+                    res.append({
+                        'invoice_tax_line_id': tax_line.id,
+                        'tax_line_id': tax_line.tax_id.id,
+                        'type': 'tax',
+                        'name': tax_line.name,
+                        'price_unit': tax_line.amount*-1,
+                        'quantity': 1,
+                        'price': tax_line.amount*-1,
+                        'account_id': tax_line.tax_id.deduced_account_id.id,
+                        'account_analytic_id': tax_line.account_analytic_id.id,
+                        'invoice_id': self.id,
+                        'tax_ids': [(6, 0, done_taxes)]
+                        if tax_line.tax_id.include_base_amount else []
+                    })
         return res
 
     @api.model
