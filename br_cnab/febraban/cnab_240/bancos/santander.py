@@ -35,6 +35,8 @@ class Santander240(Cnab240):
         vals['codigo_juros'] = int(vals['codigo_juros'])
         vals['juros_mora_taxa'] = vals['juros_mora_taxa'] * Decimal('1000')
         vals['juros_multa'] = vals['juros_multa'] * Decimal('1000')
+        # Data da multa fica zerado, dai ele considera data de vencimento
+        vals['data_multa'] = 0
         # tipo documento : 1- Tradicional , 2- Escritural
         vals['tipo_documento'] = 1
         especie = 2
