@@ -453,7 +453,7 @@ class AccountInvoiceLine(models.Model):
             self.tributos_estimados_estaduais + \
             self.tributos_estimados_municipais
 
-    @api.onchange('quantity')
+    @api.onchange('price_subtotal')
     def _br_account_onchange_quantity(self):
         self._set_extimated_taxes(self.price_subtotal)
 
