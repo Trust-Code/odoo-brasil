@@ -22,6 +22,7 @@
                 <field name="icms_aliquota_reducao_base" invisible="1" />
                 <field name="icms_st_aliquota_reducao_base" invisible="1" />
                 <field name="icms_st_aliquota_deducao" invisible="1" />
+                <field name="tem_difal" invisible="1" />
                 <field name="ipi_cst" invisible="1" />
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
@@ -44,6 +45,7 @@
                 <field name="icms_aliquota_reducao_base" invisible="1" />
                 <field name="icms_st_aliquota_reducao_base" invisible="1" />
                 <field name="icms_st_aliquota_deducao" invisible="1" />
+                <field name="tem_difal" invisible="1" />
                 <field name="ipi_cst" invisible="1" />
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
