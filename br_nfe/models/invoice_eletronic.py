@@ -517,6 +517,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vCOFINS': "%.02f" % self.valor_cofins,
             'vOutro': "%.02f" % self.valor_despesas,
             'vNF': "%.02f" % self.valor_final,
+            'vFCPUFDest': "%.02f" % self.valor_icms_fcp_uf_dest,
+            'vICMSUFDest': "%.02f" % self.valor_icms_uf_dest,
+            'vICMSUFRemet': "%.02f" % self.valor_icms_uf_remet,
             'vTotTrib': "%.02f" % self.valor_estimado_tributos,
             # ISSQn
             'vServ': '0.00',
