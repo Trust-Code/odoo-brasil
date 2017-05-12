@@ -51,7 +51,7 @@ class NfseExportInvoice(models.TransientModel):
                                inv.company_id.cnae_main_id.code or ''),
                 'CST': '1',
                 'aliquota': line.issqn_aliquota / 100,
-                'valor_unitario': line.price_unit,
+                'valor_unitario': line.price_subtotal / line.quantity,
                 'quantidade': int(line.quantity),
                 'valor_total': line.price_subtotal,
             })

@@ -34,7 +34,7 @@
                     <CNPJ>{{ tomador.cnpj_cpf }}</CNPJ>
                 </CPFCNPJ>
             </DocIdTomador>
-            <InscricaoMunicipal>{{ tomador.inscricao_municipal }}</InscricaoMunicipal>
+            <InscricaoMunicipal>0000000</InscricaoMunicipal>
         </IdentificacaoTomador>
         <RazaoSocial>{{ tomador.name }}</RazaoSocial>
         <Endereco>
