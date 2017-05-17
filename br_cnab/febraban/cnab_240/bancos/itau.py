@@ -40,7 +40,7 @@ class Itau240(Cnab240):
         vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
         vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
         vals['cedente_nome'] = line.company_id.legal_name[:30]
-        vals['sacado_nome'] = line.partner_id.legal_name[:30]
+        vals['sacado_nome'] = line.partner_id.name[:30]
         vals['sacado_cidade'] = line.partner_id.city_id.name[:15]
         vals['sacado_bairro'] = line.partner_id.district[:15]
         vals['sacado_endereco'] = vals['sacado_endereco'][:40]
