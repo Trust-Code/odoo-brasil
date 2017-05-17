@@ -65,30 +65,46 @@ class PaymentOrder(models.Model):
                     raise UserError(u'Dígito Agência not set')
 
             for line in order.line_ids:
-                if not line.partner_id:
-                    raise UserError(_("Partner not defined for %s" % line.name))
-                if not line.partner_id.legal_name:
-                    raise UserError(
-                        _(u"Razão Social not defined for %s" % line.partner_id.name))
-                if not line.partner_id.state_id:
-                    raise UserError(_("Partner's state not defined"))
-                if not line.partner_id.state_id.code:
-                    raise UserError(_("Partner's state code not defined"))
-                    # max 15 chars
-                if not line.partner_id.district:
-                    raise UserError(_("Partner's bairro not defined"))
-                if not line.partner_id.zip:
-                    raise UserError(_("Partner's CEP not defined"))
-                if not line.partner_id.city_id:
-                    raise UserError(_("Partner's city not defined"))
-                if not line.partner_id.street:
-                    raise UserError(_("Partner's street not defined"))
-
-                # Itau code : 341 supposed not to be larger than 8 digits
-                if self.payment_mode_id.bank_account_id.bank_id.bic == '341':
-                    try:
-                        int(line.move_line_id.nosso_numero.split('/')[1].split('-')[0])
-                    except:
+                if line.state in ['r', 'rj']:
+                    if not line.partner_id:
+                        raise UserError(_("Partner not defined for %s" % line.name))
+                    if line.partner_id.company_type == 'company' and not line.partner_id.legal_name:
                         raise UserError(
-                            _(u"Nosso Número for move line must be in format xx/xxxxxxxx-x, digits between / and - must be integers"))
+                            _(u"Razão Social not defined for %s" % line.partner_id.name))
+                    if not line.partner_id.state_id:
+                        raise UserError(_("Partner's state not defined"))
+                    if not line.partner_id.state_id.code:
+                        raise UserError(_("Partner's state code not defined"))
+                        # max 15 chars
+                    if not line.partner_id.district:
+                        raise UserError(_("Partner's bairro not defined"))
+                    if not line.partner_id.zip:
+                        raise UserError(_("Partner's CEP not defined"))
+                    if not line.partner_id.city_id:
+                        raise UserError(_("Partner's city not defined"))
+                    if not line.partner_id.street:
+                        raise UserError(_("Partner's street not defined"))
+
+                    # Itau code : 341 supposed not to be larger than 8 digits
+                    if self.payment_mode_id.bank_account_id.bank_id.bic == '341':
+                        try:
+                            int(line.move_line_id.nosso_numero.split('/')[1].split('-')[0])
+                        except:
+                            raise UserError(
+                                _(u"Nosso Número for move line must be in format xx/xxxxxxxx-x, digits between / and - must be integers"))
+
+
+class PaymentOrderLine(models.Model):
+    _inherit = "payment.order.line"
+
+    state = fields.Selection([("r", "Rascunho"),
+                              ("ag", "Aguardando"),
+                              ("a", "Aceito"), #code 2
+                              ("e", "Enviado"),
+                              ("rj","Rejeitado"), # code 3
+                              ("p","Pago"), #code 6, 8
+                              ("b", "Baixado"), #code 5,9, 32
+                              ("c", "Cancelado")],
+                              default="r",
+                             string=u"Situação",compute=False)
 
