@@ -643,6 +643,9 @@ class InvoiceEletronicItem(models.Model):
     pis_valor = fields.Monetary(
         string=u'Valor Total', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
+    pis_new_base_calculo = fields.Monetary(
+        string=u'Base de Cálculo PIS/COFINS', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
 
     # ------------ COFINS ------------
     cofins_cst = fields.Selection(

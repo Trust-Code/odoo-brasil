@@ -267,7 +267,7 @@
                                     <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
                                     <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                     <field name="icms_origem"/>
-                                    <field name="icms_tipo_base" invisible="1"/>
+                                    <field name="icms_tipo_base"/>
                                     <field name="incluir_ipi_base" />
                                     <field name="tem_difal" />
                                 </group>
@@ -339,6 +339,7 @@
                                     <field name="pis_rule_id" />
                                 </group>
                                 <group>
+									<field name="pis_new_base_calculo" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
                                     <field name="pis_base_calculo"/>
                                     <field name="tax_pis_id" />
                                     <field name="pis_aliquota" invisible="1"/>

@@ -122,6 +122,7 @@ class AccountInvoice(models.Model):
             'pis_cst': line.pis_cst,
             'pis_aliquota': line.pis_aliquota,
             'pis_base_calculo': line.pis_base_calculo,
+            'pis_new_base_calculo': line.pis_new_base_calculo,
             'pis_valor': line.pis_valor,
             # - COFINS -
             'cofins_cst': line.cofins_cst,

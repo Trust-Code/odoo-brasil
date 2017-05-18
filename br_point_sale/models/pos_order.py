@@ -89,7 +89,7 @@ class PosOrder(models.Model):
             # - ICMS -
             'icms_cst': pos_line.icms_cst_normal,
             'icms_aliquota': pos_line.aliquota_icms,
-            'icms_tipo_base': '3',
+            'icms_tipo_base': pos_line.icms_tipo_base,
             'icms_aliquota_reducao_base': pos_line.icms_aliquota_reducao_base,
             'icms_base_calculo': pos_line.base_icms,
             'icms_valor': pos_line.valor_icms,
@@ -113,6 +113,7 @@ class PosOrder(models.Model):
             'pis_aliquota': pos_line.aliquota_pis,
             'pis_base_calculo': pos_line.base_pis,
             'pis_valor': pos_line.valor_pis,
+            'pis_new_base_calculo': pos_line.pis_new_base_calculo,
             # - COFINS -
             'cofins_cst': pos_line.cofins_cst,
             'cofins_aliquota': pos_line.aliquota_cofins,
@@ -237,6 +238,7 @@ class PosOrderLine(models.Model):
             'icms_base_calculo': self.base_icms,
             'pis_base_calculo': self.base_pis,
             'cofins_base_calculo': self.base_cofins,
+            'pis_new_base_calculo': self.pis_new_base_calculo,
         }
 
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
@@ -273,6 +275,8 @@ class PosOrderLine(models.Model):
             line.ipi_cst = values.get('ipi_cst', False) or u'99'
             line.ipi_reducao_bc = values.get('ipi_reducao_bc', False)
             line.pis_cst = values.get('pis_cst', False)
+            line.pis_new_base_calculo = values.get(
+                'pis_new_base_calculo', False)
             line.cofins_cst = values.get('cofins_cst', False)
             line.valor_bruto = line.qty * line.price_unit
             line.valor_desconto = line.valor_bruto * line.discount / 100
@@ -338,6 +342,7 @@ class PosOrderLine(models.Model):
                                 compute=_compute_amount_line_all)
     base_icms = fields.Float(string='Base ICMS', store=True,
                              compute=_compute_amount_line_all)
+    base_pis_new = fields.Float(string=u'Base PIS New', digits=dp.get_precision('Account'))
     base_pis = fields.Float(string='Base PIS', store=True,
                             compute=_compute_amount_line_all)
     base_cofins = fields.Float(string='Base COFINS', store=True,

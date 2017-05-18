@@ -249,6 +249,8 @@ class AccountTax(models.Model):
         if not pis_cofins_tax:
             return []
         taxes = []
+        if "pis_new_base_calculo" in self.env.context:
+            price_base = self.env.context['pis_new_base_calculo']
         for tax in pis_cofins_tax:
             vals = self._tax_vals(tax)
             vals['amount'] = tax._compute_amount(price_base, 1.0)

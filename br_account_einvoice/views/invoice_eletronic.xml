@@ -95,6 +95,7 @@
                                     <field name="pis_base_calculo"/>
                                     <field name="pis_aliquota"/>
                                     <field name="pis_valor"/>
+									<field name="pis_new_base_calculo"/>
                                 </group>
                             </group>
 
