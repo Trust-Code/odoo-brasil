@@ -139,7 +139,7 @@ class AccountInvoice(models.Model):
         default=_default_fiscal_document)
     is_eletronic = fields.Boolean(
         related='fiscal_document_id.electronic', type='boolean',
-        store=True, string=u'Electrônico')
+        store=True, string=u'Eletrônico', readonly=True)
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',
         'Documento Fiscal Relacionado', readonly=True,
@@ -287,8 +287,8 @@ class AccountInvoice(models.Model):
             self.account_id = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
-        self.fiscal_observation_ids = \
-            self.fiscal_position_id.fiscal_observation_ids
+        ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
+        self.fiscal_observation_ids = [(6, False, ob_ids)]
 
     @api.multi
     def action_invoice_cancel_paid(self):
@@ -301,9 +301,12 @@ class AccountInvoice(models.Model):
     @api.model
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
+
         contador = 0
 
         for line in self.invoice_line_ids:
+            if line.quantity == 0:
+                continue
             res[contador]['price'] = line.price_total
 
             price = line.price_unit * (1 - (
@@ -389,9 +392,9 @@ class AccountInvoice(models.Model):
                     'tax_line_id': tax_line.tax_id.id,
                     'type': 'tax',
                     'name': tax_line.name,
-                    'price_unit': tax_line.amount*-1,
+                    'price_unit': tax_line.amount * -1,
                     'quantity': 1,
-                    'price': tax_line.amount*-1,
+                    'price': tax_line.amount * -1,
                     'account_id': tax_line.tax_id.deduced_account_id.id,
                     'account_analytic_id': tax_line.account_analytic_id.id,
                     'invoice_id': self.id,

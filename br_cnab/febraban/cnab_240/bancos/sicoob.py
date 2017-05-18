@@ -33,6 +33,7 @@ class Sicoob240(Cnab240):
             boleto_modalidade)
         vals['nosso_numero_dv'] = int(digito)
         vals['prazo_baixa'] = '0'
+        vals['codigo_multa'] = int(vals['codigo_multa'])
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         return vals

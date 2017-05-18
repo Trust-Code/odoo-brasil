@@ -30,7 +30,8 @@ class AccountInvoice(models.Model):
         'invoice.eletronic', 'invoice_id',
         'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
-        string="Modelo de Fatura", related="fiscal_document_id.code")
+        string="Modelo de Fatura", related="fiscal_document_id.code",
+        readonly=True)
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
     internal_number = fields.Integer(

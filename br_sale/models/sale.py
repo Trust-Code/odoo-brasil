@@ -263,21 +263,21 @@ class SaleOrderLine(models.Model):
 
         if self.product_id.fiscal_type == 'service':
             res['tributos_estimados_federais'] = \
-                self.product_id.lst_price * (service.federal_nacional / 100)
+                self.price_subtotal * (service.federal_nacional / 100)
             res['tributos_estimados_estaduais'] = \
-                self.product_id.lst_price * (service.estadual_imposto / 100)
+                self.price_subtotal * (service.estadual_imposto / 100)
             res['tributos_estimados_municipais'] = \
-                self.product_id.lst_price * (service.municipal_imposto / 100)
+                self.price_subtotal * (service.municipal_imposto / 100)
         else:
             federal = ncm.federal_nacional if self.product_id.origin in \
                 ('1', '2', '3', '8') else ncm.federal_importado
 
             res['tributos_estimados_federais'] = \
-                self.product_id.lst_price * (federal / 100)
+                self.price_subtotal * (federal / 100)
             res['tributos_estimados_estaduais'] = \
-                self.product_id.lst_price * (ncm.estadual_imposto / 100)
+                self.price_subtotal * (ncm.estadual_imposto / 100)
             res['tributos_estimados_municipais'] = \
-                self.product_id.lst_price * (ncm.municipal_imposto / 100)
+                self.price_subtotal * (ncm.municipal_imposto / 100)
 
         res['tributos_estimados'] = res['tributos_estimados_federais'] + \
             res['tributos_estimados_estaduais'] + \
