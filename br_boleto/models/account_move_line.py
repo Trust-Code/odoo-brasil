@@ -76,7 +76,8 @@ class AccountMoveLine(models.Model):
 
             boleto = Boleto.getBoleto(move, move.nosso_numero)
             boleto_list.append(boleto.boleto)
-            move.gerar_payment_order()
+            # do not create payment order
+            #move.gerar_payment_order()
         return boleto_list
 
     @api.multi
