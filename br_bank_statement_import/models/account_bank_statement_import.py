@@ -222,6 +222,7 @@ class AccountBankStatementImport(models.TransientModel):
             'transactions': transacoes,
             'currency_code': u'BRL',
             'account_number': arquivo.header.cedente_conta,
+            'bank_code' : bank_code,
         }
         account_number = str(arquivo.header.cedente_conta)
         if self.force_journal_account:
