@@ -29,7 +29,7 @@
                     <group name='payment_order'>
                         <group name='references'>
                             <field name="name"/>
-                            <field name="user_id" />
+                            <field name="user_id" invisible="1"/>
                             <field name="amount_total" />
                         </group>
 
