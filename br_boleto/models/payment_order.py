@@ -49,7 +49,7 @@ class PaymentOrder(models.Model):
 
     name = fields.Char(max_length=30, string="Nome", required=True)
     user_id = fields.Many2one('res.users', string=u'Responsável',
-                              required=True)
+                              required=False)
     payment_mode_id = fields.Many2one('payment.mode',
                                       string='Modo de Pagamento',
                                       required=True)
