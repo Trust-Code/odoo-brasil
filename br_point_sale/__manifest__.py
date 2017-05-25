@@ -29,7 +29,11 @@
         'views/res_company.xml',
         'views/invoice_eletronic.xml',
         'views/account_fiscal_position.xml',
+        'views/pos_assets.xml',
+    ],
+    "qweb": [
+         'static/src/xml/pos.xml',
     ],
     'application': True,
-    'installable': False
+    'installable': True
 }

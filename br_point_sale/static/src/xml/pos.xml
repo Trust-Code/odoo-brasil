@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="ClientDetailsEdit">
+        <t t-jquery="div.client-details-left" t-operation="replace">
+            <div class='client-details-left'>
+                <div class='client-detail'>
+                    <span class='label'>Empresa?:</span>
+                    <input type="checkbox" class='detail client-company' name='is_company' t-att-value='partner.is_company'></input>
+                 </div>
+                <div class='client-detail'>
+                    <span class='label'>CPF:</span>
+                    <input class='detail client-cnpj' name='cnpj_cpf' t-att-value='partner.cnpj_cpf' placeholder="CPF"></input>
+                 </div>
+                 <div class='client-detail'>
+                     <span class='label'>Cep</span>
+                     <input class='detail client-address-zip' name='zip' t-att-value='partner.zip || ""' placeholder='ZIP'></input>
+                     <span class="button back">
+                        <i class="fa fa-search"></i>
+                    </span>
+                 </div>
+                <div class='client-detail'>
+                    <span class='label'>Street</span>
+                    <input class='detail client-address-street' name='street' t-att-value='partner.street || ""' placeholder='Street'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Número</span>
+                    <input class='detail client-address-number' name='number' t-att-value='partner.number || ""' placeholder='Número'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Bairro</span>
+                    <input class='detail client-address-district' name='district' t-att-value='partner.district || ""' placeholder='Bairro'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Compl.</span>
+                    <input class='detail client-address-street2' name='street2' t-att-value='partner.street2 || ""' placeholder='Complemento'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Country</span>
+                    <select class='detail client-address-country needsclick' name='country_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.countries' t-as='country'>
+                            <option t-att-value='country.id' t-att-selected="partner.country_id ? ((country.id === partner.country_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='country.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Estado</span>
+                    <select class='detail client-address-state needsclick' name='country_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.countries' t-as='state'>
+                            <option t-att-value='state.id' t-att-selected="partner.state_id ? ((state.id === partner.state_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='state.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Cidade</span>
+                    <select class='detail client-address-city needsclick' name='city_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.countries' t-as='city'>
+                            <option t-att-value='city.id' t-att-selected="partner.city_id ? ((city.id === partner.city_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='city.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+         </t>
+     </t>
+</templates>
