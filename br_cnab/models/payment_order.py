@@ -10,6 +10,15 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
+class ExportedPaymentOrder(models.Model):
+    _name = 'exported.payment.order'
+
+    file = fields.Binary('File', readonly=True)
+    filename = fields.Char('File Name')
+    exported_date = fields.Datetime('Exported Date')
+    order_id = fields.Many2one('payment.order', 'Order')
+
+
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
@@ -17,6 +26,7 @@ class PaymentOrder(models.Model):
     file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
     cnab_valido = fields.Boolean(u'CNAB Válido', readonly=1)
+    exported_files = fields.One2many('exported.payment.order', 'order_id', u'File')
 
     @api.multi
     def gerar_cnab(self):
@@ -38,16 +48,12 @@ class PaymentOrder(models.Model):
             self.name = 'CB%s%s.REM' % (
                 time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
-            self.cnab_file = base64.b64encode(remessa.encode('utf-8'))
-
-            self.env['ir.attachment'].create({
-                'name': self.name,
-                'datas': self.cnab_file,
-                'datas_fname': self.name,
-                'description': 'Arquivo CNAB 240',
-                'res_model': 'payment.order',
-                'res_id': order_id
-            })
+            self.env['exported.payment.order'].create(
+                {'file': base64.b64encode(remessa.encode('utf-8')), 'exported_date': datetime.now(),
+                 'order_id': order.id,
+                 'filename' :'CB%s%s.REM' % (
+                time.strftime('%d%m'), str(order.file_number)) })
+        return remessa
 
     @api.multi
     def validar_cnab(self):
@@ -91,7 +97,8 @@ class PaymentOrder(models.Model):
                             int(line.move_line_id.nosso_numero.split('/')[1].split('-')[0])
                         except:
                             raise UserError(
-                                _(u"Nosso Número for move line must be in format xx/xxxxxxxx-x, digits between / and - must be integers"))
+                                _(
+                                    u"Nosso Número for move line must be in format xx/xxxxxxxx-x, digits between / and - must be integers"))
 
 
 class PaymentOrderLine(models.Model):
@@ -99,12 +106,11 @@ class PaymentOrderLine(models.Model):
 
     state = fields.Selection([("r", "Rascunho"),
                               ("ag", "Aguardando"),
-                              ("a", "Aceito"), #code 2
+                              ("a", "Aceito"),  # code 2
                               ("e", "Enviado"),
-                              ("rj","Rejeitado"), # code 3
-                              ("p","Pago"), #code 6, 8
-                              ("b", "Baixado"), #code 5,9, 32
+                              ("rj", "Rejeitado"),  # code 3
+                              ("p", "Pago"),  # code 6, 8
+                              ("b", "Baixado"),  # code 5,9, 32
                               ("c", "Cancelado")],
-                              default="r",
-                             string=u"Situação",compute=False)
-
+                             default="r",
+                             string=u"Situação", compute=False)

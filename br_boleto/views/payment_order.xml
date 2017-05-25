@@ -38,7 +38,7 @@
                         </group>
                     </group>
 
-                    <group naem='line_ids' string='Linhas de Cobrança' >
+                    <group name='line_ids' string='Linhas de Cobrança' >
                         <field name="line_ids" nolabel='1'>
                             <tree name='account_move_line'>
                                 <field name="move_id" />

@@ -4,19 +4,49 @@
     <record id="br_cnab_payment_order_form_view" model="ir.ui.view">
         <field name="name">br_cnab.payment_order.form.view</field>
         <field name="model">payment.order</field>
-        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_form_view" />
+        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_form_view"/>
         <field name="arch" type="xml">
+            <group name='line_ids' position="replace">
+                <notebook>
+                    <page string="Linhas de Cobrança" name="line_ids">
+                        <group namm='line_ids'>
+                            <field name="line_ids" nolabel='1'>
+                                <tree name='account_move_line'>
+                                    <field name="move_id"/>
+                                    <field name="state"/>
+                                    <field name="name"/>
+                                    <field name="date_maturity"/>
+                                    <field name="value"/>
+                                    <field name='partner_id'/>
+                                    <field name="nosso_numero"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                    <page name="exported_files" string="Exported Files">
+                        <field name="exported_files">
+                            <tree>
+                                <field name="file" filename="filename"/>
+                                <field name="exported_date"/>
+                                <field name="filename" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </group>
             <group name="payment_order" position="before">
                 <div class="oe_button_box" name="button_box">
-                    <button name="gerar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB"/>
-                    <button name="validar_cnab" type="object" class="oe_stat_button" icon="fa-check-square-o" string="Validar CNAB" />
+                    <button name="gerar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                            string="Gerar CNAB"/>
+                    <button name="validar_cnab" type="object" class="oe_stat_button" icon="fa-check-square-o"
+                            string="Validar CNAB"/>
                 </div>
             </group>
             <field name="payment_mode_id" position="after">
-                <field name="cnab_file" />
-                <field name="file_number" />
-                <field name="cnab_valido" />
-                <field name="data_emissao_cnab" />
+                <field name="cnab_file"/>
+                <field name="file_number"/>
+                <field name="cnab_valido"/>
+                <field name="data_emissao_cnab"/>
             </field>
         </field>
     </record>
@@ -24,11 +54,11 @@
     <record id="br_cnab_payment_order_tree_view" model="ir.ui.view">
         <field name="name">trustcode.payment_order.tree.view</field>
         <field name="model">payment.order</field>
-        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_tree_view" />
+        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_tree_view"/>
         <field name="type">tree</field>
-        <field name="arch" type="xml" >
-            <field name="state" position="after" >
-                <field name="data_emissao_cnab" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="data_emissao_cnab"/>
             </field>
         </field>
     </record>
