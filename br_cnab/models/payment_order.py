@@ -51,8 +51,8 @@ class PaymentOrder(models.Model):
             self.env['exported.payment.order'].create(
                 {'file': base64.b64encode(remessa.encode('utf-8')), 'exported_date': datetime.now(),
                  'order_id': order.id,
-                 'filename' :'CB%s%s.REM' % (
-                time.strftime('%d%m'), str(order.file_number)) })
+                 'filename': 'CB%s%s.REM' % (
+                     time.strftime('%d%m'), str(order.file_number))})
         return remessa
 
     @api.multi
@@ -78,18 +78,18 @@ class PaymentOrder(models.Model):
                         raise UserError(
                             _(u"Razão Social not defined for %s" % line.partner_id.name))
                     if not line.partner_id.state_id:
-                        raise UserError(_("Partner's state not defined"))
+                        raise UserError(_("State not defined for %s" % line.partner_id.name))
                     if not line.partner_id.state_id.code:
-                        raise UserError(_("Partner's state code not defined"))
+                        raise UserError(_("State code not defined for %s" % line.partner_id.name))
                         # max 15 chars
                     if not line.partner_id.district:
-                        raise UserError(_("Partner's bairro not defined"))
+                        raise UserError(_("Bairro not defined for %s" % line.partner_id.name))
                     if not line.partner_id.zip:
-                        raise UserError(_("Partner's CEP not defined"))
+                        raise UserError(_("CEP not defined for %s" % line.partner_id.name))
                     if not line.partner_id.city_id:
-                        raise UserError(_("Partner's city not defined"))
+                        raise UserError(_("City not defined for %s" % line.partner_id.name))
                     if not line.partner_id.street:
-                        raise UserError(_("Partner's street not defined"))
+                        raise UserError(_("Street not defined for %s" % line.partner_id.name))
 
                     # Itau code : 341 supposed not to be larger than 8 digits
                     if self.payment_mode_id.bank_account_id.bank_id.bic == '341':
