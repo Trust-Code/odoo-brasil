@@ -26,7 +26,7 @@ class PaymentOrder(models.Model):
     file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
     cnab_valido = fields.Boolean(u'CNAB Válido', readonly=1)
-    exported_files = fields.One2many('exported.payment.order', 'order_id', u'File')
+    exported_files = fields.One2many('exported.payment.order', 'order_id', string= u'File', readonly=True)
 
     @api.multi
     def gerar_cnab(self):
