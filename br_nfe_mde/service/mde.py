@@ -6,14 +6,20 @@ import re
 import base64
 import gzip
 import cStringIO
-from pytrustnfe.certificado import Certificado
-from pytrustnfe.nfe import consulta_nfe_destinada
-from pytrustnfe.nfe import download_nfe
-from pytrustnfe.nfe import recepcao_evento_manifesto
+import logging
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.certificado import Certificado
+    from pytrustnfe.nfe import consulta_nfe_destinada
+    from pytrustnfe.nfe import download_nfe
+    from pytrustnfe.nfe import recepcao_evento_manifesto
+except ImportError:
+    _logger.info('Cannot import pytrustnfe', exc_info=True)
 
 
 def __certificado(company):
-
     cert = company.with_context({'bin_size': False}).nfe_a1_file
     cert_pfx = base64.decodestring(cert)
     certificado = Certificado(cert_pfx, company.nfe_a1_password)
@@ -29,7 +35,7 @@ def distribuicao_nfe(company, ultimo_nsu):
     ultimo_nsu = _format_nsu(ultimo_nsu)
     certificado = __certificado(company)
     cnpj_partner = re.sub('[^0-9]', '', company.cnpj_cpf)
-    consulta= dict(
+    consulta = dict(
         cnpj_cpf=cnpj_partner,
         ultimo_nsu=ultimo_nsu,
         indicador_nfe='0',
@@ -42,7 +48,7 @@ def distribuicao_nfe(company, ultimo_nsu):
         ambiente=1 if company.tipo_ambiente == 'producao' else 2
     )
     retorno = result['object'].Body.nfeConsultaNFDestResult.retConsNFeDest
-    import ipdb; ipdb.set_trace()
+
     if retorno.cStat == 138:
         nfe_list = []
         for doc in result.resposta.loteDistDFeInt.docZip:
@@ -109,10 +115,13 @@ def send_event(company, nfe_key, method):
         }
 
 
-def download_nfe(company, list_nfe):
-    p = __processo(company)
+def exec_download_nfe(company, list_nfe):
+    certificado = __certificado(company)
     cnpj_partner = re.sub('[^0-9]', '', company.cnpj_cpf)
-    result = p.baixar_notas_destinadas(
+    result = download_nfe(
+        estado=company.partner_id.state_id.ibge_code,
+        certificado=certificado,
+        ambiente=1 if company.tipo_ambiente == 'producao' else 2,
         cnpj=cnpj_partner,
         lista_chaves=list_nfe)
 

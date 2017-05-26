@@ -79,7 +79,8 @@ class NfeMde(models.Model):
         }
 
     def _create_attachment(self, event, result):
-        file_name = 'evento-manifesto-%s.xml' % datetime.now().strftime('%Y-%m-%d-%H-%M')
+        file_name = 'evento-manifesto-%s.xml' % datetime.now().strftime(
+            '%Y-%m-%d-%H-%M')
         self.env['ir.attachment'].create(
             {
                 'name': file_name,
@@ -92,7 +93,6 @@ class NfeMde(models.Model):
 
     @api.one
     def action_known_emission(self):
-        validate_nfe_configuration(self.company_id)
         nfe_result = send_event(
             self.company_id, self.chNFe, 'ciencia_operacao')
         env_events = self.env['l10n_br_account.document_event']
@@ -113,7 +113,6 @@ class NfeMde(models.Model):
 
     @api.one
     def action_confirm_operation(self):
-        validate_nfe_configuration(self.company_id)
         nfe_result = send_event(
             self.company_id,
             self.chNFe,
@@ -133,7 +132,6 @@ class NfeMde(models.Model):
 
     @api.one
     def action_unknown_operation(self):
-        validate_nfe_configuration(self.company_id)
         nfe_result = send_event(
             self.company_id,
             self.chNFe,
@@ -153,7 +151,6 @@ class NfeMde(models.Model):
 
     @api.one
     def action_not_operation(self):
-        validate_nfe_configuration(self.company_id)
         nfe_result = send_event(
             self.company_id,
             self.chNFe,
@@ -173,7 +170,6 @@ class NfeMde(models.Model):
 
     @api.one
     def action_download_xml(self):
-        validate_nfe_configuration(self.company_id)
         nfe_result = download_nfe(self.company_id, [self.chNFe])
         env_events = self.env['l10n_br_account.document_event']
 
@@ -187,7 +183,8 @@ class NfeMde(models.Model):
                     'name': file_name,
                     'datas': base64.b64encode(nfe_result['file_returned']),
                     'datas_fname': file_name,
-                    'description': u'XML NFe - Download manifesto do destinatário',
+                    'description':
+                    u'XML NFe - Download manifesto do destinatário',
                     'res_model': 'nfe.mde',
                     'res_id': self.id
                 })

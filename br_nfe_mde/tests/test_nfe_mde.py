@@ -2,9 +2,7 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import time
 from odoo.tests import common
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from mock import patch
 
 
@@ -15,8 +13,8 @@ class TestNfeMde(common.TransactionCase):
         self.mde = self.env['nfe.mde'].create(
             {'company_id': 1, 'chNFe': '123'})
 
-    @patch('openerp.addons.nfe_mde.nfe_mde.send_event')
-    @patch('openerp.addons.nfe_mde.nfe_mde.validate_nfe_configuration')
+    @patch('odoo.addons.br_nfe_mde.nfe_mde.send_event')
+    @patch('odoo.addons.br_nfe_mde.nfe_mde.validate_nfe_configuration')
     def test_action_known_emission(self, validate, send_event):
         validate.return_value = True
         send_event.return_value = {'file_returned': 'file.xml',

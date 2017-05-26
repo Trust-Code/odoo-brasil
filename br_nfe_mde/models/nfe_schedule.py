@@ -38,33 +38,12 @@ class NfeSchedule(models.TransientModel):
         companies = self.env['res.company'].search([])
         for company in companies:
             try:
+                if not company.cert_state == 'valid':
+                    continue
+
                 nfe_result = distribuicao_nfe(company, company.last_nsu_nfe)
 
                 if nfe_result['code'] == '137' or nfe_result['code'] == '138':
-                    event = {
-                        'type': '12', 'company_id': company.id,
-                        'response': 'Consulta distribuição: sucesso',
-                        'status': nfe_result['code'],
-                        'message': nfe_result['message'],
-                        'create_date': datetime.now(),
-                        'write_date': datetime.now(),
-                        'end_date': datetime.now(),
-                        'state': 'done', 'origin': 'Scheduler Download'
-                    }
-
-                    obj = env_events.create(event)
-                    self.env['ir.attachment'].create(
-                        {
-                            'name': u"Consulta manifesto - {0}".format(
-                                company.cnpj_cpf),
-                            'datas': base64.b64encode(
-                                nfe_result['file_returned']),
-                            'datas_fname': u"Consulta manifesto - {0}".format(
-                                company.cnpj_cpf),
-                            'description': u'Consulta distribuição: sucesso',
-                            'res_model': 'l10n_br_account.document_event',
-                            'res_id': obj.id
-                        })
 
                     env_mde = self.env['nfe.mde']
 
@@ -106,35 +85,14 @@ class NfeSchedule(models.TransientModel):
 
                         company.last_nsu_nfe = nfe['NSU']
                 else:
+                    message = "%s - %s" % (nfe_result['code'],
+                                           nfe_result['message'])
+                    _logger.error(message)
+                    if raise_error:
+                        raise UserError(message)
 
-                    event = {
-                        'type': '12',
-                        'response': 'Consulta distribuição com problemas',
-                        'company_id': company.id,
-                        'file_returned': nfe_result['file_returned'],
-                        'file_sent': nfe_result['file_sent'],
-                        'message': nfe_result['message'],
-                        'create_date': datetime.now(),
-                        'write_date': datetime.now(),
-                        'end_date': datetime.now(),
-                        'status': nfe_result['code'],
-                        'state': 'done', 'origin': 'Scheduler Download'
-                    }
-
-                    obj = env_events.create(event)
-                    self.env['ir.attachment'].create(
-                        {
-                            'name': u"Consulta manifesto - {0}".format(
-                                company.cnpj_cpf),
-                            'datas': base64.b64encode(
-                                nfe_result['file_returned']),
-                            'datas_fname': u"Consulta manifesto - {0}".format(
-                                company.cnpj_cpf),
-                            'description': u'Consulta manifesto com erro',
-                            'res_model': 'l10n_br_account.document_event',
-                            'res_id': obj.id
-                        })
-
+            except UserError:
+                raise
             except Exception:
                 _logger.error("Erro ao consultar Manifesto", exc_info=True)
                 if raise_error:
