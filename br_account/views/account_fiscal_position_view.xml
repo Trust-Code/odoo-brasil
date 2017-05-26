@@ -179,6 +179,15 @@
                     <group name="issqn_rules" string="Regras ISSQN">
                         <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>
                     </group>
+                    <group name="irrf_rules" string="Regras de IRRF">
+                        <field nolabel="1" name="irrf_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'irrf'}" />
+                    </group>
+                    <group name="inss_rules" string="Regras de INSS">
+                        <field nolabel="1" name="inss_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'inss'}" />
+                    </group>
+                    <group name="csll_rules" string="Regras de CSLL">
+                        <field nolabel="1" name="csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll'}" />
+                    </group>
                     <group name="ii_rules" string="Regras de II">
                         <field nolabel="1" name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
                     </group>

@@ -63,7 +63,7 @@
                         </group>
                     </group>
                 </page>
-                <page name="documentos_relacionados" string="Doc. Relacionados" >
+                <page name="documentos_relacionados" string="Doc. Relacionados" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <field name="fiscal_document_related_ids" >
                         <tree>
                             <field name="invoice_related_id" />
@@ -74,7 +74,7 @@
                         </tree>
                     </field>
                 </page>
-                <page name="carta_correcao" string="Cartas de Correção" >
+                <page name="carta_correcao" string="Cartas de Correção" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <field name="cartas_correcao_ids" >
                         <tree>
                             <field name="sequencial_evento" />
@@ -95,7 +95,6 @@
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="nfe_processada_name" invisible="1"/>
                 <field name="nfe_processada" filename="nfe_processada_name"/>
-                <button name="generate_nfe_proc" type="object" string="Gerar NFe Processada" />
             </field>
             <field name="finalidade_emissao" position="after">
                 <field name="tipo_emissao" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />

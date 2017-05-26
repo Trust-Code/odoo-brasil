@@ -10,7 +10,8 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     ambiente_nfse = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse")
+        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
+        readonly=True)
 
     def _prepare_edoc_item_vals(self, line):
         res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)
@@ -23,7 +24,23 @@ class AccountInvoice(models.Model):
             [('invoice_id', '=', self.id)])
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+
+        if self.invoice_model == '009':
+            if docs[0].state != 'done':
+                raise UserError('Nota Fiscal na fila de envio. Aguarde!')
+            return {
+                "type": "ir.actions.act_url",
+                "url": docs[0].url_danfe,
+                "target": "_blank",
+            }
+
+        report = ''
+        if self.invoice_model == '001':
+            report = 'br_nfse.main_template_br_nfse_danfe'
+        elif self.invoice_model == '008':
+            report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
+
         action = self.env['report'].get_action(
-            docs.ids, 'br_nfse.main_template_br_nfse_danfe')
+            docs.ids, report)
         action['report_type'] = 'qweb-html'
         return action
