@@ -620,7 +620,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     def _prepare_lote(self, lote, nfe_values):
         return {
             'idLote': lote,
-            'indSinc': 1,
+            'indSinc': 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
