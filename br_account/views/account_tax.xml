@@ -6,6 +6,9 @@
         <field name="model">account.tax</field>
         <field name="inherit_id" ref="account.view_tax_form"/>
         <field name="arch" type="xml">
+            <field name="price_include" position="before">
+                <field name="tax_discount"/>
+            </field>
             <xpath expr="//div" position="attributes">
                 <attribute name="attrs">{'invisible':[('amount_type','not in', ('fixed', 'percent', 'division', 'icmsst'))]}</attribute>
             </xpath>
