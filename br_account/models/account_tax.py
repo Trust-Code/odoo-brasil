@@ -77,6 +77,8 @@ class AccountTax(models.Model):
                                ('fcp', 'FCP'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
+    tax_discount = fields.Boolean(string='Discount this Tax in Price',
+                                  help="Mark it for (ICMS, PIS e etc.).")
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):

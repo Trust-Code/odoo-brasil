@@ -47,17 +47,21 @@ class PaymentOrder(models.Model):
                 amount_total += line.value
             item.amount_total = amount_total
 
-    name = fields.Char(max_length=30, string="Nome", required=True)
+    name = fields.Char(max_length=30, string="Nome", required=True, readonly=True,
+                       states={'draft': [('readonly', False)]}, )
     user_id = fields.Many2one('res.users', string=u'Responsável',
-                              required=True)
+                              required=False, readonly=True, states={'draft': [('readonly', False)]}, )
     payment_mode_id = fields.Many2one('payment.mode',
                                       string='Modo de Pagamento',
-                                      required=True)
-    state = fields.Selection([('draft', 'Rascunho'), ('cancel', 'Cancelado'),
-                              ('open', 'Confirmado'), ('done', 'Fechado')],
-                             string=u"Situação")
+                                      required=True, readonly=True, states={'draft': [('readonly', False)]}, )
+    state = fields.Selection([('draft', 'Rascunho'),
+                              ('open', 'Confirmado'),
+                              ('done', 'Fechado'),
+                              ('cancel', 'Cancelado')],
+                             string=u"Situação", readonly=True, states={'draft': [('readonly', False)]}, )
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
-                               required=True, string=u'Linhas de Cobrança')
+                               required=True, string=u'Linhas de Cobrança', readonly=True,
+                               states={'draft': [('readonly', False)]}, )
     currency_id = fields.Many2one('res.currency', string='Moeda')
     amount_total = fields.Float(string="Total",
                                 compute='_compute_amount_total')
