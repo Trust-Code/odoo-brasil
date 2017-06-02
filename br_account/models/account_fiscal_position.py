@@ -23,6 +23,8 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
+                               ('irpj', 'IRPJ'),
+                               ('csll', 'CSLL'),
                                ('outros', 'Outros')], string="Tipo")
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u"Posição Fiscal")
