@@ -315,6 +315,24 @@
                                 <field name="issqn_valor"/>
                             </group>
                         </page>
+                        <page name="csll" string="CSLL" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                            <group>
+                                <field name="tax_csll_id" />
+                                <field name="csll_tipo"/>
+                                <field name="csll_base_calculo"/>
+                                <field name="csll_aliquota" invisible="1" />
+                                <field name="csll_valor"/>
+                            </group>
+                        </page>
+                        <page name="irpj" string="IRPJ" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                            <group>
+                                <field name="tax_irpj_id" />
+                                <field name="irpj_tipo"/>
+                                <field name="irpj_base_calculo"/>
+                                <field name="irpj_aliquota" invisible="1" />
+                                <field name="irpj_valor"/>
+                            </group>
+                        </page>
                         <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>

@@ -47,6 +47,7 @@ class AccountInvoiceLine(models.Model):
                  'tax_icms_id', 'tax_icms_st_id', 'tax_icms_inter_id',
                  'tax_icms_intra_id', 'tax_icms_fcp_id', 'tax_ipi_id',
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
+                 'tax_csll_id','tax_irpj_id',
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
@@ -92,6 +93,10 @@ class AccountInvoiceLine(models.Model):
                    if x['id'] == self.tax_cofins_id.id]) if taxes else []
         issqn = ([x for x in taxes['taxes']
                   if x['id'] == self.tax_issqn_id.id]) if taxes else []
+        irpj = ([x for x in taxes['taxes']
+                  if x['id'] == self.tax_irpj_id.id]) if taxes else []
+        csll = ([x for x in taxes['taxes']
+                 if x['id'] == self.tax_csll_id.id]) if taxes else []
         ii = ([x for x in taxes['taxes']
                if x['id'] == self.tax_ii_id.id]) if taxes else []
 
@@ -129,6 +134,10 @@ class AccountInvoiceLine(models.Model):
             'cofins_valor': sum([x['amount'] for x in cofins]),
             'issqn_base_calculo': sum([x['base'] for x in issqn]),
             'issqn_valor': sum([x['amount'] for x in issqn]),
+            'csll_base_calculo': sum([x['base'] for x in csll]),
+            'csll_valor': sum([x['amount'] for x in csll]),
+            'irpj_base_calculo': sum([x['base'] for x in irpj]),
+            'irpj_valor': sum([x['amount'] for x in irpj]),
             'ii_base_calculo': sum([x['base'] for x in ii]),
             'ii_valor': sum([x['amount'] for x in ii]),
         })
@@ -371,6 +380,44 @@ class AccountInvoiceLine(models.Model):
         'Perc COFINS', digits=dp.get_precision('Discount'))
 
     # =========================================================================
+    # CSLL
+    # =========================================================================
+    csll_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra')
+    tax_csll_id = fields.Many2one('account.tax', string=u"Alíquota CSLL",
+                                  domain=[('domain', '=', 'csll')])
+    csll_tipo = fields.Selection([('percent', 'Percentual')],
+                                 string='Tipo do CSLL', required=True,
+                                 default='percent')
+    csll_base_calculo = fields.Float(
+        'Base CSLL', compute='_compute_price', store=True,
+        digits=dp.get_precision('Account'))
+    csll_valor = fields.Float(
+        'Valor CSLL', digits=dp.get_precision('Account'),
+        compute='_compute_price', store=True)
+    csll_aliquota = fields.Float(
+        'Perc CSLL', digits=dp.get_precision('Discount'))
+
+    # =========================================================================
+    # IRPJ
+    # =========================================================================
+    irpj_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', 'Regra')
+    tax_irpj_id = fields.Many2one('account.tax', string=u"Alíquota IRPJ",
+                                  domain=[('domain', '=', 'irpj')])
+    irpj_tipo = fields.Selection([('percent', 'Percentual')],
+                                 string='Tipo do IRPJ', required=True,
+                                 default='percent')
+    irpj_base_calculo = fields.Float(
+        'Base IRPJ', compute='_compute_price', store=True,
+        digits=dp.get_precision('Account'))
+    irpj_valor = fields.Float(
+        'Valor IRPJ', digits=dp.get_precision('Account'),
+        compute='_compute_price', store=True)
+    irpj_aliquota = fields.Float(
+        'Perc IRPJ', digits=dp.get_precision('Discount'))
+
+    # =========================================================================
     # Imposto de importação
     # =========================================================================
     ii_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
@@ -426,7 +473,7 @@ class AccountInvoiceLine(models.Model):
             self.tax_icms_inter_id | self.tax_icms_intra_id | \
             self.tax_icms_fcp_id | self.tax_simples_id | self.tax_ipi_id | \
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
-            self.tax_ii_id
+            self.tax_ii_id | self.tax_irpj_id | self.tax_csll_id
 
     def _set_extimated_taxes(self, price):
         service = self.product_id.service_type_id
@@ -475,7 +522,8 @@ class AccountInvoiceLine(models.Model):
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
             self.tax_simples_id | self.tax_ipi_id | self.tax_pis_id | \
-            self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id
+            self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id | \
+            self.tax_csll_id | self.tax_irpj_id
 
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
@@ -533,4 +581,16 @@ class AccountInvoiceLine(models.Model):
     def _onchange_tax_issqn_id(self):
         if self.tax_issqn_id:
             self.issqn_aliquota = self.tax_issqn_id.amount
+        self._update_invoice_line_ids()
+
+    @api.onchange('tax_csll_id')
+    def _onchange_tax_csll_id(self):
+        if self.tax_csll_id:
+            self.csll_aliquota = self.tax_csll_id.amount
+        self._update_invoice_line_ids()
+
+    @api.onchange('tax_irpj_id')
+    def _onchange_tax_irpj_id(self):
+        if self.tax_irpj_id:
+            self.irpj_aliquota = self.tax_irpj_id.amount
         self._update_invoice_line_ids()

@@ -75,6 +75,8 @@ class AccountTax(models.Model):
                                ('icms_inter', u'Difal - Alíquota Inter'),
                                ('icms_intra', u'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
+                               ('irpj', 'IRPJ'),
+                               ('csll', 'CSLL'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     tax_discount = fields.Boolean(string='Discount this Tax in Price',
@@ -83,7 +85,7 @@ class AccountTax(models.Model):
     @api.onchange('domain')
     def _onchange_domain_tax(self):
         if self.domain in ('icms', 'simples', 'pis', 'cofins', 'issqn', 'ii',
-                           'icms_inter', 'icms_intra', 'fcp'):
+                           'icms_inter', 'icms_intra', 'fcp', 'irpj', 'csll'):
             self.price_include = True
             self.amount_type = 'division'
         if self.domain in ('icmsst', 'ipi'):
@@ -276,6 +278,24 @@ class AccountTax(models.Model):
         vals['base'] = price_base
         return [vals]
 
+    def _compute_irpj(self, price_base):
+        irpj_tax = self.filtered(lambda x: x.domain == 'irpj')
+        if not irpj_tax:
+            return []
+        vals = self._tax_vals(irpj_tax)
+        vals['amount'] = irpj_tax._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
+    def _compute_csll(self, price_base):
+        csll_tax = self.filtered(lambda x: x.domain == 'csll')
+        if not csll_tax:
+            return []
+        vals = self._tax_vals(csll_tax)
+        vals['amount'] = csll_tax._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None):
@@ -302,8 +322,9 @@ class AccountTax(models.Model):
         pis_cofins = self._compute_pis_cofins(price_base)
         issqn = self._compute_issqn(price_base)
         ii = self._compute_ii(price_base)
-
-        taxes = icms + icmsst + simples + difal + ipi + pis_cofins + issqn + ii
+        irpj = self._compute_irpj(price_base)
+        csll = self._compute_csll(price_base)
+        taxes = icms + icmsst + simples + difal + ipi + pis_cofins + issqn + ii + irpj + csll
 
         total_included = total_excluded = price_base
         for tax in taxes:
