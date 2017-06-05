@@ -212,6 +212,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 errors.append(u'Emitente / Inscrição Estadual')
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
+            if self.company_id.accountant_id and not \
+               self.company_id.accountant_id.cnpj_cpf:
+                errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -496,6 +499,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                     'xLocDespacho': self.local_despacho or '',
                 }
 
+        autorizados = []
+        if self.company_id.accountant_id:
+            autorizados.append({
+                'CNPJ': re.sub(
+                    '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
+            })
+
         eletronic_items = []
         for item in self.eletronic_item_ids:
             eletronic_items.append(
@@ -609,6 +619,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'ide': ide,
             'emit': emit,
             'dest': dest,
+            'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
             'transp': transp,
