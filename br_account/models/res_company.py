@@ -36,3 +36,5 @@ class ResCompany(models.Model):
     cnae_secondary_ids = fields.Many2many(
         'br_account.cnae', 'res_company_br_account_cnae',
         'company_id', 'cnae_id', u'CNAE Secundários')
+
+    accountant_id = fields.Many2one('res.partner', string="Contador")
