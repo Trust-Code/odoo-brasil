@@ -40,6 +40,7 @@ class PaymentOrder(models.Model):
             raise UserError(
                 u'Número sequencial do arquivo must be integer')
         for order_id in self:
+            order_id.validar_cnab()
             order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
                 order.payment_mode_id.bank_account_id.bank_bic, '240')()
@@ -69,6 +70,9 @@ class PaymentOrder(models.Model):
                     raise UserError(u'Agência not set')
                 if not order.payment_mode_id.bank_account_id.bra_number_dig:
                     raise UserError(u'Dígito Agência not set')
+            if not order.payment_mode_id.company_id.legal_name:
+                raise UserError(u'Legal Name not set for company')
+
 
             for line in order.line_ids:
                 if line.state in ['r', 'rj']:
