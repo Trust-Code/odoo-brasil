@@ -58,7 +58,7 @@ class PaymentOrder(models.Model):
                               ('open', 'Confirmado'),
                               ('done', 'Fechado'),
                               ('cancel', 'Cancelado')],
-                             string=u"Situação", readonly=True, states={'draft': [('readonly', False)]}, )
+                             string=u"Situação", default='draft', readonly=True, states={'draft': [('readonly', False)]}, )
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança', readonly=True,
                                states={'draft': [('readonly', False)]}, )
