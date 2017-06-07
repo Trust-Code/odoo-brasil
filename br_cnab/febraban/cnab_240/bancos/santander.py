@@ -2,9 +2,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import re
-import string
 from ..cnab_240 import Cnab240
+from decimal import Decimal
 
 
 class Santander240(Cnab240):
@@ -25,11 +24,8 @@ class Santander240(Cnab240):
     def _prepare_segmento(self, line):
         vals = super(Santander240, self)._prepare_segmento(line)
 
-        carteira, nosso_numero, digito = self.nosso_numero(line.nosso_numero)
-
-        vals['carteira_numero'] = int(carteira)
-        vals['nosso_numero'] = int(line.nosso_numero)
-        vals['nosso_numero_dv'] = int(digito)
+        nosso_numero = self.nosso_numero(line.nosso_numero)
+        vals['nosso_numero'] = nosso_numero
         vals['cedente_agencia_dv'] = 0  # Não obrigatório
         vals['cedente_conta_dv'] = int(vals['cedente_conta_dv'])
         vals['conta_cobranca'] = vals['cedente_conta']
@@ -37,6 +33,9 @@ class Santander240(Cnab240):
         vals['forma_cadastramento'] = 1
         vals['codigo_multa'] = int(vals['codigo_multa'])
         vals['codigo_juros'] = int(vals['codigo_juros'])
+        vals['juros_mora_taxa'] = vals['juros_mora_taxa'] * Decimal('1000')
+        # Data da multa fica zerado, dai ele considera data de vencimento
+        vals['data_multa'] = 0
         # tipo documento : 1- Tradicional , 2- Escritural
         vals['tipo_documento'] = 1
         especie = 2
@@ -55,9 +54,27 @@ class Santander240(Cnab240):
             self.order.payment_mode_id.bank_account_id.bra_number,
             self.order.payment_mode_id.boleto_cnab_code.zfill(11)))
 
-    def nosso_numero(self, format):
-        digito = format[-1:]
-        carteira = format[:3]
-        nosso_numero = re.sub(
-            '[%s]' % re.escape(string.punctuation), '', format[3:-1] or '')
-        return carteira, nosso_numero, digito
+    def nosso_numero(self, nosso_numero_sem_dv):
+        digito = self.modulo11(nosso_numero_sem_dv)
+        return int("%s%s" % (nosso_numero_sem_dv, digito))
+
+    @staticmethod
+    def modulo11(num, base=9, r=0):
+        if not isinstance(num, basestring):
+            raise TypeError
+        soma = 0
+        fator = 2
+        for c in reversed(num):
+            soma += int(c) * fator
+            if fator == base:
+                fator = 1
+            fator += 1
+        if r == 0:
+            soma = soma * 10
+            digito = soma % 11
+            if digito == 10:
+                digito = 0
+            return digito
+        if r == 1:
+            resto = soma % 11
+            return resto

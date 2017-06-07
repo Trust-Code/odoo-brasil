@@ -47,6 +47,9 @@ class AccountTaxTemplate(models.Model):
                                ('icms_inter', u'Difal - Alíquota Inter'),
                                ('icms_intra', u'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
+                               ('csll', 'CSLL'),
+                               ('irrf', 'IRRF'),
+                               ('inss', 'INSS'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
@@ -75,6 +78,9 @@ class AccountTax(models.Model):
                                ('icms_inter', u'Difal - Alíquota Inter'),
                                ('icms_intra', u'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
+                               ('csll', 'CSLL'),
+                               ('irrf', 'IRRF'),
+                               ('inss', 'INSS'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
@@ -282,6 +288,19 @@ class AccountTax(models.Model):
         vals['base'] = price_base
         return [vals]
 
+    def _compute_retention(self, price_base):
+        retention_tax = self.filtered(
+            lambda x: x.domain in ('csll', 'irrf', 'inss'))
+        if not retention_tax:
+            return []
+        taxes = []
+        for tax in retention_tax:
+            vals = self._tax_vals(tax)
+            vals['amount'] = tax._compute_amount(price_base, 1.0)
+            vals['base'] = price_base
+            taxes.append(vals)
+        return taxes
+
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None):
@@ -304,12 +323,13 @@ class AccountTax(models.Model):
             icms[0]['amount'] if icms else 0.0)
         difal = self._compute_difal(
             price_base, ipi[0]['amount'] if ipi else 0.0)
-        simples = self._compute_simples(price_base)
-        pis_cofins = self._compute_pis_cofins(price_base)
-        issqn = self._compute_issqn(price_base)
-        ii = self._compute_ii(price_base)
 
-        taxes = icms + icmsst + simples + difal + ipi + pis_cofins + issqn + ii
+        taxes = icms + icmsst + difal + ipi
+        taxes += self._compute_simples(price_base)
+        taxes += self._compute_pis_cofins(price_base)
+        taxes += self._compute_issqn(price_base)
+        taxes += self._compute_ii(price_base)
+        taxes += self._compute_retention(price_base)
 
         total_included = total_excluded = price_base
         for tax in taxes:

@@ -246,7 +246,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': item.product_id.name,
+            'xProd': item.product_id.with_context(
+                display_default_code=False).name_get()[0][1],
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
@@ -526,6 +527,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vCOFINS': "%.02f" % self.valor_cofins,
             'vOutro': "%.02f" % self.valor_despesas,
             'vNF': "%.02f" % self.valor_final,
+            'vFCPUFDest': "%.02f" % self.valor_icms_fcp_uf_dest,
+            'vICMSUFDest': "%.02f" % self.valor_icms_uf_dest,
+            'vICMSUFRemet': "%.02f" % self.valor_icms_uf_remet,
             'vTotTrib': "%.02f" % self.valor_estimado_tributos,
             # ISSQn
             'vServ': '0.00',
@@ -641,8 +645,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        attachment_obj = self.env['ir.attachment']
+        if self.model not in ('55'):
+            return atts
 
+        attachment_obj = self.env['ir.attachment']
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
@@ -779,7 +785,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def generate_nfe_proc(self):
-        if self.state == 'done':
+        if self.state in ['cancel', 'done', 'denied']:
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
@@ -793,12 +799,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
                 ('datas_fname', 'like', 'nfe-envio')])
-            nfe_proc = gerar_nfeproc(
-                base64.decodestring(nfe_envio.datas),
-                base64.decodestring(recibo.datas)
-            )
-            self.nfe_processada = base64.encodestring(nfe_proc)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+            if nfe_envio.datas and recibo.datas:
+                nfe_proc = gerar_nfeproc(
+                    base64.decodestring(nfe_envio.datas),
+                    base64.decodestring(recibo.datas)
+                )
+                self.nfe_processada = base64.encodestring(nfe_proc)
+                self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:
             raise UserError('A NFe não está validada')
 

@@ -23,6 +23,9 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
+                               ('csll', 'CSLL'),
+                               ('irrf', 'IRRF'),
+                               ('inss', 'INSS'),
                                ('outros', 'Outros')], string="Tipo")
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u"Posição Fiscal")
@@ -106,6 +109,15 @@ class AccountFiscalPosition(models.Model):
     ii_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras II", domain=[('domain', '=', 'ii')])
+    irrf_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string="Regras IRRF", domain=[('domain', '=', 'irrf')])
+    csll_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string="Regras CSLL", domain=[('domain', '=', 'csll')])
+    inss_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string="Regras INSS", domain=[('domain', '=', 'inss')])
 
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
@@ -174,33 +186,12 @@ class AccountFiscalPosition(models.Model):
     def map_tax_extra_values(self, company, product, partner):
         to_state = partner.state_id
 
+        taxes = ('icms', 'simples', 'ipi', 'pis', 'cofins',
+                 'issqn', 'ii', 'irrf', 'csll', 'inss')
         res = {}
-        vals = self._filter_rules(
-            self.id, 'icms', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'simples', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'ipi', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'pis', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'cofins', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'issqn', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'ii', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
+        for tax in taxes:
+            vals = self._filter_rules(
+                self.id, tax, partner, product, to_state)
+            res.update({k: v for k, v in vals.items() if v})
 
         return res

@@ -1,0 +1,409 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="report_br_nfse_danfe_simpliss"
+        string="Nota de Serviço - Simpliss"
+        model="invoice.eletronic"
+        report_type="qweb-pdf"
+        file="br_nfse.main_template_br_nfse_danfe_simpliss"
+        name="br_nfse.main_template_br_nfse_danfe_simpliss" />
+
+    <record id="report_br_nfse_danfe_simpliss" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
+        <field name="name">Nota de Serviço - Simpliss</field>
+    </record>
+
+    <template id="danfse_report_template_simpliss">
+        <style type="text/css">
+            .col-xs-1, .col-xs-2,
+            .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
+            .col-xs-8,
+            .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+                padding:0px;
+            }
+            td, th { padding: 0 4px; }
+        </style>
+        <div class="page">
+            <div class="row" style="border: 1px solid black;">
+                <div class="col-xs-2">
+                    <img src="/br_nfse/static/src/img/piracicaba.png" alt="Logo Prefeitura Piracicaba"
+                        style="max-height:80px; margin-top:4px; margin-left:10px;" />
+                </div>
+                <div class="col-xs-7" style="padding:0px;text-align:center;font-size:18px;">
+                    Prefeitura do Município de Piracicaba
+                    <br />
+                    Secretaria Municipal de Finanças
+                    <br />
+                    Divisão de Fiscalização
+                    <br />
+                    Departamento de Administração Fazendária
+                    <br />
+                    NOTA FISCAL ELETRÔNICA DE SERVIÇOS - NFSe
+                </div>
+                <div class="col-xs-3" style="padding:0px;">
+                    <div style="border: 1px solid black; padding: 3px; text-align:center;">
+                        <span style="font-size:9px;">Número da Nota Fiscal: </span><br />
+                        <strong t-field="doc.numero_nfse"></strong>
+                    </div>
+                    <div style="border: 1px solid black; padding: 3px; text-align:center;">
+                        <span style="font-size:9px;">Série: </span>
+                        <strong t-field="doc.serie.code"></strong>
+                    </div>
+                    <div style="border: 1px solid black; padding: 3px; text-align:center;">
+                        <span style="font-size:9px;">Data de Emissão: </span>
+                        <strong t-field="doc.data_emissao" t-field-options='{"format": "dd/MM/yyyy"}'></strong>
+                    </div>
+                    <div style="border: 1px solid black; padding: 3px; text-align:center;">
+                        <span style="font-size:8px;">Certificação: </span>
+                        <strong t-field="doc.verify_code"></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
+                <div class="col-xs-2">
+                    <img style="height:65px;margin-top:15px;max-width:150px;"
+                        t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" /><br />
+                </div>
+                <div class="col-xs-10">
+                    <div class="col-xs-12" style="text-align:center;">
+                        <strong>PRESTADOR DE SERVIÇOS</strong>
+                    </div>
+                    <div class="col-xs-12">
+                        Nome/Razão Social:
+                        <strong t-field="doc.company_id.partner_id.legal_name"></strong>
+                    </div>
+                    <div class="col-xs-8">
+                        CNPJ:
+                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
+                    </div>
+                    <div class="col-xs-4">
+                        Inscrição Municipal:
+                        <strong t-field="doc.company_id.partner_id.inscr_mun"></strong>
+                    </div>
+                    <div class="col-xs-12">
+                        Endereço:
+                        <strong t-field="doc.company_id.partner_id.street">
+                        </strong>
+                        <strong t-field="doc.company_id.partner_id.number">
+                        </strong>
+                        <strong t-field="doc.company_id.partner_id.district">
+                        </strong>
+                    </div>
+                    <div class="col-xs-6">
+                        Município:
+                        <strong t-field="doc.company_id.partner_id.city_id"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        UF:
+                        <strong t-field="doc.company_id.partner_id.state_id"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        E-mail:
+                        <strong t-field="doc.company_id.email"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        Telefone:
+                        <strong t-field="doc.company_id.phone"></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong>TOMADOR DE SERVIÇOS</strong>
+                </div>
+                <div class="col-xs-12">
+                    Nome/Razão Social:
+                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
+                </div>
+                <div class="col-xs-8">
+                    CNPJ:
+                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
+                </div>
+                <div class="col-xs-4">
+                    Inscrição Municipal:
+                    <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
+                </div>
+                <div class="col-xs-12">
+                    Endereço:
+                    <strong t-field="doc.commercial_partner_id.street">
+                    </strong>
+                    <strong t-field="doc.commercial_partner_id.number">
+                    </strong>
+                    <strong t-field="doc.commercial_partner_id.district">
+                    </strong>
+                </div>
+                <div class="col-xs-6">
+                    Município:
+                    <strong t-field="doc.commercial_partner_id.city_id"></strong>
+                </div>
+                <div class="col-xs-6">
+                    UF:
+                    <strong t-field="doc.commercial_partner_id.state_id"></strong>
+                </div>
+                <div class="col-xs-6">
+                    E-mail:
+                    <strong t-field="doc.partner_id.email"></strong>
+                </div>
+                <div class="col-xs-6">
+                    Telefone:
+                    <strong t-field="doc.partner_id.phone"></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:150px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
+                </div>
+                <div class="col-xs-12">
+                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
+                        <p t-field="line.name"></p>
+                    </t>
+                    <span t-field="doc.informacoes_legais"></span>
+                    <span t-field="doc.informacoes_complementares"></span>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:150px;">
+                <div class="col-xs-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:60%;">Item</th>
+                                <th style="width:10%;">Tributável</th>
+                                <th style="width:10%;">Qtde.</th>
+                                <th style="width:10%;">Vl. Unitário R$</th>
+                                <th style="width:10%;">Total R$</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.eletronic_item_ids" t-as="e">
+                                <tr>
+                                    <td><span t-field="e.product_id.name"></span></td>
+                                    <td><span>Sim</span></td>
+                                    <td><span t-field="e.quantidade"></span></td>
+                                    <td><span t-field="e.preco_unitario" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'></span></td>
+                                    <td><span t-field="e.valor_liquido" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'></span></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0px;">
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Valor Tributável:
+                    <br />
+                    <strong t-field="doc.valor_bruto"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Não Tributável::
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-xs-6" style="text-align:right;border-right: 1px solid black;">
+                    <strong>VALOR BRUTO DA NOTA </strong>
+                </div>
+                <div class="col-xs-2" style="text-align:right;">
+                    <strong t-field="doc.valor_bruto"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 0px;">
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Valor Deduções:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Desc. Incondic.:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Desc. Condicionado:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Base de Cálculo:
+                    <br />
+                    <strong t-field="doc.valor_bruto"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    Alíquota:
+                    <br />
+                    <strong t-field="doc.eletronic_item_ids[0].issqn_aliquota"></strong>%
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Valor do ISS:
+                    <br />
+                    <strong t-field="doc.valor_issqn"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 0px;">
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    PIS(<span t-field="doc.eletronic_item_ids[0].pis_aliquota" />%):
+                    <br />
+                    <strong t-field="doc.valor_retencao_pis"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    COFINS(<span t-field="doc.eletronic_item_ids[0].cofins_aliquota" />%):
+                    <br />
+                    <strong t-field="doc.valor_retencao_cofins"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    INSS(<span />%):
+                    <br />
+                    <strong t-field="doc.valor_retencao_inss"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    IR(<span />%):
+                    <br />
+                    <strong t-field="doc.valor_retencao_irrf"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                    CSLL(<span />%):
+                    <br />
+                    <strong t-field="doc.valor_retencao_csll"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Outras Retenções:
+                    <br />
+                    <strong t-field="doc.valor_retencao_csll"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
+                <div class="col-xs-12">
+                    Enquadramento do serviço:
+                    <br />
+                    <strong t-field="doc.eletronic_item_ids[0].issqn_codigo"></strong> -
+                    <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;">
+                <div class="col-xs-3" style="text-align:center;">
+                    VL. Total Deduções (R$):
+                    <br />
+                    <strong>R$0,00</strong>
+                </div>
+                <div class="col-xs-3" style="text-align:center;">
+                    Base de Cálculo (R$):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_bruto"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>*</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Alíquota (%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong><span t-field="doc.eletronic_item_ids[0].issqn_aliquota" />%</strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>*</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Valor do ISS (R$):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_issqn"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>*</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Crédito (R$):
+                    <br />
+                    <strong>0,00</strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0px;">
+                <div class="col-xs-6" style="border-right: 1px solid black;">
+                    <span style="font-size:10px;">
+                        Valor Aproximado de Impostos: Federais R$ 0,00 Estaduais R$ 0,00 Municipais R$ 0,00
+                    </span>
+                </div>
+                <div class="col-xs-3" style="text-align:right;border-right: 1px solid black;">
+                    <strong>VALOR LÍQUIDO DA NOTA </strong>
+                </div>
+                <div class="col-xs-3" style="text-align:right;">
+                    <strong t-field="doc.valor_final"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                </div>
+            </div>
+            <div class="row"
+                style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
+                <div style="text-align:center"><b>Outras informações</b></div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        Mês de competência: <strong t-field="doc.data_emissao" t-field-options='{"format": "MM/yyyy"}' />
+                    </div>
+                    <div class="col-xs-4">
+                        Local de Recolhimento: <strong t-field="doc.company_id.partner_id.city_id" />
+                    </div>
+                    <div class="col-xs-4">
+                        Data Geração: <strong t-field="doc.data_emissao" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        Recolhimento: <strong t-esc="'Retido' if doc.valor_retencao_issqn > 0 else 'Sem Retenção'" />
+                    </div>
+                    <div class="col-xs-8">
+                        Tributação: <strong>Tributação por Faturamento (Variável)</strong>
+                    </div>
+                    <div class="col-xs-4">
+                        CNAE: <strong t-field="doc.company_id.cnae_main_id.code" />
+                    </div>
+                </div>
+                Observações:
+                <span t-field="doc.informacoes_legais"></span>
+                <span t-field="doc.informacoes_complementares"></span>
+            </div>
+            <hr style="border-top: dashed 1px; margin:4px;" />
+            <div class="row" style="border: 1px solid black; padding: 0px;">
+                <div class="col-xs-8" style="border-right: 1px solid black;">
+                    Recebi(emos) de: <span t-field="doc.company_id.legal_name" /><br />
+                    Os serviços constantes nesta Nota Fiscal de Serviços Eletrônica.<br />
+                    ________/_____/____________ &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    _____________________________________<br />
+                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Data
+                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Assinatura do Recebedor
+                </div>
+                <div class="col-xs-4" style="text-align:center;">
+                    Nota Fiscal de Serviços Eletrônica <br />
+                    Número: <span t-field="doc.numero_nfse" /><br />
+                    Certificação<br />
+                    <span t-field="doc.verify_code" />
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="main_template_br_nfse_danfe_simpliss">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="br_nfse.danfse_report_template_simpliss" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>
