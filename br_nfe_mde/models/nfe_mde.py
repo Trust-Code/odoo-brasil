@@ -7,12 +7,12 @@ import base64
 from datetime import datetime
 from odoo import models, api, fields
 from odoo.exceptions import ValidationError
-from ..service.mde import download_nfe, send_event
+from ..service.mde import exec_download_nfe, send_event
 
 
 class NfeMde(models.Model):
     _name = 'nfe.mde'
-    _rec_name = 'nSeqEvento'
+    _rec_name = 'numero_sequencial'
     _inherit = [
         'ir.needaction_mixin'
     ]
@@ -21,7 +21,7 @@ class NfeMde(models.Model):
     def name_get(self):
         return [(rec.id,
                  u"NFº: {0} ({1}): {2}".format(
-                     rec.nNFe, rec.CNPJ, rec.xNome)
+                     rec.numero_nfe, rec.cnpj_fornecedor, rec.razao_social)
                  ) for rec in self]
 
     def _default_company(self):
@@ -31,22 +31,23 @@ class NfeMde(models.Model):
                                  default=_default_company, readonly=True)
     currency_id = fields.Many2one(related='company_id.currency_id',
                                   string='Moeda', readonly=True)
-    chNFe = fields.Char(string="Chave de Acesso", size=50, readonly=True)
-    nNFe = fields.Char(string="Número NFe", size=10, readonly=True)
-    nSeqEvento = fields.Char(
+    chave_nfe = fields.Char(string="Chave de Acesso", size=50, readonly=True)
+    numero_nfe = fields.Char(string="Número NFe", size=10, readonly=True)
+    numero_sequencial = fields.Char(
         string="Número Sequencial", readonly=True, size=20)
-    CNPJ = fields.Char(string="CNPJ", readonly=True, size=20)
-    IE = fields.Char(string="RG/IE", readonly=True, size=20)
-    xNome = fields.Char(string="Razão Social", readonly=True, size=200)
+    cnpj_fornecedor = fields.Char(string="CNPJ", readonly=True, size=20)
+    inscricao_estadual = fields.Char(string="RG/IE", readonly=True, size=20)
+    razao_social = fields.Char(string="Razão Social", readonly=True, size=200)
     partner_id = fields.Many2one('res.partner', string='Fornecedor')
-    dEmi = fields.Datetime(string="Data Emissão", readonly=True)
-    tpNF = fields.Selection([('0', 'Entrada'), ('1', 'Saída')],
-                            string="Tipo de Operação", readonly=True)
-    vNF = fields.Float(string="Valor Total da NF-e",
-                       readonly=True, digits=(18, 2))
-    cSitNFe = fields.Selection([('1', 'Autorizada'), ('2', 'Cancelada'),
-                                ('3', 'Denegada')],
-                               string="Situação da NF-e", readonly=True)
+    data_emissao = fields.Datetime(string="Data Emissão", readonly=True)
+    tipo_operacao = fields.Selection(
+        [('0', 'Entrada'), ('1', 'Saída')],
+        string="Tipo de Operação", readonly=True)
+    valor_nfe = fields.Float(
+        string="Valor Total da NF-e", readonly=True, digits=(18, 2))
+    situacao_nfe = fields.Selection(
+        [('1', 'Autorizada'), ('2', 'Cancelada'), ('3', 'Denegada')],
+        string="Situação da NF-e", readonly=True)
     state = fields.Selection(string="Situação da Manifestação", readonly=True,
                              selection=[
                                  ('pending', 'Pendente'),
@@ -55,27 +56,28 @@ class NfeMde(models.Model):
                                  ('desconhecido', 'Desconhecimento'),
                                  ('nao_realizado', 'Não realizado')
                              ])
-    formInclusao = fields.Char(string="Forma de Inclusão", readonly=True)
-    dataInclusao = fields.Datetime(string="Data de Inclusão", readonly=True)
+    forma_inclusao = fields.Char(string="Forma de Inclusão", readonly=True)
+    data_inclusao = fields.Datetime(string="Data de Inclusão", readonly=True)
+    eletronic_event_ids = fields.One2many(
+        'invoice.eletronic.event', 'nfe_mde_id', string=u"Eventos",
+        readonly=True)
 
     @api.one
-    @api.constrains('CNPJ', 'partner_id')
+    @api.constrains('cnpj_fornecedor', 'partner_id')
     def _check_partner_id(self):
-        if self.partner_id and self.CNPJ != self.partner_id.cnpj_cpf:
+        if self.partner_id and \
+           self.cnpj_fornecedor != self.partner_id.cnpj_cpf:
             raise ValidationError(
                 "O Parceiro não possui o mesmo CNPJ/CPF do manifesto atual")
 
     def _needaction_domain_get(self):
         return [('state', '=', 'pending')]
 
-    def _create_event(self, response, nfe_result, type_event='13'):
+    def _create_event(self, code, message, mde_id):
         return {
-            'type': type_event, 'response': response,
-            'company_id': self.company_id.id,
-            'status': nfe_result['code'], 'message': nfe_result['message'],
-            'create_date': datetime.now(), 'write_date': datetime.now(),
-            'end_date': datetime.now(), 'state': 'done',
-            'origin': response, 'mde_event_id': self.id
+            'code': code,
+            'message': message,
+            'nfe_mde_id': mde_id
         }
 
     def _create_attachment(self, event, result):
@@ -84,7 +86,7 @@ class NfeMde(models.Model):
         self.env['ir.attachment'].create(
             {
                 'name': file_name,
-                'datas': base64.b64encode(result['file_returned']),
+                'datas': base64.b64encode(result['received_xml']),
                 'datas_fname': file_name,
                 'description': u'Evento Manifesto Destinatário',
                 'res_model': 'l10n_br_account.document_event',
@@ -94,10 +96,11 @@ class NfeMde(models.Model):
     @api.one
     def action_known_emission(self):
         nfe_result = send_event(
-            self.company_id, self.chNFe, 'ciencia_operacao')
-        env_events = self.env['l10n_br_account.document_event']
+            self.company_id, self.chave_nfe, 'ciencia_operacao', self.id)
+        env_events = self.env['invoice.eletronic.event']
 
-        event = self._create_event('Ciência da operação', nfe_result)
+        event = self._create_event(
+            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == '135':
             self.state = 'ciente'
@@ -114,12 +117,11 @@ class NfeMde(models.Model):
     @api.one
     def action_confirm_operation(self):
         nfe_result = send_event(
-            self.company_id,
-            self.chNFe,
-            'confirma_operacao')
-        env_events = self.env['l10n_br_account.document_event']
+            self.company_id, self.chave_nfe, 'confirma_operacao', self.id)
+        env_events = self.env['invoice.eletronic.event']
 
-        event = self._create_event('Confirmação da operação', nfe_result)
+        event = self._create_event(
+            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == '135':
             self.state = 'confirmado'
@@ -134,11 +136,13 @@ class NfeMde(models.Model):
     def action_unknown_operation(self):
         nfe_result = send_event(
             self.company_id,
-            self.chNFe,
-            'desconhece_operacao')
-        env_events = self.env['l10n_br_account.document_event']
+            self.chave_nfe,
+            'desconhece_operacao',
+            self.id)
+        env_events = self.env['invoice.eletronic.event']
 
-        event = self._create_event('Desconhecimento da operação', nfe_result)
+        event = self._create_event(
+            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == '135':
             self.state = 'desconhecido'
@@ -153,11 +157,12 @@ class NfeMde(models.Model):
     def action_not_operation(self):
         nfe_result = send_event(
             self.company_id,
-            self.chNFe,
+            self.chave_nfe,
             'nao_realizar_operacao')
-        env_events = self.env['l10n_br_account.document_event']
+        env_events = self.env['invoice.eletronic.event']
 
-        event = self._create_event('Operação não realizada', nfe_result)
+        event = self._create_event(
+            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == '135':
             self.state = 'nap_realizado'
@@ -170,14 +175,14 @@ class NfeMde(models.Model):
 
     @api.one
     def action_download_xml(self):
-        nfe_result = download_nfe(self.company_id, [self.chNFe])
-        env_events = self.env['l10n_br_account.document_event']
+        nfe_result = exec_download_nfe(self.company_id, [self.chave_nfe])
+        env_events = self.env['invoice.eletronic.event']
 
         if nfe_result['code'] == '140':
-            event = self._create_event('Download NFe concluido', nfe_result,
-                                       type_event='10')
+            event = self._create_event(
+                nfe_result['code'], nfe_result['message'], self.id)
             env_events.create(event)
-            file_name = 'NFe%s.xml' % self.chNFe
+            file_name = 'NFe%s.xml' % self.chave_nfe
             self.env['ir.attachment'].create(
                 {
                     'name': file_name,

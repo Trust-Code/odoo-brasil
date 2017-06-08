@@ -43,7 +43,7 @@ class NfeSchedule(models.TransientModel):
 
                 nfe_result = distribuicao_nfe(company, company.last_nsu_nfe)
 
-                if nfe_result['code'] == '137' or nfe_result['code'] == '138':
+                if nfe_result['code'] in (138, ):
 
                     env_mde = self.env['nfe.mde']
 
@@ -55,23 +55,31 @@ class NfeSchedule(models.TransientModel):
                             partner = self.env['res.partner'].search(
                                 [('cnpj_cpf', '=', cnpj_forn)])
 
-                            invoice_eletronic = {
-                                'chNFe': root.chNFe,
-                                'nSeqEvento': nfe['NSU'], 'xNome': root.xNome,
-                                'tpNF': str(root.tpNF), 'vNF': root.vNF,
-                                'cSitNFe': str(root.cSitNFe),
+                            total = env_mde.search_count(
+                                [('chave_nfe', '=', root.chNFe)])
+                            if total > 0:
+                                continue
+
+                            manifesto = {
+                                'chave_nfe': root.chNFe,
+                                'numero_nfe': str(root.chNFe)[25:34],
+                                'numero_sequencial': nfe['NSU'],
+                                'razao_social': root.xNome,
+                                'tipo_operacao': str(root.tpNF),
+                                'valor_nfe': root.vNF,
+                                'situacao_nfe': str(root.cSitNFe),
                                 'state': 'pending',
-                                'dataInclusao': datetime.now(),
-                                'CNPJ': cnpj_forn,
-                                'IE': root.IE,
+                                'data_nclusao': datetime.now(),
+                                'cnpj_fornecedor': cnpj_forn,
+                                'inscricao_estadual': root.IE,
                                 'partner_id': partner.id,
-                                'dEmi': datetime.strptime(str(root.dhEmi)[:19],
-                                                          '%Y-%m-%dT%H:%M:%S'),
+                                'data_emissao': datetime.strptime(
+                                    str(root.dhEmi)[:19], '%Y-%m-%dT%H:%M:%S'),
                                 'company_id': company.id,
-                                'formInclusao': u'Verificação agendada'
+                                'forma_inclusao': u'Verificação agendada'
                             }
 
-                            obj_nfe = env_mde.create(invoice_eletronic)
+                            obj_nfe = env_mde.create(manifesto)
                             file_name = 'resumo_nfe-%s.xml' % nfe['NSU']
                             self.env['ir.attachment'].create(
                                 {
@@ -102,3 +110,17 @@ class NfeSchedule(models.TransientModel):
     @api.one
     def execute_download(self):
         self.schedule_download(raise_error=True)
+
+    @api.model
+    def cron_manifest_automation(self):
+        companies = self.env['res.company'].search([])
+        for company in companies:
+            if company.manifest_automation == 'nenhuma':
+                continue
+
+            manifestos = self.env['nfe.mde'].search(
+                [('company_id', '=', company.id),
+                 ('state', '=', 'pending')], limit=5)
+            for manifesto in manifestos:
+                manifesto.action_known_emission()
+                manifesto.action_download_xml()

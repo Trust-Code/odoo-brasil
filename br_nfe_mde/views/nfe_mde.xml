@@ -20,24 +20,24 @@
                 </header>
                 <group>
                     <group>
-                        <field name="chNFe" select="1" />
-                        <field name="nNFe" />
-                        <field name="nSeqEvento" />
-                        <field name="CNPJ" />
-                        <field name="IE" />
-                        <field name="xNome" />
+                        <field name="chave_nfe" select="1" />
+                        <field name="numero_nfe" />
+                        <field name="numero_sequencial" />
+                        <field name="cnpj_fornecedor" />
+                        <field name="inscricao_estadual" />
+                        <field name="razao_social" />
                         <field name="partner_id" />
-                        <field name="dEmi" />
+                        <field name="data_emissao" />
                     </group>
                     <group>
                         <field name="currency_id" groups="base.group_multi_currency" />
-                        <field name="tpNF" />
-                        <field name="vNF" widget="monetary"
-                        options="{'currency_field': 'currency_id'}" />
-                        <field name="cSitNFe" />
+                        <field name="tipo_operacao" />
+                        <field name="valor_nfe" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                        <field name="situacao_nfe" />
                         <field name="state" />
-                        <field name="formInclusao" />
-                        <field name="dataInclusao" />
+                        <field name="forma_inclusao" />
+                        <field name="data_inclusao" />
+                        <field name="company_id" groups="base.group_multi_company" />
                     </group>
                 </group>
             </form>
@@ -50,8 +50,8 @@
         <field name="arch" type="xml">
             <search string="Filtrar">
                 <field name="partner_id" string="Fornecedor" />
-                <field name="xNome" string="Nome fornecedor" />
-                <field name="CNPJ" string="Cnpj fornecedor" />
+                <field name="razao_social" string="Nome fornecedor" />
+                <field name="cnpj_fornecedor" string="Cnpj fornecedor" />
                 <field name="state" string="Situação" />
                 <filter name="situacao_pendente" string="Pendentes"
                     domain="[('state','=','pending')]" />
@@ -73,14 +73,13 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="NFe Destinadas" create="false">
-                <field name="nSeqEvento" />
+                <field name="numero_sequencial" />
                 <field name="partner_id" />
-                <field name="CNPJ" />
-                <field name="xNome" />
-                <field name="dEmi" />
+                <field name="cnpj_fornecedor" />
+                <field name="razao_social" />
+                <field name="data_emissao" />
                 <field name="state" />
-                <field name="vNF" />
-                <field name="state" invisible="1" />
+                <field name="valor_nfe" />
             </tree>
         </field>
     </record>

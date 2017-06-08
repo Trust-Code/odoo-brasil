@@ -25,7 +25,8 @@
     'data': [
         'security/ir.model.access.csv',
         'data/nfe_schedule.xml',
-        'views/nfe_mde_view.xml'
+        'views/nfe_mde.xml',
+        'views/res_company.xml'
     ],
     'installable': True,
     'application': True

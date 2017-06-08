@@ -1,16 +1,26 @@
 <?xml version="1.0" ?>
 <odoo>
     <record id="ir_cron_download_nfe_scheduler0" model="ir.cron">
-        <field eval="&quot;&quot;&quot;schedule_download&quot;&quot;&quot;" name="function"/>
-        <field name="interval_number">2</field>
+        <field name="name">Agendamento NFe Download</field>
+        <field name="interval_number">1</field>
         <field name="interval_type">hours</field>
         <field name="user_id" ref="base.user_root"/>
-        <field eval="&quot;&quot;&quot;Agendamento NFe Download&quot;&quot;&quot;" name="name"/>
         <field eval="-1" name="numbercall"/>
-        <field eval="5" name="priority"/>
-        <field eval="0" name="doall"/>
-        <field eval="0" name="active"/>
-        <field eval="&quot;&quot;&quot;nfe.schedule&quot;&quot;&quot;" name="model"/>
+        <field eval="'nfe.schedule'" name="model"/>
+        <field eval="'schedule_download'" name="function"/>
+        <field eval="'()'" name="args" />
+    </record>
+
+    <record id="ir_cron_automacao_manifesto" model="ir.cron" forcecreate="True">
+        <field name="name">Automação de NFe entrada</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall" />
+        <field eval="'nfe.schedule'" name="model" />
+        <field eval="'cron_manifest_automation'" name="function" />
+        <field eval="'()'" name="args" />
     </record>
 
     <record id="form_nfe_schedule_download_nfe" model="ir.ui.view">
