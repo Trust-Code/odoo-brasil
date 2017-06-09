@@ -89,6 +89,8 @@ class Cnab240(Cnab):
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
+            'cedente_agencia_conta_dv' : int(self.order.payment_mode_id.
+                                 bank_account_id.acc_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
             'nome_banco': unicode(self.order.payment_mode_id.bank_account_id.
