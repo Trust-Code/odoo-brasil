@@ -94,7 +94,8 @@ class PaymentOrder(models.Model):
                         raise UserError(_("City not defined for %s" % line.partner_id.name))
                     if not line.partner_id.street:
                         raise UserError(_("Street not defined for %s" % line.partner_id.name))
-
+                    if not line.move_line_id.nosso_numero:
+                        raise UserError(_("Nosso numero not set for %s" % line.name))
                     # Itau code : 341 supposed not to be larger than 8 digits
                     if self.payment_mode_id.bank_account_id.bank_id.bic == '341':
                         try:
