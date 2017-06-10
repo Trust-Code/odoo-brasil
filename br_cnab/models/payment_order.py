@@ -45,9 +45,9 @@ class PaymentOrder(models.Model):
             cnab = Cnab.get_cnab(
                 order.payment_mode_id.bank_account_id.bank_bic, '240')()
             remessa = cnab.remessa(order)
-
-            self.name = 'CB%s%s.REM' % (
-                time.strftime('%d%m'), str(order.file_number))
+            # do not change file name from file
+            # self.name = 'CB%s%s.REM' % (
+            #     time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
             self.env['exported.payment.order'].create(
                 {'file': base64.b64encode(remessa.encode('utf-8')), 'exported_date': datetime.now(),
