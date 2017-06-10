@@ -67,7 +67,7 @@ class Cnab240(Cnab):
         """
         cnpj_cpf = re.sub('[^0-9]', '',
                           self.order.payment_mode_id.company_id.cnpj_cpf)
-        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
+        cedente_conta_dv = self.order.payment_mode_id.bank_account_id. \
             acc_number_dig
         cedente_conta_dv = str(cedente_conta_dv)
         return {
@@ -84,13 +84,13 @@ class Cnab240(Cnab):
                                  acc_number),
             'cedente_conta_dv': cedente_conta_dv,
             'cedente_agencia_dv': self.order.payment_mode_id.
-            bank_account_id.bra_number_dig,
+                bank_account_id.bra_number_dig,
             'cedente_nome': self.order.payment_mode_id.company_id.legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
-            'cedente_agencia_conta_dv' : int(self.order.payment_mode_id.
-                                 bank_account_id.acc_number_dig),
+            'cedente_agencia_conta_dv': int(self.order.payment_mode_id.
+                                            bank_account_id.acc_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
             'nome_banco': unicode(self.order.payment_mode_id.bank_account_id.
@@ -159,11 +159,13 @@ class Cnab240(Cnab):
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
-            acc_number_dig,
+                acc_number_dig,
             'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
-            bra_number_dig,
+                bra_number_dig,
+            'cedente_agencia_conta_dv': int(self.order.payment_mode_id.
+                                            bank_account_id.acc_number_dig),
             'cedente_nome':
-            self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
+                self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
             # DV ag e cc
             'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
                                  bra_number_dig),
@@ -186,16 +188,16 @@ class Cnab240(Cnab):
             'codigo_juros': 2,
             'juros_mora_data': self.format_date(
                 line.date_maturity),
-            'juros_mora_taxa':  Decimal(
+            'juros_mora_taxa': Decimal(
                 str(self.order.payment_mode_id.late_payment_interest)
-                ).quantize(Decimal('1.00')),
+            ).quantize(Decimal('1.00')),
             # Multa padrão em percentual no Odoo, valor '2'
             'codigo_multa': '2',
             'data_multa': self.format_date(
                 line.date_maturity),
-            'juros_multa':  Decimal(
+            'juros_multa': Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
-                    Decimal('1.00')),
+                Decimal('1.00')),
             # TODO Remover taxa dia - deixar apenas taxa normal
             'juros_mora_taxa_dia': Decimal('0.00'),
             'valor_abatimento': Decimal('0.00'),
