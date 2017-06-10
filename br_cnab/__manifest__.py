@@ -23,6 +23,7 @@
         ],
     },
     'data': [
+        'security/ir.model.access.csv',
         'sequence/br_cnab_sequence.xml',
         'views/payment_order.xml',
     ],
