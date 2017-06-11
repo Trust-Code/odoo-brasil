@@ -244,6 +244,12 @@ class Cnab240(Cnab):
                 self.arquivo.lotes[0].trailer.cobrancasimples_valor_titulos = \
                     Decimal(cobrancasimples_valor_titulos).quantize(
                         Decimal('1.00'))
+                year = str(datetime.datetime.now().year)[2:]
+                # add year in nosso_numero because we pass it to bank
+                # and this is used to loacate payment order line while
+                # importing bank return
+                if line.nosso_numero[:2] != year:
+                    line.nosso_numero  =  year + str(line.nosso_numero)
                 line.state = 'ag'
 
         return unicode(self.arquivo)
