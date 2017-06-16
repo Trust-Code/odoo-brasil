@@ -40,13 +40,14 @@ class PaymentOrder(models.Model):
             raise UserError(
                 u'Número sequencial do arquivo must be integer')
         for order_id in self:
+            order_id.validar_cnab()
             order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
                 order.payment_mode_id.bank_account_id.bank_bic, '240')()
             remessa = cnab.remessa(order)
-
-            self.name = 'CB%s%s.REM' % (
-                time.strftime('%d%m'), str(order.file_number))
+            if not self.name:
+                self.name = 'CB%s%s.REM' % (
+                    time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
             self.env['exported.payment.order'].create(
                 {'file': base64.b64encode(remessa.encode('utf-8')), 'exported_date': datetime.now(),
@@ -69,6 +70,9 @@ class PaymentOrder(models.Model):
                     raise UserError(u'Agência not set')
                 if not order.payment_mode_id.bank_account_id.bra_number_dig:
                     raise UserError(u'Dígito Agência not set')
+            if not order.payment_mode_id.company_id.legal_name:
+                raise UserError(u'Legal Name not set for company')
+
 
             for line in order.line_ids:
                 if line.state in ['r', 'rj']:
@@ -90,7 +94,8 @@ class PaymentOrder(models.Model):
                         raise UserError(_("City not defined for %s" % line.partner_id.name))
                     if not line.partner_id.street:
                         raise UserError(_("Street not defined for %s" % line.partner_id.name))
-
+                    if not line.move_line_id.nosso_numero:
+                        raise UserError(_("Nosso numero not set for %s" % line.name))
                     # Itau code : 341 supposed not to be larger than 8 digits
                     if self.payment_mode_id.bank_account_id.bank_id.bic == '341':
                         try:

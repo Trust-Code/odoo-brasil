@@ -24,7 +24,7 @@
         ],
     },
     'data': [
-        'data/br_nfse.xml',
+      #  'data/br_nfse.xml',
         'views/br_account_service.xml',
         'views/account_invoice.xml',
         'views/invoice_eletronic.xml',
