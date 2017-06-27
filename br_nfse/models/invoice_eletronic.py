@@ -233,7 +233,7 @@ class InvoiceEletronic(models.Model):
             certificado = Certificado(
                 cert_pfx, self.company_id.nfe_a1_password)
 
-            if self.ambiente_nfse == 'producao':
+            if self.ambiente_nfse == '1':
                 resposta = envio_lote_rps(certificado, nfse=nfse_values)
             else:
                 resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
@@ -244,7 +244,7 @@ class InvoiceEletronic(models.Model):
                 self.mensagem_retorno = \
                     'Nota Fiscal Paulistana emitida com sucesso'
 
-                if self.ambiente_nfse == 'producao':  # Apenas producão tem essa tag
+                if self.ambiente_nfse == '1':  # Apenas producão tem essa tag
                     self.verify_code = \
                         retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao
                     self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe
