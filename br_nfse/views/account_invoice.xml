@@ -22,4 +22,22 @@
         </field>
     </record>
 
+    <record id="account_cust_invoice_inherit_remove_required" model="ir.ui.view">
+        <field name="name">account_invoice_line_form_view</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pis_cst']" position="after">
+                <field name="is_cust_invoice" invisible="1"/> 
+                <field name="is_supp_invoice" invisible="1"/> 
+            </xpath>
+            <xpath expr="//field[@name='pis_cst']" position="replace">
+                <field name="pis_cst" attrs="{'required':[('is_cust_invoice','!=',True),('is_supp_invoice','!=',False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='cofins_cst']" position="replace">
+                <field name="cofins_cst" attrs="{'required':[('is_cust_invoice','!=',True),('is_supp_invoice','!=',False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
