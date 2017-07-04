@@ -16,15 +16,17 @@ class AccountBankStatementLine(models.Model):
 
     @api.model
     def create(self, vals):
-        vals["nosso_numero"] = self._get_nosso_numero(vals["nosso_numero"])
+        if "nosso_numero" in vals:
+            vals["nosso_numero"] = self._get_nosso_numero(vals["nosso_numero"])
         return super(AccountBankStatementLine, self).create(vals)
 
     def get_reconciliation_proposition(self, excluded_ids=None):
         res = super(AccountBankStatementLine, self).\
             get_reconciliation_proposition(excluded_ids)
 
-        moves = self.env['account.move.line'].search(
-            [('nosso_numero', '=', self.nosso_numero)])
-        if moves:
-            return moves
+        if self.nosso_numero:
+            moves = self.env['account.move.line'].search(
+                [('nosso_numero', '=', self.nosso_numero)])
+            if moves:
+                return moves
         return res

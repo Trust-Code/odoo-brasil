@@ -115,7 +115,7 @@ class TestImportStatement(TransactionCase):
         self.import_ofx.import_file()
 
     def test_import_cnab_default(self):
-        cnab = os.path.join(self.caminho, 'extratos/CNAB240-Sicoob.txt')
+        cnab = os.path.join(self.caminho, 'extratos/CNAB240-Sicoob.ret')
         self.import_cnab.data_file = base64.b64encode(open(cnab, 'r').read())
         self.import_cnab.import_file()
 
@@ -124,20 +124,22 @@ class TestImportStatement(TransactionCase):
 
         lines = stmt.line_ids.sorted(lambda x: x.ref, reverse=True)
         self.assertTrue(stmt)
-        self.assertEquals(len(lines), 20)
-        self.assertEquals(lines[0].amount, -800.0)
-        self.assertEquals(lines[0].name, u'SAQUE - BANCO24HORA')
-        self.assertEquals(lines[0].ref, '322036')
-        self.assertEquals(stmt.balance_start, 21335.74)
-        self.assertEquals(stmt.balance_end_real, 20236.07)
-        self.assertEquals(stmt.balance_end, 20236.07)
+        self.assertEquals(len(lines), 3)
+        self.assertEquals(lines[0].amount, 260.0)
+        self.assertEquals(
+            lines[0].name,
+            u'Empresa de teste limitada me          00 : NF-0117/01')
+        self.assertEquals(lines[0].ref, 'NF-0117/01')
+        self.assertEquals(stmt.balance_start, 0.0)
+        self.assertEquals(stmt.balance_end_real, 2405.6)
+        self.assertEquals(stmt.balance_end, 2405.6)
 
     def test_import_cnab_without_force(self):
-        cnab = os.path.join(self.caminho, 'extratos/CNAB240-Sicoob.txt')
+        cnab = os.path.join(self.caminho, 'extratos/CNAB240-Sicoob.ret')
         self.import_cnab.data_file = base64.b64encode(open(cnab, 'r').read())
         self.import_cnab.force_format = False
         self.import_cnab.import_file()
         stmt = self.env['account.bank.statement'].search(
             [('journal_id', '=', self.journal.id)])
         self.assertTrue(stmt)
-        self.assertEquals(len(stmt.line_ids), 20)
+        self.assertEquals(len(stmt.line_ids), 3)
