@@ -153,14 +153,19 @@ class AccountBankStatementImport(models.TransientModel):
             inicio = primeira_transacao["date"]
             final = ultima_transacao["date"]
 
+        last_bank_stmt = self.env['account.bank.statement'].search(
+            [('journal_id', 'in', self.journal_id.ids)],
+            order="date desc, id desc", limit=1)
+        last_balance = last_bank_stmt and last_bank_stmt[0].balance_end or 0.0
+
         vals_bank_statement = {
             'name': u"%s - %s até %s" % (
                 arquivo.header.nome_do_banco,
                 inicio.strftime('%d/%m/%Y'),
                 final.strftime('%d/%m/%Y')),
             'date': inicio,
-            'balance_start': 0.0,
-            'balance_end_real': valor_total,
+            'balance_start': last_balance,
+            'balance_end_real': Decimal(last_balance) + valor_total,
             'transactions': transacoes
         }
         account_number = str(arquivo.header.cedente_conta)
