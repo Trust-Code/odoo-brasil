@@ -6,6 +6,7 @@ import logging
 import tempfile
 import StringIO
 
+from decimal import Decimal
 from datetime import datetime
 from odoo import fields, models
 from odoo.exceptions import UserError
@@ -125,25 +126,32 @@ class AccountBankStatementImport(models.TransientModel):
 
         arquivo = Arquivo(sicoob, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
+        valor_total = Decimal('0.0')
+
         for lote in arquivo.lotes:
             for evento in lote.eventos:
                 valor = evento.valor_lancamento
-                if evento.tipo_lancamento == 'D':
-                    valor *= -1
-                transacoes.append({
-                    'name': evento.descricao_historico,
-                    'date': datetime.strptime(
-                        str(evento.data_lancamento), '%d%m%Y'),
-                    'amount': valor,
-                    'partner_name': evento.cedente_nome,
-                    'ref': evento.numero_documento,
-                    'unique_import_id': str(evento.servico_numero_registro),
-                })
-        header = arquivo.lotes[0].header
-        trailer = arquivo.lotes[0].trailer
+                # Apenas liquidação  (Sicoob:6)
+                if evento.servico_codigo_movimento in (6, ):
+                    valor_total += valor
+                    transacoes.append({
+                        'name': "%s : %s" % (evento.sacado_nome,
+                                             evento.numero_documento),
+                        'date': datetime.strptime(
+                            str(evento.data_ocorrencia), '%d%m%Y'),
+                        'amount': valor,
+                        'partner_name': evento.sacado_nome,
+                        'ref': evento.numero_documento,
+                        'unique_import_id': str(evento.nosso_numero),
+                        'nosso_numero': str(evento.nosso_numero),
+                    })
 
-        inicio = datetime.strptime(str(header.data_saldo_inicial), '%d%m%Y')
-        final = datetime.strptime(str(trailer.data_saldo_final), '%d%m%Y')
+        inicio = final = datetime.now()
+        if len(transacoes):
+            primeira_transacao = min(transacoes, key=lambda x: x["date"])
+            ultima_transacao = max(transacoes, key=lambda x: x["date"])
+            inicio = primeira_transacao["date"]
+            final = ultima_transacao["date"]
 
         vals_bank_statement = {
             'name': u"%s - %s até %s" % (
@@ -151,15 +159,15 @@ class AccountBankStatementImport(models.TransientModel):
                 inicio.strftime('%d/%m/%Y'),
                 final.strftime('%d/%m/%Y')),
             'date': inicio,
-            'balance_start': arquivo.lotes[0].header.valor_saldo_inicial,
-            'balance_end_real': arquivo.lotes[0].trailer.valor_saldo_final,
+            'balance_start': 0.0,
+            'balance_end_real': valor_total,
             'transactions': transacoes
         }
         account_number = str(arquivo.header.cedente_conta)
         if self.force_journal_account:
             account_number = self.journal_id.bank_acc_number
         return (
-            arquivo.lotes[0].header.moeda,
+            'BRL',
             account_number,
             [vals_bank_statement]
         )
