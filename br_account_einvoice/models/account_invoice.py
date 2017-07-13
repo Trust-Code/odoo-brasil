@@ -8,12 +8,11 @@ from random import SystemRandom
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-
 TYPE2EDOC = {
-    'out_invoice': 'saida',        # Customer Invoice
-    'in_invoice': 'entrada',          # Vendor Bill
-    'out_refund': 'entrada',        # Customer Refund
-    'in_refund': 'saida',          # Vendor Refund
+    'out_invoice': 'saida',  # Customer Invoice
+    'in_invoice': 'entrada',  # Vendor Bill
+    'out_refund': 'entrada',  # Customer Refund
+    'in_refund': 'saida',  # Vendor Refund
 }
 
 
@@ -100,8 +99,8 @@ class AccountInvoice(models.Model):
             # - ICMS ST -
             'icms_st_aliquota': line.icms_st_aliquota,
             'icms_st_aliquota_mva': line.icms_st_aliquota_mva,
-            'icms_st_aliquota_reducao_base': line.\
-            icms_st_aliquota_reducao_base,
+            'icms_st_aliquota_reducao_base': line. \
+                icms_st_aliquota_reducao_base,
             'icms_st_base_calculo': line.icms_st_base_calculo,
             'icms_st_valor': line.icms_st_valor,
             # - Simples Nacional -
@@ -139,7 +138,7 @@ class AccountInvoice(models.Model):
 
     def _prepare_edoc_vals(self, invoice):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
-                           for i in range(8)]))
+                                    for i in range(8)]))
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
@@ -185,7 +184,19 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         self.action_number()
         for item in self:
-            if item.is_eletronic:
+            if item.is_eletronic and item.company_id.issue_eletronic_doc == 'o':
+                edoc_vals = self._prepare_edoc_vals(item)
+                if edoc_vals:
+                    eletronic = self.env['invoice.eletronic'].create(edoc_vals)
+                    eletronic.validate_invoice()
+                    eletronic.action_post_validate()
+        return res
+
+    @api.multi
+    def action_invoice_paid(self):
+        res = super(AccountInvoice, self).action_invoice_paid()
+        for item in self:
+            if item.is_eletronic and item.company_id.issue_eletronic_doc == 'p':
                 edoc_vals = self._prepare_edoc_vals(item)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
