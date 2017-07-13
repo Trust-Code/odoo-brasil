@@ -10,3 +10,7 @@ class ResCompany(models.Model):
 
     nfe_email_template = fields.Many2one(
         'mail.template', string="Template de Email para NFe")
+    issue_eletronic_doc = fields.Selection([('o', u'Open'), ('p', u'Paid')],
+                                  default='o',
+                                  required=True,
+                                  help=u'This field tells when to issue NFSe')

@@ -9,6 +9,9 @@
         <group string="Email NFe" name="nfe_mail">
           <field name="nfe_email_template" />
         </group>
+        <group string="Documento eletrônico" name="nfe_mail">
+          <field name="issue_eletronic_doc" />
+        </group>
       </group>
     </field>
   </record>
