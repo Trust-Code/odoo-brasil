@@ -5,6 +5,8 @@
 import re
 import base64
 import logging
+import pytz
+from odoo import SUPERUSER_ID
 from lxml import etree
 from StringIO import StringIO
 from datetime import datetime
@@ -704,8 +706,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def action_send_eletronic_invoice(self):
+        user_time_zone = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc  # get user timezone
         self.state = 'error'
-        self.data_emissao = datetime.now()
+        self.data_emissao = pytz.utc.localize(datetime.now()).astimezone(user_time_zone)
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
         if self.model not in ('55', '65'):
