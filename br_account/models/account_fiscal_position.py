@@ -56,14 +56,11 @@ class AccountFiscalPositionTaxRule(models.Model):
     reducao_icms_st = fields.Float(string=u"Redução de base ST")
     reducao_ipi = fields.Float(string=u"Redução de base IPI")
     aliquota_mva = fields.Float(string=u"Alíquota MVA")
-    icms_aliquota_proprio = fields.Float(
-        string=u"Alíquota ICMS Próprio",
-        help="Usada nos casos de CST 20 onde existe apenas ST, \
-        usar este campo para o % de ICMS")
     icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+        string=u"% ICMS Próprio",
+        help="Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
-         do Simples Nacional")
+         do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS")
     tem_difal = fields.Boolean(string="Aplicar Difal?")
     tax_icms_inter_id = fields.Many2one(
         'account.tax', help=u"Alíquota utilizada na operação Interestadual",
@@ -159,7 +156,6 @@ class AccountFiscalPosition(models.Model):
                 'incluir_ipi_base': rules[0].incluir_ipi_base,
                 # ICMS ST
                 'tax_icms_st_id': rules[0].tax_icms_st_id,
-                'icms_aliquota_proprio': rules[0].icms_aliquota_proprio,
                 'icms_st_aliquota_mva': rules[0].aliquota_mva,
                 'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
                 'icms_st_aliquota_deducao': rules[0].icms_st_aliquota_deducao,

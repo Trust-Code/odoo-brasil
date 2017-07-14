@@ -169,7 +169,6 @@ class AccountTax(models.Model):
         base_icmsst = price_base + ipi_value
         reducao_icmsst = 0.0
         aliquota_mva = 0.0
-
         if "icms_st_aliquota_reducao_base" in self.env.context:
             reducao_icmsst = self.env.context['icms_st_aliquota_reducao_base']
         if "icms_st_aliquota_mva" in self.env.context:
@@ -189,13 +188,6 @@ class AccountTax(models.Model):
 
         if deducao_st_simples:
             icms_value = base_icmsst * (deducao_st_simples / 100.0)
-
-        aliquota_icms = 0.0
-        if "icms_aliquota_proprio" in self.env.context:
-            aliquota_icms = self.env.context["icms_aliquota_proprio"]
-
-        if aliquota_icms:
-            icms_value = base_icmsst * (aliquota_icms / 100.0)
 
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
 
