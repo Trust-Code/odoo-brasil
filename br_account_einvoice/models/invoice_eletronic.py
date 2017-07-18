@@ -28,8 +28,8 @@ class InvoiceEletronic(models.Model):
 
     code = fields.Char(
         u'Código', size=100, required=True, readonly=True, states=STATE)
-    name = fields.Char(
-        u'Nome', size=100, required=True, readonly=True, states=STATE)
+    name = fields.Text(
+        u'Nome', required=True, readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', readonly=True, states=STATE)
     state = fields.Selection(
