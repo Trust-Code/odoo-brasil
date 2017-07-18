@@ -176,7 +176,8 @@ class CashFlowReport(models.TransientModel):
         ])
         moves = []
         for move in moveline_ids:
-            debit, credit = move.credit, move.debit
+            debit = move.credit - move.credit_cash_basis
+            credit = move.debit - move.debit_cash_basis
             amount = move.debit - move.credit
 
             moves.append({
