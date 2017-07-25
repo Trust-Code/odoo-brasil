@@ -52,8 +52,8 @@ class PaymentOrder(models.Model):
             self.env['exported.payment.order'].create(
                 {'file': base64.b64encode(remessa.encode('utf-8')), 'exported_date': datetime.now(),
                  'order_id': order.id,
-                 'filename': 'CB:%s-%s.REM' % (
-                     time.strftime('%d-%m-%y %H:%M:%S'), str(order.file_number))})
+                 'filename': 'CB%s%s.REM' % (
+                     time.strftime('%d%m'), str(order.file_number))})
         return remessa
 
     @api.multi
