@@ -14,7 +14,6 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from cnab240.bancos import sicoob
     from cnab240.tipos import Arquivo
     from ofxparse import OfxParser
 except ImportError:
@@ -54,7 +53,8 @@ class AccountBankStatementImport(models.TransientModel):
             cnab240_file = tempfile.NamedTemporaryFile()
             cnab240_file.write(data_file)
             cnab240_file.flush()
-            Arquivo(sicoob, arquivo=open(cnab240_file.name, 'r'))
+            bank = self.get_bank()
+            Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
             return True
         except Exception as e:
             if raise_error:
@@ -119,12 +119,35 @@ class AccountBankStatementImport(models.TransientModel):
             [vals_bank_statement]
         )
 
+    def get_bank(self):
+        bank = self.env['account.journal'].browse(
+            self.env.context["journal_id"]).bank_id.bic
+        if bank == '237':
+            from cnab240.bancos import bradesco
+            return bradesco
+        elif bank == '756':
+            from cnab240.bancos import sicoob
+            return sicoob
+        elif bank == '001':
+            from cnab240.bancos import banco_brasil
+            return banco_brasil
+        elif bank == '0851':
+            from cnab240.bancos import cecred
+            return cecred
+        elif bank == '341':
+            from cnab240.bancos import itau
+            return itau
+        elif bank == '033':
+            from cnab240.bancos import santander
+            return santander
+
     def _parse_cnab(self, data_file, raise_error=False):
         cnab240_file = tempfile.NamedTemporaryFile()
         cnab240_file.write(data_file)
         cnab240_file.flush()
 
-        arquivo = Arquivo(sicoob, arquivo=open(cnab240_file.name, 'r'))
+        bank = self.get_bank()
+        arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
         valor_total = Decimal('0.0')
 
