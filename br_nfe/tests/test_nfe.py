@@ -4,6 +4,7 @@
 
 import os
 import base64
+import urllib3
 from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
@@ -16,6 +17,7 @@ class TestNFeBrasil(TransactionCase):
 
     def setUp(self):
         super(TestNFeBrasil, self).setUp()
+        urllib3.disable_warnings()
         self.main_company = self.env.ref('base.main_company')
         self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
