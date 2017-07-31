@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import io
 import base64
 import logging
 from lxml import etree
-from StringIO import StringIO
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -652,14 +652,14 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        tmpLogo = StringIO()
+        tmpLogo = io.BytesIO()
         tmpLogo.write(logo)
         tmpLogo.seek(0)
 
         xml_element = etree.fromstring(nfe_xml)
         oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
 
-        tmpDanfe = StringIO()
+        tmpDanfe = io.BytesIO()
         oDanfe.writeto_pdf(tmpDanfe)
 
         if danfe:

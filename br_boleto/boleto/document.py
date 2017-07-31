@@ -5,6 +5,7 @@
 
 
 import re
+import io
 import logging
 from datetime import datetime, date
 
@@ -12,14 +13,10 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pyboleto import bank
+    BoletoException = bank.BoletoException
 except ImportError:
     _logger.debug('Cannot import pyboleto')
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-BoletoException = bank.BoletoException
 
 especie = {
     '01': 'DM',
@@ -137,7 +134,7 @@ class Boleto:
         :param boletoList:
         :return:
         """
-        fbuffer = StringIO()
+        fbuffer = io.BytesIO
 
         fbuffer.reset()
         from pyboleto.pdf import BoletoPDF

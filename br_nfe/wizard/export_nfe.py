@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import os
+import io
 import base64
 import os.path
 from zipfile import ZipFile
-from StringIO import StringIO
 from odoo import api, fields, models
 
 
@@ -30,7 +30,7 @@ class ExportNfe(models.TransientModel):
             os.makedirs(tmp)
         except:
             pass
-        zip_base64 = StringIO()
+        zip_base64 = io.BytesIO()
         zip_file = ZipFile(zip_base64, 'w')
         for xml in xmls:
             filename = os.path.join(tmp, xml['name'])
