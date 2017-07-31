@@ -17,7 +17,7 @@ class AccountDocumentRelated(models.Model):
     _inherit = 'br_account.document.related'
 
     invoice_eletronic_id = fields.Many2one(
-        'invoice.eletronic', 'Documento Eletrônico', ondelete='cascade')
+        'invoice.eletronic', u'Documento Eletrônico', ondelete='cascade')
 
     @api.onchange('invoice_related_id')
     def onchange_br_nfe_invoice_related_id(self):
