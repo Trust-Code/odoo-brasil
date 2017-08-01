@@ -16,13 +16,18 @@ class AccountBankStatementLine(models.Model):
             return int(nosso_numero[8:19])
         elif bank == '756':
             return int(nosso_numero[:9])
+        elif bank == '033':
+            return int(nosso_numero)
         return nosso_numero
 
     @api.model
     def create(self, vals):
         if "nosso_numero" in vals:
-            import ipdb; ipdb.set_trace()
-            vals["nosso_numero"] = self._get_nosso_numero(vals["nosso_numero"])
+            journal_id = self.env['account.journal'].browse(
+                self.env.context['journal_id'])
+            bank = journal_id.bank_id.bic
+            vals["nosso_numero"] = self._get_nosso_numero(
+                bank, vals["nosso_numero"])
         return super(AccountBankStatementLine, self).create(vals)
 
     def get_reconciliation_proposition(self, excluded_ids=None):

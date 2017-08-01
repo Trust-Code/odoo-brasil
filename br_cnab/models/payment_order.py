@@ -28,7 +28,7 @@ class PaymentOrder(models.Model):
         for order_id in self:
             order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
-                order.payment_mode_id.bank_account_id.bank_bic, '240')()
+                order.payment_mode_id.bank_aid.bank_bic, '240')()
             remessa = cnab.remessa(order)
 
             self.name = 'CB%s%s.REM' % (

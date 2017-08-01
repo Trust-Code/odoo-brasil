@@ -87,7 +87,8 @@ class AccountBankStatementImport(models.TransientModel):
                 valor = evento.valor_lancamento
                 # Apenas liquidação  (Sicoob:6)
                 # Liquidação Bradesco (6, 177)
-                if evento.servico_codigo_movimento in (6, 17, ):
+                # Liquidação Santander ('06', '17')
+                if evento.servico_codigo_movimento in (6, 17, '06', '17',):
                     valor_total += valor
                     transacoes.append({
                         'name': "%s : %s" % (evento.sacado_nome,
@@ -123,7 +124,7 @@ class AccountBankStatementImport(models.TransientModel):
             'balance_end_real': Decimal(last_balance) + valor_total,
             'transactions': transacoes
         }
-        account_number = str(arquivo.header.cedente_conta)
+        account_number = ''  # str(arquivo.header.cedente_conta)
         if self.force_journal_account:
             account_number = self.journal_id.bank_acc_number
         return (
