@@ -4,6 +4,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import timedelta
+
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
 
@@ -36,6 +38,14 @@ class SaleOrder(models.Model):
             res['fiscal_observation_ids'] = [
                 (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
         return res
+
+    @api.multi
+    def _prepare_order_line_procurement(self, group_id=False):
+        vals = super(SaleOrder, self)._prepare_order_line_procurement(
+            group_id=group_id)
+        confirm = fields.Date.from_string(self.order_id.confirmation_date)
+        vals["date_plannned"] = confirm + timedelta(days=self.customer_lead)
+        return vals
 
     total_bruto = fields.Float(
         string='Total Bruto ( = )', readonly=True, compute='_amount_all',
