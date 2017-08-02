@@ -234,8 +234,10 @@ class Cnab240(Cnab):
         self.order = order
         header = self._prepare_header()
         self.arquivo = Arquivo(self.bank, **header)
+        #
         for line in order.line_ids:
-            if line.state == 'r':
+
+            if line.validate_line_to_export():
                 seg = self._prepare_segmento(line.move_line_id)
                 self.arquivo.incluir_cobranca(header, **seg)
                 self.arquivo.lotes[0].header.servico_servico = 1

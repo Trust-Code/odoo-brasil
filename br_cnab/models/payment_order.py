@@ -102,7 +102,7 @@ class PaymentOrder(models.Model):
                             int(line.move_line_id.nosso_numero)
                         except:
                             raise UserError(
-                                _(u"Nosso Número for move line must be integer"))
+                                _(u"Nosso Número for move line %s must be integer" %line.move_line_id.name))
 
 
 class PaymentOrderLine(models.Model):
@@ -118,3 +118,16 @@ class PaymentOrderLine(models.Model):
                               ("c", "Cancelado")],
                              default="r",
                              string=u"Situação", compute=False)
+
+
+    # valid lines to export
+    # invoice must be in Open Stage
+    # line must be in Rascunho Stage
+    @api.multi
+    def validate_line_to_export(self):
+        self.ensure_one()
+        if self.move_id:
+            invoice = self.env['account.invoice'].search([('move_id','=',self.move_id.id)])
+            if len(invoice) and invoice.state in ['open'] and self.state== 'r':
+                return True
+        return False
