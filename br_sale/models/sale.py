@@ -126,22 +126,22 @@ class SaleOrderLine(models.Model):
             line.detalhes_calculo = u'\n'.join(msg)
 
     icms_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra ICMS')
+        'account.fiscal.position.tax.rule', u'Regra ICMS')
     ipi_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra IPI')
+        'account.fiscal.position.tax.rule', u'Regra IPI')
     pis_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra PIS')
+        'account.fiscal.position.tax.rule', u'Regra PIS')
     cofins_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra COFINS')
+        'account.fiscal.position.tax.rule', u'Regra COFINS')
     issqn_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra ISSQN')
+        'account.fiscal.position.tax.rule', u'Regra ISSQN')
     ii_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra II')
+        'account.fiscal.position.tax.rule', u'Regra II')
 
-    cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
+    cfop_id = fields.Many2one('br_account.cfop', string=u"CFOP")
 
-    icms_cst_normal = fields.Char(string="CST ICMS", size=5)
-    icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
+    icms_cst_normal = fields.Char(string=u"CST ICMS", size=5)
+    icms_csosn_simples = fields.Char(string=u"CSOSN ICMS", size=5)
     icms_st_aliquota_mva = fields.Float(string=u'Alíquota MVA (%)',
                                         digits=dp.get_precision('Account'))
     aliquota_icms_proprio = fields.Float(
@@ -153,23 +153,23 @@ class SaleOrderLine(models.Model):
     icms_st_aliquota_reducao_base = fields.Float(
         string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+        string=u"% Dedução", help=u"Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
          do Simples Nacional", digits=dp.get_precision('Account'))
-    tem_difal = fields.Boolean(string="Possui Difal")
+    tem_difal = fields.Boolean(string=u"Possui Difal")
 
-    ipi_cst = fields.Char(string='CST IPI', size=5)
+    ipi_cst = fields.Char(string=u'CST IPI', size=5)
     ipi_reducao_bc = fields.Float(
         string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'))
 
-    pis_cst = fields.Char(string='CST PIS', size=5)
-    cofins_cst = fields.Char(string='CST COFINS', size=5)
+    pis_cst = fields.Char(string=u'CST PIS', size=5)
+    cofins_cst = fields.Char(string=u'CST COFINS', size=5)
 
     valor_desconto = fields.Float(
-        compute='_compute_amount', string='Vlr. Desc. (-)', store=True,
+        compute='_compute_amount', string=u'Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
     valor_bruto = fields.Float(
-        compute='_compute_amount', string='Vlr. Bruto', store=True,
+        compute='_compute_amount', string=u'Vlr. Bruto', store=True,
         digits=dp.get_precision('Sale Price'))
     price_without_tax = fields.Float(
         compute='_compute_amount', string=u'Preço Base', store=True,
