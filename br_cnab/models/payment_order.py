@@ -6,9 +6,10 @@ import time
 import base64
 from ..febraban.cnab import Cnab
 from datetime import datetime
+from datetime import time as dtime
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 class ExportedPaymentOrder(models.Model):
     _name = 'exported.payment.order'
@@ -34,6 +35,9 @@ class PaymentOrder(models.Model):
             raise UserError(
                 u'Ordem de Cobrança não possui Linhas de Cobrança!')
         self.data_emissao_cnab = datetime.now()
+        today = datetime.strftime(datetime.combine(datetime.now(), dtime.min),DTFT)
+        exported_files = self.env['exported.payment.order'].search([('exported_date','>',today)])
+        file_number = len(exported_files) + 1
         try:
             self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         except:
@@ -49,11 +53,12 @@ class PaymentOrder(models.Model):
                 self.name = 'CB%s%s.REM' % (
                     time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
+
             self.env['exported.payment.order'].create(
                 {'file': base64.b64encode(remessa.encode('utf-8')), 'exported_date': datetime.now(),
                  'order_id': order.id,
                  'filename': 'CB%s%s.REM' % (
-                     time.strftime('%d%m'), str(order.file_number))})
+                     time.strftime('%d%m'), str(file_number))})
         return remessa
 
     @api.multi
