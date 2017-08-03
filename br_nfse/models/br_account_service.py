@@ -10,3 +10,7 @@ class BrAccountServiceType(models.Model):
 
     codigo_servico_paulistana = fields.Char(
         string=u'Código NFSe Paulistana', size=5)
+
+    codigo_tributacao_municipio = fields.Char(
+        string=u"Cód. Tribut. Munic.", size=20,
+        help="Código de Tributação no Munípio")

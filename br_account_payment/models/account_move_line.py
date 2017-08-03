@@ -16,8 +16,9 @@ class AccountMoveLine(models.Model):
         for item in self:
             item.payment_value = item.debit \
                 if item.user_type_id.type == 'receivable' else item.credit * -1
-    payment_value = fields.Float(
-        string="Valor", compute=_compute_payment_value)
+    payment_value = fields.Monetary(
+        string="Valor", compute=_compute_payment_value, store=True,
+        currency_field='company_currency_id')
 
     @api.multi
     def action_register_payment(self):

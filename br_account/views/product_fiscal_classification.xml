@@ -57,6 +57,17 @@
         </field>
     </record>
 
+    <record id="view_br_account_product_fiscal_classification_search" model="ir.ui.view">
+        <field name="name">br_account.product.fiscal.classification.search</field>
+        <field name="model">product.fiscal.classification</field>
+        <field name="arch" type="xml">
+            <search string="NCM">
+                <field name="code"/>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
     <record id="action_br_account_product_fiscal_classification" model="ir.actions.act_window">
         <field name="name">Classificações Fiscais (NCM)</field>
         <field name="type">ir.actions.act_window</field>

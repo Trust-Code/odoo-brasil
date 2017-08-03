@@ -212,6 +212,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 errors.append(u'Emitente / Inscrição Estadual')
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
+            if self.company_id.accountant_id and not \
+               self.company_id.accountant_id.cnpj_cpf:
+                errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -496,6 +499,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                     'xLocDespacho': self.local_despacho or '',
                 }
 
+        autorizados = []
+        if self.company_id.accountant_id:
+            autorizados.append({
+                'CNPJ': re.sub(
+                    '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
+            })
+
         eletronic_items = []
         for item in self.eletronic_item_ids:
             eletronic_items.append(
@@ -609,6 +619,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'ide': ide,
             'emit': emit,
             'dest': dest,
+            'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
             'transp': transp,
@@ -624,7 +635,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     def _prepare_lote(self, lote, nfe_values):
         return {
             'idLote': lote,
-            'indSinc': 1,
+            'indSinc': 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
@@ -634,8 +645,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        attachment_obj = self.env['ir.attachment']
+        if self.model not in ('55'):
+            return atts
 
+        attachment_obj = self.env['ir.attachment']
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
