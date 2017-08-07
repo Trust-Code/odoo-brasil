@@ -17,7 +17,7 @@ class AccountBankStatementLine(models.Model):
         elif bank == '756':
             return int(nosso_numero[:9])
         elif bank == '033':
-            return int(nosso_numero)
+            return int(nosso_numero[:-1])
         return nosso_numero
 
     @api.model
@@ -33,7 +33,6 @@ class AccountBankStatementLine(models.Model):
     def get_reconciliation_proposition(self, excluded_ids=None):
         res = super(AccountBankStatementLine, self).\
             get_reconciliation_proposition(excluded_ids)
-
         if self.nosso_numero:
             moves = self.env['account.move.line'].search(
                 [('nosso_numero', '=', self.nosso_numero)])
