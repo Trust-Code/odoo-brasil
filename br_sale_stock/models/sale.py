@@ -47,17 +47,6 @@ class SaleOrder(models.Model):
                 'outras_despesas': self.total_despesas * percentual
             })
 
-    @api.multi
-    def _prepare_order_line_procurement(self, group_id=False):
-        vals = super(SaleOrderLine, self)._prepare_order_line_procurement(
-            group_id=group_id)
-
-        confirm = fields.Date.from_string(self.order_id.confirmation_date)
-        date_planned = confirm + timedelta(days=self.customer_lead or 0.0)
-        date_planned -= timedelta(days=self.order_id.company_id.security_lead)
-        vals["date_planned"] = date_planned
-        return vals
-
     total_despesas = fields.Float(
         string='Despesas ( + )', default=0.00,
         digits=dp.get_precision('Account'),
@@ -85,6 +74,16 @@ class SaleOrderLine(models.Model):
             'outras_despesas': self.outras_despesas,
         })
         return res
+
+    @api.multi
+    def _prepare_order_line_procurement(self, group_id=False):
+        vals = super(SaleOrderLine, self)._prepare_order_line_procurement(
+            group_id=group_id)
+        confirm = fields.Date.from_string(self.order_id.confirmation_date)
+        date_planned = confirm + timedelta(days=self.customer_lead or 0.0)
+        date_planned -= timedelta(days=self.order_id.company_id.security_lead)
+        vals["date_planned"] = date_planned
+        return vals
 
     valor_seguro = fields.Float(
         'Seguro', default=0.0, digits=dp.get_precision('Account'))
