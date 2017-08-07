@@ -18,8 +18,8 @@ from odoo.exceptions import UserError
 class NfseExportInvoice(models.TransientModel):
     _name = 'nfse.export.invoice'
 
-    name = fields.Char('Nome', size=255)
-    file = fields.Binary('Arquivo', readonly=True)
+    name = fields.Char(u'Nome', size=255)
+    file = fields.Binary(u'Arquivo', readonly=True)
     state = fields.Selection(
         [('init', 'init'), ('done', 'done')],
         'state', readonly=True, default='init')
