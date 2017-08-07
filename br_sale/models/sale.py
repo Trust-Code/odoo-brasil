@@ -39,14 +39,6 @@ class SaleOrder(models.Model):
                 (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
         return res
 
-    @api.multi
-    def _prepare_order_line_procurement(self, group_id=False):
-        vals = super(SaleOrder, self)._prepare_order_line_procurement(
-            group_id=group_id)
-        confirm = fields.Date.from_string(self.order_id.confirmation_date)
-        vals["date_plannned"] = confirm + timedelta(days=self.customer_lead)
-        return vals
-
     total_bruto = fields.Float(
         string='Total Bruto ( = )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
@@ -73,6 +65,15 @@ class SaleOrderLine(models.Model):
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
         }
+
+    @api.multi
+    def _prepare_order_line_procurement(self, group_id=False):
+        vals = super(SaleOrderLine, self)._prepare_order_line_procurement(
+            group_id=group_id)
+
+        confirm = fields.Date.from_string(self.order_id.confirmation_date)
+        vals["date_planned"] = confirm + timedelta(days=self.customer_lead)
+        return vals
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
                  'icms_st_aliquota_mva', 'incluir_ipi_base',
