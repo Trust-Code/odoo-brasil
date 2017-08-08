@@ -42,7 +42,12 @@ class AccountBankStatementImport(models.TransientModel):
             cnab240_file = tempfile.NamedTemporaryFile()
             cnab240_file.write(data_file)
             cnab240_file.flush()
-            bank = self.get_bank()
+
+            journal_id = self.env.context['journal_id']
+            if self.force_journal_account:
+                journal_id = self.journal_id.id
+
+            bank = self.get_bank(journal_id)
             Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
             return True
         except Exception as e:
@@ -50,9 +55,19 @@ class AccountBankStatementImport(models.TransientModel):
                 raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
             return False
 
-    def get_bank(self):
-        bank = self.env['account.journal'].browse(
-            self.env.context["journal_id"]).bank_id.bic
+    def _get_nosso_numero(self, journal_id, nosso_numero):
+        # TODO Quando outros bancos modificar aqui
+        bank = self.env['account.journal'].browse(journal_id).bank_id.bic
+        if bank == '237':  # Bradesco
+            return int(nosso_numero[8:19])
+        elif bank == '756':
+            return int(nosso_numero[:9])
+        elif bank == '033':
+            return int(nosso_numero[:-1])
+        return nosso_numero
+
+    def get_bank(self, journal_id):
+        bank = self.env['account.journal'].browse(journal_id).bank_id.bic
         if bank == '237':
             from cnab240.bancos import bradesco
             return bradesco
@@ -77,7 +92,11 @@ class AccountBankStatementImport(models.TransientModel):
         cnab240_file.write(data_file)
         cnab240_file.flush()
 
-        bank = self.get_bank()
+        journal_id = self.env.context['journal_id']
+        if self.force_journal_account:
+            journal_id = self.journal_id.id
+
+        bank = self.get_bank(journal_id)
         arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
         valor_total = Decimal('0.0')
@@ -90,16 +109,27 @@ class AccountBankStatementImport(models.TransientModel):
                 # Liquidação Santander ('06', '17')
                 if evento.servico_codigo_movimento in (6, 17, '06', '17',):
                     valor_total += valor
+
+                    nosso_numero = self._get_nosso_numero(
+                        journal_id, evento.nosso_numero)
+
+                    move_line = self.env['account.move.line'].search(
+                        [('nosso_numero', '=', nosso_numero)])
+
                     transacoes.append({
-                        'name': "%s : %s" % (evento.sacado_nome,
-                                             evento.numero_documento),
+                        'name': "%s : %s" % (
+                            evento.sacado_nome or move_line.partner_id.name,
+                            evento.numero_documento or "%s: %s" % (
+                                move_line.move_id.name, move_line.name)),
                         'date': datetime.strptime(
                             str(evento.data_ocorrencia), '%d%m%Y'),
                         'amount': valor,
-                        'partner_name': evento.sacado_nome,
+                        'partner_name':
+                        evento.sacado_nome or move_line.partner_id.name,
+                        'partner_id': move_line.partner_id.id,
                         'ref': evento.numero_documento,
                         'unique_import_id': str(evento.nosso_numero),
-                        'nosso_numero': str(evento.nosso_numero),
+                        'nosso_numero': nosso_numero,
                     })
 
         inicio = final = datetime.now()
@@ -110,7 +140,7 @@ class AccountBankStatementImport(models.TransientModel):
             final = ultima_transacao["date"]
 
         last_bank_stmt = self.env['account.bank.statement'].search(
-            [('journal_id', 'in', self.journal_id.ids)],
+            [('journal_id', '=', journal_id)],
             order="date desc, id desc", limit=1)
         last_balance = last_bank_stmt and last_bank_stmt[0].balance_end or 0.0
 
