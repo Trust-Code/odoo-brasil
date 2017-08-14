@@ -23,7 +23,7 @@ class ProductTemplate(models.Model):
     cest = fields.Char(string="CEST", size=10,
                        help=u"Código Especificador da Substituição Tributária")
     fiscal_observation_ids = fields.Many2many(
-        'br_account.fiscal.observation', string="Mensagens Doc. Eletrônico")
+        'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico")
 
     @api.onchange('type')
     def onchange_product_type(self):

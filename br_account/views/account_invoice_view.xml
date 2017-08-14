@@ -290,7 +290,7 @@
                                     <field name="icms_st_aliquota_reducao_base"/>
                                     <field name="tax_icms_st_id" />
                                     <field name="icms_st_aliquota" invisible="1"/>
-                                    <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_st_aliquota_deducao" />
                                     <field name="icms_st_valor"/>
                                 </group>
                                 <group name="icms_interestaual" attrs="{'invisible': [('tem_difal', '==', False)] }">

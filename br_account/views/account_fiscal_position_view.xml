@@ -36,7 +36,7 @@
                         <field name="icms_aliquota_credito" attrs="{'invisible': [('domain', '!=', 'simples')]}" />
                         <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}" />
                         <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
-                        <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
+                        <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
                         <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
                     </group>

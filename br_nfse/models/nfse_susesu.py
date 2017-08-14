@@ -144,7 +144,7 @@ class InvoiceEletronic(models.Model):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
         attachment_obj = self.env['ir.attachment']
         if self.model not in ('009'):
-            return
+            return atts
 
         tmp = tempfile._get_default_tempdir()
         temp_name = os.path.join(tmp, next(tempfile._get_candidate_names()))
