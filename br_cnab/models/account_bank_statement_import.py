@@ -64,6 +64,8 @@ class AccountBankStatementImport(models.TransientModel):
             return int(nosso_numero[:9])
         elif bank == '033':
             return int(nosso_numero[:-1])
+        elif bank == '748':
+            return int(nosso_numero[:-1])
         return nosso_numero
 
     def get_bank(self, journal_id):
@@ -86,6 +88,9 @@ class AccountBankStatementImport(models.TransientModel):
         elif bank == '033':
             from cnab240.bancos import santander
             return santander
+        elif bank == '748':
+            from cnab240.bancos import sicredi
+            return sicredi
 
     def _parse_cnab(self, data_file, raise_error=False):
         cnab240_file = tempfile.NamedTemporaryFile()
@@ -100,7 +105,6 @@ class AccountBankStatementImport(models.TransientModel):
         arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
         valor_total = Decimal('0.0')
-
         for lote in arquivo.lotes:
             for evento in lote.eventos:
                 valor = evento.valor_lancamento
@@ -122,7 +126,7 @@ class AccountBankStatementImport(models.TransientModel):
                             evento.numero_documento or "%s: %s" % (
                                 move_line.move_id.name, move_line.name)),
                         'date': datetime.strptime(
-                            str(evento.data_ocorrencia), '%d%m%Y'),
+                            str(evento.data_credito), '%d%m%Y'),
                         'amount': valor,
                         'partner_name':
                         evento.sacado_nome or move_line.partner_id.name,
