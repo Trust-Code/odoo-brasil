@@ -54,6 +54,7 @@ class InvoiceEletronic(models.Model):
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
         readonly=True, states=STATE)
+    serie_documento = fields.Char(string=u'Série Documento', size=6)
     numero = fields.Integer(
         string=u'Número', readonly=True, states=STATE)
     numero_controle = fields.Integer(
