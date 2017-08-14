@@ -24,25 +24,25 @@ STATE = {'edit': [('readonly', False)], 'draft': [('readonly', False)]}
 class InutilizedNfe(models.Model):
     _name = 'invoice.eletronic.inutilized'
 
-    name = fields.Char('Nome', required=True, readonly=True, states=STATE)
-    numeration_start = fields.Integer('Numero Inicial', required=True,
+    name = fields.Char(u'Nome', required=True, readonly=True, states=STATE)
+    numeration_start = fields.Integer(u'Número Inicial', required=True,
                                       readonly=True, states=STATE)
-    numeration_end = fields.Integer('Numero Final', required=True,
+    numeration_end = fields.Integer(u'Número Final', required=True,
                                     readonly=True, states=STATE)
-    justificativa = fields.Text('Justificativa', required=True,
+    justificativa = fields.Text(u'Justificativa', required=True,
                                 readonly=True, states=STATE)
-    erro = fields.Text('Erros', readonly=True)
+    erro = fields.Text(u'Erros', readonly=True)
     state = fields.Selection([
-        ('draft', 'Provisório'),
-        ('done', 'Enviado'),
-        ('error', 'Erro'),
-        ('edit', 'Editando'), ],
+        ('draft', u'Provisório'),
+        ('done', u'Enviado'),
+        ('error', u'Erro'),
+        ('edit', u'Editando'), ],
         string=u'State', default='edit', required=True, readonly=True)
     modelo = fields.Selection([
         ('55', '55 - NFe'),
         ('65', '65 - NFCe'), ],
-        string='Modelo', required=True, readonly=True, states=STATE)
-    serie = fields.Many2one('br_account.document.serie', string='Série',
+        string=u'Modelo', required=True, readonly=True, states=STATE)
+    serie = fields.Many2one('br_account.document.serie', string=u'Série',
                             required=True, readonly=True, states=STATE)
 
     @api.model
@@ -111,7 +111,7 @@ class InutilizedNfe(models.Model):
         self._create_attachment('inutilizacao-recibo', self,
                                 resposta['received_xml'])
         if hasattr(resposta['object'].Body, 'Fault'):
-            raise UserError('Não foi possível concluir a operação.')
+            raise UserError(u'Não foi possível concluir a operação.')
         inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result.\
             retInutNFe.infInut
         status = inf_inut.cStat

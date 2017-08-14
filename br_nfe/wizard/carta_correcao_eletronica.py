@@ -19,24 +19,24 @@ except ImportError:
 class WizardCartaCorrecaoEletronica(models.TransientModel):
     _name = 'wizard.carta.correcao.eletronica'
 
-    state = fields.Selection([('drat', 'Provisório'), ('error', 'Erro')],
-                             string="Situação")
-    correcao = fields.Text(string="Correção", max_length=1000, required=True)
+    state = fields.Selection([('drat', u'Provisório'), ('error', u'Erro')],
+                             string=u"Situação")
+    correcao = fields.Text(string=u"Correção", max_length=1000, required=True)
     eletronic_doc_id = fields.Many2one(
-        'invoice.eletronic', string="Documento Eletrônico")
-    message = fields.Char(string="Mensagem", size=300, readonly=True)
-    sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
-    received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
+        'invoice.eletronic', string=u"Documento Eletrônico")
+    message = fields.Char(string=u"Mensagem", size=300, readonly=True)
+    sent_xml = fields.Binary(string=u"Xml Envio", readonly=True)
+    sent_xml_name = fields.Char(string=u"Xml Envio", size=30, readonly=True)
+    received_xml = fields.Binary(string=u"Xml Recebimento", readonly=True)
     received_xml_name = fields.Char(
-        string="Xml Recebimento", size=30, readonly=True)
+        string=u"Xml Recebimento", size=30, readonly=True)
 
     def valida_carta_correcao_eletronica(self):
         if len(self.correcao) < 15:
-            raise UserError('Motivo de Correção deve ter mais de ' +
+            raise UserError(u'Motivo de Correção deve ter mais de ' +
                             '15 caracteres')
         if len(self.correcao) > 1000:
-            raise UserError('Motivo de Correção deve ter menos de ' +
+            raise UserError(u'Motivo de Correção deve ter menos de ' +
                             '1000 caracteres')
 
     @api.multi
@@ -106,7 +106,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 "type": "ir.actions.act_window",
                 "res_model": "wizard.carta.correcao.eletronica",
                 "views": [[False, "form"]],
-                "name": "Carta de Correção",
+                "name": u"Carta de Correção",
                 "target": "new",
                 "res_id": self.id,
             }

@@ -13,6 +13,9 @@
                             <group name="simples_nacional" string="Simples Nacional" attrs="{'invisible': [('fiscal_type', '!=', '1')]}">
                                 <field name="annual_revenue" string="Faturamento dos últimos 12 meses" />
                             </group>
+                            <group string="Escritório de contabilidade">
+                                <field name="accountant_id" nolabel="1" />
+                            </group>
                         </group>
                         <group  string="Séries de Documentos Fiscais">
                             <field name="fiscal_document_for_product_id" />
