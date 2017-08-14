@@ -28,7 +28,7 @@ class AccountInvoice(models.Model):
 
     invoice_eletronic_ids = fields.One2many(
         'invoice.eletronic', 'invoice_id',
-        'Documentos Eletrônicos', readonly=True)
+        u'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
         string="Modelo de Fatura", related="fiscal_document_id.code",
         readonly=True)
@@ -37,7 +37,7 @@ class AccountInvoice(models.Model):
     internal_number = fields.Integer(
         'Invoice Number', readonly=True,
         states={'draft': [('readonly', False)]},
-        help="""Unique number of the invoice, computed
+        help=u"""Unique number of the invoice, computed
             automatically when the invoice is created.""")
 
     @api.multi

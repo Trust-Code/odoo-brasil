@@ -176,13 +176,13 @@ class InvoiceEletronic(models.Model):
     mensagem_retorno = fields.Char(
         string=u'Mensagem Retorno', readonly=True, states=STATE)
     numero_nfe = fields.Char(
-        string="Numero Formatado NFe", readonly=True, states=STATE)
+        string=u"Numero Formatado NFe", readonly=True, states=STATE)
 
     xml_to_send = fields.Binary(string="Xml a Enviar", readonly=True)
     xml_to_send_name = fields.Char(
-        string="Nome xml a ser enviado", size=100, readonly=True)
+        string=u"Nome xml a ser enviado", size=100, readonly=True)
 
-    email_sent = fields.Boolean(string="Email enviado", default=False,
+    email_sent = fields.Boolean(string=u"Email enviado", default=False,
                                 readonly=True, states=STATE)
 
     def _create_attachment(self, prefix, event, data):
@@ -546,8 +546,8 @@ class InvoiceEletronicItem(models.Model):
         string=u'Valor Líquido', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
     indicador_total = fields.Selection(
-        [('0', '0 - Não'), ('1', '1 - Sim')],
-        string="Compõe Total da Nota?", default='1',
+        [('0', u'0 - Não'), ('1', u'1 - Sim')],
+        string=u"Compõe Total da Nota?", default='1',
         readonly=True, states=STATE)
 
     origem = fields.Selection(
