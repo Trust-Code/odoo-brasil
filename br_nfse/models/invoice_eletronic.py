@@ -222,7 +222,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '001':
+        if self.model == '001' and self.state not in ('done', 'cancel'):
             self.state = 'error'
 
             nfse_values = self._prepare_eletronic_invoice_values()

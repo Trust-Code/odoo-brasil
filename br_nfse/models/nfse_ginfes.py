@@ -190,7 +190,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '002':
+        if self.model == '002' and self.state not in ('done', 'cancel'):
             self.state = 'error'
 
             cert = self.company_id.with_context(
