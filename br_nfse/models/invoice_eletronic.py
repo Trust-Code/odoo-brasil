@@ -219,6 +219,28 @@ class InvoiceEletronic(models.Model):
             res.update(nfse_vals)
         return res
 
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        if self.model not in ('001'):
+            return atts
+
+        attachment_obj = self.env['ir.attachment']
+        danfe_report = self.env['ir.actions.report.xml'].search(
+            [('report_name', '=', 'br_nfse.main_template_br_nfse_danfe')])
+        report_service = danfe_report.report_name
+        danfse = self.env['report'].get_pdf([self.id], report_service)
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name="paulistana-%08d.pdf" % self.numero,
+                datas_fname="paulistana-%08d.pdf" % self.numero,
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+        return atts
+
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
