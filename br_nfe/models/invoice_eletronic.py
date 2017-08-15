@@ -704,12 +704,14 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        self.state = 'error'
-        self.data_emissao = datetime.now()
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
-        if self.model not in ('55', '65'):
+        if self.model not in ('55', '65') or self.state in (
+           'done', 'denied', 'cancel'):
             return
+
+        self.state = 'error'
+        self.data_emissao = datetime.now()
 
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(self.id, nfe_values)
