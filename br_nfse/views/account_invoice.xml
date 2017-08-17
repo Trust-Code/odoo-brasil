@@ -31,12 +31,12 @@
                 <field name="is_cust_invoice" invisible="1"/> 
                 <field name="is_supp_invoice" invisible="1"/> 
             </xpath>
-            <xpath expr="//field[@name='pis_cst']" position="replace">
-                <field name="pis_cst" attrs="{'required':[('is_cust_invoice','!=',True),('is_supp_invoice','!=',False)]}"/>
-            </xpath>
-            <xpath expr="//field[@name='cofins_cst']" position="replace">
-                <field name="cofins_cst" attrs="{'required':[('is_cust_invoice','!=',True),('is_supp_invoice','!=',False)]}"/>
-            </xpath>
+            <!--<xpath expr="//field[@name='pis_cst']" position="replace">-->
+                <!--<field name="pis_cst" attrs="{'required':[('is_cust_invoice','!=',True),('is_supp_invoice','!=',False)]}"/>-->
+            <!--</xpath>-->
+            <!--<xpath expr="//field[@name='cofins_cst']" position="replace">-->
+                <!--<field name="cofins_cst" attrs="{'required':[('is_cust_invoice','!=',True),('is_supp_invoice','!=',False)]}"/>-->
+            <!--</xpath>-->
         </field>
     </record>
 
