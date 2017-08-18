@@ -17,6 +17,10 @@ class BrBoletoWizard(models.TransientModel):
         if self.date_change:
             self.move_line_id.date_maturity = self.date_change
             self.move_line_id.boleto_emitido = False
-
+            invoice =  self.env['account.invoice'].search([('move_id','=',self.move_line_id.move_id.id)])
+            invoice.write({'date_due':self.date_change})
+            move_line_ids =  self.env['account.move.line'].search([('move_id','=',self.move_line_id.move_id.id)])
+            for line in move_line_ids:
+                line.write({'date_maturity':self.date_change})
         return self.env['report'].get_action(self.move_line_id.id,
                                              'br_boleto.report.print')
