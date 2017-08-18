@@ -70,8 +70,6 @@ class AccountFiscalPositionTaxRule(models.Model):
         string=u"ICMS Intra", domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string=u"% FCP", domain=[('domain', '=', 'fcp')])
-    fiscal_type = fields.Selection([('saida', 'Saída'),
-                                    ('entrada', 'Entrada')])
 
 
 class AccountFiscalPosition(models.Model):
@@ -117,6 +115,9 @@ class AccountFiscalPosition(models.Model):
     inss_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras INSS", domain=[('domain', '=', 'inss')])
+    fiscal_type = fields.Selection([('saida', 'Saída'),
+                                    ('entrada', 'Entrada')],
+                                   string=u"Tipo da posição")
 
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
