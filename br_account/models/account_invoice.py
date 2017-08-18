@@ -307,7 +307,7 @@ class AccountInvoice(models.Model):
         for line in self.invoice_line_ids:
             if line.quantity == 0:
                 continue
-            res[contador]['price'] = line.price_unity
+            res[contador]['price'] = line.price_unit
 
             price = line.price_unit * (1 - (
                 line.discount or 0.0) / 100.0)
