@@ -203,7 +203,6 @@ class AccountInvoice(models.Model):
         for inv_line in invoice.invoice_line_ids:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
-
         vals['eletronic_item_ids'] = eletronic_items
         return vals
 

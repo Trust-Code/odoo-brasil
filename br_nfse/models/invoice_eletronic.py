@@ -30,7 +30,13 @@ class InvoiceEletronicItem(models.Model):
 
     codigo_servico_paulistana = fields.Char(
         string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
-
+    inss_value = fields.Float(string='Valor INSS', readonly=True)
+    ir_value = fields.Float(string='Valor IR',
+                             readonly=True)
+    csll_value = fields.Float(string='Valor CSLL', readonly=True)
+    cofins_valor = fields.Float(string='Valor Cofins', readonly=True)
+    pis_valor = fields.Float(string='Valor Pis', readonly=True)
+    issqn_valor = fields.Float(string='ISSQN', readonly=True)
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
@@ -94,7 +100,12 @@ class InvoiceEletronic(models.Model):
                     errors.append(u'%s - CST do PIS' % prod)
                 if not eletr.cofins_cst:
                     errors.append(u'%s - CST do Cofins' % prod)
-
+        else:
+            errors.append(u'Modulo para emissão desse tipo de  \
+                            Documento ainda não disponivel. Favor \
+                            Alterar o Tipo de documento')
+                            
+        
         return errors
 
     @api.multi
