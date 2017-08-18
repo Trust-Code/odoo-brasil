@@ -70,6 +70,8 @@ class AccountFiscalPositionTaxRule(models.Model):
         string=u"ICMS Intra", domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string=u"% FCP", domain=[('domain', '=', 'fcp')])
+    fiscal_type = fields.Selection([('saida', 'Saída'),
+                                    ('entrada', 'Entrada')])
 
 
 class AccountFiscalPosition(models.Model):
