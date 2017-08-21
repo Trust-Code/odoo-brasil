@@ -5,7 +5,7 @@
         <template id="account_cash_flow_template_html_report">
              <t t-call="report.html_container">
                 <t t-call="report.external_layout">
-                    <script type="text/javascript" src="/dashboard/static/src/js/plotly-latest.min.js"></script>
+                    <script type="text/javascript" src="/account_cash_flow/static/src/js/plotly-latest.min.js"></script>
                     <h2>Gráfico</h2>
                     <div class="row">
                         <t t-raw="docs[0].draw_chart()" />
