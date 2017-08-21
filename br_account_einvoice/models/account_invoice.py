@@ -167,6 +167,7 @@ class AccountInvoice(models.Model):
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
+            'serie_documento': invoice.document_serie_id.code,
             'numero': invoice.internal_number,
             'numero_controle': num_controle,
             'numero_nfe': invoice.internal_number,
