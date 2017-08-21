@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="br_account_tax_rule_form" model="ir.ui.view">
         <field name="name">br_account.tax.rule.form</field>
         <field name="model">account.fiscal.position.tax.rule</field>
@@ -25,7 +24,7 @@
                 </group>
                 <group name="icms" attrs="{'invisible': [('domain', 'not in', ('icms', 'simples'))]}">
                     <group>
-                        <field name="cfop_id"  />
+                        <field name="cfop_id" />
                         <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tem_difal" />
@@ -65,7 +64,6 @@
             </form>
         </field>
     </record>
-
     <record id="view_br_account_tax_rule_formtree" model="ir.ui.view">
         <field name="name">view.br_account.tax.rule.tree</field>
         <field name="model">account.fiscal.position.tax.rule</field>
@@ -77,12 +75,14 @@
             </tree>
         </field>
     </record>
-
     <record id="br_account_position_form" model="ir.ui.view">
         <field name="name">br_account.fiscal.position.form</field>
         <field name="model">account.fiscal.position</field>
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
+            <field name="auto_apply" position="after">
+                <field name="fiscal_type"></field>
+            </field>
             <xpath expr="//page[@name='account_mapping']/group" position="before">
                 <group>
                     <field name="journal_id" placeholder="Este diário vai ser usado no faturamento" />
@@ -96,19 +96,19 @@
                     </group>
                 </page>
             </xpath>
-            <field name="vat_required" position="attributes" >
+            <field name="vat_required" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <field name="zip_from" position="attributes" >
+            <field name="zip_from" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <field name="zip_to" position="attributes" >
+            <field name="zip_to" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <xpath expr="//group/group/div" position="attributes" >
+            <xpath expr="//group/group/div" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group/group/label" position="attributes" >
+            <xpath expr="//group/group/label" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <page name="tax_mapping" position="attributes">
@@ -195,5 +195,4 @@
             </page>
         </field>
     </record>
-
 </odoo>
