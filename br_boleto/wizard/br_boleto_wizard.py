@@ -2,7 +2,10 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+import datetime
+from odoo.exceptions import ValidationError
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as OE_DFORMAT
 
 
 class BrBoletoWizard(models.TransientModel):
@@ -18,6 +21,12 @@ class BrBoletoWizard(models.TransientModel):
             self.move_line_id.date_maturity = self.date_change
             self.move_line_id.boleto_emitido = False
             invoice =  self.env['account.invoice'].search([('move_id','=',self.move_line_id.move_id.id)])
+            date_change = datetime.datetime.strptime(self.date_change, OE_DFORMAT).date()
+            invoice_date = datetime.datetime.strptime(invoice.date, OE_DFORMAT).date()
+            if date_change > invoice_date:
+                raise ValidationError(
+                _("You can not set Due Date Greater than Invoice date."))
+                return False
             invoice.write({'date_due':self.date_change})
             move_line_ids =  self.env['account.move.line'].search([('move_id','=',self.move_line_id.move_id.id)])
             for line in move_line_ids:
