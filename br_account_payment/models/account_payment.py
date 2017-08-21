@@ -10,8 +10,8 @@ class AccountPayment(models.Model):
 
     move_line_id = fields.Many2one('account.move.line',
                                    string="Linha de fatura")
-    count_payments = fields.Integer('Linha(s)',
-                                    compute = 'compute_count_payments')
+    total_moves = fields.Integer(
+        'Linha(s)', compute='_compute_open_moves')
 
     @api.model
     def default_get(self, fields):
@@ -26,19 +26,23 @@ class AccountPayment(models.Model):
         return super(AccountPayment, self)._create_payment_entry(amount)
 
     @api.depends('partner_id', 'partner_type')
-    def _compute_count_payments(self):
-        if self.partner_type == 'supplier':
-            account_type = 'payable'
-        else:
-            account_type = 'receivable'
+    def _compute_open_moves(self):
+        for item in self:
+            if item.partner_type == 'supplier':
+                account_type = 'payable'
+                column = 'debit'
+            else:
+                account_type = 'receivable'
+                column = 'credit'
 
-        self.count_payments = self.env['account.move.line'].search_count(
-            [('partner_id', '=', self.partner_id.id),
-             ('user_type_id.type', '=', account_type),
-             ('amount_residual', '!=', 0)])
+            item.total_moves = self.env['account.move.line'].search_count(
+                [('partner_id', '=', item.partner_id.id),
+                 ('user_type_id.type', '=', account_type),
+                 (column, '=', 0),
+                 ('reconciled', '=', False)])
 
     @api.multi
-    def action_view_account_payment(self):
+    def action_view_receivable_payable(self):
         if self.partner_type == 'supplier':
             action_ref = 'br_account_payment.action_payable_move_lines'
         else:
