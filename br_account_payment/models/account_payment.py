@@ -11,7 +11,7 @@ class AccountPayment(models.Model):
     move_line_id = fields.Many2one('account.move.line',
                                    string="Linha de fatura")
     count_payments = fields.Integer('Linha(s)',
-        compute = 'compute_count_payments')
+                                    compute = 'compute_count_payments')
 
     @api.model
     def default_get(self, fields):
@@ -26,7 +26,7 @@ class AccountPayment(models.Model):
         return super(AccountPayment, self)._create_payment_entry(amount)
 
     @api.depends('partner_id', 'partner_type')
-    def compute_count_payments(self):
+    def _compute_count_payments(self):
         if self.partner_type == 'supplier':
             account_type = 'payable'
         else:
@@ -34,8 +34,8 @@ class AccountPayment(models.Model):
 
         self.count_payments = self.env['account.move.line'].search_count(
             [('partner_id', '=', self.partner_id.id),
-            ('user_type_id.type', '=', account_type),
-            ('amount_residual', '!=', 0)])
+             ('user_type_id.type', '=', account_type),
+             ('amount_residual', '!=', 0)])
 
     @api.multi
     def action_view_account_payment(self):
