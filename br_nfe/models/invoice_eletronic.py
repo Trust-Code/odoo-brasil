@@ -267,6 +267,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
+            'nItemPed': item.item_pedido_compra,
         }
         di_vals = []
         for di in item.import_declaration_ids:
