@@ -23,6 +23,7 @@
                                     <field name="outras_despesas" />
                                     <field name="valor_liquido" />
                                     <field name="indicador_total" />
+                                    <field name="item_pedido_compra" />
                                 </group>
                                 <group>
                                     <field name="tipo_produto" />
