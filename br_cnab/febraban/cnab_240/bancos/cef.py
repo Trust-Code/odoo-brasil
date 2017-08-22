@@ -6,8 +6,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-import re
-import string
 from decimal import Decimal
 from ..cnab_240 import Cnab240
 
