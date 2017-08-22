@@ -15,11 +15,8 @@ _logger = logging.getLogger(__name__)
 
 
 class BrZip(models.Model):
-    """ Este objeto persiste todos os códigos postais que podem ser
-    utilizados para pesquisar e auxiliar o preenchimento dos endereços.
-    """
     _name = 'br.zip'
-    _description = 'CEP'
+    _description = u'CEP'
     _rec_name = 'zip'
 
     zip = fields.Char('CEP', size=8, required=True)
@@ -95,7 +92,7 @@ class BrZip(models.Model):
             if zip_code and len(zip_code) == 8:
                 self._search_by_cep(zip_code)
             elif zip_code:
-                raise UserError('Digite o cep corretamente')
+                raise UserError(u'Digite o cep corretamente')
             else:
                 self._search_by_address(state_id, city_id, street)
 
@@ -155,7 +152,7 @@ class BrZip(models.Model):
         if len(zip_ids) == 1:
             return self.set_result(zip_ids[0])
         else:
-            raise UserError(_('Nenhum CEP encontrado'))
+            raise UserError(_(u'Nenhum CEP encontrado'))
 
     @api.multi
     def seach_by_address(self, obj, country_id=False, state_id=False,
@@ -186,7 +183,7 @@ class BrZip(models.Model):
                     zip_ids=[z.id for z in zip_ids]
                 )
             else:
-                raise UserError(_('Nenhum registro encontrado'))
+                raise UserError(_(u'Nenhum registro encontrado'))
 
     def create_wizard(self, object_name, address_id, country_id=False,
                       state_id=False, city_id=False,
@@ -205,7 +202,7 @@ class BrZip(models.Model):
             'object_name': object_name})
 
         result = {
-            'name': 'Zip Search',
+            'name': u'Zip Search',
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'br.zip.search',

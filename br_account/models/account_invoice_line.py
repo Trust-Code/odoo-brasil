@@ -293,7 +293,7 @@ class AccountInvoiceLine(models.Model):
         u"Valor de Crédito", compute='_compute_price', store=True)
     icms_st_aliquota_deducao = fields.Float(
         string=u"% ICMS Próprio",
-        help="Alíquota interna ou interestadual aplicada \
+        help=u"Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
          do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS")
 
@@ -449,16 +449,16 @@ class AccountInvoiceLine(models.Model):
     tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
                                   domain=[('domain', '=', 'inss')])
     inss_base_calculo = fields.Float(
-        'Base INSS', required=True, digits=dp.get_precision('Account'),
+        u'Base INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     inss_valor = fields.Float(
-        'Valor INSS', required=True, digits=dp.get_precision('Account'),
+        u'Valor INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     inss_aliquota = fields.Float(
-        'Perc INSS', required=True, digits=dp.get_precision('Account'),
+        u'Perc INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00)
 
-    informacao_adicional = fields.Text(string="Informações Adicionais")
+    informacao_adicional = fields.Text(string=u"Informações Adicionais")
 
     def _update_tax_from_ncm(self):
         if self.product_id:

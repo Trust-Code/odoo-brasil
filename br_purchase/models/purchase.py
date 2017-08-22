@@ -101,7 +101,7 @@ class PurchaseOrderLine(models.Model):
     icms_st_aliquota_reducao_base = fields.Float(
         string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+        string=u"% Dedução", help=u"Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
          do Simples Nacional", digits=dp.get_precision('Account'))
     tem_difal = fields.Boolean(string="Possui Difal")

@@ -145,7 +145,7 @@ class AccountInvoice(models.Model):
         'Documento Fiscal Relacionado', readonly=True,
         states={'draft': [('readonly', False)]})
     fiscal_observation_ids = fields.Many2many(
-        'br_account.fiscal.observation', string="Observações Fiscais",
+        'br_account.fiscal.observation', string=u"Observações Fiscais",
         readonly=True, states={'draft': [('readonly', False)]})
     fiscal_comment = fields.Text(
         u'Observação Fiscal', readonly=True,

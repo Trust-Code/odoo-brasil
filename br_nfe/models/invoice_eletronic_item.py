@@ -48,4 +48,4 @@ class InvoiceEletronicItem(models.Model):
         string=u'ICMS Destino', readonly=True, states=STATE)
     icms_fcp_uf_dest = fields.Monetary(
         string=u'Valor FCP', readonly=True, states=STATE)
-    informacao_adicional = fields.Text(string="Informação Adicional")
+    informacao_adicional = fields.Text(string=u"Informação Adicional")
