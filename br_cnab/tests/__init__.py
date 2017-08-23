@@ -5,3 +5,4 @@
 
 from . import test_cnab_common
 from . import test_cnab_sicoob
+from . import test_import_statement
