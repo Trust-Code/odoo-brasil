@@ -461,10 +461,10 @@ class InvoiceEletronic(models.Model):
         if not mail:
             raise UserError('Modelo de email padrão não configurado')
         atts = self._find_attachment_ids_email()
-
-        if atts and len(atts):
-            mail.attachment_ids = [(6, 0, atts)]
-        mail.send_mail(self.invoice_id.id)
+        values = {
+            "attachment_ids": atts + mail.attachment_ids.ids
+        }
+        mail.send_mail(self.invoice_id.id, email_values=values)
 
     @api.multi
     def send_email_nfe_queue(self):

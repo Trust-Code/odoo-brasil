@@ -8,6 +8,7 @@ from datetime import timedelta
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
@@ -61,6 +62,31 @@ class SaleOrder(models.Model):
         string='Frete ( + )', default=0.00, digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
                                'sent': [('readonly', False)]})
+
+    @api.multi
+    def action_confirm(self):
+        for order in self:
+            itens = order.order_line
+            if sum(x.valor_frete for x in itens) != order.total_frete:
+                raise UserError("A soma do frete dos itens não confere com o\
+                                valor total do frete. Insira novamente o valor\
+                                total do frete para que o mesmo seja rateado\
+                                entre os itens.")
+
+            if sum(x.outras_despesas for x in itens) != order.total_despesas:
+                raise UserError("A soma de outras despesas dos itens não\
+                                confere com o valor total de outras despesas.\
+                                Insira novamente o valor total de outras\
+                                despesas para que o mesmo seja rateado entre\
+                                os itens.")
+
+            if sum(x.valor_seguro for x in itens) != order.total_seguro:
+                raise UserError("A soma do seguro dos itens não confere com o\
+                                valor total do seguro. Insira novamente o\
+                                valor total do seguro para que o mesmo seja\
+                                rateado entre os itens.")
+
+        return super(SaleOrder, self).action_confirm()
 
 
 class SaleOrderLine(models.Model):
