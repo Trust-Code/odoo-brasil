@@ -31,7 +31,7 @@ class PaymentOrder(models.Model):
                 order.payment_mode_id.bank_account_id.bank_bic, '240')()
             remessa = cnab.remessa(order)
 
-            self.name = 'CB%s%s.REM' % (
+            self.name = 'CNAB%s%s.REM' % (
                 time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
             self.cnab_file = base64.b64encode(remessa)

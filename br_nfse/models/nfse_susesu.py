@@ -193,7 +193,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '009':
+        if self.model == '009' and self.state not in ('done', 'cancel'):
             self.state = 'error'
             xml_to_send = base64.decodestring(self.xml_to_send)
             resposta = enviar_nota_retorna_url(
