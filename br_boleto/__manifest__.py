@@ -19,11 +19,6 @@
     'depends': [
         'br_account_payment', 'br_data_account_product'
     ],
-    'external_dependencies': {
-        'python': [
-            'pyboleto',
-        ],
-    },
     'data': [
         'security/ir.model.access.csv',
         'views/account_invoice.xml',

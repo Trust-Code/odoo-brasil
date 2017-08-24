@@ -18,12 +18,6 @@
     'depends': [
         'br_account_einvoice',
     ],
-    'external_dependencies': {
-        'python': [
-            'pytrustnfe', 'pytrustnfe.nfe',
-            'pytrustnfe.certificado', 'pytrustnfe.utils'
-        ],
-    },
     'data': [
         'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',

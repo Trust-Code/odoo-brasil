@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <odoo>
 
+    <!--
+    Marcado para remoção deste danfe na versão 11
     <template id="danfe_assets_backend" name="Danfe assets" inherit_id="report.assets_common">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/css" href="/br_nfe/static/css/danfe.css"/>
@@ -21,6 +23,7 @@
         <field name="paperformat_id" ref="paperformat_br_nfe_danfe"/>
         <field name="name">Impressão de Danfe</field>
     </record>
+    -->
 
     <template id="template_br_nfe_danfe">
         <div class="page">

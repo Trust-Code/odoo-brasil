@@ -17,11 +17,6 @@
     'depends': [
         'base', 'web',
     ],
-    'external_dependencies': {
-        'python': [
-            'pytrustnfe.nfe', 'pytrustnfe.certificado'
-        ],
-    },
     'data': [
         'views/br_base.xml',
         'views/ir_module.xml',
