@@ -158,7 +158,7 @@ class AccountInvoice(models.Model):
 
     def _prepare_edoc_vals(self, invoice):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
-                           for i in range(8)]))
+                                    for i in range(8)]))
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
@@ -214,7 +214,8 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         self.action_number()
         for item in self:
-            if item.is_eletronic and item.issuer == 1:
+            if item.is_eletronic and\
+                    item.type in ['out_invoice', 'out_refund']:
                 edoc_vals = self._prepare_edoc_vals(item)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
