@@ -267,7 +267,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
-            'nItemPed': item.item_pedido_compra,
+            'nItemPed': item.item_pedido_compra if item.item_pedido_compra
+            else '',
         }
         di_vals = []
         for di in item.import_declaration_ids:
@@ -851,8 +852,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
-                }]
-            }
+            }]
+        }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
         if resposta.cStat == 128 and \
