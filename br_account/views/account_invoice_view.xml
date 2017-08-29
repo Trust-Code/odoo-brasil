@@ -345,11 +345,11 @@
                         <page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
                             <group string="Detalhes do Imposto de Importação">
                                 <field name="ii_rule_id" />
+                                <field name="ii_valor_despesas"/>
+                                <field name="ii_valor_iof"/>
                                 <field name="tax_ii_id" />
                                 <field name="ii_base_calculo"/>
                                 <field name="ii_aliquota" invisible="1"/>
-                                <field name="ii_valor_despesas"/>
-                                <field name="ii_valor_iof"/>
                                 <field name="ii_valor"/>
                             </group>
                             <group string="Declaração de Importação">
