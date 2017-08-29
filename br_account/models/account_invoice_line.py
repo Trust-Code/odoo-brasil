@@ -65,12 +65,12 @@ class AccountInvoiceLine(models.Model):
         self._update_invoice_line_ids()
         if self.invoice_line_tax_ids:
             ctx = self._prepare_tax_context()
-
             tax_ids = self.invoice_line_tax_ids.with_context(**ctx)
 
             taxes = tax_ids.compute_all(
                 price, currency, self.quantity, product=self.product_id,
-                partner=self.invoice_id.partner_id)
+                partner=self.invoice_id.partner_id,
+                base_ii=self.ii_base_calculo)
 
         icms = ([x for x in taxes['taxes']
                  if x['id'] == self.tax_icms_id.id]) if taxes else []
@@ -393,7 +393,7 @@ class AccountInvoiceLine(models.Model):
                                 domain=[('domain', '=', 'ii')])
     ii_base_calculo = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
-        default=0.00, compute='_compute_price', store=True)
+        default=0.00, store=True)
     ii_aliquota = fields.Float(
         '% II', required=True, digits=dp.get_precision('Account'),
         default=0.00)
@@ -617,3 +617,7 @@ class AccountInvoiceLine(models.Model):
         if self.tax_inss_id:
             self.inss_aliquota = self.tax_inss_id.amount
         self._update_invoice_line_ids()
+
+    @api.onchange('ii_base_calculo')
+    def _onchange_ii_base_calculo(self):
+        self.ii_valor = (self.ii_base_calculo * self.ii_aliquota) / 100

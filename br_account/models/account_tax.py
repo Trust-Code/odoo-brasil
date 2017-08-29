@@ -262,13 +262,13 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
-    def _compute_ii(self, price_base):
+    def _compute_ii(self, base_ii):
         ii_tax = self.filtered(lambda x: x.domain == 'ii')
         if not ii_tax:
             return []
         vals = self._tax_vals(ii_tax)
-        vals['amount'] = ii_tax._compute_amount(price_base, 1.0)
-        vals['base'] = price_base
+        vals['amount'] = ii_tax._compute_amount(base_ii, 1.0)
+        vals['base'] = base_ii
         return [vals]
 
     def _compute_issqn(self, price_base):
@@ -295,7 +295,7 @@ class AccountTax(models.Model):
 
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
-                    product=None, partner=None):
+                    product=None, partner=None, base_ii=0):
 
         exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
         if not exists_br_tax:
@@ -320,7 +320,7 @@ class AccountTax(models.Model):
         taxes += self._compute_simples(price_base)
         taxes += self._compute_pis_cofins(price_base)
         taxes += self._compute_issqn(price_base)
-        taxes += self._compute_ii(price_base)
+        taxes += self._compute_ii(base_ii)
         taxes += self._compute_retention(price_base)
 
         total_included = total_excluded = price_base

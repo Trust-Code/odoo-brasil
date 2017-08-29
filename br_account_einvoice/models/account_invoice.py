@@ -215,7 +215,8 @@ class AccountInvoice(models.Model):
         self.action_number()
         for item in self:
             if item.is_eletronic and\
-                    item.type in ['out_invoice', 'out_refund']:
+                    (item.issuer == '1' or
+                     item.type in ['out_invoice', 'out_refund']):
                 edoc_vals = self._prepare_edoc_vals(item)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
