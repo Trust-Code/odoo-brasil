@@ -6,7 +6,7 @@
         </xpath>
     </template>
     <template id="trust_login_layout" name="Login Layout" inherit_id="web.login_layout">
-          <t t-set="head">
+          <t position="inside">
               <link href="/br_base/static/src/css/br_base.css" rel="stylesheet"/>
           </t>
      </template>

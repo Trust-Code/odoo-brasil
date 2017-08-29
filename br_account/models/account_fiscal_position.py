@@ -23,85 +23,101 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('outros', 'Outros')], string="Tipo")
+                               ('csll', 'CSLL'),
+                               ('irrf', 'IRRF'),
+                               ('inss', 'INSS'),
+                               ('outros', 'Outros')], string=u"Tipo")
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u"Posição Fiscal")
 
-    state_ids = fields.Many2many('res.country.state', string="Estado Destino",
+    state_ids = fields.Many2many('res.country.state', string=u"Estado Destino",
                                  domain=[('country_id.code', '=', 'BR')])
     product_category_ids = fields.Many2many(
-        'product.category', string="Categoria de Produtos")
-    tipo_produto = fields.Selection([('product', 'Produto'),
+        'product.category', string=u"Categoria de Produtos")
+    tipo_produto = fields.Selection([('product', u'Produto'),
                                      ('service', u'Serviço')],
-                                    string="Tipo produto", default="product")
+                                    string=u"Tipo produto", default="product")
 
-    product_ids = fields.Many2many('product.product', string="Produtos")
-    partner_ids = fields.Many2many('res.partner', string="Parceiros")
+    product_ids = fields.Many2many('product.product', string=u"Produtos")
+    partner_ids = fields.Many2many('res.partner', string=u"Parceiros")
 
-    cst_icms = fields.Selection(CST_ICMS, string="CST ICMS")
-    csosn_icms = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
-    cst_pis = fields.Selection(CST_PIS_COFINS, string="CST PIS")
-    cst_cofins = fields.Selection(CST_PIS_COFINS, string="CST COFINS")
-    cst_ipi = fields.Selection(CST_IPI, string="CST IPI")
-    cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
-    tax_id = fields.Many2one('account.tax', string="Imposto")
-    tax_icms_st_id = fields.Many2one('account.tax', string="ICMS ST",
+    cst_icms = fields.Selection(CST_ICMS, string=u"CST ICMS")
+    csosn_icms = fields.Selection(CSOSN_SIMPLES, string=u"CSOSN ICMS")
+    cst_pis = fields.Selection(CST_PIS_COFINS, string=u"CST PIS")
+    cst_cofins = fields.Selection(CST_PIS_COFINS, string=u"CST COFINS")
+    cst_ipi = fields.Selection(CST_IPI, string=u"CST IPI")
+    cfop_id = fields.Many2one('br_account.cfop', string=u"CFOP")
+    tax_id = fields.Many2one('account.tax', string=u"Imposto")
+    tax_icms_st_id = fields.Many2one('account.tax', string=u"ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
     icms_aliquota_credito = fields.Float(string=u"% Crédito de ICMS")
-    incluir_ipi_base = fields.Boolean(string="Incl. IPI na base ICMS")
+    incluir_ipi_base = fields.Boolean(string=u"Incl. IPI na base ICMS")
     reducao_icms = fields.Float(string=u"Redução de base")
     reducao_icms_st = fields.Float(string=u"Redução de base ST")
     reducao_ipi = fields.Float(string=u"Redução de base IPI")
     aliquota_mva = fields.Float(string=u"Alíquota MVA")
     icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help="Alíquota interna ou interestadual aplicada \
+        string=u"% ICMS Próprio",
+        help=u"Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
-         do Simples Nacional")
+         do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS")
     tem_difal = fields.Boolean(string="Aplicar Difal?")
     tax_icms_inter_id = fields.Many2one(
         'account.tax', help=u"Alíquota utilizada na operação Interestadual",
-        string="ICMS Inter", domain=[('domain', '=', 'icms_inter')])
+        string=u"ICMS Inter", domain=[('domain', '=', 'icms_inter')])
     tax_icms_intra_id = fields.Many2one(
         'account.tax', help=u"Alíquota interna do produto no estado destino",
-        string="ICMS Intra", domain=[('domain', '=', 'icms_intra')])
+        string=u"ICMS Intra", domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
-        'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
+        'account.tax', string=u"% FCP", domain=[('domain', '=', 'fcp')])
 
 
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
     journal_id = fields.Many2one(
-        'account.journal', string="Diário Contábil",
-        help="Diário Contábil a ser utilizado na fatura.")
+        'account.journal', string=u"Diário Contábil",
+        help=u"Diário Contábil a ser utilizado na fatura.")
     account_id = fields.Many2one(
-        'account.account', string="Conta Contábil",
-        help="Conta Contábil a ser utilizada na fatura.")
+        'account.account', string=u"Conta Contábil",
+        help=u"Conta Contábil a ser utilizada na fatura.")
     fiscal_observation_ids = fields.Many2many(
-        'br_account.fiscal.observation', string="Mensagens Doc. Eletrônico")
+        'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico")
     note = fields.Text(u'Observações')
 
     icms_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras ICMS", domain=[('domain', '=', 'icms')])
+        string=u"Regras ICMS", domain=[('domain', '=', 'icms')])
     simples_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras Simples Nacional", domain=[('domain', '=', 'simples')])
+        string=u"Regras Simples Nacional", domain=[('domain', '=', 'simples')])
     ipi_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras IPI", domain=[('domain', '=', 'ipi')])
+        string=u"Regras IPI", domain=[('domain', '=', 'ipi')])
     pis_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras PIS", domain=[('domain', '=', 'pis')])
+        string=u"Regras PIS", domain=[('domain', '=', 'pis')])
     cofins_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras COFINS", domain=[('domain', '=', 'cofins')])
+        string=u"Regras COFINS", domain=[('domain', '=', 'cofins')])
     issqn_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras ISSQN", domain=[('domain', '=', 'issqn')])
+        string=u"Regras ISSQN", domain=[('domain', '=', 'issqn')])
     ii_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string="Regras II", domain=[('domain', '=', 'ii')])
+        string=u"Regras II", domain=[('domain', '=', 'ii')])
+    irrf_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string=u"Regras IRRF", domain=[('domain', '=', 'irrf')])
+    csll_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string=u"Regras CSLL", domain=[('domain', '=', 'csll')])
+    inss_tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string=u"Regras INSS", domain=[('domain', '=', 'inss')])
+    fiscal_type = fields.Selection([('saida', 'Saída'),
+                                    ('entrada', 'Entrada')],
+                                   string=u"Tipo da posição")
 
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
@@ -169,33 +185,12 @@ class AccountFiscalPosition(models.Model):
     def map_tax_extra_values(self, company, product, partner):
         to_state = partner.state_id
 
+        taxes = ('icms', 'simples', 'ipi', 'pis', 'cofins',
+                 'issqn', 'ii', 'irrf', 'csll', 'inss')
         res = {}
-        vals = self._filter_rules(
-            self.id, 'icms', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'simples', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'ipi', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'pis', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'cofins', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'issqn', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
-
-        vals = self._filter_rules(
-            self.id, 'ii', partner, product, to_state)
-        res.update({k: v for k, v in vals.items() if v})
+        for tax in taxes:
+            vals = self._filter_rules(
+                self.id, tax, partner, product, to_state)
+            res.update({k: v for k, v in vals.items() if v})
 
         return res

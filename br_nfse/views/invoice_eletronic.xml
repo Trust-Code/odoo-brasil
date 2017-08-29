@@ -9,8 +9,8 @@
             <div name="alertas" position="before">
                 <field name="ambiente_nfse" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('model', '!=', '001')]}">
-                    A Nota Fiscal Paulistana está em ambiente de homologação
+                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('model', 'not in', ('001', '002', '008', '009'))]}">
+                    A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
             <field name="numero" position="after">
@@ -19,6 +19,9 @@
             <field name="mensagem_retorno" position="after">
                 <span attrs="{'invisible': [('model', 'not in', ('001'))]}">
                     <br /><b>Código Verificação:</b> <field name="verify_code" class="oe_inline" readonly="1"/>
+                </span>
+                <span attrs="{'invisible': [('model', 'not in', ('009'))]}">
+                    <br /><b>URL Danfe:</b> <field name="url_danfe" class="oe_inline" readonly="1" widget="url" />
                 </span>
             </field>
         </field>
