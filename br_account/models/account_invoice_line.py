@@ -69,8 +69,7 @@ class AccountInvoiceLine(models.Model):
 
             taxes = tax_ids.compute_all(
                 price, currency, self.quantity, product=self.product_id,
-                partner=self.invoice_id.partner_id,
-                base_ii=self.ii_base_calculo)
+                partner=self.invoice_id.partner_id)
 
         icms = ([x for x in taxes['taxes']
                  if x['id'] == self.tax_icms_id.id]) if taxes else []
