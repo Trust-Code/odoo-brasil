@@ -118,7 +118,7 @@ class AccountInvoice(models.Model):
 
     issuer = fields.Selection(
         [('0', 'Terceiros'), ('1', u'Emissão própria')], 'Emitente',
-        default='0', readonly=True, states={'draft': [('readonly', False)]})
+        default='1', readonly=True, states={'draft': [('readonly', False)]})
     vendor_number = fields.Char(
         u'Número NF Entrada', size=18, readonly=True,
         states={'draft': [('readonly', False)]},
