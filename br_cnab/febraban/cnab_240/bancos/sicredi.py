@@ -19,39 +19,31 @@ class Sicredi240(Cnab240):
     def _prepare_header(self):
         vals = super(Sicredi240, self)._prepare_header()
         vals['cedente_agencia_dv'] = ''
-	conta_dv = vals['cedente_conta_dv']
-	vals['cedente_conta_dv'] = str(conta_dv)
+        conta_dv = vals['cedente_conta_dv']
+        vals['cedente_conta_dv'] = str(conta_dv)
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         return vals
 
     def _prepare_segmento(self, line):
         vals = super(Sicredi240, self)._prepare_segmento(line)
-        if not line.payment_mode_id.bank_account_id.codigo_convenio or not line.payment_mode_id.bank_account_id.bra_number:
-            raise UserError('Código do beneficiario ou número da agência em branco')
+        if not line.payment_mode_id.bank_account_id.codigo_convenio or \
+           not line.payment_mode_id.bank_account_id.bra_number:
+            raise UserError(
+                u'Código do beneficiario ou número da agência em branco')
         digito = self.dv_nosso_numero(
             line.payment_mode_id.bank_account_id.bra_number,
             re.sub('[^0-9]', '',
                    line.payment_mode_id.bank_account_id.codigo_convenio),
             line.nosso_numero)
-        parcela = line.name
-        cnpj_cpf = line.partner_id.cnpj_cpf
-        if line.partner_id.company_type == 'company':
-            cnpj_cpf = cnpj_cpf.replace("-", "")
-            cnpj_cpf = cnpj_cpf.replace(".", "")
-            cnpj_cpf = cnpj_cpf.replace("/", "")
-        else:
-            cnpj_cpf = cnpj_cpf.replace(".", "")
-            cnpj_cpf = cnpj_cpf.replace("-", "")
-        vals['nosso_numero'] = self.format_nosso_numero(line.nosso_numero, digito)
+        vals['nosso_numero'] = self.format_nosso_numero(
+            line.nosso_numero, digito)
         vals['nosso_numero_dv'] = int(digito)
         vals['prazo_baixa'] = '0'
-	vals['codigo_multa'] = int(vals['codigo_multa'])
-	vals['cedente_conta_dv'] = str(vals['cedente_conta_dv'])
+        vals['codigo_multa'] = int(vals['codigo_multa'])
+        vals['cedente_conta_dv'] = str(vals['cedente_conta_dv'])
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
-        #vals['sacador_inscricao_numero'] = int(cnpj_cpf)
-        #vals['sacador_nome'] = line.partner_id.name
         if line.payment_mode_id.boleto_especie == '01':
             especie = '03'
         elif line.payment_mode_id.boleto_especie == '02':
@@ -81,21 +73,20 @@ class Sicredi240(Cnab240):
         else:
             especie = '99'
         vals['especie_titulo'] = especie
-        vals['codigo_multa'] = '1' # 1 - Valor por dia
+        vals['codigo_multa'] = '1'  # 1 - Valor por dia
         vlr_doc = line.debit
-        juros_dia = vlr_doc*(self.order.payment_mode_id.late_payment_interest/100/30)
+        juros_dia = vlr_doc * (
+            self.order.payment_mode_id.late_payment_interest / 100 / 30)
         vals['juros_mora_taxa'] = Decimal(str(juros_dia)).quantize(
-                Decimal('1.00'))
+            Decimal('1.00'))
         vals['codigo_baixa'] = 1
-        vals['prazo_baixa'] = '060'  #Usar sempre "060" - Para baixa/devolução.
+        vals['prazo_baixa'] = '060'  # Usar sempre "060" - Para baixa/devolução
         return vals
 
     def dv_nosso_numero(self, agencia, codigo_beneficiario, nosso_numero):
-        n_num = "%s2%s" % (self.format_ano(),
-                           nosso_numero.zfill(5))
-        composto = "%s05%s%s" % (agencia.zfill(4),
-                                   codigo_beneficiario.zfill(5),
-                                   n_num.zfill(8))
+        n_num = "%s2%s" % (self.format_ano(), nosso_numero.zfill(5))
+        composto = "%s05%s%s" % (
+            agencia.zfill(4), codigo_beneficiario.zfill(5), n_num.zfill(8))
         constante = '4329876543298765432'
         soma = 0
         for i in range(19):
@@ -104,7 +95,7 @@ class Sicredi240(Cnab240):
         return '0' if (resto == 1 or resto == 0) else 11 - resto
 
     def format_nosso_numero(self, nosso_numero, dv):
-        return "%s2%s%s    " % (self.format_ano(),nosso_numero.zfill(5),dv)
+        return "%s2%s%s    " % (self.format_ano(), nosso_numero.zfill(5), dv)
 
     def format_ano(self):
         data = fields.Datetime.now()

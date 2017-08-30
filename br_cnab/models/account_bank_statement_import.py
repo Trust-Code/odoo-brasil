@@ -126,7 +126,7 @@ class AccountBankStatementImport(models.TransientModel):
                             evento.numero_documento or "%s: %s" % (
                                 move_line.move_id.name, move_line.name)),
                         'date': datetime.strptime(
-                            str(evento.data_credito), '%d%m%Y'),
+                            str(evento.data_ocorrencia), '%d%m%Y'),
                         'amount': valor,
                         'partner_name':
                         evento.sacado_nome or move_line.partner_id.name,
