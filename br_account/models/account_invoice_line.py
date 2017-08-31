@@ -52,7 +52,7 @@ class AccountInvoiceLine(models.Model):
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
-                 'icms_st_aliquota_deducao')
+                 'icms_st_aliquota_deducao', 'ii_base_calculo')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -137,7 +137,6 @@ class AccountInvoiceLine(models.Model):
             'cofins_valor': sum([x['amount'] for x in cofins]),
             'issqn_base_calculo': sum([x['base'] for x in issqn]),
             'issqn_valor': sum([x['amount'] for x in issqn]),
-            'ii_base_calculo': sum([x['base'] for x in ii]),
             'ii_valor': sum([x['amount'] for x in ii]),
             'csll_base_calculo': sum([x['base'] for x in csll]),
             'csll_valor': sum([x['amount'] for x in csll]),
@@ -393,7 +392,7 @@ class AccountInvoiceLine(models.Model):
                                 domain=[('domain', '=', 'ii')])
     ii_base_calculo = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
-        default=0.00, compute='_compute_price', store=True)
+        default=0.00, store=True)
     ii_aliquota = fields.Float(
         '% II', required=True, digits=dp.get_precision('Account'),
         default=0.00)

@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Contas a Pagar e Receber',
     'summary': """Facilita a visualização de parcelas a pagar e receber
     no Odoo - Mantido por Trustcode""",
