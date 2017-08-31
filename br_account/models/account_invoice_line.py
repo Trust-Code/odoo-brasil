@@ -32,11 +32,16 @@ class AccountInvoiceLine(models.Model):
             'icms_st_aliquota_reducao_base':
             self.icms_st_aliquota_reducao_base,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
+            'icms_st_base_calculo_manual': self.icms_st_base_calculo_manual,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_base_calculo': self.icms_base_calculo,
+            'icms_base_calculo_manual': self.icms_base_calculo_manual,
             'ipi_base_calculo': self.ipi_base_calculo,
+            'ipi_base_calculo_manual': self.ipi_base_calculo_manual,
             'pis_base_calculo': self.pis_base_calculo,
+            'pis_base_calculo_manual': self.pis_base_calculo_manual,
             'cofins_base_calculo': self.cofins_base_calculo,
+            'cofins_base_calculo_manual': self.cofins_base_calculo_manual,
             'ii_base_calculo': self.ii_base_calculo,
             'issqn_base_calculo': self.issqn_base_calculo,
         }
@@ -52,7 +57,9 @@ class AccountInvoiceLine(models.Model):
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
-                 'icms_st_aliquota_deducao')
+                 'icms_st_aliquota_deducao', 'icms_st_base_calculo_manual',
+                 'icms_base_calculo_manual', 'ipi_base_calculo_manual',
+                 'pis_base_calculo_manual', 'cofins_base_calculo_manual')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -255,7 +262,8 @@ class AccountInvoiceLine(models.Model):
         'MVA Ajustado ST',
         digits=dp.get_precision('Discount'), default=0.00)
     icms_st_base_calculo_manual = fields.Float(
-        'Base ICMS ST Manual', digits=dp.get_precision('Account'), default=0.00)
+        'Base ICMS ST Manual', digits=dp.get_precision('Account'),
+        default=0.00)
 
     # =========================================================================
     # ICMS Difal
