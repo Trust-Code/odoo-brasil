@@ -342,6 +342,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'pCOFINS': "%.02f" % item.cofins_aliquota,
                 'vCOFINS': "%.02f" % item.cofins_valor
             },
+            'II': {
+                'vBC': "%.02f" % item.ii_base_calculo,
+                'vDespAdu': "%.02f" % item.ii_valor_despesas,
+                'vII': "%.02f" % item.ii_valor,
+                'vIOF': "%.02f" % item.ii_valor_iof
+            },
         }
         if item.tem_difal:
             imposto['ICMSUFDest'] = {

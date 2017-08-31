@@ -1,0 +1,211 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AccountConfigSettings	../models/account_config_settings.py	/^class AccountConfigSettings(models.TransientModel):$/;"	kind:class	line:8
+AccountInvoice	../models/account_invoice.py	/^class AccountInvoice(models.Model):$/;"	kind:class	line:20
+InvoiceEletronic	../models/invoice_eletronic.py	/^class InvoiceEletronic(models.Model):$/;"	kind:class	line:24
+InvoiceEletronicEvent	../models/invoice_eletronic.py	/^class InvoiceEletronicEvent(models.Model):$/;"	kind:class	line:481
+InvoiceEletronicItem	../models/invoice_eletronic.py	/^class InvoiceEletronicItem(models.Model):$/;"	kind:class	line:494
+ResCompany	../models/res_company.py	/^class ResCompany(models.Model):$/;"	kind:class	line:8
+STATE	../models/invoice_eletronic.py	/^STATE = {'edit': [('readonly', False)]}$/;"	kind:variable	line:21
+TYPE2EDOC	../models/account_invoice.py	/^TYPE2EDOC = {$/;"	kind:variable	line:12
+TestEletronicInvoice	../tests/test_eletronic_invoice.py	/^class TestEletronicInvoice(TransactionCase):$/;"	kind:class	line:9
+__init__.py	../__init__.py	1;"	kind:file	line:1
+__init__.py	../models/__init__.py	1;"	kind:file	line:1
+__init__.py	../tests/__init__.py	1;"	kind:file	line:1
+__manifest__.py	../__manifest__.py	1;"	kind:file	line:1
+_compute_legal_information	../models/invoice_eletronic.py	/^    def _compute_legal_information(self):$/;"	kind:member	line:315
+_compute_msg	../models/invoice_eletronic.py	/^    def _compute_msg(self, observation_ids):$/;"	kind:member	line:336
+_compute_total_edocs	../models/account_invoice.py	/^    def _compute_total_edocs(self):$/;"	kind:member	line:24
+_create_attachment	../models/invoice_eletronic.py	/^    def _create_attachment(self, prefix, event, data):$/;"	kind:member	line:188
+_find_attachment_ids_email	../models/invoice_eletronic.py	/^    def _find_attachment_ids_email(self):$/;"	kind:member	line:455
+_get_state_to_send	../models/invoice_eletronic.py	/^    def _get_state_to_send(self):$/;"	kind:member	line:440
+_hook_validation	../models/invoice_eletronic.py	/^    def _hook_validation(self):$/;"	kind:member	line:202
+_inherit	../models/account_config_settings.py	/^    _inherit = 'account.config.settings'$/;"	kind:variable	line:9
+_inherit	../models/account_invoice.py	/^    _inherit = 'account.invoice'$/;"	kind:variable	line:21
+_inherit	../models/invoice_eletronic.py	/^    _inherit = ['mail.thread']$/;"	kind:variable	line:27
+_inherit	../models/res_company.py	/^    _inherit = 'res.company'$/;"	kind:variable	line:9
+_name	../models/invoice_eletronic.py	/^    _name = 'invoice.eletronic'$/;"	kind:variable	line:25
+_name	../models/invoice_eletronic.py	/^    _name = 'invoice.eletronic.event'$/;"	kind:variable	line:482
+_name	../models/invoice_eletronic.py	/^    _name = 'invoice.eletronic.item'$/;"	kind:variable	line:495
+_order	../models/invoice_eletronic.py	/^    _order = 'id desc'$/;"	kind:variable	line:483
+_prepare_edoc_item_vals	../models/account_invoice.py	/^    def _prepare_edoc_item_vals(self, line):$/;"	kind:member	line:78
+_prepare_edoc_vals	../models/account_invoice.py	/^    def _prepare_edoc_vals(self, invoice):$/;"	kind:member	line:158
+_prepare_eletronic_invoice_item	../models/invoice_eletronic.py	/^    def _prepare_eletronic_invoice_item(self, item, invoice):$/;"	kind:member	line:400
+_prepare_eletronic_invoice_values	../models/invoice_eletronic.py	/^    def _prepare_eletronic_invoice_values(self):$/;"	kind:member	line:404
+account_config_settings.py	../models/account_config_settings.py	1;"	kind:file	line:1
+account_invoice.py	../models/account_invoice.py	1;"	kind:file	line:1
+action_back_to_draft	../models/invoice_eletronic.py	/^    def action_back_to_draft(self):$/;"	kind:member	line:416
+action_cancel	../models/account_invoice.py	/^    def action_cancel(self):$/;"	kind:member	line:225
+action_cancel_document	../models/invoice_eletronic.py	/^    def action_cancel_document(self, context=None, justificativa=None):$/;"	kind:member	line:412
+action_edit_edoc	../models/invoice_eletronic.py	/^    def action_edit_edoc(self):$/;"	kind:member	line:420
+action_number	../models/account_invoice.py	/^    def action_number(self):$/;"	kind:member	line:65
+action_post_validate	../models/invoice_eletronic.py	/^    def action_post_validate(self):$/;"	kind:member	line:396
+action_send_eletronic_invoice	../models/invoice_eletronic.py	/^    def action_send_eletronic_invoice(self):$/;"	kind:member	line:408
+action_view_edocs	../models/account_invoice.py	/^    def action_view_edocs(self):$/;"	kind:member	line:44
+ambiente	../models/invoice_eletronic.py	/^    ambiente = fields.Selection($/;"	kind:variable	line:68
+can_unlink	../models/invoice_eletronic.py	/^    def can_unlink(self):$/;"	kind:member	line:423
+cfop	../models/invoice_eletronic.py	/^    cfop = fields.Char(u'CFOP', size=5, readonly=True, states=STATE)$/;"	kind:variable	line:514
+code	../models/invoice_eletronic.py	/^    code = fields.Char($/;"	kind:variable	line:29
+code	../models/invoice_eletronic.py	/^    code = fields.Char(string=u'Código', readonly=True, states=STATE)$/;"	kind:variable	line:485
+codigo_retorno	../models/invoice_eletronic.py	/^    codigo_retorno = fields.Char($/;"	kind:variable	line:174
+cofins_aliquota	../models/invoice_eletronic.py	/^    cofins_aliquota = fields.Float($/;"	kind:variable	line:673
+cofins_base_calculo	../models/invoice_eletronic.py	/^    cofins_base_calculo = fields.Monetary($/;"	kind:variable	line:676
+cofins_cst	../models/invoice_eletronic.py	/^    cofins_cst = fields.Selection($/;"	kind:variable	line:670
+cofins_valor	../models/invoice_eletronic.py	/^    cofins_valor = fields.Monetary($/;"	kind:variable	line:679
+cofins_valor_retencao	../models/invoice_eletronic.py	/^    cofins_valor_retencao = fields.Monetary($/;"	kind:variable	line:682
+commercial_partner_id	../models/invoice_eletronic.py	/^    commercial_partner_id = fields.Many2one($/;"	kind:variable	line:83
+company_id	../models/invoice_eletronic.py	/^    company_id = fields.Many2one($/;"	kind:variable	line:33
+company_id	../models/invoice_eletronic.py	/^    company_id = fields.Many2one($/;"	kind:variable	line:498
+cron_send_nfe	../models/invoice_eletronic.py	/^    def cron_send_nfe(self):$/;"	kind:member	line:444
+csll_aliquota	../models/invoice_eletronic.py	/^    csll_aliquota = fields.Float($/;"	kind:variable	line:706
+csll_base_calculo	../models/invoice_eletronic.py	/^    csll_base_calculo = fields.Monetary($/;"	kind:variable	line:703
+csll_valor_retencao	../models/invoice_eletronic.py	/^    csll_valor_retencao = fields.Monetary($/;"	kind:variable	line:709
+currency_id	../models/invoice_eletronic.py	/^    currency_id = fields.Many2one($/;"	kind:variable	line:163
+currency_id	../models/invoice_eletronic.py	/^    currency_id = fields.Many2one($/;"	kind:variable	line:502
+data_autorizacao	../models/invoice_eletronic.py	/^    data_autorizacao = fields.Char($/;"	kind:variable	line:66
+data_emissao	../models/invoice_eletronic.py	/^    data_emissao = fields.Datetime($/;"	kind:variable	line:62
+data_fatura	../models/invoice_eletronic.py	/^    data_fatura = fields.Datetime($/;"	kind:variable	line:64
+desconto	../models/invoice_eletronic.py	/^    desconto = fields.Monetary($/;"	kind:variable	line:531
+domain	../models/account_config_settings.py	/^        domain=[('model_id.model', '=', 'account.invoice')])$/;"	kind:variable	line:13
+eletronic_event_ids	../models/invoice_eletronic.py	/^    eletronic_event_ids = fields.One2many($/;"	kind:variable	line:97
+eletronic_item_ids	../models/invoice_eletronic.py	/^    eletronic_item_ids = fields.One2many($/;"	kind:variable	line:94
+email_sent	../models/invoice_eletronic.py	/^    email_sent = fields.Boolean(string="Email enviado", default=False,$/;"	kind:variable	line:185
+finalidade_emissao	../models/invoice_eletronic.py	/^    finalidade_emissao = fields.Selection($/;"	kind:variable	line:72
+fiscal_position_id	../models/invoice_eletronic.py	/^    fiscal_position_id = fields.Many2one($/;"	kind:variable	line:91
+frete	../models/invoice_eletronic.py	/^    frete = fields.Monetary($/;"	kind:variable	line:525
+get_default_nfe_email_template	../models/account_config_settings.py	/^    def get_default_nfe_email_template(self, fields):$/;"	kind:member	line:15
+icms_aliquota	../models/invoice_eletronic.py	/^    icms_aliquota = fields.Float($/;"	kind:variable	line:558
+icms_aliquota_credito	../models/invoice_eletronic.py	/^    icms_aliquota_credito = fields.Float($/;"	kind:variable	line:579
+icms_aliquota_diferimento	../models/invoice_eletronic.py	/^    icms_aliquota_diferimento = fields.Float($/;"	kind:variable	line:607
+icms_aliquota_reducao_base	../models/invoice_eletronic.py	/^    icms_aliquota_reducao_base = fields.Float($/;"	kind:variable	line:570
+icms_base_calculo	../models/invoice_eletronic.py	/^    icms_base_calculo = fields.Monetary($/;"	kind:variable	line:567
+icms_cst	../models/invoice_eletronic.py	/^    icms_cst = fields.Selection($/;"	kind:variable	line:555
+icms_motivo_desoneracao	../models/invoice_eletronic.py	/^    icms_motivo_desoneracao = fields.Char($/;"	kind:variable	line:614
+icms_st_aliquota	../models/invoice_eletronic.py	/^    icms_st_aliquota = fields.Float($/;"	kind:variable	line:594
+icms_st_aliquota_mva	../models/invoice_eletronic.py	/^    icms_st_aliquota_mva = fields.Float($/;"	kind:variable	line:591
+icms_st_aliquota_reducao_base	../models/invoice_eletronic.py	/^    icms_st_aliquota_reducao_base = fields.Float($/;"	kind:variable	line:600
+icms_st_base_calculo	../models/invoice_eletronic.py	/^    icms_st_base_calculo = fields.Monetary($/;"	kind:variable	line:597
+icms_st_tipo_base	../models/invoice_eletronic.py	/^    icms_st_tipo_base = fields.Selection($/;"	kind:variable	line:583
+icms_st_valor	../models/invoice_eletronic.py	/^    icms_st_valor = fields.Monetary($/;"	kind:variable	line:603
+icms_tipo_base	../models/invoice_eletronic.py	/^    icms_tipo_base = fields.Selection($/;"	kind:variable	line:561
+icms_valor	../models/invoice_eletronic.py	/^    icms_valor = fields.Monetary($/;"	kind:variable	line:573
+icms_valor_credito	../models/invoice_eletronic.py	/^    icms_valor_credito = fields.Monetary($/;"	kind:variable	line:576
+icms_valor_desonerado	../models/invoice_eletronic.py	/^    icms_valor_desonerado = fields.Monetary($/;"	kind:variable	line:616
+icms_valor_diferido	../models/invoice_eletronic.py	/^    icms_valor_diferido = fields.Monetary($/;"	kind:variable	line:610
+ii_aliquota	../models/invoice_eletronic.py	/^    ii_aliquota = fields.Float($/;"	kind:variable	line:639
+ii_base_calculo	../models/invoice_eletronic.py	/^    ii_base_calculo = fields.Monetary($/;"	kind:variable	line:636
+ii_valor	../models/invoice_eletronic.py	/^    ii_valor = fields.Monetary($/;"	kind:variable	line:645
+ii_valor_despesas	../models/invoice_eletronic.py	/^    ii_valor_despesas = fields.Monetary($/;"	kind:variable	line:642
+ii_valor_iof	../models/invoice_eletronic.py	/^    ii_valor_iof = fields.Monetary($/;"	kind:variable	line:648
+indicador_total	../models/invoice_eletronic.py	/^    indicador_total = fields.Selection($/;"	kind:variable	line:548
+informacoes_complementares	../models/invoice_eletronic.py	/^    informacoes_complementares = fields.Text($/;"	kind:variable	line:171
+informacoes_legais	../models/invoice_eletronic.py	/^    informacoes_legais = fields.Text($/;"	kind:variable	line:169
+inss_aliquota	../models/invoice_eletronic.py	/^    inss_aliquota = fields.Float($/;"	kind:variable	line:724
+inss_base_calculo	../models/invoice_eletronic.py	/^    inss_base_calculo = fields.Monetary($/;"	kind:variable	line:721
+inss_valor_retencao	../models/invoice_eletronic.py	/^    inss_valor_retencao = fields.Monetary($/;"	kind:variable	line:727
+internal_number	../models/account_invoice.py	/^    internal_number = fields.Integer($/;"	kind:variable	line:37
+invoice_eletronic.py	../models/invoice_eletronic.py	1;"	kind:file	line:1
+invoice_eletronic_id	../models/invoice_eletronic.py	/^    invoice_eletronic_id = fields.Many2one($/;"	kind:variable	line:487
+invoice_eletronic_id	../models/invoice_eletronic.py	/^    invoice_eletronic_id = fields.Many2one($/;"	kind:variable	line:500
+invoice_eletronic_ids	../models/account_invoice.py	/^    invoice_eletronic_ids = fields.One2many($/;"	kind:variable	line:29
+invoice_id	../models/invoice_eletronic.py	/^    invoice_id = fields.Many2one($/;"	kind:variable	line:79
+invoice_model	../models/account_invoice.py	/^    invoice_model = fields.Char($/;"	kind:variable	line:32
+invoice_validate	../models/account_invoice.py	/^    def invoice_validate(self):$/;"	kind:member	line:212
+ipi_aliquota	../models/invoice_eletronic.py	/^    ipi_aliquota = fields.Float($/;"	kind:variable	line:622
+ipi_base_calculo	../models/invoice_eletronic.py	/^    ipi_base_calculo = fields.Monetary($/;"	kind:variable	line:625
+ipi_cst	../models/invoice_eletronic.py	/^    ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária')$/;"	kind:variable	line:621
+ipi_reducao_bc	../models/invoice_eletronic.py	/^    ipi_reducao_bc = fields.Float($/;"	kind:variable	line:628
+ipi_valor	../models/invoice_eletronic.py	/^    ipi_valor = fields.Monetary($/;"	kind:variable	line:631
+irrf_aliquota	../models/invoice_eletronic.py	/^    irrf_aliquota = fields.Float($/;"	kind:variable	line:715
+irrf_base_calculo	../models/invoice_eletronic.py	/^    irrf_base_calculo = fields.Monetary($/;"	kind:variable	line:712
+irrf_valor_retencao	../models/invoice_eletronic.py	/^    irrf_valor_retencao = fields.Monetary($/;"	kind:variable	line:718
+issqn_aliquota	../models/invoice_eletronic.py	/^    issqn_aliquota = fields.Float($/;"	kind:variable	line:689
+issqn_base_calculo	../models/invoice_eletronic.py	/^    issqn_base_calculo = fields.Monetary($/;"	kind:variable	line:692
+issqn_codigo	../models/invoice_eletronic.py	/^    issqn_codigo = fields.Char($/;"	kind:variable	line:687
+issqn_valor	../models/invoice_eletronic.py	/^    issqn_valor = fields.Monetary($/;"	kind:variable	line:695
+issqn_valor_retencao	../models/invoice_eletronic.py	/^    issqn_valor_retencao = fields.Monetary($/;"	kind:variable	line:698
+log_exception	../models/invoice_eletronic.py	/^    def log_exception(self, exc):$/;"	kind:member	line:436
+mensagem_retorno	../models/invoice_eletronic.py	/^    mensagem_retorno = fields.Char($/;"	kind:variable	line:176
+model	../models/invoice_eletronic.py	/^    model = fields.Selection($/;"	kind:variable	line:46
+name	../models/invoice_eletronic.py	/^    name = fields.Char($/;"	kind:variable	line:31
+name	../models/invoice_eletronic.py	/^    name = fields.Char(string=u'Mensagem', readonly=True, states=STATE)$/;"	kind:variable	line:486
+name	../models/invoice_eletronic.py	/^    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)$/;"	kind:variable	line:497
+ncm	../models/invoice_eletronic.py	/^    ncm = fields.Char(u'NCM', size=10, readonly=True, states=STATE)$/;"	kind:variable	line:515
+nfe_email_template	../models/account_config_settings.py	/^    nfe_email_template = fields.Many2one($/;"	kind:variable	line:11
+nfe_email_template	../models/res_company.py	/^    nfe_email_template = fields.Many2one($/;"	kind:variable	line:11
+numero	../models/invoice_eletronic.py	/^    numero = fields.Integer($/;"	kind:variable	line:58
+numero_controle	../models/invoice_eletronic.py	/^    numero_controle = fields.Integer($/;"	kind:variable	line:60
+numero_nfe	../models/invoice_eletronic.py	/^    numero_nfe = fields.Char($/;"	kind:variable	line:178
+origem	../models/invoice_eletronic.py	/^    origem = fields.Selection($/;"	kind:variable	line:553
+outras_despesas	../models/invoice_eletronic.py	/^    outras_despesas = fields.Monetary($/;"	kind:variable	line:534
+partner_id	../models/invoice_eletronic.py	/^    partner_id = fields.Many2one($/;"	kind:variable	line:81
+partner_shipping_id	../models/invoice_eletronic.py	/^    partner_shipping_id = fields.Many2one($/;"	kind:variable	line:86
+payment_term_id	../models/invoice_eletronic.py	/^    payment_term_id = fields.Many2one($/;"	kind:variable	line:88
+pis_aliquota	../models/invoice_eletronic.py	/^    pis_aliquota = fields.Float($/;"	kind:variable	line:656
+pis_base_calculo	../models/invoice_eletronic.py	/^    pis_base_calculo = fields.Monetary($/;"	kind:variable	line:659
+pis_cst	../models/invoice_eletronic.py	/^    pis_cst = fields.Selection($/;"	kind:variable	line:653
+pis_valor	../models/invoice_eletronic.py	/^    pis_valor = fields.Monetary($/;"	kind:variable	line:662
+pis_valor_retencao	../models/invoice_eletronic.py	/^    pis_valor_retencao = fields.Monetary($/;"	kind:variable	line:665
+preco_unitario	../models/invoice_eletronic.py	/^    preco_unitario = fields.Monetary($/;"	kind:variable	line:521
+product_id	../models/invoice_eletronic.py	/^    product_id = fields.Many2one($/;"	kind:variable	line:508
+quantidade	../models/invoice_eletronic.py	/^    quantidade = fields.Float($/;"	kind:variable	line:519
+res_company.py	../models/res_company.py	1;"	kind:file	line:1
+seguro	../models/invoice_eletronic.py	/^    seguro = fields.Monetary($/;"	kind:variable	line:528
+send_email_nfe	../models/invoice_eletronic.py	/^    def send_email_nfe(self):$/;"	kind:member	line:459
+send_email_nfe_queue	../models/invoice_eletronic.py	/^    def send_email_nfe_queue(self):$/;"	kind:member	line:470
+serie	../models/invoice_eletronic.py	/^    serie = fields.Many2one($/;"	kind:variable	line:54
+serie_documento	../models/invoice_eletronic.py	/^    serie_documento = fields.Char(string=u'Série Documento', size=6)$/;"	kind:variable	line:57
+setUp	../tests/test_eletronic_invoice.py	/^    def setUp(self):$/;"	kind:member	line:11
+set_default_nfe_email_template	../models/account_config_settings.py	/^    def set_default_nfe_email_template(self):$/;"	kind:member	line:20
+state	../models/invoice_eletronic.py	/^    state = fields.Selection($/;"	kind:variable	line:35
+state	../models/invoice_eletronic.py	/^    state = fields.Selection($/;"	kind:variable	line:490
+state	../models/invoice_eletronic.py	/^    state = fields.Selection($/;"	kind:variable	line:505
+string	../models/invoice_eletronic.py	/^        string="Company Currency")$/;"	kind:variable	line:165
+string	../models/invoice_eletronic.py	/^        string="Company Currency")$/;"	kind:variable	line:504
+test_basic_validation_for_eletronic_doc	../tests/test_eletronic_invoice.py	/^    def test_basic_validation_for_eletronic_doc(self):$/;"	kind:member	line:103
+test_eletronic_invoice.py	../tests/test_eletronic_invoice.py	1;"	kind:file	line:1
+tipo_operacao	../models/invoice_eletronic.py	/^    tipo_operacao = fields.Selection($/;"	kind:variable	line:42
+tipo_produto	../models/invoice_eletronic.py	/^    tipo_produto = fields.Selection($/;"	kind:variable	line:510
+total_edocs	../models/account_invoice.py	/^    total_edocs = fields.Integer(string="Total NFe",$/;"	kind:variable	line:35
+tributos_estimados	../models/invoice_eletronic.py	/^    tributos_estimados = fields.Monetary($/;"	kind:variable	line:538
+unlink	../models/invoice_eletronic.py	/^    def unlink(self):$/;"	kind:member	line:429
+uom_id	../models/invoice_eletronic.py	/^    uom_id = fields.Many2one($/;"	kind:variable	line:517
+validate_invoice	../models/invoice_eletronic.py	/^    def validate_invoice(self):$/;"	kind:member	line:387
+valor_bc_csll	../models/invoice_eletronic.py	/^    valor_bc_csll = fields.Monetary($/;"	kind:variable	line:153
+valor_bc_icms	../models/invoice_eletronic.py	/^    valor_bc_icms = fields.Monetary($/;"	kind:variable	line:110
+valor_bc_icmsst	../models/invoice_eletronic.py	/^    valor_bc_icmsst = fields.Monetary($/;"	kind:variable	line:116
+valor_bc_inss	../models/invoice_eletronic.py	/^    valor_bc_inss = fields.Monetary($/;"	kind:variable	line:157
+valor_bc_irrf	../models/invoice_eletronic.py	/^    valor_bc_irrf = fields.Monetary($/;"	kind:variable	line:149
+valor_bc_issqn	../models/invoice_eletronic.py	/^    valor_bc_issqn = fields.Monetary($/;"	kind:variable	line:134
+valor_bruto	../models/invoice_eletronic.py	/^    valor_bruto = fields.Monetary($/;"	kind:variable	line:100
+valor_bruto	../models/invoice_eletronic.py	/^    valor_bruto = fields.Monetary($/;"	kind:variable	line:542
+valor_cofins	../models/invoice_eletronic.py	/^    valor_cofins = fields.Monetary($/;"	kind:variable	line:127
+valor_cofins_servicos	../models/invoice_eletronic.py	/^    valor_cofins_servicos = fields.Monetary($/;"	kind:variable	line:140
+valor_desconto	../models/invoice_eletronic.py	/^    valor_desconto = fields.Monetary($/;"	kind:variable	line:106
+valor_despesas	../models/invoice_eletronic.py	/^    valor_despesas = fields.Monetary($/;"	kind:variable	line:108
+valor_estimado_tributos	../models/invoice_eletronic.py	/^    valor_estimado_tributos = fields.Monetary($/;"	kind:variable	line:129
+valor_final	../models/invoice_eletronic.py	/^    valor_final = fields.Monetary($/;"	kind:variable	line:166
+valor_frete	../models/invoice_eletronic.py	/^    valor_frete = fields.Monetary($/;"	kind:variable	line:102
+valor_icms	../models/invoice_eletronic.py	/^    valor_icms = fields.Monetary($/;"	kind:variable	line:112
+valor_icms_deson	../models/invoice_eletronic.py	/^    valor_icms_deson = fields.Monetary($/;"	kind:variable	line:114
+valor_icmsst	../models/invoice_eletronic.py	/^    valor_icmsst = fields.Monetary($/;"	kind:variable	line:119
+valor_ii	../models/invoice_eletronic.py	/^    valor_ii = fields.Monetary($/;"	kind:variable	line:121
+valor_ipi	../models/invoice_eletronic.py	/^    valor_ipi = fields.Monetary($/;"	kind:variable	line:123
+valor_issqn	../models/invoice_eletronic.py	/^    valor_issqn = fields.Monetary($/;"	kind:variable	line:136
+valor_liquido	../models/invoice_eletronic.py	/^    valor_liquido = fields.Monetary($/;"	kind:variable	line:545
+valor_pis	../models/invoice_eletronic.py	/^    valor_pis = fields.Monetary($/;"	kind:variable	line:125
+valor_pis_servicos	../models/invoice_eletronic.py	/^    valor_pis_servicos = fields.Monetary($/;"	kind:variable	line:138
+valor_retencao_cofins	../models/invoice_eletronic.py	/^    valor_retencao_cofins = fields.Monetary($/;"	kind:variable	line:147
+valor_retencao_csll	../models/invoice_eletronic.py	/^    valor_retencao_csll = fields.Monetary($/;"	kind:variable	line:155
+valor_retencao_inss	../models/invoice_eletronic.py	/^    valor_retencao_inss = fields.Monetary($/;"	kind:variable	line:159
+valor_retencao_irrf	../models/invoice_eletronic.py	/^    valor_retencao_irrf = fields.Monetary($/;"	kind:variable	line:151
+valor_retencao_issqn	../models/invoice_eletronic.py	/^    valor_retencao_issqn = fields.Monetary($/;"	kind:variable	line:143
+valor_retencao_pis	../models/invoice_eletronic.py	/^    valor_retencao_pis = fields.Monetary($/;"	kind:variable	line:145
+valor_seguro	../models/invoice_eletronic.py	/^    valor_seguro = fields.Monetary($/;"	kind:variable	line:104
+valor_servicos	../models/invoice_eletronic.py	/^    valor_servicos = fields.Monetary($/;"	kind:variable	line:132
+xml_to_send	../models/invoice_eletronic.py	/^    xml_to_send = fields.Binary(string="Xml a Enviar", readonly=True)$/;"	kind:variable	line:181
+xml_to_send_name	../models/invoice_eletronic.py	/^    xml_to_send_name = fields.Char($/;"	kind:variable	line:182
