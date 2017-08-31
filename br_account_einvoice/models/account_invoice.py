@@ -90,6 +90,7 @@ class AccountInvoice(models.Model):
             'origem': line.icms_origem,
             'tributos_estimados': line.tributos_estimados,
             'ncm': line.fiscal_classification_id.code,
+            'item_pedido_compra': line.item_pedido_compra,
             # - ICMS -
             'icms_cst': line.icms_cst,
             'icms_aliquota': line.icms_aliquota,
@@ -234,3 +235,10 @@ class AccountInvoice(models.Model):
                 if edoc.can_unlink():
                     edoc.unlink()
         return res
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    item_pedido_compra = fields.Char(
+        string=u'Item do pedido de compra do cliente')

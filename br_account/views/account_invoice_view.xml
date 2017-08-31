@@ -18,7 +18,7 @@
             </xpath>
             <field name="fiscal_position_id" position="replace"></field>
             <field name="payment_term_id" position="after">
-                <field name="fiscal_position_id" domain="[('fiscal_type', '=', 'saida')]" /></field>
+                <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]" /></field>
             <field name="date_invoice" position="before">
                 <field name="is_eletronic" invisible="1" />
                 <field name="fiscal_document_id" />
@@ -120,7 +120,7 @@
             </xpath>
             <field name="fiscal_position_id" position="replace"></field>
             <field name="reference" position="after">
-                <field name="fiscal_position_id" domain="[('fiscal_type', '=', 'entrada')]" /></field>
+                <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'entrada')]" /></field>
             <field name="date_invoice" position="after">
                 <field name="is_eletronic" invisible="1" />
                 <field name="issuer" />
