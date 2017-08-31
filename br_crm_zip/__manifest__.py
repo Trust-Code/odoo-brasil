@@ -2,7 +2,7 @@
 # © 2011  Fabio Negrini - Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Brazilian Localization CRM Zip',
     'description': """ZIP Search Integration for Brazilian
         Localization of CRM module""",
