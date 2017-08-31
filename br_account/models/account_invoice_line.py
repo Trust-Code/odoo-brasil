@@ -83,7 +83,7 @@ class AccountInvoiceLine(models.Model):
             [x for x in taxes['taxes']
              if x['id'] == self.tax_icms_intra_id.id]) if taxes else []
         icms_fcp = ([x for x in taxes['taxes']
-                    if x['id'] == self.tax_icms_fcp_id.id]) if taxes else []
+                     if x['id'] == self.tax_icms_fcp_id.id]) if taxes else []
         simples = ([x for x in taxes['taxes']
                     if x['id'] == self.tax_simples_id.id]) if taxes else []
         ipi = ([x for x in taxes['taxes']
@@ -97,11 +97,11 @@ class AccountInvoiceLine(models.Model):
         ii = ([x for x in taxes['taxes']
                if x['id'] == self.tax_ii_id.id]) if taxes else []
         csll = ([x for x in taxes['taxes']
-                if x['id'] == self.tax_csll_id.id]) if taxes else []
+                 if x['id'] == self.tax_csll_id.id]) if taxes else []
         irrf = ([x for x in taxes['taxes']
-                if x['id'] == self.tax_irrf_id.id]) if taxes else []
+                 if x['id'] == self.tax_irrf_id.id]) if taxes else []
         inss = ([x for x in taxes['taxes']
-                if x['id'] == self.tax_inss_id.id]) if taxes else []
+                 if x['id'] == self.tax_inss_id.id]) if taxes else []
 
         price_subtotal_signed = taxes['total_excluded'] if taxes else subtotal
         if self.invoice_id.currency_id and self.invoice_id.currency_id != \
@@ -223,6 +223,8 @@ class AccountInvoiceLine(models.Model):
     icms_aliquota_reducao_base = fields.Float(
         '% Red. Base ICMS', digits=dp.get_precision('Discount'),
         default=0.00)
+    icms_base_calculo_manual = fields.Float(
+        'Base ICMS Manual', digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Substituição
@@ -252,6 +254,8 @@ class AccountInvoiceLine(models.Model):
     icms_st_aliquota_mva = fields.Float(
         'MVA Ajustado ST',
         digits=dp.get_precision('Discount'), default=0.00)
+    icms_st_base_calculo_manual = fields.Float(
+        'Base ICMS ST Manual', digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Difal
@@ -344,6 +348,8 @@ class AccountInvoiceLine(models.Model):
         'Perc IPI', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
     ipi_cst = fields.Selection(CST_IPI, string='CST IPI')
+    ipi_base_calculo_manual = fields.Float(
+        'Base IPI Manual', digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # PIS
@@ -364,6 +370,8 @@ class AccountInvoiceLine(models.Model):
     pis_aliquota = fields.Float(
         'Perc PIS', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
+    pis_base_calculo_manual = fields.Float(
+        'Base PIS Manual', digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # COFINS
@@ -384,6 +392,8 @@ class AccountInvoiceLine(models.Model):
         compute='_compute_price', store=True)
     cofins_aliquota = fields.Float(
         'Perc COFINS', digits=dp.get_precision('Discount'))
+    cofins_base_calculo_manual = fields.Float(
+        'Base COFINS Manual', digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # Imposto de importação
