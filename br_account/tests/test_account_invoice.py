@@ -29,6 +29,7 @@ class TestAccountInvoice(TestBaseBr):
                     'price_unit': self.default_product.list_price,
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
+                    'ii_base_calculo': 150.00,
                 }
              ),
             (0, 0,
@@ -73,7 +74,6 @@ class TestAccountInvoice(TestBaseBr):
 
     def test_invoice_pis_cofins_taxes(self):
         for invoice in self.invoices:
-
             first_item = invoice.invoice_line_ids[0]
 
             # PIS
