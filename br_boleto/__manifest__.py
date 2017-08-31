@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Pagamentos via Boleto Bancário',
     'summary': """Permite gerar e realizar a integração bancária através de
         arquivo CNAB 240 - Mantido por Trustcode""",

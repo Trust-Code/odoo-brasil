@@ -3,7 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Brazilian Localisation ZIP Codes',
     'description': 'Brazilian Localisation ZIP Codes',
     'license': 'AGPL-3',

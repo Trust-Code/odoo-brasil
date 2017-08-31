@@ -3,7 +3,7 @@
 # @author Luis Felipe Mileo <mileo@kmee.com.br>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Brazilian Localization HR',
     'description': """Brazilian Localization HR with informations
         refered to the national context of HR""",

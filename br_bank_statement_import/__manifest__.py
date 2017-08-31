@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Importação de extratos bancários',
     'summary': """Importação de extratos bancários nos formatos OFX e
     Cnab 240 - Mantido por Trustcode""",
