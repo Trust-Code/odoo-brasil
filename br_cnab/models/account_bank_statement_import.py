@@ -64,6 +64,8 @@ class AccountBankStatementImport(models.TransientModel):
             return int(nosso_numero[:9])
         elif bank == '033':
             return int(nosso_numero[:-1])
+        elif bank == '748':
+            return int(nosso_numero[:-1])
         elif bank == '001':
             return int(nosso_numero[10:])
         return nosso_numero
@@ -88,6 +90,9 @@ class AccountBankStatementImport(models.TransientModel):
         elif bank == '033':
             from cnab240.bancos import santander
             return santander
+        elif bank == '748':
+            from cnab240.bancos import sicredi
+            return sicredi
         else:
             raise UserError(u'Banco ainda não implementado: %s' % bank)
 
@@ -104,7 +109,6 @@ class AccountBankStatementImport(models.TransientModel):
         arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
         valor_total = Decimal('0.0')
-
         for lote in arquivo.lotes:
             for evento in lote.eventos:
                 valor = evento.valor_lancamento
