@@ -23,10 +23,10 @@ class BrBoletoWizard(models.TransientModel):
             invoice =  self.env['account.invoice'].search([('move_id','=',self.move_line_id.move_id.id)])
             date_change = datetime.datetime.strptime(self.date_change, OE_DFORMAT).date()
             invoice_date = datetime.datetime.strptime(invoice.date, OE_DFORMAT).date()
-            if date_change < invoice_date:
-                raise ValidationError(
-                _("You can not set Due Date Less than Invoice date."))
-                return False
+            # if date_change < invoice_date:
+            #     raise ValidationError(
+            #     _("You can not set Due Date Less than Invoice date."))
+            #     return False
             invoice.write({'date_due':self.date_change})
             move_line_ids =  self.env['account.move.line'].search([('move_id','=',self.move_line_id.move_id.id)])
             for line in move_line_ids:
