@@ -37,16 +37,35 @@ class SaleOrder(models.Model):
             if line.product_id.fiscal_type == 'product':
                 amount += line.valor_bruto - line.valor_desconto
 
+        index = 0
+        prec = self.currency_id.decimal_places
+        balance_seguro = self.total_seguro
+        balance_frete = self.total_frete
+        balance_despesas = self.total_despesas
+        total_items = len(self.order_line)
+
         for l in self.order_line:
+            index += 1
             if l.product_id.fiscal_type == 'service':
                 continue
             item_liquido = l.valor_bruto - l.valor_desconto
             percentual = self._calc_ratio(item_liquido, amount)
+            if index == total_items:
+                amount_seguro = balance_seguro
+                amount_frete = balance_frete
+                amount_despesas = balance_despesas
+            else:
+                amount_seguro = round(self.total_seguro * percentual, prec)
+                amount_frete = round(self.total_frete * percentual, prec)
+                amount_despesas = round(self.total_despesas * percentual, prec)
             l.update({
-                'valor_seguro': self.total_seguro * percentual,
-                'valor_frete': self.total_frete * percentual,
-                'outras_despesas': self.total_despesas * percentual
+                'valor_seguro': amount_seguro,
+                'valor_frete': amount_frete,
+                'outras_despesas': amount_despesas
             })
+            balance_seguro -= amount_seguro
+            balance_frete -= amount_frete
+            balance_despesas -= amount_despesas
 
     total_despesas = fields.Float(
         string='Despesas ( + )', default=0.00,
@@ -66,21 +85,25 @@ class SaleOrder(models.Model):
     @api.multi
     def action_confirm(self):
         for order in self:
+            prec = order.currency_id.decimal_places
             itens = order.order_line
-            if sum(x.valor_frete for x in itens) != order.total_frete:
+            frete = round(sum(x.valor_frete for x in itens), prec)
+            if frete != order.total_frete:
                 raise UserError("A soma do frete dos itens não confere com o\
                                 valor total do frete. Insira novamente o valor\
                                 total do frete para que o mesmo seja rateado\
                                 entre os itens.")
 
-            if sum(x.outras_despesas for x in itens) != order.total_despesas:
+            despesas = round(sum(x.outras_despesas for x in itens), prec)
+            if despesas != order.total_despesas:
                 raise UserError("A soma de outras despesas dos itens não\
                                 confere com o valor total de outras despesas.\
                                 Insira novamente o valor total de outras\
                                 despesas para que o mesmo seja rateado entre\
                                 os itens.")
 
-            if sum(x.valor_seguro for x in itens) != order.total_seguro:
+            seguro = round(sum(x.valor_seguro for x in itens), prec)
+            if seguro != order.total_seguro:
                 raise UserError("A soma do seguro dos itens não confere com o\
                                 valor total do seguro. Insira novamente o\
                                 valor total do seguro para que o mesmo seja\
