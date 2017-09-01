@@ -25,7 +25,7 @@
                 <field name="uf_veiculo"/>
                 <field name="rntc"/>
                 <field name="vagao"/>
-                <field name="vagao"/>
+                <field name="balsa"/>
             </tree>
         </field>
     </record>

@@ -23,6 +23,7 @@
                                     <field name="outras_despesas" />
                                     <field name="valor_liquido" />
                                     <field name="indicador_total" />
+                                    <field name="item_pedido_compra" />
                                 </group>
                                 <group>
                                     <field name="tipo_produto" />
@@ -194,6 +195,7 @@
                                         <field name="company_id"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="serie"/>
+                                        <field name="serie_documento"/>
                                         <field name="numero"/>
                                         <field name="numero_controle"/>
                                         <field name="xml_to_send_name" invisible="1"/>

@@ -90,6 +90,7 @@ class AccountInvoice(models.Model):
             'origem': line.icms_origem,
             'tributos_estimados': line.tributos_estimados,
             'ncm': line.fiscal_classification_id.code,
+            'item_pedido_compra': line.item_pedido_compra,
             # - ICMS -
             'icms_cst': line.icms_cst,
             'icms_aliquota': line.icms_aliquota,
@@ -157,7 +158,7 @@ class AccountInvoice(models.Model):
 
     def _prepare_edoc_vals(self, invoice):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
-                           for i in range(8)]))
+                                    for i in range(8)]))
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
@@ -167,6 +168,7 @@ class AccountInvoice(models.Model):
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'model': invoice.fiscal_document_id.code,
             'serie': invoice.document_serie_id.id,
+            'serie_documento': invoice.document_serie_id.code,
             'numero': invoice.internal_number,
             'numero_controle': num_controle,
             'numero_nfe': invoice.internal_number,
@@ -212,7 +214,9 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         self.action_number()
         for item in self:
-            if item.is_eletronic:
+            if item.is_eletronic and\
+                    (item.issuer == '1' or
+                     item.type in ['out_invoice', 'out_refund']):
                 edoc_vals = self._prepare_edoc_vals(item)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
@@ -233,3 +237,10 @@ class AccountInvoice(models.Model):
                 if edoc.can_unlink():
                     edoc.unlink()
         return res
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    item_pedido_compra = fields.Char(
+        string=u'Item do pedido de compra do cliente')

@@ -54,6 +54,7 @@ class InvoiceEletronic(models.Model):
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
         readonly=True, states=STATE)
+    serie_documento = fields.Char(string=u'Série Documento', size=6)
     numero = fields.Integer(
         string=u'Número', readonly=True, states=STATE)
     numero_controle = fields.Integer(
@@ -520,6 +521,9 @@ class InvoiceEletronicItem(models.Model):
     preco_unitario = fields.Monetary(
         string=u'Preço Unitário', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
+
+    item_pedido_compra = fields.Char(
+        string=u'Item do pedido de compra do cliente')
 
     frete = fields.Monetary(
         string=u'Frete', digits=dp.get_precision('Account'),

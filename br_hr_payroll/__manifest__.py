@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Folha de Pagamento Brasil',
     'summary': """Permite gerar o cálculo automático do pagamento a seus
         funcionários - Mantido por Trustcode""",
