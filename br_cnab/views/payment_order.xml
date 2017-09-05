@@ -14,7 +14,6 @@
             <field name="payment_mode_id" position="after">
                 <field name="cnab_file" filename="name" />
                 <field name="file_number" />
-                <field name="cnab_valido" />
                 <field name="data_emissao_cnab" />
             </field>
         </field>
