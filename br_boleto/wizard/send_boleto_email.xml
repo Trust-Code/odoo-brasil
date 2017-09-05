@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_br_boleto_send_email_wizard">
+        <field name="name">view_br_boleto.send.email.form</field>
+        <field name="model">boleto.send.email</field>
+        <field name="arch" type="xml">
+            <form string="Enviar emails">
+                <footer>
+                    <button name="send_boletos_by_email" type="object" string="Enviar e-mails" class="oe_highlight"/>
+                        or
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <act_window id="br_boleto_action"
+        name="Enviar boletos via e-mail"
+        src_model="account.invoice"
+        res_model="boleto.send.email"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"/>
+
+</odoo>
