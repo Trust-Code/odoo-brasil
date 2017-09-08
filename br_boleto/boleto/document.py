@@ -189,6 +189,7 @@ class BoletoBradesco(Boleto):
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
         self.boleto.valor = 0.0  # Não preencher
+        self.boleto.quantidade = ''
 
 
 class BoletoCaixa(Boleto):
