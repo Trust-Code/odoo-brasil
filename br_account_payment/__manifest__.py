@@ -19,7 +19,6 @@
     ],
     'depends': [
         'br_account',
-        'account_accountant',
     ],
     'data': [
         'security/ir.model.access.csv',

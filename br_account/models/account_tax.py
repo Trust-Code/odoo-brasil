@@ -53,8 +53,9 @@ class AccountTaxTemplate(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
-    def _get_tax_vals(self, company):
-        res = super(AccountTaxTemplate, self)._get_tax_vals(company)
+    def _get_tax_vals(self, company, tax_template_to_tax):
+        res = super(AccountTaxTemplate, self)._get_tax_vals(
+            company, tax_template_to_tax)
         res['domain'] = self.domain
         res['amount_type'] = self.amount_type
         return res
