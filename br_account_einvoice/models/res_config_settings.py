@@ -5,8 +5,8 @@
 from odoo import api, fields, models
 
 
-class AccountConfigSettings(models.TransientModel):
-    _inherit = 'account.config.settings'
+class ResConfigSettings(models.TransientModel):
+    _inherit = 'res.config.settings'
 
     nfe_email_template = fields.Many2one(
         'mail.template', string="Template de Email para NFe",

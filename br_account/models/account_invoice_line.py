@@ -481,7 +481,7 @@ class AccountInvoiceLine(models.Model):
             vals = fpos.map_tax_extra_values(
                 self.company_id, self.product_id, self.invoice_id.partner_id)
 
-            for key, value in vals.iteritems():
+            for key, value in vals.items():
                 if value and key in self._fields:
                     self.update({key: value})
 

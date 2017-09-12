@@ -80,7 +80,6 @@ class ResPartner(models.Model):
                 address_format = '%(company_name)s\n' + address_format
             return address_format % args
 
-    @api.one
     @api.constrains('cnpj_cpf', 'country_id', 'is_company')
     def _check_cnpj_cpf(self):
         country_code = self.country_id.code or ''
@@ -106,7 +105,6 @@ class ResPartner(models.Model):
                 return False
         return True
 
-    @api.one
     @api.constrains('inscr_est')
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,
