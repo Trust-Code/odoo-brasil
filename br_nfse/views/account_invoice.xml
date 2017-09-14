@@ -10,13 +10,13 @@
                 <field name="ambiente_nfse" invisible="1" />
                 <field name="invoice_model" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('invoice_model', 'not in', ('001', '002', '008', '009'))]}">
+                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('invoice_model', 'not in', ('001', '002', '008', '009', '010'))]}">
                     A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
             <div name="button_box" position="inside">
                 <button name="action_preview_danfse" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                    string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', 'not in', ('001', '002', '008', '009'))]}">
+                    string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', 'not in', ('001', '002', '008', '009', '010'))]}">
                 </button>
             </div>
         </field>
