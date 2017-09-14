@@ -32,6 +32,7 @@
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_simpliss.xml',
         'reports/danfse_ginfes.xml',
+        'reports/danfse_imperial.xml',
     ],
     'installable': True,
     'application': True,
