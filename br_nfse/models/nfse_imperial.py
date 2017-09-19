@@ -60,7 +60,6 @@ class InvoiceEletronic(models.Model):
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
             dt_emissao = datetime.strptime(self.data_emissao, DTFT)
             dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
-            dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')
 
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
@@ -83,17 +82,21 @@ class InvoiceEletronic(models.Model):
                 'email': self.partner_id.email or partner.email or '',
             }
             city_prestador = self.company_id.partner_id.city_id
+            company = self.company_id
             prestador = {
                 'cnpj': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
+                    '[^0-9]', '', company.partner_id.cnpj_cpf or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
-                'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                    city_prestador.ibge_code),
-                'cnae': re.sub('[^0-9]', '',
-                               self.company_id.cnae_main_id.code or '')
+                    '[^0-9]', '', company.partner_id.inscr_mun or ''),
+                'logradouro': company.street or '',
+                'numero': company.number or '',
+                'complemento': company.street2 or '',
+                'bairro': company.district or 'Sem Bairro',
+                'municipio': company.city_id.name,
+                'uf': company.state_id.code,
+                'cep': re.sub('[^0-9]', '', partner.zip),
             }
-
+            valor_tributos = 0.0
             itens_servico = []
             descricao = ''
             codigo_servico = ''
@@ -111,26 +114,21 @@ class InvoiceEletronic(models.Model):
                 'serie': self.serie.code or '',
                 'tipo_rps': '1',
                 'data_emissao': dt_emissao,
-                'natureza_operacao': '1',  # Tributada no municipio
-                'regime_tributacao': '7',  # Estimativa
                 'optante_simples':  # 1 - Sim, 2 - Não
                 '2' if self.company_id.fiscal_type == '3' else '1',
-                'incentivador_cultural': '2',  # 2 - Não
-                'status': '1',  # 1 - Normal
-                'valor_servico': str("%.2f" % self.valor_final),
-                'valor_deducao': '0',
-                'valor_pis': str("%.2f" % self.valor_pis),
-                'valor_cofins': str("%.2f" % self.valor_cofins),
-                'valor_inss': str("%.2f" % self.valor_retencao_inss),
-                'valor_ir': str("%.2f" % self.valor_retencao_irrf),
-                'valor_csll': str("%.2f" % self.valor_retencao_csll),
+                'valor_servico': self.valor_final,
+                'valor_deducao': 0.0,
+                'valor_pis': self.valor_pis,
+                'valor_cofins': self.valor_cofins,
+                'valor_inss': self.valor_retencao_inss,
+                'valor_ir': self.valor_retencao_irrf,
+                'valor_csll': self.valor_retencao_csll,
                 'iss_retido': '1' if self.valor_retencao_issqn > 0 else '2',
-                'valor_iss': str("%.2f" % self.valor_issqn),
-                'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
-                'base_calculo': str("%.2f" % self.valor_final),
-                'aliquota_issqn': str(
-                    "%.2f" % self.eletronic_item_ids[0].issqn_aliquota),
-                'valor_liquido_nfse': str("%.2f" % self.valor_final),
+                'valor_iss': self.valor_issqn,
+                'valor_iss_retido': self.valor_retencao_issqn,
+                'base_calculo': self.valor_final,
+                'aliquota_issqn': self.eletronic_item_ids[0].issqn_aliquota,
+                'valor_liquido_nfse': self.valor_final,
                 'codigo_servico': codigo_servico,
                 'cnae_servico': prestador['cnae'],
                 'codigo_tributacao_municipio': codigo_servico,
@@ -139,6 +137,7 @@ class InvoiceEletronic(models.Model):
                 'itens_servico': itens_servico,
                 'tomador': tomador,
                 'prestador': prestador,
+                'impostos': [],
             }
 
             nfse_vals = {
@@ -146,7 +145,9 @@ class InvoiceEletronic(models.Model):
                 'inscricao_municipal': prestador['inscricao_municipal'],
                 'cnpj_prestador': prestador['cnpj'],
                 'lista_rps': [rps],
-                'senha': self.company_id.senha_ambiente_nfse
+                'valor_tributos': valor_tributos,
+                'codigo_usuario': self.company_id.codigo_nfse_usuario,
+                'codigo_contribuinte': self.company_id.codigo_nfse_empresa,
             }
 
             res.update(nfse_vals)
@@ -174,7 +175,7 @@ class InvoiceEletronic(models.Model):
 
             xml_to_send = base64.decodestring(self.xml_to_send)
             recebe_lote = processa_rps(
-                None, xml=xml_to_send, ambiente=self.ambiente)
+                None, xml=xml_to_send, ambiente=self.ambiente_nfse)
 
             retorno = recebe_lote['object'].Body['ws_nfe.PROCESSARPSResponse']
             retorno = retorno['Sdt_processarpsout']
@@ -183,12 +184,9 @@ class InvoiceEletronic(models.Model):
                 self.state = 'done'
                 self.codigo_retorno = '100'
                 self.mensagem_retorno = 'NFSe emitida com sucesso'
-                self.verify_code = \
-                    retorno.NovaNfse.IdentificacaoNfse.CodigoVerificacao
-                self.numero_nfse = \
-                    retorno.NovaNfse.IdentificacaoNfse.Numero
-                self.url_danfe = \
-                    retorno.NovaNfse.IdentificacaoNfse.Link
+                # TODO Ajustar o retorno aqui
+                # self.verify_code = retorno.NovaNfse.CodigoVerificacao
+
             else:
                 self.codigo_retorno = -1
                 self.mensagem_retorno = retorno.Messages[0].Message.Description
@@ -220,7 +218,7 @@ class InvoiceEletronic(models.Model):
             'senha': self.company_id.senha_ambiente_nfse
         }
         cancel = cancelar_nfse(
-            None, cancelamento=canc, ambiente=self.ambiente)
+            None, cancelamento=canc, ambiente=self.ambiente_nfse)
         retorno = cancel['object'].Body.CancelarNfseResponse.CancelarNfseResult
         if "Cancelamento" in dir(retorno):
             self.state = 'cancel'

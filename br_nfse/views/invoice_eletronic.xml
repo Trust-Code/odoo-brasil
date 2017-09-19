@@ -16,6 +16,9 @@
             <field name="numero" position="after">
                 <field name="numero_nfse" />
             </field>
+            <field name="ambiente" position="after">
+                <field name="ambiente_nfse" />
+            </field>
             <field name="mensagem_retorno" position="after">
                 <span attrs="{'invisible': [('model', 'not in', ('001'))]}">
                     <br /><b>Código Verificação:</b> <field name="verify_code" class="oe_inline" readonly="1"/>

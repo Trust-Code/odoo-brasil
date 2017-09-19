@@ -13,10 +13,19 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
 
+    def _prepare_edoc_vals(self, inv):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
+
+        res['ambiente_nfse'] = 'homologacao' \
+            if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
+        return res
+
     def _prepare_edoc_item_vals(self, line):
         res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)
         res['codigo_servico_paulistana'] = \
             line.service_type_id.codigo_servico_paulistana
+        res['codigo_tributacao_municipio'] = \
+            line.service_type_id.codigo_tributacao_municipio
         return res
 
     def action_preview_danfse(self):

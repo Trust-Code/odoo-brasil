@@ -257,7 +257,7 @@
             </div>
             <div class="row" style="border: 1px solid black; padding: 0px;">
                 <div class="col-xs-12">
-                    <span t-field="doc.eletronic_item_ids[0].issqn_codigo" /> -
+                    <span t-field="doc.eletronic_item_ids[0].codigo_tributacao_municipio" /> -
                     <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
                 </div>
             </div>
@@ -274,13 +274,13 @@
                     PIS
                 </div>
                 <div class="col-xs-1 linha br direita">
-                    <span t-field="doc.valor_pis" />
+                    <span t-field="doc.valor_retencao_pis" />
                 </div>
                 <div class="col-xs-1 rotulo br">
                     COFINS
                 </div>
                 <div class="col-xs-1 linha br direita">
-                    <span t-field="doc.valor_cofins" />
+                    <span t-field="doc.valor_retencao_cofins" />
                 </div>
                 <div class="col-xs-1 rotulo br">
                     IR(R$)
