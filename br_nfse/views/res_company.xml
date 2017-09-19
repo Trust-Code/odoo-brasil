@@ -8,6 +8,8 @@
             <field name="nfe_a1_password" position="after" >
                 <field name="tipo_ambiente_nfse" />
                 <field name="senha_ambiente_nfse" password="True" />
+                <field name="codigo_nfse_empresa" />
+                <field name="codigo_nfse_usuario" />
             </field>
         </field>
     </record>

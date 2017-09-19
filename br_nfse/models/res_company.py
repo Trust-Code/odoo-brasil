@@ -14,3 +14,7 @@ class ResCompany(models.Model):
 
     senha_ambiente_nfse = fields.Char(
         string=u'Senha NFSe', size=30, help=u'Senha Nota Fiscal de Serviço')
+
+    codigo_nfse_empresa = fields.Char(string="Cód. NFSe - Imperial", size=70)
+    codigo_nfse_usuario = fields.Char(
+        string="Usuário NFSe - Imperial", size=70)
