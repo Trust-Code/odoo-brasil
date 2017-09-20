@@ -21,12 +21,4 @@
         </field>
     </record>
 
-    <act_window id="br_boleto_action"
-        name="Alterar / Reimprimir Boleto"
-        src_model="account.invoice"
-        res_model="br.boleto.wizard"
-        view_mode="form"
-        target="new"
-        key2="client_action_multi"/>
-
 </odoo>

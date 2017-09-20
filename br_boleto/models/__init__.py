@@ -8,3 +8,5 @@ from . import res_partner_bank
 from . import payment_order
 from . import payment_mode
 from . import account_journal
+from . import res_company
+from . import account_config_settings

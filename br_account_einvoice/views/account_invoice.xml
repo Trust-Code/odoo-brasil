@@ -27,4 +27,19 @@
             </div>
         </field>
     </record>
+
+    <record id="view_br_account_einvoice_invoice_line_form" model="ir.ui.view">
+        <field name="name">br_account_einvoice_invoice_line_form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <field name="price_subtotal" position="after">
+                <field name="item_pedido_compra" />
+            </field>
+        </field>
+    </record>
+
+    <record id="account.action_invoice_tree2" model="ir.actions.act_window">
+        <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'issuer': 0}</field>
+    </record>
 </odoo>

@@ -18,7 +18,7 @@
             </xpath>
             <field name="fiscal_position_id" position="replace"></field>
             <field name="payment_term_id" position="after">
-                <field name="fiscal_position_id" domain="[('fiscal_type', '=', 'saida')]" /></field>
+                <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]" /></field>
             <field name="date_invoice" position="before">
                 <field name="is_eletronic" invisible="1" />
                 <field name="fiscal_document_id" />
@@ -120,7 +120,7 @@
             </xpath>
             <field name="fiscal_position_id" position="replace"></field>
             <field name="reference" position="after">
-                <field name="fiscal_position_id" domain="[('fiscal_type', '=', 'entrada')]" /></field>
+                <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'entrada')]" /></field>
             <field name="date_invoice" position="after">
                 <field name="is_eletronic" invisible="1" />
                 <field name="issuer" />
@@ -254,6 +254,7 @@
                                 </group>
                                 <group>
                                     <field name="icms_rule_id" />
+                                    <field name="icms_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>
                                     <field name="icms_base_calculo"/>
                                     <field name="icms_aliquota_reducao_base"/>
                                     <field name="tax_icms_id" />
@@ -267,6 +268,7 @@
                                 <group>
                                     <field name="icms_st_tipo_base" invisible="1"/>
                                     <field name="icms_st_aliquota_mva"/>
+                                    <field name="icms_st_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>
                                     <field name="icms_st_base_calculo"/>
                                     <field name="icms_st_aliquota_reducao_base"/>
                                     <field name="tax_icms_st_id" />
@@ -304,6 +306,7 @@
                                     <field name="ipi_rule_id" />
                                 </group>
                                 <group>
+                                    <field name="ipi_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>
                                     <field name="ipi_base_calculo"/>
                                     <field name="ipi_reducao_bc"/>
                                     <field name="tax_ipi_id" />
@@ -320,6 +323,7 @@
                                     <field name="pis_rule_id" />
                                 </group>
                                 <group>
+                                    <field name="pis_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>
                                     <field name="pis_base_calculo"/>
                                     <field name="tax_pis_id" />
                                     <field name="pis_aliquota" invisible="1"/>
@@ -335,6 +339,7 @@
                                     <field name="cofins_rule_id" />
                                 </group>
                                 <group>
+                                    <field name="cofins_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>
                                     <field name="cofins_base_calculo"/>
                                     <field name="tax_cofins_id" />
                                     <field name="cofins_aliquota" invisible="1" />
@@ -345,11 +350,11 @@
                         <page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
                             <group string="Detalhes do Imposto de Importação">
                                 <field name="ii_rule_id" />
+                                <field name="ii_valor_despesas"/>
+                                <field name="ii_valor_iof"/>
                                 <field name="tax_ii_id" />
                                 <field name="ii_base_calculo"/>
                                 <field name="ii_aliquota" invisible="1"/>
-                                <field name="ii_valor_despesas"/>
-                                <field name="ii_valor_iof"/>
                                 <field name="ii_valor"/>
                             </group>
                             <group string="Declaração de Importação">
@@ -419,4 +424,8 @@
             </form>
         </field>
     </record>
+    <record id="group_edit_bases_calculo" model="res.groups">
+        <field name="name">Habilitar edição das bases de cálculo</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>>
 </odoo>

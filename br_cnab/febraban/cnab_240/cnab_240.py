@@ -49,6 +49,9 @@ class Cnab240(Cnab):
         elif bank == '104':
             from .bancos.cef import Cef240
             return Cef240
+        elif bank == '748':
+            from .bancos.sicredi import Sicredi240
+            return Sicredi240
         else:
             return Cnab240
 

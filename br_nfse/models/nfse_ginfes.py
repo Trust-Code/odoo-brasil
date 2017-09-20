@@ -28,6 +28,14 @@ except ImportError:
 STATE = {'edit': [('readonly', False)]}
 
 
+class InvoiceEletronicItem(models.Model):
+    _inherit = 'invoice.eletronic.item'
+
+    codigo_tributacao_municipio = fields.Char(
+        string=u"Cód. Tribut. Munic.", size=20, readonly=True,
+        help="Código de Tributação no Munípio", states=STATE)
+
+
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
@@ -135,13 +143,13 @@ class InvoiceEletronic(models.Model):
                 'status': '1',  # 1 - Normal
                 'valor_servico': str("%.2f" % self.valor_final),
                 'valor_deducao': '0',
-                'valor_pis': str("%.2f" % self.valor_pis),
-                'valor_cofins': str("%.2f" % self.valor_cofins),
+                'valor_pis': str("%.2f" % self.valor_retencao_pis),
+                'valor_cofins': str("%.2f" % self.valor_retencao_cofins),
                 'valor_inss': str("%.2f" % self.valor_retencao_inss),
                 'valor_ir': str("%.2f" % self.valor_retencao_irrf),
                 'valor_csll': str("%.2f" % self.valor_retencao_csll),
                 'iss_retido': '1' if self.valor_retencao_issqn > 0 else '2',
-                'valor_iss': str("%.2f" % self.valor_issqn),
+                'valor_iss':  str("%.2f" % self.valor_issqn),
                 'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
                 'base_calculo': str("%.2f" % self.valor_final),
                 'aliquota_issqn': str("%.4f" % (
@@ -186,6 +194,29 @@ class InvoiceEletronic(models.Model):
 
         self.xml_to_send = base64.encodestring(xml_enviar)
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        if self.model not in ('002'):
+            return atts
+
+        attachment_obj = self.env['ir.attachment']
+        danfe_report = self.env['ir.actions.report.xml'].search(
+            [('report_name', '=',
+              'br_nfse.main_template_br_nfse_danfe_ginfes')])
+        report_service = danfe_report.report_name
+        danfse = self.env['report'].get_pdf([self.id], report_service)
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name="ginfes-%08d.pdf" % int(self.numero_nfse),
+                datas_fname="ginfes-%08d.pdf" % int(self.numero_nfse),
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+        return atts
 
     @api.multi
     def action_send_eletronic_invoice(self):

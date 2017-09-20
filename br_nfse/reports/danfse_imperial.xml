@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="report_br_nfse_danfe_imperial"
+        string="Nota de Serviço - Imperial"
+        model="invoice.eletronic"
+        report_type="qweb-pdf"
+        file="br_nfse.main_template_br_nfse_danfe_imperial"
+        name="br_nfse.main_template_br_nfse_danfe_imperial" />
+
+    <record id="report_br_nfse_danfe_imperial" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
+        <field name="name">Nota de Serviço - Imperial</field>
+    </record>
+
+    <template id="danfse_report_template_imperial">
+        <style type="text/css">
+            .col-xs-1, .col-xs-2,
+            .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
+            .col-xs-8,
+            .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+                padding:0px;
+            }
+            td, th { padding: 0 4px; }
+        </style>
+        <div class="page">
+            <div class="row" style="border: 1px solid black;">
+                <div class="col-xs-2">
+                    <img src="/br_nfse/static/src/img/logo-petropolis.png" alt="Logo Prefeitura Petropolis"
+                        style="max-height:80px; margin-top:4px; margin-left:10px;" />
+                </div>
+                <div class="col-xs-7" style="padding:0px;text-align:center;font-size:18px;">
+                    Prefeitura de Petrópolis
+                    <br />
+                    Secretaria Municipal de Fazenda
+                    <br />
+                    <strong style="font-size:20px;">NOTA IMPERIAL</strong>
+                    <br />
+                    <t t-if="doc.state != 'done'">
+                        <strong style="font-size:20px;">RECIBO PROVISÓRIO DE SERVIÇOS - RPS
+                        </strong>
+                    </t>
+                    <t t-if="doc.state == 'done'">
+                        <strong style="font-size:20px;">NOTA FISCAL ELETRÔNICA DE SERVIÇOS - NFSe</strong><br />
+                        RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" />
+                    </t>
+                </div>
+                <div class="col-xs-3" style="padding:0px;">
+                    <div style="border: 1px solid black; padding: 2px;">
+                        <t t-if="doc.state == 'done'">
+                            <span style="font-size:9px;">Número NFSe</span>
+                            <br />
+                            <strong t-field="doc.numero_nfse"></strong>
+                        </t>
+                        <t t-if="doc.state != 'done'">
+                            <span style="font-size:9px;">Número RPS</span>
+                            <br />
+                            <strong t-field="doc.numero"></strong>
+                        </t>
+                    </div>
+                    <div style="border: 1px solid black; padding: 2px;">
+                        <span style="font-size:9px;">Data de Emissão</span>
+                        <br />
+                        <strong t-field="doc.data_emissao"></strong>
+                    </div>
+                    <t t-if="doc.state == 'done'">
+                        <div style="border: 1px solid black; padding: 2px;">
+                            <span style="font-size:8px;">Código de verificação</span>
+                            <br />
+                            <strong t-field="doc.verify_code"></strong>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
+                <div class="col-xs-1">
+                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" /><br />
+                </div>
+                <div class="col-xs-11">
+                    <div class="col-xs-12" style="text-align:center;">
+                        <strong>PRESTADOR DE SERVIÇOS</strong>
+                    </div>
+                    <div class="col-xs-12">
+                        Nome/Razão Social:
+                        <strong t-field="doc.company_id.partner_id.legal_name"></strong>
+                    </div>
+                    <div class="col-xs-8">
+                        CNPJ:
+                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
+                    </div>
+                    <div class="col-xs-4">
+                        Inscrição Municipal:
+                        <strong t-field="doc.company_id.partner_id.inscr_mun"></strong>
+                    </div>
+                    <div class="col-xs-12">
+                        Endereço:
+                        <strong t-field="doc.company_id.partner_id.street">
+                        </strong>
+                        <strong t-field="doc.company_id.partner_id.number">
+                        </strong>
+                        <strong t-field="doc.company_id.partner_id.district">
+                        </strong>
+                    </div>
+                    <div class="col-xs-6">
+                        Município:
+                        <strong t-field="doc.company_id.partner_id.city_id"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        UF:
+                        <strong t-field="doc.company_id.partner_id.state_id"></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong>TOMADOR DE SERVIÇOS</strong>
+                </div>
+                <div class="col-xs-12">
+                    Nome/Razão Social:
+                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
+                </div>
+                <div class="col-xs-8">
+                    CNPJ:
+                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
+                </div>
+                <div class="col-xs-4">
+                    Inscrição Municipal:
+                    <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
+                </div>
+                <div class="col-xs-12">
+                    Endereço:
+                    <strong t-field="doc.commercial_partner_id.street">
+                    </strong>
+                    <strong t-field="doc.commercial_partner_id.number">
+                    </strong>
+                    <strong t-field="doc.commercial_partner_id.district">
+                    </strong>
+                </div>
+                <div class="col-xs-4">
+                    Município:
+                    <strong t-field="doc.commercial_partner_id.city_id"></strong>
+                </div>
+                <div class="col-xs-2">
+                    UF:
+                    <strong t-field="doc.commercial_partner_id.state_id"></strong>
+                </div>
+                <div class="col-xs-6">
+                    E-mail:
+                    <strong t-field="doc.partner_id.email"></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong>INTERMEDIÁRIO DE SERVIÇOS</strong>
+                    <br />
+                </div>
+                <div class="col-xs-4">
+                    CPF/CNPJ:
+                    <strong> ---- </strong>
+                </div>
+                <div class="col-xs-8">
+                    Nome/Razão Social:
+                    <strong> ---- </strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:350px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
+                </div>
+                <div class="col-xs-12">
+                    <br />
+                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
+                        <p t-field="line.name"></p>
+                    </t>
+                    <span t-field="doc.informacoes_legais"></span>
+                    <span t-field="doc.informacoes_complementares"></span>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong>VALOR TOTAL DA NOTA = </strong>
+                    <strong t-field="doc.valor_final"
+                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    <br />
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
+                <div class="col-xs-2" style="width:20%;text-align:center;">
+                    INSS(<span />%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_retencao_inss"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>-</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="width:20%;text-align:center;">
+                    IR(<span />%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_retencao_irrf"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>-</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="width:20%;text-align:center;">
+                    CSLL(<span />%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_retencao_csll"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>-</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="width:20%;text-align:center;">
+                    COFINS(<span t-field="doc.eletronic_item_ids[0].cofins_aliquota" />%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_cofins_servicos"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>-</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="width:20%;text-align:center;border">
+                    PIS(<span t-field="doc.eletronic_item_ids[0].pis_aliquota" />%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_pis_servicos"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>-</strong>
+                    </t>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
+                <div class="col-xs-12">
+                    Código do serviço:
+                    <br />
+                    <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana"></strong> -
+                    <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;">
+                <div class="col-xs-3" style="text-align:center;">
+                    VL. Total Deduções (R$):
+                    <br />
+                    <strong>R$0,00</strong>
+                </div>
+                <div class="col-xs-3" style="text-align:center;">
+                    Base de Cálculo (R$):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_bruto"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>*</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Alíquota (%):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong><span t-field="doc.eletronic_item_ids[0].issqn_aliquota" />%</strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>*</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Valor do ISS (R$):
+                    <br />
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        <strong t-field="doc.valor_issqn"
+                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        <strong>*</strong>
+                    </t>
+                </div>
+                <div class="col-xs-2" style="text-align:center;">
+                    Crédito (R$):
+                    <br />
+                    <strong>0,00</strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding:0 0 5px 5px;">
+                <div class="col-xs-4" style="text-align:center;">
+                    Município de Prestação do Serviço:
+                    <br />
+                    <strong>-</strong>
+                </div>
+                <div class="col-xs-4" style="text-align:center;">
+                    Número Inscrição da Obra:
+                    <br />
+                    <strong>-</strong>
+                </div>
+                <div class="col-xs-4" style="text-align:center;">
+                    Valor Aproximado dos Tributos / Fonte
+                    <br />
+                    <strong>-</strong>
+                </div>
+            </div>
+            <div class="row"
+                style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
+                <div style="text-align:center"><b>Outras informações</b></div>
+                <div style="float:left; width:50%;">
+                    (1) Esta NFS-e foi emitida com respaldo na Lei nº 14.097/2005;
+                </div>
+                <div style="float:left; width:50%;">
+                    (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-field-options='{"format": "dd/MM/yyyy"}' />
+                </div>
+                <div style="float:left; width:50%;">
+                    (3) Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
+                </div>
+                <br />
+                <span t-field="doc.informacoes_legais"></span>
+            </div>
+        </div>
+    </template>
+
+    <template id="main_template_br_nfse_danfe_imperial">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="br_nfse.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

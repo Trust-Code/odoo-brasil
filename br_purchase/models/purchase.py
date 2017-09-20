@@ -187,4 +187,5 @@ class PurchaseOrderLine(models.Model):
             if tax['account_id']:
                 price -= tax['amount']
 
+        price = price / self.product_qty
         return price
