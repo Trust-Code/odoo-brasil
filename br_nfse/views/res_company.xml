@@ -11,6 +11,11 @@
                 <field name="codigo_nfse_empresa" />
                 <field name="codigo_nfse_usuario" />
             </field>
+            <field name="inscr_mun" position="after">
+                <field name="tipo_tributacao_imperial" />
+                <field name="iss_simples_nacional" />
+                <field name="adesao_simples_nacional" />
+            </field>
         </field>
     </record>
 </odoo>

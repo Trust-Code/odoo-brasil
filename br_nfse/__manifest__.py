@@ -33,6 +33,7 @@
         'reports/danfse_simpliss.xml',
         'reports/danfse_ginfes.xml',
         'reports/danfse_imperial.xml',
+        'wizard/cancel_nfse.xml',
     ],
     'installable': True,
     'application': True,
