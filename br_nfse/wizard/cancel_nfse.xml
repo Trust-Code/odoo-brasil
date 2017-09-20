@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_cancel_nfse">
+        <field name="name">wizard.cancel.nfse.form</field>
+        <field name="model">wizard.cancel.nfse</field>
+        <field name="arch" type="xml">
+            <form string="Cancelamento de NFSe">
+                <group>
+                    <field name="edoc_id"/>
+                    <field name="justificativa"/>
+                </group>
+                <footer>
+                    <button name="action_cancel_nfse"
+                        string="Enviar Cancelamento" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

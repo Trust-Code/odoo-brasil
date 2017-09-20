@@ -30,7 +30,7 @@
                     <img src="/br_nfse/static/src/img/logo-petropolis.png" alt="Logo Prefeitura Petropolis"
                         style="max-height:80px; margin-top:4px; margin-left:10px;" />
                 </div>
-                <div class="col-xs-8" style="padding:0px;text-align:center;font-size:18px;">
+                <div class="col-xs-7" style="padding:0px;text-align:center;font-size:18px;">
                     Prefeitura de Petrópolis
                     <br />
                     Secretaria Municipal de Fazenda
@@ -46,7 +46,7 @@
                         RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" />
                     </t>
                 </div>
-                <div class="col-xs-2" style="padding:0px;">
+                <div class="col-xs-3" style="padding:0px;">
                     <div style="border: 1px solid black; padding: 2px;">
                         <t t-if="doc.state == 'done'">
                             <span style="font-size:9px;">Número NFSe</span>
