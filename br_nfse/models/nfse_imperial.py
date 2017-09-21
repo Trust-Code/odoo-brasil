@@ -196,7 +196,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model != '010' and self.state in ('done', 'cancel'):
+        if self.model != '010' or self.state in ('done', 'cancel'):
             return
 
         self.state = 'error'
