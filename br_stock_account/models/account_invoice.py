@@ -51,7 +51,8 @@ class AccountInvoice(models.Model):
     vehicle_rntc = fields.Char('RNTC', size=20)
 
     tow_plate = fields.Char('Placa do Reboque', size=7)
-    tow_state_id = fields.Many2one('res.country.state', 'UF da Placa')
+    tow_state_id = fields.Many2one(
+        'res.country.state', 'UF da Placa do Reboque')
     tow_rntc = fields.Char('RNTC Reboque', size=20)
 
     weight = fields.Float(string='Peso Bruto', help="O peso bruto em Kg.")

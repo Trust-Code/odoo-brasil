@@ -388,7 +388,7 @@ class AccountInvoiceLine(models.Model):
         'account.fiscal.position.tax.rule', 'Regra')
     tax_cofins_id = fields.Many2one('account.tax', string=u"Alíquota COFINS",
                                     domain=[('domain', '=', 'cofins')])
-    cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
+    cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST COFINS')
     cofins_tipo = fields.Selection([('percent', 'Percentual')],
                                    string='Tipo do COFINS', required=True,
                                    default='percent')
