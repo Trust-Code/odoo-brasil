@@ -71,6 +71,15 @@ class PuchaseOrderLine(models.Model):
         })
         return res
 
+    @api.multi
+    def _get_stock_move_price_unit(self):
+        price = super(PuchaseOrderLine, self)._get_stock_move_price_unit()
+        price = price + \
+                (self.valor_frete/self.product_qty) + \
+                (self.valor_seguro/self.product_qty) + \
+                (self.outras_despesas/self.product_qty)
+        return price
+
     valor_seguro = fields.Float(
         'Seguro', default=0.0, digits=dp.get_precision('Account'))
     outras_despesas = fields.Float(
