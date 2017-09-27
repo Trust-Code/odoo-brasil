@@ -67,7 +67,7 @@ class InvoiceEletronic(models.Model):
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cnpj_cpf': re.sub('[^0-9]', '',
                                    partner.cnpj_cpf or ''),
-                'razao_social': partner.legal_name or '',
+                'razao_social': partner.legal_name or partner.name or '',
                 'logradouro': partner.street or '',
                 'numero': partner.number or '',
                 'complemento': partner.street2 or '',
