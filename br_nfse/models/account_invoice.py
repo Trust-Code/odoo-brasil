@@ -48,6 +48,8 @@ class AccountInvoice(models.Model):
             report = 'br_nfse.main_template_br_nfse_danfe'
         elif self.invoice_model == '008':
             report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
+        elif self.invoice_model == '010':
+            report = 'br_nfse.main_template_br_nfse_danfe_imperial'
 
         action = self.env['report'].get_action(
             docs.ids, report)
