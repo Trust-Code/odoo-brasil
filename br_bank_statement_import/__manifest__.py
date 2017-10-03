@@ -18,6 +18,11 @@
     'depends': [
         'account_bank_statement_import'
     ],
+    'external_dependencies': {
+        'python': [
+            'ofxparse'
+        ],
+    },
     'data': [
         'views/account_bank_statement_import.xml',
     ],

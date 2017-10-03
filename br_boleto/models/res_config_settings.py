@@ -5,8 +5,8 @@
 from odoo import api, fields, models
 
 
-class AccountConfigSettings(models.TransientModel):
-    _inherit = 'account.config.settings'
+class ResConfigSettings(models.TransientModel):
+    _inherit = 'res.config.settings'
 
     boleto_email_tmpl = fields.Many2one(
         'mail.template', string="Template de Email para Envio de Boleto",

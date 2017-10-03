@@ -19,9 +19,14 @@
     'depends': [
         'br_account_payment', 'br_data_account_product'
     ],
+    'external_dependencies': {
+        'python': [
+            'pyboleto',
+        ],
+    },
     'data': [
         'security/ir.model.access.csv',
-        'views/account_config_settings.xml',
+        'views/res_config_settings.xml',
         'views/account_invoice.xml',
         'views/account_move_line.xml',
         'views/res_partner_bank.xml',

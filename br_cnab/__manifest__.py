@@ -17,6 +17,11 @@
     'depends': [
         'br_boleto'
     ],
+    'external_dependencies': {
+        'python': [
+            'cnab240', 'cnab240.tipos'
+        ],
+    },
     'data': [
         'sequence/br_cnab_sequence.xml',
         'views/payment_order.xml',

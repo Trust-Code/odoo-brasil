@@ -24,7 +24,7 @@ class AccountInvoice(models.Model):
                 'origin_model': 'account.invoice',
                 'active_ids': [item.id],
             })
-            boleto, fmt = self.env['ir.actions.report.xml'].render_report(
+            boleto, fmt = self.env['ir.actions.report'].render_report(
                 [item.id], 'br_boleto.report.print', {'report_type': u'pdf'})
 
             if boleto:
@@ -103,4 +103,4 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
-        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+        return self.env.ref('br_boleto.action_boleto_account_invoice').report_action(self)

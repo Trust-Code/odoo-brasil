@@ -18,6 +18,11 @@
     'depends': [
         'br_account_einvoice',
     ],
+    'external_dependencies': {
+        'python': [
+            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado'
+        ],
+    },
     'data': [
         'data/br_nfse.xml',
         'views/br_account_service.xml',
