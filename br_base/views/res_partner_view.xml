@@ -36,7 +36,7 @@
                     icon="fa-search" string="Consultar" attrs="{'invisible': [('company_type', '=', 'person')]}">
                 </button>
             </xpath>
-            <xpath expr="//div[@class='o_row']" position="before">
+            <xpath expr="//div[hasclass('o_row')]" position="before">
                 <h3 attrs="{'invisible': [('is_company', '=', False)]}">
                     <field name="legal_name" placeholder="Razão Social" nolabel="1" />
                 </h3>
