@@ -18,8 +18,6 @@ class IrActionsReport(models.Model):
         if not self.name == 'Boleto':
             return
 
-        import ipdb
-        ipdb.set_trace()
         active_ids = res_ids
         # active_model = self.env.context.get('origin_model')
 

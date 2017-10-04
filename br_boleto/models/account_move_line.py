@@ -20,7 +20,8 @@ class AccountMoveLine(models.Model):
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
-        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+        return self.env.ref(
+            'br_boleto.action_boleto_account_invoice').report_action(self)
 
     @api.multi
     def gerar_payment_order(self):

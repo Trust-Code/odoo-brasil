@@ -67,8 +67,6 @@ class TestBoletoSicoob(TestBoleto):
         })
 
     def test_raise_error_if_not_payment(self):
-        import ipdb
-        ipdb.set_trace()
         self._update_main_company()
         self._update_partner_fisica()
         self.invoices.action_invoice_open()
@@ -79,11 +77,11 @@ class TestBoletoSicoob(TestBoleto):
         vals = move.action_print_boleto()
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
-        self.assertEquals(vals['report_type'], 'pdf')
+        self.assertEquals(vals['report_type'], 'qweb-pdf')
 
         vals = self.invoices.action_register_boleto()
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
-        self.assertEquals(vals['report_type'], 'pdf')
+        self.assertEquals(vals['report_type'], 'qweb-pdf')
 
         move.action_register_boleto()
