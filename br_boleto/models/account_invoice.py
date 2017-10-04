@@ -2,12 +2,48 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import base64
 from odoo import api, models
 from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    @api.multi
+    def send_email_boleto_queue(self):
+        mail = self.env.user.company_id.boleto_email_tmpl
+        if not mail:
+            raise UserError('Modelo de email padrão não configurado')
+
+        attachment_obj = self.env['ir.attachment']
+        for item in self:
+
+            atts = []
+            self = self.with_context({
+                'origin_model': 'account.invoice',
+                'active_ids': [item.id],
+            })
+            boleto, fmt = self.env['ir.actions.report'].render_report(
+                [item.id], 'br_boleto.report.print', {'report_type': u'pdf'})
+
+            if boleto:
+                name = "boleto-%s-%s.pdf" % (
+                    item.number, item.partner_id.commercial_partner_id.name)
+                boleto_id = attachment_obj.create(dict(
+                    name=name,
+                    datas_fname=name,
+                    datas=base64.b64encode(boleto),
+                    mimetype='application/pdf',
+                    res_model='account.invoice',
+                    res_id=item.id,
+                ))
+                atts.append(boleto_id.id)
+
+            values = {
+                "attachment_ids": atts + mail.attachment_ids.ids
+            }
+            mail.send_mail(item.id, email_values=values)
 
     @api.multi
     def invoice_validate(self):
@@ -67,4 +103,4 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
-        return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+        return self.env.ref('br_boleto.action_boleto_account_invoice').report_action(self)

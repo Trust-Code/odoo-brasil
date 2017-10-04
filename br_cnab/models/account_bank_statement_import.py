@@ -64,6 +64,10 @@ class AccountBankStatementImport(models.TransientModel):
             return int(nosso_numero[:9])
         elif bank == '033':
             return int(nosso_numero[:-1])
+        elif bank == '748':
+            return int(nosso_numero[:-1])
+        elif bank == '001':
+            return int(nosso_numero[10:])
         return nosso_numero
 
     def get_bank(self, journal_id):
@@ -86,6 +90,11 @@ class AccountBankStatementImport(models.TransientModel):
         elif bank == '033':
             from cnab240.bancos import santander
             return santander
+        elif bank == '748':
+            from cnab240.bancos import sicredi
+            return sicredi
+        else:
+            raise UserError(u'Banco ainda não implementado: %s' % bank)
 
     def _parse_cnab(self, data_file, raise_error=False):
         cnab240_file = tempfile.NamedTemporaryFile()
@@ -100,11 +109,11 @@ class AccountBankStatementImport(models.TransientModel):
         arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
         transacoes = []
         valor_total = Decimal('0.0')
-
         for lote in arquivo.lotes:
             for evento in lote.eventos:
                 valor = evento.valor_lancamento
                 # Apenas liquidação  (Sicoob:6)
+                # Liquidação Banco do Brasil (6, 17)
                 # Liquidação Bradesco (6, 177)
                 # Liquidação Santander ('06', '17')
                 if evento.servico_codigo_movimento in (6, 17, '06', '17',):
@@ -118,14 +127,14 @@ class AccountBankStatementImport(models.TransientModel):
 
                     transacoes.append({
                         'name': "%s : %s" % (
-                            evento.sacado_nome or move_line.partner_id.name,
+                            move_line.partner_id.name or evento.sacado_nome,
                             evento.numero_documento or "%s: %s" % (
                                 move_line.move_id.name, move_line.name)),
                         'date': datetime.strptime(
                             str(evento.data_ocorrencia), '%d%m%Y'),
                         'amount': valor,
                         'partner_name':
-                        evento.sacado_nome or move_line.partner_id.name,
+                        move_line.partner_id.name or evento.sacado_nome,
                         'partner_id': move_line.partner_id.id,
                         'ref': evento.numero_documento,
                         'unique_import_id': str(evento.nosso_numero),

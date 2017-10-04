@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Envio de NFS-e',
     'summary': """Permite o envio de NFS-e através das faturas do Odoo
     Mantido por Trustcode""",
@@ -18,6 +18,11 @@
     'depends': [
         'br_account_einvoice',
     ],
+    'external_dependencies': {
+        'python': [
+            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado'
+        ],
+    },
     'data': [
         'data/br_nfse.xml',
         'views/br_account_service.xml',
@@ -27,6 +32,8 @@
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_simpliss.xml',
         'reports/danfse_ginfes.xml',
+        'reports/danfse_imperial.xml',
+        'wizard/cancel_nfse.xml',
     ],
     'installable': True,
     'application': True,

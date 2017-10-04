@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Envio de NF-e',
     'summary': """Permite o envio de NF-e através das faturas do Odoo
     Mantido por Trustcode""",
@@ -18,6 +18,12 @@
     'depends': [
         'br_account_einvoice',
     ],
+    'external_dependencies': {
+        'python': [
+            'pytrustnfe', 'pytrustnfe.nfe',
+            'pytrustnfe.certificado', 'pytrustnfe.utils'
+        ],
+    },
     'data': [
         'security/ir.model.access.csv',
         'views/account_fiscal_position.xml',

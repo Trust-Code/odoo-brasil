@@ -138,6 +138,7 @@ class TestInutilizacao(TransactionCase):
         ))
 
     def tearDown(self):
+        super(TestInutilizacao, self).tearDown()
         inutilized = self.env['invoice.eletronic.inutilized'].search([])
         for number in inutilized:
             self.env['invoice.eletronic.inutilized'].update([

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report id="action_insert_reports_print_button_account_move_line"
+        <report id="action_boleto_account_move_line"
                 name="br_boleto.report"
                 model="account.move.line"
+                report_type="raw-pdf"
                 string="Boleto"/>
 
-        <report id="action_insert_reports_print_button_account_invoice"
+        <report id="action_boleto_account_invoice"
                 name="br_boleto.report.print"
                 model="account.invoice"
+                report_type="raw-pdf"
                 string="Boleto"/>
     </data>
 </odoo>

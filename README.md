@@ -42,14 +42,15 @@ Este repositório adapta o Odoo 10 para ser usado no Brasil
 
 * Cálculo de impostos (ICMS, IPI, PIS, COFINS, ISSQN, DIFAL, FCP, Simples Nacional)
 * Emissão de NFe
-* Emissão de NFSe Paulistana
-* Emissão de Boletos (boletos homologados: Itaú, Bradesco, Sicoob, Cecred)
+* Emissão de NFSe Paulistana, GINFES, Susesu, SimplISS
+* Emissão de Boletos (boletos homologados: Bradesco, Sicoob, Cecred, BB, Santander)
 * Integração Bancária (cnab240)
 * Folha de Pagamento
 * Importação de extratos bancários (OFX)
 * Contas a pagar e Receber
 * Integração Cielo
 * Integração Correios
+* Retenções de Impostos (INSS, IRRF, PIS, COFINS, CSLL, ISS)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -57,7 +58,6 @@ Este repositório adapta o Odoo 10 para ser usado no Brasil
 
 * Importação de XML
 * Integração com Manifesto de destinatário
-* Retenções de Impostos (INSS, IRRF, PIS, COFINS, CSLL, ISS)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -99,7 +99,7 @@ Contributors
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-## Licence 
+## Licence
 
 Este projeto é open source sob licença AGPL v3 http://www.gnu.org/licenses/agpl-3.0.html
 

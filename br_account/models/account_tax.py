@@ -131,7 +131,11 @@ class AccountTax(models.Model):
 
         base_tax = base_ipi * (1 - (reducao_ipi / 100.0))
         vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
-        vals['base'] = base_tax
+        if 'ipi_base_calculo_manual' in self.env.context and\
+                self.env.context['ipi_base_calculo_manual'] > 0:
+            vals['base'] = self.env.context['ipi_base_calculo_manual']
+        else:
+            vals['base'] = base_tax
         return [vals]
 
     def _compute_icms(self, price_base, ipi_value):
@@ -157,8 +161,15 @@ class AccountTax(models.Model):
             base_icms += self.env.context["outras_despesas"]
 
         base_icms *= 1 - (reducao_icms / 100.0)
-        vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
-        vals['base'] = base_icms
+
+        if 'icms_base_calculo_manual' in self.env.context and\
+                self.env.context['icms_base_calculo_manual'] > 0:
+            vals['amount'] = icms_tax._compute_amount(
+                self.env.context['icms_base_calculo_manual'], 1.0)
+            vals['base'] = self.env.context['icms_base_calculo_manual']
+        else:
+            vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
+            vals['base'] = base_icms
         return [vals]
 
     def _compute_icms_st(self, price_base, ipi_value, icms_value):
@@ -192,11 +203,18 @@ class AccountTax(models.Model):
 
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
 
-        icmsst = round(
-            (base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
-
-        vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
-        vals['base'] = base_icmsst
+        if 'icms_st_base_calculo_manual' in self.env.context and\
+                self.env.context['icms_st_base_calculo_manual'] > 0:
+            icmsst = round(
+                (self.env.context['icms_st_base_calculo_manual'] *
+                 (icmsst_tax.amount / 100.0)) - icms_value, 2)
+            vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
+            vals['base'] = self.env.context['icms_st_base_calculo_manual']
+        else:
+            icmsst = round(
+                (base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
+            vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
+            vals['base'] = base_icmsst
         return [vals]
 
     def _compute_difal(self, price_base, ipi_value):
@@ -258,8 +276,25 @@ class AccountTax(models.Model):
         taxes = []
         for tax in pis_cofins_tax:
             vals = self._tax_vals(tax)
-            vals['amount'] = tax._compute_amount(price_base, 1.0)
-            vals['base'] = price_base
+            if tax.domain == 'pis':
+                if 'pis_base_calculo_manual' in self.env.context and\
+                        self.env.context['pis_base_calculo_manual'] > 0:
+                    vals['amount'] = tax._compute_amount(
+                        self.env.context['pis_base_calculo_manual'], 1.0)
+                    vals['base'] = self.env.context['pis_base_calculo_manual']
+                else:
+                    vals['amount'] = tax._compute_amount(price_base, 1.0)
+                    vals['base'] = price_base
+            if tax.domain == 'cofins':
+                if 'cofins_base_calculo_manual' in self.env.context and\
+                        self.env.context['cofins_base_calculo_manual'] > 0:
+                    vals['amount'] = tax._compute_amount(
+                        self.env.context['cofins_base_calculo_manual'], 1.0)
+                    vals['base'] = self.env.context[
+                        'cofins_base_calculo_manual']
+                else:
+                    vals['amount'] = tax._compute_amount(price_base, 1.0)
+                    vals['base'] = price_base
             taxes.append(vals)
         return taxes
 
@@ -268,6 +303,8 @@ class AccountTax(models.Model):
         if not ii_tax:
             return []
         vals = self._tax_vals(ii_tax)
+        if "ii_base_calculo" in self.env.context:
+            price_base = self.env.context["ii_base_calculo"]
         vals['amount'] = ii_tax._compute_amount(price_base, 1.0)
         vals['base'] = price_base
         return [vals]

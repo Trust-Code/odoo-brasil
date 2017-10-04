@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Website Sale Checkout Fields for Brazil',
     'summary': """Adds fields to e-commerce checkout""",
     'description': 'Website Sale Checkout Fields for Brazil',

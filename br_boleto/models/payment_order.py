@@ -38,6 +38,7 @@ class PaymentOrderLine(models.Model):
 
 class PaymentOrder(models.Model):
     _name = 'payment.order'
+    _order = 'id desc'
 
     @api.depends('line_ids')
     def _compute_amount_total(self):
