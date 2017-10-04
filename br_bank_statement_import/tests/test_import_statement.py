@@ -27,7 +27,7 @@ class TestImportStatement(TransactionCase):
             'file_format': 'ofx',
             'force_journal_account': True,
             'journal_id': self.journal.id,
-            'data_file': base64.b64encode('000'),
+            'data_file': base64.b64encode(b'000'),
         })
 
     def test_invalid_files(self):
@@ -36,7 +36,7 @@ class TestImportStatement(TransactionCase):
 
     def test_import_ofx_default(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato.ofx')
-        self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.data_file = base64.b64encode(open(ofx, 'rb').read())
         self.import_ofx.import_file()
 
         stmt = self.env['account.bank.statement'].search(
@@ -54,7 +54,7 @@ class TestImportStatement(TransactionCase):
 
     def test_import_ofx_bb(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato-bb.ofx')
-        self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.data_file = base64.b64encode(open(ofx, 'rb').read())
         self.import_ofx.import_file()
 
         stmt = self.env['account.bank.statement'].search(
@@ -73,7 +73,7 @@ class TestImportStatement(TransactionCase):
 
     def test_import_ofx_itau(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato-itau.ofx')
-        self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.data_file = base64.b64encode(open(ofx, 'rb').read())
         self.import_ofx.import_file()
 
         stmt = self.env['account.bank.statement'].search(
@@ -91,16 +91,16 @@ class TestImportStatement(TransactionCase):
 
     def test_import_ofx_without_force(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato.ofx')
-        self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.data_file = base64.b64encode(open(ofx, 'rb').read())
         self.import_ofx.force_format = False
         self.import_ofx.import_file()
 
         ofx = os.path.join(self.caminho, 'extratos/extrato-bb.ofx')
-        self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.data_file = base64.b64encode(open(ofx, 'rb').read())
         self.import_ofx.force_format = False
         self.import_ofx.import_file()
 
         ofx = os.path.join(self.caminho, 'extratos/extrato-itau.ofx')
-        self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.data_file = base64.b64encode(open(ofx, 'rb').read())
         self.import_ofx.force_format = False
         self.import_ofx.import_file()

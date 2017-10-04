@@ -5,7 +5,7 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@class='oe_title']/h1" position="after">
+            <xpath expr="//div[hasclass('oe_title')]/h1" position="after">
                 <label for="legal_name" class="oe_edit_only"/>
                 <h3>
                     <field name="legal_name" placeholder="Razão Social"/>
