@@ -43,13 +43,13 @@ class TestBoletoSicoob(TestBoleto):
     def _update_main_company(self):
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': u'Trustcode Tecnologia da Informação',
+            'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': u'Córrego Grande',
+            'district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -67,6 +67,8 @@ class TestBoletoSicoob(TestBoleto):
         })
 
     def test_raise_error_if_not_payment(self):
+        import ipdb
+        ipdb.set_trace()
         self._update_main_company()
         self._update_partner_fisica()
         self.invoices.action_invoice_open()

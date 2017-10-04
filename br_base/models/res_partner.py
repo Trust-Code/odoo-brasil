@@ -80,15 +80,17 @@ class ResPartner(models.Model):
                 address_format = '%(company_name)s\n' + address_format
             return address_format % args
 
+    @api.multi
     @api.constrains('cnpj_cpf', 'country_id', 'is_company')
     def _check_cnpj_cpf(self):
-        country_code = self.country_id.code or ''
-        if self.cnpj_cpf and country_code.upper() == 'BR':
-            if self.is_company:
-                if not fiscal.validate_cnpj(self.cnpj_cpf):
-                    raise UserError(_(u'CNPJ inválido!'))
-            elif not fiscal.validate_cpf(self.cnpj_cpf):
-                raise UserError(_(u'CPF inválido!'))
+        for item in self:
+            country_code = item.country_id.code or ''
+            if item.cnpj_cpf and country_code.upper() == 'BR':
+                if item.is_company:
+                    if not fiscal.validate_cnpj(item.cnpj_cpf):
+                        raise UserError(_(u'CNPJ inválido!'))
+                elif not fiscal.validate_cpf(item.cnpj_cpf):
+                    raise UserError(_(u'CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
