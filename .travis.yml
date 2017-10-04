@@ -16,8 +16,8 @@ addons:
       - libxslt-dev
 
 env:
-  - VERSION="10.0" LINT_CHECK="1"
-  - VERSION="10.0" ODOO_REPO="odoo/odoo" LINT_CHECK="0"
+  - VERSION="11.0" LINT_CHECK="1"
+  - VERSION="11.0" ODOO_REPO="odoo/odoo" LINT_CHECK="0"
 
 virtualenv:
   system_site_packages: true
@@ -32,4 +32,4 @@ script:
   - travis_run_tests
 
 after_success:
-  coveralls
+  - travis_after_tests_success
