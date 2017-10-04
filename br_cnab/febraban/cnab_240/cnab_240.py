@@ -91,8 +91,8 @@ class Cnab240(Cnab):
                                  bank_account_id.bra_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
-            'nome_banco': unicode(self.order.payment_mode_id.bank_account_id.
-                                  bank_name)
+            'nome_banco': str(self.order.payment_mode_id.bank_account_id
+                              .bank_name)
         }
 
     def get_file_numeration(self):
@@ -184,7 +184,7 @@ class Cnab240(Cnab):
                 line.date_maturity),
             'juros_mora_taxa':  Decimal(
                 str(self.order.payment_mode_id.late_payment_interest)
-                ).quantize(Decimal('1.00')),
+            ).quantize(Decimal('1.00')),
             # Multa padrão em percentual no Odoo, valor '2'
             'codigo_multa': '2',
             'data_multa': self.format_date(
@@ -233,7 +233,7 @@ class Cnab240(Cnab):
                 Decimal(cobrancasimples_valor_titulos).quantize(
                     Decimal('1.00'))
 
-        return unicode(self.arquivo)
+        return str(self.arquivo)
 
     def data_hoje(self):
         return (int(time.strftime("%d%m%Y")))

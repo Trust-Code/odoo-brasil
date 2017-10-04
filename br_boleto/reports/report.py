@@ -4,30 +4,33 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import models
 from odoo.exceptions import UserError
 from ..boleto.document import Boleto
-
 
 
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
 
-    report_type = fields.Selection(selection_add=[('raw-pdf', 'PDF')])
+    # report_type = fields.Selection(selection_add=[('raw-pdf', 'PDF')])
 
-    def render_raw_pdf(self, res_ids, data=None):
-        import ipdb; ipdb.set_trace()
+    def render_qweb_pdf(self, res_ids, data=None):
+        if not self.name == 'Boleto':
+            return
+
+        import ipdb
+        ipdb.set_trace()
         active_ids = res_ids
-        active_model = context.get('origin_model')
+        # active_model = self.env.context.get('origin_model')
 
         ids_move_lines = []
         aml_obj = self.env['account.move.line']
-        if active_model == 'account.invoice':
+        if self.model == 'account.invoice':
             ai_obj = self.env['account.invoice']
             for account_invoice in ai_obj.browse(active_ids):
                 for move_line in account_invoice.receivable_move_line_ids:
                     ids_move_lines.append(move_line.id)
-        elif active_model == 'account.move.line':
+        elif self.model == 'account.move.line':
             ids_move_lines = active_ids
         else:
             raise UserError(u'Parâmetros inválidos')
@@ -39,6 +42,4 @@ Não é possível gerar os boletos
 Certifique-se que a fatura esteja confirmada e o
 forma de pagamento seja duplicatas""")
         pdf_string = Boleto.get_pdfs(boleto_list)
-        self.obj = external_pdf(pdf_string)
-        self.obj.render()
-        return self.obj.pdf, 'pdf'
+        return pdf_string, 'pdf'

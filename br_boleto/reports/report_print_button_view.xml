@@ -4,13 +4,13 @@
         <report id="action_boleto_account_move_line"
                 name="br_boleto.report"
                 model="account.move.line"
-                report_type="raw-pdf"
+                report_type="qweb-pdf"
                 string="Boleto"/>
 
         <report id="action_boleto_account_invoice"
                 name="br_boleto.report.print"
                 model="account.invoice"
-                report_type="raw-pdf"
+                report_type="qweb-pdf"
                 string="Boleto"/>
     </data>
 </odoo>
