@@ -29,7 +29,7 @@ class ProductFiscalClassificationWizard(models.TransientModel):
         temp = tempfile.NamedTemporaryFile(delete=False)
         temp.write(ncm_string)
         temp.close()
-        with open(temp.name, 'rb') as csvfile:
+        with open(temp.name, 'r') as csvfile:
             if not self.has_quote_char:
                 ncm_lines = csv.DictReader(
                     csvfile, delimiter=str(self.ncm_csv_delimiter))
