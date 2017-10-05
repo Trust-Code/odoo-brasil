@@ -176,7 +176,8 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.state, 'error')
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
-            partner_id=self.partner_fisica.id
+            partner_id=self.partner_fisica.id,
+            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
@@ -213,7 +214,8 @@ class TestInutilizacao(TransactionCase):
         wizard2.action_inutilize_nfe()
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
-            partner_id=self.partner_fisica.id
+            partner_id=self.partner_fisica.id,
+            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
@@ -251,7 +253,8 @@ class TestInutilizacao(TransactionCase):
         self.assertEqual(inut_inv.state, 'done')
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
-            partner_id=self.partner_fisica.id
+            partner_id=self.partner_fisica.id,
+            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
@@ -268,7 +271,8 @@ class TestInutilizacao(TransactionCase):
         ))
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
-            partner_id=self.partner_fisica.id
+            partner_id=self.partner_fisica.id,
+            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
@@ -340,7 +344,8 @@ class TestInutilizacao(TransactionCase):
         ))
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
-            partner_id=self.partner_fisica.id
+            partner_id=self.partner_fisica.id,
+            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
