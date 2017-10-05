@@ -325,10 +325,10 @@ class AccountInvoice(models.Model):
                 if not tax.price_include and tax.account_id and \
                    not tax.deduced_account_id:
                     res[contador]['price'] -= tax_dict['amount']
-                if tax.price_include and (not tax.account_id or
-                                          not tax.deduced_account_id):
-                    if tax_dict['amount'] > 0.0:  # Negativo é retido
-                        res[contador]['price'] -= tax_dict['amount']
+                # if tax.price_include and (not tax.account_id or
+                #                          not tax.deduced_account_id):
+                #    if tax_dict['amount'] > 0.0:  # Negativo é retido
+                #        res[contador]['price'] -= tax_dict['amount']
 
             contador += 1
 
