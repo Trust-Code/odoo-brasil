@@ -203,7 +203,7 @@ class SaleOrderLine(models.Model):
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
 
-                for key, value in vals.iteritems():
+                for key, value in vals.items():
                     if value and key in line._fields:
                         line.update({key: value})
 

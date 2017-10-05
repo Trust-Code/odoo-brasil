@@ -152,7 +152,8 @@ class TestCnabSicoob(TestCnab):
             ('state', '=', 'draft')
         ], limit=1)
         ordem_cobranca.gerar_cnab()
-        cnab = base64.decodestring(ordem_cobranca.cnab_file).split('\r\n')
+        cnab = base64.decodestring(
+            ordem_cobranca.cnab_file.decode('UTF-8')).split('\r\n')
         cnab.pop()
 
         self.assertEquals(len(cnab), 7)  # 8 linhas
