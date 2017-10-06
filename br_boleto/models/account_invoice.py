@@ -103,4 +103,5 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
-        return self.env.ref('br_boleto.action_boleto_account_invoice').report_action(self)
+        return self.env.ref(
+            'br_boleto.action_boleto_account_invoice').report_action(self)
