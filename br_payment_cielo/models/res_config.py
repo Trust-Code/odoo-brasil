@@ -7,7 +7,7 @@ from odoo import fields, models
 
 
 class AccountPaymentConfig(models.TransientModel):
-    _inherit = 'account.config.settings'
+    _inherit = 'res.config.settings'
 
     module_payment_cielo = fields.Boolean(
         string='Manage Payments Using Cielo',
