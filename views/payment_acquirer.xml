@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="acquirer_form_cielo" model="ir.ui.view">
+        <field name="name">acquirer.form.cielo</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.acquirer_form" />
+        <field name="arch" type="xml">
+            <xpath expr='//group[@name="acquirer"]' position='after'>
+                <group attrs="{'invisible': [('provider', '!=', 'cielo')]}">
+                    <field name="cielo_merchant_id" />
+                    <field name="return_url" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="transaction_form_cielo" model="ir.ui.view">
+        <field name="name">acquirer.transaction.form.cielo</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.transaction_form" />
+        <field name="arch" type="xml">
+            <xpath expr='//notebook' position='inside'>
+                <page string="Detalhes transação Cielo">
+                    <group>
+                        <field name="state_cielo" />
+                        <field name="cielo_transaction_id" />
+                        <field name="transaction_type" />
+                        <field name="payment_installments" />
+                        <field name="payment_method_brand" />
+                        <field name="payment_boletonumber" />
+                    </group>
+                </page>
+            </xpath>
+            <field name="acquirer_reference" position="after">
+                <field name="url_cielo" widget="url" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
