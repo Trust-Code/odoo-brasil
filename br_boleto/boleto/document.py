@@ -250,8 +250,7 @@ class BoletoSantander(Boleto):
             move_line.payment_mode_id.bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
-        import ipdb
-        ipdb.set_trace()
+
         self.boleto.conta_cedente = \
             move_line.payment_mode_id.boleto_cnab_code
 

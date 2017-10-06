@@ -192,7 +192,7 @@ class InvoiceEletronic(models.Model):
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_recepcionar_lote_rps(certificado, nfse=nfse_values)
 
-        self.xml_to_send = base64.encodestring(xml_enviar)
+        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     def _find_attachment_ids_email(self):
