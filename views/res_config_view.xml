@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!--  Add payment options to sale.order and invoice forms -->
+    <record model="ir.ui.view" id="payment_cielo_option_config">
+        <field name="model">account.config.settings</field>
+        <field name="inherit_id" ref="account.view_account_config_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='payment_acquirer']" position="after">
+                <div>
+                    <field name="module_payment_cielo" class="oe_inline"/>
+                    <label for="module_payment_cielo"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

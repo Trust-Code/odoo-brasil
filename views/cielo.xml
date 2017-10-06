@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cielo_acquirer_button">
+        <form t-if="checkout_url" t-att-action="checkout_url" method="post" target="_self">
+            <input type="hidden" name="merchant_id" t-att-value="merchant_id" />
+            <button type="submit" width="100px" t-att-class="submit_class">
+                <span t-if="submit_txt"><t t-esc="submit_txt"/> <span class="fa fa-long-arrow-right"/></span>
+            </button>
+        </form>
+    </template>
+
+</odoo>
