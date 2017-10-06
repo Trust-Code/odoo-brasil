@@ -10,7 +10,7 @@ from datetime import date
 import os.path
 from jinja2 import Environment, FileSystemLoader
 from zipfile import ZipFile
-from StringIO import StringIO
+from io import BytesIO
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -91,7 +91,7 @@ class NfseExportInvoice(models.TransientModel):
             os.makedirs(tmp)
         except:
             pass
-        zip_base64 = StringIO()
+        zip_base64 = BytesIO()
         zipFile = ZipFile(zip_base64, 'w')
         for xml in xmls:
             filename = os.path.join(tmp, xml['name'])
