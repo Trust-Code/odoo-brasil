@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<InfRequisicao xmlns="http://nfe.pmf.sc.gov.br/nfse/versao?tipo=xsd-2_0"
+ xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+    <Versao>2.0</Versao>
+    <TipoSistema>1</TipoSistema>
+    <Identificacao>M9D2N0</Identificacao>
+    <AEDF>
+        <AEDF>290216</AEDF>
+        <TipoAedf>NORMAL</TipoAedf>
+    </AEDF>
+    <DataEmissao>{{ data_emissao }}</DataEmissao>
+    <CFPS>{{ cfps }}</CFPS>
+    <DadosServico>
+        {% for item in items -%}
+        <ItemServico>
+            <IdCNAE>11544</IdCNAE>
+            <CodigoAtividade>{{ item.CNAE }}</CodigoAtividade>
+            <DescricaoServico>{{ item.name }}</DescricaoServico>
+            <CST>{{ item.CST }}</CST>
+            <Aliquota>{{ item.aliquota }}</Aliquota>
+            <ValorUnitario>{{ item.valor_unitario }}</ValorUnitario>
+            <Quantidade>{{ item.quantidade }}</Quantidade>
+            <ValorTotal>{{ item.valor_total }}</ValorTotal>
+        </ItemServico>
+        {% endfor %}
+        <BaseCalculo>{{ base_calculo }}</BaseCalculo>
+        <ValorISSQN>{{ valor_issqn }}</ValorISSQN>
+        <ValorTotalServicos>{{ valor_total }}</ValorTotalServicos>
+    </DadosServico>
+    <Tomador>
+        <IdentificacaoTomador>
+            <DocIdTomador>
+                <CPFCNPJ>
+                    <CNPJ>{{ tomador.cnpj_cpf }}</CNPJ>
+                </CPFCNPJ>
+            </DocIdTomador>
+            <InscricaoMunicipal>0000000</InscricaoMunicipal>
+        </IdentificacaoTomador>
+        <RazaoSocial>{{ tomador.name }}</RazaoSocial>
+        <Endereco>
+            <Logradouro>{{ tomador.street }}</Logradouro>
+            <NumeroEndereco>{{ tomador.number }}</NumeroEndereco>
+            <Bairro>{{ tomador.district }}</Bairro>
+            <Municipio>
+                <CodigoMunicipio>{{ tomador.city_code }}</CodigoMunicipio>
+            </Municipio>
+            <CodigoPostal>
+                <CEP>{{ tomador.zip }}</CEP>
+            </CodigoPostal>
+            <UF>{{ tomador.uf_code }}</UF>
+        </Endereco>
+        <Contato>
+            <Email>{{ tomador.email }}</Email>
+            <Telefone>{{ tomador.phone }}</Telefone>
+        </Contato>
+    </Tomador>
+</InfRequisicao>
