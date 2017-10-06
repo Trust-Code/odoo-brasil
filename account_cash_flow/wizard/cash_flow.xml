@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <record id="view_account_cash_flow_wizard_form" model="ir.ui.view">
+            <field name="name">View Cash Flow Wizard</field>
+            <field name="model">account.cash.flow.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Generate Cash Flow">
+                    <group>
+                        <field name="end_date"/>
+                        <field name="start_amount"/>
+                        <field name="print_report"/>
+                    </group>
+                    <footer>
+                        <button name="button_calculate"  string="Generate" type="object"
+                            class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_account_cash_flow_wizard_form" model="ir.actions.act_window">
+            <field name="name">Cash Flow</field>
+            <field name="res_model">account.cash.flow.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_cash_flow_wizard" name="Cash Flow" parent="br_account_payment.menu_br_payments"
+            action="action_account_cash_flow_wizard_form" sequence="20"/>
+
+    </data>
+</openerp>
