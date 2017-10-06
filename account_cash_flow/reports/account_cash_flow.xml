@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <template id="account_cash_flow_template_html_report">
+             <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                    <script type="text/javascript" src="/account_cash_flow/static/src/js/plotly-latest.min.js"></script>
+                    <h2>Gráfico</h2>
+                    <div class="row">
+                        <t t-raw="docs[0].draw_chart()" />
+                    </div>
+                    <div class="page">
+                        <h2>Cash Flow Report</h2>
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <td>Saldo de Caixa e Bancos</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].start_balance" /></td>
+                                </tr>
+                                <tr class="active" t-foreach="docs[0].line_ids.filtered(lambda x: x.liquidity)" t-as="o">
+                                    <td style="padding-left: 50px;"><span t-field="o.name" /></td>
+                                    <td style="text-align: right;"><span t-field="o.amount" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Total de Recebimentos no Período</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].total_receivables" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Total de Despesas no Período</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].total_payables" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Balanço no Período</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].period_balance" /></td>
+                                </tr>
+                                <tr class="info">
+                                    <td>Saldo Final</td>
+                                    <td style="text-align: right;"><span t-field="docs[0].final_amount" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-condensed table-bordered table-striped">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th style="font-size:12px;">Description</th>
+                                    <th style="font-size:12px;">Partner</th>
+                                    <th style="font-size:12px;" class="text-right">Date</th>
+                                    <th style="font-size:12px;" class="text-right">A Receber</th>
+                                    <th style="font-size:12px;" class="text-right">A pagar</th>
+                                    <th style="font-size:12px;" class="text-right">Saldo da linha</th>
+                                    <th style="font-size:12px;" class="text-right">Accumulated balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs[0].line_ids.filtered(lambda x: not x.liquidity)" t-as="o">
+                                    <td><span t-field="o.name" /></td>
+                                    <td><span t-field="o.partner_id" /></td>
+                                    <td><span t-field="o.date" /></td>
+                                    <td><span t-field="o.credit" /></td>
+                                    <td><span t-field="o.debit" /></td>
+                                    <td><span t-field="o.amount" /></td>
+                                    <td><span t-field="o.balance" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <template id="main_template_cash_flow">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="account_cash_flow.account_cash_flow_template_html_report" />
+                </t>
+            </t>
+        </template>
+
+        <report
+            id="account_cash_flow_html_report"
+            string="Cash Flow Report"
+            model="account.cash.flow"
+            report_type="qweb-html"
+            name="account_cash_flow.main_template_cash_flow" />
+
+        <record id="paperformat_account_cash_flow" model="report.paperformat">
+            <field name="name">Cash Flow Format</field>
+            <field name="default" eval="True" />
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">3.0</field>
+            <field name="margin_left">3.0</field>
+            <field name="margin_right">3.0</field>
+            <field name="margin_bottom">6.0</field>
+        </record>
+
+        <record id="account_cash_flow_html_report" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="paperformat_account_cash_flow"/>
+            <field name="name">Cash Flow</field>
+        </record>
+    </data>
+</openerp>
