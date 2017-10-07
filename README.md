@@ -25,8 +25,8 @@ Odoo Brasil
 
 This is a repository from Trustcode.
 
-[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=10.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
-[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=10.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=10.0)
+[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=11.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
+[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=11.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=11.0)
 [![Code Climate](https://codeclimate.com/github/Trust-Code/odoo-brasil/badges/gpa.svg)](https://codeclimate.com/github/Trust-Code/odoo-brasil)
 [![Licence](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
 
@@ -34,7 +34,7 @@ This is a repository from Trustcode.
 
 ## Introdução
 
-Este repositório adapta o Odoo 10 para ser usado no Brasil
+Este repositório adapta o Odoo 11 para ser usado no Brasil
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -49,15 +49,10 @@ Este repositório adapta o Odoo 10 para ser usado no Brasil
 * Importação de extratos bancários (OFX)
 * Contas a pagar e Receber
 * Integração Cielo
-* Integração Correios
 * Retenções de Impostos (INSS, IRRF, PIS, COFINS, CSLL, ISS)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-## Roadmap
-
-* Importação de XML
-* Integração com Manifesto de destinatário
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
