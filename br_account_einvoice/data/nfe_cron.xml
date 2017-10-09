@@ -8,8 +8,7 @@
             <field name="numbercall">-1</field>
             <field eval="False" name="doall" />
             <field name="model_id" ref="model_invoice_eletronic"/>
-            <field eval="'cron_send_nfe'" name="function" />
-            <field eval="'()'" name="args" />
+            <field name="code">model.cron_send_nfe()</field>
         </record>
 
         <record id="ir_cron_nfe_send_email" model="ir.cron" forcecreate="True">
@@ -21,8 +20,7 @@
             <field eval="False" name="active" />
             <field eval="False" name="doall" />
             <field name="model_id" ref="model_invoice_eletronic"/>
-            <field eval="'send_email_nfe_queue'" name="function" />
-            <field eval="'()'" name="args" />
+            <field name="code">model.send_email_nfe_queue()</field>
         </record>
 
 </odoo>
