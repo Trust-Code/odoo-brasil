@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="account_config_settings_email_templates" model="ir.ui.view">
+        <field name="name">account_config_settings.email.boleto</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <div id="invoicing_settings" position="after" >
+                <h2>Modelos de e-mail</h2>
+                <div class="row mt16 o_settings_container" id="mail_templates">
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>

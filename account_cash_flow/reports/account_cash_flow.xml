@@ -95,7 +95,7 @@
             <field name="margin_bottom">6.0</field>
         </record>
 
-        <record id="account_cash_flow_html_report" model="ir.actions.report.xml">
+        <record id="account_cash_flow_html_report" model="ir.actions.report">
             <field name="paperformat_id" ref="paperformat_account_cash_flow"/>
             <field name="name">Cash Flow</field>
         </record>
