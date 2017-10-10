@@ -14,7 +14,6 @@
                 <field name="tax_icms_inter_id" invisible="1"/>
                 <field name="tax_icms_intra_id" invisible="1"/>
                 <field name="tax_icms_fcp_id" invisible="1"/>
-                <field name="tax_simples_id" invisible="1"/>
                 <field name="tax_ipi_id" invisible="1"/>
                 <field name="tax_pis_id" invisible="1"/>
                 <field name="tax_cofins_id" invisible="1"/>

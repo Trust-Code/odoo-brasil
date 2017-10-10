@@ -10,21 +10,6 @@
         <field name="expense_currency_exchange_account_id" ref="id_4_1_5_01_003" />
     </record>
 
-    <record id="simples_tax_six_percent" model="account.tax.template">
-        <field name="description">Simples Nacional 6%</field>
-        <field name="name">SN 6%</field>
-        <field name="domain">simples</field>
-        <field name="amount">6.00</field>
-        <field name="type_tax_use">sale</field>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field name="account_id" ref="id_2_1_4_03_009" />
-        <field name="refund_account_id" ref="id_2_1_4_03_009" />
-        <field name="deduced_account_id" ref="id_3_2_2_03_005" />
-        <field name="refund_deduced_account_id" ref="id_3_2_2_03_005" />
-        <field ref="br_account_chart_template" name="chart_template_id"/>
-    </record>
-
     <record id="tax_template_out_ipi" model="account.tax.template">
         <field name="description">IPI Saída 3%</field>
         <field name="name">IPI Saída 3%</field>

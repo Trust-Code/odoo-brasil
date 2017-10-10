@@ -55,7 +55,7 @@ class AccountInvoiceLine(models.Model):
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
                  'tax_csll_id', 'tax_irrf_id', 'tax_inss_id',
                  'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
-                 'ipi_reducao_bc', 'icms_st_aliquota_mva', 'tax_simples_id',
+                 'ipi_reducao_bc', 'icms_st_aliquota_mva',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
                  'icms_st_aliquota_deducao', 'icms_st_base_calculo_manual',
                  'icms_base_calculo_manual', 'ipi_base_calculo_manual',
@@ -92,8 +92,6 @@ class AccountInvoiceLine(models.Model):
              if x['id'] == self.tax_icms_intra_id.id]) if taxes else []
         icms_fcp = ([x for x in taxes['taxes']
                      if x['id'] == self.tax_icms_fcp_id.id]) if taxes else []
-        simples = ([x for x in taxes['taxes']
-                    if x['id'] == self.tax_simples_id.id]) if taxes else []
         ipi = ([x for x in taxes['taxes']
                 if x['id'] == self.tax_ipi_id.id]) if taxes else []
         pis = ([x for x in taxes['taxes']
@@ -135,7 +133,7 @@ class AccountInvoiceLine(models.Model):
             'icms_uf_remet': sum([x['amount'] for x in icms_inter]),
             'icms_uf_dest': sum([x['amount'] for x in icms_intra]),
             'icms_fcp_uf_dest': sum([x['amount'] for x in icms_fcp]),
-            'icms_valor_credito': sum([x['base'] for x in simples]) *
+            'icms_valor_credito': sum([x['base'] for x in icms]) *
             (self.icms_aliquota_credito / 100),
             'ipi_base_calculo': sum([x['base'] for x in ipi]),
             'ipi_valor': sum([x['amount'] for x in ipi]),
@@ -296,9 +294,6 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # ICMS Simples Nacional
     # =========================================================================
-    tax_simples_id = fields.Many2one(
-        'account.tax', help=u"Alíquota utilizada no Simples Nacional",
-        string=u"Alíquota Simples", domain=[('domain', '=', 'simples')])
     icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
     icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
     icms_valor_credito = fields.Float(
@@ -505,7 +500,7 @@ class AccountInvoiceLine(models.Model):
 
         self.invoice_line_tax_ids = self.tax_icms_id | self.tax_icms_st_id | \
             self.tax_icms_inter_id | self.tax_icms_intra_id | \
-            self.tax_icms_fcp_id | self.tax_simples_id | self.tax_ipi_id | \
+            self.tax_icms_fcp_id | self.tax_ipi_id | \
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
             self.tax_ii_id | self.tax_csll_id | self.tax_irrf_id | \
             self.tax_inss_id
@@ -556,7 +551,7 @@ class AccountInvoiceLine(models.Model):
         self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
-            self.tax_simples_id | self.tax_ipi_id | self.tax_pis_id | \
+            self.tax_ipi_id | self.tax_pis_id | \
             self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id | \
             self.tax_csll_id | self.tax_irrf_id | self.tax_inss_id
 
@@ -582,10 +577,6 @@ class AccountInvoiceLine(models.Model):
 
     @api.onchange('tax_icms_fcp_id')
     def _onchange_tax_icms_fcp_id(self):
-        self._update_invoice_line_ids()
-
-    @api.onchange('tax_simples_id')
-    def _onchange_tax_simples_id(self):
         self._update_invoice_line_ids()
 
     @api.onchange('tax_pis_id')

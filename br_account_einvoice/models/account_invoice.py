@@ -201,9 +201,8 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
-        self.action_number()
         for item in self:
-            if item.product_document_id.is_eletronic:
+            if item.product_document_id.eletronic:
                 inv_lines = item.invoice_lines.filtered(
                     lambda x: x.fiscal_type == 'product')
                 edoc_vals = self._prepare_edoc_vals(item, inv_lines)
@@ -211,7 +210,7 @@ class AccountInvoice(models.Model):
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
-            if item.service_document_id.is_eletronic:
+            if item.service_document_id.eletronic:
                 inv_lines = item.invoice_lines.filtered(
                     lambda x: x.fiscal_type == 'service')
                 edoc_vals = self._prepare_edoc_vals(item, inv_lines)
