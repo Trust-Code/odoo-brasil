@@ -17,7 +17,6 @@ class AccountFiscalPositionTaxRule(models.Model):
     sequence = fields.Integer(string=u"Sequência")
     name = fields.Char(string=u"Descrição", size=100)
     domain = fields.Selection([('icms', 'ICMS'),
-                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -102,9 +101,6 @@ class AccountFiscalPosition(models.Model):
     icms_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras ICMS", domain=[('domain', '=', 'icms')])
-    simples_tax_rule_ids = fields.One2many(
-        'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string=u"Regras Simples Nacional", domain=[('domain', '=', 'simples')])
     ipi_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras IPI", domain=[('domain', '=', 'ipi')])

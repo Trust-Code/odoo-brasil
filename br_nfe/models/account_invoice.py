@@ -47,31 +47,6 @@ class AccountInvoice(models.Model):
                                     Duplique a fatura para continuar')
         return super(AccountInvoice, self).action_invoice_draft()
 
-    @api.multi
-    def action_number(self):
-        super(AccountInvoice, self).action_number()
-        if self.product_document_id.code == '55':
-            nfe_inutilized = self.env[
-                'invoice.eletronic.inutilized'].search([
-                    ('serie', '=', self.document_serie_id.id)],
-                    order='numeration_end desc', limit=1)
-            numeration_end = nfe_inutilized.numeration_end
-
-            if self.internal_number <= numeration_end:
-                self.internal_number = nfe_inutilized.numeration_end + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
-
-            nfe = self.env['invoice.eletronic'].search([
-                ('serie', '=', self.document_serie_id.id)
-            ], order='numero desc', limit=1)
-            if self.internal_number <= nfe.numero:
-                self.internal_number = nfe.numero + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
-
-        return True
-
     def action_preview_danfe(self):
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])

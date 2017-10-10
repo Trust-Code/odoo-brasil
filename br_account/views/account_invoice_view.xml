@@ -239,7 +239,6 @@
                                     <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1" />
-                                    <field name="tax_simples_id" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                     <field name="tributos_estimados_federais" />
                                     <field name="tributos_estimados_estaduais" />
                                     <field name="tributos_estimados_municipais" />
