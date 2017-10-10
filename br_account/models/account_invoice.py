@@ -94,16 +94,6 @@ class AccountInvoice(models.Model):
         self.payable_move_line_ids = self.env['account.move.line'].browse(
             list(set(payable_lines)))
 
-    @api.model
-    def _default_fiscal_document(self):
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.fiscal_document_for_product_id
-
-    @api.model
-    def _default_fiscal_document_serie(self):
-        company = self.env['res.company'].browse(self.env.user.company_id.id)
-        return company.document_serie_id.id
-
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
         digits=dp.get_precision('Account'), store=True)
@@ -127,19 +117,22 @@ class AccountInvoice(models.Model):
         u'Série NF Entrada', size=12, readonly=True,
         states={'draft': [('readonly', False)]},
         help=u"Série do número da Nota Fiscal do Fornecedor")
-    document_serie_id = fields.Many2one(
-        'br_account.document.serie', string=u'Série',
-        domain="[('fiscal_document_id', '=', fiscal_document_id),\
+    product_serie_id = fields.Many2one(
+        'br_account.document.serie', string=u'Série produtos',
+        domain="[('fiscal_document_id', '=', product_document_id),\
         ('company_id','=',company_id)]", readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document_serie)
-    fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document', string='Documento', readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=_default_fiscal_document)
-    is_eletronic = fields.Boolean(
-        related='fiscal_document_id.electronic', type='boolean',
-        store=True, string=u'Eletrônico', readonly=True)
+        states={'draft': [('readonly', False)]})
+    product_document_id = fields.Many2one(
+        'br_account.fiscal.document', string='Documento produtos',
+        readonly=True, states={'draft': [('readonly', False)]})
+    service_serie_id = fields.Many2one(
+        'br_account.document.serie', string=u'Série serviços',
+        domain="[('fiscal_document_id', '=', service_document_id),\
+        ('company_id','=',company_id)]", readonly=True,
+        states={'draft': [('readonly', False)]})
+    service_document_id = fields.Many2one(
+        'br_account.fiscal.document', string='Documento serviços',
+        readonly=True, states={'draft': [('readonly', False)]})
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',
         'Documento Fiscal Relacionado', readonly=True,
@@ -272,14 +265,8 @@ class AccountInvoice(models.Model):
     @api.onchange('issuer')
     def _onchange_issuer(self):
         if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
-            self.fiscal_document_id = None
-            self.document_serie_id = None
-
-    @api.onchange('fiscal_document_id')
-    def _onchange_fiscal_document_id(self):
-        series = self.env['br_account.document.serie'].search(
-            [('fiscal_document_id', '=', self.fiscal_document_id.id)])
-        self.document_serie_id = series and series[0].id or False
+            self.product_document_id = None
+            self.product_serie_id = None
 
     @api.onchange('fiscal_position_id')
     def _onchange_br_account_fiscal_position_id(self):
@@ -287,6 +274,15 @@ class AccountInvoice(models.Model):
             self.account_id = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
             self.journal_id = self.fiscal_position_id.journal_id
+
+        self.product_serie_id = self.fiscal_position_id.product_serie_id.id
+        self.product_document_id = \
+            self.fiscal_position_id.product_document_id.id
+
+        self.service_serie_id = self.fiscal_position_id.service_serie_id.id
+        self.service_document_id = \
+            self.fiscal_position_id.service_document_id.id
+
         ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
@@ -411,6 +407,8 @@ class AccountInvoice(models.Model):
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
 
-        res['fiscal_document_id'] = invoice.fiscal_document_id.id
-        res['document_serie_id'] = invoice.document_serie_id.id
+        res['product_document_id'] = invoice.produc5_document_id.id
+        res['product_serie_id'] = invoice.product_serie_id.id
+        res['service_document_id'] = invoice.service_document_id.id
+        res['service_serie_id'] = invoice.service_serie_id.id
         return res

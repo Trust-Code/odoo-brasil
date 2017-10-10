@@ -152,7 +152,7 @@ class TestCartaCorrecao(TransactionCase):
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
+            'product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,

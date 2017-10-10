@@ -50,7 +50,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_number(self):
         super(AccountInvoice, self).action_number()
-        if self.fiscal_document_id.code == '55':
+        if self.product_document_id.code == '55':
             nfe_inutilized = self.env[
                 'invoice.eletronic.inutilized'].search([
                     ('serie', '=', self.document_serie_id.id)],
@@ -83,7 +83,7 @@ class AccountInvoice(models.Model):
         return action
 
     def invoice_print(self):
-        if self.fiscal_document_id.code == '55':
+        if self.product_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)])
             return self.env.ref(
@@ -91,8 +91,8 @@ class AccountInvoice(models.Model):
         else:
             return super(AccountInvoice, self).invoice_print()
 
-    def _prepare_edoc_vals(self, inv):
-        res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
+    def _prepare_edoc_vals(self, inv, inv_lines):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
 
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao

@@ -217,7 +217,7 @@ class TestNFeBrasil(TransactionCase):
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
+            'product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
@@ -227,7 +227,7 @@ class TestNFeBrasil(TransactionCase):
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
             reference_type="none",
-            fiscal_document_id=self.env.ref(
+            product_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,
@@ -294,11 +294,11 @@ class TestNFeBrasil(TransactionCase):
                 invoice.action_preview_danfe()
 
             # Testa a impressão normal quando não é documento eletrônico
-            invoice.fiscal_document_id.code = '00'
+            invoice.product_document_id.code = '00'
             vals_print = invoice.invoice_print()
             self.assertEquals(vals_print['report_name'],
                               'account.report_invoice_with_payments')
-            invoice.fiscal_document_id.code = '55'
+            invoice.product_document_id.code = '55'
 
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
