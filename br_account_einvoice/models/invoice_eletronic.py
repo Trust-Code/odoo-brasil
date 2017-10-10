@@ -207,7 +207,7 @@ class InvoiceEletronic(models.Model):
             @returns list<string> errors
         """
         errors = []
-        if not self.serie.fiscal_document_id:
+        if not self.serie.product_document_id:
             errors.append(u'Nota Fiscal - Tipo de documento fiscal')
         if not self.serie.internal_sequence_id:
             errors.append(u'Nota Fiscal - Número da nota fiscal, \
