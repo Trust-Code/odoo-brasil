@@ -217,7 +217,7 @@ def validate_ie_mg(inscr_est):
     r = re.sub('[^0-9]', '', r)
     r = list(map(int, r))
     r = sum(r)
-    r2 = (r / 10 + 1) * 10
+    r2 = (r // 10 + 1) * 10
     r = r2 - r
 
     if r >= 10:

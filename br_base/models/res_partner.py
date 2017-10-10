@@ -107,6 +107,7 @@ class ResPartner(models.Model):
                 return False
         return True
 
+    @api.depends('state_id', 'is_company')
     @api.constrains('inscr_est')
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,

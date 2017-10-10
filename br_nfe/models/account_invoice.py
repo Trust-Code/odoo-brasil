@@ -77,8 +77,8 @@ class AccountInvoice(models.Model):
             [('invoice_id', '=', self.id)])
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
-        action = self.env['report'].get_action(
-            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+        action = self.env.ref(
+            'br_nfe.report_br_nfe_danfe').report_action(docs)
         action['report_type'] = 'qweb-html'
         return action
 
@@ -86,8 +86,8 @@ class AccountInvoice(models.Model):
         if self.fiscal_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)])
-            return self.env['report'].get_action(
-                docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+            return self.env.ref(
+                'br_nfe.report_br_nfe_danfe').report_action(docs)
         else:
             return super(AccountInvoice, self).invoice_print()
 

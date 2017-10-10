@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ProductPricelist(models.Model):
@@ -38,13 +38,13 @@ class ProductPricelist(models.Model):
         if not pl:
             if p.state_id:
                 pls = self.env['product.pricelist'].search(
-                    [('region_ids.state_ids.id', '=', p.state_id.id),], limit=1)
+                    [('region_ids.state_ids.id', '=', p.state_id.id)], limit=1)
                 pl = pls and pls[0].id
 
         if not pl:
             if p.city_id:
                 pls = self.env['product.pricelist'].search(
-                    [('region_ids.city_ids.id', '=', p.city_id.id),], limit=1)
+                    [('region_ids.city_ids.id', '=', p.city_id.id)], limit=1)
                 pl = pls and pls[0].id
 
         if not pl:

@@ -40,7 +40,7 @@ class TestNFeBrasil(TransactionCase):
             'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
+                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
