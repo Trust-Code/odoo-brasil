@@ -153,8 +153,6 @@ class AccountInvoice(models.Model):
             'state': 'draft',
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'model': invoice.product_document_id.code,
-            'serie': invoice.document_serie_id.id,
-            'serie_documento': invoice.document_serie_id.code,
             'numero': invoice.internal_number,
             'numero_controle': num_controle,
             'numero_nfe': invoice.internal_number,
@@ -202,9 +200,9 @@ class AccountInvoice(models.Model):
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
         for item in self:
-            if item.product_document_id.eletronic:
-                inv_lines = item.invoice_lines.filtered(
-                    lambda x: x.fiscal_type == 'product')
+            if item.product_document_id.electronic:
+                inv_lines = item.invoice_line_ids.filtered(
+                    lambda x: x.product_id.fiscal_type == 'product')
                 edoc_vals = self._prepare_edoc_vals(item, inv_lines)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
@@ -212,7 +210,7 @@ class AccountInvoice(models.Model):
                     eletronic.action_post_validate()
             if item.service_document_id.eletronic:
                 inv_lines = item.invoice_lines.filtered(
-                    lambda x: x.fiscal_type == 'service')
+                    lambda x: x.product_id.fiscal_type == 'service')
                 edoc_vals = self._prepare_edoc_vals(item, inv_lines)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)

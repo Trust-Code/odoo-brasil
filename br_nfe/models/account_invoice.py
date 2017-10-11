@@ -81,6 +81,8 @@ class AccountInvoice(models.Model):
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
+        res['serie'] = inv.fiscal_position_id.product_serie_id.id
+        res['serie_documento'] = inv.fiscal_position_id.product_document_id.id
 
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
