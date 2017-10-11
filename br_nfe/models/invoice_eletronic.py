@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pytrustnfe.nfe import autorizar_nfe
-    from pytrustnfe.nfe import xml_autorizar_nfe
+    # from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
@@ -699,7 +699,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         super(InvoiceEletronic, self).action_post_validate()
         if self.model not in ('55', '65'):
             return
-
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'estado': self.company_id.state_id.ibge_code,
@@ -722,13 +721,14 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(self.id, nfe_values)
 
-        xml_enviar = xml_autorizar_nfe(certificado, **lote)
+        xml_enviar = autorizar_nfe(certificado, **lote)
 
         mensagens_erro = valida_nfe(xml_enviar)
         if mensagens_erro:
             raise UserError(mensagens_erro)
 
-        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
+        self.xml_to_send = base64.encodestring(
+            xml_enviar['sent_xml'].encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi

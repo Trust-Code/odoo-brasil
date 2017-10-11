@@ -107,8 +107,6 @@ class TestEletronicInvoice(TransactionCase):
         self.assertEquals(vals['type'], 'ir.actions.act_window')
         self.assertEquals(vals['res_model'], 'invoice.eletronic')
         self.assertEquals(vals['res_id'], 0)
-        import ipdb
-        ipdb.set_trace()
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
