@@ -18,6 +18,8 @@ class AccountInvoice(models.Model):
 
         res['ambiente_nfse'] = 'homologacao' \
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
+        res['serie'] = inv.fiscal_position_id.service_serie_id.id
+        res['serie_documento'] = inv.fiscal_position_id.service_document_id.id
         return res
 
     def _prepare_edoc_item_vals(self, line):
