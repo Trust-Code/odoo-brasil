@@ -106,9 +106,6 @@ class AccountInvoice(models.Model):
         'account.move.line', string='Payable Move Lines',
         compute='_compute_payables')
 
-    issuer = fields.Selection(
-        [('0', 'Terceiros'), ('1', u'Emissão própria')], 'Emitente',
-        default='1', readonly=True, states={'draft': [('readonly', False)]})
     vendor_number = fields.Char(
         u'Número NF Entrada', size=18, readonly=True,
         states={'draft': [('readonly', False)]},
