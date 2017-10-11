@@ -125,11 +125,6 @@
             <field name="fiscal_position_id" position="replace"></field>
             <field name="reference" position="after">
                 <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'entrada')]" /></field>
-            <field name="date_invoice" position="after">
-                <field name="issuer" />
-                <field name="vendor_number" attrs="{'invisible': [('issuer','=', '1')]}" />
-                <field name="vendor_serie" attrs="{'invisible': [('issuer','=', '1')]}" />
-            </field>
             <field name="partner_bank_id" position="after">
                 <field name="product_document_id" />
                 <field name="product_serie_id" />

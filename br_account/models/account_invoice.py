@@ -106,9 +106,6 @@ class AccountInvoice(models.Model):
         'account.move.line', string='Payable Move Lines',
         compute='_compute_payables')
 
-    issuer = fields.Selection(
-        [('0', 'Terceiros'), ('1', u'Emissão própria')], 'Emitente',
-        default='1', readonly=True, states={'draft': [('readonly', False)]})
     vendor_number = fields.Char(
         u'Número NF Entrada', size=18, readonly=True,
         states={'draft': [('readonly', False)]},
@@ -261,12 +258,6 @@ class AccountInvoice(models.Model):
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
-
-    @api.onchange('issuer')
-    def _onchange_issuer(self):
-        if self.issuer == '0' and self.type in (u'in_invoice', u'in_refund'):
-            self.product_document_id = None
-            self.product_serie_id = None
 
     @api.onchange('fiscal_position_id')
     def _onchange_br_account_fiscal_position_id(self):
