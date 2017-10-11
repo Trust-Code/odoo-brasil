@@ -94,9 +94,26 @@ class TestInutilizacao(TransactionCase):
             'default_credit_account_id': self.revenue_account.id,
         })
 
+        self.fiscal_doc = self.env['br_account.fiscal.document'].create(dict(
+            code='55',
+            electronic=True
+        ))
+
+        self.serie = self.env['br_account.document.serie'].create(dict(
+            code='1',
+            active=True,
+            name='serie teste',
+            fiscal_document_id=self.fiscal_doc.id,
+            fiscal_type='product',
+            company_id=self.main_company.id,
+        ))
+
         self.fpos = self.env['account.fiscal.position'].create({
-            'name': 'Venda'
+            'name': 'Venda',
+            'product_document_id': self.fiscal_doc.id,
+            'product_serie_id': self.serie.id
         })
+
         invoice_line_data = [
             (0, 0,
                 {
@@ -118,24 +135,13 @@ class TestInutilizacao(TransactionCase):
         self.default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
-                'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
-            'invoice_line_ids': invoice_line_data
+            'invoice_line_ids': invoice_line_data,
+            'product_document_id': self.fiscal_doc.id,
+            'product_serie_id': self.serie.id,
         }
-        self.fiscal_doc = self.env['br_account.fiscal.document'].create(dict(
-            code='1',
-        ))
-        self.serie = self.env['br_account.document.serie'].create(dict(
-            code='1',
-            active=True,
-            name='serie teste',
-            fiscal_document_id=self.fiscal_doc.id,
-            fiscal_type='product',
-            company_id=self.main_company.id,
-        ))
 
     def tearDown(self):
         super(TestInutilizacao, self).tearDown()
@@ -219,7 +225,6 @@ class TestInutilizacao(TransactionCase):
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
-            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
