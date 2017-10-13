@@ -153,12 +153,31 @@ class TestNFeBrasil(TransactionCase):
             'default_credit_account_id': self.revenue_account.id,
         })
 
+        self.fiscal_doc = self.env['br_account.fiscal.document'].create(dict(
+            code='55',
+            electronic=True
+        ))
+
+        self.serie = self.env['br_account.document.serie'].create(dict(
+            code='1',
+            active=True,
+            name='serie teste',
+            fiscal_document_id=self.fiscal_doc.id,
+            fiscal_type='product',
+            company_id=self.main_company.id,
+        ))
+
         self.fpos = self.env['account.fiscal.position'].create({
-            'name': 'Venda'
+            'name': 'Venda',
+            'product_document_id': self.fiscal_doc.id,
+            'product_serie_id': self.serie.id
         })
+
         self.fpos_consumo = self.env['account.fiscal.position'].create({
             'name': 'Venda Consumo',
-            'ind_final': '1'
+            'ind_final': '1',
+            'product_document_id': self.fiscal_doc.id,
+            'product_serie_id': self.serie.id
         })
         invoice_line_incomplete = [
             (0, 0,
@@ -222,7 +241,8 @@ class TestNFeBrasil(TransactionCase):
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
-            'invoice_line_ids': invoice_line_data
+            'invoice_line_ids': invoice_line_data,
+            'product_serie_id': self.serie.id,
         }
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
@@ -232,7 +252,9 @@ class TestNFeBrasil(TransactionCase):
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,
             account_id=self.receivable_account.id,
-            invoice_line_ids=invoice_line_incomplete
+            invoice_line_ids=invoice_line_incomplete,
+            product_serie_id=self.serie.id,
+            fiscal_position_id=self.fpos.id,
         ))
 
         self.invoices = self.env['account.invoice'].create(dict(
@@ -296,7 +318,7 @@ class TestNFeBrasil(TransactionCase):
             # Testa a impressão normal quando não é documento eletrônico
             invoice.product_document_id.code = '00'
             vals_print = invoice.invoice_print()
-            self.assertEquals(vals_print['report_name'],
+            self.assertEquals(vals_print['context']['default_report_name'],
                               'account.report_invoice_with_payments')
             invoice.product_document_id.code = '55'
 
@@ -304,14 +326,13 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_invoice_open()
 
             danfe = invoice.action_preview_danfe()
-            self.assertEquals(
-                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
+            self.assertEquals(danfe['context']['default_report_name'],
+                              'br_nfe.main_template_br_nfe_danfe')
             self.assertEquals(danfe['report_type'], 'qweb-html')
 
             danfe = invoice.invoice_print()
-            self.assertEquals(
-                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
-            self.assertEquals(danfe['report_type'], 'qweb-pdf')
+            self.assertEquals(danfe['context']['default_report_name'],
+                              'br_nfe.main_template_br_nfe_danfe')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     def test_check_invoice_eletronic_values(self, validar):
@@ -415,7 +436,7 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.codigo_retorno, '694')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento') # noqa
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')  # noqa
     def test_nfe_cancelamento_ok(self, cancelar, validar):
         validar.return_value = ''
         for invoice in self.invoices:
