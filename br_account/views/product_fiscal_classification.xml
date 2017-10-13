@@ -9,9 +9,10 @@
                 <group name="general">
                     <group>
                         <field name="code"/>
+                        <field name="category"/>
                         <field name="name"/>
-                        <field name="type"/>
-                        <field name="parent_id"/>
+                        <field name="unidade_tributacao"/>
+                        <field name="descricao_unidade"/>
                         <field name="company_id"/>
                     </group>
                     <group>
@@ -47,8 +48,8 @@
         <field name="arch" type="xml">
             <tree string="Classificações Fiscais (NCM)">
                 <field name="code"/>
+                <field name="category"/>
                 <field name="name"/>
-                <field name="type"/>
                 <field name="federal_nacional" />
                 <field name="federal_importado" />
                 <field name="estadual_imposto" />
