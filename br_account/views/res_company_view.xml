@@ -17,10 +17,6 @@
                                 <field name="accountant_id" nolabel="1" />
                             </group>
                         </group>
-                        <group  string="Séries de Documentos Fiscais">
-                            <field name="fiscal_document_for_product_id" />
-                            <field name="document_serie_id" />
-                        </group>
                         <group name="cnae" string="CNAE">
                             <field name="cnae_main_id"/>
                         </group>

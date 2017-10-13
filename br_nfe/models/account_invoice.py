@@ -66,9 +66,24 @@ class AccountInvoice(models.Model):
         else:
             return super(AccountInvoice, self).invoice_print()
 
+    def action_number(self, serie_id):
+        inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
+            ('serie', '=', serie_id.id)], order='numeration_end desc', limit=1)
+
+        if not inv_inutilized:
+            return serie_id.internal_sequence_id.next_by_id()
+
+        if inv_inutilized.numeration_end >= \
+                serie_id.internal_sequence_id.number_next_actual:
+            serie_id.internal_sequence_id.write(
+                {'number_next_actual': inv_inutilized.numeration_end + 1})
+            return serie_id.internal_sequence_id.next_by_id()
+
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
 
+        numero_nfe = self.action_number(
+            inv.fiscal_position_id.product_serie_id)
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
@@ -84,7 +99,9 @@ class AccountInvoice(models.Model):
         res['serie'] = inv.fiscal_position_id.product_serie_id.code
         res['serie_documento'] = inv.fiscal_position_id.product_document_id.id
         res['model'] = inv.fiscal_position_id.product_document_id.code
-
+        res['numero_nfe'] = numero_nfe
+        res['numero'] = numero_nfe
+        res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
 
