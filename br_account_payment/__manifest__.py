@@ -8,7 +8,7 @@
     no Odoo - Mantido por Trustcode""",
     'description': """Facilita a visualização de parcelas a pagar e receber
     no Odoo - Mantido por Trustcode""",
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Invoicing & Payments',
     'author': 'Trustcode',
     'license': 'AGPL-3',
