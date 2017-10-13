@@ -12,12 +12,6 @@
             <tree name="vencimentos" position="inside">
                 <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"/>
             </tree>
-            <field name="date_maturity" position="before">
-                <field name="payment_mode_id" />
-            </field>
-            <field name="payment_term_id" position="after">
-                <field name="payment_mode_id" />
-            </field>
         </field>
     </record>
 
