@@ -105,9 +105,26 @@ class TestNFeBrasil(TransactionCase):
             'default_credit_account_id': self.revenue_account.id,
         })
 
+        self.fiscal_doc = self.env['br_account.fiscal.document'].create(dict(
+            code='001',
+            electronic=True
+        ))
+
+        self.serie = self.env['br_account.document.serie'].create(dict(
+            code='1',
+            active=True,
+            name='serie teste',
+            fiscal_document_id=self.fiscal_doc.id,
+            fiscal_type='product',
+            company_id=self.main_company.id,
+        ))
+
         self.fpos = self.env['account.fiscal.position'].create({
-            'name': 'Venda'
+            'name': 'Venda',
+            'service_document_id': self.fiscal_doc.id,
+            'service_serie_id': self.serie.id
         })
+
         invoice_line_data = [
             (0, 0,
                 {

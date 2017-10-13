@@ -205,7 +205,7 @@ class AccountInvoice(models.Model):
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
             if item.service_document_id.electronic:
-                inv_lines = item.invoice_lines.filtered(
+                inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'service')
                 edoc_vals = self._prepare_edoc_vals(item, inv_lines)
                 if edoc_vals:
