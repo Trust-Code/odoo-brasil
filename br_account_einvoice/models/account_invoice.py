@@ -148,12 +148,10 @@ class AccountInvoice(models.Model):
         vals = {
             'invoice_id': invoice.id,
             'code': invoice.number,
-            'name': u'Documento Eletrônico: nº %d' % invoice.internal_number,
             'company_id': invoice.company_id.id,
             'state': 'draft',
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'numero_controle': num_controle,
-            'numero_nfe': invoice.internal_number,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',

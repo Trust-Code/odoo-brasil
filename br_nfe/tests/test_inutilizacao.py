@@ -185,12 +185,11 @@ class TestInutilizacao(TransactionCase):
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
-            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
-        self.assertEqual(inv_eletr.numero, 6)
+        self.assertEqual(inv_eletr.numero_nfe, '6')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
@@ -229,7 +228,7 @@ class TestInutilizacao(TransactionCase):
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
-        self.assertEqual(inv_eletr.numero, 10)
+        self.assertEqual(inv_eletr.numero_nfe, '10')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
@@ -265,12 +264,11 @@ class TestInutilizacao(TransactionCase):
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
-            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
-        self.assertEqual(inv_eletr.numero, 6)
+        self.assertEqual(inv_eletr.numero_nfe, '6')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     def test_inutilizacao_wrong_sqnc(self, validar):
@@ -285,7 +283,6 @@ class TestInutilizacao(TransactionCase):
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
-            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
@@ -360,7 +357,6 @@ class TestInutilizacao(TransactionCase):
         invoice = self.env['account.invoice'].create(dict(
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
-            document_serie_id=self.serie.id
         ))
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
