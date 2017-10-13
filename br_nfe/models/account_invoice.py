@@ -67,6 +67,10 @@ class AccountInvoice(models.Model):
             return super(AccountInvoice, self).invoice_print()
 
     def action_number(self, serie_id):
+
+        if not serie_id:
+            return
+
         inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
             ('serie', '=', serie_id.id)], order='numeration_end desc', limit=1)
 
