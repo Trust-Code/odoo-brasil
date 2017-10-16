@@ -202,7 +202,9 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao') # noqa
+    # noqa
+    @patch('odoo.addons.br_nfe.wizard \
+    .carta_correcao_eletronica.recepcao_evento_carta_correcao')
     def test_carta_correca_eletronica(self, recepcao):
         # Mock o retorno da CCE
         xml_recebido = open(os.path.join(
