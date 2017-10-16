@@ -195,74 +195,73 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        if self.model not in ('55', '65'):
-            super(InvoiceEletronic, self).action_send_eletronic_invoice()
-            if self.model != '010' or self.state in ('done', 'cancel'):
-                return
+        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+        if self.model != '010' or self.state in ('done', 'cancel'):
+            return
 
-            self.state = 'error'
+        self.state = 'error'
 
-            recebe_lote = ret_consulta = None
+        recebe_lote = ret_consulta = None
 
-            xml_to_send = base64.decodestring(self.xml_to_send)
-            recebe_lote = processa_rps(
-                None, xml=xml_to_send, ambiente=self.ambiente_nfse)
+        xml_to_send = base64.decodestring(self.xml_to_send)
+        recebe_lote = processa_rps(
+            None, xml=xml_to_send, ambiente=self.ambiente_nfse)
 
-            retorno = recebe_lote['object'].Body['ws_nfe.PROCESSARPSResponse']
-            retorno = retorno['Sdt_processarpsout']
+        retorno = recebe_lote['object'].Body['ws_nfe.PROCESSARPSResponse']
+        retorno = retorno['Sdt_processarpsout']
 
-            if retorno.Retorno:
-                obj = {
-                    'protocolo': retorno.Protocolo,
-                    'codigo_usuario': self.company_id.codigo_nfse_usuario,
-                    'codigo_contribuinte': self.company_id.codigo_nfse_empresa,
-                }
-                self.recibo_nfe = retorno.Protocolo
-                while True:
-                    time.sleep(2)
-                    ret_consulta = consulta_protocolo(
-                        None, ambiente=self.ambiente_nfse, consulta=obj)
-
-                    retorno = ret_consulta['object'].Body
-                    retorno = retorno['ws_nfe.CONSULTAPROTOCOLOResponse']
-                    retorno = retorno['Sdt_consultaprotocoloout']
-                    if retorno.PrtXSts in (3, 4, 5):
-                        break
-
-                ret_consulta = consulta_notas_protocolo(
+        if retorno.Retorno:
+            obj = {
+                'protocolo': retorno.Protocolo,
+                'codigo_usuario': self.company_id.codigo_nfse_usuario,
+                'codigo_contribuinte': self.company_id.codigo_nfse_empresa,
+            }
+            self.recibo_nfe = retorno.Protocolo
+            while True:
+                time.sleep(2)
+                ret_consulta = consulta_protocolo(
                     None, ambiente=self.ambiente_nfse, consulta=obj)
 
                 retorno = ret_consulta['object'].Body
-                retorno = retorno['ws_nfe.CONSULTANOTASPROTOCOLOResponse']
-                retorno = retorno['Sdt_consultanotasprotocoloout']
+                retorno = retorno['ws_nfe.CONSULTAPROTOCOLOResponse']
+                retorno = retorno['Sdt_consultaprotocoloout']
+                if retorno.PrtXSts in (3, 4, 5):
+                    break
 
-                if retorno.Retorno:
-                    self.state = 'done'
-                    self.codigo_retorno = '100'
-                    self.mensagem_retorno = 'NFSe emitida com sucesso'
-                    self.numero_nfse = retorno.XML_Notas.Reg20.Reg20Item.NumNf
-                    self.verify_code = \
-                        retorno.XML_Notas.Reg20.Reg20Item.CodVernf
-                else:
-                    self.codigo_retorno = '-1'
-                    self.mensagem_retorno = \
-                        retorno.Messages.Message[1].Description
+            ret_consulta = consulta_notas_protocolo(
+                None, ambiente=self.ambiente_nfse, consulta=obj)
 
+            retorno = ret_consulta['object'].Body
+            retorno = retorno['ws_nfe.CONSULTANOTASPROTOCOLOResponse']
+            retorno = retorno['Sdt_consultanotasprotocoloout']
+
+            if retorno.Retorno:
+                self.state = 'done'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = 'NFSe emitida com sucesso'
+                self.numero_nfse = retorno.XML_Notas.Reg20.Reg20Item.NumNf
+                self.verify_code = \
+                    retorno.XML_Notas.Reg20.Reg20Item.CodVernf
             else:
-                self.codigo_retorno = -1
-                self.mensagem_retorno = retorno.Messages[0].Message.Description
+                self.codigo_retorno = '-1'
+                self.mensagem_retorno = \
+                    retorno.Messages.Message[1].Description
 
-            self.env['invoice.eletronic.event'].create({
-                'code': self.codigo_retorno,
-                'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
-            })
-            if recebe_lote:
-                self._create_attachment(
-                    'nfse-ret', self, recebe_lote['received_xml'])
-            if ret_consulta:
-                self._create_attachment(
-                    'nfse-prot', self, ret_consulta['received_xml'])
+        else:
+            self.codigo_retorno = -1
+            self.mensagem_retorno = retorno.Messages[0].Message.Description
+
+        self.env['invoice.eletronic.event'].create({
+            'code': self.codigo_retorno,
+            'name': self.mensagem_retorno,
+            'invoice_eletronic_id': self.id,
+        })
+        if recebe_lote:
+            self._create_attachment(
+                'nfse-ret', self, recebe_lote['received_xml'])
+        if ret_consulta:
+            self._create_attachment(
+                'nfse-prot', self, ret_consulta['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
