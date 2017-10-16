@@ -192,29 +192,30 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '009' and self.state not in ('done', 'cancel'):
-            self.state = 'error'
-            xml_to_send = base64.decodestring(self.xml_to_send)
-            resposta = enviar_nota_retorna_url(
-                xml=xml_to_send, ambiente=self.ambiente)
+        if self.model not in ('55', '65'):
+            super(InvoiceEletronic, self).action_send_eletronic_invoice()
+            if self.model == '009' and self.state not in ('done', 'cancel'):
+                self.state = 'error'
+                xml_to_send = base64.decodestring(self.xml_to_send)
+                resposta = enviar_nota_retorna_url(
+                    xml=xml_to_send, ambiente=self.ambiente)
 
-            codigo, mensagem = resposta['received_xml'].split('-')
-            if codigo == '1':
-                self.state = 'done'
-                self.codigo_retorno = '1'
-                self.mensagem_retorno = \
-                    'Nota Fiscal Digital emitida com sucesso'
-                self.url_danfe = mensagem
-            else:
-                self.codigo_retorno = codigo
-                self.mensagem_retorno = mensagem
+                codigo, mensagem = resposta['received_xml'].split('-')
+                if codigo == '1':
+                    self.state = 'done'
+                    self.codigo_retorno = '1'
+                    self.mensagem_retorno = \
+                        'Nota Fiscal Digital emitida com sucesso'
+                    self.url_danfe = mensagem
+                else:
+                    self.codigo_retorno = codigo
+                    self.mensagem_retorno = mensagem
 
-            self.env['invoice.eletronic.event'].create({
-                'code': self.codigo_retorno,
-                'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
-            })
+                self.env['invoice.eletronic.event'].create({
+                    'code': self.codigo_retorno,
+                    'name': self.mensagem_retorno,
+                    'invoice_eletronic_id': self.id,
+                })
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
