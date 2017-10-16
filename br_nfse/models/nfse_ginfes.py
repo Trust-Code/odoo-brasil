@@ -220,104 +220,103 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        if self.model not in ('55', '65'):
-            super(InvoiceEletronic, self).action_send_eletronic_invoice()
-            if self.model == '002' and self.state not in ('done', 'cancel'):
-                self.state = 'error'
+        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+        if self.model == '002' and self.state not in ('done', 'cancel'):
+            self.state = 'error'
 
-                cert = self.company_id.with_context(
-                    {'bin_size': False}).nfe_a1_file
-                cert_pfx = base64.decodestring(cert)
+            cert = self.company_id.with_context(
+                {'bin_size': False}).nfe_a1_file
+            cert_pfx = base64.decodestring(cert)
 
-                certificado = Certificado(
-                    cert_pfx, self.company_id.nfe_a1_password)
+            certificado = Certificado(
+                cert_pfx, self.company_id.nfe_a1_password)
 
-                consulta_lote = None
-                recebe_lote = None
+            consulta_lote = None
+            recebe_lote = None
 
-                # Envia o lote apenas se não existir protocolo
-                if not self.recibo_nfe:
-                    xml_to_send = base64.decodestring(self.xml_to_send)
-                    recebe_lote = recepcionar_lote_rps(
-                        certificado, xml=xml_to_send, ambiente=self.ambiente)
+            # Envia o lote apenas se não existir protocolo
+            if not self.recibo_nfe:
+                xml_to_send = base64.decodestring(self.xml_to_send)
+                recebe_lote = recepcionar_lote_rps(
+                    certificado, xml=xml_to_send, ambiente=self.ambiente)
 
-                    retorno = recebe_lote['object']
-                    if "NumeroLote" in dir(retorno):
-                        self.recibo_nfe = retorno.Protocolo
-                        # Espera alguns segundos antes de consultar
-                        time.sleep(5)
+                retorno = recebe_lote['object']
+                if "NumeroLote" in dir(retorno):
+                    self.recibo_nfe = retorno.Protocolo
+                    # Espera alguns segundos antes de consultar
+                    time.sleep(5)
+                else:
+                    mensagem_retorno = retorno.ListaMensagemRetorno\
+                        .MensagemRetorno
+                    self.codigo_retorno = mensagem_retorno.Codigo
+                    self.mensagem_retorno = mensagem_retorno.Mensagem
+                    self._create_attachment(
+                        'nfse-ret', self, recebe_lote['received_xml'])
+                    return
+            # Monta a consulta de situação do lote
+            # 1 - Não Recebido
+            # 2 - Não processado
+            # 3 - Processado com erro
+            # 4 - Processado com sucesso
+            obj = {
+                'cnpj_prestador': re.sub(
+                    '[^0-9]', '', self.company_id.cnpj_cpf),
+                'inscricao_municipal': re.sub(
+                    '[^0-9]', '', self.company_id.inscr_mun),
+                'protocolo': self.recibo_nfe,
+            }
+            consulta_situacao = consultar_situacao_lote(
+                certificado, consulta=obj, ambiente=self.ambiente)
+            ret_rec = consulta_situacao['object']
+
+            if "Situacao" in dir(ret_rec):
+                if ret_rec.Situacao in (3, 4):
+
+                    consulta_lote = consultar_lote_rps(
+                        certificado, consulta=obj, ambiente=self.ambiente)
+                    retLote = consulta_lote['object']
+
+                    if "ListaNfse" in dir(retLote):
+                        self.state = 'done'
+                        self.codigo_retorno = '100'
+                        self.mensagem_retorno = 'NFSe emitida com sucesso'
+                        self.verify_code = retLote.ListaNfse.CompNfse \
+                            .Nfse.InfNfse.CodigoVerificacao
+                        self.numero_nfse = \
+                            retLote.ListaNfse.CompNfse.Nfse.InfNfse.Numero
                     else:
-                        mensagem_retorno = retorno.ListaMensagemRetorno\
+                        mensagem_retorno = retLote.ListaMensagemRetorno \
                             .MensagemRetorno
                         self.codigo_retorno = mensagem_retorno.Codigo
                         self.mensagem_retorno = mensagem_retorno.Mensagem
-                        self._create_attachment(
-                            'nfse-ret', self, recebe_lote['received_xml'])
-                        return
-                # Monta a consulta de situação do lote
-                # 1 - Não Recebido
-                # 2 - Não processado
-                # 3 - Processado com erro
-                # 4 - Processado com sucesso
-                obj = {
-                    'cnpj_prestador': re.sub(
-                        '[^0-9]', '', self.company_id.cnpj_cpf),
-                    'inscricao_municipal': re.sub(
-                        '[^0-9]', '', self.company_id.inscr_mun),
-                    'protocolo': self.recibo_nfe,
-                }
-                consulta_situacao = consultar_situacao_lote(
-                    certificado, consulta=obj, ambiente=self.ambiente)
-                ret_rec = consulta_situacao['object']
 
-                if "Situacao" in dir(ret_rec):
-                    if ret_rec.Situacao in (3, 4):
-
-                        consulta_lote = consultar_lote_rps(
-                            certificado, consulta=obj, ambiente=self.ambiente)
-                        retLote = consulta_lote['object']
-
-                        if "ListaNfse" in dir(retLote):
-                            self.state = 'done'
-                            self.codigo_retorno = '100'
-                            self.mensagem_retorno = 'NFSe emitida com sucesso'
-                            self.verify_code = retLote.ListaNfse.CompNfse \
-                                .Nfse.InfNfse.CodigoVerificacao
-                            self.numero_nfse = \
-                                retLote.ListaNfse.CompNfse.Nfse.InfNfse.Numero
-                        else:
-                            mensagem_retorno = retLote.ListaMensagemRetorno \
-                                .MensagemRetorno
-                            self.codigo_retorno = mensagem_retorno.Codigo
-                            self.mensagem_retorno = mensagem_retorno.Mensagem
-
-                    elif ret_rec.Situacao == 1:  # Reenviar caso não recebido
-                        self.codigo_retorno = ''
-                        self.mensagem_retorno = 'Aguardando envio'
-                        self.state = 'draft'
-                    else:
-                        self.state = 'waiting'
-                        self.codigo_retorno = '2'
-                        self.mensagem_retorno = 'Lote aguardando processamento'
+                elif ret_rec.Situacao == 1:  # Reenviar caso não recebido
+                    self.codigo_retorno = ''
+                    self.mensagem_retorno = 'Aguardando envio'
+                    self.state = 'draft'
                 else:
-                    self.codigo_retorno = \
-                        ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
-                    self.mensagem_retorno = \
-                        ret_rec.ListaMensagemRetorno.MensagemRetorno.Mensagem
+                    self.state = 'waiting'
+                    self.codigo_retorno = '2'
+                    self.mensagem_retorno = 'Lote aguardando processamento'
+            else:
+                self.codigo_retorno = \
+                    ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
+                self.mensagem_retorno = \
+                    ret_rec.ListaMensagemRetorno.MensagemRetorno.Mensagem
 
-                self.env['invoice.eletronic.event'].create({
-                    'code': self.codigo_retorno,
-                    'name': self.mensagem_retorno,
-                    'invoice_eletronic_id': self.id,
-                })
-                if recebe_lote:
-                    self._create_attachment(
-                        'nfse-ret', self, recebe_lote['received_xml'])
-                if consulta_lote:
-                    self._create_attachment(
-                        'rec', self, consulta_lote['sent_xml'])
-                    self._create_attachment(
-                        'rec-ret', self, consulta_lote['received_xml'])
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            if recebe_lote:
+                self._create_attachment(
+                    'nfse-ret', self, recebe_lote['received_xml'])
+            if consulta_lote:
+                self._create_attachment(
+                    'rec', self, consulta_lote['sent_xml'])
+                self._create_attachment(
+                    'rec-ret', self, consulta_lote['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):

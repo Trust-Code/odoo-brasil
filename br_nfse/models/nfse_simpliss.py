@@ -185,45 +185,44 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_send_eletronic_invoice(self):
-        if self.model not in ('55', '65'):
-            super(InvoiceEletronic, self).action_send_eletronic_invoice()
-            if self.model == '008' and self.state not in ('done', 'cancel'):
-                self.state = 'error'
+        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+        if self.model == '008' and self.state not in ('done', 'cancel'):
+            self.state = 'error'
 
-                recebe_lote = None
+            recebe_lote = None
 
-                xml_to_send = base64.decodestring(self.xml_to_send)
-                recebe_lote = gerar_nfse(
-                    None, xml=xml_to_send, ambiente=self.ambiente)
+            xml_to_send = base64.decodestring(self.xml_to_send)
+            recebe_lote = gerar_nfse(
+                None, xml=xml_to_send, ambiente=self.ambiente)
 
-                retorno = recebe_lote['object']
-                retorno = retorno.Body.GerarNfseResponse
-                retorno = retorno.getchildren()[0]
+            retorno = recebe_lote['object']
+            retorno = retorno.Body.GerarNfseResponse
+            retorno = retorno.getchildren()[0]
 
-                if "NovaNfse" in dir(retorno):
-                    self.state = 'done'
-                    self.codigo_retorno = '100'
-                    self.mensagem_retorno = 'NFSe emitida com sucesso'
-                    self.verify_code = \
-                        retorno.NovaNfse.IdentificacaoNfse.CodigoVerificacao
-                    self.numero_nfse = \
-                        retorno.NovaNfse.IdentificacaoNfse.Numero
-                    self.url_danfe = \
-                        retorno.NovaNfse.IdentificacaoNfse.Link
-                else:
-                    self.codigo_retorno = \
-                        retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
-                    self.mensagem_retorno = retorno.ListaMensagemRetorno.\
-                        MensagemRetorno.Mensagem
+            if "NovaNfse" in dir(retorno):
+                self.state = 'done'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = 'NFSe emitida com sucesso'
+                self.verify_code = \
+                    retorno.NovaNfse.IdentificacaoNfse.CodigoVerificacao
+                self.numero_nfse = \
+                    retorno.NovaNfse.IdentificacaoNfse.Numero
+                self.url_danfe = \
+                    retorno.NovaNfse.IdentificacaoNfse.Link
+            else:
+                self.codigo_retorno = \
+                    retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
+                self.mensagem_retorno = retorno.ListaMensagemRetorno.\
+                    MensagemRetorno.Mensagem
 
-                self.env['invoice.eletronic.event'].create({
-                    'code': self.codigo_retorno,
-                    'name': self.mensagem_retorno,
-                    'invoice_eletronic_id': self.id,
-                })
-                if recebe_lote:
-                    self._create_attachment(
-                        'nfse-ret', self, recebe_lote['received_xml'])
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            if recebe_lote:
+                self._create_attachment(
+                    'nfse-ret', self, recebe_lote['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
