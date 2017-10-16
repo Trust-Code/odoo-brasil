@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {  # pylint: disable=C8101,C8103
-    'name': 'Brazilian Localization Purchase and Warehouse',
-    'description': 'Brazilian Localization Purchase and Warehouse Link',
+    'name': 'Brazilian Localization Sale Payment',
+    'description': 'Brazilian Localization for Sale Payment',
     'category': 'Localisation',
     'license': 'AGPL-3',
     'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
     'version': '11.0.1.0.0',
+    'contributors': [
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+    ],
     'depends': [
-        'br_purchase', 'br_stock_account'
+        'sale', 'br_account_payment',
     ],
     'data': [
-        'views/purchase_stock_view.xml',
+        'views/sale_order.xml',
     ],
-    'auto_install': True,
+    'auto_install': True
 }

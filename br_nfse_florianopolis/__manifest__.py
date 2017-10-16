@@ -2,11 +2,11 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Exportação XML NFS-e - Florianópolis',
     'description': "Realiza a exportação em xml das notas fiscais de serviço",
     'summary': "Realiza a exportação em xml das notas fiscais de serviço",
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': "Accounting & Finance",
     'author': 'Trustcode',
     'license': 'AGPL-3',
