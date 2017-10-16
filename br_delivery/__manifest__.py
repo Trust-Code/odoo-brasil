@@ -10,7 +10,7 @@
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'depends': [
         'br_sale_stock',
         'delivery',
