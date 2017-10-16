@@ -146,6 +146,7 @@ class AccountInvoice(models.Model):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         vals = {
+            'name': invoice.name,
             'invoice_id': invoice.id,
             'code': invoice.number,
             'company_id': invoice.company_id.id,
