@@ -11,13 +11,12 @@ class ProductFiscalClassification(models.Model):
     _name = 'product.fiscal.classification'
     _description = u'Classificações Fiscais (NCM)'
 
-    code = fields.Char(string=u"Código", size=14)
-    name = fields.Char(string="Nome", size=200)
+    code = fields.Char(string="Código", size=14)
+    category = fields.Char(string="Categoria", size=14)
+    name = fields.Char(string="Nome", size=300)
     company_id = fields.Many2one('res.company', string="Empresa")
-    type = fields.Selection([('view', u'Visão'),
-                             ('normal', 'Normal'),
-                             ('extension', u'Extensão')], 'Tipo')
-    parent_id = fields.Many2one('product.fiscal.classification', string="Pai")
+    unidade_tributacao = fields.Char(string="Unidade Tributável", size=4)
+    descricao_unidade = fields.Char(string="Descrição Unidade", size=20)
     cest = fields.Char(string="CEST", size=10,
                        help=u"Código Especificador da Substituição Tributária")
     federal_nacional = fields.Float(u'Imposto Fed. Sobre Produto Nacional')
