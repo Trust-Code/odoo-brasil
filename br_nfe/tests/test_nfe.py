@@ -318,7 +318,7 @@ class TestNFeBrasil(TransactionCase):
             # Testa a impressão normal quando não é documento eletrônico
             invoice.product_document_id.code = '00'
             vals_print = invoice.invoice_print()
-            self.assertEquals(vals_print['context']['default_report_name'],
+            self.assertEquals(vals_print['report_name'],
                               'account.report_invoice_with_payments')
             invoice.product_document_id.code = '55'
 
@@ -326,12 +326,12 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_invoice_open()
 
             danfe = invoice.action_preview_danfe()
-            self.assertEquals(danfe['context']['default_report_name'],
+            self.assertEquals(danfe['report_name'],
                               'br_nfe.main_template_br_nfe_danfe')
             self.assertEquals(danfe['report_type'], 'qweb-html')
 
             danfe = invoice.invoice_print()
-            self.assertEquals(danfe['context']['default_report_name'],
+            self.assertEquals(danfe['report_name'],
                               'br_nfe.main_template_br_nfe_danfe')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
