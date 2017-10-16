@@ -75,7 +75,11 @@
             <field name="amount_tax" position="before">
                 <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
                 <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
-                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}" />
+
+                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                    <label for="total_tax"/>
+                </div>
+                <field name="total_tax" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
