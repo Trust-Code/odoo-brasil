@@ -47,31 +47,6 @@ class AccountInvoice(models.Model):
                                     Duplique a fatura para continuar')
         return super(AccountInvoice, self).action_invoice_draft()
 
-    @api.multi
-    def action_number(self):
-        super(AccountInvoice, self).action_number()
-        if self.fiscal_document_id.code == '55':
-            nfe_inutilized = self.env[
-                'invoice.eletronic.inutilized'].search([
-                    ('serie', '=', self.document_serie_id.id)],
-                    order='numeration_end desc', limit=1)
-            numeration_end = nfe_inutilized.numeration_end
-
-            if self.internal_number <= numeration_end:
-                self.internal_number = nfe_inutilized.numeration_end + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
-
-            nfe = self.env['invoice.eletronic'].search([
-                ('serie', '=', self.document_serie_id.id)
-            ], order='numero desc', limit=1)
-            if self.internal_number <= nfe.numero:
-                self.internal_number = nfe.numero + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
-
-        return True
-
     def action_preview_danfe(self):
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])
@@ -83,7 +58,7 @@ class AccountInvoice(models.Model):
         return action
 
     def invoice_print(self):
-        if self.fiscal_document_id.code == '55':
+        if self.product_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)])
             return self.env.ref(
@@ -91,9 +66,28 @@ class AccountInvoice(models.Model):
         else:
             return super(AccountInvoice, self).invoice_print()
 
-    def _prepare_edoc_vals(self, inv):
-        res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
+    def action_number(self, serie_id):
 
+        if not serie_id:
+            return
+
+        inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
+            ('serie', '=', serie_id.id)], order='numeration_end desc', limit=1)
+
+        if not inv_inutilized:
+            return serie_id.internal_sequence_id.next_by_id()
+
+        if inv_inutilized.numeration_end >= \
+                serie_id.internal_sequence_id.number_next_actual:
+            serie_id.internal_sequence_id.write(
+                {'number_next_actual': inv_inutilized.numeration_end + 1})
+            return serie_id.internal_sequence_id.next_by_id()
+
+    def _prepare_edoc_vals(self, inv, inv_lines):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
+
+        numero_nfe = self.action_number(
+            inv.fiscal_position_id.product_serie_id)
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
@@ -106,7 +100,12 @@ class AccountInvoice(models.Model):
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
-
+        res['serie'] = inv.fiscal_position_id.product_serie_id.code
+        res['serie_documento'] = inv.fiscal_position_id.product_document_id.id
+        res['model'] = inv.fiscal_position_id.product_document_id.code
+        res['numero_nfe'] = numero_nfe
+        res['numero'] = numero_nfe
+        res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
 

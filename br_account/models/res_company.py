@@ -21,9 +21,6 @@ class ResCompany(models.Model):
     fiscal_document_for_product_id = fields.Many2one(
         'br_account.fiscal.document', "Documento Fiscal para produto")
 
-    document_serie_id = fields.Many2one(
-        'br_account.document.serie', u'Série Fiscal',
-        domain="[('company_id', '=', active_id),('active','=',True)]")
     annual_revenue = fields.Float(
         'Faturamento Anual', required=True,
         digits=dp.get_precision('Account'), default=0.00,

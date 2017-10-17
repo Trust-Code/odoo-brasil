@@ -30,7 +30,7 @@ class AccountInvoice(models.Model):
         'invoice.eletronic', 'invoice_id',
         u'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
-        string="Modelo de Fatura", related="fiscal_document_id.code",
+        string="Modelo de Fatura", related="product_document_id.code",
         readonly=True)
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
@@ -60,20 +60,6 @@ class AccountInvoice(models.Model):
                 'br_account_einvoice', 'action_sped_base_eletronic_doc')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
-
-    @api.multi
-    def action_number(self):
-        for invoice in self:
-            if invoice.is_eletronic:
-                if not invoice.document_serie_id.internal_sequence_id.id:
-                    raise UserError(
-                        u'Configure a sequência para a numeração da nota')
-
-                seq_number = \
-                    invoice.document_serie_id.internal_sequence_id.next_by_id()
-                self.write(
-                    {'internal_number': seq_number})
-        return True
 
     def _prepare_edoc_item_vals(self, line):
         vals = {
@@ -156,22 +142,17 @@ class AccountInvoice(models.Model):
         }
         return vals
 
-    def _prepare_edoc_vals(self, invoice):
+    def _prepare_edoc_vals(self, invoice, inv_lines):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         vals = {
+            'name': invoice.name,
             'invoice_id': invoice.id,
             'code': invoice.number,
-            'name': u'Documento Eletrônico: nº %d' % invoice.internal_number,
             'company_id': invoice.company_id.id,
             'state': 'draft',
             'tipo_operacao': TYPE2EDOC[invoice.type],
-            'model': invoice.fiscal_document_id.code,
-            'serie': invoice.document_serie_id.id,
-            'serie_documento': invoice.document_serie_id.code,
-            'numero': invoice.internal_number,
             'numero_controle': num_controle,
-            'numero_nfe': invoice.internal_number,
             'data_emissao': datetime.now(),
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
@@ -205,7 +186,7 @@ class AccountInvoice(models.Model):
         }
 
         eletronic_items = []
-        for inv_line in invoice.invoice_line_ids:
+        for inv_line in inv_lines:
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 
@@ -215,12 +196,19 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
-        self.action_number()
         for item in self:
-            if item.is_eletronic and\
-                    (item.issuer == '1' or
-                     item.type in ['out_invoice', 'out_refund']):
-                edoc_vals = self._prepare_edoc_vals(item)
+            if item.product_document_id.electronic:
+                inv_lines = item.invoice_line_ids.filtered(
+                    lambda x: x.product_id.fiscal_type == 'product')
+                edoc_vals = self._prepare_edoc_vals(item, inv_lines)
+                if edoc_vals:
+                    eletronic = self.env['invoice.eletronic'].create(edoc_vals)
+                    eletronic.validate_invoice()
+                    eletronic.action_post_validate()
+            if item.service_document_id.electronic:
+                inv_lines = item.invoice_line_ids.filtered(
+                    lambda x: x.product_id.fiscal_type == 'service')
+                edoc_vals = self._prepare_edoc_vals(item, inv_lines)
                 if edoc_vals:
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()

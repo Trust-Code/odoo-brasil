@@ -207,11 +207,11 @@ class InvoiceEletronic(models.Model):
             @returns list<string> errors
         """
         errors = []
-        if not self.serie.fiscal_document_id:
-            errors.append(u'Nota Fiscal - Tipo de documento fiscal')
-        if not self.serie.internal_sequence_id:
-            errors.append(u'Nota Fiscal - Número da nota fiscal, \
-                          a série deve ter uma sequencia interna')
+        # if not self.serie.product_document_id:
+        #     errors.append(u'Nota Fiscal - Tipo de documento fiscal')
+        # if not self.serie.internal_sequence_id:
+        #     errors.append(u'Nota Fiscal - Número da nota fiscal, \
+        #                   a série deve ter uma sequencia interna')
 
         # Emitente
         if not self.company_id.nfe_a1_file:
@@ -389,6 +389,7 @@ class InvoiceEletronic(models.Model):
         if len(errors) > 0:
             msg = u"\n".join(
                 [u"Por favor corrija os erros antes de prosseguir"] + errors)
+            self.unlink()
             raise UserError(msg)
 
     @api.multi

@@ -699,7 +699,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         super(InvoiceEletronic, self).action_post_validate()
         if self.model not in ('55', '65'):
             return
-
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'estado': self.company_id.state_id.ibge_code,
@@ -728,7 +727,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if mensagens_erro:
             raise UserError(mensagens_erro)
 
-        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
+        self.xml_to_send = base64.encodestring(
+            xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi

@@ -152,7 +152,7 @@ class TestCartaCorrecao(TransactionCase):
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
+            'product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
@@ -202,7 +202,7 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao') # noqa
+    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
     def test_carta_correca_eletronica(self, recepcao):
         # Mock o retorno da CCE
         xml_recebido = open(os.path.join(
