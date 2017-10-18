@@ -1,0 +1,301 @@
+id,code,name,parent_id:id,reconcile,type,user_type_id:id,chart_template_id:id
+id_0,0,Plano de Contas Trustcode,,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1,1,Ativo,id_0,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1,1.1,Ativo Circulante,id_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_1,1.1.1,Disponibilidade,id_1_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_1_01,1.1.1.01,Caixa,id_1_1_1,FALSE,view,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_01_001,1.1.1.01.001,Caixa Geral,id_1_1_1_01,TRUE,other,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02,1.1.1.02,Banco conta corrente,id_1_1_1,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_001,1.1.1.02.001,Banco Bradesco,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_002,1.1.1.02.002,Banco Itau,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_003,1.1.1.02.003,Banco Santander,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_004,1.1.1.02.004,Banco do Brasil,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_005,1.1.1.02.005,Banco Caixa Economica Federal ,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_006,1.1.1.02.006,Pag Seguro,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_02_007,1.1.1.02.007,Banco Citibank,id_1_1_1_02,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_1_03,1.1.1.03,Banco Aplicacao Financeira,id_1_1_1,TRUE,liquidity,account.data_account_type_liquidity,br_account_chart_template
+id_1_1_2,1.1.2,Contas a Receber,id_1_1,TRUE,receivable,account.data_account_type_receivable,br_account_chart_template
+id_1_1_2_01,1.1.2.01,Clientes Nacionais,id_1_1_2,TRUE,view,account.data_account_type_receivable,br_account_chart_template
+id_1_1_2_01_001,1.1.2.01.001,Cliente Padrao,id_1_1_2_01,TRUE,receivable,account.data_account_type_receivable,br_account_chart_template
+id_1_1_3,1.1.3,Estoques,id_1_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_3_01,1.1.3.01,Mercadoria para Revenda,id_1_1_3,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_3_02,1.1.3.02,Materia Prima,id_1_1_3,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_3_03,1.1.3.03,Adiantamentos a Fornecedores,id_1_1_3,TRUE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5,1.1.5,Outros Creditos ,id_1_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01,1.1.5.01,Impostos a Recuperar,id_1_1_5,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_001,1.1.5.01.001,ISSQN a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_002,1.1.5.01.002,Cofins a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_003,1.1.5.01.003,CSLL a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_004,1.1.5.01.004,IRRF a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_005,1.1.5.01.005,PIS a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_006,1.1.5.01.006,ICMS a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_007,1.1.5.01.007,INSS a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_01_008,1.1.5.01.008,IPI a Recuperar,id_1_1_5_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_02,1.1.5.02,Impostos a Compensar,id_1_1_5,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_02_001,1.1.5.02.001,IR Antecipado,id_1_1_5_02,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_5_02_002,1.1.5.02.002,CSLL Antecipado,id_1_1_5_02,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_6,1.1.6,Adiantamentos,id_1_1,FALSE,view,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_6_01,1.1.6.01,Adiantamentos a Funcionarios,id_1_1_6,FALSE,view,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_6_01_001,1.1.6.01.001,Adiantamento de Salario,id_1_1_6_01,FALSE,other,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_6_01_002,1.1.6.01.002,Adiantamento de 13o Salario,id_1_1_6_01,FALSE,other,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_6_01_003,1.1.6.01.003,Adiantamento de Ferias,id_1_1_6_01,FALSE,other,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_6_02,1.1.6.02,Adiantamentos a Fornecedores,id_1_1_6,TRUE,view,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_6_03,1.1.6.03,Adiantamentos de Viagens,id_1_1_6,FALSE,view,account.data_account_type_prepayments,br_account_chart_template
+id_1_1_9,1.1.9,Outros Creditos,id_1_1,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_9_01,1.1.9.01,Titulos a Receber,id_1_1_9,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_9_01_001,1.1.9.01.001,Cartao de Credito / Debitos,id_1_1_9_01,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_9_09,1.1.9.09,Creditos com Socios,id_1_1_9,FALSE,view,account.data_account_type_current_assets,br_account_chart_template
+id_1_1_9_09_001,1.1.9.09.001,Antecipacao de Lucros,id_1_1_9_09,FALSE,other,account.data_account_type_current_assets,br_account_chart_template
+id_1_2,1.2,Ativo Nao Circulante,id_1,FALSE,view,account.data_account_type_non_current_assets,br_account_chart_template
+id_1_2_1,1.2.1,Realizavel a Longo Prazo,id_1_2,FALSE,view,account.data_account_type_non_current_assets,br_account_chart_template
+id_1_2_1_09,1.2.1.09,Emprestimos Concedidos,id_1_2_1,FALSE,view,account.data_account_type_non_current_assets,br_account_chart_template
+id_1_2_2,1.2.2,Imobilizado,id_1_2,FALSE,view,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_01,1.2.2.01,Bens em Operacao,id_1_2_2,FALSE,view,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_01_001,1.2.2.01.001,Computadores e Perifericos ,id_1_2_2_01,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_01_002,1.2.2.01.002,Moveis e Utensilios,id_1_2_2_01,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_01_003,1.2.2.01.003,Equipamentos Eletronicos,id_1_2_2_01,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_01_004,1.2.2.01.004,Maquinas e Equipamentos,id_1_2_2_01,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_01_005,1.2.2.01.005,Veiculos,id_1_2_2_01,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_02,1.2.2.02,( - ) Depreciacao Acumulada,id_1_2_2,FALSE,view,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_02_000,1.2.2.02.000,( - ) Dep. Acumulada Mov Utensilios,id_1_2_2_02,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_02_001,1.2.2.02.001,( - ) Dep. Acumulada Computadores e Perifericos,id_1_2_2_02,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_02_002,1.2.2.02.002,( - ) Dep. Acumulada Equipamentos Eletronicos,id_1_2_2_02,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_02_003,1.2.2.02.003,( - ) Dep Acumulada Maquinas e Equipamentos,id_1_2_2_02,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_2_02_004,1.2.2.02.004,( - ) Dep. Acumulada Veiculos,id_1_2_2_02,FALSE,other,account.data_account_type_fixed_assets,br_account_chart_template
+id_1_2_3,1.2.3,Investimentos,id_1_2,FALSE,view,account.data_account_type_non_current_assets,br_account_chart_template
+id_1_2_4,1.2.4,Intangivel,id_1_2,FALSE,view,account.data_account_type_non_current_assets,br_account_chart_template
+id_2,2,Passivo,id_0,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1,2.1,Passivo Circulante,id_2,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_1,2.1.1,Emprestimos e Financiamentos,id_2_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_2,2.1.2,Fornecedores,id_2_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_2_01,2.1.2.01,Fornecedores Nacionais,id_2_1_2,TRUE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_2_01_001,2.1.2.01.001,Fornecedor Padrao,id_2_1_2_01,TRUE,payable,account.data_account_type_payable,br_account_chart_template
+id_2_1_3,2.1.3,Obrigacoes Trabalhistas,id_2_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01,2.1.3.01,Salarios e Ordenados,id_2_1_3,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_001,2.1.3.01.001,Salarios a Pagar,id_2_1_3_01,TRUE,payable,account.data_account_type_payable,br_account_chart_template
+id_2_1_3_01_002,2.1.3.01.002,Autonomos a pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_003,2.1.3.01.003,Rescisao a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_004,2.1.3.01.004,Ferias a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_005,2.1.3.01.005,13o Salario a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_006,2.1.3.01.006,FGTS a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_01_007,2.1.3.01.007,Pensao Alimenticia a Pagar,id_2_1_3_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02,2.1.3.02,Provisao de Ferias e 13o Salarios,id_2_1_3,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02_001,2.1.3.02.001,Ferias a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02_002,2.1.3.02.002,INSS sobre Ferias a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02_003,2.1.3.02.003,FGTS sobre Ferias a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02_004,2.1.3.02.004,13o Salario a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02_005,2.1.3.02.005,INSS sobre 13o Salario a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_3_02_006,2.1.3.02.006,FGTS sobre 13o Salario a Pagar,id_2_1_3_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4,2.1.4,Obrigacoes Tributarias,id_2_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_01,2.1.4.01,Tributos Municipais,id_2_1_4,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_01_001,2.1.4.01.001,IPTU a Pagar,id_2_1_4_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_01_001,2.1.4.01.001,ISSQN a Pagar,id_2_1_4_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_02,2.1.4.02,Tributos Estaduais,id_2_1_4,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_02_001,2.1.4.02.001,ICMS a Pagar,id_2_1_4_02,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03,2.1.4.03,Tributos Federais,id_2_1_4,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_001,2.1.4.03.001,Pis a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_002,2.1.4.03.002,Cofins a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_003,2.1.4.03.003,IRPJ a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_004,2.1.4.03.004,CSLL a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_005,2.1.4.03.005,IRRF a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_006,2.1.4.03.006,CRF a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_007,2.1.4.03.007,INSS a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_008,2.1.4.03.008,Contribuicoes Assistenciais e Sindicais a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_009,2.1.4.03.009,Simples Nacional a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_4_03_010,2.1.4.03.010,IPI a Pagar,id_2_1_4_03,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_5,2.1.5,Obrigacoes com Clientes,id_2_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_5_00_1,2.1.5.00.1,Adiantamento de Clientes,id_2_1_5,TRUE,other,account.data_account_type_current_assets,br_account_chart_template
+id_2_1_9,2.1.9,Outras Contas a Pagar,id_2_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_9_01,2.1.9.01,Contas a Pagar,id_2_1_9,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_9_01_001,2.1.9.01.001,Alugueis a Pagar,id_2_1_9_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_9_09,2.1.9.09,Obrigacoes com Socios,id_2_1_9,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_9_09_001,2.1.9.09.001,Pro Labore a Pagar,id_2_1_9_09,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_9_09_002,2.1.9.09.002,Dividendos a Pagar,id_2_1_9_09,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_1_9_09_003,2.1.9.09.003,Reembolso a Pagar,id_2_1_9_09,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template
+id_2_2,2.2,Passivo Nao Circulante,id_2,FALSE,view,account.data_account_type_non_current_liabilities,br_account_chart_template
+id_2_3,2.3,Patrimonio Liquido,id_2,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_1,2.3.1,Capital Social,id_2_3,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_1_01,2.3.1.01,Capital Social Integralizado,id_2_3_1,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_1_01_001,2.3.1.01.001,Capital Social Integralizado,id_2_3_1_01,FALSE,other,account.data_account_type_equity,br_account_chart_template
+id_2_3_1_02,2.3.1.02,( - ) Capital Social a Integralizar,id_2_3_1,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_1_02_001,2.3.1.02.001,( - ) Capital Social a Integralizar,id_2_3_1_02,FALSE,other,account.data_account_type_equity,br_account_chart_template
+id_2_3_2,2.3.2,Reservas,id_2_3,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_2_01,2.3.2.01,Reservas de Capital,id_2_3_2,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_2_02,2.3.2.02,Reservas de Lucros,id_2_3_2,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_9,2.3.9,Resultados do Exercicio,id_2_3,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_9_01,2.3.9.01,Resultado do Exercicio,id_2_3_9,FALSE,view,account.data_account_type_equity,br_account_chart_template
+id_2_3_9_01_001,2.3.9.01.001,Resultado do Exercicio,id_2_3_9_01,FALSE,other,account.data_account_type_equity,br_account_chart_template
+id_3,3,Receita,id_0,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1,3.1,Receita Bruta,id_3,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1,3.1.1,Receita Bruta,id_3_1,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_01,3.1.1.01,Receita com Servico,id_3_1_1,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_01_001,3.1.1.01.001,Prestacao de Servico,id_3_1_1_01,FALSE,other,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_02,3.1.1.02,Receita com Locacao,id_3_1_1,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_02_001,3.1.1.02.001,Locacao de Equipamentos,id_3_1_1_02,FALSE,other,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_03,3.1.1.03,Receita com Revenda de Mercadoria ,id_3_1_1,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_03_001,3.1.1.03.001,Venda de Mercadoria,id_3_1_1_03,FALSE,other,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_04,3.1.1.04,Receita de Mercadoria,id_3_1_1,FALSE,view,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_04_001,3.1.1.04.001,Rendimentos de Aplicacoes Financeiras,id_3_1_1_04,FALSE,other,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_04_002,3.1.1.04.002,Juros Recebidos,id_3_1_1_04,FALSE,other,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_04_003,3.1.1.04.003,Descontos Recebidos,id_3_1_1_04,FALSE,other,account.data_account_type_revenue,br_account_chart_template
+id_3_1_1_09,3.1.1.09,Outras Receitas,id_3_1_1,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_1_1_09_001,3.1.1.09.001,Venda Imobilizado,id_3_1_1_09,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2,3.2,( - ) Deducoes e Abatimentos,id_3,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_2_1,3.2.1,( - ) Abatimentos,id_3_2,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2,3.2.2,( - ) Deducoes ,id_3_2,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_01,3.2.2.01,Impostos sobre Servico,id_3_2_2,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_01_001,3.2.2.01.001,ISSQN sobre Servico,id_3_2_2_01,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_01_002,3.2.2.01.002,PIS sobre Servico,id_3_2_2_01,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_01_003,3.2.2.01.003,Cofins sobre Servico,id_3_2_2_01,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_01_004,3.2.2.01.004,INSS sobre Servico,id_3_2_2_01,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_01_005,3.2.2.01.005,Simples Nacional sobre Servico,id_3_2_2_01,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_02,3.2.2.02,Impostos sobre Locacao,id_3_2_2,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_02_001,3.2.2.02.001,ISSQN sobre Locacao,id_3_2_2_02,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_02_002,3.2.2.02.002,PIS sobre Locacao,id_3_2_2_02,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_02_003,3.2.2.02.003,Cofins sobre Locacao,id_3_2_2_02,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_02_004,3.2.2.02.004,INSS sobre Locacao,id_3_2_2_02,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_02_005,3.2.2.02.005,Simples Nacional sobre Locacao,id_3_2_2_02,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03,3.2.2.03,Impostos sobre Revenda,id_3_2_2,FALSE,view,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03_001,3.2.2.03.001,ICMS sobre Venda,id_3_2_2_03,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03_002,3.2.2.03.002,PIS sobre Venda,id_3_2_2_03,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03_003,3.2.2.03.003,Cofins sobre Venda,id_3_2_2_03,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03_004,3.2.2.03.004,INSS sobre Venda,id_3_2_2_03,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03_005,3.2.2.03.005,Simples Nacional sobre Venda,id_3_2_2_03,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_3_2_2_03_006,3.2.2.03.006,IPI sobre Venda,id_3_2_2_03,FALSE,other,account.data_account_type_other_income,br_account_chart_template
+id_4,4,Despesas,id_0,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1,4.1,Despesas Operacionais,id_4,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1,4.1.1,Despesas com Pessoal,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01,4.1.1.01,Remuneracao e Ordenados,id_4_1_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_001,4.1.1.01.001,Salarios,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_002,4.1.1.01.002,Horas Extras,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_003,4.1.1.01.003,Ferias,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_004,4.1.1.01.004,Comissao e Gratificacoes,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_005,4.1.1.01.005,Participacoes nos Lucros e Resultados,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_006,4.1.1.01.006,13o Salarios,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_007,4.1.1.01.007,Bolsa Estagio,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_01_008,4.1.1.01.008,Bonus,id_4_1_1_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_02,4.1.1.02,Encargos Sociais,id_4_1_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_02_001,4.1.1.02.001,Sociais,id_4_1_1_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_02_002,4.1.1.02.002,INSS,id_4_1_1_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_02_003,4.1.1.02.003,Contribuicoes Sindicais e Confederativas,id_4_1_1_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03,4.1.1.03,Beneficios ,id_4_1_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_001,4.1.1.03.001,Vale Transportes,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_002,4.1.1.03.002,Vale Alimentacao ,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_003,4.1.1.03.003,Vale Refeicao ,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_004,4.1.1.03.004,Cursos e Treinamentos,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_005,4.1.1.03.005,Seguro de Vida e Saude,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_006,4.1.1.03.006,Assistencia  Medica,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_007,4.1.1.03.007,Uniformes,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_03_008,4.1.1.03.008,Previdencia Privada,id_4_1_1_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_04,4.1.1.04,Remuneracao Diretoria,id_4_1_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_04_001,4.1.1.04.001,Pro Labore,id_4_1_1_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_04_002,4.1.1.04.002,INSS sobre Pro Labore,id_4_1_1_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_04_003,4.1.1.04.003,Assistencia Medica,id_4_1_1_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_1_04_004,4.1.1.04.004,Previdencia Privada,id_4_1_1_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2,4.1.2,Despesas Administrativas,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01,4.1.2.01,Infraestruturas,id_4_1_2,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_001,4.1.2.01.001,Internet Movel,id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_002,4.1.2.01.002,Telefonia Fixa e Internet,id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_003,4.1.2.01.003,Telefonia Movel,id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_004,4.1.2.01.004,Servicos de TI,id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_005,4.1.2.01.005,Equipamentos de TI,id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_006,4.1.2.01.006,Hospedagem de TI (Servidores),id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_007,4.1.2.01.007,Sistemas (SaaS),id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_01_008,4.1.2.01.008,Registro de Dominio,id_4_1_2_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02,4.1.2.02,Prediais,id_4_1_2,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_001,4.1.2.02.001,Condominio,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_002,4.1.2.02.002,Aluguel,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_003,4.1.2.02.003,Energia Eletrica,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_004,4.1.2.02.004,Agua e Esgoto,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_005,4.1.2.02.005,Servicos Prediais e Manutencao,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_006,4.1.2.02.006,Servicos de limpeza,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_02_007,4.1.2.02.007,Seguro Incendio,id_4_1_2_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_03,4.1.2.03,Servicos de Entrega,id_4_1_2,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_03_001,4.1.2.03.001,Correios,id_4_1_2_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_03_002,4.1.2.03.002,Motoboy,id_4_1_2_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04,4.1.2.04,Reembolsos de Viagem ,id_4_1_2,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_001,4.1.2.04.001,Passagens Aereas e Rodoviarias,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_002,4.1.2.04.002,Lanches e Refeicoes,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_003,4.1.2.04.003,Taxi ou Transportes Executivo,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_004,4.1.2.04.004,Pedagio,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_005,4.1.2.04.005,Quilometragem,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_006,4.1.2.04.006,Hotel e Pousadas,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_04_007,4.1.2.04.007,Estacionamento,id_4_1_2_04,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05,4.1.2.05,Despesas Gerais,id_4_1_2,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_001,4.1.2.05.001,Copa e Cozinha,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_002,4.1.2.05.002,Materiais de Limpeza,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_003,4.1.2.05.003,Material de Escritorio,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_004,4.1.2.05.004,Depreciacao,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_005,4.1.2.05.005,Cartorio,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_006,4.1.2.05.006,Suprimentos de Informatica,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_007,4.1.2.05.007,Estacionamento,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_008,4.1.2.05.008,Manutencao,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_2_05_009,4.1.2.05.009,Revistas,id_4_1_2_05,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3,4.1.3,Despesas Marketing,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_01,4.1.3.01,Midia Online,id_4_1_3,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_01_001,4.1.3.01.001,Online Producao,id_4_1_3_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_01_002,4.1.3.01.002,Online Veiculacao,id_4_1_3_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_01_003,4.1.3.01.003,Online Servico,id_4_1_3_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_02,4.1.3.02,Midia Off-line,id_4_1_3,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_02_001,4.1.3.02.001,Offline Producao,id_4_1_3_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_02_002,4.1.3.02.002,Offline Veiculacao,id_4_1_3_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_3_02_003,4.1.3.02.003,Offline Servicos,id_4_1_3_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4,4.1.4,Despesas Tributarias,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_01,4.1.4.01,Municipais,id_4_1_4,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_01_001,4.1.4.01.001,Taxa de Fiscalizacao e Licenca e Funcionamento,id_4_1_4_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_01_002,4.1.4.01.002,IPTU,id_4_1_4_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_01_003,4.1.4.01.003,ISSQN Retido Outro Municipio,id_4_1_4_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_01_004,4.1.4.01.004,Taxas Municipais Diversas,id_4_1_4_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_02,4.1.4.02,Estadual,id_4_1_4,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_02_001,4.1.4.02.001,DARE e Taxas Estaduais,id_4_1_4_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_02_001,4.1.4.02.001,ICMS - Diferencial de Aliquota,id_4_1_4_02,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_03,4.1.4.03,Federal,id_4_1_4,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_03_001,4.1.4.03.001,IRPJ + Adicional de 1/3,id_4_1_4_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_4_03_002,4.1.4.03.002,CSLL ,id_4_1_4_03,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5,4.1.5,Despesas Financeiras,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01,4.1.5.01,Despesas Financeiras,id_4_1_5,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01_001,4.1.5.01.001,Juros Pagos,id_4_1_5_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01_002,4.1.5.01.002,IOF,id_4_1_5_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01_003,4.1.5.01.003,Tarifa e Comissoes Bancarias,id_4_1_5_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01_004,4.1.5.01.004,Descontos Concedidos,id_4_1_5_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01_005,4.1.5.01.005,Servicos de Consultas e Creditos,id_4_1_5_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_5_01_006,4.1.5.01.006,Multas Pagas,id_4_1_5_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6,4.1.6,Servicos de Terceiros,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01,4.1.6.01,Servicos de Terceiros,id_4_1_6,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_001,4.1.6.01.001,Servicos Contabeis,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_002,4.1.6.01.002,Servicos de Consultoria ,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_003,4.1.6.01.003,Servicos Juridicos,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_004,4.1.6.01.004,Servicos de Auditoria,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_005,4.1.6.01.005,Assessoria e Desenvolvimento Software,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_006,4.1.6.01.006,Assessoria de Imprensa,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_007,4.1.6.01.007,Recrutamento & Selecao,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_008,4.1.6.01.008,Cooperativa de Trabalho,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_6_01_009,4.1.6.01.009,Apoio Administrativo,id_4_1_6_01,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_9,4.1.9,Outras Despesas Operacionais,id_4_1,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_9_09,4.1.9.09,Outras Despesas Operacionais,id_4_1_9,FALSE,view,account.data_account_type_expenses,br_account_chart_template
+id_4_1_9_09_001,4.1.9.09.001,Brindes,id_4_1_9_09,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_4_1_9_09_002,4.1.9.09.002,Confraternizacao,id_4_1_9_09,FALSE,other,account.data_account_type_expenses,br_account_chart_template
+id_5,5,Custos,id_0,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1,5.1,Custos com Mercadoria e Produtos,id_5,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1,5.1.1,Custos com Mercadorias,id_5_1,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01,5.1.1.01,Mercadoria para Revenda,id_5_1_1,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_001,5.1.1.01.001,( + ) Compras do Periodo,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_002,5.1.1.01.002,( - ) ICMS sobre Compra,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_003,5.1.1.01.003,( - ) PIS sobre Compra,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_004,5.1.1.01.004,( - ) Cofins sobre Compra,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_005,5.1.1.01.005,( - ) IPI sobre Compra,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_006,5.1.1.01.006,( - ) Compras do Periodo,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_01_007,5.1.1.01.007,( + ) Estoque Inicial,id_5_1_1_01,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_02,5.1.1.02,Mercadoria para Prestacao de Servico,id_5_1_1,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_02_001,5.1.1.02.001,( + ) Compras do Periodo,id_5_1_1_02,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_03,5.1.1.03,Mercadoria  para Uso e Consumo,id_5_1_1,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_03_001,5.1.1.03.001,( + ) Compras do Periodo,id_5_1_1_03,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_04,5.1.1.04,Servicos de Terceiros,id_5_1_1,FALSE,view,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_04_001,5.1.1.04.001,Locacao de Equipamentos,id_5_1_1_04,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_04_002,5.1.1.04.002,Usinagem,id_5_1_1_04,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_5_1_1_04_003,5.1.1.04.003,Pintura e Acabamento,id_5_1_1_04,FALSE,other,account.data_account_type_direct_costs,br_account_chart_template
+id_6,6,Encerramento,id_0,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_6_1,6.1,Encerramento do Exercicio,id_6,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_6_1_1,6.1.1,Encerramento do Exercicio,id_6_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_6_1_1_01,6.1.1.01,Encerramento do Exercicio ,id_6_1_1,FALSE,view,account.data_account_type_current_liabilities,br_account_chart_template
+id_6_1_1_01_001,6.1.1.01.001,Encerramento do Exercicio,id_6_1_1_01,FALSE,other,account.data_account_type_current_liabilities,br_account_chart_template

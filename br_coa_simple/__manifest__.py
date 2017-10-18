@@ -4,9 +4,9 @@
 
 
 {  # pylint: disable=C8101,C8103
-    'name': 'Plano de Contas Brasil',
-    'summary': """Plano de contas Brasileiro""",
-    'description': """Plano de contas Brasileiro""",
+    'name': 'Plano de Contas Simplificado Brasil',
+    'summary': """Plano de contas simplificado""",
+    'description': """Plano de contas simplificado""",
     'version': '11.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
