@@ -16,7 +16,8 @@ class IrActionsReport(models.Model):
 
     def render_qweb_pdf(self, res_ids, data=None):
         if not self.name == 'Boleto':
-            return
+            return super(IrActionsReport, self).render_qweb_pdf(
+                res_ids, data=data)
 
         active_ids = res_ids
         # active_model = self.env.context.get('origin_model')

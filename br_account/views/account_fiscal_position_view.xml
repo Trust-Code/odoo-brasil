@@ -24,7 +24,7 @@
                 </group>
                 <group name="icms" attrs="{'invisible': [('domain', 'not in', ('icms'))]}">
                     <group>
-                        <field name="cfop_id" />
+                        <field name="cfop_id" domain="[('internal_type', '=', 'normal')]" />
                         <field name="tax_icms_st_id" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tem_difal" />
