@@ -259,6 +259,10 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
 
+    fiscal_category_id = fields.Many2one(
+        'br_account.fiscal.category',
+        string='Categoria Fiscal')
+
     @api.onchange('fiscal_position_id')
     def _onchange_br_account_fiscal_position_id(self):
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
