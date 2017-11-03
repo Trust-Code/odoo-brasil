@@ -282,7 +282,8 @@ class AccountInvoice(models.Model):
     @api.onchange('fiscal_document_id')
     def _onchange_fiscal_document_id(self):
         series = self.env['br_account.document.serie'].search(
-            [('fiscal_document_id', '=', self.fiscal_document_id.id)])
+            [('fiscal_document_id', '=', self.fiscal_document_id.id),
+             ('company_id', '=', self.env.user.company_id.id)])
         self.document_serie_id = series and series[0].id or False
 
     @api.onchange('fiscal_position_id')
