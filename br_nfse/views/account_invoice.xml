@@ -37,7 +37,8 @@
         <field name="arch" type="xml">
             <field name="item_pedido_compra" position="after">
                 <field name="state"/>
-                <field name="numero_nfse"/></field>
+                <field name="numero_nfse" attrs="{'required': [('state', '=', 'transmitido')]}"/>
+            </field>
         </field>
     </record>
 </odoo>
