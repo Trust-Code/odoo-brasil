@@ -27,7 +27,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)
         res['codigo_servico_paulistana'] = \
             line.service_type_id.codigo_servico_paulistana
-        res['codigo_tributacao_municipio'] = \editable
+        res['codigo_tributacao_municipio'] = \
             line.service_type_id.codigo_tributacao_municipio
         return res
 
@@ -64,10 +64,10 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     state = fields.Selection(
-        string="state",
+        string="Status",
         selection=[
             ('pendente', 'Pendente'),
-            ('Transmitido', 'Transmitido'),
+            ('transmitido', 'Transmitido'),
         ],
         default='pendente',
         help="""Define a situação eletrônica do item da fatura.
@@ -75,6 +75,6 @@ class AccountInvoiceLine(models.Model):
                 Transmitido: Já foi transmitido eletronicamente."""
     )
 
-    numero_nfse = fields.Char(string="Numéro NFS-e",
+    numero_nfse = fields.Char(string="Número NFS-e",
                               help="""Número da NFS-e na qual o item foi
                               transmitido eletrônicamente.""")
