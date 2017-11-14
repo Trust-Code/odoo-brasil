@@ -195,12 +195,12 @@ class InvoiceEletronic(models.Model):
                 str(data_envio[0:4] + data_envio[5:7] + data_envio[8:10]),
                 str(tipo_recolhimento),
                 str(iss_retido),
-                round(valor_servico*100),
-                round(valor_deducao*100),
+                round(valor_servico * 100),
+                round(valor_deducao * 100),
                 str(codigo_atividade).zfill(5),
                 str(tipo_cpfcnpj),
                 str(cnpj_cpf).zfill(14)
-                )
+            )
             rps['assinatura'] = assinatura
 
             nfse_vals = {
@@ -259,7 +259,8 @@ class InvoiceEletronic(models.Model):
             if self.ambiente == 'producao':
                 resposta = envio_lote_rps(certificado, nfse=nfse_values)
             else:
-                resposta = teste_envio_lote_rps(certificado, nfse=nfse_values)
+                resposta = teste_envio_lote_rps(
+                    certificado, nfse=nfse_values)
             retorno = resposta['object']
             if retorno.Cabecalho.Sucesso:
                 self.state = 'done'
@@ -267,10 +268,12 @@ class InvoiceEletronic(models.Model):
                 self.mensagem_retorno = \
                     'Nota Fiscal Paulistana emitida com sucesso'
 
-                if self.ambiente == 'producao':  # Apenas producão tem essa tag
+                # Apenas producão tem essa tag
+                if self.ambiente == 'producao':
                     self.verify_code = \
                         retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao
-                    self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe.NumeroNFe
+                    self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe \
+                        .NumeroNFe
 
             else:
                 self.codigo_retorno = retorno.Erro.Codigo
@@ -281,8 +284,10 @@ class InvoiceEletronic(models.Model):
                 'name': self.mensagem_retorno,
                 'invoice_eletronic_id': self.id,
             })
-            self._create_attachment('nfse-envio', self, resposta['sent_xml'])
-            self._create_attachment('nfse-ret', self, resposta['received_xml'])
+            self._create_attachment(
+                'nfse-envio', self, resposta['sent_xml'])
+            self._create_attachment(
+                'nfse-ret', self, resposta['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):

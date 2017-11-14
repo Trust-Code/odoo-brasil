@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_cash_flow_report_search_graph" model="ir.ui.view">
+            <field name="name">cash.flow.search.graph</field>
+            <field name="model">account.cash.flow.line</field>
+            <field name="arch" type="xml">
+               <search string="Cash Flow">
+                   <field name="cashflow_id" widget="selection" />
+                   <group expand="1" string="Group By">
+                       <filter string="Day" context="{'group_by':'date:day'}" name="date"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_account_cash_flow_line_graph" model="ir.actions.act_window">
+            <field name="res_model">account.cash.flow.line</field>
+            <field name="name">Cash Flow Graph</field>
+            <field name="view_mode">graph</field>
+            <field name="search_view_id" ref="view_account_cash_flow_report_search_graph" />
+        </record>
+
+        <record id="view_account_cash_flow_line_graph" model="ir.ui.view">
+            <field name="name">cash.flow.line.graph</field>
+            <field name="model">account.cash.flow.line</field>
+            <field name="arch" type="xml">
+                <graph string="Cash Flow" type="bar">
+                    <field name="date" type="row" interval="day"/>
+                    <field name="debit" type="measure" />
+                    <field name="credit" type="measure" />
+                    <field name="amount" operator="+" />
+                </graph>
+            </field>
+        </record>
+
+        <record id="account_cash_flow_report_tree" model="ir.ui.view">
+            <field name="name">account.cash.flow.line.tree</field>
+            <field name="model">account.cash.flow.line</field>
+            <field name="arch" type="xml">
+                <tree string="Linhas" colors="red:amount &lt; 0">
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="account_id" />
+                    <field name="journal_id" />
+                    <field name="date" />
+                    <field name="credit" />
+                    <field name="debit" />
+                    <field name="amount" />
+                    <field name="balance" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="account_cash_flow_report_action" model="ir.actions.act_window">
+            <field name="name">action.account.cash.flow.tree</field>
+            <field name="res_model">account.cash.flow.line</field>
+            <field name="view_mode">tree,graph</field>
+        </record>
+
+    </data>
+</openerp>

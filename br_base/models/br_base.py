@@ -21,3 +21,11 @@ class ResStateCity(models.Model):
                                string='Estado',
                                required=True)
     ibge_code = fields.Char(string=u'Código IBGE', size=7, copy=False)
+
+
+class ResRegion(models.Model):
+    _name = 'res.region'
+
+    name = fields.Char(string="Nome", size=100)
+    city_ids = fields.Many2many('res.state.city', string="Cidades")
+    state_ids = fields.Many2many('res.country.state', string="Estados")

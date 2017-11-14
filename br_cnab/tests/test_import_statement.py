@@ -28,7 +28,7 @@ class TestImportStatement(TransactionCase):
                 'file_format': 'cnab240',
                 'force_journal_account': True,
                 'journal_id': self.journal.id,
-                'data_file': base64.b64encode('000'),
+                'data_file': base64.b64encode(b'000'),
             })
 
     def test_invalid_files(self):
@@ -37,7 +37,7 @@ class TestImportStatement(TransactionCase):
 
     def test_import_cnab_default(self):
         cnab = os.path.join(self.caminho, 'extratos/CNAB240-Sicoob.ret')
-        self.cnab_imp.data_file = base64.b64encode(open(cnab, 'r').read())
+        self.cnab_imp.data_file = base64.b64encode(open(cnab, 'rb').read())
         # Sicoob
         self.journal.bank_id = self.env.ref('br_data_base.res_bank_115').id
         self.cnab_imp.import_file()
@@ -59,7 +59,7 @@ class TestImportStatement(TransactionCase):
 
     def test_import_cnab_without_force(self):
         cnab = os.path.join(self.caminho, 'extratos/CNAB240-Sicoob.ret')
-        self.cnab_imp.data_file = base64.b64encode(open(cnab, 'r').read())
+        self.cnab_imp.data_file = base64.b64encode(open(cnab, 'rb').read())
         self.cnab_imp.force_format = False
         # Sicoob
         self.journal.bank_id = self.env.ref('br_data_base.res_bank_115').id

@@ -23,7 +23,6 @@ class TestCartaCorrecao(TransactionCase):
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
@@ -35,8 +34,9 @@ class TestCartaCorrecao(TransactionCase):
             'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
-                open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
+                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
+        self.main_company.write({'inscr_est': '219.882.606'})
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
@@ -152,7 +152,7 @@ class TestCartaCorrecao(TransactionCase):
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
+            'product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
@@ -202,7 +202,7 @@ class TestCartaCorrecao(TransactionCase):
         with self.assertRaises(UserError):
             self.carta_wizard_long.send_letter()
 
-    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao') # noqa
+    @patch('odoo.addons.br_nfe.wizard.carta_correcao_eletronica.recepcao_evento_carta_correcao')  # noqa
     def test_carta_correca_eletronica(self, recepcao):
         # Mock o retorno da CCE
         xml_recebido = open(os.path.join(

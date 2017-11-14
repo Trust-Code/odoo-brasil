@@ -1,0 +1,235 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* account_cash_flow
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-11-04 18:21+0000\n"
+"PO-Revision-Date: 2016-11-04 18:21+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_account_id
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Account"
+msgstr "Conta"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_balance
+msgid "Accumulated Balance"
+msgstr "Saldo Acumulado"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Accumulated balance"
+msgstr "Saldo acumulado"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Balance (C-D)"
+msgstr "Saldo (C-D)"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_amount
+msgid "Balance(C-D)"
+msgstr "Saldo(C-D)"
+
+#. module: account_cash_flow
+#: model:ir.actions.act_window,name:account_cash_flow.action_account_cash_flow_wizard_form
+#: model:ir.actions.report.xml,name:account_cash_flow.account_cash_flow_html_report
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_cashflow_id
+#: model:ir.ui.menu,name:account_cash_flow.menu_cash_flow_wizard
+#: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_line_graph
+#: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_report_search_graph
+msgid "Cash Flow"
+msgstr "Fluxo de Caixa"
+
+#. module: account_cash_flow
+#: model:ir.actions.act_window,name:account_cash_flow.action_account_cash_flow_line_graph
+msgid "Cash Flow Graph"
+msgstr "Gráfico de Fluxo de Caixa"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_ids
+msgid "Cash Flow Lines"
+msgstr "Linhas de Fluxo de Caixa"
+
+#. module: account_cash_flow
+#: model:ir.model,name:account_cash_flow.model_account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Cash Flow Report"
+msgstr "Relatório Fluxo de Caixa"
+
+#. module: account_cash_flow
+#: model:ir.model,name:account_cash_flow.model_account_cash_flow_line
+msgid "Cash flow lines"
+msgstr "Linhas de Fluxo de Caixa"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_create_uid
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_create_uid
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_create_date
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_create_date
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_credit
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Credit"
+msgstr "Crédito"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_date
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Date"
+msgstr "Data"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_report_search_graph
+msgid "Day"
+msgstr "Dia"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_debit
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Debit"
+msgstr "Débito"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_name
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Description"
+msgstr "Descrição"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_display_name
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_display_name
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_display_name
+msgid "Display Name"
+msgstr "Nome para Exibição"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_end_date
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_end_date
+msgid "End Date"
+msgstr "Data Final"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_wizard_form
+msgid "Generate"
+msgstr "Gerar"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_wizard_form
+msgid "Generate Cash Flow"
+msgstr "Gerar Fluxo de Caixa"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_report_search_graph
+msgid "Group By"
+msgstr "Agrupar Por"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Gráfico"
+msgstr "Gráfico"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_id
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_id
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_print_report
+msgid "Imprimir"
+msgstr "Imprimir"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_start_amount
+msgid "Initial Value"
+msgstr "Valor Inicial"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_start_amount
+msgid "Initial value"
+msgstr "Valor inicial"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_invoice_id
+msgid "Invoice"
+msgstr "Fatura"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_journal_id
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Journal"
+msgstr "Diário"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow___last_update
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line___last_update
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard___last_update
+msgid "Last Modified on"
+msgstr "Última Modificação em"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_write_uid
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_write_uid
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_write_date
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_write_date
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_report_tree
+msgid "Linhas"
+msgstr "Linhas"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_partner_id
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Partner"
+msgstr "Parceiro"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_start_date
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_start_date
+msgid "Start Date"
+msgstr "Data de Início"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_final_amount
+msgid "Total"
+msgstr "Total"
+
+#. module: account_cash_flow
+#: model:ir.model,name:account_cash_flow.model_account_cash_flow_wizard
+msgid "account.cash.flow.wizard"
+msgstr "account.cash.flow.wizard"
+
+#. module: account_cash_flow
+#: model:ir.actions.act_window,name:account_cash_flow.account_cash_flow_report_action
+msgid "action.account.cash.flow.tree"
+msgstr "action.account.cash.flow.tree"

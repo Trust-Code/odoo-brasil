@@ -18,7 +18,6 @@ class TestCnab(TransactionCase):
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
@@ -28,6 +27,7 @@ class TestCnab(TransactionCase):
             'city_id': self.env.ref('br_base.city_4205407').id,
             'phone': '(48) 9801-6226',
         })
+        self.main_company.write({'inscr_est': '219.882.606'})
         self.revenue_account = self.env['account.account'].create({
             'code': '3.0.0',
             'name': 'Receita de Vendas',
@@ -104,7 +104,7 @@ class TestCnab(TransactionCase):
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'fiscal_document_id': self.env.ref(
+            'product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_01').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,

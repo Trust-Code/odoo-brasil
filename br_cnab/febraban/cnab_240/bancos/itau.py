@@ -47,7 +47,7 @@ class Itau240(Cnab240):
 
     @staticmethod
     def modulo10(num):
-        if not isinstance(num, basestring):
+        if not isinstance(num, str):
             raise TypeError
         soma = 0
         peso = 2

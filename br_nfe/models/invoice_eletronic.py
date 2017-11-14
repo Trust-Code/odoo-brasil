@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import io
 import base64
 import logging
 from lxml import etree
-from StringIO import StringIO
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -17,11 +17,13 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pytrustnfe.nfe import autorizar_nfe
+    from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
     from pytrustnfe.nfe.danfe import danfe
+    from pytrustnfe.xml.validate import valida_nfe
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
@@ -660,14 +662,14 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        tmpLogo = StringIO()
+        tmpLogo = io.BytesIO()
         tmpLogo.write(logo)
         tmpLogo.seek(0)
 
         xml_element = etree.fromstring(nfe_xml)
         oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
 
-        tmpDanfe = StringIO()
+        tmpDanfe = io.BytesIO()
         oDanfe.writeto_pdf(tmpDanfe)
 
         if danfe:
@@ -697,18 +699,37 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         super(InvoiceEletronic, self).action_post_validate()
         if self.model not in ('55', '65'):
             return
-        for item in self:
-            chave_dict = {
-                'cnpj': re.sub('[^0-9]', '', item.company_id.cnpj_cpf),
-                'estado': item.company_id.state_id.ibge_code,
-                'emissao': item.data_emissao[2:4] + item.data_emissao[5:7],
-                'modelo': item.model,
-                'numero': item.numero,
-                'serie': item.serie.code.zfill(3),
-                'tipo': int(item.tipo_emissao),
-                'codigo': "%08d" % item.numero_controle
-            }
-            item.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
+        chave_dict = {
+            'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+            'estado': self.company_id.state_id.ibge_code,
+            'emissao': self.data_emissao[2:4] + self.data_emissao[5:7],
+            'modelo': self.model,
+            'numero': self.numero,
+            'serie': self.serie.code.zfill(3),
+            'tipo': int(self.tipo_emissao),
+            'codigo': "%08d" % self.numero_controle
+        }
+        self.chave_nfe = gerar_chave(ChaveNFe(**chave_dict))
+
+        cert = self.company_id.with_context(
+            {'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+
+        certificado = Certificado(
+            cert_pfx, self.company_id.nfe_a1_password)
+
+        nfe_values = self._prepare_eletronic_invoice_values()
+        lote = self._prepare_lote(self.id, nfe_values)
+
+        xml_enviar = xml_autorizar_nfe(certificado, **lote)
+
+        mensagens_erro = valida_nfe(xml_enviar)
+        if mensagens_erro:
+            raise UserError(mensagens_erro)
+
+        self.xml_to_send = base64.encodestring(
+            xml_enviar.encode('utf-8'))
+        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi
     def action_send_eletronic_invoice(self):
@@ -721,15 +742,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         self.state = 'error'
         self.data_emissao = datetime.now()
 
-        nfe_values = self._prepare_eletronic_invoice_values()
-        lote = self._prepare_lote(self.id, nfe_values)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
+        xml_to_send = base64.decodestring(self.xml_to_send).decode('utf-8')
+
         resposta_recibo = None
-        resposta = autorizar_nfe(certificado, **lote)
+        resposta = autorizar_nfe(
+            certificado, xml=xml_to_send,
+            estado=self.company_id.state_id.ibge_code,
+            ambiente=1 if self.ambiente == 'producao' else 2)
         retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:

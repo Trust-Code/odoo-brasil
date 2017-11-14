@@ -5,6 +5,7 @@
 
 
 import re
+import io
 import logging
 from datetime import datetime, date
 
@@ -12,14 +13,10 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pyboleto import bank
+    BoletoException = bank.BoletoException
 except ImportError:
     _logger.debug('Cannot import pyboleto')
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-BoletoException = bank.BoletoException
 
 especie = {
     '01': 'DM',
@@ -65,13 +62,13 @@ class Boleto:
         if self.account_digit:
             return str(self.account_number + '-' +
                        self.account_digit).encode('utf-8')
-        return self.account_number.encode('utf-8')
+        return self.account_number
 
     def getBranchNumber(self):
         if self.branch_digit:
             return str(self.branch_number + '-' +
-                       self.branch_digit).encode('utf-8').strip()
-        return self.branch_number.encode('utf-8').strip()
+                       self.branch_digit)
+        return self.branch_number
 
     def _move_line(self, move_line):
         self._payment_mode(move_line.payment_mode_id)
@@ -137,9 +134,9 @@ class Boleto:
         :param boletoList:
         :return:
         """
-        fbuffer = StringIO()
+        fbuffer = io.BytesIO()
 
-        fbuffer.reset()
+        # fbuffer.reset()
         from pyboleto.pdf import BoletoPDF
         boleto = BoletoPDF(fbuffer)
         for i in range(len(boleto_list)):
@@ -253,6 +250,7 @@ class BoletoSantander(Boleto):
             move_line.payment_mode_id.bank_account_id.bra_number
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
+
         self.boleto.conta_cedente = \
             move_line.payment_mode_id.boleto_cnab_code
 
@@ -286,10 +284,10 @@ class BoletoSicoob(Boleto):
         self.boleto.nosso_numero = self.nosso_numero
 
     def getAccountNumber(self):
-        return self.account_number.encode('utf-8')
+        return self.account_number
 
     def getBranchNumber(self):
-        return self.branch_number.encode('utf-8')
+        return self.branch_number
 
 
 dict_boleto = {

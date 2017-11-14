@@ -13,11 +13,14 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
 
-    def _prepare_edoc_vals(self, inv):
-        res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
+    def _prepare_edoc_vals(self, inv, inv_lines):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
 
         res['ambiente_nfse'] = 'homologacao' \
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
+        res['serie'] = inv.fiscal_position_id.service_serie_id.id
+        res['serie_documento'] = inv.fiscal_position_id.service_document_id.id
+        res['model'] = inv.fiscal_position_id.service_document_id.code
         return res
 
     def _prepare_edoc_item_vals(self, line):

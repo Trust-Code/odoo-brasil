@@ -8,7 +8,7 @@
         arquivo CNAB 240 - Mantido por Trustcode""",
     'description': """Permite gerar e realizar a integração bancária através de
         arquivo CNAB 240 - Mantido por Trustcode""",
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -26,7 +26,7 @@
     },
     'data': [
         'security/ir.model.access.csv',
-        'views/account_config_settings.xml',
+        'views/res_config_settings.xml',
         'views/account_invoice.xml',
         'views/account_move_line.xml',
         'views/res_partner_bank.xml',

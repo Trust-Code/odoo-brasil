@@ -26,4 +26,36 @@
         </field>
     </record>
 
+    <record id="view_br_res_region_form" model="ir.ui.view">
+        <field name="name">res.region.form</field>
+        <field name="model">res.region</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                  <field name="name"/>
+                  <field name="city_ids"/>
+                  <field name="state_ids"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_br_res_region_tree" model="ir.ui.view">
+        <field name="name">res.region.tree</field>
+        <field name="model">res.region</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_br_base_res_region_form" model="ir.actions.act_window">
+        <field name="name">Regiões</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.region</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+    </record>
+
 </odoo>

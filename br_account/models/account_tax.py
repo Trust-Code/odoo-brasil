@@ -38,7 +38,6 @@ class AccountTaxTemplate(models.Model):
         'account.account.template', string=u"Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
-                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -53,8 +52,9 @@ class AccountTaxTemplate(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
-    def _get_tax_vals(self, company):
-        res = super(AccountTaxTemplate, self)._get_tax_vals(company)
+    def _get_tax_vals(self, company, tax_template_to_tax):
+        res = super(AccountTaxTemplate, self)._get_tax_vals(
+            company, tax_template_to_tax)
         res['domain'] = self.domain
         res['amount_type'] = self.amount_type
         return res
@@ -69,7 +69,6 @@ class AccountTax(models.Model):
         'account.account', string=u"Conta de Dedução do Reembolso")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
-                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -86,7 +85,7 @@ class AccountTax(models.Model):
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
-        if self.domain in ('icms', 'simples', 'pis', 'cofins', 'issqn', 'ii',
+        if self.domain in ('icms', 'pis', 'cofins', 'issqn', 'ii',
                            'icms_inter', 'icms_intra', 'fcp'):
             self.price_include = True
             self.amount_type = 'division'
@@ -256,18 +255,6 @@ class AccountTax(models.Model):
             taxes += [vals_fcp]
         return taxes
 
-    def _compute_simples(self, price_base):
-        simples_tax = self.filtered(lambda x: x.domain == 'simples')
-        if not simples_tax:
-            return []
-        taxes = []
-        for tax in simples_tax:
-            vals = self._tax_vals(tax)
-            vals['amount'] = tax._compute_amount(price_base, 1.0)
-            vals['base'] = price_base
-            taxes.append(vals)
-        return taxes
-
     def _compute_pis_cofins(self, price_base):
         pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
         if not pis_cofins_tax:
@@ -354,7 +341,6 @@ class AccountTax(models.Model):
             price_base, ipi[0]['amount'] if ipi else 0.0)
 
         taxes = icms + icmsst + difal + ipi
-        taxes += self._compute_simples(price_base)
         taxes += self._compute_pis_cofins(price_base)
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)

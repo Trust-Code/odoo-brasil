@@ -92,7 +92,7 @@ class TestEletronicInvoice(TransactionCase):
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
             reference_type="none",
-            fiscal_document_id=self.env.ref(
+            product_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,
@@ -107,7 +107,6 @@ class TestEletronicInvoice(TransactionCase):
         self.assertEquals(vals['type'], 'ir.actions.act_window')
         self.assertEquals(vals['res_model'], 'invoice.eletronic')
         self.assertEquals(vals['res_id'], 0)
-
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 

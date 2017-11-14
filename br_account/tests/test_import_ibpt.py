@@ -24,7 +24,7 @@ class TestImportIBPT(TransactionCase):
             self.wiz.import_ncm()
 
         self.wiz.product_fiscal_class_csv = base64.b64encode(open(
-            os.path.join(self.caminho, 'csv/tabela-ibpt.csv'), 'r').read())
+            os.path.join(self.caminho, 'csv/tabela-ibpt.csv'), 'rb').read())
 
         with self.assertRaises(UserError):
             self.wiz.import_ncm()

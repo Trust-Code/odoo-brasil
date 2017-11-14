@@ -21,6 +21,9 @@ class SaleOrder(models.Model):
             price_subtotal = sum(l.price_subtotal for l in order.order_line)
             order.update({
                 'total_tax': price_total - price_subtotal,
+                'total_ipi': sum(l.ipi_valor for l in order.order_line),
+                'total_icms_st': sum(l.icms_st_valor
+                                     for l in order.order_line),
                 'total_desconto': sum(l.valor_desconto
                                       for l in order.order_line),
                 'total_bruto': sum(l.valor_bruto
@@ -44,6 +47,12 @@ class SaleOrder(models.Model):
         digits=dp.get_precision('Account'), store=True)
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True)
+    total_ipi = fields.Float(
+        string='IPI', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True)
+    total_icms_st = fields.Float(
+        string='ICMS ST', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
     total_desconto = fields.Float(
         string='Desconto Total ( - )', readonly=True, compute='_amount_all',
@@ -81,6 +90,8 @@ class SaleOrderLine(models.Model):
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao')
     def _compute_amount(self):
         for line in self:
+            ipi = 0.0
+            icms_st = 0.0
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             ctx = line._prepare_tax_context()
             tax_ids = line.tax_id.with_context(**ctx)
@@ -88,6 +99,13 @@ class SaleOrderLine(models.Model):
                 price, line.order_id.currency_id,
                 line.product_uom_qty, product=line.product_id,
                 partner=line.order_id.partner_id)
+
+            for tax in taxes['taxes']:
+                tax_id = self.env['account.tax'].browse(tax['id'])
+                if tax_id.domain == 'ipi':
+                    ipi += tax['amount']
+                if tax_id.domain == 'icmsst':
+                    icms_st += tax['amount']
 
             valor_bruto = line.price_unit * line.product_uom_qty
             desconto = valor_bruto * line.discount / 100.0
@@ -98,6 +116,8 @@ class SaleOrderLine(models.Model):
                 'price_subtotal': taxes['total_excluded'],
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
+                'icms_st_valor': icms_st,
+                'ipi_valor': ipi,
             })
 
     @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
@@ -157,11 +177,17 @@ class SaleOrderLine(models.Model):
         string=u"% Dedução", help=u"Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
          do Simples Nacional", digits=dp.get_precision('Account'))
+    icms_st_valor = fields.Monetary(
+        string="Valor ICMS ST", store=True, compute='_compute_amount',
+        digits=dp.get_precision('Sale Price'))
     tem_difal = fields.Boolean(string=u"Possui Difal")
 
     ipi_cst = fields.Char(string=u'CST IPI', size=5)
     ipi_reducao_bc = fields.Float(
         string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'))
+    ipi_valor = fields.Monetary(
+        string="Valor IPI", store=True, compute='_compute_amount',
+        digits=dp.get_precision('Sale Price'))
 
     pis_cst = fields.Char(string=u'CST PIS', size=5)
     cofins_cst = fields.Char(string=u'CST COFINS', size=5)
@@ -203,7 +229,7 @@ class SaleOrderLine(models.Model):
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
 
-                for key, value in vals.iteritems():
+                for key, value in vals.items():
                     if value and key in line._fields:
                         line.update({key: value})
 
@@ -215,7 +241,6 @@ class SaleOrderLine(models.Model):
                     vals.get('tax_icms_inter_id', empty) | \
                     vals.get('tax_icms_intra_id', empty) | \
                     vals.get('tax_icms_fcp_id', empty) | \
-                    vals.get('tax_simples_id', empty) | \
                     vals.get('tax_ipi_id', ipi) | \
                     vals.get('tax_pis_id', empty) | \
                     vals.get('tax_cofins_id', empty) | \
@@ -241,7 +266,6 @@ class SaleOrderLine(models.Model):
         icms_inter = self.tax_id.filtered(lambda x: x.domain == 'icms_inter')
         icms_intra = self.tax_id.filtered(lambda x: x.domain == 'icms_intra')
         icms_fcp = self.tax_id.filtered(lambda x: x.domain == 'icms_fcp')
-        simples = self.tax_id.filtered(lambda x: x.domain == 'simples')
         ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
         pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
@@ -256,7 +280,6 @@ class SaleOrderLine(models.Model):
         res['tax_icms_inter_id'] = icms_inter and icms_inter.id or False
         res['tax_icms_intra_id'] = icms_intra and icms_intra.id or False
         res['tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
-        res['tax_simples_id'] = simples and simples.id or False
         res['tax_ipi_id'] = ipi and ipi.id or False
         res['tax_pis_id'] = pis and pis.id or False
         res['tax_cofins_id'] = cofins and cofins.id or False

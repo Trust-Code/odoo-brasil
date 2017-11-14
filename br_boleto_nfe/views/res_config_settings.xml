@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="account_config_settings_email_boleto" model="ir.ui.view">
+        <field name="name">account_config_settings.email.boleto</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="br_boleto.account_config_settings_email_boleto"/>
+        <field name="arch" type="xml">
+            <div id="mail_template_boleto" position="attributes" >
+                <attribute name="invisible">1</attribute>
+            </div>
+        </field>
+    </record>
+</odoo>

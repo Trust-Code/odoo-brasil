@@ -69,8 +69,8 @@ class AccountInvoice(models.Model):
     local_embarque = fields.Char('Local de Embarque', size=60)
     local_despacho = fields.Char('Local de Despacho', size=60)
 
-    def _prepare_edoc_vals(self, inv):
-        res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
+    def _prepare_edoc_vals(self, inv, inv_lines):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
         res['valor_frete'] = inv.total_frete
         res['valor_despesas'] = inv.total_despesas
         res['valor_seguro'] = inv.total_seguro

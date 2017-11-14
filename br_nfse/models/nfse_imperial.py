@@ -240,10 +240,12 @@ class InvoiceEletronic(models.Model):
                 self.codigo_retorno = '100'
                 self.mensagem_retorno = 'NFSe emitida com sucesso'
                 self.numero_nfse = retorno.XML_Notas.Reg20.Reg20Item.NumNf
-                self.verify_code = retorno.XML_Notas.Reg20.Reg20Item.CodVernf
+                self.verify_code = \
+                    retorno.XML_Notas.Reg20.Reg20Item.CodVernf
             else:
                 self.codigo_retorno = '-1'
-                self.mensagem_retorno = retorno.Messages.Message[1].Description
+                self.mensagem_retorno = \
+                    retorno.Messages.Message[1].Description
 
         else:
             self.codigo_retorno = -1

@@ -114,17 +114,17 @@ class CrmLead(models.Model):
             self.district = self.partner_id.district
             self.city_id = self.partner_id.city_id.id
 
-    @api.model
-    def _lead_create_contact(self, name, is_company, parent_id=False):
-        partner = super(CrmLead, self)._lead_create_contact(
+    @api.multi
+    def _create_lead_partner_data(self, name, is_company, parent_id=False):
+        partner = super(CrmLead, self)._create_lead_partner_data(
             name, is_company, parent_id)
-        value = {
+        partner.update({
             'number': self.number,
             'district': self.district,
             'city_id': self.city_id.id
-        }
+        })
         if is_company:
-            value.update({
+            partner.update({
                 'legal_name': self.legal_name,
                 'cnpj_cpf': self.cnpj,
                 'inscr_est': self.inscr_est,
@@ -132,11 +132,9 @@ class CrmLead(models.Model):
                 'suframa': self.suframa,
                 })
         else:
-            value.update({
+            partner.update({
                 'legal_name': self.name_surname,
                 'cnpj_cpf': self.cpf,
                 'inscr_est': self.rg,
                 })
-        if partner:
-            partner.write(value)
         return partner

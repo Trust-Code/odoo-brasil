@@ -49,6 +49,7 @@ class ResPartner(models.Model):
         from_clause, where_clause, where_clause_params = where_query.get_sql()
 
         # price_total is in the company currency
+        # pylint: disable=E8103
         query = """
                   SELECT SUM(price_total) as total, partner_id
                     FROM account_invoice_report account_invoice_report

@@ -17,7 +17,6 @@ class AccountFiscalPositionTaxRule(models.Model):
     sequence = fields.Integer(string=u"Sequência")
     name = fields.Char(string=u"Descrição", size=100)
     domain = fields.Selection([('icms', 'ICMS'),
-                               ('simples', 'Simples Nacional'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
@@ -85,12 +84,23 @@ class AccountFiscalPosition(models.Model):
         'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico")
     note = fields.Text(u'Observações')
 
+    product_serie_id = fields.Many2one(
+        'br_account.document.serie', string=u'Série Produto',
+        domain="[('fiscal_document_id', '=', product_document_id),\
+        ('company_id','=',company_id)]")
+    product_document_id = fields.Many2one(
+        'br_account.fiscal.document', string='Documento Produto')
+
+    service_serie_id = fields.Many2one(
+        'br_account.document.serie', string=u'Série Serviço',
+        domain="[('fiscal_document_id', '=', service_document_id),\
+        ('company_id','=',company_id)]")
+    service_document_id = fields.Many2one(
+        'br_account.fiscal.document', string='Documento Serviço')
+
     icms_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras ICMS", domain=[('domain', '=', 'icms')])
-    simples_tax_rule_ids = fields.One2many(
-        'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string=u"Regras Simples Nacional", domain=[('domain', '=', 'simples')])
     ipi_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras IPI", domain=[('domain', '=', 'ipi')])

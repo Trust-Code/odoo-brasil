@@ -192,7 +192,7 @@ class InvoiceEletronic(models.Model):
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_recepcionar_lote_rps(certificado, nfse=nfse_values)
 
-        self.xml_to_send = base64.encodestring(xml_enviar)
+        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     def _find_attachment_ids_email(self):
@@ -243,12 +243,13 @@ class InvoiceEletronic(models.Model):
                 retorno = recebe_lote['object']
                 if "NumeroLote" in dir(retorno):
                     self.recibo_nfe = retorno.Protocolo
-                    time.sleep(5)  # Espera alguns segundos antes de consultar
+                    # Espera alguns segundos antes de consultar
+                    time.sleep(5)
                 else:
-                    self.codigo_retorno = \
-                        retorno.ListaMensagemRetorno.MensagemRetorno.Codigo
-                    self.mensagem_retorno = \
-                        retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem
+                    mensagem_retorno = retorno.ListaMensagemRetorno\
+                        .MensagemRetorno
+                    self.codigo_retorno = mensagem_retorno.Codigo
+                    self.mensagem_retorno = mensagem_retorno.Mensagem
                     self._create_attachment(
                         'nfse-ret', self, recebe_lote['received_xml'])
                     return
@@ -279,15 +280,15 @@ class InvoiceEletronic(models.Model):
                         self.state = 'done'
                         self.codigo_retorno = '100'
                         self.mensagem_retorno = 'NFSe emitida com sucesso'
-                        self.verify_code = retLote.ListaNfse.CompNfse.Nfse.\
-                            InfNfse.CodigoVerificacao
+                        self.verify_code = retLote.ListaNfse.CompNfse \
+                            .Nfse.InfNfse.CodigoVerificacao
                         self.numero_nfse = \
                             retLote.ListaNfse.CompNfse.Nfse.InfNfse.Numero
                     else:
-                        self.codigo_retorno = \
-                            retLote.ListaMensagemRetorno.MensagemRetorno.Codigo
-                        self.mensagem_retorno = retLote.ListaMensagemRetorno.\
-                            MensagemRetorno.Mensagem
+                        mensagem_retorno = retLote.ListaMensagemRetorno \
+                            .MensagemRetorno
+                        self.codigo_retorno = mensagem_retorno.Codigo
+                        self.mensagem_retorno = mensagem_retorno.Mensagem
 
                 elif ret_rec.Situacao == 1:  # Reenviar caso não recebido
                     self.codigo_retorno = ''
@@ -312,7 +313,8 @@ class InvoiceEletronic(models.Model):
                 self._create_attachment(
                     'nfse-ret', self, recebe_lote['received_xml'])
             if consulta_lote:
-                self._create_attachment('rec', self, consulta_lote['sent_xml'])
+                self._create_attachment(
+                    'rec', self, consulta_lote['sent_xml'])
                 self._create_attachment(
                     'rec-ret', self, consulta_lote['received_xml'])
 

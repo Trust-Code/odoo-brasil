@@ -2,8 +2,9 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import io
 import logging
-import StringIO
+
 
 from odoo import fields, models
 from odoo.exceptions import UserError
@@ -39,8 +40,7 @@ class AccountBankStatementImport(models.TransientModel):
 
     def _check_ofx(self, data_file, raise_error=False):
         try:
-            data_file = data_file.replace('\r\n', '\n').replace('\r', '\n')
-            OfxParser.parse(StringIO.StringIO(data_file))
+            OfxParser.parse(io.BytesIO(data_file))
             return True
         except Exception as e:
             if raise_error:
@@ -48,8 +48,7 @@ class AccountBankStatementImport(models.TransientModel):
             return False
 
     def _parse_ofx(self, data_file):
-        data_file = data_file.replace('\r\n', '\n').replace('\r', '\n')
-        ofx = OfxParser.parse(StringIO.StringIO(data_file))
+        ofx = OfxParser.parse(io.BytesIO(data_file))
         transacoes = []
         total = 0.0
         index = 1  # Some banks don't use a unique transaction id, we make one

@@ -1,0 +1,204 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_payment_cielo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-09 14:12+0000\n"
+"PO-Revision-Date: 2017-10-09 14:12+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,help:br_payment_cielo.field_res_config_settings_module_payment_cielo
+msgid "-It installs the module payment_cielo."
+msgstr "Instala o módulo de pagamentos Cielo"
+
+#. module: br_payment_cielo
+#: model:payment.acquirer,cancel_msg:br_payment_cielo.payment_acquirer_cielo
+msgid "<span><i>Cancel,</i> Your payment has been cancelled.</span>"
+msgstr "<span><i>Cancelar,</i> Seu pagamento foi cancelado.</span>"
+
+#. module: br_payment_cielo
+#: model:payment.acquirer,done_msg:br_payment_cielo.payment_acquirer_cielo
+msgid "<span><i>Done,</i> Your online payment has been successfully processed. Thank you for your order.</span>"
+msgstr "<span><i>Pronto,</i> Seu pagamento online foi processado com sucesso. Obrigado por sua compra.</span>"
+
+#. module: br_payment_cielo
+#: model:payment.acquirer,error_msg:br_payment_cielo.payment_acquirer_cielo
+msgid "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but will not be paid. Do not hesitate to contact us if you have any questions on the status of your order.</span>"
+msgstr "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but will not be paid. Do not hesitate to contact us if you have any questions on the status of your order.</span>"
+
+#. module: br_payment_cielo
+#: model:payment.acquirer,pending_msg:br_payment_cielo.payment_acquirer_cielo
+msgid "<span><i>Pending,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>"
+msgstr "<span><i>Pendente,</i> Seu pagamento online foi processado com sucesso. Mas sua compra ainda não foi validada.</span>"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "American Express"
+msgstr "American Express"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "Aura"
+msgstr "Aura"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,state_cielo:0
+msgid "Autorizado"
+msgstr "Autorizado"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_payment_method_brand
+msgid "Bandeira Cartão"
+msgstr "Bandeira Cartão"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,transaction_type:0
+msgid "Boleto Bancário"
+msgstr "Boleto Bancário"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,state_cielo:0
+msgid "Cancelado"
+msgstr "Cancelado"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,transaction_type:0
+msgid "Cartão de Crédito"
+msgstr "Cartão de Crédito"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,transaction_type:0
+msgid "Cartão de Débito"
+msgstr "Cartão de Débito"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_url_cielo
+#: model:ir.ui.view,arch_db:br_payment_cielo.payment_cielo_option_config
+#: model:payment.acquirer,name:br_payment_cielo.payment_acquirer_cielo
+msgid "Cielo"
+msgstr "Cielo"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_acquirer_cielo_merchant_id
+msgid "Cielo Merchant Id"
+msgstr "Id do comerciante Cielo"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "Diners"
+msgstr "Diners"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,transaction_type:0
+msgid "Débito Online"
+msgstr "Débito Online"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "Elo"
+msgstr "Elo"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_cielo_transaction_id
+msgid "ID Transação"
+msgstr "ID Transação"
+
+#. module: br_payment_cielo
+#: model:ir.ui.view,arch_db:br_payment_cielo.payment_cielo_option_config
+msgid "It installs the module payment_cielo"
+msgstr "Instala o modulo de pagamentos Cielo"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "JCB"
+msgstr "JCB"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_res_config_settings_module_payment_cielo
+msgid "Manage Payments Using Cielo"
+msgstr "Gestão de pagamentos utilizando Cielo"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "Mastercard"
+msgstr "Mastercard"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,state_cielo:0
+msgid "Negado"
+msgstr "Negado"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,state_cielo:0
+msgid "Não Finalizado"
+msgstr "Não Finalizado"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_payment_boletonumber
+msgid "Número boleto"
+msgstr "Número boleto"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_payment_installments
+msgid "Número de parcelas"
+msgstr "Número de parcelas"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,state_cielo:0
+msgid "Pago"
+msgstr "Pago"
+
+#. module: br_payment_cielo
+#: model:ir.model,name:br_payment_cielo.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr "Método de Pagamento"
+
+#. module: br_payment_cielo
+#: model:ir.model,name:br_payment_cielo.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transação do Pagamento"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,state_cielo:0
+msgid "Pendente"
+msgstr "Pendente"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_state_cielo
+msgid "Situação Cielo"
+msgstr "Situação Cielo"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_transaction_transaction_type
+msgid "Tipo pagamento"
+msgstr "Tipo pagamento"
+
+#. module: br_payment_cielo
+#: model:ir.model.fields,field_description:br_payment_cielo.field_payment_acquirer_return_url
+msgid "Url de Retorno"
+msgstr "Url de Retorno"
+
+#. module: br_payment_cielo
+#: selection:payment.transaction,payment_method_brand:0
+msgid "Visa"
+msgstr "Visa"
+
+#. module: br_payment_cielo
+#: model:payment.acquirer,pre_msg:br_payment_cielo.payment_acquirer_cielo
+msgid "Você vai ser redirecionado ao site da CIELO para capturar os dados de pagamento."
+msgstr "Você vai ser redirecionado ao site da CIELO para capturar os dados de pagamento."
+
+#. module: br_payment_cielo
+#: model:ir.model,name:br_payment_cielo.model_res_config_settings
+msgid "res.config.settings"
+msgstr "res.config.settings"
+

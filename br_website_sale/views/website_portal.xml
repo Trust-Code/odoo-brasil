@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <template id="br_website_portal_my_account" inherit_id="website_portal.details"
+        <template id="br_website_portal_my_account" inherit_id="portal.portal_my_details"
             name="Website Sale Portal">
 
             <form action="/my/account" position="replace">

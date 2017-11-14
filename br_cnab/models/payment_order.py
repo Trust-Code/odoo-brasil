@@ -33,7 +33,7 @@ class PaymentOrder(models.Model):
             self.name = 'CNAB%s%s.REM' % (
                 time.strftime('%d%m'), str(order.file_number))
             self.state = 'done'
-            self.cnab_file = base64.b64encode(remessa)
+            self.cnab_file = base64.b64encode(remessa.encode('UTF-8'))
 
             self.env['ir.attachment'].create({
                 'name': self.name,

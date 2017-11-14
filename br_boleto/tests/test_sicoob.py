@@ -43,13 +43,13 @@ class TestBoletoSicoob(TestBoleto):
     def _update_main_company(self):
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': u'Trustcode Tecnologia da Informação',
+            'legal_name': 'Trustcode Tecnologia da Informação',
             'cnpj_cpf': '92.743.275/0001-33',
             'inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
             'number': '42',
-            'district': u'Córrego Grande',
+            'district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -77,11 +77,11 @@ class TestBoletoSicoob(TestBoleto):
         vals = move.action_print_boleto()
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
-        self.assertEquals(vals['report_type'], 'pdf')
+        self.assertEquals(vals['report_type'], 'qweb-pdf')
 
         vals = self.invoices.action_register_boleto()
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
-        self.assertEquals(vals['report_type'], 'pdf')
+        self.assertEquals(vals['report_type'], 'qweb-pdf')
 
         move.action_register_boleto()

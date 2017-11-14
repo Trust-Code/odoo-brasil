@@ -43,10 +43,6 @@
             <field name="bc_code">00647</field>
         </record>
 
-        <record id="base.an" model="res.country">
-            <field name="bc_code">00477</field>
-        </record>
-
         <record id="base.ao" model="res.country">
             <field name="bc_code">00400</field>
         </record>
@@ -663,10 +659,6 @@
             <field name="bc_code">05088</field>
         </record>
 
-        <record id="base.nt" model="res.country">
-            <field name="bc_code"></field>
-        </record>
-
         <record id="base.nu" model="res.country">
             <field name="bc_code">05312</field>
         </record>
@@ -867,7 +859,7 @@
             <field name="bc_code">08109</field>
         </record>
 
-        <record id="base.tp" model="res.country">
+        <record id="base.tl" model="res.country">
             <field name="bc_code">07951</field>
         </record>
 
@@ -963,21 +955,12 @@
             <field name="bc_code">04885</field>
         </record>
 
-        <record id="base.yu" model="res.country">
-            <field name="bc_code">04499</field>
-        </record>
-
         <record id="base.za" model="res.country">
             <field name="bc_code">07560</field>
         </record>
 
         <record id="base.zm" model="res.country">
             <field name="bc_code">08907</field>
-        </record>
-
-        <!-- DEPRECATED, New name of Zaire is Democratic Republic of the Congo ! -->
-        <record id="base.zr" model="res.country">
-            <field name="bc_code">08885</field>
         </record>
 
         <record id="base.zw" model="res.country">

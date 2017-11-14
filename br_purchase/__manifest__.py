@@ -9,13 +9,14 @@
     'license': 'AGPL-3',
     'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'depends': [
         'purchase', 'br_account',
     ],
     'data': [
         'views/purchase_view.xml',
         'views/account_invoice.xml',
+        'views/product.xml',
     ],
     'installable': True,
     'auto_install': True
