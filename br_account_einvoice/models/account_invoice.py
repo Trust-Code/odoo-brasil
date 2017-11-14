@@ -233,5 +233,9 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
+    state = fields.Selection(
+        [('draft', 'Provisório'), ('done', 'Finalizado')], string="Situação")
+    eletronic_line_id = fields.Many2one('invoice.eletronic')
+
     item_pedido_compra = fields.Char(
         string=u'Item do pedido de compra do cliente')

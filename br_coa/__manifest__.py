@@ -25,5 +25,5 @@
         # TODO Achar uma forma de carregar o template
         # 'data/account_chart_template_data.yml',
     ],
-    'active': False,
+    'active': True,
 }

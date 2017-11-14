@@ -10,7 +10,7 @@
     </record>
 
     <record id="br_account_chart_template" model="account.chart.template">
-        <field name="name">Plano de Contas Simplificado Brasil</field>
+        <field name="name">Plano de Contas Brasil</field>
         <field name="code_digits">1</field>
         <field name="bank_account_code_prefix">1.1.1.02</field>
         <field name="cash_account_code_prefix">1.1.1.01</field>

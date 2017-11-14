@@ -4,7 +4,7 @@
 
     <record id="transfer_account_id" model="account.account.template">
         <field name="name">Transferência de Contas</field>
-        <field name="code">1.1.1.04</field>
+        <field name="code">1400</field>
         <field name="reconcile" eval="True"/>
         <field ref="account.data_account_type_current_assets" name="user_type_id"/>
     </record>
@@ -12,8 +12,8 @@
     <record id="br_account_chart_template" model="account.chart.template">
         <field name="name">Plano de Contas Simplificado Brasil</field>
         <field name="code_digits">1</field>
-        <field name="bank_account_code_prefix">1.1.1.02</field>
-        <field name="cash_account_code_prefix">1.1.1.01</field>
+        <field name="bank_account_code_prefix">103</field>
+        <field name="cash_account_code_prefix">102</field>
         <field name="currency_id" ref="base.USD"/>
         <field name="transfer_account_id" ref="transfer_account_id"/>
     </record>
