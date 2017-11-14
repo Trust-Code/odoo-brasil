@@ -60,7 +60,7 @@ class TestCnab(TransactionCase):
         })
         self.partner_fisica = self.env['res.partner'].create(dict(
             name='Parceiro',
-            company_type='company',
+            company_type='person',
             is_company=False,
             street='Donicia',
             zip='88032-050',

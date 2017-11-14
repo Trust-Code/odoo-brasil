@@ -140,7 +140,7 @@ class TestNFeBrasil(TransactionCase):
         self.partner_exterior = self.env['res.partner'].create(dict(
             default_partner.items(),
             cnpj_cpf='12345670',
-            company_type=True,
+            company_type='company',
             is_company=True,
             country_id=self.env.ref('base.us').id,
         ))
