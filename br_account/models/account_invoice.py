@@ -398,7 +398,7 @@ class AccountInvoice(models.Model):
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
 
-        res['product_document_id'] = invoice.produc5_document_id.id
+        res['product_document_id'] = invoice.product_document_id.id
         res['product_serie_id'] = invoice.product_serie_id.id
         res['service_document_id'] = invoice.service_document_id.id
         res['service_serie_id'] = invoice.service_serie_id.id
