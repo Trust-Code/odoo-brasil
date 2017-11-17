@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="account_config_settings_email_boleto" model="ir.ui.view">
-        <field name="name">account_config_settings.email.boleto</field>
+    <record id="res_config_settings_email_boleto" model="ir.ui.view">
+        <field name="name">res_config_settings.email.boleto</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="br_account.account_config_settings_email_templates"/>
         <field name="arch" type="xml">
