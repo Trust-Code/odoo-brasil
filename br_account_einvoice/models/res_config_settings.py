@@ -12,10 +12,13 @@ class ResConfigSettings(models.TransientModel):
         'mail.template', string="Template de Email para NFe",
         domain=[('model_id.model', '=', 'account.invoice')])
 
-    def get_default_nfe_email_template(self, fields):
-        return {'nfe_email_template':
-                self.env.user.company_id.nfe_email_template.id}
+    def get_values(self):
+        res = super(ResConfigSettings, self).get_values()
+        res['nfe_email_template'] = self.env.user.company_id\
+            .nfe_email_template.id
+        return res
 
     @api.multi
-    def set_default_nfe_email_template(self):
+    def set_values(self):
+        super(ResConfigSettings, self).set_values()
         self.env.user.company_id.nfe_email_template = self.nfe_email_template
