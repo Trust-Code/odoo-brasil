@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <odoo>
     <record id="res_config_settings_email_boleto" model="ir.ui.view">
         <field name="name">res_config_settings.email.boleto</field>
