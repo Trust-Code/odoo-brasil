@@ -35,6 +35,5 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         if self.invoice_id:
-            vals['context']['default_invoice_ids'] = [
-                (4, self.invoice_id.id, None)],
+            vals['context']['default_invoice_ids'] = [self.invoice_id.id]
         return vals

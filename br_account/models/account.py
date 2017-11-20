@@ -5,6 +5,14 @@
 from odoo import fields, models
 
 
+class AccountAccountTemplate(models.Model):
+    _inherit = 'account.account.template'
+
+    account_type = fields.Selection(
+        [('tax', 'Imposto'), ('income', 'Receita'), ('expense', 'Despesa')],
+        string="Tipo de conta")
+
+
 class AccountAccount(models.Model):
     _inherit = 'account.account'
 
