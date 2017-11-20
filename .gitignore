@@ -4,4 +4,4 @@
 # Remove IDE files
 .idea/
 
-.vscode/tags
+.vscode/
