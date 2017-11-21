@@ -9,7 +9,7 @@
             <div name="alertas" position="before">
                 <field name="ambiente_nfse" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('model', 'not in', ('001', '002', '008', '009', '010'))]}">
+                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('model', 'not in', ('001', '002', '008', '009', '010'))]}">
                     A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
