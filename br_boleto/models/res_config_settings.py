@@ -12,10 +12,13 @@ class ResConfigSettings(models.TransientModel):
         'mail.template', string="Template de Email para Envio de Boleto",
         domain=[('model_id.model', '=', 'account.invoice')])
 
-    def get_default_boleto_email_tmpl(self, fields):
-        return {'boleto_email_tmpl':
-                self.env.user.company_id.boleto_email_tmpl.id}
+    def get_values(self):
+        res = super(ResConfigSettings, self).get_values()
+        res['boleto_email_tmpl'] = self.env.user.company_id\
+            .boleto_email_tmpl.id
+        return res
 
     @api.multi
-    def set_default_boleto_email_tmpl(self):
+    def set_values(self):
+        super(ResConfigSettings, self).set_values()
         self.env.user.company_id.boleto_email_tmpl = self.boleto_email_tmpl
