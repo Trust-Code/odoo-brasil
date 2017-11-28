@@ -35,6 +35,7 @@ class AccountInvoice(models.Model):
         self.pis_value = sum(abs(l.pis_valor) for l in lines)
         self.cofins_base = sum(l.cofins_base_calculo for l in lines)
         self.cofins_value = sum(abs(l.cofins_valor) for l in lines)
+        self.ii_base = sum(l.ii_base_calculo for l in lines)
         self.ii_value = sum(l.ii_valor for l in lines)
         self.csll_base = sum(l.csll_base_calculo for l in lines)
         self.csll_value = sum(abs(l.csll_valor) for l in lines)
@@ -208,6 +209,9 @@ class AccountInvoice(models.Model):
         string='COFINS Retido', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
+    ii_base = fields.Float(
+        string='Base II', store=True,
+        digits=dp.get_precision('Account'), compute='_compute_amount')
     ii_value = fields.Float(
         string='Valor II', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
@@ -398,7 +402,7 @@ class AccountInvoice(models.Model):
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
 
-        res['product_document_id'] = invoice.produc5_document_id.id
+        res['product_document_id'] = invoice.product_document_id.id
         res['product_serie_id'] = invoice.product_serie_id.id
         res['service_document_id'] = invoice.service_document_id.id
         res['service_serie_id'] = invoice.service_serie_id.id
