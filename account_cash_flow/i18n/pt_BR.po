@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 10.0\n"
+"Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-04 18:21+0000\n"
-"PO-Revision-Date: 2016-11-04 18:21+0000\n"
+"POT-Creation-Date: 2017-11-28 16:12+0000\n"
+"PO-Revision-Date: 2017-11-28 16:12+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,17 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_cash_flow
-#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_account_id
 #: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "A Receber"
+msgstr "A Receber"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "A pagar"
+msgstr "A pagar"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_account_id
 msgid "Account"
 msgstr "Conta"
 
@@ -32,18 +41,18 @@ msgid "Accumulated balance"
 msgstr "Saldo acumulado"
 
 #. module: account_cash_flow
-#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
-msgid "Balance (C-D)"
-msgstr "Saldo (C-D)"
-
-#. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_amount
 msgid "Balance(C-D)"
 msgstr "Saldo(C-D)"
 
 #. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Balanço no Período"
+msgstr "Balanço no Período"
+
+#. module: account_cash_flow
 #: model:ir.actions.act_window,name:account_cash_flow.action_account_cash_flow_wizard_form
-#: model:ir.actions.report.xml,name:account_cash_flow.account_cash_flow_html_report
+#: model:ir.actions.report,name:account_cash_flow.account_cash_flow_html_report
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_cashflow_id
 #: model:ir.ui.menu,name:account_cash_flow.menu_cash_flow_wizard
 #: model:ir.ui.view,arch_db:account_cash_flow.view_account_cash_flow_line_graph
@@ -88,7 +97,6 @@ msgstr "Criado em"
 
 #. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_credit
-#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
 msgid "Credit"
 msgstr "Crédito"
 
@@ -105,7 +113,6 @@ msgstr "Dia"
 
 #. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_debit
-#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
 msgid "Debit"
 msgstr "Débito"
 
@@ -120,7 +127,7 @@ msgstr "Descrição"
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_display_name
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_display_name
 msgid "Display Name"
-msgstr "Nome para Exibição"
+msgstr "Nome exibido"
 
 #. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_end_date
@@ -177,7 +184,6 @@ msgstr "Fatura"
 
 #. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_journal_id
-#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
 msgid "Journal"
 msgstr "Diário"
 
@@ -186,7 +192,7 @@ msgstr "Diário"
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line___last_update
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard___last_update
 msgid "Last Modified on"
-msgstr "Última Modificação em"
+msgstr "Última modificação em"
 
 #. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_write_uid
@@ -208,21 +214,76 @@ msgid "Linhas"
 msgstr "Linhas"
 
 #. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_liquidity
+msgid "Liquidity"
+msgstr "Liquidity"
+
+#. module: account_cash_flow
+#: selection:account.cash.flow.line,line_type:0
+msgid "Pagável"
+msgstr "Pagável"
+
+#. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_partner_id
 #: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
 msgid "Partner"
 msgstr "Parceiro"
 
 #. module: account_cash_flow
-#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_start_date
-#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_wizard_start_date
-msgid "Start Date"
-msgstr "Data de Início"
+#: selection:account.cash.flow.line,line_type:0
+msgid "Recebível"
+msgstr "Recebível"
 
 #. module: account_cash_flow
 #: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_final_amount
-msgid "Total"
-msgstr "Total"
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Saldo Final"
+msgstr "Saldo Final"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_start_balance
+msgid "Saldo Inicial"
+msgstr "Saldo Inicial"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Saldo da linha"
+msgstr "Saldo da linha"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Saldo de Caixa e Bancos"
+msgstr "Saldo de Caixa e Bancos"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_period_balance
+msgid "Saldo do Período"
+msgstr "Saldo do Período"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_line_line_type
+msgid "Tipo"
+msgstr "Tipo"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_total_payables
+msgid "Total de Despesas"
+msgstr "Total de Despesas"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Total de Despesas no Período"
+msgstr "Total de Despesas no Período"
+
+#. module: account_cash_flow
+#: model:ir.model.fields,field_description:account_cash_flow.field_account_cash_flow_total_receivables
+msgid "Total de Recebimentos"
+msgstr "Total de Recebimentos"
+
+#. module: account_cash_flow
+#: model:ir.ui.view,arch_db:account_cash_flow.account_cash_flow_template_html_report
+msgid "Total de Recebimentos no Período"
+msgstr "Total de Recebimentos no Período"
 
 #. module: account_cash_flow
 #: model:ir.model,name:account_cash_flow.model_account_cash_flow_wizard
