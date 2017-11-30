@@ -14,4 +14,13 @@ class AccountClose(models.TransientModel):
 
     @api.multi
     def action_close_period(self):
-        pass
+        import ipdb
+        ipdb.set_trace()
+        account_move_lines = self.env['account.move.line'].search([
+            ('date', '>=', self.start_date), ('date', '<=', self.end_date),
+            ('account_id.account_type', '=', 'tax')])
+
+        # icms_line = account_move_lines.filtered(
+        #     lambda x: x.tax_line_id.domain == 'icms')
+
+        domains = set(account_move_lines.tax_line_id.domain)
