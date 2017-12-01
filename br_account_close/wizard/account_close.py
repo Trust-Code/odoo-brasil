@@ -22,5 +22,14 @@ class AccountClose(models.TransientModel):
 
         # icms_line = account_move_lines.filtered(
         #     lambda x: x.tax_line_id.domain == 'icms')
+        domains = []
+        for lines in account_move_lines:
+            domains.append(lines.tax_line_id.domain)
 
-        domains = set(account_move_lines.tax_line_id.domain)
+        domains = set(domains)
+
+        for domain in domains:
+            self.create_account_payment_tax(domain)
+
+    def create_account_payment_tax(self, domain):
+        pass
