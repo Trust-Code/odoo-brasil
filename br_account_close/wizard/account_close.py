@@ -11,6 +11,7 @@ class AccountClose(models.TransientModel):
 
     start_date = fields.Date(string="Inicio")
     end_date = fields.Date(string="Final")
+    
 
     @api.multi
     def action_close_period(self):
@@ -32,4 +33,8 @@ class AccountClose(models.TransientModel):
             self.create_account_payment_tax(domain)
 
     def create_account_payment_tax(self, domain):
-        pass
+        vals = dict(
+            payment_type=outbound,
+            partner_type=supplier,
+
+        )
