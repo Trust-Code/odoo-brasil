@@ -9,6 +9,8 @@
                     <group name='dates'>
                         <field name="start_date"/>
                         <field name="end_date"/>
+                        <field name="partner_id"/>
+                        <field name="payment_date"/>
                     </group>
                 </group>
                 <footer>
