@@ -39,30 +39,64 @@ class AccountClose(models.TransientModel):
 
     @api.multi
     def action_close_period(self):
-        import ipdb
-        ipdb.set_trace()
-        account_move_lines=self.env['account.move.line'].search([
+        account_move_lines = self.env['account.move.line'].search([
             ('date', '>=', self.start_date), ('date', '<=', self.end_date),
             ('account_id.account_type', '=', 'tax')])
 
         # icms_line = account_move_lines.filtered(
         #     lambda x: x.tax_line_id.domain == 'icms')
-        domains=[]
+        domains = []
         for lines in account_move_lines:
             domains.append(lines.tax_line_id.domain)
 
-        domains=set(domains)
+        domains = set(domains)
 
+        account_voucher = self.prepare_account_voucher()
         for domain in domains:
-            self.create_account_payment_tax(domain)
+            import ipdb
+            ipdb.set_trace()
+            price_unit = self.tax_calculation(account_move_lines, domain)
+            account_voucher.line_ids = self.prepare_account_line_voucher(
+                account_voucher, domain, price_unit)
 
-    def create_account_payment_tax(self, domain):
-        vals=dict(
-            partner_id = self.partner_id.id,
-            pay_now = 'pay_later',
-            date = datetime.now(),
-            date_due = self.payment_date,
-            account_date = self.payment_date,
-            account_id = self.account_id.id,
-            journal_id = self.journal_id.id,
+    def prepare_account_voucher(self):
+        vals = dict(
+            partner_id=self.partner_id.id,
+            pay_now='pay_later',
+            date=datetime.now(),
+            date_due=self.payment_date,
+            account_date=self.payment_date,
+            account_id=self.account_id.id,
+            journal_id=self.journal_id.id,
         )
+
+        return vals
+
+    def prepare_account_line_voucher(self, domain, price_unit):
+        vals = dict(
+            name=str(domain),
+            account_id=self.account_payment_id.id,
+            quantity=1,
+            price_unit=price_unit,
+        )
+
+        return [0, 0, vals]
+
+    def tax_calculation(self, account_move_lines, domain):
+        tax_to_recover_lines = account_move_lines.filtered(
+            lambda x: x.tax_line_id.domain == domain and
+            x.account_id.user_type_id.id == 5)
+
+        tax_to_recover = 0
+        for line in tax_to_recover_lines:
+            tax_to_recover += line.debit
+
+        tax_to_paid_lines = account_move_lines.filtered(
+            lambda x: x.tax_line_id.domain == domain and
+            x.account_id.user_type_id.id == 9)
+
+        tax_to_paid = 0
+        for line in tax_to_paid_lines:
+            tax_to_paid += line.credit
+
+        return tax_to_paid - tax_to_recover
