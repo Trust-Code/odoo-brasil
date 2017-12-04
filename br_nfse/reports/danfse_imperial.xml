@@ -331,8 +331,10 @@
 
     <template id="main_template_br_nfse_danfe_imperial">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <t t-call="br_nfse.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="br_nfse.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
+                </t>
             </t>
         </t>
     </template>
