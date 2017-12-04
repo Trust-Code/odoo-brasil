@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_simples_nacional_company_form" model="ir.ui.view">
+            <field name="name">simples_nacional.company</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="br_account.view_br_account_company_form" />
+            <field name="arch" type="xml">
+                <group name="simples_nacional" position="replace">
+                    <group name="simples_nacional" string="Simples Nacional"
+                            attrs="{'invisible': [('fiscal_type', 'not in', ('1', '2'))]}">
+                        <field name="simples_nacional_ids" nolabel="1" />
+                    </group>
+                </group>
+            </field>
+        </record>
+	</data>
+</odoo>
