@@ -11,6 +11,8 @@
                         <field name="end_date"/>
                         <field name="partner_id"/>
                         <field name="payment_date"/>
+                        <field name="journal_id" />
+                        <field name="account_payment_id" />
                     </group>
                 </group>
                 <footer>

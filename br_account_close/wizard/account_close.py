@@ -56,8 +56,10 @@ class AccountClose(models.TransientModel):
             import ipdb
             ipdb.set_trace()
             price_unit = self.tax_calculation(account_move_lines, domain)
-            account_voucher.line_ids = self.prepare_account_line_voucher(
-                account_voucher, domain, price_unit)
+            account_voucher['line_ids'] = self.prepare_account_line_voucher(
+                domain, price_unit)
+
+        self.env['account.voucher'].create(account_voucher)
 
     def prepare_account_voucher(self):
         vals = dict(
@@ -68,6 +70,7 @@ class AccountClose(models.TransientModel):
             account_date=self.payment_date,
             account_id=self.account_id.id,
             journal_id=self.journal_id.id,
+            lines_ids=[],
         )
 
         return vals
@@ -83,20 +86,14 @@ class AccountClose(models.TransientModel):
         return [0, 0, vals]
 
     def tax_calculation(self, account_move_lines, domain):
-        tax_to_recover_lines = account_move_lines.filtered(
-            lambda x: x.tax_line_id.domain == domain and
-            x.account_id.user_type_id.id == 5)
+        tax_lines = account_move_lines.filtered(
+            lambda x: x.tax_line_id.domain == domain)
 
-        tax_to_recover = 0
-        for line in tax_to_recover_lines:
-            tax_to_recover += line.debit
+        tax_credit = 0
+        tax_debit = 0
 
-        tax_to_paid_lines = account_move_lines.filtered(
-            lambda x: x.tax_line_id.domain == domain and
-            x.account_id.user_type_id.id == 9)
+        for lines in tax_lines:
+            tax_credit += lines.credit
+            tax_debit += lines.debit
 
-        tax_to_paid = 0
-        for line in tax_to_paid_lines:
-            tax_to_paid += line.credit
-
-        return tax_to_paid - tax_to_recover
+        return tax_debit - tax_credit
