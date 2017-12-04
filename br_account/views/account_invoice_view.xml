@@ -232,7 +232,7 @@
                                     <field name="price_subtotal" string="(=) Valor Líquido" />
                                 </group>
                                 <group>
-                                    <field name="cfop_id"/>
+                                    <field name="cfop_id" domain="[('internal_type', '=', 'normal')]"/>
                                     <field name="fiscal_classification_id" />
                                     <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
                                     <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>

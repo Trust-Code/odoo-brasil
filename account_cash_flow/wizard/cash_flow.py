@@ -12,7 +12,7 @@ class CashFlowWizard(models.TransientModel):
 
     end_date = fields.Date(
         string="End Date", required=True,
-        default=fields.date.today()+datetime.timedelta(6*365/12))
+        default=fields.date.today() + datetime.timedelta(6 * 365 / 12))
     start_amount = fields.Float(string="Initial value",
                                 digits=dp.get_precision('Account'))
     print_report = fields.Boolean(string="Imprimir")
@@ -26,8 +26,9 @@ class CashFlowWizard(models.TransientModel):
         cashflow_id.action_calculate_report()
 
         if not self.print_report:
-            return self.env['report'].get_action(
-                cashflow_id.id, 'account_cash_flow.main_template_cash_flow')
+            return self.env.ref('account_cash_flow\
+.account_cash_flow_html_report')\
+                .report_action(cashflow_id)
 
         dummy, action_id = self.env['ir.model.data'].get_object_reference(
             'account_cash_flow', 'account_cash_flow_report_action')
