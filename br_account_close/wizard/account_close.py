@@ -43,8 +43,6 @@ class AccountClose(models.TransientModel):
             ('date', '>=', self.start_date), ('date', '<=', self.end_date),
             ('account_id.account_type', '=', 'tax')])
 
-        # icms_line = account_move_lines.filtered(
-        #     lambda x: x.tax_line_id.domain == 'icms')
         domains = []
         for lines in account_move_lines:
             domains.append(lines.tax_line_id.domain)
@@ -52,32 +50,33 @@ class AccountClose(models.TransientModel):
         domains = set(domains)
 
         account_voucher = self.prepare_account_voucher()
+        lines_ids = []
         for domain in domains:
-            import ipdb
-            ipdb.set_trace()
             price_unit = self.tax_calculation(account_move_lines, domain)
-            account_voucher['line_ids'] = self.prepare_account_line_voucher(
-                domain, price_unit)
+            lines_ids.append(self.prepare_account_line_voucher(
+                domain, price_unit))
 
+        account_voucher['line_ids'] = lines_ids
         self.env['account.voucher'].create(account_voucher)
 
     def prepare_account_voucher(self):
         vals = dict(
             partner_id=self.partner_id.id,
             pay_now='pay_later',
-            date=datetime.now(),
+            date=datetime.strftime(datetime.now(), '%Y-%m-%d'),
             date_due=self.payment_date,
             account_date=self.payment_date,
             account_id=self.account_id.id,
             journal_id=self.journal_id.id,
-            lines_ids=[],
+            voucher_type='purchase',
+            line_ids=[],
         )
 
         return vals
 
     def prepare_account_line_voucher(self, domain, price_unit):
         vals = dict(
-            name=str(domain),
+            name=domain,
             account_id=self.account_payment_id.id,
             quantity=1,
             price_unit=price_unit,
@@ -96,4 +95,4 @@ class AccountClose(models.TransientModel):
             tax_credit += lines.credit
             tax_debit += lines.debit
 
-        return tax_debit - tax_credit
+        return tax_credit - tax_debit
