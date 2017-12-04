@@ -398,7 +398,7 @@
     </template>
 
     <template id="main_template_br_nfse_danfe_simpliss">
-        <t t-call="web.html_container">
+        <t t-call="web.external_layout">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="br_nfse.danfse_report_template_simpliss" t-lang="doc.partner_id.lang"/>
             </t>
