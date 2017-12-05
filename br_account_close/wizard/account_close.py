@@ -52,7 +52,10 @@ class AccountClose(models.TransientModel):
         account_voucher = self.prepare_account_voucher()
         lines_ids = []
         for domain in domains:
-            price_unit = self.tax_calculation(account_move_lines, domain)
+            if self.env.user.company_id.fiscal_type == '3':
+                price_unit = self.tax_calculation(account_move_lines, domain)
+            else:
+                price_unit = 0  # TODO Implementar calculo do Simples Nacional e implementar filtros no wizard
             lines_ids.append(self.prepare_account_line_voucher(
                 domain, price_unit))
 
