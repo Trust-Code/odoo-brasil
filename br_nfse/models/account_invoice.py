@@ -4,9 +4,8 @@
 
 from odoo import fields, models
 from odoo.exceptions import UserError
-from datetime import datetime, timedelta
+from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
-import time
 
 
 class AccountInvoice(models.Model):
