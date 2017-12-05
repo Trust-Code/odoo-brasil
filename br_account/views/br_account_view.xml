@@ -281,6 +281,20 @@
         </field>
     </record>
 
+    <record id="view_taxes_close_tree" model="ir.ui.view">
+        <field name="name">br_account.taxes.close.tree</field>
+        <field name="model">br_account.taxes.close</field>
+        <field name="arch" type="xml">
+            <tree string="Impostos" editable="bottom">
+                <field name="account_id" domain="[('account_type', '=', 'income')]" />
+                <field name="account_id_compensation" />
+                <field name="tax" />
+                <field name="deducao_simples_nacional" />
+                <field name="icms_percent_simples_nacional" />
+            </tree>
+        </field>
+    </record>
+
     <record id="br_account_cfop_action" model="ir.actions.act_window">
         <field name="name">CFOP</field>
         <field name="type">ir.actions.act_window</field>
