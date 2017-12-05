@@ -4,6 +4,9 @@
 
 from odoo import fields, models
 from odoo.exceptions import UserError
+from datetime import datetime
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+import time
 
 
 class AccountInvoice(models.Model):
@@ -20,8 +23,10 @@ class AccountInvoice(models.Model):
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
 
         if self.invoice_model == '001':
-            res['data_emissao'] = self.date_invoice
-            res['data_fatura'] = self.date_invoice
+            dt = datetime.strptime(
+                self.date_invoice + ' ' + time.strftime('%X'), DTFT)
+            res['data_emissao'] = dt
+            res['data_fatura'] = dt
 
         return res
 
