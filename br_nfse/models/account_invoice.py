@@ -23,10 +23,15 @@ class AccountInvoice(models.Model):
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
 
         if self.invoice_model == '001':
+<<<<<<< HEAD
             dt = datetime.strptime(
                 self.date_invoice + ' ' + time.strftime('%X'), DTFT)
             res['data_emissao'] = dt
             res['data_fatura'] = dt
+=======
+            res['data_emissao'] = self.date_invoice
+            res['data_fatura'] = self.date_invoice
+>>>>>>> 6d213468bc5243ac5ba4b30923ecdeebd6b2e440
 
         return res
 

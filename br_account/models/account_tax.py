@@ -129,12 +129,13 @@ class AccountTax(models.Model):
             base_ipi += self.env.context["outras_despesas"]
 
         base_tax = base_ipi * (1 - (reducao_ipi / 100.0))
-        vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
+
         if 'ipi_base_calculo_manual' in self.env.context and\
                 self.env.context['ipi_base_calculo_manual'] > 0:
-            vals['base'] = self.env.context['ipi_base_calculo_manual']
-        else:
-            vals['base'] = base_tax
+            base_tax = self.env.context['ipi_base_calculo_manual']
+
+        vals['base'] = base_tax
+        vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
         return [vals]
 
     def _compute_icms(self, price_base, ipi_value):
