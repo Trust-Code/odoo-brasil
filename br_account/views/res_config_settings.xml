@@ -7,7 +7,20 @@
         <field name="arch" type="xml">
             <div id="invoicing_settings" position="after" >
                 <h2>Modelos de e-mail</h2>
-                <div class="row mt16 o_settings_container" id="mail_templates">
+                <div class="row mt16 o_settings_container" id="mail_templates"></div>
+                <h2>Regime Tributário</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-xs-12 col-md-6 o_setting_box" groups="account.group_account_user">
+                        <div class="o_setting_left_pane">
+                            <field name="group_simples_nacional"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="group_simples_nacional"/>
+                            <div class="text-muted">
+                                Habilita campos para o cálculo do simples nacional.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </field>
