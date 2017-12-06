@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# © 2009 Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -41,9 +40,6 @@ class ResCompany(models.Model):
                                 'company_id',
                                 string='Impostos')
 
-    # Pesquisa as faturas dos ultimos 12 meses e retorna a receita bruta
-    # para cada uma das contas em 'taxes_ids' presente no cadastro
-    # da empresa
     def get_gross_revenue_last_year(self):
         gross_revenues = {}
         date_max = datetime.date.today()
@@ -59,7 +55,6 @@ class ResCompany(models.Model):
             gross_revenues.update({simples_nacional_id: gross_revenue})
         return gross_revenues
 
-    # Calcula uma aliquota nova para cada conta do cadastro da empresa
     def compute_new_aliquot_simples_nacional(self):
         gross_revenues = self.get_gross_revenue_last_year()
         taxes = {}

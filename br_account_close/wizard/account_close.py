@@ -63,7 +63,7 @@ class AccountClose(models.TransientModel):
             self.env['account.voucher'].create(account_voucher)
         else:
             prices_unit = self.tax_calculation_simples_nacional(
-                account_move_lines)  # implementar filtros no wizard
+                account_move_lines)
             self.create_account_vouchers_simples_nacional(prices_unit)
 
     def prepare_account_voucher(self):
