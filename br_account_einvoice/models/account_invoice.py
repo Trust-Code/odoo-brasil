@@ -61,6 +61,30 @@ class AccountInvoice(models.Model):
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
+    def _return_pdf_invoice(self, doc):
+        return None
+
+    def action_preview_danfe(self):
+
+        docs = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)])
+
+        if not docs:
+            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+
+        # for doc in docs:
+        #     if doc.state != 'done':
+        #         raise UserError('Nota Fiscal na fila de envio. Aguarde!')
+
+        report = self._return_pdf_invoice(docs[0])
+        if not report:
+            raise UserError(
+                'Nenhum relatório implementado para este modelo de documento')
+        if not isinstance(report, str):
+            return report
+        action = self.env.ref(report).report_action(docs)
+        return action
+
     def _prepare_edoc_item_vals(self, line):
         vals = {
             'name': line.name,
@@ -146,7 +170,7 @@ class AccountInvoice(models.Model):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         vals = {
-            'name': invoice.name,
+            'name': invoice.number,
             'invoice_id': invoice.id,
             'code': invoice.number,
             'company_id': invoice.company_id.id,
