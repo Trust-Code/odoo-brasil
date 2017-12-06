@@ -86,15 +86,13 @@ class AccountFiscalPosition(models.Model):
 
     product_serie_id = fields.Many2one(
         'br_account.document.serie', string=u'Série Produto',
-        domain="[('fiscal_document_id', '=', product_document_id),\
-        ('company_id','=',company_id)]")
+        domain="[('fiscal_document_id', '=', product_document_id)]")
     product_document_id = fields.Many2one(
         'br_account.fiscal.document', string='Documento Produto')
 
     service_serie_id = fields.Many2one(
         'br_account.document.serie', string=u'Série Serviço',
-        domain="[('fiscal_document_id', '=', service_document_id),\
-        ('company_id','=',company_id)]")
+        domain="[('fiscal_document_id', '=', service_document_id)]")
     service_document_id = fields.Many2one(
         'br_account.fiscal.document', string='Documento Serviço')
 
