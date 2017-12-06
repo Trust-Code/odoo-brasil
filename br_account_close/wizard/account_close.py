@@ -39,9 +39,11 @@ class AccountClose(models.TransientModel):
 
     @api.multi
     def action_close_period(self):
+        taxes = self.env.user.company_id.taxes_ids
+        account_ids = [line.account_id for line in taxes]
         account_move_lines = self.env['account.move.line'].search([
             ('date', '>=', self.start_date), ('date', '<=', self.end_date),
-            ('account_id.account_type', '=', 'tax')])
+            ('account_id', 'in', account_ids)])
 
         domains = []
         for lines in account_move_lines:
@@ -51,16 +53,18 @@ class AccountClose(models.TransientModel):
 
         account_voucher = self.prepare_account_voucher()
         lines_ids = []
-        for domain in domains:
-            if self.env.user.company_id.fiscal_type == '3':
+        if self.env.user.company_id.fiscal_type == '3':
+            for domain in domains:
                 price_unit = self.tax_calculation(account_move_lines, domain)
-            else:
-                price_unit = 0  # TODO Implementar calculo do Simples Nacional e implementar filtros no wizard
-            lines_ids.append(self.prepare_account_line_voucher(
-                domain, price_unit))
+                lines_ids.append(self.prepare_account_line_voucher(
+                    domain, price_unit))
 
-        account_voucher['line_ids'] = lines_ids
-        self.env['account.voucher'].create(account_voucher)
+            account_voucher['line_ids'] = lines_ids
+            self.env['account.voucher'].create(account_voucher)
+        else:
+            prices_unit = self.tax_calculation_simples_nacional(
+                account_move_lines)  # implementar filtros no wizard
+            self.create_account_vouchers_simples_nacional(prices_unit)
 
     def prepare_account_voucher(self):
         vals = dict(
@@ -87,9 +91,19 @@ class AccountClose(models.TransientModel):
 
         return [0, 0, vals]
 
-    def tax_calculation(self, account_move_lines, domain):
-        tax_lines = account_move_lines.filtered(
-            lambda x: x.tax_line_id.domain == domain)
+    def create_account_vouchers_simples_nacional(self, prices):
+        for line in prices.keys():
+            account_voucher = self.prepare_account_voucher()
+            voucher_line = [self.prepare_account_line_voucher(
+                'Simples Nacional', prices[line])]
+            account_voucher['line_ids'] = voucher_line
+            self.env['account.voucher'].create(account_voucher)
+
+    def tax_calculation(self, account_move_lines, domain=False):
+        tax_lines = account_move_lines
+        if domain:
+            tax_lines = account_move_lines.filtered(
+                lambda x: x.tax_line_id.domain == domain)
 
         tax_credit = 0
         tax_debit = 0
@@ -99,3 +113,15 @@ class AccountClose(models.TransientModel):
             tax_debit += lines.debit
 
         return tax_credit - tax_debit
+
+    def tax_calculation_simples_nacional(self, account_move_lines):
+        taxes = self.env.company_id.compute_new_aliquot_simples_nacional()
+        taxes_amount = {}
+        for line in taxes.keys():
+            tax_lines = account_move_lines.filtered(
+                lambda x: x.account_id == line.account_id
+            )
+            amount = self.tax_calculation(tax_lines)
+            tax_amount = amount*taxes[line]
+            taxes_amount.update({line: tax_amount})
+        return taxes_amount
