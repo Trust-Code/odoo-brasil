@@ -51,24 +51,22 @@ class AccountInvoice(models.Model):
     def action_number(self):
         super(AccountInvoice, self).action_number()
         if self.fiscal_document_id.code == '55':
-            nfe_inutilized = self.env[
-                'invoice.eletronic.inutilized'].search([
-                    ('serie', '=', self.document_serie_id.id)],
-                    order='numeration_end desc', limit=1)
-            numeration_end = nfe_inutilized.numeration_end
+            if not self.document_serie_id:
+                return
+            serie_id = self.document_serie_id
+            inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
+                ('serie', '=', serie_id.id)],
+                order='numeration_end desc', limit=1)
 
-            if self.internal_number <= numeration_end:
-                self.internal_number = nfe_inutilized.numeration_end + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
+            if not inv_inutilized:
+                return serie_id.internal_sequence_id.next_by_id()
 
-            nfe = self.env['invoice.eletronic'].search([
-                ('serie', '=', self.document_serie_id.id)
-            ], order='numero desc', limit=1)
-            if self.internal_number <= nfe.numero:
-                self.internal_number = nfe.numero + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
+            if inv_inutilized.numeration_end >= \
+                    serie_id.internal_sequence_id.number_next_actual:
+                serie_id.internal_sequence_id.write(
+                    {'number_next_actual': inv_inutilized.numeration_end + 1})
+                self.write({'internal_number':
+                            serie_id.internal_sequence_id.next_by_id()})
 
         return True
 
