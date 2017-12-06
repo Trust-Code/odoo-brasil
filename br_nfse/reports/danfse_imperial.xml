@@ -12,6 +12,7 @@
     <record id="report_br_nfse_danfe_imperial" model="ir.actions.report">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
         <field name="name">Nota de Serviço - Imperial</field>
+        <field name="print_report_name">'%s - NF - %s ' % (object.numero, object.partner_id.name)</field>
     </record>
 
     <template id="danfse_report_template_imperial">
@@ -75,7 +76,7 @@
             </div>
             <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
                 <div class="col-xs-1">
-                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" /><br />
+                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
                 </div>
                 <div class="col-xs-11">
                     <div class="col-xs-12" style="text-align:center;">
@@ -181,7 +182,7 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong>VALOR TOTAL DA NOTA = </strong>
                     <strong t-field="doc.valor_final"
-                        t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     <br />
                 </div>
             </div>
@@ -191,7 +192,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_inss"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -202,7 +203,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_irrf"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -213,7 +214,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_csll"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -224,7 +225,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_cofins_servicos"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -235,7 +236,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_pis_servicos"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>-</strong>
@@ -261,7 +262,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_bruto"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
@@ -282,7 +283,7 @@
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_issqn"
-                            t-field-options='{"widget": "monetary",  "display_currency": "doc.currency_id" }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
                         <strong>*</strong>
@@ -318,7 +319,7 @@
                     (1) Esta NFS-e foi emitida com respaldo na Lei nº 14.097/2005;
                 </div>
                 <div style="float:left; width:50%;">
-                    (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-field-options='{"format": "dd/MM/yyyy"}' />
+                    (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' />
                 </div>
                 <div style="float:left; width:50%;">
                     (3) Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
@@ -330,13 +331,11 @@
     </template>
 
     <template id="main_template_br_nfse_danfe_imperial">
-        <t t-call="web.html_container">
-            <t t-call="web.external_layout">
-                <t t-foreach="docs" t-as="doc">
-                    <t t-call="br_nfse.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
-                </t>
+        <div class="article">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="br_nfse.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
             </t>
-        </t>
+        </div>
     </template>
 
 
