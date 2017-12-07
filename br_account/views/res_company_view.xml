@@ -10,8 +10,8 @@
                     <page name="fiscal" string="Dados Fiscais">
                         <group name="regime_fiscal" string="Regime Tributário">
                             <field name="fiscal_type" nolabel="1" />
-                            <group name="simples_nacional" string="Simples Nacional" attrs="{'invisible': [('fiscal_type', '!=', '1')]}">
-                                <field name="annual_revenue" string="Faturamento dos últimos 12 meses" />
+                            <group string="Impostos">
+                                <field name="taxes_ids" nolabel="1" />
                             </group>
                             <group string="Escritório de contabilidade">
                                 <field name="accountant_id" nolabel="1" />
