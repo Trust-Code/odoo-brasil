@@ -22,6 +22,14 @@ class AccountInvoice(models.Model):
                 item.nfe_status = '%s - %s' % (
                     docs[0].codigo_retorno, docs[0].mensagem_retorno)
 
+    @api.multi
+    @api.depends("document_serie_id")
+    def _compute_nfe_next_number(self):
+        for item in self:
+            if item.state == 'draft':
+                seq_id = item.sudo().document_serie_id.internal_sequence_id
+                self.nfe_next_number = seq_id.number_next_actual
+
     ambiente_nfe = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente",
         readonly=True)
@@ -35,6 +43,11 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
+    nfe_next_number = fields.Integer(
+        string=u"Número NF-e", readonly=True,
+        compute="_compute_nfe_next_number",
+        help="Númeração da NF-e a ser gerada, " +
+        "caso outra fatura não seja validada.")
 
     @api.multi
     def action_invoice_draft(self):
