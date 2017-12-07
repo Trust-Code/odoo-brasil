@@ -59,8 +59,7 @@ class AccountInvoice(models.Model):
                 ('serie', '=', serie_id.id)])
 
             if not inv_inutilized:
-                self.write({'internal_number': seq_id.next_by_id()})
-                return True
+                return
 
             inutilized_numbers = []
 
@@ -72,8 +71,6 @@ class AccountInvoice(models.Model):
 
             if number_next_actual in inutilized_numbers:
                 raise UserError(u"Número gerado para NF-e inutilizado.")
-            else:
-                self.write({'internal_number': seq_id.next_by_id()})
 
         return True
 
