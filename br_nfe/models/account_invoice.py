@@ -71,21 +71,7 @@ class AccountInvoice(models.Model):
             number_next_actual = seq_id.number_next_actual
 
             if number_next_actual in inutilized_numbers:
-                invoice = self.env['invoice.eletronic'].search([
-                    ('serie', '=', serie_id.id),
-                    ('numero', '=', max(inutilized_numbers) + 1)])
-
-                if invoice:
-                    last_inv = self.env['invoice.eletronic'].search([
-                        ('serie', '=', serie_id.id)],
-                        order='numero desc', limit=1)
-                    serie_id.internal_sequence_id.write(
-                        {'number_next_actual': last_inv.numero + 1})
-                    self.write({'internal_number': seq_id.next_by_id()})
-                else:
-                    serie_id.internal_sequence_id.write(
-                        {'number_next_actual': max(inutilized_numbers) + 1})
-                    self.write({'internal_number': seq_id.next_by_id()})
+                raise UserError(u"Número gerado para NF-e inutilizado.")
             else:
                 self.write({'internal_number': seq_id.next_by_id()})
 
