@@ -24,6 +24,9 @@ class ProductTemplate(models.Model):
                        help=u"Código Especificador da Substituição Tributária")
     fiscal_observation_ids = fields.Many2many(
         'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico")
+    fiscal_category_id = fields.Many2one(
+        'br_account.fiscal.category',
+        string='Categoria Fiscal')
 
     @api.onchange('type')
     def onchange_product_type(self):

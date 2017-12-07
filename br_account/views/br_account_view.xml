@@ -449,7 +449,7 @@
     <menuitem
     id="menu_action_fiscal_category_form"
     name="Categoria Fiscal"
-    parent="menu_br_account"
+    parent="br_account.menu_br_account_fiscal_manager"
     action="action_br_account_fiscal_category"/>
 
 </odoo>
