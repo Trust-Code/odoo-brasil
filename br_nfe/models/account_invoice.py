@@ -54,19 +54,40 @@ class AccountInvoice(models.Model):
             if not self.document_serie_id:
                 return
             serie_id = self.document_serie_id
+            seq_id = serie_id.sudo().internal_sequence_id
             inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
-                ('serie', '=', serie_id.id)],
-                order='numeration_end desc', limit=1)
+                ('serie', '=', serie_id.id)])
 
             if not inv_inutilized:
-                return serie_id.internal_sequence_id.next_by_id()
+                self.write({'internal_number': seq_id.next_by_id()})
+                return True
 
-            if inv_inutilized.numeration_end >= \
-                    serie_id.internal_sequence_id.number_next_actual:
-                serie_id.internal_sequence_id.write(
-                    {'number_next_actual': inv_inutilized.numeration_end + 1})
-                self.write({'internal_number':
-                            serie_id.internal_sequence_id.next_by_id()})
+            inutilized_numbers = []
+
+            for item in inv_inutilized:
+                inutilized_numbers.extend(
+                    range(item.numeration_start, item.numeration_end + 1))
+
+            number_next_actual = seq_id.number_next_actual
+
+            if number_next_actual in inutilized_numbers:
+                invoice = self.env['invoice.eletronic'].search([
+                    ('serie', '=', serie_id.id),
+                    ('numero', '=', max(inutilized_numbers) + 1)])
+
+                if invoice:
+                    last_inv = self.env['invoice.eletronic'].search([
+                        ('serie', '=', serie_id.id)],
+                        order='numero desc', limit=1)
+                    serie_id.internal_sequence_id.write(
+                        {'number_next_actual': last_inv.numero + 1})
+                    self.write({'internal_number': seq_id.next_by_id()})
+                else:
+                    serie_id.internal_sequence_id.write(
+                        {'number_next_actual': max(inutilized_numbers) + 1})
+                    self.write({'internal_number': seq_id.next_by_id()})
+            else:
+                self.write({'internal_number': seq_id.next_by_id()})
 
         return True
 
