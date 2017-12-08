@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# © 2009 Renato Lima - Akretion
-# © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -329,3 +327,17 @@ class BrAccountFiscalObservation(models.Model):
                              ('observacao', 'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")
+
+
+class BrAccountTaxesClose(models.Model):
+    _name = 'br_account.taxes.close'
+
+    company_id = fields.Many2one(
+        'res.company', string="Empresa",
+        default=lambda self: self.env.user.company_id.id)
+    account_id = fields.Many2one('account.account', string='Conta Contábil')
+    account_id_compensation = fields.Many2one('account.account',
+                                              string='Conta Contrapartida')
+    tax = fields.Float(string='Alíquota')
+    deducao_simples_nacional = fields.Float(string='Parcela Dedutiva')
+    icms_percent_simples_nacional = fields.Float(string='% de ICMS')

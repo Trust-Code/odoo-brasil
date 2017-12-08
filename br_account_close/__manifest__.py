@@ -15,12 +15,14 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Fábio Luna <fabiocluna@hotmail.com>',
     ],
     'depends': [
         'account_voucher', 'br_account'
     ],
     'data': [
         'wizard/account_close.xml',
+        # 'views/res_config_settings.xml',
     ],
     'application': True,
 }
