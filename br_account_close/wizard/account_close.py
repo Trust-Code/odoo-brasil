@@ -115,7 +115,7 @@ class AccountClose(models.TransientModel):
         return tax_credit - tax_debit
 
     def tax_calculation_simples_nacional(self, account_move_lines):
-        taxes = self.env.company_id.compute_new_aliquot_simples_nacional()
+        taxes = self.env.company_id.compute_new_taxes_simples_nacional()
         taxes_amount = {}
         for line in taxes.keys():
             tax_lines = account_move_lines.filtered(

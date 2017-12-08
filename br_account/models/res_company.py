@@ -55,7 +55,7 @@ class ResCompany(models.Model):
             gross_revenues.update({simples_nacional_id: gross_revenue})
         return gross_revenues
 
-    def compute_new_aliquot_simples_nacional(self):
+    def compute_new_taxes_simples_nacional(self):
         gross_revenues = self.get_gross_revenue_last_year()
         taxes = {}
         for simples_nacional_id in gross_revenues.keys():
@@ -68,7 +68,7 @@ class ResCompany(models.Model):
 
     def compute_icms_credit_simples_nacional(self):
         icms = {}
-        taxes = self.compute_new_aliquot_simples_nacional()
+        taxes = self.compute_new_taxes_simples_nacional()
         for simples_nacional_id in taxes.keys():
             icms_credit = simples_nacional_id.icms_percent*taxes[
                 simples_nacional_id]

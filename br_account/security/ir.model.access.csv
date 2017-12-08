@@ -32,3 +32,4 @@
 "access_br_account_import_declaration_invoice","access_br_account_import_declaration","model_br_account_import_declaration","account.group_account_invoice",1,0,0,0
 "access_br_account_document_related_user_invoice","access_br_account_document_related","model_br_account_document_related","account.group_account_invoice",1,0,0,0
 "access_br_account_fiscal_observation_invoice","access_br_account_fiscal_observation","model_br_account_fiscal_observation","account.group_account_invoice",1,0,0,0
+"access_br_account_taxes_close","access_br_account_taxes_close","model_br_account_taxes_close",,1,0,0,0
