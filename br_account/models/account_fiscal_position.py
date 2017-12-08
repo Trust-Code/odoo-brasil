@@ -129,7 +129,7 @@ class AccountFiscalPosition(models.Model):
                                    string=u"Tipo da posição")
 
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
-        rule_obj = self.env['account.fiscal.position.tax.rule']
+        rule_obj = self.env['account.fiscal.position.tax.rule'].search([])
         domain = [('fiscal_position_id', '=', fpos_id),
                   ('domain', '=', type_tax)]
         rules = rule_obj.search(domain)
@@ -146,37 +146,8 @@ class AccountFiscalPosition(models.Model):
             # Calcula o maior valor para os resultados obtidos
             greater_rule = max([(v, k) for k, v in rules_points.items()])
             # Se o valor da regra for menor do que 0, a regra é descartada.
-            if greater_rule[0] <= 0:
-                # return {}
-                return {
-                    ('%s_rule_id' % type_tax): 0,
-                    'cfop_id': 0,
-                    ('tax_%s_id' % type_tax): 0,
-                    # ICMS
-                    'icms_cst_normal': None,
-                    'icms_aliquota_reducao_base': 0,
-                    'incluir_ipi_base': 0,
-                    # ICMS ST
-                    'tax_icms_st_id': 0,
-                    'icms_st_aliquota_mva': 0,
-                    'icms_st_aliquota_reducao_base': 0,
-                    'icms_st_aliquota_deducao': 0,
-                    # ICMS Difal
-                    'tem_difal': 0,
-                    'tax_icms_inter_id': 0,
-                    'tax_icms_intra_id': 0,
-                    'tax_icms_fcp_id': 0,
-                    # Simples
-                    'icms_csosn_simples': 0,
-                    'icms_aliquota_credito': 0,
-                    # IPI
-                    'ipi_cst': 0,
-                    'ipi_reducao_bc': 0,
-                    # PIS
-                    'pis_cst': 0,
-                    # PIS
-                    'cofins_cst': 0,
-                }
+            if greater_rule[0] < 0:
+                return {}
 
             # Procura pela regra associada ao id -> (greater_rule[1])
             rules = [rules.browse(greater_rule[1])]
