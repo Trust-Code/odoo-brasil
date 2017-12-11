@@ -165,8 +165,8 @@ class InutilizedNfe(models.Model):
             last_inv = self.env['invoice.eletronic'].search([
                 ('serie', '=', self.serie.id)],
                 order='numero desc', limit=1)
-            self.serie.internal_sequence_id.write(
+            self.serie.sudo().internal_sequence_id.write(
                 {'number_next_actual': last_inv.numero + 1})
         else:
-            self.serie.internal_sequence_id.write(
+            self.serie.sudo().internal_sequence_id.write(
                 {'number_next_actual': self.numeration_end + 1})
