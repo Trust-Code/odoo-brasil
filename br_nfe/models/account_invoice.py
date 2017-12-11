@@ -69,20 +69,11 @@ class AccountInvoice(models.Model):
             serie_id = self.document_serie_id
             seq_id = serie_id.sudo().internal_sequence_id
             inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
-                ('serie', '=', serie_id.id)])
+                ('serie', '=', serie_id.id),
+                ('numeration_start', '<', number_next_actual),
+                ('numeration_end', '>', number_next_actual)])
 
-            if not inv_inutilized:
-                return
-
-            inutilized_numbers = []
-
-            for item in inv_inutilized:
-                inutilized_numbers.extend(
-                    range(item.numeration_start, item.numeration_end + 1))
-
-            number_next_actual = seq_id.number_next_actual
-
-            if number_next_actual in inutilized_numbers:
+            if len(inv_inutilized) > 0:
                 raise UserError(u"Número gerado para NF-e inutilizado.")
 
         return True
