@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <report id="action_insert_reports_print_button_account_move_line"
-                name="br_boleto.report"
+                name="br_boleto.report.print"
                 model="account.move.line"
                 string="Boleto"/>
 
