@@ -39,6 +39,9 @@
                     string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
                 </button>
             </div>
+            <field name="document_serie_id" position="after">
+                <field name="nfe_next_number" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_model', '!=', '55')]}" />
+            </field>
         </field>
     </record>
 
@@ -81,6 +84,9 @@
                      string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
                 </button>
             </div>
+            <field name="document_serie_id" position="after">
+                <field name="nfe_next_number" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_model', '!=', '55')]}" />
+            </field>
         </field>
     </record>
 

@@ -30,9 +30,8 @@ class ReportCustom(report_int):
 
     def create(self, cr, uid, ids, datas, context=False):
         env = odoo.api.Environment(cr, uid, context or {})
-
         active_ids = context.get('active_ids')
-        active_model = context.get('origin_model')
+        active_model = context.get('active_model')
 
         ids_move_lines = []
         aml_obj = env['account.move.line']
