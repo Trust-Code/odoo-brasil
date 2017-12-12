@@ -58,15 +58,19 @@ class AccountMoveLine(models.Model):
         boleto_list = []
         for move in self:
             if not move.payment_mode_id:
-                raise UserError(
-                    u'O modo de pagamento configurado não é boleto')
+                raise UserError(u'A fatura ' + move.move_id.name + u' - ' +
+                                move.partner_id.name +
+                                u' não está configurada com boleto')
             if not move.payment_mode_id.nosso_numero_sequence.id:
                 raise UserError(u'Cadastre a sequência do nosso número no modo \
-                                de pagamento')
+                                de pagamento na fatura: ' + move.move_id.name +
+                                u' - ' + move.partner_id.name)
             vencimento = fields.Date.from_string(move.date_maturity)
             if vencimento < datetime.today().date() and not move.reconciled:
                 raise UserError(u'A data de vencimento deve ser maior que a \
-                                data atual. Altere a data de vencimento!')
+                                data atual na fatura: ' + move.move_id.name +
+                                u' - ' + move.partner_id.name +
+                                u'. Altere a data de vencimento!')
             if not move.boleto_emitido:
                 move.boleto_emitido = True
                 move.nosso_numero = \
