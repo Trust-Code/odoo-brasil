@@ -75,6 +75,33 @@ class AccountInvoice(models.Model):
                     {'internal_number': seq_number})
         return True
 
+    def _return_pdf_invoice(self, doc):
+        return None
+
+    def action_preview_danfe(self):
+        docs = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)])
+
+        if not docs:
+            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+
+        for doc in docs:
+            if doc.state != 'done':
+                raise UserError('Nota Fiscal na fila de envio. Aguarde!')
+
+        report = self._return_pdf_invoice(docs[0])
+        if not report:
+            raise UserError(
+                'Nenhum relatório implementado para este modelo de documento')
+
+        if not isinstance(report, str):
+            return report
+
+        action = self.env.ref(report).report_action(docs)
+        action['report_type'] = 'qweb-pdf'
+
+        return action
+
     def _prepare_edoc_item_vals(self, line):
         vals = {
             'name': line.name,

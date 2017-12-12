@@ -72,16 +72,6 @@ class AccountInvoice(models.Model):
 
         return True
 
-    def action_preview_danfe(self):
-        docs = self.env['invoice.eletronic'].search(
-            [('invoice_id', '=', self.id)])
-        if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
-        action = self.env['report'].get_action(
-            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
-        action['report_type'] = 'qweb-html'
-        return action
-
     def invoice_print(self):
         if self.fiscal_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
