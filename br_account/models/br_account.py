@@ -329,3 +329,10 @@ class BrAccountFiscalObservation(models.Model):
                              ('observacao', 'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")
+
+
+class BrAccountCategoriaFiscal(models.Model):
+    _name = 'br_account.fiscal.category'
+    _description = 'Categoria Fiscal'
+
+    name = fields.Char('Descrição', required=True)
