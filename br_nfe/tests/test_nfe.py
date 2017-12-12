@@ -299,11 +299,6 @@ class TestNFeBrasil(TransactionCase):
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
-            danfe = invoice.action_preview_danfe()
-            self.assertEquals(
-                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
-            self.assertEquals(danfe['report_type'], 'qweb-html')
-
             danfe = invoice.invoice_print()
             self.assertEquals(
                 danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
