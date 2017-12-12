@@ -39,6 +39,9 @@
                     string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
                 </button>
             </div>
+            <field name="document_serie_id" position="after">
+                <field name="nfe_next_number" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_model', '!=', '55')]}" />
+            </field>
         </field>
     </record>
 
@@ -81,14 +84,6 @@
                      string="Visualizar Danfe" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', '!=', '55')]}">
                 </button>
             </div>
-        </field>
-    </record>
-
-    <record id="br_account.view_br_account_invoice_form_nfe" model="ir.ui.view">
-        <field name="name">br_account.view_br_account_invoice_form.nfe</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
-        <field name="arch" type="xml">
             <field name="document_serie_id" position="after">
                 <field name="nfe_next_number" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_model', '!=', '55')]}" />
             </field>

@@ -44,7 +44,7 @@ class AccountInvoice(models.Model):
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_next_number = fields.Integer(
-        string=u"Número NF-e", readonly=True,
+        string=u"* Número NF-e", readonly=True,
         compute="_compute_nfe_next_number",
         help="Númeração da NF-e a ser gerada, " +
         "caso outra fatura não seja validada.")
