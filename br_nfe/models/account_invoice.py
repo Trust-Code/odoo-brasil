@@ -68,6 +68,7 @@ class AccountInvoice(models.Model):
                 return
             serie_id = self.document_serie_id
             seq_id = serie_id.sudo().internal_sequence_id
+            number_next_actual = seq_id.number_next_actual
             inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
                 ('serie', '=', serie_id.id),
                 ('numeration_start', '<', number_next_actual),
