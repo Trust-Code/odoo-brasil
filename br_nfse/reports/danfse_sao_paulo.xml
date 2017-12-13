@@ -6,7 +6,6 @@
         string="Nota de Serviço - Paulistana"
         model="invoice.eletronic"
         report_type="qweb-pdf"
-        file="br_nfse.main_template_br_nfse_danfe"
         name="br_nfse.main_template_br_nfse_danfe" />
 
     <record id="paperformat_br_nfse_danfse" model="report.paperformat">
@@ -86,7 +85,7 @@
             </div>
             <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
                 <div class="col-xs-2">
-                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" /><br />
                 </div>
                 <div class="col-xs-10">
                     <div class="col-xs-12" style="text-align:center;">

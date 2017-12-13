@@ -5,6 +5,6 @@
             id="report_br_nfe_danfe_ok"
             string="Impressão de Danfe"
             model="invoice.eletronic"
-            name="custom_report_danfe" />
+            name="nfe.custom_report_danfe" />
     </data>
 </odoo>

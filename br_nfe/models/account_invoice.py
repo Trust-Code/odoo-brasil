@@ -83,7 +83,7 @@ class AccountInvoice(models.Model):
 
     def _return_pdf_invoice(self, doc):
         if self.fiscal_document_id.code == '55':
-            return 'br_nfe.report_br_nfe_danfe'
+            return 'nfe.custom_report_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_vals(self, inv):

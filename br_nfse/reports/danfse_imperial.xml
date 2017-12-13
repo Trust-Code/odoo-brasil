@@ -76,7 +76,7 @@
             </div>
             <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
                 <div class="col-xs-1">
-                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" /><br />
                 </div>
                 <div class="col-xs-11">
                     <div class="col-xs-12" style="text-align:center;">

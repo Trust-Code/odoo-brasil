@@ -6,7 +6,22 @@ from datetime import datetime
 from random import SystemRandom
 
 from odoo import api, fields, models
+from odoo.report.render import render
 from odoo.exceptions import UserError
+import base64
+import logging
+from lxml import etree
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+_logger = logging.getLogger(__name__)
+
+try:
+    from pytrustnfe.nfe.danfe import danfe
+except ImportError:
+    _logger.info('Cannot import pytrustnfe', exc_info=True)
 
 
 TYPE2EDOC = {
@@ -16,6 +31,15 @@ TYPE2EDOC = {
     'in_refund': 'saida',          # Vendor Refund
 }
 
+
+class external_pdf(render):
+    def __init__(self, pdf):
+        render.__init__(self)
+        self.pdf = pdf
+        self.output_type = 'pdf'
+
+    def _render(self):
+        return self.pdf
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
@@ -98,9 +122,7 @@ class AccountInvoice(models.Model):
             return report
 
         action = self.env['report'].get_action(
-            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
-        action['report_type'] = 'qweb-pdf'
-
+            docs.ids, report)
         return action
 
     def _prepare_edoc_item_vals(self, line):

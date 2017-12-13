@@ -14,13 +14,13 @@ class AccountInvoice(models.Model):
 
     def _return_pdf_invoice(self, doc):
         if self.fiscal_document_id.code == '001':  # Paulistana
-            return 'br_nfse.report_br_nfse_danfe'
+            return 'br_nfse.main_template_br_nfse_danfe'
         elif self.fiscal_document_id.code == '002':  # Ginfes
-            return 'br_nfse.report_br_nfse_danfe_ginfes'
+            return 'br_nfse.main_template_br_nfse_danfe_ginfes'
         elif self.fiscal_document_id.code == '008':  # Simpliss
-            return 'br_nfse.report_br_nfse_danfe_simpliss'
+            return 'br_nfse.main_template_br_nfse_danfe_simpliss'
         elif self.fiscal_document_id.code == '010':
-            return 'br_nfse.report_br_nfse_danfe_imperial'  # Imperial
+            return 'br_nfse.main_template_br_nfse_danfe_imperial'  # Imperial
         elif self.fiscal_document_id.code == '009':  # Susesu
             return {
                 "type": "ir.actions.act_url",
