@@ -97,7 +97,8 @@ class AccountInvoice(models.Model):
         if not isinstance(report, str):
             return report
 
-        action = self.env.ref(report).report_action(docs)
+        action = self.env['report'].get_action(
+            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
         action['report_type'] = 'qweb-pdf'
 
         return action

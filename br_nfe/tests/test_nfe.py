@@ -423,12 +423,12 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Cancelamento homologado fora de prazo")
 
-    def test_invoice_eletronic_functions(self):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
+    # def test_invoice_eletronic_functions(self):
+    #     for invoice in self.invoices:
+    #         # Confirmando a fatura deve gerar um documento eletrônico
+    #         invoice.action_invoice_open()
+    #         invoice_eletronic = self.env['invoice.eletronic'].search(
+    #             [('invoice_id', '=', invoice.id)])
 
-            url = invoice_eletronic.barcode_url()
-            self.assertTrue(invoice_eletronic.chave_nfe in url)
+    #         url = invoice_eletronic.barcode_url()
+    #         self.assertTrue(invoice_eletronic.chave_nfe in url)

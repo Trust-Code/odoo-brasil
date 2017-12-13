@@ -35,7 +35,7 @@
         'views/inutilized_nfe.xml',
         'views/br_nfe.xml',
         'reports/br_nfe_reports.xml',
-        'reports/danfe_report.xml',
+        # 'reports/danfe_report.xml',
         'wizard/cancel_nfe.xml',
         'wizard/carta_correcao_eletronica.xml',
         'wizard/inutilize_nfe_numeration.xml',
