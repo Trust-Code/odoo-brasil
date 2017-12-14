@@ -27,6 +27,8 @@ class AccountInvoice(models.Model):
                 "url": doc.url_danfe,
                 "target": "_blank",
             }
+        elif self.service_document_id.code == '011':
+            return 'br_nfse.report_br_nfse_danfe_campinas'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_vals(self, inv, inv_lines):

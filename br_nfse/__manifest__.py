@@ -20,7 +20,7 @@
     ],
     'external_dependencies': {
         'python': [
-            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado'
+            'pytrustnfe.nfse.paulistana', 'pytrustnfe.certificado',
         ],
     },
     'data': [
@@ -33,6 +33,7 @@
         'reports/danfse_simpliss.xml',
         'reports/danfse_ginfes.xml',
         'reports/danfse_imperial.xml',
+        'reports/danfse_campinas.xml',
         'wizard/cancel_nfse.xml',
     ],
     'installable': True,

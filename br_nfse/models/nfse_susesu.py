@@ -181,6 +181,8 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
+        import ipdb
+        ipdb.set_trace()
         if self.model not in ('009'):
             return
 
