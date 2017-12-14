@@ -32,8 +32,6 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
-        import ipdb
-        ipdb.set_trace()
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
         if self.model == '011':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
