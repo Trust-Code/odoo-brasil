@@ -299,15 +299,10 @@ class TestNFeBrasil(TransactionCase):
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
-            danfe = invoice.action_preview_danfe()
-            self.assertEquals(
-                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
-            self.assertEquals(danfe['report_type'], 'qweb-html')
-
             danfe = invoice.invoice_print()
             self.assertEquals(
-                danfe['report_name'], 'br_nfe.main_template_br_nfe_danfe')
-            self.assertEquals(danfe['report_type'], 'qweb-pdf')
+                danfe['report_name'], 'nfe.custom_report_danfe')
+            self.assertEquals(danfe['report_type'], u'pdf')
 
     def test_check_invoice_eletronic_values(self):
         for invoice in self.invoices:
@@ -427,13 +422,3 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.codigo_retorno, "155")
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Cancelamento homologado fora de prazo")
-
-    def test_invoice_eletronic_functions(self):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
-
-            url = invoice_eletronic.barcode_url()
-            self.assertTrue(invoice_eletronic.chave_nfe in url)

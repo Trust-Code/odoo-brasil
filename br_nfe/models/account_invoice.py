@@ -79,24 +79,19 @@ class AccountInvoice(models.Model):
 
         return True
 
-    def action_preview_danfe(self):
-        docs = self.env['invoice.eletronic'].search(
-            [('invoice_id', '=', self.id)])
-        if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
-        action = self.env['report'].get_action(
-            docs.ids, 'br_nfe.main_template_br_nfe_danfe')
-        action['report_type'] = 'qweb-html'
-        return action
-
     def invoice_print(self):
         if self.fiscal_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)])
             return self.env['report'].get_action(
-                docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+                docs.ids, 'nfe.custom_report_danfe')
         else:
             return super(AccountInvoice, self).invoice_print()
+
+    def _return_pdf_invoice(self, doc):
+        if self.fiscal_document_id.code == '55':
+            return 'nfe.custom_report_danfe'
+        return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)

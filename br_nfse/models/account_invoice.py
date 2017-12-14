@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models
-from odoo.exceptions import UserError
 from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
@@ -14,6 +13,23 @@ class AccountInvoice(models.Model):
     ambiente_nfse = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
+
+    def _return_pdf_invoice(self, doc):
+        if self.fiscal_document_id.code == '001':  # Paulistana
+            return 'br_nfse.main_template_br_nfse_danfe'
+        elif self.fiscal_document_id.code == '002':  # Ginfes
+            return 'br_nfse.main_template_br_nfse_danfe_ginfes'
+        elif self.fiscal_document_id.code == '008':  # Simpliss
+            return 'br_nfse.main_template_br_nfse_danfe_simpliss'
+        elif self.fiscal_document_id.code == '010':
+            return 'br_nfse.main_template_br_nfse_danfe_imperial'  # Imperial
+        elif self.fiscal_document_id.code == '009':  # Susesu
+            return {
+                "type": "ir.actions.act_url",
+                "url": doc.url_danfe,
+                "target": "_blank",
+            }
+        return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
@@ -39,31 +55,3 @@ class AccountInvoice(models.Model):
         res['codigo_tributacao_municipio'] = \
             line.service_type_id.codigo_tributacao_municipio
         return res
-
-    def action_preview_danfse(self):
-        docs = self.env['invoice.eletronic'].search(
-            [('invoice_id', '=', self.id)])
-        if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
-
-        if self.invoice_model == '009':
-            if docs[0].state != 'done':
-                raise UserError('Nota Fiscal na fila de envio. Aguarde!')
-            return {
-                "type": "ir.actions.act_url",
-                "url": docs[0].url_danfe,
-                "target": "_blank",
-            }
-
-        report = ''
-        if self.invoice_model == '001':
-            report = 'br_nfse.main_template_br_nfse_danfe'
-        elif self.invoice_model == '008':
-            report = 'br_nfse.main_template_br_nfse_danfe_simpliss'
-        elif self.invoice_model == '010':
-            report = 'br_nfse.main_template_br_nfse_danfe_imperial'
-
-        action = self.env['report'].get_action(
-            docs.ids, report)
-        action['report_type'] = 'qweb-html'
-        return action

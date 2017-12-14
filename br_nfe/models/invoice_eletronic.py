@@ -185,11 +185,6 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string=u"Cartas de Correção", readonly=True, states=STATE)
 
-    def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
-src="/report/barcode/Code128/' + self.chave_nfe + '" />'
-        return url
-
     def can_unlink(self):
         res = super(InvoiceEletronic, self).can_unlink()
         if self.state == 'denied':
@@ -660,9 +655,15 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        tmpLogo = StringIO()
-        tmpLogo.write(logo)
-        tmpLogo.seek(0)
+        if not logo:
+            logo = base64.decodestring(self.invoice_id.company_id.logo_web)
+
+        if logo:
+            tmpLogo = StringIO()
+            tmpLogo.write(logo)
+            tmpLogo.seek(0)
+        else:
+            tmpLogo = False
 
         xml_element = etree.fromstring(nfe_xml)
         oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
