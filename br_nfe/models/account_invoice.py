@@ -77,7 +77,7 @@ class AccountInvoice(models.Model):
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)])
             return self.env['report'].get_action(
-                docs.ids, 'br_nfe.main_template_br_nfe_danfe')
+                docs.ids, 'nfe.custom_report_danfe')
         else:
             return super(AccountInvoice, self).invoice_print()
 

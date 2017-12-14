@@ -8,21 +8,6 @@ from random import SystemRandom
 from odoo import api, fields, models
 from odoo.report.render import render
 from odoo.exceptions import UserError
-import base64
-import logging
-from lxml import etree
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-_logger = logging.getLogger(__name__)
-
-try:
-    from pytrustnfe.nfe.danfe import danfe
-except ImportError:
-    _logger.info('Cannot import pytrustnfe', exc_info=True)
-
 
 TYPE2EDOC = {
     'out_invoice': 'saida',        # Customer Invoice
@@ -40,6 +25,7 @@ class external_pdf(render):
 
     def _render(self):
         return self.pdf
+
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'

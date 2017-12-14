@@ -340,11 +340,11 @@
     </template>
 
     <template id="main_template_br_nfse_danfe">
-        <div class="article">
+        <t t-call="report.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="br_nfse.danfse_report_template" t-lang="doc.partner_id.lang"/>
             </t>
-        </div>
+        </t>
     </template>
 
 
