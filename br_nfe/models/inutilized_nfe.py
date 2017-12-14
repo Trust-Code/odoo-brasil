@@ -141,6 +141,7 @@ class InutilizedNfe(models.Model):
     def action_send_inutilization(self):
         self.validate_hook()
         self.send_sefaz()
+        self.update_sequence_invoice_number()
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
@@ -154,3 +155,18 @@ class InutilizedNfe(models.Model):
                 'res_model': 'invoice.eletronic.inutilized',
                 'res_id': event.id
             })
+
+    def update_sequence_invoice_number(self):
+        invoice = self.env['invoice.eletronic'].search([
+            ('serie', '=', self.serie.id),
+            ('numero', '=', self.numeration_end + 1)])
+
+        if invoice:
+            last_inv = self.env['invoice.eletronic'].search([
+                ('serie', '=', self.serie.id)],
+                order='numero desc', limit=1)
+            self.serie.sudo().internal_sequence_id.write(
+                {'number_next_actual': last_inv.numero + 1})
+        else:
+            self.serie.sudo().internal_sequence_id.write(
+                {'number_next_actual': self.numeration_end + 1})

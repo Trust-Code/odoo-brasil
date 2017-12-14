@@ -22,6 +22,14 @@ class AccountInvoice(models.Model):
                 item.nfe_status = '%s - %s' % (
                     docs[0].codigo_retorno, docs[0].mensagem_retorno)
 
+    @api.multi
+    @api.depends("document_serie_id")
+    def _compute_nfe_next_number(self):
+        for item in self:
+            if item.state == 'draft':
+                seq_id = item.sudo().document_serie_id.internal_sequence_id
+                self.nfe_next_number = seq_id.number_next_actual
+
     ambiente_nfe = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente",
         readonly=True)
@@ -35,6 +43,11 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
+    nfe_next_number = fields.Integer(
+        string=u"* Número NF-e", readonly=True,
+        compute="_compute_nfe_next_number",
+        help="Númeração da NF-e a ser gerada, " +
+        "caso outra fatura não seja validada.")
 
     @api.multi
     def action_invoice_draft(self):
@@ -51,24 +64,18 @@ class AccountInvoice(models.Model):
     def action_number(self):
         super(AccountInvoice, self).action_number()
         if self.fiscal_document_id.code == '55':
-            nfe_inutilized = self.env[
-                'invoice.eletronic.inutilized'].search([
-                    ('serie', '=', self.document_serie_id.id)],
-                    order='numeration_end desc', limit=1)
-            numeration_end = nfe_inutilized.numeration_end
+            if not self.document_serie_id:
+                return
+            serie_id = self.document_serie_id
+            seq_id = serie_id.sudo().internal_sequence_id
+            number_next_actual = seq_id.number_next_actual
+            inv_inutilized = self.env['invoice.eletronic.inutilized'].search([
+                ('serie', '=', serie_id.id),
+                ('numeration_start', '<', number_next_actual),
+                ('numeration_end', '>', number_next_actual)])
 
-            if self.internal_number <= numeration_end:
-                self.internal_number = nfe_inutilized.numeration_end + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
-
-            nfe = self.env['invoice.eletronic'].search([
-                ('serie', '=', self.document_serie_id.id)
-            ], order='numero desc', limit=1)
-            if self.internal_number <= nfe.numero:
-                self.internal_number = nfe.numero + 1
-                self.document_serie_id.sudo().internal_sequence_id\
-                    .number_next_actual = self.internal_number
+            if len(inv_inutilized) > 0:
+                raise UserError(u"Número gerado para NF-e inutilizado.")
 
         return True
 
