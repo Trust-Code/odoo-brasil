@@ -655,9 +655,15 @@ class InvoiceEletronic(models.Model):
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        tmpLogo = StringIO()
-        tmpLogo.write(logo)
-        tmpLogo.seek(0)
+        if not logo:
+            logo = base64.decodestring(self.invoice_id.company_id.logo_web)
+
+        if logo:
+            tmpLogo = StringIO()
+            tmpLogo.write(logo)
+            tmpLogo.seek(0)
+        else:
+            tmpLogo = False
 
         xml_element = etree.fromstring(nfe_xml)
         oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)

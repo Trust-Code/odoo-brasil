@@ -48,6 +48,10 @@ class ReportCustom(report_int):
 
         nfe_xml = base64.decodestring(nfe.nfe_processada)
         logo = base64.decodestring(nfe.invoice_id.company_id.logo)
+
+        if not logo:
+            logo = base64.decodestring(nfe.invoice_id.company_id.logo_web)
+
         if logo:
             tmpLogo = StringIO()
             tmpLogo.write(logo)
