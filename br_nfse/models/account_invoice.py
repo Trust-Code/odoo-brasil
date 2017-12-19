@@ -34,9 +34,9 @@ class AccountInvoice(models.Model):
 
         res['ambiente_nfse'] = 'homologacao' \
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
-        res['serie'] = inv.fiscal_position_id.service_serie_id.id
-        res['serie_documento'] = inv.fiscal_position_id.service_document_id.id
-        res['model'] = inv.fiscal_position_id.service_document_id.code
+        res['serie'] = inv.service_serie_id.id
+        res['serie_documento'] = inv.service_document_id.id
+        res['model'] = inv.service_document_id.code
         return res
 
     def _prepare_edoc_item_vals(self, line):
@@ -46,3 +46,23 @@ class AccountInvoice(models.Model):
         res['codigo_tributacao_municipio'] = \
             line.service_type_id.codigo_tributacao_municipio
         return res
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    state = fields.Selection(
+        string="Status",
+        selection=[
+            ('pendente', 'Pendente'),
+            ('transmitido', 'Transmitido'),
+        ],
+        default='pendente',
+        help="""Define a situação eletrônica do item da fatura.
+                Pendente: Ainda não foi transmitido eletronicamente.
+                Transmitido: Já foi transmitido eletronicamente."""
+    )
+
+    numero_nfse = fields.Char(string="Número NFS-e",
+                              help="""Número da NFS-e na qual o item foi
+                              transmitido eletrônicamente.""")
