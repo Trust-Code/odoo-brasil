@@ -45,7 +45,23 @@
         <field name="arch" type="xml">
             <field name="price_subtotal" position="after">
                 <field name="item_pedido_compra" />
+                <field name="state"/>
             </field>
+        </field>
+    </record>
+
+    <record id="view_br_nfse_invoice_tree" model="ir.ui.view">
+        <field name="name">view.br_nfse.line.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
+                <attribute name="decoration-info">state == 'pendente'</attribute>
+                <attribute name="decoration-muted">state == 'transmitido'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                <field name="state"/>
+            </xpath>
         </field>
     </record>
 
