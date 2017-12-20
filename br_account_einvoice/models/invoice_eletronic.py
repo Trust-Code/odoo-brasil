@@ -730,3 +730,8 @@ class InvoiceEletronicItem(models.Model):
     inss_valor_retencao = fields.Monetary(
         string=u'Valor Retenção', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
+
+    account_invoice_line_id = fields.Many2one(
+        string="Account Invoice Line",
+        comodel_name="account.invoice.line",
+        )

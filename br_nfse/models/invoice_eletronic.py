@@ -275,6 +275,12 @@ class InvoiceEletronic(models.Model):
                     self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe \
                         .NumeroNFe
 
+                for inv_line in self.invoice_id.invoice_line_ids:
+                    if inv_line.product_id.fiscal_type == 'service':
+                        inv_line.write(
+                            {'state': 'transmitido',
+                             'numero_nfse': self.numero_nfse})
+
             else:
                 self.codigo_retorno = retorno.Erro.Codigo
                 self.mensagem_retorno = retorno.Erro.Descricao

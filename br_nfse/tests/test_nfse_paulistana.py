@@ -147,6 +147,7 @@ class TestNFeBrasil(TransactionCase):
             'reference_type': "none",
             'service_document_id': self.env.ref(
                 'br_data_account.fiscal_document_001').id,
+            'service_serie_id': self.fpos.service_serie_id.id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,

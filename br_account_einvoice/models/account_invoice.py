@@ -258,8 +258,16 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     state = fields.Selection(
-        [('draft', 'Provisório'), ('done', 'Finalizado')], string="Situação")
-    eletronic_line_id = fields.Many2one('invoice.eletronic')
+        string="Status",
+        selection=[
+            ('pendente', 'Pendente'),
+            ('transmitido', 'Transmitido'),
+        ],
+        default='pendente',
+        help="""Define a situação eletrônica do item da fatura.
+                Pendente: Ainda não foi transmitido eletronicamente.
+                Transmitido: Já foi transmitido eletronicamente."""
+    )
 
     item_pedido_compra = fields.Char(
         string=u'Item do pedido de compra do cliente')
