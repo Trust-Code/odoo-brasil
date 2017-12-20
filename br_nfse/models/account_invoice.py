@@ -12,6 +12,28 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
 
+    # Nota Campinas
+    type_retention = fields.Selection([('A', u'ISS a recolher pelo prestador'),
+                                       ('R', u'Retido na Fonte')],
+                                      string='Tipo Recolhimento', default='A',)
+
+    operation = fields.Selection([('A', u"Sem Dedução"),
+                                  ('B', u"Com dedução/Materiais"),
+                                  ('C', u"Imune/Isenta de ISSQN"),
+                                  ('D', u"Devolução/Simples Remessa"),
+                                  ('J', u"Intermediação")], string="Operação",)
+
+    taxation = fields.Selection([('C', u"Isenta de ISS"),
+                                 ('E', u"Não incidência no município"),
+                                 ('F', u"Imune"),
+                                 ('K', u"Exigibilidade Susp.Dec.J/Proc.A"),
+                                 ('N', u"Não Tributável"),
+                                 ('T', u"Tributável"),
+                                 ('G', u"Tributável Fixo"),
+                                 ('H', u"Tributável S.N."),
+                                 ('M', u"Micro Empreendedor Individual(MEI)")],
+                                string="Tributação",)
+
     def _return_pdf_invoice(self, doc):
         if self.service_document_id.code == '001':  # Paulistana
             return 'br_nfse.report_br_nfse_danfe'
@@ -36,9 +58,14 @@ class AccountInvoice(models.Model):
 
         res['ambiente_nfse'] = 'homologacao' \
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
-        res['serie'] = inv.fiscal_position_id.service_serie_id.id
-        res['serie_documento'] = inv.fiscal_position_id.service_document_id.id
+        res['serie'] = inv.service_serie_id.id
+        res['serie_documento'] = inv.service_document_id.id
         res['model'] = inv.service_document_id.code
+
+        if res['model'] == '011':
+            res['taxation'] = inv.taxation
+            res['type_retention'] = inv.type_retention
+            res['operation'] = inv.operation
         return res
 
     def _prepare_edoc_item_vals(self, line):

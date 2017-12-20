@@ -29,6 +29,7 @@
         'views/account_invoice.xml',
         'views/invoice_eletronic.xml',
         'views/res_company.xml',
+        'views/account_fiscal_position.xml',
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_simpliss.xml',
         'reports/danfse_ginfes.xml',

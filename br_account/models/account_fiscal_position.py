@@ -127,6 +127,27 @@ class AccountFiscalPosition(models.Model):
     fiscal_type = fields.Selection([('saida', 'Saída'),
                                     ('entrada', 'Entrada')],
                                    string=u"Tipo da posição")
+    # Nota Campinas
+    type_retention = fields.Selection([('A', u'ISS a recolher pelo prestador'),
+                                       ('R', u'Retido na Fonte')],
+                                      string='Tipo Recolhimento', default='A',)
+
+    operation = fields.Selection([('A', u"Sem Dedução"),
+                                  ('B', u"Com dedução/Materiais"),
+                                  ('C', u"Imune/Isenta de ISSQN"),
+                                  ('D', u"Devolução/Simples Remessa"),
+                                  ('J', u"Intermediação")], string="Operação",)
+
+    taxation = fields.Selection([('C', u"Isenta de ISS"),
+                                 ('E', u"Não incidência no município"),
+                                 ('F', u"Imune"),
+                                 ('K', u"Exigibilidade Susp.Dec.J/Proc.A"),
+                                 ('N', u"Não Tributável"),
+                                 ('T', u"Tributável"),
+                                 ('G', u"Tributável Fixo"),
+                                 ('H', u"Tributável S.N."),
+                                 ('M', u"Micro Empreendedor Individual(MEI)")],
+                                string="Tributação",)
 
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']

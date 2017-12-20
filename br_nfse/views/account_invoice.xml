@@ -14,7 +14,13 @@
                     A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
+            <page name="other_info" position="inside">
+                <group name="nfse" string="NFS-e">
+                    <field name="type_retention" />
+                    <field name="operation" />
+                    <field name="taxation" />
+                </group>
+            </page>
         </field>
     </record>
-
 </odoo>
