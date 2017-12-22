@@ -541,8 +541,8 @@ class InvoiceEletronic(models.Model):
         if self.transportadora_id.street:
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
                                           self.transportadora_id.number or '',
-                                          self.transportadora_id.district
-                                          or '')
+                                          self.
+                                          transportadora_id.district or '')
         else:
             end_transp = ''
         transp = {
