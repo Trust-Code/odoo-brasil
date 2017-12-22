@@ -40,7 +40,7 @@
         <div class="page">
             <div class="row" style="border: 1px solid black;">
                 <div class="col-xs-2">
-                    <img src="/br_nfse/static/src/img/prefeitura-sp.gif" alt="Logo Prefeitura Campinas"
+                    <img src="/br_nfse/static/src/img/prefeitura-sp.gif" alt="Logo Prefeitura São Paulo"
                         style="max-height:80px; margin-top:4px; margin-left:10px;" />
                 </div>
                 <div class="col-xs-8" style="padding:0px;text-align:center;font-size:18px;">

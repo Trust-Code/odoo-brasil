@@ -12,7 +12,7 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
 
-    # Nota Campinas
+    # Nota DSF
     type_retention = fields.Selection([('A', u'ISS a recolher pelo prestador'),
                                        ('R', u'Retido na Fonte')],
                                       string='Tipo Recolhimento', default='A',)
@@ -50,7 +50,7 @@ class AccountInvoice(models.Model):
                 "target": "_blank",
             }
         elif self.service_document_id.code == '011':
-            return 'br_nfse.report_br_nfse_danfe_campinas'
+            return 'br_nfse.report_br_nfse_danfe_dsf'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_vals(self, inv, inv_lines):

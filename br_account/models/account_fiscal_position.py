@@ -127,7 +127,7 @@ class AccountFiscalPosition(models.Model):
     fiscal_type = fields.Selection([('saida', 'Saída'),
                                     ('entrada', 'Entrada')],
                                    string=u"Tipo da posição")
-    # Nota Campinas
+    # Nota DSF
     type_retention = fields.Selection([('A', u'ISS a recolher pelo prestador'),
                                        ('R', u'Retido na Fonte')],
                                       string='Tipo Recolhimento', default='A',)

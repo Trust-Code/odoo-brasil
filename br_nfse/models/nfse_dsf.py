@@ -15,10 +15,10 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 _logger = logging.getLogger(__name__)
 
 try:
-    from pytrustnfe.nfse.campinas import cancelar
-    from pytrustnfe.nfse.campinas import enviar
-    from pytrustnfe.nfse.campinas import teste_enviar
-    from pytrustnfe.nfse.campinas import consulta_lote
+    from pytrustnfe.nfse.dsf import cancelar
+    from pytrustnfe.nfse.dsf import enviar
+    from pytrustnfe.nfse.dsf import teste_enviar
+    from pytrustnfe.nfse.dsf import consulta_lote
     from pytrustnfe.certificado import Certificado
 except ImportError:
     _logger.debug('Cannot import pytrustnfe')
@@ -102,7 +102,9 @@ class InvoiceEletronic(models.Model):
                 partner_phone = partner_phone[2:]
 
             im_tomador = ''
-            if city_tomador.name == 'Campinas':
+            dsf_cities = ['Campinas', 'Campo Grande', 'São Luís', 'Sorocaba',
+                          'Belém', 'Uberlândia', 'Teresina']
+            if city_tomador.name in dsf_cities:
                 im_tomador = re.sub(
                     '[^0-9]', '', partner.inscr_mun or '').zfill(9)
 
