@@ -207,7 +207,6 @@ class AccountInvoice(models.Model):
                     'amount_discount': di_line.amount_discount,
                     'drawback_number': di_line.drawback_number,
                 }))
-
             di_importacao.append((0, None, {
                 'name': di.name,
                 'date_registration': di.date_registration,
