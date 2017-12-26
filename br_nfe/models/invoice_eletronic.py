@@ -546,6 +546,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             # Retenções
 
         }
+        if self.transportadora_id.street:
+            end_transp = "%s - %s, %s" % (self.transportadora_id.street,
+                                          self.transportadora_id.number or '',
+                                          self.
+                                          transportadora_id.district or '')
+        else:
+            end_transp = ''
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
@@ -553,9 +560,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
                              self.transportadora_id.inscr_est or ''),
-                'xEnder': "%s - %s, %s" % (self.transportadora_id.street,
-                                           self.transportadora_id.number,
-                                           self.transportadora_id.district)
+                'xEnder': end_transp
                 if self.transportadora_id else '',
                 'xMun': self.transportadora_id.city_id.name or '',
                 'UF': self.transportadora_id.state_id.code or ''
@@ -615,6 +620,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             },
             'dup': duplicatas
         }
+        self.informacoes_complementares = self.informacoes_complementares.\
+            replace('\n', '<br />')
+        self.informacoes_legais = self.informacoes_legais.replace(
+            '\n', '<br />')
         infAdic = {
             'infCpl': self.informacoes_complementares or '',
             'infAdFisco': self.informacoes_legais or '',
