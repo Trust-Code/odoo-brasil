@@ -12,7 +12,7 @@
     <record id="report_br_nfse_danfe_imperial" model="ir.actions.report">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
         <field name="name">Nota de Serviço - Imperial</field>
-        <field name="print_report_name">'%s - NF - %s ' % (object.numero, object.partner_id.name)</field>
+        <field name="print_report_name">'%s - NF - %s.pdf' % (object.numero, object.partner_id.name)</field>
     </record>
 
     <template id="danfse_report_template_imperial">
