@@ -9,11 +9,13 @@ class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
 
     @api.multi
+    @api.depends('move_line_id.reconciled')
     def _compute_state(self):
         for item in self:
-            item.state = 'open'
             if item.move_line_id.reconciled:
                 item.state = 'paid'
+            if not item.state:
+                item.state = 'draft'
 
     name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
@@ -30,10 +32,15 @@ class PaymentOrderLine(models.Model):
         'payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
-    state = fields.Selection([("open", "Aberto"),
-                              ("paid", "Pago")],
+    state = fields.Selection([("draft", "Provisório"),
+                              ("open", "Confirmado"),
+                              ("paid", "Pago"),
+                              ("rejected", "Rejeitado"),
+                              ("baixa", "Baixa")],
                              string=u"Situação",
-                             compute="_compute_state")
+                             compute="_compute_state",
+                             readonly=False,
+                             store=True)
 
 
 class PaymentOrder(models.Model):
