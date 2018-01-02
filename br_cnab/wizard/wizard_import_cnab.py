@@ -53,7 +53,7 @@ class WizardImportCnab(models.TransientModel):
         bank = self.get_bank()
         return Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
 
-    @api.onchange('cnab_file')
+    @api.onchange('cnab_file', 'journal_id')
     def _preview_cnab(self):
         codigos_movimentacao = {
             0: u'Evento Desconhecido',
@@ -151,8 +151,6 @@ class WizardImportCnab(models.TransientModel):
         inicio = final = datetime.now()
         valor_total = Decimal('0.0')
         if len(transactions):
-            import ipdb
-            ipdb.set_trace()
             for transaction in transactions:
                 valor_total += transaction['amount']
 
@@ -160,7 +158,10 @@ class WizardImportCnab(models.TransientModel):
                 [('journal_id', '=', self.journal_id.id)],
                 order="date desc, id desc", limit=1)
 
-            last_balance = last_bank_stmt[0].balance_end or 0.0
+            try:
+                last_balance = last_bank_stmt[0].balance_end
+            except IndexError:
+                last_balance = 0.0
 
             vals_bank_statement = {
                 'name': u"%s - %s até %s" % (
@@ -182,9 +183,11 @@ class WizardImportCnab(models.TransientModel):
                     u'counterpart_aml_dicts': [{
                         u'credit': line.debit,
                         u'counterpart_aml_id': line.id,
-                        u'name': str(line.move_id) + ': ' + str(
+                        u'name': str(line.move_id.name) + ': ' + str(
                             line.name),
-                        u'debit': 0}]
+                        u'debit': 0,
+                        u'payment_mode_id': line.payment_mode_id.id,
+                        u'nosso_numero': line.nosso_numero}]
                     })
             return vals_bank_statement, datas
 
@@ -222,11 +225,23 @@ class WizardImportCnab(models.TransientModel):
 
         return BankStatement.create(stmt_values)
 
+    def _get_order_line(self, nosso_numero, method):
+        payment_modes = self.env['payment.mode'].search([])
+
+        filtered_pm = payment_modes.filtered(
+            lambda x: x.bank_account_id.bank_id ==
+            self.journal_id.bank_id
+        )
+
+        return self.env[method].search([
+            ('nosso_numero', '=', nosso_numero),
+            ('payment_mode_id', 'in', filtered_pm.ids)])
+
     def _change_boleto_state(self, evento):
         nosso_numero = self._get_nosso_numero(evento.nosso_numero)
 
-        payment_order_lines = self.env['payment.order.line'].search([
-            ('nosso_numero', '=', nosso_numero)])
+        payment_order_lines = self._get_order_line(
+            nosso_numero, 'payment.order.line')
 
         for line in payment_order_lines:
             if line.state == 'draft':
@@ -237,11 +252,10 @@ class WizardImportCnab(models.TransientModel):
             if evento.servico_codigo_movimento in (9, '09'):
                 line.write({'state': 'baixa'})
 
-    def _liquidacao_cnab(self, evento, valor):
+    def _liquidacao_cnab(self, arquivo, evento, valor):
         nosso_numero = self._get_nosso_numero(evento.nosso_numero)
 
-        move_line = self.env['account.move.line'].search(
-            [('nosso_numero', '=', nosso_numero)])
+        move_line = self._get_order_line(nosso_numero, 'account.move.line')
 
         transaction = {
             'name': "%s : %s" % (
@@ -256,7 +270,7 @@ class WizardImportCnab(models.TransientModel):
             'ref': evento.numero_documento,
             'unique_import_id': str(evento.nosso_numero),
             'nosso_numero': nosso_numero,
-            'bank_account_id': '033'
+            'bank_account_id': move_line.payment_mode_id.bank_account_id.id
         }
 
         return transaction, move_line
@@ -270,8 +284,8 @@ class WizardImportCnab(models.TransientModel):
                 valor = evento.valor_lancamento
 
                 if evento.servico_codigo_movimento in (6, 17, '06', '17',):
-                    transaction, move_line = self._liquidacao_cnab(evento,
-                                                                   valor)
+                    transaction, move_line = self._liquidacao_cnab(
+                        arquivo, evento, valor)
 
                     transactions.append(transaction)
                     move_lines.append(move_line)
