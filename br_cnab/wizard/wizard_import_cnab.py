@@ -206,9 +206,9 @@ class WizardImportCnab(models.TransientModel):
                         account_number)
 
                     transaction['unique_import_id'] = (
-                        sanitized_account_number and sanitized_account_number
-                        + '-' or '') + str(self.journal_id.id) + '-'\
-                        + transaction['unique_import_id']
+                        sanitized_account_number and sanitized_account_number +
+                        '-' or '') + str(self.journal_id.id) + '-' +\
+                        transaction['unique_import_id']
 
                     partner_bank = self.env['res.partner.bank'].search([
                         ('acc_number', '=', sanitized_account_number)],
