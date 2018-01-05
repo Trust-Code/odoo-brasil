@@ -15,6 +15,7 @@ class IrActionsReport(models.Model):
     # report_type = fields.Selection(selection_add=[('raw-pdf', 'PDF')])
 
     def render_qweb_pdf(self, res_ids, data=None):
+
         if not self.name == 'Boleto':
             return super(IrActionsReport, self).render_qweb_pdf(
                 res_ids, data=data)
