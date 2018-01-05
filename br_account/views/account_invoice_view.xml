@@ -140,6 +140,12 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="valor_bruto" invisible="1" />
                 <field name="valor_desconto" invisible="1" />
+                <field name="ii_rule_id" invisible="1"/>
+                <field name="issqn_rule_id" invisible="1"/>
+                <field name="cofins_rule_id" invisible="1" />
+                <field name="pis_rule_id" invisible="1"/>
+                <field name="ipi_rule_id" invisible="1"/>
+                <field name="icms_rule_id" invisible="1"/>
             </xpath>
             <xpath expr="//notebook/page" position="after">
                 <page name="vencimentos" string="Vencimentos">
