@@ -52,7 +52,11 @@ class ReportCustom(report_int):
             ('res_id', '=', nfe.id),
             ('name', 'like', 'cce-')
         ])
-        cce_xml = base64.decodestring(cce_list[0].datas)
+
+        cce_xml_element = None
+        if cce_list:
+            cce_xml = base64.decodestring(cce_list[0].datas)
+            cce_xml_element = [etree.fromstring(cce_xml)]
 
         logo = False
         if nfe.invoice_id.company_id.logo:
@@ -68,9 +72,8 @@ class ReportCustom(report_int):
             tmpLogo = False
 
         xml_element = etree.fromstring(nfe_xml)
-        cce_xml_element = etree.fromstring(cce_xml)
         oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo,
-                       cce_xml=[cce_xml_element])
+                       cce_xml=cce_xml_element)
 
         tmpDanfe = StringIO()
         oDanfe.writeto_pdf(tmpDanfe)
