@@ -47,9 +47,11 @@ class ReportCustom(report_int):
             'active_ids'))])
 
         nfe_xml = base64.decodestring(nfe.nfe_processada)
-        logo = base64.decodestring(nfe.invoice_id.company_id.logo)
 
-        if not logo:
+        logo = False
+        if nfe.invoice_id.company_id.logo:
+            logo = base64.decodestring(nfe.invoice_id.company_id.logo)
+        elif nfe.invoice_id.company_id.logo_web:
             logo = base64.decodestring(nfe.invoice_id.company_id.logo_web)
 
         if logo:
