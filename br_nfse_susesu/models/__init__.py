@@ -5,3 +5,5 @@
 from . import br_account_service
 from . import account_invoice
 from . import invoice_eletronic
+from . import res_company
+from . import nfse_susesu

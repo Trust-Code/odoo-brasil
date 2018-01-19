@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_br_nfse_floripa_account_invoice_form" model="ir.ui.view">
+        <field name="name">view_br_nfse_floripa.account.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
+        <field name="arch" type="xml">
+            <div class="alert alert-info" position="after">
+                <field name="ambiente_nfse" invisible="1" />
+                <field name="invoice_model" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('invoice_model', 'not in', ('012', ))]}">                    A Nota de Serviço está em ambiente de homologação                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
