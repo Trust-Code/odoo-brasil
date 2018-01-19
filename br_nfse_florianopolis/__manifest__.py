@@ -15,11 +15,12 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'br_account_einvoice',
+        'br_nfse',
     ],
     'data': [
         'views/res_company.xml',
         'views/br_account.xml',
+        'views/account_invoice.xml',
         'wizard/nfse_florianopolis_export_view.xml',
     ],
 }
