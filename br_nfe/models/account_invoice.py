@@ -77,6 +77,8 @@ class AccountInvoice(models.Model):
             serie_id.internal_sequence_id.write(
                 {'number_next_actual': inv_inutilized.numeration_end + 1})
             return serie_id.internal_sequence_id.next_by_id()
+        else:
+            return serie_id.internal_sequence_id.next_by_id()
 
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
