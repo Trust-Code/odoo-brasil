@@ -238,6 +238,12 @@ class InvoiceEletronic(models.Model):
         if self.model not in ('55', '65'):
             return res
 
+        product_price_precision = self.env['decimal.precision'].precision_get(
+            'Product Price')
+        product_uom_precision = self.env['decimal.precision'].precision_get(
+            'Product Unit of Measure')
+        product_price_format = '{0:.' + str(product_price_precision) + 'f}'
+        product_uom_format = '{0:.' + str(product_uom_precision) + 'f}'
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
@@ -247,13 +253,13 @@ class InvoiceEletronic(models.Model):
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
-            'qCom': item.quantidade,
-            'vUnCom': "%.10f" % item.preco_unitario,
+            'qCom': product_uom_format.format(item.quantidade),
+            'vUnCom': product_price_format.format(item.preco_unitario),
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
-            'qTrib': item.quantidade,
-            'vUnTrib': "%.10f" % item.preco_unitario,
+            'qTrib': product_uom_format.format(item.quantidade),
+            'vUnTrib': product_price_format.format(item.preco_unitario),
             'vFrete': "%.02f" % item.frete if item.frete else '',
             'vSeg': "%.02f" % item.seguro if item.seguro else '',
             'vDesc': "%.02f" % item.desconto if item.desconto else '',
@@ -297,7 +303,6 @@ class InvoiceEletronic(models.Model):
             })
 
         prod["DI"] = di_vals
-
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
             'ICMS': {
@@ -539,6 +544,13 @@ class InvoiceEletronic(models.Model):
             # Retenções
 
         }
+        if self.transportadora_id.street:
+            end_transp = "%s - %s, %s" % (self.transportadora_id.street,
+                                          self.transportadora_id.number or '',
+                                          self.
+                                          transportadora_id.district or '')
+        else:
+            end_transp = ''
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
@@ -546,9 +558,7 @@ class InvoiceEletronic(models.Model):
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
                              self.transportadora_id.inscr_est or ''),
-                'xEnder': "%s - %s, %s" % (self.transportadora_id.street,
-                                           self.transportadora_id.number,
-                                           self.transportadora_id.district)
+                'xEnder': end_transp
                 if self.transportadora_id else '',
                 'xMun': self.transportadora_id.city_id.name or '',
                 'UF': self.transportadora_id.state_id.code or ''
@@ -608,6 +618,10 @@ class InvoiceEletronic(models.Model):
             },
             'dup': duplicatas
         }
+        self.informacoes_complementares = self.informacoes_complementares.\
+            replace('\n', '<br />')
+        self.informacoes_legais = self.informacoes_legais.replace(
+            '\n', '<br />')
         infAdic = {
             'infCpl': self.informacoes_complementares or '',
             'infAdFisco': self.informacoes_legais or '',

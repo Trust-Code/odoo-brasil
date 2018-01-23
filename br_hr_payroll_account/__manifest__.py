@@ -5,6 +5,7 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Folha de Pagamento Brasil',
     'description': 'Folha de Pagamento Brasil',
+    'version': '10.0.1.0.0',
     'maintainer': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
     'license': 'AGPL-3',
