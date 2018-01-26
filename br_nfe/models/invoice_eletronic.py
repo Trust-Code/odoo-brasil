@@ -618,10 +618,14 @@ class InvoiceEletronic(models.Model):
             },
             'dup': duplicatas
         }
-        self.informacoes_complementares = self.informacoes_complementares.\
-            replace('\n', '<br />')
-        self.informacoes_legais = self.informacoes_legais.replace(
-            '\n', '<br />')
+        if self.informacoes_complementares:
+            self.informacoes_complementares = self.informacoes_complementares.\
+                replace('\n', '<br />')
+
+        if self.informacoes_legais:
+            self.informacoes_legais = self.informacoes_legais.replace(
+                '\n', '<br />')
+
         infAdic = {
             'infCpl': self.informacoes_complementares or '',
             'infAdFisco': self.informacoes_legais or '',
