@@ -73,7 +73,7 @@ class AccountInvoice(models.Model):
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
 
         for doc in docs:
-            if doc.state != 'done':
+            if doc.state == 'draft':
                 raise UserError('Nota Fiscal na fila de envio. Aguarde!')
 
         report = self._return_pdf_invoice(docs[0])
