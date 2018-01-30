@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_br_nfse_imperial_res_company_form" model="ir.ui.view">
+        <field name="name">br_nfse_imperial.res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="br_base.view_company_form_inherited"/>
+        <field name="arch" type="xml">
+            <page name="integracao_nfse" position="inside">
+                <group string="Nota Imperial">
+                  <field name="codigo_nfse_empresa" />
+                  <field name="codigo_nfse_usuario" />
+                  <field name="tipo_tributacao_imperial" />
+                  <field name="iss_simples_nacional" />
+                  <field name="adesao_simples_nacional" />
+                </group>
+            </page>
+        </field>
+    </record>
+</odoo>
