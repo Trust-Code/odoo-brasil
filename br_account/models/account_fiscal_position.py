@@ -141,7 +141,7 @@ class AccountFiscalPosition(models.Model):
                 # Quanto mais alto, mais adequada está a regra em relacao ao
                 # faturamento
                 rules_points[rule.id] = self._calculate_points(
-                    rule, product, state)
+                    rule, product, state, partner)
 
             # Calcula o maior valor para os resultados obtidos
             greater_rule = max([(v, k) for k, v in rules_points.items()])
@@ -198,53 +198,47 @@ class AccountFiscalPosition(models.Model):
             res.update({k: v for k, v in vals.items() if v})
         return res
 
-    def _calculate_points(self, rule, product, state):
+    def _calculate_points(self, rule, product, state, partner):
+        """Calcula a pontuação das regras. A pontuação aumenta de acordo
+        com os 'matches'. Não havendo match(exceto quando o campo não está
+        definido) retorna o valor -1, que posteriormente será tratado como
+        uma regra a ser descartada.
+        """
+
         rule_points = 0
 
         # Verifica o tipo do produto. Se sim, avança para calculo da pontuação
         # Se não, retorna o valor -1 (a regra será descartada)
-        if rule.tipo_produto == product.fiscal_type:
+        if product.fiscal_type == rule.tipo_produto:
 
-            # Verifica a categoria fiscal. Se igual, adiciona 2 pontos
-            # Se não, subtrai 2 pontos
-            fiscal_cat_len = len(rule.fiscal_category_ids)
-            if product.fiscal_category_id in rule.fiscal_category_ids:
-                rule_points += 2
-                # Mesmo contendo a categoria fiscal do produto na regra,
-                # será descontado 1 ponto se houver mais de uma
-                # categoria associada à regra.
-                if fiscal_cat_len > 1:
-                    rule_points -= 1
-            elif fiscal_cat_len > 0:
-                rule_points -= 2
+            # Verifica a categoria fiscal. Se contido, adiciona 1 ponto
+            # Se não, retorna valor -1 (a regra será descartada)
+            if product.categ_id in rule.product_category_ids:
+                rule_points += 1
+            elif len(rule.product_category_ids) > 0:
+                return -1
 
-            # Verifica a classificacao fiscal. Se igual, adiciona 2 pontos
-            # Se não, subtrai 2 pontos
-            fiscal_class_len = len(rule.product_fiscal_classification_ids)
-            if product.fiscal_classification_id in\
-                    rule.product_fiscal_classification_ids:
-                rule_points += 2
-                # Mesmo contendo a classificacao fiscal do produto na regra,
-                # será descontado 1 ponto se houver mais de uma
-                # categoria associada à regra.
-                if fiscal_class_len > 1:
-                    rule_points -= 1
-            elif fiscal_class_len > 0:
-                rule_points -= 2
+            # Verifica produtos. Se contido, adiciona 1 ponto
+            # Se não, retorna -1
+            if product in rule.product_ids:
+                rule_points += 1
+            elif len(rule.product_ids) > 0:
+                return -1
 
-            # Verifica o estado. Se igual, adiciona 2 pontos
-            # Se não, subtrai 2 pontos
-            state_len = len(rule.state_ids)
+            # Verifica o estado. Se contido, adiciona 1 ponto
+            # Se não, retorna -1
             if state in rule.state_ids:
-                rule_points = 2
-                # Mesmo contendo o estado do produto na regra,
-                # será descontado 1 ponto se houver mais de uma
-                # categoria associada à regra.
-                if state_len > 1:
-                    rule_points -= 1
-            elif state_len > 0:
-                rule_points -= 2
+                rule_points += 1
+            elif len(rule.state_ids) > 0:
+                return -1
+
+            # Verifica o cliente. Se está contido, adiciona 1 ponto
+            # Se não, retorna -1
+            if partner in rule.partner_ids:
+                rule_points += 1
+            elif len(rule.partner_ids) > 0:
+                return -1
         else:
-            rule_points = -1
+            return -1
 
         return rule_points
