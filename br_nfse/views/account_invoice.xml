@@ -7,10 +7,42 @@
         <field name="arch" type="xml">
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfse" invisible="1" />
-                <field name="invoice_model" invisible="1" />
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('invoice_model', 'not in', ('001', '002', '008', '009', '010'))]}">                    A Nota de Serviço está em ambiente de homologação                </div>
+                <field name="nfse_eletronic" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('nfse_eletronic', '=', False)]}">
+                                      A Nota de Serviço está em ambiente de homologação
+                </div>
             </div>
+            <field name="date_invoice" position="before">
+                  <field name="numero_nfse" attrs="{'invisible': [('numero_nfse', '=', '')]}" />
+            </field>
         </field>
+    </record>
+    <record id="view_br_nfse_account_invoice_supplier_form" model="ir.ui.view">
+        <field name="name">view_br_nfse.account.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <div class="alert alert-info" position="after">
+                <field name="ambiente_nfse" invisible="1" />
+                <field name="nfse_eletronic" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('nfse_eletronic', '=', False)]}">
+                                      A Nota de Serviço está em ambiente de homologação
+                </div>
+            </div>
+            <field name="date_invoice" position="before">
+                  <field name="numero_nfse" attrs="{'invisible': [('numero_nfse', '=', None)]}" />
+            </field>
+        </field>
+    </record>
+    <record id="view_br_nfse_account_invoice_tree" model="ir.ui.view">
+        <field name="name">view_br_nfse.account.invoice.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="number" position="after">
+                <field name="numero_nfse" />
+            </field>
+      	</field>
     </record>
     <record id="view_br_nfse_invoice_tree" model="ir.ui.view">
         <field name="name">view.br_nfse.line.tree</field>

@@ -43,6 +43,7 @@
                         <field name="code" select="1"/>
                         <field name="name" select="1"/>
                         <field name="electronic" select="2"/>
+                        <field name="nfse_eletronic" select="2"/>
                     </group>
                 </sheet>
             </form>
@@ -57,6 +58,7 @@
                 <field name="code" select="1"/>
                 <field name="name" select="1"/>
                 <field name="electronic" select="2"/>
+                <field name="nfse_eletronic" select="2"/>
             </tree>
         </field>
     </record>
@@ -392,7 +394,7 @@
     parent="menu_br_account"
     sequence="0"/>
 
-    <menuitem 
+    <menuitem
     id="br_account_cfop_menu"
     name="CFOP"
     parent="br_account.menu_br_account_fiscal_manager"
@@ -413,9 +415,9 @@
     action="action_br_account_cnae_form"
     sequence="30" />
 
-    <menuitem 
+    <menuitem
     id="menu_action_cnae_structure"
-    name="Estrutura do CNAE" 
+    name="Estrutura do CNAE"
     parent="menu_br_account_fiscal_manager"
     action="action_br_account_cnae_structure"
     sequence="40" />
@@ -445,7 +447,7 @@
     name="Serie de Documento Fiscal"
     parent="menu_br_account"
     action="action_br_account_document_serie_form"/>
-    
+
     <menuitem
     id="menu_action_fiscal_category_form"
     name="Categoria Fiscal"

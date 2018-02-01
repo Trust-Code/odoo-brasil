@@ -81,8 +81,7 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
 
-        numero_nfe = self.action_number(
-            inv.fiscal_position_id.product_serie_id)
+        numero_nfe = self.action_number(inv.product_serie_id)
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
