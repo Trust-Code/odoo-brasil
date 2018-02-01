@@ -15,7 +15,7 @@ try:
 
     from pytrustnfe.certificado import Certificado
 except ImportError:
-    _logger.error('Cannot import pytrustnfe', exc_info=True)
+    _logger.warning('Cannot import pytrustnfe', exc_info=True)
 
 
 STATE = {'edit': [('readonly', False)]}
