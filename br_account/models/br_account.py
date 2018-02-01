@@ -99,6 +99,7 @@ class BrAccountFiscalDocument(models.Model):
     code = fields.Char(u'Codigo', size=8, required=True)
     name = fields.Char(u'Descrição', size=64)
     electronic = fields.Boolean(u'Eletrônico')
+    nfse_eletronic = fields.Boolean('Emite NFS-e?')
 
 
 class BrAccountDocumentSerie(models.Model):
