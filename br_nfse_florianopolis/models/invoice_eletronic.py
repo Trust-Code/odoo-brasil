@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -26,7 +25,7 @@ class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
     model = fields.Selection(
-        selection_add=[('012', u'NFS-e Florianópolis')])
+        selection_add=[('012', 'NFS-e Florianópolis')])
 
     @api.multi
     def _hook_validation(self):
@@ -35,9 +34,11 @@ class InvoiceEletronic(models.Model):
             if not self.company_id.client_id:
                 errors.append('Client ID na empresa é obrigatório')
             if not self.company_id.client_secret:
-                errors.append(u'Client Secret na empresa é obrigatório')
+                errors.append('Client Secret na empresa é obrigatório')
             if not self.company_id.user_password:
-                errors.append(u'Inscrição municipal obrigatória')
+                errors.append('Inscrição municipal obrigatória')
+            if not self.company_id.cnae_main_id.id_cnae:
+                errors.append('Código de CNAE da empresa obrigatório')
 
         return errors
 
@@ -124,6 +125,7 @@ class InvoiceEletronic(models.Model):
 
         self.state = 'error'
         xml_to_send = base64.decodestring(self.xml_to_send)
+
         recebe_lote = processar_nota(
             None, xml=xml_to_send, ambiente=self.ambiente,
             client_id=self.company_id.client_id,
@@ -133,7 +135,7 @@ class InvoiceEletronic(models.Model):
 
         retorno = recebe_lote['object']
 
-        if retorno.Cabecalho.Sucesso:
+        if "codigo" in dir(retorno):
             self.state = 'done'
             self.codigo_retorno = '100'
             self.mensagem_retorno = \
@@ -147,8 +149,8 @@ class InvoiceEletronic(models.Model):
                     .NumeroNFe
 
         else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
+            self.codigo_retorno = recebe_lote['status_code']
+            self.mensagem_retorno = retorno.message
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -156,9 +158,9 @@ class InvoiceEletronic(models.Model):
             'invoice_eletronic_id': self.id,
         })
         self._create_attachment(
-            'nfse-envio', self, resposta['sent_xml'])
+            'nfse-envio', self, recebe_lote['sent_xml'].decode('utf-8'))
         self._create_attachment(
-            'nfse-ret', self, resposta['received_xml'])
+            'nfse-ret', self, recebe_lote['received_xml'].decode('utf-8'))
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):

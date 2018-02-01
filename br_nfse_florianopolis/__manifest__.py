@@ -20,7 +20,6 @@
     'data': [
         'views/res_company.xml',
         'views/br_account.xml',
-        'views/account_invoice.xml',
         'wizard/nfse_florianopolis_export_view.xml',
     ],
 }
