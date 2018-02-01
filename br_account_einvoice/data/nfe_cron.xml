@@ -4,6 +4,7 @@
             <field name="name">Cron Enviar NFe</field>
             <field name="user_id" ref="base.user_root" />
             <field name="interval_number">1</field>
+            <field name="state">code</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field eval="False" name="doall" />
@@ -15,6 +16,7 @@
             <field name="name">Enviar NFe por Email</field>
             <field name="user_id" ref="base.user_root" />
             <field name="interval_number">1</field>
+            <field name="state">code</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field eval="False" name="active" />
