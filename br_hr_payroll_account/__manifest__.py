@@ -9,6 +9,7 @@
     'website': 'http://www.trustcode.com.br',
     'license': 'AGPL-3',
     'category': 'Localization',
+    'version': '11.0.1.0.0',
     'depends': ['br_hr_payroll', 'hr_payroll_account'],
     'data': [
         'data/br_hr_payroll_account_data.xml',

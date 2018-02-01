@@ -102,7 +102,12 @@ class Boleto:
         :param company:
         :return:
         """
-        self.boleto.cedente = company.partner_id.legal_name
+        company_legal_name = company.partner_id.legal_name
+
+        if len(company_legal_name) > 45:
+            company_legal_name = company_legal_name[0:42] + '...'
+
+        self.boleto.cedente = company_legal_name
         self.boleto.cedente_documento = company.cnpj_cpf
         self.boleto.cedente_bairro = company.district
         self.boleto.cedente_cep = company.zip
