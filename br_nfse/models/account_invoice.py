@@ -2,17 +2,26 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    @api.depends('invoice_eletronic_ids.numero_nfse')
+    def _compute_nfse_number(self):
+        for inv in self:
+            numeros = inv.invoice_eletronic_ids.mapped('numero_nfse')
+            numeros = [n for n in numeros if n]
+            inv.numero_nfse = ','.join(numeros)
 
     ambiente_nfse = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
     nfse_eletronic = fields.Boolean(
         related="service_document_id.nfse_eletronic", readonly=True)
+    numero_nfse = fields.Char(
+        'NFS-e', size=30, compute='_compute_nfse_number', store=True)
 
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
@@ -20,8 +29,9 @@ class AccountInvoice(models.Model):
         res['ambiente_nfse'] = 'homologacao' \
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
         res['serie'] = inv.service_serie_id.id
-        res['serie_documento'] = inv.service_document_id.id
+        res['serie_documento'] = inv.service_serie_id.code
         res['model'] = inv.service_document_id.code
+        res['numero'] = inv.service_serie_id.internal_sequence_id.next_by_id()
         return res
 
 

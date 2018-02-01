@@ -69,12 +69,15 @@ class InvoiceEletronic(models.Model):
         }
         items = []
         for line in self.eletronic_item_ids:
+            aliquota = line.issqn_aliquota / 100
+            if self.company_id.fiscal_type != '3':
+                aliquota = 0.0
             items.append({
                 'name': line.product_id.name,
                 'cnae': re.sub(
                     '[^0-9]', '', self.company_id.cnae_main_id.id_cnae or ''),
                 'cst_servico': '1',
-                'aliquota': line.issqn_aliquota / 100,
+                'aliquota': aliquota,
                 'valor_unitario': line.preco_unitario,
                 'quantidade': int(line.quantidade),
                 'valor_total': line.valor_liquido,
@@ -85,13 +88,16 @@ class InvoiceEletronic(models.Model):
             cfps = '9202'
         if self.company_id.state_id.id != partner.state_id.id:
             cfps = '9203'
+        base, issqn = self.valor_bc_issqn, self.valor_issqn
+        if self.company_id.fiscal_type != '3':
+            base, issqn = 0.0, 0.0
         return {
-            'numero': "%06d" % self.id,
+            'numero': "%06d" % self.numero,
             'tomador': tomador,
             'itens_servico': items,
             'data_emissao': emissao.strftime('%Y-%m-%d'),
-            'base_calculo': self.valor_bc_issqn,
-            'valor_issqn': self.valor_issqn,
+            'base_calculo': base,
+            'valor_issqn': issqn,
             'valor_total': self.valor_final,
             'aedf': self.company_id.partner_id.inscr_mun[:6],
             'cfps': cfps,
@@ -135,19 +141,14 @@ class InvoiceEletronic(models.Model):
 
         retorno = recebe_lote['object']
 
-        if "codigo" in dir(retorno):
+        if "codigoVerificacao" in dir(retorno):
             self.state = 'done'
             self.codigo_retorno = '100'
             self.mensagem_retorno = \
-                'Nota Fiscal Paulistana emitida com sucesso'
+                'Nota Fiscal emitida com sucesso'
 
-            # Apenas producão tem essa tag
-            if self.ambiente == 'producao':
-                self.verify_code = \
-                    retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao
-                self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe \
-                    .NumeroNFe
-
+            self.verify_code = retorno.codigoVerificacao
+            self.numero_nfse = retorno.numeroSerie
         else:
             self.codigo_retorno = recebe_lote['status_code']
             self.mensagem_retorno = retorno.message
