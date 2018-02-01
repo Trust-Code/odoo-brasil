@@ -25,8 +25,6 @@
     'data': [
         'views/account_invoice.xml',
         'views/invoice_eletronic.xml',
-        'reports/danfse_simpliss.xml',
-        'reports/danfse_imperial.xml',
         'wizard/cancel_nfse.xml',
     ],
     'installable': True,

@@ -11,10 +11,12 @@ class AccountInvoice(models.Model):
     ambiente_nfse = fields.Selection(
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
+    nfse_eletronic = fields.Boolean(
+        related="service_document_id.nfse_eletronic", readonly=True)
 
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
-
+        res['nfse_eletronic'] = inv.nfse_eletronic
         res['ambiente_nfse'] = 'homologacao' \
             if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
         res['serie'] = inv.service_serie_id.id
