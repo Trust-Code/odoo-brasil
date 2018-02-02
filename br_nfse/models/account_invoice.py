@@ -26,8 +26,7 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
         res['nfse_eletronic'] = inv.nfse_eletronic
-        res['ambiente_nfse'] = 'homologacao' \
-            if inv.company_id.tipo_ambiente_nfse == '2' else 'producao'
+        res['ambiente'] = inv.ambiente_nfse
         res['serie'] = inv.service_serie_id.id
         res['serie_documento'] = inv.service_serie_id.code
         res['model'] = inv.service_document_id.code

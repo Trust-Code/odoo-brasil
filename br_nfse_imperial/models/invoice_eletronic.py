@@ -205,7 +205,7 @@ class InvoiceEletronic(models.Model):
 
         xml_to_send = base64.decodestring(self.xml_to_send)
         recebe_lote = processa_rps(
-            None, xml=xml_to_send, ambiente=self.ambiente_nfse)
+            None, xml=xml_to_send, ambiente=self.ambiente)
 
         retorno = recebe_lote['object'].Body['ws_nfe.PROCESSARPSResponse']
         retorno = retorno['Sdt_processarpsout']
@@ -220,7 +220,7 @@ class InvoiceEletronic(models.Model):
             while True:
                 time.sleep(2)
                 ret_consulta = consulta_protocolo(
-                    None, ambiente=self.ambiente_nfse, consulta=obj)
+                    None, ambiente=self.ambiente, consulta=obj)
 
                 retorno = ret_consulta['object'].Body
                 retorno = retorno['ws_nfe.CONSULTAPROTOCOLOResponse']
@@ -229,7 +229,7 @@ class InvoiceEletronic(models.Model):
                     break
 
             ret_consulta = consulta_notas_protocolo(
-                None, ambiente=self.ambiente_nfse, consulta=obj)
+                None, ambiente=self.ambiente, consulta=obj)
 
             retorno = ret_consulta['object'].Body
             retorno = retorno['ws_nfe.CONSULTANOTASPROTOCOLOResponse']
@@ -294,7 +294,7 @@ class InvoiceEletronic(models.Model):
             'codigo_contribuinte': self.company_id.codigo_nfse_empresa,
         }
         cancel = cancelar_nfse(
-            None, cancelamento=canc, ambiente=self.ambiente_nfse)
+            None, cancelamento=canc, ambiente=self.ambiente)
 
         retorno = cancel['object'].Body['ws_nfe.CANCELANOTAELETRONICAResponse']
         retorno = retorno['Sdt_retornocancelanfe']

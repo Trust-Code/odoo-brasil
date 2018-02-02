@@ -7,18 +7,14 @@
         <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
         <field name="arch" type="xml">
             <div name="alertas" position="before">
-                <field name="ambiente_nfse" invisible="1" />
                 <field name="nfse_eletronic" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('nfse_eletronic', '=', False)]}">
+                    attrs="{'invisible': ['|', ('ambiente', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
                     A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
             <field name="numero" position="after">
                 <field name="numero_nfse" />
-            </field>
-            <field name="ambiente" position="after">
-                <field name="ambiente_nfse" />
             </field>
             <field name="mensagem_retorno" position="after">
                 <span>
