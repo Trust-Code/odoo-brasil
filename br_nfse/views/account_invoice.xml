@@ -8,7 +8,7 @@
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfse" invisible="1" />
                 <field name="nfse_eletronic" invisible="1" />
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('nfse_eletronic', '=', False)]}">
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
                                       A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
@@ -25,7 +25,7 @@
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfse" invisible="1" />
                 <field name="nfse_eletronic" invisible="1" />
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('nfse_eletronic', '=', False)]}">
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
                                       A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
