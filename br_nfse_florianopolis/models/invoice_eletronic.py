@@ -99,7 +99,7 @@ class InvoiceEletronic(models.Model):
             'base_calculo': base,
             'valor_issqn': issqn,
             'valor_total': self.valor_final,
-            'aedf': self.company_id.partner_id.inscr_mun[:6],
+            'aedf': self.company_id.aedf,
             'cfps': cfps,
             'observacoes': '',
         }
