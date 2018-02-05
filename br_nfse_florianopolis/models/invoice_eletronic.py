@@ -39,6 +39,8 @@ class InvoiceEletronic(models.Model):
                 errors.append('Inscrição municipal obrigatória')
             if not self.company_id.cnae_main_id.id_cnae:
                 errors.append('Código de CNAE da empresa obrigatório')
+            if not self.company_id.aedf:
+                errors.append('Código AEDF da empresa obrigatório')
 
         return errors
 
@@ -169,35 +171,51 @@ class InvoiceEletronic(models.Model):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
+        if not justificativa:
+            return {
+                'name': 'Cancelamento NFe',
+                'type': 'ir.actions.act_window',
+                'res_model': 'wizard.cancel.nfse',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_edoc_id': self.id
+                }
+            }
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
         company = self.company_id
         canc = {
-            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
-            'numero_nfse': self.numero_nfse,
+            'motivo': justificativa,
+            'aedf': re.sub('[^0-9]', '', company.aedf),
+            'numero': self.numero_nfse,
             'codigo_verificacao': self.verify_code,
-            'assinatura': '%s%s' % (
-                re.sub('[^0-9]', '', company.inscr_mun),
-                self.numero_nfse.zfill(12)
-            )
         }
-        resposta = cancelar_nota(certificado, cancelamento=canc)
+        resposta = cancelar_nota(certificado, cancelamento=canc,
+                                 ambiente=self.ambiente,
+                                 client_id=self.company_id.client_id,
+                                 secret_id=self.company_id.client_secret,
+                                 username=self.company_id.inscr_mun,
+                                 password=self.company_id.user_password)
         retorno = resposta['object']
-        if retorno.Cabecalho.Sucesso:
+        msg_cancelada = 'A Nota Fiscal já está com a situação cancelada.'
+        if resposta['status_code'] == 200 or retorno.message == msg_cancelada:
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal Cancelada'
         else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
+            self.codigo_retorno = resposta['status_code']
+            self.mensagem_retorno = retorno.message
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
-        self._create_attachment('canc', self, resposta['sent_xml'])
-        self._create_attachment('canc-ret', self, resposta['received_xml'])
+        self._create_attachment(
+            'canc', self, resposta['sent_xml'])
+        self._create_attachment(
+            'canc-ret', self, resposta['received_xml'].decode('utf-8'))
