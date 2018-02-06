@@ -61,7 +61,7 @@ class Boleto:
     def getAccountNumber(self):
         if self.account_digit:
             return str(self.account_number + '-' +
-                       self.account_digit).encode('utf-8')
+                       self.account_digit)
         return self.account_number
 
     def getBranchNumber(self):
