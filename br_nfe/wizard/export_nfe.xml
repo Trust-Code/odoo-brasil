@@ -13,6 +13,8 @@
                     </group>
                     <group name='modelo-serie'>
                         <field name="model" />
+                        <field name="company_ids" widget="many2many_tags"  groups="base.group_multi_company"
+                            help="Exporta NFe das empresas selecionadas. Deixe em branco para exportar de todas as empresas"/>
                     </group>
                 </group>
                 <group states="done">

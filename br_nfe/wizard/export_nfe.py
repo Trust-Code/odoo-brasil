@@ -22,6 +22,7 @@ class ExportNfe(models.TransientModel):
     state = fields.Selection(
         [('init', 'init'), ('done', 'done')],
         'state', readonly=True, default='init')
+    company_ids = fields.Many2many('res.company', string="Empresas")
 
     def _save_zip(self, xmls):
         tmp = '/tmp/odoo/nfse-export/'
@@ -47,6 +48,8 @@ class ExportNfe(models.TransientModel):
         search_vals.append(('data_emissao', '>=', self.start_date))
         search_vals.append(('data_emissao', '<=', self.end_date))
         search_vals.append(('state', 'in', ['cancel', 'done', 'denied']))
+        if self.company_ids:
+            search_vals.append(('company_id', 'in', self.company_ids.ids))
 
         if self.model:
             search_vals.append(('model', 'in', [self.model.code]))
