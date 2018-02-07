@@ -1,8 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <menuitem id="menu_br_account" name="Brasil" parent="account.menu_finance_configuration" sequence="0"/>
-
+    <record id="view_br_account_import_declaration_form" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.form</field>
+        <field name="model">br_account.import.declaration</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="date_registration"/>
+                            <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="location"/>
+                            <field name="date_release"/>
+                            <field name="type_transportation" />
+                        </group>
+                        <group>
+                            <field name="afrmm_value" />
+                            <field name="type_import" />
+                            <field name="thirdparty_cnpj" />
+                            <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="exporting_code"/>
+                        </group>
+                        <group string="Adições" colspan="4">
+                            <field name="line_ids" nolabel="1"></field>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_br_account_import_declaration_tree" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.tree</field>
+        <field name="model">br_account.import.declaration</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date_registration"/>
+                <field name="date_release"/>
+                <field name="type_transportation" />
+                <field name="afrmm_value" />
+                <field name="type_import" />
+            </tree>
+        </field>
+    </record>
     <record id="view_br_account_import_declaration_line_form" model="ir.ui.view">
         <field name="name">br_account.import.declaration.line.form</field>
         <field name="model">br_account.import.declaration.line</field>
@@ -14,11 +56,11 @@
                     <field name="manufacturer_code"/>
                     <field name="amount_discount"/>
                     <field name="drawback_number"/>
+                    <field name="invoice_line_id" widget="many2many_checkboxes" domain="[('invoice_id.state', '=', 'draft'), ('invoice_id.fiscal_position_id.is_import', '=', 'True')]"/>
                 </group>
             </form>
         </field>
     </record>
-
     <record id="view_br_account_import_declaration_line_tree" model="ir.ui.view">
         <field name="name">br_account.import.declaration.line.tree</field>
         <field name="model">br_account.import.declaration.line</field>
@@ -29,10 +71,10 @@
                 <field name="manufacturer_code"/>
                 <field name="amount_discount"/>
                 <field name="drawback_number" />
+                <field name="invoice_line_id"/>
             </tree>
         </field>
     </record>
-
     <record id="view_br_account_fiscal_document_form" model="ir.ui.view">
         <field name="name">br_account.fiscal.document</field>
         <field name="model">br_account.fiscal.document</field>
@@ -48,7 +90,6 @@
             </form>
         </field>
     </record>
-
     <record id="view_br_account_fiscal_document_tree" model="ir.ui.view">
         <field name="name">br_account.fiscal.document</field>
         <field name="model">br_account.fiscal.document</field>
@@ -60,7 +101,6 @@
             </tree>
         </field>
     </record>
-
     <record id="view_br_account_document_serie_form" model="ir.ui.view">
         <field name="name">br_account.document.serie</field>
         <field name="model">br_account.document.serie</field>
@@ -80,7 +120,6 @@
             </form>
         </field>
     </record>
-
     <record id="view_br_account_document_serie_tree" model="ir.ui.view">
         <field name="name">br_account.document.serie</field>
         <field name="model">br_account.document.serie</field>
@@ -94,7 +133,6 @@
             </tree>
         </field>
     </record>
-
     <record id="view_br_account_cnae_form" model="ir.ui.view">
         <field name="name">br_account.cnae.form</field>
         <field name="model">br_account.cnae</field>
@@ -112,7 +150,6 @@
             </form>
         </field>
     </record>
-
     <record id="view_br_account_cnae_tree" model="ir.ui.view">
         <field name="name">br_account.cnae.tree</field>
         <field name="model">br_account.cnae</field>
@@ -125,7 +162,6 @@
             </tree>
         </field>
     </record>
-
     <record id="view_br_account_cnae_structure" model="ir.ui.view">
         <field name="name">br_account.cnae.structure</field>
         <field name="model">br_account.cnae</field>
@@ -139,7 +175,6 @@
             </tree>
         </field>
     </record>
-
     <record id="view_br_account_service_type_form" model="ir.ui.view">
         <field name="name">br_account.service.type.form</field>
         <field name="model">br_account.service.type</field>
@@ -160,7 +195,6 @@
             </form>
         </field>
     </record>
-
     <record id="view_br_account_service_type_tree" model="ir.ui.view">
         <field name="name">br_account.service.type.tree</field>
         <field name="model">br_account.service.type</field>
@@ -172,7 +206,6 @@
             </tree>
         </field>
     </record>
-
     <record id="view_br_account_service_type_structure" model="ir.ui.view">
         <field name="name">br_account.service.type.structure</field>
         <field name="model">br_account.service.type</field>
@@ -185,7 +218,6 @@
             </tree>
         </field>
     </record>
-
     <record id="br_account_cfop_form" model="ir.ui.view">
         <field name="name">br_account.cfop.name</field>
         <field name="model">br_account.cfop</field>
@@ -207,7 +239,6 @@
             </form>
         </field>
     </record>
-
     <record id="br_account_cfop_search" model="ir.ui.view">
         <field name="name">br_account.cfop.search</field>
         <field name="model">br_account.cfop</field>
@@ -220,13 +251,12 @@
                 <field name="name"/>
                 <field name="small_name"/>
                 <newline/>
-                <group  expand='0' string='Agrupar Por...' groups="base.group_extended">
+                <group expand='0' string='Agrupar Por...' groups="base.group_extended">
                     <filter string='Tipo' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
                 </group>
             </search>
         </field>
     </record>
-
     <record id="br_account_cfop_tree" model="ir.ui.view">
         <field name="name">br_account.cfop.tree</field>
         <field name="model">br_account.cfop</field>
@@ -238,7 +268,6 @@
             </tree>
         </field>
     </record>
-
     <record id="br_account_cfop_structure" model="ir.ui.view">
         <field name="name">br_account.cfop.structure</field>
         <field name="model">br_account.cfop</field>
@@ -251,7 +280,6 @@
             </tree>
         </field>
     </record>
-
     <record id="br_account_fiscal_observation_form" model="ir.ui.view">
         <field name="name">br_account.fiscal.observation.form</field>
         <field name="model">br_account.fiscal.observation</field>
@@ -268,7 +296,6 @@
             </form>
         </field>
     </record>
-
     <record id="br_account_fiscal_observation_tree" model="ir.ui.view">
         <field name="name">br_account.fiscal.observation.tree</field>
         <field name="model">br_account.fiscal.observation</field>
@@ -280,7 +307,6 @@
             </tree>
         </field>
     </record>
-
     <record id="br_account_cfop_action" model="ir.actions.act_window">
         <field name="name">CFOP</field>
         <field name="type">ir.actions.act_window</field>
@@ -289,7 +315,6 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="br_account_cfop_tree"/>
     </record>
-
     <record id="br_account_cfop_structure_action" model="ir.actions.act_window">
         <field name="name">Estrutura do CFOP</field>
         <field name="type">ir.actions.act_window</field>
@@ -298,7 +323,6 @@
         <field name="domain">[('parent_id','=',False)]</field>
         <field name="view_id" ref="br_account_cfop_structure"/>
     </record>
-
     <record id="action_br_account_fiscal_document_form" model="ir.actions.act_window">
         <field name="name">Documento Fiscal</field>
         <field name="type">ir.actions.act_window</field>
@@ -307,7 +331,6 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_br_account_fiscal_document_tree"/>
     </record>
-
     <record id="action_br_account_document_serie_form" model="ir.actions.act_window">
         <field name="name">Document Serie</field>
         <field name="type">ir.actions.act_window</field>
@@ -316,7 +339,6 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_br_account_document_serie_tree"/>
     </record>
-
     <record id="action_br_account_cnae_form" model="ir.actions.act_window">
         <field name="name">CNAE</field>
         <field name="type">ir.actions.act_window</field>
@@ -325,7 +347,6 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_br_account_cnae_tree"/>
     </record>
-
     <record id="action_br_account_cnae_structure" model="ir.actions.act_window">
         <field name="name">Estrutura do CNAE</field>
         <field name="type">ir.actions.act_window</field>
@@ -334,7 +355,6 @@
         <field name="domain">[('parent_id','=',False)]</field>
         <field name="view_id" ref="view_br_account_cnae_structure"/>
     </record>
-
     <record id="action_br_account_service_type_form" model="ir.actions.act_window">
         <field name="name">Tipo de Serviço</field>
         <field name="type">ir.actions.act_window</field>
@@ -343,7 +363,6 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_br_account_service_type_tree"/>
     </record>
-
     <record id="action_br_account_service_type_structure" model="ir.actions.act_window">
         <field name="name">Estrutura de Tipo de Serviço</field>
         <field name="type">ir.actions.act_window</field>
@@ -352,22 +371,22 @@
         <field name="domain">[('parent_id','=',False)]</field>
         <field name="view_id" ref="view_br_account_service_type_structure"/>
     </record>
-
+    <record id="action_br_account_import_declaration_form" model="ir.actions.act_window">
+        <field name="name">Import Declaration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.import.declaration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_import_declaration_tree"/>
+    </record>
     <menuitem id="menu_br_account_fiscal_manager" name="Cadastros" parent="menu_br_account" sequence="0"/>
-
     <menuitem id="br_account_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_action" sequence="10" />
     <menuitem id="br_account_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_structure_action" sequence="20" />
-
     <menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_form" sequence="30" />
-
     <menuitem id="menu_action_cnae_structure" name="Estrutura do CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_structure" sequence="40" />
-
     <menuitem id="menu_action_service_type_form" name="Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_form" sequence="50" />
-
     <menuitem id="menu_action_service_type_structure" name="Estrutura de Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_structure" sequence="60" />
-
     <menuitem id="menu_action_br_account_fiscal_document_form" name="Documento Fiscal" parent="menu_br_account" action="action_br_account_fiscal_document_form"/>
-
     <menuitem id="menu_action_document_serie_form" name="Serie de Documento Fiscal" parent="menu_br_account" action="action_br_account_document_serie_form"/>
-
+    <menuitem id="menu_action_br_account_import_declaration_form" name="Declaração de Importação" parent="menu_br_account" action="action_br_account_import_declaration_form"/>
 </odoo>

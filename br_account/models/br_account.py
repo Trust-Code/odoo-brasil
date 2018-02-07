@@ -227,6 +227,9 @@ class ImportDeclarationLine(models.Model):
     amount_discount = fields.Float(
         string=u'Valor', digits=dp.get_precision('Account'), default=0.00)
     drawback_number = fields.Char(u'Número Drawback', size=11)
+    invoice_line_id = fields.Many2one(
+        'account.invoice.line', u'Linha de Documento Fiscal',
+        ondelete='cascade', index=True)
 
 
 class AccountDocumentRelated(models.Model):

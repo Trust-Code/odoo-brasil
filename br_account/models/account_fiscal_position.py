@@ -118,6 +118,7 @@ class AccountFiscalPosition(models.Model):
     fiscal_type = fields.Selection([('saida', 'Saída'),
                                     ('entrada', 'Entrada')],
                                    string=u"Tipo da posição")
+    is_import = fields.Boolean(string="Importação")
 
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']

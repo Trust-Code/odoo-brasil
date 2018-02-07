@@ -95,7 +95,9 @@
                         <field name="fiscal_observation_ids" nolabel="1" />
                     </group>
                 </page>
-                <page name="other_information" string="Outras Informações"></page>
+                <page name="other_information" string="Outras Informações">
+                    <field name="is_import" />
+                </page>
             </xpath>
             <field name="vat_required" position="attributes">
                 <attribute name="invisible">1</attribute>
