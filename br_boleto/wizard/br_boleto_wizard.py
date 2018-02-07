@@ -18,5 +18,6 @@ class BrBoletoWizard(models.TransientModel):
             self.move_line_id.date_maturity = self.date_change
             self.move_line_id.boleto_emitido = False
 
-        return self.env['report'].get_action(self.move_line_id.id,
-                                             'br_boleto.report.print')
+        return self.env.ref(
+            'br_boleto.action_boleto_account_move_line').report_action(
+                self.move_line_id)
