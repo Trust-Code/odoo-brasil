@@ -84,9 +84,10 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 'protocolo': retorno.retEvento.infEvento.nProt,
             })
             self.eletronic_doc_id._create_attachment(
-                'cce', self.eletronic_doc_id, resposta['sent_xml'])
+                'cce', self.eletronic_doc_id, resposta['sent_xml'].encode())
             self.eletronic_doc_id._create_attachment(
-                'cce_ret', self.eletronic_doc_id, resposta['received_xml'])
+                'cce_ret', self.eletronic_doc_id,
+                resposta['received_xml'].encode())
 
         else:
             mensagem = "%s - %s" % (retorno.cStat, retorno.xMotivo)
@@ -96,9 +97,10 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             self.write({
                 'state': 'error',
                 'message': mensagem,
-                'sent_xml': base64.b64encode(resposta['sent_xml']),
+                'sent_xml': base64.b64encode(resposta['sent_xml'].encode()),
                 'sent_xml_name': 'cce-envio.xml',
-                'received_xml': base64.b64encode(resposta['received_xml']),
+                'received_xml': base64.b64encode(
+                    resposta['received_xml'].encode()),
                 'received_xml_name': 'cce-retorno.xml',
             })
 
