@@ -31,4 +31,14 @@
         </field>
     </record>
 
+    <record id="seq_boleto_name" model="ir.sequence">
+        <field name="name">Sequência de Nomes Boletos</field>
+        <field name="code">seq.boleto.name</field>
+        <field name="prefix">%(y)s%(month)s%(day)s</field>
+        <field name="suffix">.REM</field>
+        <field name="padding">0</field>
+        <field eval="1" name="number_increment"/>
+        <field eval="False" name="company_id"/>
+    </record>
+
 </odoo>
