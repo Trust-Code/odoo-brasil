@@ -16,7 +16,12 @@
                 <field name="payment_mode_id" />
             </field>
             <field name="payment_term_id" position="after">
-                <field name="payment_mode_id" />
+                <label for="payment_mode_id" />
+                <div>
+                    <field name="update_boleto" invisible="1" />
+                    <field name="payment_mode_id" />
+                    <button name="onchange_payment_mode" string="Atualizar modo de pagamento" type="object" class="oe_inline fa fa-arrow-right oe_link" attrs="{'invisible':[('update_boleto', '=', False)]}"/>
+                </div>
             </field>
         </field>
     </record>
