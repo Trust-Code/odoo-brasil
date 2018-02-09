@@ -89,6 +89,7 @@ class PaymentOrder(models.Model):
         string=u"Situação",
         compute='_compute_state',
         store=True)
+
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
     currency_id = fields.Many2one('res.currency', string='Moeda')
