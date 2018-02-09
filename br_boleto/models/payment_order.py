@@ -69,21 +69,6 @@ class PaymentOrder(models.Model):
             item.amount_total = amount_total
 
     @api.multi
-    def _compute_state(self):
-        for item in self:
-            if any(line.state == 'rejected' for line in item.line_ids):
-                item.state = 'pending'
-            elif all(line.state == 'baixa' for line in item.line_ids):
-                item.state = 'cancel'
-            elif all(line.state not in ('baixa', 'draft', 'rejected') for line
-                     in item.line_ids):
-                item.state = 'open'
-            elif item.cnab_file:
-                item.state = 'done'
-            else:
-                item.state = 'draft'
-
-    @api.multi
     def unlink(self):
         for item in self:
             item.line_ids.unlink()
@@ -102,7 +87,8 @@ class PaymentOrder(models.Model):
          ('open', 'Confirmado'),
          ('done', 'Fechado')],
         string=u"Situação",
-        compute='_compute_state')
+        compute='_compute_state',
+        store=True)
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
     currency_id = fields.Many2one('res.currency', string='Moeda')

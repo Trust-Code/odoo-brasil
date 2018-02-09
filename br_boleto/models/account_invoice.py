@@ -3,12 +3,30 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
-from odoo import api, models
+from odoo import api, models, fields
 from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    update_boleto = fields.Boolean(
+        string="Atualizar boletos",
+        compute='_compute_update_boletos')
+
+    @api.depends('payment_mode_id')
+    @api.multi
+    def _compute_update_boletos(self):
+        for item in self:
+            if item.state != 'open':
+                item.update_boleto = False
+            else:
+                for line in item.receivable_move_line_ids:
+                    if line.payment_mode_id != item.payment_mode_id and not\
+                            line.boleto_emitido:
+                        item.update_boleto = True
+                        return
+                item.update_boleto = False
 
     @api.multi
     def send_email_boleto_queue(self):
@@ -104,3 +122,14 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
                 u'Fatura provisória ou cancelada não permite emitir boleto')
         self = self.with_context({'origin_model': 'account.invoice'})
         return self.env['report'].get_action(self.id, 'br_boleto.report.print')
+
+    def onchange_payment_mode(self):
+        receivable_ids = self.receivable_move_line_ids
+        change = False
+        for line in receivable_ids:
+            if not line.boleto_emitido:
+                change = True
+                line.payment_mode_id = self.payment_mode_id
+        if not change:
+            raise UserError("Todos os boletos já foram emitidos, \
+                não é possível mudar o modo de pagamento!")

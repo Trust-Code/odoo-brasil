@@ -18,6 +18,21 @@ class PaymentOrder(models.Model):
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
 
     @api.multi
+    def _compute_state(self):
+        for item in self:
+            if any(line.state == 'rejected' for line in item.line_ids):
+                item.state = 'pending'
+            elif all(line.state == 'baixa' for line in item.line_ids):
+                item.state = 'cancel'
+            elif all(line.state not in ('baixa', 'draft', 'rejected') for line
+                     in item.line_ids):
+                item.state = 'open'
+            elif item.cnab_file:
+                item.state = 'done'
+            else:
+                item.state = 'draft'
+
+    @api.multi
     def gerar_cnab(self):
         if len(self.line_ids) < 1:
             raise UserError(
