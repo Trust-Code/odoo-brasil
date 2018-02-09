@@ -25,7 +25,8 @@ class PaymentOrderLine(models.Model):
                 state = 'Confirmado'
                 if item.state == 'paid':
                     state = 'Pago'
-                raise UserError("Você não pode deletar a linha de cobrança {}\
+                raise UserError(
+                    "Você não pode deletar a linha de cobrança {}\
                     pois ela está com status {}".format(
                         item.move_id.name, state))
         return super(PaymentOrderLine, self).unlink()
