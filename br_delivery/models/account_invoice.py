@@ -9,9 +9,6 @@ from odoo import fields, models
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    carrier_id = fields.Many2one(
-        'delivery.carrier', 'Transportadora', readonly=True,
-        states={'draft': [('readonly', False)]})
     vehicle_id = fields.Many2one(
         'br_delivery.carrier.vehicle', u'Veículo', readonly=True,
         states={'draft': [('readonly', False)]})
