@@ -3,7 +3,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api,  models
+from odoo import models
 
 
 class SaleOrder(models.Model):
@@ -21,4 +21,5 @@ class SaleOrder(models.Model):
         if price_unit == 0:
             return
 
-        return super(SaleOrder, self)._create_delivery_line(carrier, price_unit)
+        return super(SaleOrder, self)._create_delivery_line(
+            carrier, price_unit)
