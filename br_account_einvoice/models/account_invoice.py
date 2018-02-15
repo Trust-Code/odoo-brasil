@@ -61,6 +61,30 @@ class AccountInvoice(models.Model):
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
+    def _return_pdf_invoice(self, doc):
+        return None
+
+    def action_preview_danfe(self):
+
+        docs = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)])
+
+        if not docs:
+            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+
+        for doc in docs:
+            if doc.state == 'draft':
+                raise UserError('Nota Fiscal na fila de envio. Aguarde!')
+
+        report = self._return_pdf_invoice(docs[0])
+        if not report:
+            raise UserError(
+                'Nenhum relatório implementado para este modelo de documento')
+        if not isinstance(report, str):
+            return report
+        action = self.env.ref(report).report_action(docs)
+        return action
+
     def _prepare_edoc_item_vals(self, line):
         vals = {
             'name': line.name,
@@ -146,7 +170,7 @@ class AccountInvoice(models.Model):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         vals = {
-            'name': invoice.name,
+            'name': invoice.number,
             'invoice_id': invoice.id,
             'code': invoice.number,
             'company_id': invoice.company_id.id,
@@ -205,7 +229,7 @@ class AccountInvoice(models.Model):
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
-            if item.service_document_id.electronic:
+            if item.service_document_id.nfse_eletronic:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'service')
                 edoc_vals = self._prepare_edoc_vals(item, inv_lines)
@@ -234,8 +258,16 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     state = fields.Selection(
-        [('draft', 'Provisório'), ('done', 'Finalizado')], string="Situação")
-    eletronic_line_id = fields.Many2one('invoice.eletronic')
+        string="Status",
+        selection=[
+            ('pendente', 'Pendente'),
+            ('transmitido', 'Transmitido'),
+        ],
+        default='pendente',
+        help="""Define a situação eletrônica do item da fatura.
+                Pendente: Ainda não foi transmitido eletronicamente.
+                Transmitido: Já foi transmitido eletronicamente."""
+    )
 
     item_pedido_compra = fields.Char(
         string=u'Item do pedido de compra do cliente')

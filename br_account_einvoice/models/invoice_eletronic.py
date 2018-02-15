@@ -207,12 +207,6 @@ class InvoiceEletronic(models.Model):
             @returns list<string> errors
         """
         errors = []
-        # if not self.serie.product_document_id:
-        #     errors.append(u'Nota Fiscal - Tipo de documento fiscal')
-        # if not self.serie.internal_sequence_id:
-        #     errors.append(u'Nota Fiscal - Número da nota fiscal, \
-        #                   a série deve ter uma sequencia interna')
-
         # Emitente
         if not self.company_id.nfe_a1_file:
             errors.append(u'Emitente - Certificado Digital')
@@ -730,3 +724,8 @@ class InvoiceEletronicItem(models.Model):
     inss_valor_retencao = fields.Monetary(
         string=u'Valor Retenção', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
+
+    account_invoice_line_id = fields.Many2one(
+        string="Account Invoice Line",
+        comodel_name="account.invoice.line",
+        )

@@ -57,7 +57,7 @@ class Cnab240(Cnab):
 
     @property
     def inscricao_tipo(self):
-        if self.order.payment_mode_id.bank_account_id.partner_id.is_company:
+        if self.order.payment_mode_id.company_id.partner_id.is_company:
             return 2
         else:
             return 1

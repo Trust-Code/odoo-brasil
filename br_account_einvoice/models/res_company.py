@@ -8,5 +8,9 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    tipo_ambiente_nfse = fields.Selection(
+        [('producao', u'Produção'), ('homologacao', u'Homologação')],
+        string="Ambiente NFSe", default='homologacao')
+
     nfe_email_template = fields.Many2one(
         'mail.template', string="Template de Email para NFe")

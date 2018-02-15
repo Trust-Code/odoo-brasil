@@ -43,6 +43,7 @@
                         <field name="code" select="1"/>
                         <field name="name" select="1"/>
                         <field name="electronic" select="2"/>
+                        <field name="nfse_eletronic" select="2"/>
                     </group>
                 </sheet>
             </form>
@@ -57,6 +58,7 @@
                 <field name="code" select="1"/>
                 <field name="name" select="1"/>
                 <field name="electronic" select="2"/>
+                <field name="nfse_eletronic" select="2"/>
             </tree>
         </field>
     </record>
@@ -281,6 +283,30 @@
         </field>
     </record>
 
+    <record id="view_br_account_fiscal_category_form" model="ir.ui.view">
+        <field name="name">br_account.fiscal.category.form</field>
+        <field name="model">br_account.fiscal.category</field>
+        <field name="arch" type="xml">
+            <form string="Categoria Fiscal">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_br_account_fiscal_category_tree" model="ir.ui.view">
+        <field name="name">br_account.fiscal.category.tree</field>
+        <field name="model">br_account.fiscal.category</field>
+        <field name="arch" type="xml">
+            <tree string="Categoria Fiscal">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
     <record id="br_account_cfop_action" model="ir.actions.act_window">
         <field name="name">CFOP</field>
         <field name="type">ir.actions.act_window</field>
@@ -353,21 +379,79 @@
         <field name="view_id" ref="view_br_account_service_type_structure"/>
     </record>
 
-    <menuitem id="menu_br_account_fiscal_manager" name="Cadastros" parent="menu_br_account" sequence="0"/>
+    <record id="action_br_account_fiscal_category" model="ir.actions.act_window">
+        <field name="name">Fiscal Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">br_account.fiscal.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_br_account_fiscal_category_tree"/>
+    </record>
 
-    <menuitem id="br_account_cfop_menu" name="CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_action" sequence="10" />
-    <menuitem id="br_account_cfop_structure_menu" name="Estrutura do CFOP" parent="br_account.menu_br_account_fiscal_manager" action="br_account_cfop_structure_action" sequence="20" />
+    <menuitem
+    id="menu_br_account_fiscal_manager"
+    name="Cadastros"
+    parent="menu_br_account"
+    sequence="0"/>
 
-    <menuitem id="menu_action_cnae_form" name="CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_form" sequence="30" />
+    <menuitem
+    id="br_account_cfop_menu"
+    name="CFOP"
+    parent="br_account.menu_br_account_fiscal_manager"
+    action="br_account_cfop_action"
+    sequence="10" />
 
-    <menuitem id="menu_action_cnae_structure" name="Estrutura do CNAE" parent="menu_br_account_fiscal_manager" action="action_br_account_cnae_structure" sequence="40" />
+    <menuitem
+    id="br_account_cfop_structure_menu"
+    name="Estrutura do CFOP"
+    parent="br_account.menu_br_account_fiscal_manager"
+    action="br_account_cfop_structure_action"
+    sequence="20" />
 
-    <menuitem id="menu_action_service_type_form" name="Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_form" sequence="50" />
+    <menuitem
+    id="menu_action_cnae_form"
+    name="CNAE"
+    parent="menu_br_account_fiscal_manager"
+    action="action_br_account_cnae_form"
+    sequence="30" />
 
-    <menuitem id="menu_action_service_type_structure" name="Estrutura de Tipo de Serviço" parent="menu_br_account_fiscal_manager" action="action_br_account_service_type_structure" sequence="60" />
+    <menuitem
+    id="menu_action_cnae_structure"
+    name="Estrutura do CNAE"
+    parent="menu_br_account_fiscal_manager"
+    action="action_br_account_cnae_structure"
+    sequence="40" />
 
-    <menuitem id="menu_action_br_account_fiscal_document_form" name="Documento Fiscal" parent="menu_br_account" action="action_br_account_fiscal_document_form"/>
+    <menuitem
+    id="menu_action_service_type_form"
+    name="Tipo de Serviço"
+    parent="menu_br_account_fiscal_manager"
+    action="action_br_account_service_type_form"
+    sequence="50" />
 
-    <menuitem id="menu_action_document_serie_form" name="Serie de Documento Fiscal" parent="menu_br_account" action="action_br_account_document_serie_form"/>
+    <menuitem
+    id="menu_action_service_type_structure"
+    name="Estrutura de Tipo de Serviço"
+    parent="menu_br_account_fiscal_manager"
+    action="action_br_account_service_type_structure"
+    sequence="60" />
+
+    <menuitem
+    id="menu_action_br_account_fiscal_document_form"
+    name="Documento Fiscal"
+    parent="menu_br_account"
+    action="action_br_account_fiscal_document_form"/>
+
+    <menuitem
+    id="menu_action_document_serie_form"
+    name="Serie de Documento Fiscal"
+    parent="menu_br_account"
+    action="action_br_account_document_serie_form"/>
+
+    <menuitem
+    id="menu_action_fiscal_category_form"
+    name="Categoria Fiscal"
+    parent="br_account.menu_br_account_fiscal_manager"
+    action="action_br_account_fiscal_category"/>
 
 </odoo>

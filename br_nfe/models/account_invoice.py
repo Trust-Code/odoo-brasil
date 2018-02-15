@@ -47,16 +47,6 @@ class AccountInvoice(models.Model):
                                     Duplique a fatura para continuar')
         return super(AccountInvoice, self).action_invoice_draft()
 
-    def action_preview_danfe(self):
-        docs = self.env['invoice.eletronic'].search(
-            [('invoice_id', '=', self.id)])
-        if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
-        action = self.env.ref(
-            'br_nfe.report_br_nfe_danfe').report_action(docs)
-        action['report_type'] = 'qweb-html'
-        return action
-
     def invoice_print(self):
         if self.product_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
@@ -65,6 +55,11 @@ class AccountInvoice(models.Model):
                 'br_nfe.report_br_nfe_danfe').report_action(docs)
         else:
             return super(AccountInvoice, self).invoice_print()
+
+    def _return_pdf_invoice(self, doc):
+        if self.product_document_id.code == '55':
+            return 'br_nfe.report_br_nfe_danfe'
+        return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def action_number(self, serie_id):
 
@@ -86,8 +81,7 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
 
-        numero_nfe = self.action_number(
-            inv.fiscal_position_id.product_serie_id)
+        numero_nfe = self.action_number(inv.product_serie_id)
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
@@ -100,9 +94,9 @@ class AccountInvoice(models.Model):
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
-        res['serie'] = inv.fiscal_position_id.product_serie_id.code
-        res['serie_documento'] = inv.fiscal_position_id.product_document_id.id
-        res['model'] = inv.fiscal_position_id.product_document_id.code
+        res['serie'] = inv.product_serie_id.id
+        res['serie_documento'] = inv.product_document_id.code
+        res['model'] = inv.product_document_id.code
         res['numero_nfe'] = numero_nfe
         res['numero'] = numero_nfe
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,

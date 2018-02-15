@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
     <record id="view_br_nfse_account_invoice_form" model="ir.ui.view">
         <field name="name">view_br_nfse.account.invoice.form</field>
         <field name="model">account.invoice</field>
@@ -8,18 +7,65 @@
         <field name="arch" type="xml">
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfse" invisible="1" />
-                <field name="invoice_model" invisible="1" />
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfse', '==', '1'), ('invoice_model', 'not in', ('001', '002', '008', '009', '010'))]}">
-                    A Nota de Serviço está em ambiente de homologação
+                <field name="nfse_eletronic" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
+                                      A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
-            <div name="button_box" position="inside">
-                <button name="action_preview_danfse" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
-                    string="Visualizar Danfse" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('invoice_model', 'not in', ('001', '002', '008', '009', '010'))]}">
-                </button>
-            </div>
+            <field name="date_invoice" position="before">
+                  <field name="numero_nfse" attrs="{'invisible': [('numero_nfse', '=', '')]}" />
+            </field>
         </field>
     </record>
-
+    <record id="view_br_nfse_account_invoice_supplier_form" model="ir.ui.view">
+        <field name="name">view_br_nfse.account.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <div class="alert alert-info" position="after">
+                <field name="ambiente_nfse" invisible="1" />
+                <field name="nfse_eletronic" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
+                                      A Nota de Serviço está em ambiente de homologação
+                </div>
+            </div>
+            <field name="date_invoice" position="before">
+                  <field name="numero_nfse" attrs="{'invisible': [('numero_nfse', '=', None)]}" />
+            </field>
+        </field>
+    </record>
+    <record id="view_br_nfse_account_invoice_tree" model="ir.ui.view">
+        <field name="name">view_br_nfse.account.invoice.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="number" position="after">
+                <field name="numero_nfse" />
+            </field>
+      	</field>
+    </record>
+    <record id="view_br_nfse_invoice_tree" model="ir.ui.view">
+        <field name="name">view.br_nfse.line.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account_einvoice.view_br_nfse_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
+                <attribute name="decoration-info">state == 'pendente'</attribute>
+                <attribute name="decoration-muted">state == 'transmitido'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='state']" position="after">
+                <field name="numero_nfse"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_br_nfse_invoice_form" model="ir.ui.view">
+        <field name="name">view.br_nfse.line.form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account_einvoice.view_br_account_einvoice_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <field name="item_pedido_compra" position="after">
+                <field name="numero_nfse" attrs="{'required': [('state', '=', 'transmitido')]}"/>
+            </field>
+        </field>
+    </record>
 </odoo>

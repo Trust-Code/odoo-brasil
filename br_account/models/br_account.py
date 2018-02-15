@@ -99,6 +99,7 @@ class BrAccountFiscalDocument(models.Model):
     code = fields.Char(u'Codigo', size=8, required=True)
     name = fields.Char(u'Descrição', size=64)
     electronic = fields.Boolean(u'Eletrônico')
+    nfse_eletronic = fields.Boolean('Emite NFS-e?')
 
 
 class BrAccountDocumentSerie(models.Model):
@@ -329,3 +330,10 @@ class BrAccountFiscalObservation(models.Model):
                              ('observacao', 'Observação')], string=u"Tipo")
     document_id = fields.Many2one(
         'br_account.fiscal.document', string="Documento Fiscal")
+
+
+class BrAccountCategoriaFiscal(models.Model):
+    _name = 'br_account.fiscal.category'
+    _description = 'Categoria Fiscal'
+
+    name = fields.Char('Descrição', required=True)

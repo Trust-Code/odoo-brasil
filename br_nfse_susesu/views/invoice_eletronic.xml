@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_br_nfse_susesu_invoice_eletronic_form" model="ir.ui.view">
+        <field name="name">view.br_nfse_susesu.invoice.eletronic.form</field>
+        <field name="model">invoice.eletronic</field>
+        <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form"/>
+        <field name="arch" type="xml">
+            <field name="mensagem_retorno" position="after">
+                <span attrs="{'invisible': [('model', 'not in', ('009'))]}">
+                    <br /><b>URL Danfe:</b> <field name="url_danfe" class="oe_inline" readonly="1" widget="url" />
+                </span>
+            </field>
+        </field>
+    </record>
+
+</odoo>
