@@ -17,11 +17,11 @@
         'br_stock_account',
     ],
     'data': [
-        'views/account_invoice_view.xml',
         'views/delivery_view.xml',
         'views/br_delivery_view.xml',
         'security/ir.model.access.csv',
     ],
     'category': 'Localisation',
     'application': True,
+    'installable': True,
 }
