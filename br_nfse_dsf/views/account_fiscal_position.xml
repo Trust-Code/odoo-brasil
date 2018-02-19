@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="br_account.br_account_position_form_nfse" model="ir.ui.view">
+        <field name="name">br_account.br_account_position_nfse.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="br_account.br_account_position_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_information']" position="inside">
+                <group name="NFS-e" string="NFS-e">
+                    <field name="type_retention" />
+                    <field name="operation" />
+                    <field name="taxation" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
