@@ -16,8 +16,18 @@ class PaymentOrder(models.Model):
     cnab_file = fields.Binary('CNAB File', readonly=True)
     file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
+    state = fields.Selection(
+        [('draft', 'Rascunho'),
+         ('cancel', 'Cancelado'),
+         ('pending', 'Pendente'),
+         ('open', 'Confirmado'),
+         ('done', 'Fechado')],
+        string=u"Situação",
+        compute='_compute_state',
+        store=True)
 
     @api.multi
+    @api.depends('line_ids', 'cnab_file')
     def _compute_state(self):
         for item in self:
             if any(line.state == 'rejected' for line in item.line_ids):
