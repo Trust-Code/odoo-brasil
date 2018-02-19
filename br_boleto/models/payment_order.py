@@ -81,15 +81,9 @@ class PaymentOrder(models.Model):
     payment_mode_id = fields.Many2one('payment.mode',
                                       string='Modo de Pagamento',
                                       required=True)
-    state = fields.Selection(
-        [('draft', 'Rascunho'),
-         ('cancel', 'Cancelado'),
-         ('pending', 'Pendente'),
-         ('open', 'Confirmado'),
-         ('done', 'Fechado')],
-        string=u"Situação",
-        compute='_compute_state',
-        store=True)
+    state = fields.Selection([('draft', 'Rascunho'), ('cancel', 'Cancelado'),
+                              ('open', 'Confirmado'), ('done', 'Fechado')],
+                             string=u"Situação")
 
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
