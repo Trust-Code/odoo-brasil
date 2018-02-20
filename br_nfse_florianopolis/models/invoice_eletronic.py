@@ -80,7 +80,7 @@ class InvoiceEletronic(models.Model):
                     '[^0-9]', '', self.company_id.cnae_main_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
-                'valor_unitario': line.preco_unitario,
+                'valor_unitario': line.valor_liquido / line.quantidade,
                 'quantidade': int(line.quantidade),
                 'valor_total': line.valor_liquido,
             })
