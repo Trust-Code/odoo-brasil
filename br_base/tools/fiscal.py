@@ -379,16 +379,23 @@ def validate_ie_to(inscr_est):
     inscr_est = re.sub('[^0-9]', '', inscr_est)
 
     # verificando o tamanho da inscrição estadual
-    if len(inscr_est) != 11:
-        return False
+    if len(inscr_est) == 11:
 
-    # verificando os dígitos 3 e 4
-    if not inscr_est[2:4] in ['01', '02', '03', '99']:
-        return False
+        # verificando os dígitos 3 e 4
+        if not inscr_est[2:4] in ['01', '02', '03', '99']:
+            return False
 
-    # Pega apenas os dígitos que entram no cálculo
-    inscr_est = list(map(int, inscr_est))
-    nova_ie = inscr_est[:2] + inscr_est[4:10]
+        # Pega apenas os dígitos que entram no cálculo
+        inscr_est = list(map(int, inscr_est))
+        nova_ie = inscr_est[:2] + inscr_est[4:10]
+
+    # Contemplando o novo IE de Tocantins de 9 digitos
+    elif len(inscr_est) == 9:
+        inscr_est = list(map(int, inscr_est))
+        nova_ie = inscr_est[:8]
+
+    else:
+        return False
 
     prod = [9, 8, 7, 6, 5, 4, 3, 2]
     r = sum([x * y for (x, y) in zip(nova_ie, prod)]) % 11
@@ -398,7 +405,9 @@ def validate_ie_to(inscr_est):
         f = 0
     nova_ie.append(f)
 
-    nova_ie = nova_ie[:2] + inscr_est[2:4] + nova_ie[2:]
+    # Se o IE for antigo, adicionar os digitos 3 e 4
+    if len(inscr_est) == 11:
+        nova_ie = nova_ie[:2] + inscr_est[2:4] + nova_ie[2:]
 
     return nova_ie == inscr_est
 
