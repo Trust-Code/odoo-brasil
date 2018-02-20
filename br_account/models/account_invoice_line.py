@@ -44,6 +44,7 @@ class AccountInvoiceLine(models.Model):
             'cofins_base_calculo_manual': self.cofins_base_calculo_manual,
             'ii_base_calculo': self.ii_base_calculo,
             'issqn_base_calculo': self.issqn_base_calculo,
+            'icms_aliquota_inter_part': self.icms_aliquota_inter_part
         }
 
     @api.one
@@ -60,7 +61,8 @@ class AccountInvoiceLine(models.Model):
                  'icms_st_aliquota_deducao', 'icms_st_base_calculo_manual',
                  'icms_base_calculo_manual', 'ipi_base_calculo_manual',
                  'pis_base_calculo_manual', 'cofins_base_calculo_manual',
-                 'icms_st_aliquota_deducao', 'ii_base_calculo')
+                 'icms_st_aliquota_deducao', 'ii_base_calculo',
+                 'icms_aliquota_inter_part')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
