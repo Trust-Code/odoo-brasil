@@ -29,6 +29,9 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    model = fields.Selection(
+        selection_add=[('011', 'NFS-e - Provedor DSF')])
+
     type_retention = fields.Selection([('A', u'ISS a recolher pelo prestador'),
                                        ('R', u'Retido na Fonte')],
                                       string='Tipo Recolhimento', default='A',
