@@ -17,8 +17,10 @@
         'br_nfse',
     ],
     'data': [
+        'data/res.state.city.csv',
         'views/account_fiscal_position.xml',
         'views/account_invoice.xml',
         'views/invoice_eletronic.xml',
+        'reports/danfe_dsf.xml',
     ],
 }
