@@ -85,7 +85,7 @@ class Cnab240(Cnab):
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
             bank_account_id.bra_number_dig,
-            'cedente_nome': self.order.user_id.company_id.legal_name,
+            'cedente_nome': self.order.payment_mode_id.company_id.legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
