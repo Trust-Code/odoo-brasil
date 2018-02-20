@@ -241,7 +241,10 @@ class AccountTax(models.Model):
         base_icms *= 1 - (reducao_icms / 100.0)
         interestadual = icms_inter._compute_amount(base_icms, 1.0)
         interno = icms_intra._compute_amount(base_icms, 1.0)
-        icms_inter_part = self.env.context["icms_aliquota_inter_part"]
+        if 'icms_aliquota_inter_part' in self.env.context:
+            icms_inter_part = self.env.context["icms_aliquota_inter_part"]
+        else:
+            icms_inter_part = 20.0
         vals_inter['amount'] = round((interno - interestadual) *
                                      icms_inter_part / 100, 2)
         vals_inter['base'] = base_icms
