@@ -28,6 +28,7 @@
         'views/payment_mode.xml',
         'views/account_payment.xml',
         'views/account_journal.xml',
+        'security/account_security.xml',
     ],
     'installable': True,
     'application': True,

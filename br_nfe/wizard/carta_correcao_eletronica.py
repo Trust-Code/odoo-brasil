@@ -44,6 +44,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         self.valida_carta_correcao_eletronica()
 
         numero_evento = len(self.eletronic_doc_id.cartas_correcao_ids) + 1
+        self.correcao = self.correcao.replace('\n', '<br />')
         carta = {
             'invoice_id': self.eletronic_doc_id.id,
             'CNPJ': re.sub(

@@ -188,6 +188,8 @@ class AccountInvoice(models.Model):
         vals['icms_bc_uf_dest'] = invoice_line.icms_bc_uf_dest
         vals['icms_aliquota_interestadual'] = \
             invoice_line.tax_icms_inter_id.amount or 0.0
+        vals['icms_aliquota_inter_part'] = \
+            invoice_line.icms_aliquota_inter_part or 0.0
         vals['icms_aliquota_uf_dest'] = \
             invoice_line.tax_icms_intra_id.amount or 0.0
         vals['icms_aliquota_fcp_uf_dest'] = \
@@ -195,6 +197,8 @@ class AccountInvoice(models.Model):
         vals['icms_uf_remet'] = invoice_line.icms_uf_remet or 0.0
         vals['icms_uf_dest'] = invoice_line.icms_uf_dest or 0.0
         vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
+        vals['icms_aliquota_inter_part'] = \
+            invoice_line.icms_aliquota_inter_part or 0.0
 
         di_importacao = []
         for di in invoice_line.import_declaration_ids:

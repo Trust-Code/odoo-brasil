@@ -127,28 +127,23 @@ class AccountFiscalPosition(models.Model):
         if rules:
             rules_points = {}
             for rule in rules:
-                rules_points[rule.id] = 0
-                if rule.tipo_produto == product.fiscal_type:
-                    rules_points[rule.id] += 1
-                if state in rule.state_ids:
-                    rules_points[rule.id] += 1
-                if product.categ_id in rule.product_category_ids:
-                    rules_points[rule.id] += 1
-                if product in rule.product_ids:
-                    rules_points[rule.id] += 1
-                if len(rule.product_ids) > 0:
-                    rules_points[rule.id] -= 1
-                if not rule.tipo_produto:
-                    rules_points[rule.id] -= 1
-                if len(rule.product_category_ids) > 0:
-                    rules_points[rule.id] -= 1
-                if len(rule.state_ids) > 0:
-                    rules_points[rule.id] -= 1
+
+                # Calcula a pontuacao da regra.
+                # Quanto mais alto, mais adequada está a regra em relacao ao
+                # faturamento
+                rules_points[rule.id] = self._calculate_points(
+                    rule, product, state, partner)
+
+            # Calcula o maior valor para os resultados obtidos
             greater_rule = max([(v, k) for k, v in rules_points.items()])
-            if greater_rule[0] <= 0:
+            # Se o valor da regra for menor do que 0, a regra é descartada.
+            if greater_rule[0] < 0:
                 return {}
+
+            # Procura pela regra associada ao id -> (greater_rule[1])
             rules = [rules.browse(greater_rule[1])]
 
+            # Retorna dicionario com o valores dos campos de acordo com a regra
             return {
                 ('%s_rule_id' % type_tax): rules[0],
                 'cfop_id': rules[0].cfop_id,
@@ -179,7 +174,7 @@ class AccountFiscalPosition(models.Model):
                 'cofins_cst': rules[0].cst_cofins,
             }
         else:
-            return {}
+            return{}
 
     @api.model
     def map_tax_extra_values(self, company, product, partner):
@@ -194,3 +189,48 @@ class AccountFiscalPosition(models.Model):
             res.update({k: v for k, v in vals.items() if v})
 
         return res
+
+    def _calculate_points(self, rule, product, state, partner):
+        """Calcula a pontuação das regras. A pontuação aumenta de acordo
+        com os 'matches'. Não havendo match(exceto quando o campo não está
+        definido) retorna o valor -1, que posteriormente será tratado como
+        uma regra a ser descartada.
+        """
+
+        rule_points = 0
+
+        # Verifica o tipo do produto. Se sim, avança para calculo da pontuação
+        # Se não, retorna o valor -1 (a regra será descartada)
+        if product.fiscal_type == rule.tipo_produto:
+
+            # Verifica a categoria fiscal. Se contido, adiciona 1 ponto
+            # Se não, retorna valor -1 (a regra será descartada)
+            if product.categ_id in rule.product_category_ids:
+                rule_points += 1
+            elif len(rule.product_category_ids) > 0:
+                return -1
+
+            # Verifica produtos. Se contido, adiciona 1 ponto
+            # Se não, retorna -1
+            if product in rule.product_ids:
+                rule_points += 1
+            elif len(rule.product_ids) > 0:
+                return -1
+
+            # Verifica o estado. Se contido, adiciona 1 ponto
+            # Se não, retorna -1
+            if state in rule.state_ids:
+                rule_points += 1
+            elif len(rule.state_ids) > 0:
+                return -1
+
+            # Verifica o cliente. Se está contido, adiciona 1 ponto
+            # Se não, retorna -1
+            if partner in rule.partner_ids:
+                rule_points += 1
+            elif len(rule.partner_ids) > 0:
+                return -1
+        else:
+            return -1
+
+        return rule_points

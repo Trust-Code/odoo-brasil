@@ -95,3 +95,21 @@ class AccountMoveLine(models.Model):
                 'default_move_line_id': self.id,
             }
         })
+
+    @api.multi
+    def unlink(self):
+        order_lines = self.env['payment.order.line'].search([(
+            'move_line_id', 'in', self.ids)])
+        order_lines.unlink()
+        return super(AccountMoveLine, self).unlink()
+
+
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+
+    @api.multi
+    def unlink(self):
+        order_lines = self.env['payment.order.line'].search([(
+            'move_id', 'in', self.ids)])
+        order_lines.unlink()
+        return super(AccountMove, self).unlink()

@@ -6,7 +6,7 @@
         <field name="model">payment.order</field>
         <field name="type">tree</field>
         <field name="arch" type="xml" >
-            <tree string='Ordens de Pagamento'>
+            <tree string='Ordens de Pagamento'  colors="red:state=='pending'">
                 <field name="name" />
                 <field name="user_id" />
                 <field name="payment_mode_id" />
@@ -40,7 +40,7 @@
 
                     <group naem='line_ids' string='Linhas de Cobrança' >
                         <field name="line_ids" nolabel='1'>
-                            <tree name='account_move_line'>
+                            <tree name='account_move_line'  colors="red:state=='rejected'">
                                 <field name="move_id" />
                                 <field name="state" />
                                 <field name="name" />
