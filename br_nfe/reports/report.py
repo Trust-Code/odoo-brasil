@@ -11,6 +11,7 @@ import base64
 import logging
 from odoo.report.render import render
 from odoo.report.interface import report_int
+from odoo.exceptions import UserError
 from lxml import etree
 try:
     from cStringIO import StringIO
@@ -43,14 +44,33 @@ class ReportCustom(report_int):
 
         env = odoo.api.Environment(cr, uid, context or {})
 
-        nfe = env['invoice.eletronic'].search([('id', 'in', context.get(
+        nfes = env['invoice.eletronic'].search([('id', 'in', context.get(
             'active_ids'))])
 
-        nfe_xml = base64.decodestring(nfe.nfe_processada)
-        logo = base64.decodestring(nfe.invoice_id.company_id.logo)
+        xml_element = []
+        logo = None
+        cce_xml_element = []
+        for nfe in nfes:
+            if not nfe.nfe_processada:
+                raise UserError(u'O seguinte campo não está preenchido: \
+                    Xml da NFe - {}'.format(nfe.name))
+            nfe_xml = base64.decodestring(nfe.nfe_processada)
+            cce_list = env['ir.attachment'].search([
+                ('res_model', '=', 'invoice.eletronic'),
+                ('res_id', '=', nfe.id),
+                ('name', 'like', 'cce-')
+            ])
 
-        if not logo:
-            logo = base64.decodestring(nfe.invoice_id.company_id.logo_web)
+            if cce_list:
+                cce_xml = base64.decodestring(cce_list[0].datas)
+                cce_xml_element.append(etree.fromstring(cce_xml))
+
+            if nfe.invoice_id.company_id.logo:
+                logo = base64.decodestring(nfe.invoice_id.company_id.logo)
+            elif nfe.invoice_id.company_id.logo_web:
+                logo = base64.decodestring(nfe.invoice_id.company_id.logo_web)
+
+            xml_element.append(etree.fromstring(nfe_xml))
 
         if logo:
             tmpLogo = StringIO()
@@ -59,8 +79,8 @@ class ReportCustom(report_int):
         else:
             tmpLogo = False
 
-        xml_element = etree.fromstring(nfe_xml)
-        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+        oDanfe = danfe(list_xml=xml_element, logo=tmpLogo,
+                       cce_xml=cce_xml_element)
 
         tmpDanfe = StringIO()
         oDanfe.writeto_pdf(tmpDanfe)

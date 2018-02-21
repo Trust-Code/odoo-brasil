@@ -13,4 +13,4 @@ class DeliveryCarrier(models.Model):
 
     antt_code = fields.Char(u'Código ANTT', size=32)
     vehicle_ids = fields.One2many(
-        'br_delivery.carrier.vehicle', 'carrier_id', u'Veículos')
+        'br_delivery.carrier.vehicle', 'carrier_id', string=u'Veículos')

@@ -272,6 +272,13 @@ class SaleOrderLine(models.Model):
         res['service_type_id'] = service.id
         res['icms_origem'] = self.product_id.origin
 
+        res['icms_rule_id'] = self.icms_rule_id.id
+        res['ipi_rule_id'] = self.ipi_rule_id.id
+        res['pis_rule_id'] = self.pis_rule_id.id
+        res['cofins_rule_id'] = self.cofins_rule_id.id
+        res['issqn_rule_id'] = self.issqn_rule_id.id
+        res['ii_rule_id'] = self.ii_rule_id.id
+
         if self.product_id.fiscal_type == 'service':
             res['tributos_estimados_federais'] = \
                 self.price_subtotal * (service.federal_nacional / 100)
