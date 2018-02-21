@@ -316,6 +316,11 @@ class WizardImportCnab(models.TransientModel):
                 nao_contem_eventos = False
             if nao_contem_eventos:
                 raise UserError(u"O arquivo não contém nenhum evento!")
+        cnpj = self.journal_id.company_id.cnpj_cpf
+        if not int(cnpj.replace('.', '').replace('-', '').replace(
+                '/', '')) == arquivo.header.cedente_inscricao_numero:
+            raise UserError(u"Este arquivo de retorno não pertence à essa\
+                empresa, selecione o Diário correto.")
 
         return True
 
