@@ -77,6 +77,7 @@ class WizardImportCnab(models.TransientModel):
 
                 preview = '<h3 class="text-center">%s</h3>' % arquivo.\
                     header.nome_do_banco
+                preview += '<div style="overflow: scroll; max-height: 300px;">'
                 preview += '<table class="table table-striped">'
                 preview += '<thead><tr>'
                 preview += '<th scope="col">Nosso Numero</th>'
@@ -93,7 +94,7 @@ class WizardImportCnab(models.TransientModel):
                     preview += '<tr><td scope="row">%d</td>' % line[0]
                     preview += '<td>%s</td>' % evento
                     preview += '<td>%.2f</td></tr>' % line[2]
-                preview += '</tbody></table>'
+                preview += '</tbody></table></div>'
 
                 self.cnab_preview = preview
 
