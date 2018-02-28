@@ -233,7 +233,7 @@ class InvoiceEletronic(models.Model):
             }]
 
             nfse_vals = {
-                'cidade': '6291',
+                'cidade': city_prestador.siafi_code,
                 'cpf_cnpj': prestador['cnpj'],
                 'remetente': prestador['razao_social'],
                 'transacao': 'true',
@@ -274,61 +274,61 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model == '011' and self.state not in ('done', 'cancel'):
-            self.state = 'error'
+        if self.model != '011' or self.state in ('done', 'cancel'):
+            return
 
-            nfse_values = self._prepare_eletronic_invoice_values()
-            cert = self.company_id.with_context(
-                {'bin_size': False}).nfe_a1_file
-            cert_pfx = base64.decodestring(cert)
+        nfse_values = self._prepare_eletronic_invoice_values()
+        cert = self.company_id.with_context(
+            {'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
 
-            certificado = Certificado(
-                cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(
+            cert_pfx, self.company_id.nfe_a1_password)
 
-            if self.ambiente == "producao":
-                resposta = enviar(certificado, nfse=nfse_values)
-            else:
-                resposta = teste_enviar(certificado, nfse=nfse_values)
+        if self.ambiente == "producao":
+            resposta = enviar(certificado, nfse=nfse_values)
+        else:
+            resposta = teste_enviar(certificado, nfse=nfse_values)
 
-            retorno = resposta['object']
+        retorno = resposta['object']
 
-            if retorno.Cabecalho.Sucesso:
-                self.state = 'done'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = \
-                    'Nota Fiscal de Serviço emitida com sucesso'
+        if retorno.Cabecalho.Sucesso:
+            self.state = 'done'
+            self.codigo_retorno = '100'
+            self.mensagem_retorno = \
+                'Nota Fiscal de Serviço emitida com sucesso'
 
-                # Apenas producão tem essa tag
-                if self.ambiente == 'producao':
-                    obj = {
-                        'cpf_cnpj': re.sub(
-                            '[^0-9]', '', self.company_id.cnpj_cpf),
-                        'cidade': '6192',
-                        'lote': retorno.Cabecalho.NumeroLote,
-                    }
+            # Apenas producão tem essa tag
+            if self.ambiente == 'producao':
+                obj = {
+                    'cpf_cnpj': re.sub(
+                        '[^0-9]', '', self.company_id.cnpj_cpf),
+                    'cidade': '6192',
+                    'lote': retorno.Cabecalho.NumeroLote,
+                }
 
-                    consulta_situacao = consulta_lote(consulta=obj)
+                consulta_situacao = consulta_lote(consulta=obj)
 
-                    self.verify_code = consulta_situacao.ListaNFSe \
-                        .ConsultaNFSe.CodigoVerificacao
-                    self.numero_nfse = consulta_situacao.ListaNFSe \
-                        .ConsultaNFSe.NumeroNFe
-            else:
-                self.codigo_retorno = retorno.Erro.Codigo
-                self.mensagem_retorno = retorno.Erro.Descricao
-                return
+                self.verify_code = consulta_situacao.ListaNFSe \
+                    .ConsultaNFSe.CodigoVerificacao
+                self.numero_nfse = consulta_situacao.ListaNFSe \
+                    .ConsultaNFSe.NumeroNFe
+        else:
+            self.codigo_retorno = retorno.Erro.Codigo
+            self.mensagem_retorno = retorno.Erro.Descricao
+            return
 
-            self.env['invoice.eletronic.event'].create({
-                'code': self.codigo_retorno,
-                'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
-            })
+        self.env['invoice.eletronic.event'].create({
+            'code': self.codigo_retorno,
+            'name': self.mensagem_retorno,
+            'invoice_eletronic_id': self.id,
+        })
 
-            if resposta:
-                self._create_attachment(
-                    'nfse-ret', self, str(resposta['received_xml']))
-                self._create_attachment(
-                    'nfse-env', self, str(resposta['sent_xml']))
+        if resposta:
+            self._create_attachment(
+                'nfse-ret', self, str(resposta['received_xml']))
+            self._create_attachment(
+                'nfse-env', self, str(resposta['sent_xml']))
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
