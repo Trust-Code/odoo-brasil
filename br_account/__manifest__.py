@@ -27,5 +27,6 @@
         'views/product_fiscal_classification.xml',
         'wizard/br_product_fiscal_classification_wizard.xml',
         'security/ir.model.access.csv',
+        'views/account_invoice_refund.xml',
     ],
 }
