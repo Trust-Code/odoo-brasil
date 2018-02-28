@@ -10,7 +10,7 @@ class AccountInvoice(models.Model):
 
     def _return_pdf_invoice(self, doc):
         if self.service_document_id.code == '001':  # Paulistana
-            return 'br_nfse.report_br_nfse_danfe'
+            return 'br_nfse_paulistana.report_br_nfse_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_item_vals(self, line):
