@@ -11,5 +11,7 @@ class AccountInvoice(models.Model):
 
     def _return_pdf_invoice(self, doc):
         if self.service_document_id.code == '012':  # Floripa
-            return ''   # TODO Implementar ou não?
+            return 'br_nfse_florianopolis.report_br_nfse_danfpse'
+        # TODO Implementar ou não?
+        # PS: ITS DONE MADAFAKA
         return super(AccountInvoice, self)._return_pdf_invoice(doc)

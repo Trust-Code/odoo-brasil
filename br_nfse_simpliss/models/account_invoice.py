@@ -10,5 +10,5 @@ class AccountInvoice(models.Model):
 
     def _return_pdf_invoice(self, doc):
         if self.service_document_id.code == '008':  # Simpliss
-            return 'br_nfse.report_br_nfse_danfe_simpliss'
+            return 'br_nfse_simpliss.report_br_nfse_danfe_simpliss'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
