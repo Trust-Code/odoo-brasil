@@ -128,6 +128,23 @@ class AccountFiscalPosition(models.Model):
                                     ('entrada', 'Entrada')],
                                    string=u"Tipo da posição")
 
+    @api.model
+    def _get_fpos_by_region(self, country_id=False, state_id=False,
+                            zipcode=False, vat_required=False):
+        fpos = super(AccountFiscalPosition, self)._get_fpos_by_region(
+            country_id=country_id, state_id=state_id, zipcode=zipcode,
+            vat_required=vat_required)
+        type_inv = self.env.context.get('type', False)
+        supplier = self.env.context.get('search_default_supplier', False)
+        customer = self.env.context.get('search_default_customer', False)
+        if type_inv == 'in_invoice' or supplier:
+            type_inv = 'entrada'
+        elif type_inv == 'out_invoice' or customer:
+            type_inv = 'saida'
+        fpos = self.search([('auto_apply', '=', True),
+                            ('fiscal_type', '=', type_inv)], limit=1)
+        return fpos
+
     def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
         domain = [('fiscal_position_id', '=', fpos_id),
