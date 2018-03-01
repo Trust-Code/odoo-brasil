@@ -6,6 +6,7 @@ import pytz
 import base64
 import logging
 import hashlib
+import lxml
 from datetime import datetime
 from odoo import api, models, fields
 from odoo.exceptions import UserError
@@ -15,6 +16,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pytrustnfe.nfse.dsf import cancelar
+    from pytrustnfe.nfse.dsf import xml_enviar
     from pytrustnfe.nfse.dsf import enviar
     from pytrustnfe.nfse.dsf import teste_enviar
     from pytrustnfe.nfse.dsf import consulta_lote
@@ -272,12 +274,11 @@ class InvoiceEletronic(models.Model):
         return atts
 
     @api.multi
-    def action_send_eletronic_invoice(self):
-        super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model != '011' or self.state in ('done', 'cancel'):
+    def action_post_validate(self):
+        super(InvoiceEletronic, self).action_post_validate()
+        if self.model not in ('011'):
             return
 
-        nfse_values = self._prepare_eletronic_invoice_values()
         cert = self.company_id.with_context(
             {'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
@@ -285,38 +286,46 @@ class InvoiceEletronic(models.Model):
         certificado = Certificado(
             cert_pfx, self.company_id.nfe_a1_password)
 
+        nfse_values = self._prepare_eletronic_invoice_values()
+        xml_envio = xml_enviar(certificado, nfse=nfse_values)
+
+        self.xml_to_send = base64.encodestring(xml_envio.encode('utf-8'))
+        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+
+    @api.multi
+    def action_send_eletronic_invoice(self):
+        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+        if self.model != '011' or self.state in ('done', 'cancel'):
+            return
+
+        xml_send = base64.decodestring(self.xml_to_send)
+
+        siafi_code = self.company_id.city_id.siafi_code
         if self.ambiente == "producao":
-            resposta = enviar(certificado, nfse=nfse_values)
+            resposta = enviar(None, xml=xml_send, siafi_code=siafi_code)
         else:
-            resposta = teste_enviar(certificado, nfse=nfse_values)
+            resposta = teste_enviar(None, xml=xml_send, siafi_code=siafi_code)
+        retorno = resposta['object'].Body
 
-        retorno = resposta['object']
+        if resposta['status_code'] == 200:
+            retorno = retorno.enviarSincronoResponse.enviarSincronoReturn
+            if isinstance(retorno, lxml.objectify.StringElement):
+                self.codigo_retorno = 500
+                self.mensagem_retorno = retorno
 
-        if retorno.Cabecalho.Sucesso:
-            self.state = 'done'
-            self.codigo_retorno = '100'
-            self.mensagem_retorno = \
-                'Nota Fiscal de Serviço emitida com sucesso'
+            else:
+                self.state = 'done'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = \
+                    'Nota Fiscal de Serviço emitida com sucesso'
 
-            # Apenas producão tem essa tag
-            if self.ambiente == 'producao':
-                obj = {
-                    'cpf_cnpj': re.sub(
-                        '[^0-9]', '', self.company_id.cnpj_cpf),
-                    'cidade': '6192',
-                    'lote': retorno.Cabecalho.NumeroLote,
-                }
-
-                consulta_situacao = consulta_lote(consulta=obj)
-
-                self.verify_code = consulta_situacao.ListaNFSe \
+                self.verify_code = retorno.ListaNFSe \
                     .ConsultaNFSe.CodigoVerificacao
-                self.numero_nfse = consulta_situacao.ListaNFSe \
+                self.numero_nfse = retorno.ListaNFSe \
                     .ConsultaNFSe.NumeroNFe
         else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
-            return
+            self.codigo_retorno = resposta['status_code']
+            self.mensagem_retorno = retorno.Fault.faultstring
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
