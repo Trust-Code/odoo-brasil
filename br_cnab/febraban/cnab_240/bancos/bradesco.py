@@ -19,11 +19,20 @@ class Bradesco240(Cnab240):
         from cnab240.bancos import bradesco
         self.bank = bradesco
 
+    def get_identificacao_titulo(self, line):
+        identificacao = 0
+        carteira = line.payment_mode_id.boleto_carteira
+
+        return identificacao
+
     def _prepare_header(self):
         vals = super(Bradesco240, self)._prepare_header()
         vals['servico_servico'] = 1
         vals['cedente_convenio'] = self.order.payment_mode_id.bank_account_id.\
             codigo_convenio
+        vals['controlecob_numero'] = self.order.id
+        vals['controlecob_data_gravacao'] = self.data_hoje()
+        vals['codigo_moeda'] = 9
         return vals
 
     def _prepare_segmento(self, line):
@@ -33,8 +42,7 @@ class Bradesco240(Cnab240):
         vals['desconto1_percentual'] = Decimal('0.00')
         vals['valor_iof'] = Decimal('0.00')
         # vals['cobrancasimples_valor_titulos'] = Decimal('02.00')
-        vals['identificacao_titulo_banco'] = int(
-            vals['identificacao_titulo_banco'])
+        vals['identificacao_titulo_banco'] = self.get_identificacao_titulo(line)
         vals['cedente_conta_dv'] = unicode(str(
             vals['cedente_conta_dv']), "utf-8")
         vals['cedente_agencia_dv'] = unicode(str(
