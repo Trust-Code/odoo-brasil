@@ -27,6 +27,15 @@ class InvoiceEletronic(models.Model):
     model = fields.Selection(
         selection_add=[('012', 'NFS-e Florianópolis')])
 
+    def qrcode_floripa_url(self):
+        import urllib
+
+        url_consulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.inscr_mun)
+
+        url = '<img class="center-block" style="max-width:90px;height:90px;margin:0px 1px;"\
+src="/report/barcode/?type=QR&value=' + urllib.parse.quote(url_consulta) + '" />'
+        return url
+
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
