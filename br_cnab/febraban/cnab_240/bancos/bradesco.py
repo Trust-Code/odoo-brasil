@@ -19,12 +19,6 @@ class Bradesco240(Cnab240):
         from cnab240.bancos import bradesco
         self.bank = bradesco
 
-    def get_identificacao_titulo(self, line):
-        identificacao = 0
-        carteira = line.payment_mode_id.boleto_carteira
-
-        return identificacao
-
     def _prepare_header(self):
         vals = super(Bradesco240, self)._prepare_header()
         vals['servico_servico'] = 1
@@ -49,6 +43,11 @@ class Bradesco240(Cnab240):
             vals['cedente_agencia_dv']), "utf-8")
         vals['cedente_dv_ag_cc'] = unicode(str(
             vals['cedente_dv_ag_cc']), "utf-8")
+        vals['cobranca_carteira'] = 1
+        vals['cobranca_cadastramento'] = 1
+        vals['cobranca_documentoTipo'] = 1
+        vals['cobranca_distribuicaoBloqueto'] = 2
+        vals['juros_cod_mora'] = 2
         return vals
 
     # Override cnab_240.nosso_numero. Diferentes números de dígitos entre
@@ -59,6 +58,46 @@ class Bradesco240(Cnab240):
         nosso_numero = re.sub(
             '[%s]' % re.escape(string.punctuation), '', format[3:-1] or '')
         return carteira, nosso_numero, digito
+
+    def get_identificacao_titulo(self, line):
+        carteira = line.payment_mode_id.boleto_carteira
+        return "%s%s%s%s" % (
+            str(carteira).zfill(3),
+            '0'.zfill(5),
+            str(line.nosso_numero).zfill(11),
+            self.dv_nosso_numero(carteira, line.nosso_numero)
+        )
+
+    def dv_nosso_numero(self, carteira, nosso_numero):
+        resto2 = self.modulo11(carteira + nosso_numero.zfill(11), 7, 1)
+        digito = 11 - resto2
+        if digito == 10:
+            dv = 'P'
+        elif digito == 11:
+            dv = 0
+        else:
+            dv = digito
+        return dv
+
+    def modulo11(self, num, base=9, r=0):
+        if not isinstance(num, basestring):
+            raise TypeError
+        soma = 0
+        fator = 2
+        for c in reversed(num):
+            soma += int(c) * fator
+            if fator == base:
+                fator = 1
+            fator += 1
+        if r == 0:
+            soma = soma * 10
+            digito = soma % 11
+            if digito == 10:
+                digito = 0
+            return digito
+        if r == 1:
+            resto = soma % 11
+            return resto
 
 
 def str_to_unicode(inp_str):
