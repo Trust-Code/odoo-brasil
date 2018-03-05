@@ -659,7 +659,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
                 'infNFe': nfe_values
-            }]
+            }],
+            'modelo': self.model,
         }
 
     def _find_attachment_ids_email(self):
@@ -762,7 +763,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         resposta = autorizar_nfe(
             certificado, xml=xml_to_send,
             estado=self.company_id.state_id.ibge_code,
-            ambiente=1 if self.ambiente == 'producao' else 2)
+            ambiente=1 if self.ambiente == 'producao' else 2,
+            modelo=self.model)
         retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
@@ -772,7 +774,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'obj': {
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
                     'numero_recibo': retorno.infRec.nRec
-                }
+                },
+                'modelo': self.model,
             }
             self.recibo_nfe = obj['obj']['numero_recibo']
             import time
