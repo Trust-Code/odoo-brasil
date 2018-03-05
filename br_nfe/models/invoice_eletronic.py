@@ -245,11 +245,17 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if self.model not in ('55', '65'):
             return res
 
+        if self.ambiente != 'homologacao':
+            xProd = item.product_id.with_context(
+                display_default_code=False).name_get()[0][1]
+        else:
+            xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
+ SEM VALOR FISCAL'
+
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': item.product_id.with_context(
-                display_default_code=False).name_get()[0][1],
+            'xProd': xProd,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
@@ -493,6 +499,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'indIEDest': self.ind_ie_dest,
                 'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
+            if self.model == '65':
+                dest.update(
+                    {'CPF': re.sub('[^0-9]', '', partner.cnpj_cpf or '')})
+
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
                     u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
