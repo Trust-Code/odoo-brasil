@@ -3,8 +3,10 @@
 
 import re
 import base64
+import time
 import logging
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -125,7 +127,8 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         attachment_ids = attachment_obj.search(
             [('res_model', '=', 'invoice.eletronic'),
              ('res_id', '=', self.id),
-             ('name', 'like', 'nfse-ret')])
+             ('name', 'like', 'nfse-ret')], limit=1, order='id desc')
+
         for attachment in attachment_ids:
             xml_id = attachment_obj.create(dict(
                 name=attachment.name,
@@ -136,6 +139,26 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                 res_id=self.invoice_id.id,
             ))
             atts.append(xml_id.id)
+
+        danfe_report = self.env['ir.actions.report'].search(
+            [('report_name', '=',
+              'br_nfse_florianopolis.main_template_br_nfse_danfpse')])
+        report_service = danfe_report.xml_id
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
+        filename = "%s.%s" % (report_name, "pdf")
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name=filename,
+                datas_fname=filename,
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+
         return atts
 
     @api.multi
