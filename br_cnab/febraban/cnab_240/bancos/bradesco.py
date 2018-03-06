@@ -26,17 +26,21 @@ class Bradesco240(Cnab240):
             codigo_convenio
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
-        vals['codigo_moeda'] = 9
+        vals['nome_do_banco'] = 'BANCO BRADESCO S.A'
         return vals
 
     def _prepare_segmento(self, line):
         vals = super(Bradesco240, self)._prepare_segmento(line)
+        if vals['prazo_protesto'] < 3:
+            vals['prazo_protesto'] = 3
+        vals['codigo_moeda'] = 9
         vals['prazo_baixa'] = unicode(str(
             vals['prazo_baixa']), "utf-8")
         vals['desconto1_percentual'] = Decimal('0.00')
         vals['valor_iof'] = Decimal('0.00')
         # vals['cobrancasimples_valor_titulos'] = Decimal('02.00')
-        vals['identificacao_titulo_banco'] = self.get_identificacao_titulo(line)
+        vals['identificacao_titulo_banco'] = self.get_identificacao_titulo(
+            line)
         vals['cedente_conta_dv'] = unicode(str(
             vals['cedente_conta_dv']), "utf-8")
         vals['cedente_agencia_dv'] = unicode(str(
