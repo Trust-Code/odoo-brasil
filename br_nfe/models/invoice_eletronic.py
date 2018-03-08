@@ -904,7 +904,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
-            }]
+            }],
+            'modelo': self.model,
         }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
