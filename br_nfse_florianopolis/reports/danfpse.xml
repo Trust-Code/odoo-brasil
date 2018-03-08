@@ -24,7 +24,7 @@
     <record id="report_br_nfse_danfpse" model="ir.actions.report">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfpse"/>
         <field name="name">NFS-e Florianópolis</field>
-        <field name="print_report_name">'%s - NF - %s' % (object.numero, object.partner_id.name)</field>
+        <field name="print_report_name">'%s - NF - %s' % (object.numero, object.partner_id.name_get()[0][1])</field>
     </record>
 
     <template id="danfpse_report_template">
@@ -230,7 +230,7 @@
                 <div class="col-xs-2" style="text-align:center;">
                     Valor total dos Serviços:
                     <br />
-                    <strong t-field="doc.valor_final" 
+                    <strong t-field="doc.valor_final"
                     t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                 </div>
             </div>
