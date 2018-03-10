@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="br_account_position_sped_form" model="ir.ui.view">
+        <field name="name">br_account.fiscal.position.sepd.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="natureza_operacao"></field>
+            </field>
+        </field>
+    </record>
+</odoo>            
