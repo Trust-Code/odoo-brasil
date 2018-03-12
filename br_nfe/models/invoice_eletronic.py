@@ -818,16 +818,19 @@ class InvoiceEletronic(models.Model):
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'rec-ret')])
+                ('datas_fname', 'like', 'rec-ret')],
+                order="id desc", limit=1)
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
                     ('res_model', '=', 'invoice.eletronic'),
                     ('res_id', '=', self.id),
-                    ('datas_fname', 'like', 'nfe-ret')])
+                    ('datas_fname', 'like', 'nfe-ret')],
+                    order='id desc', limit=1)
             nfe_envio = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'nfe-envio')])
+                ('datas_fname', 'like', 'nfe-envio')],
+                order='id desc', limit=1)
             if nfe_envio.datas and recibo.datas:
                 nfe_proc = gerar_nfeproc(
                     base64.decodestring(nfe_envio.datas),

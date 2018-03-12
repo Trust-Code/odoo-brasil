@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="journal_dashboard_view_cnab_import" model="ir.ui.view">
+        <field name="name">account.journal.dashboard.import.cnab</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//div[@name="bank_journal_cta"]' position='after'>
+                <a type="object" name="wizard_import_cnab" class="oe_inline">Importar CNAB</a>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_import_cnab_form" model="ir.ui.view">
+        <field name="name">wizard.import.cnab.240</field>
+        <field name="model">wizard.import.cnab</field>
+        <field name="arch" type="xml">
+            <form string="Importar CNAB"> 
+                <field name="cnab_preview" nolabel="1"/>
+            <group>
+                <field name="journal_id" required="True"/>
+                <field name="cnab_file" required="True"/>
+            </group>
+            <footer>
+                <button name="import_cnab" string="_Importar" type="object" class="btn-primary" />
+                <button string="Cancel" class="btn-default" special="cancel"/>
+            </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_import_cnab_240"
+        name="Importar CNAB"
+        res_model="wizard.import.cnab"
+        view_mode="form,tree"
+        target="new"
+        view_id="view_account_import_cnab_form"/>
+
+    <menuitem sequence="40" action="action_import_cnab_240"
+              id="menu_action_cnab_240"
+              parent="br_account_payment.menu_br_payments"/>
+</odoo>
