@@ -19,6 +19,7 @@ try:
     from pytrustnfe.nfe import autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
+    from pytrustnfe.nfe import consultar_protocolo_nfe
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
     from pytrustnfe.nfe.danfe import danfe
@@ -863,6 +864,13 @@ class InvoiceEletronic(models.Model):
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+
+        obj = dict(
+            ambiente=self.ambiente_nfe,
+            chave_nfe=self.chave_nfe,
+        )
+        resp = consultar_protocolo_nfe(
+            certificado, obj=obj, estado=self.company_id.state_id.ibge_code, ambiente=1)
 
         id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
         cancelamento = {
