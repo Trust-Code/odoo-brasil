@@ -13,8 +13,6 @@ class AccountJournal(models.Model):
     bank_agency_dig = fields.Char(related='bank_account_id.bra_number_dig')
     acc_partner_id = fields.Many2one('res.partner',
                                      related='bank_account_id.partner_id')
-    bank_currency_id = fields.Many2one('res.currency', string="Bank Account",
-                                       related='bank_account_id.currency_id')
 
     @api.multi
     def write(self, vals):
@@ -22,18 +20,15 @@ class AccountJournal(models.Model):
         journal_ids = self.filtered(
             lambda r: r.type == 'bank' and r.bank_account_id)
         for journal in journal_ids:
-            bank_account = journal.bank_account_id
-            if not bank_account.acc_number_dig or\
-               not bank_account.bra_number or\
-               not bank_account.bra_number_dig:
-                bank_account_vals = {
-                    'acc_number_dig': vals.get('acc_number_dig'),
-                    'bra_number': vals.get('bank_agency_number'),
-                    'bra_number_dig': vals.get('bank_agency_dig'),
-                    'currency_id': vals.get('bank_currency_id'),
-                    'partner_id': vals.get('acc_partner_id'),
-                }
-                journal.bank_account_id.write(bank_account_vals)
+            acc_vals = {
+                'acc_number_dig': vals.get('acc_number_dig'),
+                'bra_number': vals.get('bank_agency_number'),
+                'bra_number_dig': vals.get('bank_agency_dig'),
+                'currency_id': vals.get('currency_id'),
+                'partner_id': vals.get('acc_partner_id'),
+            }
+            acc_vals = {k: v for k, v in acc_vals.items() if v}
+            journal.bank_account_id.write(acc_vals)
         return result
 
     @api.model
@@ -44,7 +39,7 @@ class AccountJournal(models.Model):
                 'acc_number_dig': vals.get('acc_number_dig'),
                 'bra_number': vals.get('bank_agency_number'),
                 'bra_number_dig': vals.get('bank_agency_dig'),
-                'currency_id': vals.get('bank_currency_id'),
+                'currency_id': vals.get('currency_id'),
                 'partner_id': vals.get('acc_partner_id'),
             }
             journal.bank_account_id.write(bank_account_vals)
