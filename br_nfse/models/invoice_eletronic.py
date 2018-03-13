@@ -109,6 +109,12 @@ class InvoiceEletronic(models.Model):
 
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
+            city_prestador = self.company_id.partner_id.city_id
+            if city_tomador == city_prestador:
+                insc_mun_tomador = re.sub(
+                    '[^0-9]', '', partner.inscr_mun or '')
+            else:
+                insc_mun_tomador = ''
             tomador = {
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
@@ -124,11 +130,9 @@ class InvoiceEletronic(models.Model):
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
                 'telefone': re.sub('[^0-9]', '', partner.phone or ''),
-                'inscricao_municipal': re.sub(
-                    '[^0-9]', '', partner.inscr_mun or ''),
+                'inscricao_municipal': insc_mun_tomador,
                 'email': self.partner_id.email or partner.email or '',
             }
-            city_prestador = self.company_id.partner_id.city_id
             prestador = {
                 'cnpj': re.sub(
                     '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
@@ -152,27 +156,51 @@ class InvoiceEletronic(models.Model):
             if self.informacoes_complementares:
                 descricao += self.informacoes_complementares
 
+            iss_retido = 'N'
+            iss_retido_b = 'false'
+            if self.valor_issqn:
+                if self.eletronic_item_ids[0].issqn_aliquota:
+                    iss_aliquota = self.eletronic_item_ids[0].issqn_aliquota/100
+                    aliquota_ativ = str("%.3f" % iss_aliquota)
+                    iss_retido = 'S'
+                    iss_retido_b = 'true'
+                else:
+                    aliquota_ativ = '0.000'
+                    iss_retido = 'N'
+                    iss_retido_b = 'false'
+            else:
+                aliquota_ativ = '0.000'
+            if city_tomador == city_prestador:
+                tipo_recolhimento = self.operation  # T – Tributado em São Paulo
+            else:
+                if iss_retido == 'S':
+                    tipo_recolhimento = 'F'  # F – Tributado Fora de São Paulo
+                else:
+                    tipo_recolhimento = 'T'  # F – Tributado Fora de São Paulo
             rps = {
                 'tomador': tomador,
                 'prestador': prestador,
                 'numero': self.numero,
                 'data_emissao': dt_emissao,
                 'serie': self.serie.code or '',
-                'aliquota_atividade': '0.000',
+                'aliquota_atividade': aliquota_ativ,
                 'codigo_atividade': re.sub('[^0-9]', '', codigo_servico or ''),
-                'municipio_prestacao': city_prestador.name or '',
+                'municipio_prestacao': city_tomador.name or '',
+                'tributacao_rps': tipo_recolhimento,
                 'valor_pis': str("%.2f" % self.valor_pis),
                 'valor_cofins': str("%.2f" % self.valor_cofins),
                 'valor_csll': str("%.2f" % 0.0),
                 'valor_inss': str("%.2f" % 0.0),
                 'valor_ir': str("%.2f" % 0.0),
+                'valor_iss_retido': str("%.2f" % self.valor_issqn),
+                'iss_retido': iss_retido_b,
                 'aliquota_pis': str("%.2f" % 0.0),
                 'aliquota_cofins': str("%.2f" % 0.0),
                 'aliquota_csll': str("%.2f" % 0.0),
                 'aliquota_inss': str("%.2f" % 0.0),
                 'aliquota_ir': str("%.2f" % 0.0),
                 'valor_servico': str("%.2f" % self.valor_final),
-                'valor_deducao': '0',
+                'valor_deducao': 0,
                 'descricao': descricao,
                 'deducoes': [],
             }
@@ -183,11 +211,9 @@ class InvoiceEletronic(models.Model):
             cnpj_cpf = tomador['cpf_cnpj']
             data_envio = rps['data_emissao']
             inscr = prestador['inscricao_municipal']
-            iss_retido = 'N'
+            iss_retido = iss_retido
             tipo_cpfcnpj = tomador['tipo_cpfcnpj']
             codigo_atividade = rps['codigo_atividade']
-            tipo_recolhimento = self.operation  # T – Tributado em São Paulo
-
             assinatura = '%s%s%s%s%sN%s%015d%015d%s%s%s' % (
                 str(inscr).zfill(8),
                 self.serie.code.ljust(5),
