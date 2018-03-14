@@ -59,7 +59,8 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'nSeqEvento': numero_evento,
             'idLote': self.id,
             'Id': "ID110110%s%02d" % (self.eletronic_doc_id.chave_nfe,
-                                      numero_evento)
+                                      numero_evento),
+            'modelo': self.eletronic_doc_id.model,
         }
         cert = self.eletronic_doc_id.company_id.with_context(
             {'bin_size': False}).nfe_a1_file

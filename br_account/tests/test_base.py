@@ -110,6 +110,22 @@ class TestBaseBr(TransactionCase):
             'amount': 17,
             'price_include': True,
         })
+        self.icms_difal_inter_1200 = self.tax_model.create({
+            'name': "ICMS Difal Inter 12",
+            'amount_type': 'division',
+            'domain': 'icms_inter',
+            'amount': 12,
+            'price_include': True,
+            'difal_por_dentro': True,
+        })
+        self.icms_difal_intra_1800 = self.tax_model.create({
+            'name': "ICMS Difal Intra 18",
+            'amount_type': 'division',
+            'domain': 'icms_intra',
+            'amount': 18,
+            'price_include': True,
+            'difal_por_dentro': True,
+        })
         self.icms_fcp_200 = self.tax_model.create({
             'name': "FCP",
             'amount_type': 'division',
