@@ -11,15 +11,19 @@
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
     'version': '11.0.1.0.0',
+    'contributors': [
+        'Felipe Paloschi <paloschi.eca@gmail.com>',
+    ],
     'depends': [
         'br_sale_stock',
         'delivery',
         'br_stock_account',
     ],
     'data': [
-        'views/account_invoice_view.xml',
         'views/delivery_view.xml',
         'views/br_delivery_view.xml',
+        'views/sale.xml',
+        'views/stock.xml',
         'security/ir.model.access.csv',
     ],
     'category': 'Localisation',
