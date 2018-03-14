@@ -20,5 +20,6 @@
     ],
     'data': [
         'views/account_voucher.xml',
+        'views/account_voucher_line.xml',
     ],
 }
