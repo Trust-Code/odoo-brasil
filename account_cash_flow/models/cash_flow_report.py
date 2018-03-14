@@ -174,11 +174,17 @@ class CashFlowReport(models.TransientModel):
             ('company_id', '=', self.env.user.company_id.id),
             ('date_maturity', '<=', self.end_date),
         ])
+
         moves = []
         for move in moveline_ids:
-            debit = move.credit - move.credit_cash_basis
-            credit = move.debit - move.debit_cash_basis
-            amount = move.debit - move.credit
+            debit = move.amount_residual if move.amount_residual < 0 else 0.0
+            credit = move.amount_residual if move.amount_residual > 0 else 0.0
+            amount = credit + debit
+
+            # Temporário: não mostra as linhas com os campos 'a receber' e
+            # 'a pagar' zerados
+            if not credit and not debit:
+                continue
 
             moves.append({
                 'name': move.ref or move.name,
@@ -204,7 +210,7 @@ class CashFlowReport(models.TransientModel):
         move_lines.sort(key=lambda x: datetime.datetime.strptime(x['date'],
                                                                  '%Y-%m-%d'))
         for lines in liquidity_lines+move_lines:
-            balance += lines['credit'] - lines['debit']
+            balance += lines['credit'] + lines['debit']
             lines['balance'] = balance
             self.env['account.cash.flow.line'].create(lines)
 
