@@ -5,5 +5,4 @@
 from . import sale
 from . import br_delivery
 from . import delivery
-from . import account_invoice
 from . import stock

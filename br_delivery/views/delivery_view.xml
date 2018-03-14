@@ -7,10 +7,12 @@
         <field name="type">form</field>
         <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
         <field name="arch" type="xml">
-            <field name="delivery_type" position="after">
+            <label for="delivery_type" position="before">
+                <field name="partner_id" domain="[('supplier', '=', True)]" string="Transportadora" />
                 <field name="antt_code" />
                 <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list" />
-            </field>
+                <field name="incoterm" />
+            </label>
         </field>
     </record>
 

@@ -16,3 +16,24 @@ class StockPicking(models.Model):
         help="Incoterm which stands for 'International Commercial terms"
         "implies its a series of sales terms which are used in the "
         "commercial transaction.")
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    def _get_new_picking_values(self):
+        vals = super(StockMove, self)._get_new_picking_values()
+        vals['vehicle_id'] = self.sale_line_id.order_id.vehicle_id.id
+        vals['incoterm'] = self.sale_line_id.order_id.incoterm.id
+        return vals
+
+
+class Incoterms(models.Model):
+    _inherit = "stock.incoterms"
+
+    freight_responsibility = fields.Selection(
+        [('0', u'0 - Emitente'),
+         ('1', u'1 - Destinatário'),
+         ('2', u'2 - Terceiros'),
+         ('9', u'9 - Sem Frete')],
+        'Modalidade do frete', default="9")
