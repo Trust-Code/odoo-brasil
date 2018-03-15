@@ -6,8 +6,12 @@
         <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
         <field name="arch" type="xml">
             <div name="tracking" position="after">
-                <field name="vehicle_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
-                <field name="incoterm" attrs="{'readonly': [('state', 'not in', ('draft'))]}" />
+                <field name="incoterm" attrs="{'readonly': [('state', '=', 'done')]}" />
+                <field name="freight_responsibility" />
+                <field name="vehicle_id" attrs="{'readonly': [('state', '=', 'done')]}" domain="[('carrier_id', '=', carrier_id)]" />
+                <field name="vehicle_plate" attrs="{'readonly': [('state', '=', 'done')]}" />
+                <field name="vehicle_state_id" attrs="{'readonly': [('state', '=', 'done')]}" />
+                <field name="vehicle_rntc" attrs="{'readonly': [('state', '=', 'done')]}" />
             </div>
         </field>
     </record>
