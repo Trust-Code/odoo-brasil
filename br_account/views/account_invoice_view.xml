@@ -162,6 +162,37 @@
                 </page>
             </xpath>
             <xpath expr="//notebook/page[last()]/group" position="after">
+                <group name="documentos_relacionados" string="Documentos Relacionados">
+                    <field colspan="4" nolabel="1" name="fiscal_document_related_ids">
+                        <tree>
+                            <field name="document_type"/>
+                            <field name="access_key"/>
+                            <field name="serie"/>
+                            <field name="internal_number"/>
+                        </tree>
+                        <form string="Documentos Fiscais">
+                            <group>
+                                <field name="invoice_related_id" />
+                            </group>
+                            <group>
+                                <field name="document_type"/>
+                            </group>
+                            <group string="NF-e/CT-e" attrs="{'invisible': [('document_type','in', ('nf', 'nfrural', 'cf', False))]}">
+                                <field name="access_key"/>
+                            </group>
+                            <group string="Nota Fiscal/Produtor/Cupom Fiscal" attrs="{'invisible': [('document_type', 'in', ('nfe','cte', False))]}">
+                                <field name="serie" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="internal_number" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="fiscal_document_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural', 'cf'))]}"/>
+                                <field name="state_id" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}" options="{'no_create': True, 'no_create_edit': True}" />
+                                <field name="date" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                                <field name="cpfcnpj_type" attrs="{'required': [('document_type', 'in', ('nfrural'))], 'invisible': [('document_type', '!=', 'nfrural')]}"/>
+                                <field name="cnpj_cpf" attrs="{'required': [('document_type', 'in', ('nf', 'nfrural'))], 'invisible': [('document_type', '=', 'cf')]}"/>
+                                <field name="inscr_est" attrs="{'invisible': [('document_type', '!=', 'nfrural')]}"/>
+                            </group>
+                        </form>
+                    </field>
+                </group>
                 <group string="Observações Fiscais">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>
@@ -233,6 +264,7 @@
                                     <field name="fiscal_classification_id" />
                                     <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
                                     <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
+                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1" />
                                     <field name="tributos_estimados_federais" />

@@ -10,5 +10,5 @@ class AccountInvoice(models.Model):
 
     def _return_pdf_invoice(self, doc):
         if self.service_document_id.code == '010':
-            return 'br_nfse.report_br_nfse_danfe_imperial'  # Imperial
+            return 'br_nfse_imperial.report_br_nfse_danfe_imperial'  # Imperial
         return super(AccountInvoice, self)._return_pdf_invoice(doc)

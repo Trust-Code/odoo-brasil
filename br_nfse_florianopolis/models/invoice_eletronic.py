@@ -3,8 +3,10 @@
 
 import re
 import base64
+import time
 import logging
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -26,6 +28,17 @@ class InvoiceEletronic(models.Model):
 
     model = fields.Selection(
         selection_add=[('012', 'NFS-e Florianópolis')])
+
+    def qrcode_floripa_url(self):
+        import urllib
+
+        url_consulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
+consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.inscr_mun)
+
+        url = '<img class="center-block"\
+style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
+?type=QR&value=' + urllib.parse.quote(url_consulta) + '"/>'
+        return url
 
     @api.multi
     def _hook_validation(self):
@@ -80,7 +93,7 @@ class InvoiceEletronic(models.Model):
                     '[^0-9]', '', self.company_id.cnae_main_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
-                'valor_unitario': line.preco_unitario,
+                'valor_unitario': line.valor_liquido / line.quantidade,
                 'quantidade': int(line.quantidade),
                 'valor_total': line.valor_liquido,
             })
@@ -114,7 +127,8 @@ class InvoiceEletronic(models.Model):
         attachment_ids = attachment_obj.search(
             [('res_model', '=', 'invoice.eletronic'),
              ('res_id', '=', self.id),
-             ('name', 'like', 'nfse-ret')])
+             ('name', 'like', 'nfse-ret')], limit=1, order='id desc')
+
         for attachment in attachment_ids:
             xml_id = attachment_obj.create(dict(
                 name=attachment.name,
@@ -125,6 +139,26 @@ class InvoiceEletronic(models.Model):
                 res_id=self.invoice_id.id,
             ))
             atts.append(xml_id.id)
+
+        danfe_report = self.env['ir.actions.report'].search(
+            [('report_name', '=',
+              'br_nfse_florianopolis.main_template_br_nfse_danfpse')])
+        report_service = danfe_report.xml_id
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
+        filename = "%s.%s" % (report_name, "pdf")
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name=filename,
+                datas_fname=filename,
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+
         return atts
 
     @api.multi
