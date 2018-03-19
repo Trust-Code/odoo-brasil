@@ -64,11 +64,15 @@ class AccountMoveLine(models.Model):
             if not move.payment_mode_id.nosso_numero_sequence.id:
                 raise UserError(u'Cadastre a sequência do nosso número no modo \
                                 de pagamento')
-            vencimento = fields.Date.from_string(move.date_maturity)
-            if vencimento < datetime.today().date() and not move.reconciled:
-                raise UserError(u'A data de vencimento deve ser maior que a \
-                                data atual. Altere a data de vencimento!')
             if not move.boleto_emitido:
+                vencimento = fields.Date.from_string(move.date_maturity)
+                if vencimento < datetime.today().date() and not\
+                        move.reconciled:
+                    raise UserError(u'A data de vencimento deve ser maior que a \
+                                    data atual na fatura: ' +
+                                    move.move_id.name +
+                                    u' - ' + move.partner_id.name +
+                                    u'.\n Altere a data de vencimento!')
                 move.boleto_emitido = True
                 move.nosso_numero = \
                     move.payment_mode_id.nosso_numero_sequence.next_by_id()
