@@ -835,7 +835,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             recibo_xml = resposta_recibo['received_xml']
 
         if self.codigo_retorno == '100':
-            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
+            nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml.encode())
             self.nfe_processada = base64.encodestring(nfe_proc)
             self.nfe_processada_name = "NFe%08d.xml" % self.numero
 
