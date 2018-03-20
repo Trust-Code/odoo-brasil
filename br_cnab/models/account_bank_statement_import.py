@@ -48,7 +48,7 @@ class AccountBankStatementImport(models.TransientModel):
                 journal_id = self.journal_id.id
 
             bank = self.get_bank(journal_id)
-            Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
+            Arquivo(bank, arquivo=open(cnab240_file.name, 'r', encoding='utf-8'))
             return True
         except Exception as e:
             if raise_error:
@@ -106,7 +106,7 @@ class AccountBankStatementImport(models.TransientModel):
             journal_id = self.journal_id.id
 
         bank = self.get_bank(journal_id)
-        arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r'))
+        arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r', encoding='utf-8'))
         transacoes = []
         valor_total = Decimal('0.0')
         for lote in arquivo.lotes:
