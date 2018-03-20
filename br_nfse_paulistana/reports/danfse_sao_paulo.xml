@@ -6,8 +6,8 @@
         string="Nota de Serviço - Paulistana"
         model="invoice.eletronic"
         report_type="qweb-pdf"
-        file="br_nfse.main_template_br_nfse_danfe"
-        name="br_nfse.main_template_br_nfse_danfe" />
+        file="br_nfse_paulistana.main_template_br_nfse_danfe"
+        name="br_nfse_paulistana.main_template_br_nfse_danfe" />
 
     <record id="paperformat_br_nfse_danfse" model="report.paperformat">
         <field name="name">Danfse</field>
@@ -343,7 +343,7 @@
     <template id="main_template_br_nfse_danfe">
         <div class="article">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="br_nfse.danfse_report_template" t-lang="doc.partner_id.lang"/>
+                <t t-call="br_nfse_paulistana.danfse_report_template" t-lang="doc.partner_id.lang"/>
             </t>
         </div>
     </template>

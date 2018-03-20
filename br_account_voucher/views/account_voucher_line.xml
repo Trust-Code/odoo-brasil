@@ -1,0 +1,14 @@
+<odoo>
+
+    <record id="view_br_account_voucher_line" model="ir.ui.view">
+        <field name="name">view.br_account_voucher.account.voucher.line</field>
+        <field name="model">account.voucher.line</field>
+        <field name="inherit_id" ref="account_voucher.view_voucher_line_form"/>
+        <field name="arch" type="xml">
+            <field name='account_analytic_id' position="after">
+                <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
