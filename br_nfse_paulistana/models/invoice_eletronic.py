@@ -137,16 +137,9 @@ class InvoiceEletronic(models.Model):
                 'email': self.company_id.partner_id.email or '',
             }
 
-            descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
-                descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
-
-            if self.informacoes_legais:
-                descricao += self.informacoes_legais + '\n'
-            if self.informacoes_complementares:
-                descricao += self.informacoes_complementares
 
             rps = {
                 'tomador': tomador,
@@ -169,7 +162,7 @@ class InvoiceEletronic(models.Model):
                 'aliquota_ir': str("%.2f" % 0.0),
                 'valor_servico': str("%.2f" % self.valor_final),
                 'valor_deducao': '0',
-                'descricao': descricao,
+                'descricao': self.discriminacao_servicos,
                 'deducoes': [],
             }
 

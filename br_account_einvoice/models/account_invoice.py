@@ -89,6 +89,7 @@ class AccountInvoice(models.Model):
         vals = {
             'name': line.name,
             'product_id': line.product_id.id,
+            'account_invoice_line_id': line.id,
             'tipo_produto': line.product_type,
             'cfop': line.cfop_id.code,
             'uom_id': line.uom_id.id,
@@ -169,6 +170,9 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, invoice, inv_lines):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
+        descricao = ''
+        for line in inv_lines:
+            descricao += line.name + '\n'
         vals = {
             'name': invoice.number,
             'invoice_id': invoice.id,
@@ -207,6 +211,7 @@ class AccountInvoice(models.Model):
             'valor_retencao_csll': invoice.csll_retention,
             'valor_bc_inss': invoice.inss_base,
             'valor_retencao_inss': invoice.inss_retention,
+            'discriminacao_servicos': descricao,
         }
 
         eletronic_items = []

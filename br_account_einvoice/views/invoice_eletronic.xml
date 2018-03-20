@@ -273,6 +273,7 @@
                                 <group>
                                     <field name="informacoes_legais" />
                                     <field name="informacoes_complementares" />
+                                    <field name="discriminacao_servicos" invisible="1" />
                                 </group>
                             </page>
                             <page name="eventos" string="Eventos">
