@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_br_product_category_form" model="ir.ui.view">
+            <field name="name">view.br_product.category.form</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="account.view_category_property_form"/>
+            <field name="arch" type="xml">
+                <field name="property_account_income_categ_id" position="attributes">
+                    <!-- Esse carinha apenas adiciona o filtro do
+                    'account_type' nos fields da categoria -->
+                    <attribute name="domain">[('account_type', '=', 'income'),
+                                              ('internal_type','=','other'),
+                                              ('deprecated', '=', False)]</attribute>
+                </field>
+                <field name="property_account_expense_categ_id" position="attributes">
+                    <attribute name="domain">[('account_type', '=', 'expense'),
+                                              ('internal_type','=','other'),
+                                              ('deprecated', '=', False)]</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
