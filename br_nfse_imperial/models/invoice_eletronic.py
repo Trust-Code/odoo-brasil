@@ -7,7 +7,8 @@ import pytz
 import time
 import base64
 import logging
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
@@ -312,3 +313,14 @@ class InvoiceEletronic(models.Model):
         })
         self._create_attachment('canc', self, cancel['sent_xml'])
         self._create_attachment('canc-ret', self, cancel['received_xml'])
+
+    def issqn_due_date(self):
+        date_emition = datetime.strptime(self.data_emissao, DTFT)
+        next_month = date_emition + relativedelta(months=1)
+        due_date = date(next_month.year, next_month.month, 10)
+        if due_date.weekday() >= 5:
+            while due_date.weekday() != 0:
+                due_date = due_date + timedelta(days=1)
+        format = "%d/%m/%Y"
+        due_date = datetime.strftime(due_date, format)
+        return due_date
