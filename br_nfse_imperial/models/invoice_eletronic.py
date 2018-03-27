@@ -169,7 +169,8 @@ class InvoiceEletronic(models.Model):
                 'tipo_tributacao': self.company_id.tipo_tributacao_imperial,
                 'aliquota_simples_isencao':
                 self.company_id.iss_simples_nacional,
-                'data_adesao_simples': adesao.strftime('%d/%m/%Y'),
+                'data_adesao_simples':
+                adesao and adesao.strftime('%d/%m/%Y') or '',
                 'cnpj_prestador': prestador['cnpj'],
                 'lista_rps': [rps],
                 'valor_tributos': valor_tributos,
