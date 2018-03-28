@@ -6,8 +6,8 @@
         string="Nota de Serviço - Imperial"
         model="invoice.eletronic"
         report_type="qweb-pdf"
-        file="br_nfse.main_template_br_nfse_danfe_imperial"
-        name="br_nfse.main_template_br_nfse_danfe_imperial" />
+        file="br_nfse_imperial.main_template_br_nfse_danfe_imperial"
+        name="br_nfse_imperial.main_template_br_nfse_danfe_imperial" />
 
       <record id="paperformat_br_nfse_danfse" model="report.paperformat">
           <field name="name">Danfe Imperial</field>
@@ -165,15 +165,23 @@
             </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
                 <div class="col-xs-12" style="text-align:center;">
-                    <strong>INTERMEDIÁRIO DE SERVIÇOS</strong>
+                    <strong>Local da Prestação do Serviço </strong>
                     <br />
                 </div>
-                <div class="col-xs-4">
-                    CPF/CNPJ:
+                <div class="col-xs-12">
+                    Endereço:
                     <strong> ---- </strong>
                 </div>
-                <div class="col-xs-8">
-                    Nome/Razão Social:
+                <div class="col-xs-12">
+                    Bairro:
+                     <strong> ---- </strong>
+                </div>
+                <div class="col-xs-7">
+                    Municipio:
+                    <strong> --- </strong>
+                </div>
+                <div class="col-xs-7">
+                    CEP:
                     <strong> ---- </strong>
                 </div>
             </div>
@@ -259,7 +267,6 @@
                 <div class="col-xs-12">
                     Código do serviço:
                     <br />
-                    <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana"></strong> -
                     <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
                 </div>
             </div>
@@ -327,14 +334,8 @@
             <div class="row"
                 style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
                 <div style="text-align:center"><b>Outras informações</b></div>
-                <div style="float:left; width:50%;">
-                    (1) Esta NFS-e foi emitida com respaldo na Lei nº 14.097/2005;
-                </div>
-                <div style="float:left; width:50%;">
-                    (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' />
-                </div>
-                <div style="float:left; width:50%;">
-                    (3) Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
+                <div class="col-xs-6">
+                    Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
                 </div>
                 <br />
                 <span t-field="doc.informacoes_legais"></span>
@@ -345,7 +346,7 @@
     <template id="main_template_br_nfse_danfe_imperial">
         <div class="article">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="br_nfse.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
+                <t t-call="br_nfse_imperial.danfse_report_template_imperial" t-lang="doc.partner_id.lang"/>
             </t>
         </div>
     </template>
