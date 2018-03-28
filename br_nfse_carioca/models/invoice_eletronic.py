@@ -9,6 +9,7 @@ import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
+from odoo.exceptions import UserError
 
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
@@ -119,7 +120,7 @@ class InvoiceEletronic(models.Model):
             'tipo_rps': '1',
             'data_emissao': dt_emissao,
             'natureza_operacao': '1',  # Tributada no municipio
-            'regime_tributacao': '2',  # Estimativa
+            'regime_tributacao': self.company_id.regime_tributacao or '',
             'optante_simples':  # 1 - Sim, 2 - Não
             '2' if self.company_id.fiscal_type == '3' else '1',
             'incentivador_cultural': '2',  # 2 - Não
@@ -138,7 +139,7 @@ class InvoiceEletronic(models.Model):
             'aliquota_issqn': str("%.4f" % (
                 self.eletronic_item_ids[0].issqn_aliquota / 100)),
             'valor_liquido_nfse': str("%.2f" % self.valor_final),
-            'codigo_servico': str("%.2f" % float(codigo_servico)),
+            'codigo_servico': re.sub('[^0-9]', '', codigo_servico),
             'codigo_tributacao_municipio':
             self.eletronic_item_ids[0].codigo_tributacao_municipio,
             # '01.07.00 / 00010700',
@@ -175,7 +176,7 @@ class InvoiceEletronic(models.Model):
 
         danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=',
-              'br_nfse_florianopolis.main_template_br_nfse_danfpse')])
+              'br_nfse_carioca.main_template_br_nfse_carioca')])
         report_service = danfe_report.xml_id
         danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
         report_name = safe_eval(danfe_report.print_report_name,
@@ -285,12 +286,12 @@ class InvoiceEletronic(models.Model):
             'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
                                 city_prestador.ibge_code),
             'numero_nfse': self.numero_nfse,
-            'codigo_cancelamento': '1',
-            'senha': self.company_id.senha_ambiente_nfse
+            'codigo_cancelamento': '1',  # Erro na emissão
         }
         cancel = cancelar_nfse(
             certificado, cancelamento=canc, ambiente=self.ambiente)
-        retorno = cancel['object'].Body.CancelarNfseResponse.CancelarNfseResult
+
+        retorno = cancel['object']
         if "Cancelamento" in dir(retorno):
             self.state = 'cancel'
             self.codigo_retorno = '100'

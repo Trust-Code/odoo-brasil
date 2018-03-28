@@ -10,10 +10,8 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     def _return_pdf_invoice(self, doc):
-        if self.service_document_id.code == '012':  # Floripa
-            return 'br_nfse_florianopolis.report_br_nfse_danfpse'
-        # TODO Implementar ou não?
-        # PS: ITS DONE MADAFAKA
+        if self.service_document_id.code == '013':  # Nota carioca
+            return 'br_nfse_carioca.report_br_nfse_danfe_carioca'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
     def _prepare_edoc_item_vals(self, line):

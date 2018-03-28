@@ -40,8 +40,8 @@
         <div class="page">
             <div class="row" style="border: 1px solid black;">
                 <div class="col-xs-2">
-                    <img src="/br_nfse_carioca/static/img/nota-carioca.jpg" alt="Logo Nota Carioca"
-                        style="max-height:80px; margin-top:4px; margin-left:10px;" />
+                    <img src="/br_nfse_carioca/static/img/nota-carioca.png" alt="Logo Nota Carioca"
+                        style="max-height:120px; margin-top:4px; margin-left:10px;" />
                 </div>
                 <div class="col-xs-7" style="padding:0px;text-align:center;font-size:18px;">
                     PREFEITURA DA CIDADE DO RIO DE JANEIRO
@@ -58,9 +58,9 @@
                     </t>
                 </div>
                 <div class="col-xs-3" style="padding:0px;">
-                    <div style="border: 1px solid black; padding: 2px;">
+                    <div style="border: 1px solid black; padding: 2px;text-align:center;">
                         <t t-if="doc.state == 'done'">
-                            <span style="font-size:9px;">Número NFSe</span>
+                            <span style="font-size:9px;">Número da Nota</span>
                             <br />
                             <strong t-field="doc.numero_nfse"></strong>
                         </t>
@@ -70,13 +70,13 @@
                             <strong t-field="doc.numero"></strong>
                         </t>
                     </div>
-                    <div style="border: 1px solid black; padding: 2px;">
-                        <span style="font-size:9px;">Data de Emissão</span>
+                    <div style="border: 1px solid black; padding: 2px;text-align:center;">
+                        <span style="font-size:9px;">Data e Hora de Emissão</span>
                         <br />
                         <strong t-field="doc.data_emissao"></strong>
                     </div>
                     <t t-if="doc.state == 'done'">
-                        <div style="border: 1px solid black; padding: 2px;">
+                        <div style="border: 1px solid black; padding: 2px;text-align:center;">
                             <span style="font-size:8px;">Código de verificação</span>
                             <br />
                             <strong t-field="doc.verify_code"></strong>
@@ -161,20 +161,6 @@
                     <strong t-field="doc.partner_id.email"></strong>
                 </div>
             </div>
-            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
-                <div class="col-xs-12" style="text-align:center;">
-                    <strong>INTERMEDIÁRIO DE SERVIÇOS</strong>
-                    <br />
-                </div>
-                <div class="col-xs-4">
-                    CPF/CNPJ:
-                    <strong> ---- </strong>
-                </div>
-                <div class="col-xs-8">
-                    Nome/Razão Social:
-                    <strong> ---- </strong>
-                </div>
-            </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:350px;">
                 <div class="col-xs-12" style="text-align:center;">
                     <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
@@ -189,68 +175,11 @@
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
-                <div class="col-xs-12" style="text-align:center;">
+                <div class="col-xs-12" style="text-align:center; font-size: 16px;">
                     <strong>VALOR TOTAL DA NOTA = </strong>
                     <strong t-field="doc.valor_final"
                         t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     <br />
-                </div>
-            </div>
-            <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
-                <div class="col-xs-2" style="width:20%;text-align:center;">
-                    INSS(<span />%):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_retencao_inss"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>-</strong>
-                    </t>
-                </div>
-                <div class="col-xs-2" style="width:20%;text-align:center;">
-                    IR(<span />%):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_retencao_irrf"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>-</strong>
-                    </t>
-                </div>
-                <div class="col-xs-2" style="width:20%;text-align:center;">
-                    CSLL(<span />%):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_retencao_csll"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>-</strong>
-                    </t>
-                </div>
-                <div class="col-xs-2" style="width:20%;text-align:center;">
-                    COFINS(<span t-field="doc.eletronic_item_ids[0].cofins_aliquota" />%):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_cofins_servicos"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>-</strong>
-                    </t>
-                </div>
-                <div class="col-xs-2" style="width:20%;text-align:center;border">
-                    PIS(<span t-field="doc.eletronic_item_ids[0].pis_aliquota" />%):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_pis_servicos"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>-</strong>
-                    </t>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
@@ -305,32 +234,18 @@
                     <strong>0,00</strong>
                 </div>
             </div>
-            <div class="row" style="border: 1px solid black;padding:0 0 5px 5px;">
-                <div class="col-xs-4" style="text-align:center;">
-                    Município de Prestação do Serviço:
-                    <br />
-                    <strong>-</strong>
-                </div>
-                <div class="col-xs-4" style="text-align:center;">
-                    Número Inscrição da Obra:
-                    <br />
-                    <strong>-</strong>
-                </div>
-                <div class="col-xs-4" style="text-align:center;">
-                    Valor Aproximado dos Tributos / Fonte
-                    <br />
-                    <strong>-</strong>
-                </div>
-            </div>
             <div class="row"
                 style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
                 <div style="text-align:center"><b>Outras informações</b></div>
-                <div style="float:left; width:50%;">
-                    (1) Esta NFS-e foi emitida com respaldo na Lei nº 14.097/2005;
-                </div>
-                <div style="float:left; width:50%;">
-                    (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' />
-                </div>
+                <ul style="list-style-type: square;">
+                  <li>Esta NFS-e foi emitida com respaldo na Lei nº 5.098 de 15/10/2009 e no Decreto nº 32.250 de 11/05/2010</li>
+                  <li>PROCON-RJ: Av. Rio Branco nº 25, 5º andar, tel 151: www.procon.rj.gov.br</li>
+                  <li>ISS devido deve ser recolhido por meio de Documento de Arrecadação do Simples Nacional (DAS)</li>
+                  <t t-if="doc.company_id.fiscal_type != '3'">
+                    <li>Documento emitido por ME ou EPP optantee pelo Simples Nacional. Não gera direito a crédito fiscal de IPI.</li>
+                  </t>
+                  <li>Esta NFS-e não gera crédito</li>
+                </ul>
                 <br />
                 <span t-field="doc.informacoes_legais"></span>
             </div>
