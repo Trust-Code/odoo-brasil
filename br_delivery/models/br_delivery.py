@@ -29,3 +29,25 @@ class BrDeliveryCarrierVehicle(models.Model):
     carrier_id = fields.Many2one(
         'delivery.carrier', u'Carrier', index=True,
         required=True, ondelete='cascade')
+
+
+class BrDeliveryShipment(models.Model):
+    _name = 'br_delivery.shipment'
+
+    code = fields.Char(u'Nome', size=32)
+    description = fields.Char(u'Descrição', size=132)
+    vehicle_id = fields.Many2one(
+        'br_delivery.carrier.vehicle', u'Vehicle', index=True,
+        required=True)
+    volume = fields.Float(u'Volume')
+    carrier_tracking_ref = fields.Char(u'Carrier Tracking Ref', size=32)
+    number_of_packages = fields.Integer(u'Number of Packages')
+
+    # TODO Esta função deveria estar aqui?
+    # @api.depends('product_id', 'move_lines')
+    def _cal_weight(self):
+        for picking in self:
+            picking.weight = sum(move.weight for move in picking.move_lines
+                                 if move.state != 'cancel')
+            picking.weight = sum(move.weight_net for move in picking.move_lines
+                                 if move.state != 'cancel')

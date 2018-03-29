@@ -9,12 +9,8 @@
         <field name="arch" type="xml">
             <field name="delivery_type" position="after">
                 <field name="antt_code" />
+                <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list" />
             </field>
-            <page name="destination" position="before">
-                <page string="Veículo" name="veiculo">
-                    <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list" context="{'default_carrier_id':id}" />
-                </page>
-            </page>
         </field>
     </record>
 
