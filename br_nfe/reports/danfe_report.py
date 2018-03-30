@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pytrustnfe.nfe.danfe import danfe
+    from pytrustnfe.nfe.danfce import danfce
 except ImportError:
     _logger.warning('Cannot import pytrustnfe', exc_info=True)
 
@@ -41,7 +42,10 @@ class IrActionsReport(models.Model):
             tmpLogo = False
 
         xml_element = etree.fromstring(nfe_xml)
-        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+        obj_danfe = danfe
+        if nfe.model == '65':
+            obj_danfe = danfce
+        oDanfe = obj_danfe(list_xml=[xml_element], logo=tmpLogo)
 
         tmpDanfe = BytesIO()
         oDanfe.writeto_pdf(tmpDanfe)
