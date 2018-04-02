@@ -211,6 +211,10 @@ class SaleOrderLine(models.Model):
     detalhes_calculo = fields.Text(
         string=u"Detalhes Cálculo", compute='_compute_detalhes', store=True)
 
+    desoneracao_icms = fields.Boolean(string=u"Desoneração de ICMS")
+    mot_desoneracao_icms = fields.Selection(
+        [('7', u'7 - SUFRAMA'), ('9', '9 - Outros')], string=u"Motivo da Desoneração")
+
     def _update_tax_from_ncm(self):
         if self.product_id:
             ncm = self.product_id.fiscal_classification_id
@@ -256,7 +260,6 @@ class SaleOrderLine(models.Model):
                 line.update({
                     'tax_id': [(6, None, [x.id for x in tax_ids if x])]
                 })
-
         return res
 
     @api.multi
@@ -332,6 +335,8 @@ class SaleOrderLine(models.Model):
             self.icms_st_aliquota_reducao_base
         res['icms_st_aliquota_deducao'] = self.icms_st_aliquota_deducao
         res['tem_difal'] = self.tem_difal
+        res['desoneracao_icms'] = self.desoneracao_icms
+        res['mot_desoneracao_icms'] = self.mot_desoneracao_icms
         res['icms_uf_remet'] = icms_inter.amount or 0.0
         res['icms_uf_dest'] = icms_intra.amount or 0.0
         res['icms_fcp_uf_dest'] = icms_fcp.amount or 0.0

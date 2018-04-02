@@ -232,6 +232,10 @@ class AccountInvoiceLine(models.Model):
         default=0.00)
     icms_base_calculo_manual = fields.Float(
         'Base ICMS Manual', digits=dp.get_precision('Account'), default=0.00)
+    desoneracao_icms = fields.Boolean(
+        string=u'ICMS Desonerado?')
+    mot_desoneracao_icms = fields.Selection([('7', u'7 - SUFRAMA'),('9', '9 - Outros')],
+                                            string=u'Motivo da Desoneração do ICMS')
 
     # =========================================================================
     # ICMS Substituição
