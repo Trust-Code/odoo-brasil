@@ -413,6 +413,9 @@ class TestNFeBrasil(TransactionCase):
 
             invoice_eletronic = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', invoice.id)])
+
+            invoice_eletronic.nfe_processada = base64.encodestring('<xml/>')
+
             invoice_eletronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
 
