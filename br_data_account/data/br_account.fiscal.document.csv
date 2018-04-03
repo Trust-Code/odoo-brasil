@@ -42,5 +42,6 @@
 "fiscal_document_007","007","NFS-e - Provedor SAATRI","True","True"
 "fiscal_document_008","008","NFS-e - Provedor SIMPLISS","True","True"
 "fiscal_document_009","009","NFS-e - Provedor SUSESU","True","True"
-"fiscal_document_010","010","NFS-e Imperial - Petrópolis","True","True"
+"fiscal_document_010","010","NFS-e - Nota Imperial Petrópolis","True","True"
 "fiscal_document_012","012","NFS-e - Florianópolis","True","True"
+"fiscal_document_013","013","NFS-e - Nota Carioca","True","True"

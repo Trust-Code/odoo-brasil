@@ -22,7 +22,8 @@ try:
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.nfe import consultar_protocolo_nfe
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
+        gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
 except ImportError:
@@ -806,20 +807,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
                 self.write({
-                    'state': 'done', 'nfe_exception': False,
+                    'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
                 self.write({'state': 'done', 'codigo_retorno': '100',
-                            'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
             # Denegada e nota já está denegada
             if self.codigo_retorno in ('302', '205'):
-                self.write({'state': 'denied',
-                            'nfe_exception': True})
+                self.write({'state': 'denied'})
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -952,3 +951,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
+        nfe_processada = base64.decodestring(self.nfe_processada)
+        nfe_proc_cancel = gerar_nfeproc_cancel(nfe_processada,
+                                               resp['received_xml'])
+        self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+        self.nfe_processada_name = "NFe%08d.xml" % self.numero
