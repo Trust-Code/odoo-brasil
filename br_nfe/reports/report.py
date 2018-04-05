@@ -24,6 +24,11 @@ try:
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
+try:
+    import pytz
+except ImportError:
+    _logger.info('Cannot import pytz', exc_info=True)
+
 
 class external_pdf(render):
     def __init__(self, pdf):
@@ -79,8 +84,10 @@ class ReportCustom(report_int):
         else:
             tmpLogo = False
 
+        timezone = pytz.timezone(context['tz']) or pytz.utc
+
         oDanfe = danfe(list_xml=xml_element, logo=tmpLogo,
-                       cce_xml=cce_xml_element)
+                       cce_xml=cce_xml_element, timezone=timezone)
 
         tmpDanfe = StringIO()
         oDanfe.writeto_pdf(tmpDanfe)
