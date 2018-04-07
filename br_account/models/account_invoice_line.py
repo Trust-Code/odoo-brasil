@@ -80,7 +80,7 @@ class AccountInvoiceLine(models.Model):
 
             taxes = tax_ids.compute_all(
                 price, currency, self.quantity, product=self.product_id,
-                partner=self.invoice_id.partner_id)
+                partner=self.invoice_id.partner_id, icms_desonerado=self.desoneracao_icms)
 
         icms = ([x for x in taxes['taxes']
                  if x['id'] == self.tax_icms_id.id]) if taxes else []
@@ -129,6 +129,9 @@ class AccountInvoiceLine(models.Model):
             'valor_desconto': desconto,
             'icms_base_calculo': sum([x['base'] for x in icms]),
             'icms_valor': sum([x['amount'] for x in icms]),
+                #if self.desoneracao_icms == False else 0,
+            'icms_des_valor': sum([x['amount'] for x in icms])
+                if self.desoneracao_icms == True else 0,
             'icms_st_base_calculo': sum([x['base'] for x in icmsst]),
             'icms_st_valor': sum([x['amount'] for x in icmsst]),
             'icms_bc_uf_dest': sum([x['base'] for x in icms_inter]),
@@ -236,6 +239,9 @@ class AccountInvoiceLine(models.Model):
         string=u'ICMS Desonerado?')
     mot_desoneracao_icms = fields.Selection([('7', u'7 - SUFRAMA'),('9', '9 - Outros')],
                                             string=u'Motivo da Desoneração do ICMS')
+    icms_des_valor = fields.Float(
+        'Valor ICMS Desoneração', required=True, compute='_compute_price', store=True,
+        digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Substituição

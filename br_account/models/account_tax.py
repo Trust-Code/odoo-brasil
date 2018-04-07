@@ -169,6 +169,7 @@ class AccountTax(models.Model):
         else:
             vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
             vals['base'] = base_icms
+        #print(vals)
         return [vals]
 
     def _compute_icms_st(self, price_base, ipi_value, icms_value):
@@ -329,9 +330,14 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
+    def _compute_icms_desonerado(self, icms):
+        for valor in icms:
+            valor['amount'] *= -1
+        return icms
+
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
-                    product=None, partner=None):
+                    product=None, partner=None, icms_desonerado=False):
 
         exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
         if not exists_br_tax:
@@ -345,6 +351,8 @@ class AccountTax(models.Model):
         icms = self._compute_icms(
             price_base,
             ipi[0]['amount'] if ipi else 0.0)
+        if icms_desonerado == True:
+            icms = self._compute_icms_desonerado(icms)
         icmsst = self._compute_icms_st(
             price_base,
             ipi[0]['amount'] if ipi else 0.0,
@@ -363,7 +371,9 @@ class AccountTax(models.Model):
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
                 total_included += tax['amount']
-
+        if icms_desonerado == True:
+            for amount in icms:
+                total_included += amount['amount']
         return {
             'taxes': sorted(taxes, key=lambda k: k['sequence']),
             'total_excluded': total_excluded,
