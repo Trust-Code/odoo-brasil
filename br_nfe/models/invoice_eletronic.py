@@ -873,16 +873,25 @@ class InvoiceEletronic(models.Model):
         }
 
         resp = consultar_protocolo_nfe(certificado, **consulta)
-
-        retorno_consulta = \
-            resp['object'].Body.nfeConsultaNF2Result.retConsSitNFe
-
+        # Retorno específico para o estado da Bahia
+        if self.company_id.state_id.ibge_code == '29':
+            retorno_consulta = \
+                resp['object'].Body.nfeConsultaNFResult.retConsSitNFe
+        else:
+            retorno_consulta = \
+                resp['object'].Body.nfeConsultaNF2Result.retConsSitNFe
         if retorno_consulta.cStat == 101:
             self.state = 'cancel'
             self.codigo_retorno = retorno_consulta.cStat
             self.mensagem_retorno = retorno_consulta.xMotivo
             self.sequencial_evento += 1
-            resp['received_xml'] = etree.tostring(retorno_consulta.retCancNFe)
+            # Retorno específico para o estado da Bahia
+            if self.company_id.state_id.ibge_code == '29':
+                resp['received_xml'] = etree.tostring(
+                    retorno_consulta.procEventoNFe.retEvento)
+            else:
+                resp['received_xml'] = etree.tostring(
+                    retorno_consulta.retCancNFe)
             resp['sent_xml'] = etree.tostring(retorno_consulta.procEventoNFe)
         else:
             id_canc = "ID110111%s%02d" % (
