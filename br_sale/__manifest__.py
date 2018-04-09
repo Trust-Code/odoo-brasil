@@ -15,6 +15,7 @@
         'contacts', 'sale', 'br_account', 'br_zip', 'br_data_account_product'
     ],
     'data': [
+        'reports/sale_order.xml',
         'views/br_sale.xml',
         'views/sale_view.xml',
         'security/ir.model.access.csv',

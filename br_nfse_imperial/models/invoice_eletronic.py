@@ -7,10 +7,12 @@ import pytz
 import time
 import base64
 import logging
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -169,7 +171,8 @@ class InvoiceEletronic(models.Model):
                 'tipo_tributacao': self.company_id.tipo_tributacao_imperial,
                 'aliquota_simples_isencao':
                 self.company_id.iss_simples_nacional,
-                'data_adesao_simples': adesao.strftime('%d/%m/%Y'),
+                'data_adesao_simples':
+                adesao and adesao.strftime('%d/%m/%Y') or '',
                 'cnpj_prestador': prestador['cnpj'],
                 'lista_rps': [rps],
                 'valor_tributos': valor_tributos,
@@ -180,6 +183,33 @@ class InvoiceEletronic(models.Model):
 
             res.update(nfse_vals)
         return res
+
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        if self.model not in ('010'):
+            return atts
+        attachment_obj = self.env['ir.attachment']
+
+        danfe_report = self.env['ir.actions.report'].search(
+            [('report_name', '=',
+              'br_nfse_imperial.main_template_br_nfse_danfe_imperial')])
+        report_service = danfe_report.xml_id
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
+        filename = "%s.%s" % (report_name, "pdf")
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name=filename,
+                datas_fname=filename,
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+
+        return atts
 
     @api.multi
     def action_post_validate(self):
@@ -312,3 +342,14 @@ class InvoiceEletronic(models.Model):
         })
         self._create_attachment('canc', self, cancel['sent_xml'])
         self._create_attachment('canc-ret', self, cancel['received_xml'])
+
+    def issqn_due_date(self):
+        date_emition = datetime.strptime(self.data_emissao, DTFT)
+        next_month = date_emition + relativedelta(months=1)
+        due_date = date(next_month.year, next_month.month, 10)
+        if due_date.weekday() >= 5:
+            while due_date.weekday() != 0:
+                due_date = due_date + timedelta(days=1)
+        format = "%d/%m/%Y"
+        due_date = datetime.strftime(due_date, format)
+        return due_date

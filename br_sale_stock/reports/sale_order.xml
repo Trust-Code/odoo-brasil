@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <template id="br_sale_stock_report_sale_order" inherit_id="br_sale.br_sale_report_sale_order">
+        <tr name="tr_taxes" position="before">
+            <tr>
+                 <td>
+                     <strong>IPI</strong>
+                 </td>
+                 <td class="text-right">
+                     <span t-field="doc.total_ipi" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                 </td>
+             </tr>
+             <tr>
+                  <td>
+                      <strong>ICMS ST</strong>
+                  </td>
+                  <td class="text-right">
+                      <span t-field="doc.total_icms_st" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                  </td>
+              </tr>
+        </tr>
+        <tr name="tr_taxes" position="after">
+            <tr style="border-top:1px solid #dddddd;">
+                <td><strong>Expenses ( + )</strong></td>
+                <td class="text-right">
+                    <span t-field="doc.total_despesas" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Insurance ( + )</strong></td>
+                <td class="text-right">
+                    <span t-field="doc.total_seguro" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Freight ( + )</strong></td>
+                <td class="text-right">
+                    <span t-field="doc.total_frete" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                </td>
+            </tr>
+        </tr>
+    </template>
+
+</odoo>

@@ -282,7 +282,7 @@ class AccountInvoiceLine(models.Model):
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
     icms_aliquota_inter_part = fields.Float(
-        u'% Partilha', default=20.0, digits=dp.get_precision('Discount'))
+        u'% Partilha', default=80.0, digits=dp.get_precision('Discount'))
     icms_fcp_uf_dest = fields.Float(
         string=u'Valor FCP', compute='_compute_price',
         digits=dp.get_precision('Discount'), )
