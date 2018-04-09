@@ -6,6 +6,7 @@
 
 from __future__ import with_statement
 
+import pytz
 import odoo
 import base64
 import logging
@@ -23,11 +24,6 @@ try:
     from pytrustnfe.nfe.danfe import danfe
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
-
-try:
-    import pytz
-except ImportError:
-    _logger.info('Cannot import pytz', exc_info=True)
 
 
 class external_pdf(render):
