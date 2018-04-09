@@ -101,7 +101,7 @@ class ResCompany(models.Model):
             self.cert_state = 'invalid_password'
         except:
             self.cert_state = 'unknown'
-            _logger.error(
+            _logger.warning(
                 u'Erro desconhecido ao consultar certificado', exc_info=True)
 
     cnpj_cpf = fields.Char(

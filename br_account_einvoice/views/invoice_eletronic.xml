@@ -22,16 +22,18 @@
                                     <field name="frete" />
                                     <field name="outras_despesas" />
                                     <field name="valor_liquido" />
-                                    <field name="indicador_total" />
-                                    <field name="item_pedido_compra" />
                                 </group>
                                 <group>
                                     <field name="tipo_produto" />
                                     <field name="cfop" />
                                     <field name="ncm" />
                                     <field name="tributos_estimados" />
+                                    <field name="indicador_total" />
+                                    <field name="item_pedido_compra" />
                                 </group>
                             </group>
+                            <label for="name"/>
+                            <field name="name"/>
                         </page>
 
                         <page name="icms" string="ICMS" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">

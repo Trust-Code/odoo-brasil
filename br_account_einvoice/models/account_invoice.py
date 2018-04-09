@@ -89,6 +89,7 @@ class AccountInvoice(models.Model):
         vals = {
             'name': line.name,
             'product_id': line.product_id.id,
+            'account_invoice_line_id': line.id,
             'tipo_produto': line.product_type,
             'cfop': line.cfop_id.code,
             'uom_id': line.uom_id.id,
