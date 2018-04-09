@@ -169,7 +169,7 @@ class AccountTax(models.Model):
         else:
             vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
             vals['base'] = base_icms
-        #print(vals)
+        print(vals)
         return [vals]
 
     def _compute_icms_st(self, price_base, ipi_value, icms_value):
@@ -332,7 +332,9 @@ class AccountTax(models.Model):
 
     def _compute_icms_desonerado(self, icms):
         for valor in icms:
-            valor['amount'] *= -1
+            valor['desoneracao'] = valor['amount']
+            valor['amount'] = 0
+
         return icms
 
     @api.multi
@@ -373,7 +375,9 @@ class AccountTax(models.Model):
                 total_included += tax['amount']
         if icms_desonerado == True:
             for amount in icms:
-                total_included += amount['amount']
+                total_excluded -= amount['desoneracao']
+                total_included -= amount['desoneracao']
+
         return {
             'taxes': sorted(taxes, key=lambda k: k['sequence']),
             'total_excluded': total_excluded,

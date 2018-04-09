@@ -303,12 +303,14 @@ class AccountInvoice(models.Model):
             price = line.price_unit * (1 - (
                 line.discount or 0.0) / 100.0)
 
+            desoneracao_icms = line.desoneracao_icms
+
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
 
             taxes_dict = tax_ids.compute_all(
                 price, self.currency_id, line.quantity,
-                product=line.product_id, partner=self.partner_id)
+                product=line.product_id, partner=self.partner_id, icms_desonerado=desoneracao_icms)
 
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(
@@ -352,11 +354,12 @@ class AccountInvoice(models.Model):
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
+            desoneracao_icms = line.desoneracao_icms
 
             price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = tax_ids.compute_all(
                 price_unit, self.currency_id, line.quantity,
-                line.product_id, self.partner_id)['taxes']
+                line.product_id, self.partner_id, icms_desonerado=desoneracao_icms)['taxes']
             for tax in taxes:
                 val = self._prepare_tax_line_vals(line, tax)
                 key = self.env['account.tax'].browse(

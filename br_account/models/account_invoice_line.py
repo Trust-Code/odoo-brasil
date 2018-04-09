@@ -121,16 +121,16 @@ class AccountInvoiceLine(models.Model):
         price_subtotal_signed = price_subtotal_signed * sign
         self.update({
             'price_total': taxes['total_included'] if taxes else subtotal,
-            'price_tax': taxes['total_included'] - taxes['total_excluded']
-            if taxes else 0,
-            'price_subtotal': taxes['total_excluded'] if taxes else subtotal,
-            'price_subtotal_signed': price_subtotal_signed,
+            'price_tax': taxes['total_included'] - taxes['total_excluded'] if taxes else 0,
+            'price_subtotal': taxes['total_excluded'] - sum([x['desoneracao'] for x in icms])
+                if taxes else subtotal,
+            'price_subtotal_signed': price_subtotal_signed - sum([x['desoneracao'] for x in icms]),
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,
             'icms_base_calculo': sum([x['base'] for x in icms]),
-            'icms_valor': sum([x['amount'] for x in icms]),
-                #if self.desoneracao_icms == False else 0,
-            'icms_des_valor': sum([x['amount'] for x in icms])
+            'icms_valor': sum([x['amount'] for x in icms])
+                if self.desoneracao_icms == False else 0,
+            'icms_des_valor': sum([x['desoneracao'] for x in icms])
                 if self.desoneracao_icms == True else 0,
             'icms_st_base_calculo': sum([x['base'] for x in icmsst]),
             'icms_st_valor': sum([x['amount'] for x in icmsst]),
@@ -238,10 +238,10 @@ class AccountInvoiceLine(models.Model):
     desoneracao_icms = fields.Boolean(
         string=u'ICMS Desonerado?')
     mot_desoneracao_icms = fields.Selection([('7', u'7 - SUFRAMA'),('9', '9 - Outros')],
-                                            string=u'Motivo da Desoneração do ICMS')
-    icms_des_valor = fields.Float(
-        'Valor ICMS Desoneração', required=True, compute='_compute_price', store=True,
-        digits=dp.get_precision('Account'), default=0.00)
+                                            string=u'Mot de Desoneração do ICMS')
+    icms_des_valor = fields.Float(string='Vlr ICMS Desonerado', required=True,
+                                  compute='_compute_price', store=True,
+                                  digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Substituição

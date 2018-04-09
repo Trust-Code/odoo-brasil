@@ -98,13 +98,14 @@ class SaleOrderLine(models.Model):
         for line in self:
             ipi = 0.0
             icms_st = 0.0
+            icms_desoneracao = 0.0
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             ctx = line._prepare_tax_context()
             tax_ids = line.tax_id.with_context(**ctx)
             taxes = tax_ids.compute_all(
                 price, line.order_id.currency_id,
                 line.product_uom_qty, product=line.product_id,
-                partner=line.order_id.partner_id)
+                partner=line.order_id.partner_id, icms_desonerado=self.desoneracao_icms)
 
             for tax in taxes['taxes']:
                 tax_id = self.env['account.tax'].browse(tax['id'])
@@ -112,6 +113,8 @@ class SaleOrderLine(models.Model):
                     ipi += tax['amount']
                 if tax_id.domain == 'icmsst':
                     icms_st += tax['amount']
+                if tax_id.domain == 'icms':
+                    icms_desoneracao += tax['desoneracao']
 
             valor_bruto = line.price_unit * line.product_uom_qty
             desconto = valor_bruto * line.discount / 100.0
@@ -119,7 +122,7 @@ class SaleOrderLine(models.Model):
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
-                'price_subtotal': taxes['total_excluded'],
+                'price_subtotal': taxes['total_excluded'], # - icms_desoneracao,
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
                 'icms_st_valor': icms_st,

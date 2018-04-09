@@ -299,6 +299,9 @@
                                     <field name="icms_valor"/>
                                     <field name="icms_aliquota_credito" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
                                     <field name="icms_valor_credito" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="desoneracao_icms" invisible="1"/>
+                                    <field name="icms_des_valor" attrs="{'invisible': [('desoneracao_icms', '=', False)] }"/>
+                                    <field name="mot_desoneracao_icms" attrs="{'invisible': [('desoneracao_icms', '=', False)] }"/>
                                 </group>
                             </group>
                             <group name="substituicao_icms" string="Substituição Tributária ICMS">
