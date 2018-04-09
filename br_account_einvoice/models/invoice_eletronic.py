@@ -187,8 +187,6 @@ class InvoiceEletronic(models.Model):
     email_sent = fields.Boolean(string=u"Email enviado", default=False,
                                 readonly=True, states=STATE)
 
-    discriminacao_servicos = fields.Text('Discriminação de Serviços')
-
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
             prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
@@ -328,9 +326,7 @@ class InvoiceEletronic(models.Model):
         observacao = self._compute_msg(obs_ids) + (
             self.invoice_id.comment or '')
 
-        if fiscal:
-            self.informacoes_legais = fiscal
-            self.discriminacao_servicos += fiscal + '\n'
+        self.informacoes_legais = fiscal
         self.informacoes_complementares = observacao
 
     def _compute_msg(self, observation_ids):
@@ -493,7 +489,7 @@ class InvoiceEletronicEvent(models.Model):
 class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
 
-    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
+    name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
     invoice_eletronic_id = fields.Many2one(

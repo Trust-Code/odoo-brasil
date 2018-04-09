@@ -35,6 +35,16 @@ class InvoiceEletronicItem(models.Model):
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    @api.multi
+    def _compute_discriminacao(self):
+        for item in self:
+            descricao = ''
+            for eletronic_item in item.eletronic_item_ids:
+                descricao += eletronic_item.name + '<br/>'
+            if item.informacoes_legais:
+                descricao += item.informacoes_legais + '<br/>'
+            item.discriminacao_servicos = descricao
+
     operation = fields.Selection(
         [('T', u"Tributado em São Paulo"),
          ('F', u"Tributado Fora de São Paulo"),
@@ -51,6 +61,8 @@ class InvoiceEletronic(models.Model):
         string=u'Código Autorização', size=20, readonly=True, states=STATE)
     numero_nfse = fields.Char(
         string=u"Número NFSe", size=50, readonly=True, states=STATE)
+
+    discriminacao_servicos = fields.Char(compute='_compute_discriminacao')
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
@@ -137,9 +149,14 @@ class InvoiceEletronic(models.Model):
                 'email': self.company_id.partner_id.email or '',
             }
 
+            descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
+                descricao += item.name + '\n'
                 codigo_servico = item.codigo_servico_paulistana
+
+            if self.informacoes_legais:
+                descricao += self.informacoes_legais + '\n'
 
             rps = {
                 'tomador': tomador,
@@ -162,7 +179,7 @@ class InvoiceEletronic(models.Model):
                 'aliquota_ir': str("%.2f" % 0.0),
                 'valor_servico': str("%.2f" % self.valor_final),
                 'valor_deducao': '0',
-                'descricao': self.discriminacao_servicos,
+                'descricao': descricao,
                 'deducoes': [],
             }
 

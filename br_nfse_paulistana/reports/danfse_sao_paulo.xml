@@ -181,7 +181,7 @@
                 </div>
                 <div class="col-xs-12">
                     <br />
-                    <span t-field="doc.discriminacao_servicos"></span>
+                    <span t-raw="doc.discriminacao_servicos"></span>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">

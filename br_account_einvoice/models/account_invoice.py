@@ -170,9 +170,6 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, invoice, inv_lines):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
-        descricao = ''
-        for line in inv_lines:
-            descricao += line.name + '\n'
         vals = {
             'name': invoice.number,
             'invoice_id': invoice.id,
@@ -211,7 +208,6 @@ class AccountInvoice(models.Model):
             'valor_retencao_csll': invoice.csll_retention,
             'valor_bc_inss': invoice.inss_base,
             'valor_retencao_inss': invoice.inss_retention,
-            'discriminacao_servicos': descricao,
         }
 
         eletronic_items = []
