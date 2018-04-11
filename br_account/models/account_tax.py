@@ -375,7 +375,6 @@ class AccountTax(models.Model):
                 total_included += tax['amount']
         if icms_desonerado == True:
             for amount in icms:
-                total_excluded -= amount['desoneracao']
                 total_included -= amount['desoneracao']
 
         return {

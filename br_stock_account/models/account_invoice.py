@@ -124,11 +124,11 @@ class AccountInvoiceLine(models.Model):
         return res
 
     @api.one
-    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
+    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas', 'price_total')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
 
-        total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
+        total = self.price_total - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
 

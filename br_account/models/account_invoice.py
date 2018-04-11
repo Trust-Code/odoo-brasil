@@ -22,6 +22,7 @@ class AccountInvoice(models.Model):
         self.total_tax = sum(l.price_tax for l in lines)
         self.icms_base = sum(l.icms_base_calculo for l in lines)
         self.icms_value = sum(l.icms_valor for l in lines)
+        self.icms_des_value = sum(l.icms_des_valor for l in lines)
         self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
         self.icms_st_value = sum(l.icms_st_valor for l in lines)
         self.valor_icms_uf_remet = sum(l.icms_uf_remet for l in lines)
@@ -154,6 +155,9 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'))
     icms_value = fields.Float(
         string='Valor ICMS', digits=dp.get_precision('Account'),
+        compute='_compute_amount', store=True)
+    icms_des_value = fields.Float(
+        string='Valor ICMS Desonerado', digits=dp.get_precision('Account'),
         compute='_compute_amount', store=True)
     icms_st_base = fields.Float(
         string='Base ICMS ST', store=True, compute='_compute_amount',

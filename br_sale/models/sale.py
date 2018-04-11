@@ -113,7 +113,7 @@ class SaleOrderLine(models.Model):
                     ipi += tax['amount']
                 if tax_id.domain == 'icmsst':
                     icms_st += tax['amount']
-                if tax_id.domain == 'icms':
+                if tax_id.domain == 'icms' and self.desoneracao_icms:
                     icms_desoneracao += tax['desoneracao']
 
             valor_bruto = line.price_unit * line.product_uom_qty
@@ -122,7 +122,7 @@ class SaleOrderLine(models.Model):
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
-                'price_subtotal': taxes['total_excluded'], # - icms_desoneracao,
+                'price_subtotal': taxes['total_excluded'] - icms_desoneracao,
                 'valor_bruto': valor_bruto,
                 'valor_desconto': desconto,
                 'icms_st_valor': icms_st,

@@ -119,15 +119,17 @@ class AccountInvoiceLine(models.Model):
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         price_subtotal_signed = price_subtotal_signed * sign
+        vlr_icms_desonerado = sum([x['desoneracao'] for x in icms]) if self.desoneracao_icms == True else 0.0
         self.update({
             'price_total': taxes['total_included'] if taxes else subtotal,
             'price_tax': taxes['total_included'] - taxes['total_excluded'] if taxes else 0,
-            'price_subtotal': taxes['total_excluded'] - sum([x['desoneracao'] for x in icms])
+            'price_subtotal': taxes['total_excluded'] - vlr_icms_desonerado
                 if taxes else subtotal,
-            'price_subtotal_signed': price_subtotal_signed - sum([x['desoneracao'] for x in icms]),
+            'price_subtotal_signed': price_subtotal_signed - vlr_icms_desonerado,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,
-            'icms_base_calculo': sum([x['base'] for x in icms]),
+            'icms_base_calculo': sum([x['base'] for x in icms])
+                if self.desoneracao_icms == False else 0,
             'icms_valor': sum([x['amount'] for x in icms])
                 if self.desoneracao_icms == False else 0,
             'icms_des_valor': sum([x['desoneracao'] for x in icms])

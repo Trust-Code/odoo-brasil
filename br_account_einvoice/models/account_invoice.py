@@ -108,6 +108,8 @@ class AccountInvoice(models.Model):
             'icms_aliquota_reducao_base': line.icms_aliquota_reducao_base,
             'icms_base_calculo': line.icms_base_calculo,
             'icms_valor': line.icms_valor,
+            'icms_motivo_desoneracao': line.mot_desoneracao_icms,
+            'icms_valor_desonerado': line.icms_des_valor,
             # - ICMS ST -
             'icms_st_aliquota': line.icms_st_aliquota,
             'icms_st_aliquota_mva': line.icms_st_aliquota_mva,
@@ -184,6 +186,7 @@ class AccountInvoice(models.Model):
             'payment_term_id': invoice.payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
             'valor_icms': invoice.icms_value,
+            'valor_icms_deson': invoice.icms_des_value,
             'valor_icmsst': invoice.icms_st_value,
             'valor_ipi': invoice.ipi_value,
             'valor_pis': invoice.pis_value,
