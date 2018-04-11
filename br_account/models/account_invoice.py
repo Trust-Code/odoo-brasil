@@ -107,14 +107,6 @@ class AccountInvoice(models.Model):
         'account.move.line', string='Payable Move Lines',
         compute='_compute_payables')
 
-    vendor_number = fields.Char(
-        u'Número NF Entrada', size=18, readonly=True,
-        states={'draft': [('readonly', False)]},
-        help=u"Número da Nota Fiscal do Fornecedor")
-    vendor_serie = fields.Char(
-        u'Série NF Entrada', size=12, readonly=True,
-        states={'draft': [('readonly', False)]},
-        help=u"Série do número da Nota Fiscal do Fornecedor")
     product_serie_id = fields.Many2one(
         'br_account.document.serie', string=u'Série produtos',
         domain="[('fiscal_document_id', '=', product_document_id),\
