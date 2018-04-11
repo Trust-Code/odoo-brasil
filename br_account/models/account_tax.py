@@ -83,6 +83,7 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
+    incluir_desconto_bc = fields.Boolean(string="Incluir Descontos na BC?")
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
@@ -137,12 +138,14 @@ class AccountTax(models.Model):
             vals['base'] = base_tax
         return [vals]
 
-    def _compute_icms(self, price_base, ipi_value):
+    def _compute_icms(self, price_base, ipi_value, desconto):
         icms_tax = self.filtered(lambda x: x.domain == 'icms')
         if not icms_tax:
             return []
         vals = self._tax_vals(icms_tax)
         base_icms = price_base
+        if icms_tax.incluir_desconto_bc:
+            base_icms += desconto
         incluir_ipi = False
         reducao_icms = 0.0
         if 'incluir_ipi_base' in self.env.context:
@@ -169,7 +172,6 @@ class AccountTax(models.Model):
         else:
             vals['amount'] = icms_tax._compute_amount(base_icms, 1.0)
             vals['base'] = base_icms
-        print(vals)
         return [vals]
 
     def _compute_icms_st(self, price_base, ipi_value, icms_value):
@@ -339,7 +341,7 @@ class AccountTax(models.Model):
 
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
-                    product=None, partner=None, icms_desonerado=False):
+                    product=None, partner=None, icms_desonerado=False, discount=0):
 
         exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
         if not exists_br_tax:
@@ -352,7 +354,7 @@ class AccountTax(models.Model):
         ipi = self._compute_ipi(price_base)
         icms = self._compute_icms(
             price_base,
-            ipi[0]['amount'] if ipi else 0.0)
+            ipi[0]['amount'] if ipi else 0.0, desconto=discount)
         if icms_desonerado == True:
             icms = self._compute_icms_desonerado(icms)
         icmsst = self._compute_icms_st(

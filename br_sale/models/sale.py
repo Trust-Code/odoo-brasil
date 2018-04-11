@@ -28,6 +28,8 @@ class SaleOrder(models.Model):
                                       for l in order.order_line),
                 'total_bruto': sum(l.valor_bruto
                                    for l in order.order_line),
+                'total_des_icms': sum(l.icms_des_valor
+                                   for l in order.order_line),
             })
 
     @api.multi
@@ -64,6 +66,9 @@ class SaleOrder(models.Model):
         string='Desconto Total ( - )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
         help="The discount amount.")
+    total_des_icms = fields.Float(string='ICMS Desonerado Total ( - )', readonly=True,
+        compute='_amount_all', digits=dp.get_precision('Account'), store=True,
+        help="Valor Total ICMS Desonerado.")
 
 
 class SaleOrderLine(models.Model):
@@ -93,27 +98,30 @@ class SaleOrderLine(models.Model):
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
                  'icms_st_aliquota_mva', 'incluir_ipi_base',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
-                 'ipi_reducao_bc', 'icms_st_aliquota_deducao')
+                 'ipi_reducao_bc', 'icms_st_aliquota_deducao', 'desoneracao_icms')
     def _compute_amount(self):
         for line in self:
             ipi = 0.0
             icms_st = 0.0
-            icms_desoneracao = 0.0
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            discount = ((line.discount or 0.0) / 100) * line.price_unit
             ctx = line._prepare_tax_context()
             tax_ids = line.tax_id.with_context(**ctx)
+            icms_desonerado = line.desoneracao_icms
             taxes = tax_ids.compute_all(
                 price, line.order_id.currency_id,
                 line.product_uom_qty, product=line.product_id,
-                partner=line.order_id.partner_id, icms_desonerado=self.desoneracao_icms)
+                partner=line.order_id.partner_id,
+                icms_desonerado=icms_desonerado, discount=discount)
 
+            icms_desoneracao= 0.0
             for tax in taxes['taxes']:
                 tax_id = self.env['account.tax'].browse(tax['id'])
                 if tax_id.domain == 'ipi':
                     ipi += tax['amount']
                 if tax_id.domain == 'icmsst':
                     icms_st += tax['amount']
-                if tax_id.domain == 'icms' and self.desoneracao_icms:
+                if tax_id.domain == 'icms' and icms_desonerado:
                     icms_desoneracao += tax['desoneracao']
 
             valor_bruto = line.price_unit * line.product_uom_qty
@@ -127,6 +135,7 @@ class SaleOrderLine(models.Model):
                 'valor_desconto': desconto,
                 'icms_st_valor': icms_st,
                 'ipi_valor': ipi,
+                'icms_des_valor': icms_desoneracao,
             })
 
     @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
@@ -217,6 +226,9 @@ class SaleOrderLine(models.Model):
     desoneracao_icms = fields.Boolean(string=u"Desoneração de ICMS")
     mot_desoneracao_icms = fields.Selection(
         [('7', u'7 - SUFRAMA'), ('9', '9 - Outros')], string=u"Motivo da Desoneração")
+    icms_des_valor = fields.Float(
+        string="Valor Desoneração ICMS", store=True,
+        compute='_compute_amount', digits=dp.get_precision('Sale Price'))
 
     def _update_tax_from_ncm(self):
         if self.product_id:
@@ -241,7 +253,6 @@ class SaleOrderLine(models.Model):
             if fpos:
                 vals = fpos.map_tax_extra_values(
                     line.company_id, line.product_id, line.order_id.partner_id)
-
                 for key, value in vals.items():
                     if value and key in line._fields:
                         line.update({key: value})
