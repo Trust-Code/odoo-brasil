@@ -85,14 +85,16 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         items = []
         for line in self.eletronic_item_ids:
             aliquota = line.issqn_aliquota / 100
+            base = line.issqn_base
             if self.company_id.fiscal_type != '3':
-                aliquota = 0.0
+                aliquota, base = 0.0, 0.0
             items.append({
                 'name': line.product_id.name,
                 'cnae': re.sub(
                     '[^0-9]', '', self.company_id.cnae_main_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
+                'base_calculo': base,
                 'valor_unitario': line.valor_liquido / line.quantidade,
                 'quantidade': int(line.quantidade),
                 'valor_total': line.valor_liquido,
