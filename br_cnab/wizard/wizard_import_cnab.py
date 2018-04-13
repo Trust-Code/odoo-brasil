@@ -236,7 +236,7 @@ class WizardImportCnab(models.TransientModel):
 
         return self.env[method].search([
             ('nosso_numero', '=', nosso_numero),
-            ('payment_mode_id', 'in', filtered_pm.ids)])
+            ('payment_mode_id', 'in', filtered_pm.ids)], limit=1)
 
     def _change_boleto_state(self, evento):
         nosso_numero = self._get_nosso_numero(evento.nosso_numero)
@@ -252,12 +252,14 @@ class WizardImportCnab(models.TransientModel):
                     line.write({'state': 'rejected'})
             if evento.servico_codigo_movimento in (9, '09'):
                 line.write({'state': 'baixa'})
+        return [line.id for line in payment_order_lines]
 
     def _liquidacao_cnab(self, arquivo, evento, valor):
         nosso_numero = self._get_nosso_numero(evento.nosso_numero)
 
         move_line = self._get_order_line(nosso_numero, 'account.move.line')
-
+        payment_order_lines = self._get_order_line(
+            nosso_numero, 'payment.order.line')
         transaction = {
             'name': "%s : %s" % (
                 move_line.partner_id.name or evento.sacado_nome,
@@ -274,28 +276,33 @@ class WizardImportCnab(models.TransientModel):
             'bank_account_id': move_line.payment_mode_id.bank_account_id.id
         }
 
-        return transaction, move_line
+        return transaction, move_line, payment_order_lines.ids
 
     def _parse_cnab(self, cnab_file):
         arquivo = self._create_arquivo_cnab(cnab_file)
         transactions = []
         move_lines = []
+        payment_line_ids = []
         for lote in arquivo.lotes:
             for evento in lote.eventos:
                 valor = evento.valor_lancamento
 
                 if evento.servico_codigo_movimento in (6, 17, '06', '17',):
-                    transaction, move_line = self._liquidacao_cnab(
+                    transaction, move_line, pay_lines = self._liquidacao_cnab(
                         arquivo, evento, valor)
 
                     transactions.append(transaction)
                     move_lines.append(move_line)
+                    for item in pay_lines:
+                        payment_line_ids.append(item)
 
                 elif evento.servico_codigo_movimento in (2, 3, 9,
                                                          '02', '03', '09'):
-                    self._change_boleto_state(evento)
+                    pay_lines = self._change_boleto_state(evento)
+                    for item in pay_lines:
+                        payment_line_ids.append(item)
 
-        return arquivo, transactions, move_lines
+        return arquivo, transactions, move_lines, payment_line_ids
 
     def _check_cnab(self, cnab_file):
         if int(base64.b64decode(cnab_file)[0:3]) != int(
@@ -329,10 +336,16 @@ class WizardImportCnab(models.TransientModel):
         if self._check_cnab(cnab_file):
             return self._parse_cnab(cnab_file)
 
-    def import_cnab(self):
-        arquivo, transactions, move_lines = self.with_context(
-            active_id=self.ids[0])._parse_file(self.cnab_file)
+    def action_open_payment_lines(self, lines):
+        action = self.env.ref('br_boleto.action_payment_order_line_form'
+                              ).read()[0]
+        if lines:
+            action['domain'] = [('id', 'in', lines)]
+        return action
 
+    def import_cnab(self):
+        arquivo, transactions, move_lines, pay_line_ids = self.with_context(
+            active_id=self.ids[0])._parse_file(self.cnab_file)
         if len(transactions) > 0:
             vals_stmt, datas = self._prepare_statement_data(
                 arquivo, transactions, move_lines)
@@ -344,6 +357,7 @@ class WizardImportCnab(models.TransientModel):
 
             for line, data in zip(statement.line_ids, datas):
                 line.process_reconciliations([data])
+        return self.action_open_payment_lines(pay_line_ids)
 
 
 class AccountJournal(models.Model):
