@@ -11,7 +11,7 @@ import re
 import logging
 import base64
 from datetime import datetime
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 _logger = logging.getLogger(__name__)
 
@@ -102,7 +102,8 @@ class ResCompany(models.Model):
         except:
             self.cert_state = 'unknown'
             _logger.warning(
-                u'Erro desconhecido ao consultar certificado', exc_info=True)
+                _(u'Erro desconhecido ao consultar certificado'),
+                exc_info=True)
 
     cnpj_cpf = fields.Char(
         compute=_get_br_data, inverse=_set_br_cnpj_cpf, size=18,
