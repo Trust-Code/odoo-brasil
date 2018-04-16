@@ -14,8 +14,8 @@ class AccountFiscalPositionTaxRule(models.Model):
     _name = 'account.fiscal.position.tax.rule'
     _order = 'sequence'
 
-    sequence = fields.Integer(string=u"Sequência")
-    name = fields.Char(string=u"Descrição", size=100)
+    sequence = fields.Integer(string=u"Sequence")
+    name = fields.Char(string=u"Name", size=100)
     domain = fields.Selection([('icms', 'ICMS'),
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
@@ -25,20 +25,21 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),
                                ('inss', 'INSS'),
-                               ('outros', 'Outros')], string=u"Tipo")
+                               ('outros', 'Other')], string=u"Type")
     fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', string=u"Posição Fiscal")
+        'account.fiscal.position', string=u"Fiscal Position")
 
-    state_ids = fields.Many2many('res.country.state', string=u"Estado Destino",
+    state_ids = fields.Many2many('res.country.state',
+                                 string=u"Destination State",
                                  domain=[('country_id.code', '=', 'BR')])
     fiscal_category_ids = fields.Many2many(
-        'br_account.fiscal.category', string=u"Categorias Fiscais")
-    tipo_produto = fields.Selection([('product', u'Produto'),
-                                     ('service', u'Serviço')],
-                                    string=u"Tipo produto", default="product")
+        'br_account.fiscal.category', string=u"Fiscal Categories")
+    tipo_produto = fields.Selection([('product', u'Product'),
+                                     ('service', u'Service')],
+                                    string=u"Product Type", default="product")
 
     product_fiscal_classification_ids = fields.Many2many(
-        'product.fiscal.classification', string=u"Classificação Fiscal",
+        'product.fiscal.classification', string=u"Fiscal Classification",
         relation="account_fiscal_position_tax_rule_prod_fiscal_clas_relation")
 
     cst_icms = fields.Selection(CST_ICMS, string=u"CST ICMS")
@@ -47,10 +48,10 @@ class AccountFiscalPositionTaxRule(models.Model):
     cst_cofins = fields.Selection(CST_PIS_COFINS, string=u"CST COFINS")
     cst_ipi = fields.Selection(CST_IPI, string=u"CST IPI")
     cfop_id = fields.Many2one('br_account.cfop', string=u"CFOP")
-    tax_id = fields.Many2one('account.tax', string=u"Imposto")
+    tax_id = fields.Many2one('account.tax', string=u"Tax")
     tax_icms_st_id = fields.Many2one('account.tax', string=u"ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
-    icms_aliquota_credito = fields.Float(string=u"% Crédito de ICMS")
+    icms_aliquota_credito = fields.Float(string=u"% Cŕedito ICMS")
     incluir_ipi_base = fields.Boolean(string=u"Incl. IPI na base ICMS")
     reducao_icms = fields.Float(string=u"Redução de base")
     reducao_icms_st = fields.Float(string=u"Redução de base ST")

@@ -30,7 +30,7 @@ CSOSN_SIMPLES = [
 ]
 
 ORIGEM_PROD = [
-    ('0', u'0 - Nacional'),
+    ('0', u'0 - National'),
     ('1', u'1 - Estrangeira - Importação direta'),
     ('2', u'2 - Estrangeira - Adquirida no mercado interno'),
     ('3', u'3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%'),  # noqa

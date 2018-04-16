@@ -211,7 +211,7 @@ class AccountInvoiceLine(models.Model):
     icms_cst_normal = fields.Selection(CST_ICMS, string="CST ICMS")
     icms_origem = fields.Selection(ORIGEM_PROD, 'Origem', default='0')
     icms_tipo_base = fields.Selection(
-        [('0', u'0 - Margem Valor Agregado (%)'),
+        [('0', u'0 - Value-Added Margin (%)'),
          ('1', u'1 - Pauta (valor)'),
          ('2', u'2 - Preço Tabelado Máximo (valor)'),
          ('3', u'3 - Valor da Operação')],
@@ -239,7 +239,7 @@ class AccountInvoiceLine(models.Model):
     tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
     icms_st_tipo_base = fields.Selection(
-        [('0', u'0 - Preço tabelado ou máximo  sugerido'),
+        [('0', u'0 - Tabulated Price or Maximum Suggested Price'),
          ('1', u'1 - Lista Negativa (valor)'),
          ('2', u'2 - Lista Positiva (valor)'),
          ('3', u'3 - Lista Neutra (valor)'),
