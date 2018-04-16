@@ -42,7 +42,7 @@ class ResPartner(models.Model):
 
     _sql_constraints = [
         ('res_partner_cnpj_cpf_uniq', 'unique (cnpj_cpf)',
-         u'Já existe um parceiro cadastrado com este CPF/CNPJ!')
+         _(u'Já existe um parceiro cadastrado com este CPF/CNPJ!'))
     ]
 
     @api.v8
@@ -135,7 +135,7 @@ class ResPartner(models.Model):
 
         if len(partner_ids) > 0:
             raise UserError(_(u'Já existe um parceiro cadastrado com'
-                            u'esta Inscrição Estadual/RG!'))
+                              u'esta Inscrição Estadual/RG!'))
         return True
 
     @api.onchange('cnpj_cpf')
@@ -184,13 +184,14 @@ class ResPartner(models.Model):
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
             if self.state_id.code == 'AL':
-                raise UserError(u'Alagoas não possui consulta de cadastro')
+                raise UserError(_(u'Alagoas não possui consulta de cadastro'))
             if self.state_id.code == 'RJ':
-                raise UserError(
-                    u'Rio de Janeiro não possui consulta de cadastro')
+                raise UserError(_(
+                    u'Rio de Janeiro não possui consulta de cadastro'))
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
-                raise UserError(u'Configurar o certificado e senha na empresa')
+                raise UserError(_(
+                    u'Configurar o certificado e senha na empresa'))
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)
@@ -239,7 +240,8 @@ class ResPartner(models.Model):
                     msg = "%s - %s" % (info.cStat, info.xMotivo)
                     raise UserError(msg)
             else:
-                raise UserError(u"Nenhuma resposta - verificou se seu \
-                                certificado é válido?")
+                raise UserError(_(
+                    u"Nenhuma resposta - verificou se seu \
+                    certificado é válido?"))
         else:
-            raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
+            raise UserError(_(u'Preencha o estado e o CNPJ para pesquisar'))
