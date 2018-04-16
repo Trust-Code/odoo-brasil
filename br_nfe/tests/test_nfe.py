@@ -430,8 +430,7 @@ class TestNFeBrasil(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')  # noqa
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.consultar_protocolo_nfe') # noqa
-    def test_nfe_cancelamento_ok(self, consulta, cancelar, validar):
+    def test_nfe_cancelamento_ok(self, cancelar, validar):
         validar.return_value = ''
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
@@ -443,17 +442,6 @@ class TestNFeBrasil(TransactionCase):
             resp = sanitize_response(xml_recebido)
             cancelar.return_value = {
                 'object': resp[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            # Consulta realizada
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/consulta.xml'), 'r').read()
-            resp_consulta = sanitize_response(xml_recebido)
-
-            consulta.return_value = {
-                'object': resp_consulta[1],
                 'sent_xml': '<xml />',
                 'received_xml': xml_recebido
             }
