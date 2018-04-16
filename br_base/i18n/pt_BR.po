@@ -65,7 +65,7 @@ msgstr "Contas Bancárias"
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
 #: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
-msgid "CEP"
+msgid "Zip Code"
 msgstr "CEP"
 
 #. module: br_base

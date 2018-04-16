@@ -14,7 +14,7 @@
             <field name="street2" position="replace"/>
             <field name="zip" position="replace"/>
             <field name="street" position="replace">
-                <field name="zip" placeholder="CEP" class="o_address_zip" />
+                <field name="zip" placeholder="Zip Code" class="o_address_zip" />
                 <field name="street" placeholder="Street" class="o_address_street" />
                 <field name="number" placeholder="Number" class="o_address_city"/>
                 <field name="street2" placeholder="Complement" class="o_address_street" />

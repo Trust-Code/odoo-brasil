@@ -46,7 +46,7 @@
             </xpath>
             <field name="zip" position="replace" />
             <field name="street" position="replace">
-                <field name="zip" placeholder="CEP" class="o_address_zip oe_inline" />
+                <field name="zip" placeholder="Zip Code" class="o_address_zip oe_inline" />
                 <field name="street" class="o_address_street" placeholder="Street" />
                 <field name="number" class="o_address_city" placeholder="Number" />
                 <field name="district" class="o_address_state" placeholder="District" />

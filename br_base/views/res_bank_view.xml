@@ -9,7 +9,7 @@
             <field name="street2" position="replace"/>
                <field name="zip" position="replace"/>
                <field name="street" position="replace">
-                   <field name="zip" placeholder="CEP" style="width:50%" />
+                   <field name="zip" placeholder="Zip Code" style="width:50%" />
                    <field name="street" placeholder="Street" />
                    <field name="number" placeholder="Number"/>
                    <field name="street2" placeholder="Complement"/>
