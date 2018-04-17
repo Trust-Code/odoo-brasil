@@ -29,6 +29,7 @@
                         <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tem_difal" />
                         <field name="tax_icms_intra_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
+                        <field name="desoneracao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20','30','40','41','50','70','90'))]}"/>
                     </group>
                     <group>
                         <field name="incluir_ipi_base" attrs="{'invisible': [('domain', '=', 'icms')]}" />
@@ -38,6 +39,7 @@
                         <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
                         <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
+                        <field name="mot_desoneracao_icms" attrs="{'required': [('desoneracao_icms', '=', True)],'invisible': [('desoneracao_icms', '=', False)]}"/>
                     </group>
                 </group>
                 <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">

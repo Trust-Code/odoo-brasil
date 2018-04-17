@@ -62,7 +62,7 @@ class AccountInvoiceLine(models.Model):
                  'icms_base_calculo_manual', 'ipi_base_calculo_manual',
                  'pis_base_calculo_manual', 'cofins_base_calculo_manual',
                  'icms_st_aliquota_deducao', 'ii_base_calculo',
-                 'icms_aliquota_inter_part')
+                 'icms_aliquota_inter_part', 'desoneracao_icms')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -80,7 +80,8 @@ class AccountInvoiceLine(models.Model):
 
             taxes = tax_ids.compute_all(
                 price, currency, self.quantity, product=self.product_id,
-                partner=self.invoice_id.partner_id)
+                partner=self.invoice_id.partner_id,
+                icms_desonerado=self.desoneracao_icms, discount=desconto)
 
         icms = ([x for x in taxes['taxes']
                  if x['id'] == self.tax_icms_id.id]) if taxes else []
@@ -119,16 +120,21 @@ class AccountInvoiceLine(models.Model):
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         price_subtotal_signed = price_subtotal_signed * sign
+        vlr_icms_desonerado = sum([x['desoneracao'] for x in icms]) if self.desoneracao_icms == True else 0.0
         self.update({
             'price_total': taxes['total_included'] if taxes else subtotal,
-            'price_tax': taxes['total_included'] - taxes['total_excluded']
-            if taxes else 0,
-            'price_subtotal': taxes['total_excluded'] if taxes else subtotal,
-            'price_subtotal_signed': price_subtotal_signed,
+            'price_tax': taxes['total_included'] - taxes['total_excluded'] if taxes else 0,
+            'price_subtotal': taxes['total_excluded'] - vlr_icms_desonerado
+                if taxes else subtotal,
+            'price_subtotal_signed': price_subtotal_signed - vlr_icms_desonerado,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,
-            'icms_base_calculo': sum([x['base'] for x in icms]),
-            'icms_valor': sum([x['amount'] for x in icms]),
+            'icms_base_calculo': sum([x['base'] for x in icms])
+                if self.desoneracao_icms == False else 0,
+            'icms_valor': sum([x['amount'] for x in icms])
+                if self.desoneracao_icms == False else 0,
+            'icms_des_valor': sum([x['desoneracao'] for x in icms])
+                if self.desoneracao_icms == True else 0,
             'icms_st_base_calculo': sum([x['base'] for x in icmsst]),
             'icms_st_valor': sum([x['amount'] for x in icmsst]),
             'icms_bc_uf_dest': sum([x['base'] for x in icms_inter]),
@@ -232,6 +238,13 @@ class AccountInvoiceLine(models.Model):
         default=0.00)
     icms_base_calculo_manual = fields.Float(
         'Base ICMS Manual', digits=dp.get_precision('Account'), default=0.00)
+    desoneracao_icms = fields.Boolean(
+        string=u'ICMS Desonerado?')
+    mot_desoneracao_icms = fields.Selection([('7', u'7 - SUFRAMA'),('9', '9 - Outros')],
+                                            string=u'Mot de Desoneração do ICMS')
+    icms_des_valor = fields.Float(string='Vlr ICMS Desonerado', required=True,
+                                  compute='_compute_price', store=True,
+                                  digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Substituição

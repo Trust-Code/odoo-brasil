@@ -23,7 +23,9 @@
                 <field name="ipi_cst" invisible="1" />
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
-                <field name="cofins_cst" invisible="1" />
+                <field name="cofins_cst" invisible="1"/>
+                <field name="desoneracao_icms" invisible="1"/>
+                <field name="mot_desoneracao_icms" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='order_line']/form/sheet/group/group/field[@name='price_unit']" position="after">
                 <field name="valor_bruto" />

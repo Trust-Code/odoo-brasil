@@ -321,6 +321,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
                 'pICMS': "%.02f" % item.icms_aliquota,
                 'vICMS': "%.02f" % item.icms_valor,
+                'vICMSDeson': "%.02f" % item.icms_valor_desonerado,
+                'motDesICMS': item.icms_motivo_desoneracao if item.icms_motivo_desoneracao else '',
                 'modBCST': item.icms_st_tipo_base,
                 'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
                 'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
@@ -498,6 +500,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 },
                 'indIEDest': self.ind_ie_dest,
                 'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
+                'ISUF': re.sub('[^0-9]', '', partner.suframa or ''),
             }
             if self.model == '65':
                 dest.update(
@@ -534,7 +537,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             # ICMS
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
-            'vICMSDeson': '0.00',
+            'vICMSDeson': "%.02f" % self.valor_icms_deson,
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
             'vProd': "%.02f" % self.valor_bruto,

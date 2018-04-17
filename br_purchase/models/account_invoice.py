@@ -12,6 +12,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(
             line)
         res['valor_bruto'] = line.valor_bruto
+        res['discount'] = line.discount
 
         # Improve this one later
         icms = line.taxes_id.filtered(lambda x: x.domain == 'icms')
@@ -27,7 +28,6 @@ class AccountInvoice(models.Model):
 
         res['icms_cst_normal'] = line.icms_cst_normal
         res['icms_csosn_simples'] = line.icms_csosn_simples
-
         res['tax_icms_id'] = icms and icms.id or False
         res['tax_icms_st_id'] = icmsst and icmsst.id or False
         res['tax_icms_inter_id'] = icms_inter and icms_inter.id or False
@@ -66,6 +66,8 @@ class AccountInvoice(models.Model):
         res['icms_tipo_base'] = '3'
         res['icms_aliquota'] = icms.amount or 0.0
         res['icms_st_tipo_base'] = '4'
+        res['desoneracao_icms'] = line.desoneracao_icms
+        res['mot_desoneracao_icms'] = line.mot_desoneracao_icms
         res['icms_st_aliquota_mva'] = line.icms_st_aliquota_mva
         res['icms_st_aliquota'] = icmsst.amount or 0.0
         res['icms_aliquota_reducao_base'] = line.icms_aliquota_reducao_base

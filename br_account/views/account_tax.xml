@@ -15,7 +15,8 @@
             </field>
             <field name="name" position="after">
                 <field name="domain" />
-                <field name="difal_por_dentro" />
+                <field name="difal_por_dentro"/>
+                <field name="incluir_desconto_bc"/>
             </field>
         </field>
     </record>

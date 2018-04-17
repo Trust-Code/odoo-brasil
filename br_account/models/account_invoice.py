@@ -22,6 +22,7 @@ class AccountInvoice(models.Model):
         self.total_tax = sum(l.price_tax for l in lines)
         self.icms_base = sum(l.icms_base_calculo for l in lines)
         self.icms_value = sum(l.icms_valor for l in lines)
+        self.icms_des_value = sum(l.icms_des_valor for l in lines)
         self.icms_st_base = sum(l.icms_st_base_calculo for l in lines)
         self.icms_st_value = sum(l.icms_st_valor for l in lines)
         self.valor_icms_uf_remet = sum(l.icms_uf_remet for l in lines)
@@ -154,6 +155,9 @@ class AccountInvoice(models.Model):
         digits=dp.get_precision('Account'))
     icms_value = fields.Float(
         string='Valor ICMS', digits=dp.get_precision('Account'),
+        compute='_compute_amount', store=True)
+    icms_des_value = fields.Float(
+        string='Valor ICMS Desonerado', digits=dp.get_precision('Account'),
         compute='_compute_amount', store=True)
     icms_st_base = fields.Float(
         string='Base ICMS ST', store=True, compute='_compute_amount',
@@ -303,12 +307,15 @@ class AccountInvoice(models.Model):
             price = line.price_unit * (1 - (
                 line.discount or 0.0) / 100.0)
 
+            desoneracao_icms = line.desoneracao_icms
+
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
 
             taxes_dict = tax_ids.compute_all(
                 price, self.currency_id, line.quantity,
-                product=line.product_id, partner=self.partner_id)
+                product=line.product_id, partner=self.partner_id,
+                icms_desonerado=desoneracao_icms)
 
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(
@@ -320,6 +327,7 @@ class AccountInvoice(models.Model):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
+            res[contador]['price'] = round(res[contador]['price'], 4)
             contador += 1
 
         return res
@@ -352,11 +360,12 @@ class AccountInvoice(models.Model):
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
+            desoneracao_icms = line.desoneracao_icms
 
             price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = tax_ids.compute_all(
                 price_unit, self.currency_id, line.quantity,
-                line.product_id, self.partner_id)['taxes']
+                line.product_id, self.partner_id, icms_desonerado=desoneracao_icms)['taxes']
             for tax in taxes:
                 val = self._prepare_tax_line_vals(line, tax)
                 key = self.env['account.tax'].browse(
@@ -372,7 +381,6 @@ class AccountInvoice(models.Model):
     @api.model
     def tax_line_move_line_get(self):
         res = super(AccountInvoice, self).tax_line_move_line_get()
-
         done_taxes = []
         for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
             if tax_line.amount and tax_line.tax_id.deduced_account_id:
