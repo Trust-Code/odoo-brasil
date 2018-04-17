@@ -115,6 +115,7 @@ class InvoiceEletronic(models.Model):
             codigo_servico = item.issqn_codigo
 
         rps = {
+            'numero_lote': self.id,
             'numero': self.numero,
             'serie': self.serie.code or '',
             'tipo_rps': '1',
