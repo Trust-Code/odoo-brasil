@@ -20,7 +20,6 @@ try:
     from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
-    from pytrustnfe.nfe import consultar_protocolo_nfe
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
         gerar_nfeproc_cancel
@@ -888,61 +887,42 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
-        consulta = {
+        id_canc = "ID110111%s%02d" % (
+            self.chave_nfe, self.sequencial_evento)
+        cancelamento = {
+            'idLote': self.id,
             'estado': self.company_id.state_id.ibge_code,
             'ambiente': 2 if self.ambiente == 'homologacao' else 1,
-            'chave_nfe': self.chave_nfe,
+            'eventos': [{
+                'Id': id_canc,
+                'cOrgao': self.company_id.state_id.ibge_code,
+                'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
+                'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+                'chNFe': self.chave_nfe,
+                'dhEvento': datetime.utcnow().strftime(
+                    '%Y-%m-%dT%H:%M:%S-00:00'),
+                'nSeqEvento': self.sequencial_evento,
+                'nProt': self.protocolo_nfe,
+                'xJust': justificativa
+            }],
+            'modelo': self.model,
         }
-
-        resp = consultar_protocolo_nfe(certificado, **consulta)
-
-        retorno_consulta = \
-            resp['object'].Body.nfeConsultaNF2Result.retConsSitNFe
-
-        if retorno_consulta.cStat == 101:
+        resp = recepcao_evento_cancelamento(certificado, **cancelamento)
+        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        if resposta.cStat == 128 and \
+                resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'
-            self.codigo_retorno = retorno_consulta.cStat
-            self.mensagem_retorno = retorno_consulta.xMotivo
+            self.codigo_retorno = resposta.retEvento.infEvento.cStat
+            self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
             self.sequencial_evento += 1
-            resp['received_xml'] = etree.tostring(retorno_consulta.retCancNFe)
-            resp['sent_xml'] = etree.tostring(retorno_consulta.procEventoNFe)
         else:
-            id_canc = "ID110111%s%02d" % (
-                self.chave_nfe, self.sequencial_evento)
-            cancelamento = {
-                'idLote': self.id,
-                'estado': self.company_id.state_id.ibge_code,
-                'ambiente': 2 if self.ambiente == 'homologacao' else 1,
-                'eventos': [{
-                    'Id': id_canc,
-                    'cOrgao': self.company_id.state_id.ibge_code,
-                    'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
-                    'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
-                    'chNFe': self.chave_nfe,
-                    'dhEvento': datetime.utcnow().strftime(
-                        '%Y-%m-%dT%H:%M:%S-00:00'),
-                    'nSeqEvento': self.sequencial_evento,
-                    'nProt': self.protocolo_nfe,
-                    'xJust': justificativa
-                }],
-                'modelo': self.model,
-            }
-            resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-            resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
-            if resposta.cStat == 128 and \
-                    resposta.retEvento.infEvento.cStat in (135, 136, 155):
-                self.state = 'cancel'
+            if resposta.cStat == 128:
                 self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
-                self.sequencial_evento += 1
+                self.mensagem_retorno = \
+                    resposta.retEvento.infEvento.xMotivo
             else:
-                if resposta.cStat == 128:
-                    self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                    self.mensagem_retorno = \
-                        resposta.retEvento.infEvento.xMotivo
-                else:
-                    self.codigo_retorno = resposta.cStat
-                    self.mensagem_retorno = resposta.xMotivo
+                self.codigo_retorno = resposta.cStat
+                self.mensagem_retorno = resposta.xMotivo
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -952,7 +932,9 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
         nfe_processada = base64.decodestring(self.nfe_processada)
-        nfe_proc_cancel = gerar_nfeproc_cancel(nfe_processada,
-                                               resp['received_xml'])
-        self.nfe_processada = base64.encodestring(nfe_proc_cancel)
-        self.nfe_processada_name = "NFe%08d.xml" % self.numero
+
+        nfe_proc_cancel = gerar_nfeproc_cancel(
+            nfe_processada, resp['received_xml'])
+        if nfe_proc_cancel:
+            self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
