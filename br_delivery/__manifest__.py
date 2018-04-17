@@ -17,7 +17,8 @@
         'br_stock_account',
     ],
     'data': [
-        'views/account_invoice_view.xml',
+        'views/stock.xml',
+        'views/sale.xml',
         'views/delivery_view.xml',
         'views/br_delivery_view.xml',
         'security/ir.model.access.csv',

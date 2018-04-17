@@ -9,7 +9,7 @@
             <form string="Veículo">
                 <sheet>
                     <group col="4">
-                        <separator colspan="4" string="Transportadora" />
+                        <separator colspan="4" string="Método de Entrega" />
                         <field name="carrier_id" colspan="2"/>
                     </group>
                     <group col="8">
@@ -24,6 +24,7 @@
                         </group>
                         <group colspan="4">
                             <field name="country_id"/>
+                            <field name="state_id"/>
                             <field name="city_id"/>
                             <field name="manufacture_year"/>
                             <field name="model_year"/>

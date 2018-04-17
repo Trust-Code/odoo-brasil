@@ -7,11 +7,41 @@
         <field name="type">form</field>
         <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
         <field name="arch" type="xml">
-            <field name="delivery_type" position="after">
-                <field name="antt_code" />
-                <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list" />
-            </field>
+            <div class="oe_title" position="replace">
+                    <div class="oe_title">
+                        <h1><label for="name" string="Name" style="font-size: 16pt" />
+                        <field name="name" placeholder="e.g. UPS Express"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="delivery_type" widget="radio"/>
+                            <label for="margin"/>
+                            <div>
+                                <field name="margin" class="oe_inline"/>%
+                            </div>
+                        </group>
+                        <group>
+                            <button string="Install more Providers" name="install_more_provider" type="object" class="oe_link oe_edit_only"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="integration_level" widget="radio" attrs="{'invisible': ['|', ('delivery_type', '=', 'fixed'), ('delivery_type', '=', 'base_on_rule')]}"/>
+                    </group>
+            </div>
+            <xpath expr="//notebook" position="inside">
+                <page string="Outras Informações">
+                    <group>
+                        <group><field name="partner_id" domain="[('supplier', '=', True)]" string="Transportadora" />
+                            <field name="antt_code" />
+                            <field name="incoterm" />
+                        </group>
+                        <group>
+                            <separator string="Veículos" />
+                            <field colspan="4" name="vehicle_ids" nolabel="1" widget="one2many_list" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
-
 </odoo>
