@@ -28,7 +28,7 @@ class BrDeliveryCarrierVehicle(models.Model):
     type = fields.Selection([('bau', u'Caminhão Baú')], u'Tipo')
     carrier_id = fields.Many2one(
         'delivery.carrier', u'Carrier', index=True,
-        required=True, ondelete='cascade')
+        ondelete='cascade')
 
 
 class BrDeliveryShipment(models.Model):
