@@ -1,0 +1,482 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-13 21:37+0000\n"
+"PO-Revision-Date: 2018-04-13 21:37+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.trust_menu_secondary
+msgid "<span style=\"color:#5F9EA0\">Trustcode</span>"
+msgstr "<span style=\"color:#5F9EA0\">Trustcode</span>"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_bank_acc_number_format
+msgid "Acc Number Format"
+msgstr "Acc Number Format"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number
+msgid "Agência"
+msgstr "Agency"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:187
+#, python-format
+msgid "Alagoas não possui consulta de cadastro"
+msgstr "Alagoas doesn't have this service"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_nfe_a1_file
+msgid "Arquivo NFe A1"
+msgstr "NFe A1 File"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_bank_district
+#: model:ir.model.fields,field_description:br_base.field_res_company_district
+#: model:ir.model.fields,field_description:br_base.field_res_partner_district
+#: model:ir.model.fields,field_description:br_base.field_res_users_district
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Bairro"
+msgstr "District"
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_bank
+msgid "Bank"
+msgstr "Bank"
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr "Bank Accounts"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "CEP"
+msgstr "Zip code"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_cnpj_cpf
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "CNPJ"
+msgstr "CNPJ"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:91
+#, python-format
+msgid "CNPJ inválido!"
+msgstr "Invalid CNPJ!"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_partner_cnpj_cpf
+#: model:ir.model.fields,field_description:br_base.field_res_users_cnpj_cpf
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+msgid "CNPJ/CPF"
+msgstr "CNPJ/CPF"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:93
+#, python-format
+msgid "CPF inválido!"
+msgstr "CPF inválido!"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Certificado Digital"
+msgstr "Digital Certificate"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Cidade"
+msgstr "City"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_city_ids
+msgid "Cidades"
+msgstr "City"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_city_id
+msgid "City"
+msgstr "City"
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_company
+msgid "Companies"
+msgstr "Companies"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Complemento"
+msgstr "Complement"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:193
+#, python-format
+msgid "Configurar o certificado e senha na empresa"
+msgstr "Configurar o certificado e senha na empresa"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+msgid "Consultar"
+msgstr "Consult"
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_country
+msgid "Country"
+msgstr "Country"
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_country_state
+msgid "Country state"
+msgstr "Country state"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_create_uid
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_create_date
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_country_bc_code
+msgid "Código BC"
+msgstr "BC Code"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_country_ibge_code
+#: model:ir.model.fields,field_description:br_base.field_res_country_state_ibge_code
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_ibge_code
+msgid "Código IBGE"
+msgstr "IBGE Code"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_country_siscomex_code
+msgid "Código Siscomex"
+msgstr "Siscomex Code"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+msgid "Dados Fiscais"
+msgstr "Fiscal data"
+
+#. module: br_base
+#: selection:res.company,cert_state:0
+msgid "Desconhecido"
+msgstr "Unknown"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_acc_number_dig
+msgid "Digito Conta"
+msgstr "Account Number Digit"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_display_name
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number_dig
+msgid "Dígito Agência"
+msgstr "Account Agency Digit"
+
+#. module: br_base
+#: code:addons/br_base/models/res_company.py:105
+#, python-format
+msgid "Erro desconhecido ao consultar certificado"
+msgstr "Unknown when validating certificate"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_bank_state_id
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_state_id
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+msgid "Estado"
+msgstr "State"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_state_ids
+msgid "Estados"
+msgstr "States"
+
+#. module: br_base
+#: selection:res.company,cert_state:0
+msgid "Expirado"
+msgstr "Expired"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_id
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_id
+msgid "ID"
+msgstr "ID"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_cert_information
+msgid "Informações Cert."
+msgstr "Certificate Info"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_inscr_est
+#: model:ir.model.fields,field_description:br_base.field_res_partner_inscr_est
+#: model:ir.model.fields,field_description:br_base.field_res_users_inscr_est
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Inscr. Estadual"
+msgstr "State Inscription"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_inscr_mun
+#: model:ir.model.fields,field_description:br_base.field_res_partner_inscr_mun
+#: model:ir.model.fields,field_description:br_base.field_res_users_inscr_mun
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Inscr. Municipal"
+msgstr "Municipal Inscription"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:123
+#, python-format
+msgid "Inscrição Estadual inválida!"
+msgstr "Invalid State Inscription!"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:45
+#: sql_constraint:res.partner:0
+#, python-format
+msgid "Já existe um parceiro cadastrado com este CPF/CNPJ!"
+msgstr "This CPF/CNPJ number is already being used by another partner!"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:137
+#, python-format
+msgid "Já existe um parceiro cadastrado comesta Inscrição Estadual/RG!"
+msgstr "This State Inscription/RG number is already being used by another partner!"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region___last_update
+#: model:ir.model.fields,field_description:br_base.field_res_state_city___last_update
+msgid "Last Modified on"
+msgstr "Last Modified on"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_write_uid
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_write_date
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Logradouro"
+msgstr "Street"
+
+#. module: br_base
+#: model:ir.actions.act_window,name:br_base.action_br_base_city_form
+#: model:ir.model,name:br_base.model_res_state_city
+#: model:ir.model.fields,field_description:br_base.field_res_bank_city_id
+#: model:ir.model.fields,field_description:br_base.field_res_partner_city_id
+#: model:ir.model.fields,field_description:br_base.field_res_users_city_id
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+msgid "Município"
+msgstr "City"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_city_tree
+msgid "Municípios"
+msgstr "Cities"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:243
+#, python-format
+msgid "Nenhuma resposta - verificou se seu                     certificado é válido?"
+msgstr "No answer - did you verify if your                     certificate is valid?"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_region_name
+#: model:ir.model.fields,field_description:br_base.field_res_state_city_name
+msgid "Nome"
+msgstr "Name"
+
+#. module: br_base
+#: model:ir.model.fields,help:br_base.field_res_partner_legal_name
+#: model:ir.model.fields,help:br_base.field_res_users_legal_name
+msgid "Nome utilizado em documentos fiscais"
+msgstr "Name used in fiscal documents"
+
+#. module: br_base
+#: selection:res.company,cert_state:0
+msgid "Não carregado"
+msgstr "Not loaded"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_bank_number
+#: model:ir.model.fields,field_description:br_base.field_res_company_number
+#: model:ir.model.fields,field_description:br_base.field_res_partner_number
+#: model:ir.model.fields,field_description:br_base.field_res_users_number
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Número"
+msgstr "Number"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+msgid "OFX Account Number Format"
+msgstr "OFX Account Number Format"
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_bank_country_id
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "País"
+msgstr "Country"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:247
+#, python-format
+msgid "Preencha o estado e o CNPJ para pesquisar"
+msgstr "Fill the State and CNPJ fields to search"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_partner_rg_fisica
+#: model:ir.model.fields,field_description:br_base.field_res_users_rg_fisica
+msgid "RG"
+msgstr "RG"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_legal_name
+#: model:ir.model.fields,field_description:br_base.field_res_partner_legal_name
+#: model:ir.model.fields,field_description:br_base.field_res_users_legal_name
+#: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Razão Social"
+msgstr "Social Name"
+
+#. module: br_base
+#: model:ir.actions.act_window,name:br_base.action_br_base_res_region_form
+msgid "Regiões"
+msgstr "Regions"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:189
+#, python-format
+msgid "Rio de Janeiro não possui consulta de cadastro"
+msgstr "Rio de Janeiro doesn't have this service"
+
+#. module: br_base
+#: selection:res.company,cert_state:0
+msgid "Senha Inválida"
+msgstr "Invalid Password"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_nfe_a1_password
+msgid "Senha NFe A1"
+msgstr "NFe A1 Password"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_cert_state
+msgid "Situação Cert."
+msgstr "Cert. State"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_suframa
+#: model:ir.model.fields,field_description:br_base.field_res_partner_suframa
+#: model:ir.model.fields,field_description:br_base.field_res_users_suframa
+#: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
+msgid "Suframa"
+msgstr "Suframa"
+
+#. module: br_base
+#: model:ir.ui.view,arch_db:br_base.trust_menu_secondary
+msgid "Suporte via"
+msgstr "Support via"
+
+#. module: br_base
+#: model:ir.model.fields,field_description:br_base.field_res_company_cert_expire_date
+msgid "Validade Cert."
+msgstr "Cert. Expiration Date"
+
+#. module: br_base
+#: code:addons/br_base/models/res_partner.py:155
+#, python-format
+msgid "Verifique o CNPJ/CPF"
+msgstr "Verify CNPJ/CPF number"
+
+#. module: br_base
+#: selection:res.company,cert_state:0
+msgid "Válido"
+msgstr "Valid"
+
+#. module: br_base
+#: model:ir.model.fields,help:br_base.field_res_bank_acc_number_format
+msgid "You can enter here the format as    the bank accounts are referenced in ofx files for the import of bank    statements.\n"
+"You can use the python patern string with the entire bank     account field.\n"
+"Valid Fields:\n"
+"\n"
+"          %(bra_number): Bank Branch Number\n"
+"\n"
+"          %(bra_number_dig): Bank Branch Number's Digit\n"
+"\n"
+"          %(acc_number): Bank Account Number\n"
+"\n"
+"          %(acc_number_dig): Bank Account Number's Digit\n"
+"\n"
+"    For example, use '%(acc_number)s' to display the field 'Bank Account     Number' plus '%(acc_number_dig)s' to display the field 'Bank Account     Number s Digit'."
+msgstr "You can enter here the format as    the bank accounts are referenced in ofx files for the import of bank    statements.\n"
+"You can use the python patern string with the entire bank     account field.\n"
+"Valid Fields:\n"
+"\n"
+"          %(bra_number): Bank Branch Number\n"
+"\n"
+"          %(bra_number_dig): Bank Branch Number's Digit\n"
+"\n"
+"          %(acc_number): Bank Account Number\n"
+"\n"
+"          %(acc_number_dig): Bank Account Number's Digit\n"
+"\n"
+"    For example, use '%(acc_number)s' to display the field 'Bank Account     Number' plus '%(acc_number_dig)s' to display the field 'Bank Account     Number s Digit'."
+
+#. module: br_base
+#: model:ir.model,name:br_base.model_res_region
+msgid "res.region"
+msgstr "res.region"
+
