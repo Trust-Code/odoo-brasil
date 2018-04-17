@@ -314,7 +314,8 @@ class AccountInvoice(models.Model):
 
             taxes_dict = tax_ids.compute_all(
                 price, self.currency_id, line.quantity,
-                product=line.product_id, partner=self.partner_id, icms_desonerado=desoneracao_icms)
+                product=line.product_id, partner=self.partner_id,
+                icms_desonerado=desoneracao_icms)
 
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(
@@ -326,6 +327,7 @@ class AccountInvoice(models.Model):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
+            res[contador]['price'] = round(res[contador]['price'], 4)
             contador += 1
 
         return res
@@ -379,7 +381,6 @@ class AccountInvoice(models.Model):
     @api.model
     def tax_line_move_line_get(self):
         res = super(AccountInvoice, self).tax_line_move_line_get()
-
         done_taxes = []
         for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
             if tax_line.amount and tax_line.tax_id.deduced_account_id:

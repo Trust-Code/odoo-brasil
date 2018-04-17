@@ -28,10 +28,10 @@
                 <field name="tem_difal" invisible="1" />
                 <field name="desoneracao_icms" invisible="1"/>
                 <field name="mot_desoneracao_icms" invisible="1"/>
-                <field name="ipi_cst" invisible="1" />
-                <field name="ipi_reducao_bc" invisible="1" />
-                <field name="pis_cst" invisible="1" />
-                <field name="cofins_cst" invisible="1" />
+                <field name="ipi_cst" invisible="1"/>
+                <field name="ipi_reducao_bc" invisible="1"/>
+                <field name="pis_cst" invisible="1"/>
+                <field name="cofins_cst" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
                 <field name="icms_rule_id" invisible="1" />
@@ -64,9 +64,9 @@
                 <field name="valor_desconto" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/div[@name='discount']" position="after">
-                <field name="valor_bruto" />
-                <field name="valor_desconto" invisible="1" />
-                <field name="price_subtotal" />
+                <field name="valor_bruto"/>
+                <field name="valor_desconto" invisible="1"/>
+                <field name="price_subtotal"/>
             </xpath>
             <field name="amount_untaxed" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -76,13 +76,13 @@
             </field>
             <field name="amount_tax" position="before">
                 <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
-                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
+                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line"/>
+                <field name="total_des_icms" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 
                 <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                     <label for="total_tax"/>
                 </div>
                 <field name="total_tax" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="total_des_icms" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>

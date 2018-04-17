@@ -19,6 +19,8 @@
                 <field name="tax_cofins_id" invisible="1"/>
                 <field name="tax_ii_id" invisible="1"/>
                 <field name="tax_issqn_id" invisible="1"/>
+                <field name="desoneracao_icms" invisible="1"/>
+                <field name="mot_desoneracao_icms" invisible="1"/>
 
                 <field name="product_type" invisible="1"/>
                 <field name="company_fiscal_type" invisible="1"/>
