@@ -14,18 +14,18 @@ class ResStateCity(models.Model):
     do IBGE dos município envolvidos da transação.
     """
     _name = 'res.state.city'
-    _description = u'Município'
+    _description = u'City'
 
-    name = fields.Char(string='Nome', size=64, required=True)
+    name = fields.Char(string='Name', size=64, required=True)
     state_id = fields.Many2one(comodel_name='res.country.state',
-                               string='Estado',
+                               string='State',
                                required=True)
-    ibge_code = fields.Char(string=u'Código IBGE', size=7, copy=False)
+    ibge_code = fields.Char(string=u'IBGE Code', size=7, copy=False)
 
 
 class ResRegion(models.Model):
     _name = 'res.region'
 
-    name = fields.Char(string="Nome", size=100)
-    city_ids = fields.Many2many('res.state.city', string="Cidades")
-    state_ids = fields.Many2many('res.country.state', string="Estados")
+    name = fields.Char(string="Name", size=100)
+    city_ids = fields.Many2many('res.state.city', string="Cities")
+    state_ids = fields.Many2many('res.country.state', string="States")

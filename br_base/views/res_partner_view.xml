@@ -33,12 +33,12 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_check_sefaz" type="object" class="oe_stat_button"
-                    icon="fa-search" string="Consultar" attrs="{'invisible': [('company_type', '=', 'person')]}">
+                    icon="fa-search" string="Search" attrs="{'invisible': [('company_type', '=', 'person')]}">
                 </button>
             </xpath>
             <xpath expr="//div[hasclass('o_row')]" position="before">
                 <h3 attrs="{'invisible': [('is_company', '=', False)]}">
-                    <field name="legal_name" placeholder="Razão Social" nolabel="1" />
+                    <field name="legal_name" placeholder="Legal Name" nolabel="1" />
                 </h3>
                 <h3>
                     <field name="cnpj_cpf" placeholder="CNPJ/CPF" nolabel="1" />
@@ -46,20 +46,20 @@
             </xpath>
             <field name="zip" position="replace" />
             <field name="street" position="replace">
-                <field name="zip" placeholder="CEP" class="o_address_zip oe_inline" />
-                <field name="street" class="o_address_street" placeholder="Logradouro" />
-                <field name="number" class="o_address_city" placeholder="Número" />
-                <field name="district" class="o_address_state" placeholder="Bairro" />
+                <field name="zip" placeholder="Zip Code" class="o_address_zip oe_inline" />
+                <field name="street" class="o_address_street" placeholder="Street" />
+                <field name="number" class="o_address_city" placeholder="Number" />
+                <field name="district" class="o_address_state" placeholder="District" />
             </field>
             <field name="street2" position="replace">
-                <field name="street2" placeholder="Complemento" class="o_address_street" />
+                <field name="street2" placeholder="Complement" class="o_address_street" />
             </field>
             <field name="state_id" position="attributes">
                 <attribute name="domain">[('country_id','=',country_id)]</attribute>
                 <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
             </field>
             <field name="state_id" position="after">
-                <field name="city_id" class="o_address_city" placeholder="Cidade"
+                <field name="city_id" class="o_address_city" placeholder="City"
                     options="{'no_create': True, 'no_create_edit': True}" />
             </field>
             <field name="city" position="replace">
@@ -67,11 +67,11 @@
             </field>
             <field name="country_id" position="replace" />
             <field name="state_id" position="before">
-                <field name="country_id" placeholder="País" class="o_address_country"
+                <field name="country_id" placeholder="Country" class="o_address_country"
                     options="{'no_create': True, 'no_create_edit': True}" />
             </field>
             <notebook position="inside">
-                <page string="Dados Fiscais">
+                <page string="Fiscal Data">
                     <group>
                         <group>
                             <field name="inscr_est" />
@@ -93,12 +93,12 @@
                 <field name="zip" />
             </xpath>
             <xpath expr="//div[@name='div_address']/field[@name='street']" potition="after">
-                <field name="number" placeholder="Número" />
-                <field name="district" placeholder="Bairro" />
-                <field name="country_id" placeholder="País" />
+                <field name="number" placeholder="Number" />
+                <field name="district" placeholder="District" />
+                <field name="country_id" placeholder="Country" />
             </xpath>
             <xpath expr="//div[@name='div_address']/field[@name='state_id']" potition="after">
-                <field name="city_id" placeholder="Município" />
+                <field name="city_id" placeholder="City" />
             </xpath>
         </field>
     </record>
