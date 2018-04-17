@@ -123,7 +123,7 @@ class ResCompany(models.Model):
 
     legal_name = fields.Char(
         compute=_get_br_data, inverse=_set_br_legal_name, size=128,
-        string=u'Social Name')
+        string=u'Legal Name')
 
     city_id = fields.Many2one(
         compute=_get_address_data, inverse='_set_city_id',

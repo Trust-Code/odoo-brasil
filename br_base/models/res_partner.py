@@ -33,7 +33,7 @@ class ResPartner(models.Model):
     inscr_mun = fields.Char('Municipal Inscription', size=18)
     suframa = fields.Char('Suframa', size=18)
     legal_name = fields.Char(
-        u'Social Name', size=60, help="Name used in fiscal documents")
+        u'Legal Name', size=60, help="Name used in fiscal documents")
     city_id = fields.Many2one(
         'res.state.city', u'City',
         domain="[('state_id','=',state_id)]")
@@ -191,7 +191,7 @@ class ResPartner(models.Model):
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
                 raise UserError(_(
-                    u'Configurate the company\'s certificate and password'))
+                    u'Configure the company\'s certificate and password'))
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)

@@ -23,17 +23,17 @@ msgstr "<span style=\"color:#5F9EA0\">Trustcode</span>"
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_bank_acc_number_format
 msgid "Acc Number Format"
-msgstr "Acc Number Format"
+msgstr "Formato do número acc"
 
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number_dig
 msgid "Account Agency Digit"
-msgstr "Account Agency Digit"
+msgstr "Dígito da agência da conta"
 
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_partner_bank_acc_number_dig
 msgid "Account Number Digit"
-msgstr "Account Number Digit"
+msgstr "Dígito do número da conta"
 
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number
@@ -49,7 +49,7 @@ msgstr "Alagoas não possui consulta de cadastro"
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_country_bc_code
 msgid "BC Code"
-msgstr "BC Code"
+msgstr "Cóidgo BC"
 
 #. module: br_base
 #: model:ir.model,name:br_base.model_res_bank
@@ -129,7 +129,7 @@ msgstr "Complemento"
 #. module: br_base
 #: code:addons/br_base/models/res_partner.py:193
 #, python-format
-msgid "Configurate the company's certificate and password"
+msgid "Configure the company's certificate and password"
 msgstr "Configurar o certificado e senha na empresa"
 
 #. module: br_base
@@ -139,7 +139,7 @@ msgstr "Configuração"
 
 #. module: br_base
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
-msgid "Consult"
+msgid "Search"
 msgstr "Consultar"
 
 #. module: br_base
@@ -304,7 +304,7 @@ msgstr "Nome utilizado em documentos fiscais"
 #: code:addons/br_base/models/res_partner.py:243
 #, python-format
 msgid "No answer - did you verify if your certificate is valid?"
-msgstr "No answer - did you verify if your certificate is valid?"
+msgstr "Sem resposta - verificou se o certificado é válido?"
 
 #. module: br_base
 #: selection:res.company,cert_state:0
@@ -325,7 +325,7 @@ msgstr "Número"
 #. module: br_base
 #: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
 msgid "OFX Account Number Format"
-msgstr "OFX Account Number Format"
+msgstr "Formato do número da conta OFX"
 
 #. module: br_base
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
@@ -360,7 +360,7 @@ msgstr "Código Siscomex"
 #: model:ir.model.fields,field_description:br_base.field_res_users_legal_name
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
-msgid "Social Name"
+msgid "Legal Name"
 msgstr "Razão Social"
 
 #. module: br_base
@@ -408,13 +408,13 @@ msgstr "Suporte via"
 #: sql_constraint:res.partner:0
 #, python-format
 msgid "This CPF/CNPJ number is already being used by another partner!"
-msgstr "This CPF/CNPJ number is already being used by another partner!"
+msgstr "Já existe um parceiro cadastrado com este CPF/CNPJ!"
 
 #. module: br_base
 #: code:addons/br_base/models/res_partner.py:137
 #, python-format
 msgid "This State Inscription/RG number is already being used by another partner!"
-msgstr "Já existe um parceiro cadastrado comesta Inscrição Estadual/RG!"
+msgstr "Já existe um parceiro cadastrado com esta Inscrição Estadual/RG!"
 
 #. module: br_base
 #: selection:res.company,cert_state:0
@@ -430,7 +430,7 @@ msgstr "Erro desconhecido ao consultar o certificado"
 #. module: br_base
 #: selection:res.company,cert_state:0
 msgid "Valid"
-msgstr "Valid"
+msgstr "Valido"
 
 #. module: br_base
 #: code:addons/br_base/models/res_partner.py:155

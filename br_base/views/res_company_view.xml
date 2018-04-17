@@ -8,7 +8,7 @@
             <xpath expr="//div[hasclass('oe_title')]/h1" position="after">
                 <label for="legal_name" class="oe_edit_only"/>
                 <h3>
-                    <field name="legal_name" placeholder="Social Name"/>
+                    <field name="legal_name" placeholder="Legal Name"/>
                 </h3>
             </xpath>
             <field name="street2" position="replace"/>
