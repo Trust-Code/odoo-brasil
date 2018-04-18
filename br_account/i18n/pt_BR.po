@@ -812,19 +812,19 @@ msgstr "Alíquota PIS"
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_fiscal_position_tax_rule_tax_icms_intra_id
 #: model:ir.model.fields,help:br_account.field_account_invoice_line_tax_icms_intra_id
-msgid "Alíquota interna do produto no estado destino"
+msgid "Product's internal tax rate at the destination state"
 msgstr "Alíquota interna do produto no estado destino"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_fiscal_position_tax_rule_icms_st_aliquota_deducao
 #: model:ir.model.fields,help:br_account.field_account_invoice_line_icms_st_aliquota_deducao
-msgid "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS"
-msgstr "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS"
+msgid "Internal or applied tax rate          over the operation value to deduct from ICMS ST - For companies          from Simples Nacional or used in cases where there's only ST without          ICMS"
+msgstr "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional ou usado em casos onde existe apenas ST sem          ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_fiscal_position_tax_rule_tax_icms_inter_id
 #: model:ir.model.fields,help:br_account.field_account_invoice_line_tax_icms_inter_id
-msgid "Alíquota utilizada na operação Interestadual"
+msgid "Tax rate for interstate operations"
 msgstr "Alíquota utilizada na operação Interestadual"
 
 #. module: br_account
@@ -1187,12 +1187,12 @@ msgstr "Empresas"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_account_id_6263
-msgid "Conta Contábil"
+msgid "Account"
 msgstr "Conta Contábil"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_fiscal_position_account_id_6263
-msgid "Conta Contábil a ser utilizada na fatura."
+msgid "Account to be used at the invoice."
 msgstr "Conta Contábil a ser utilizada na fatura."
 
 #. module: br_account
@@ -1422,12 +1422,12 @@ msgstr "Nome exibido"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_journal_id
-msgid "Diário Contábil"
+msgid "Accounting Journal"
 msgstr "Diário Contábil"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_fiscal_position_journal_id
-msgid "Diário Contábil a ser utilizado na fatura."
+msgid "Accounting Journal to be used at the invoice."
 msgstr "Diário Contábil a ser utilizado na fatura."
 
 #. module: br_account
@@ -1464,12 +1464,12 @@ msgstr "Documento Fiscal para produto"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_product_document_id
-msgid "Documento Produto"
+msgid "Product Document"
 msgstr "Documento Produto"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_service_document_id
-msgid "Documento Serviço"
+msgid "Service Document"
 msgstr "Documento Serviço"
 
 #. module: br_account
@@ -1514,7 +1514,7 @@ msgstr "Empresa"
 #: selection:account.fiscal.position,fiscal_type:0
 #: selection:br_account.cfop,type:0
 #: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
-msgid "Entrada"
+msgid "In"
 msgstr "Entrada"
 
 #. module: br_account
@@ -2033,7 +2033,7 @@ msgstr "Observação Fiscal"
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Observações"
+msgid "Notes"
 msgstr "Observações"
 
 #. module: br_account
@@ -2242,48 +2242,48 @@ msgstr "Regra"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_cofins_tax_rule_ids
-msgid "Regras COFINS"
+msgid "COFINS Rules"
 msgstr "Regras COFINS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_csll_tax_rule_ids
-msgid "Regras CSLL"
+msgid "CSLL Rules"
 msgstr "Regras CSLL"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_icms_tax_rule_ids
-msgid "Regras ICMS"
+msgid "ICMS Rules"
 msgstr "Regras ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_ii_tax_rule_ids
-msgid "Regras II"
+msgid "II Rules"
 msgstr "Regras II"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_inss_tax_rule_ids
-msgid "Regras INSS"
+msgid "INSS Rules"
 msgstr "Regras INSS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_ipi_tax_rule_ids
-msgid "Regras IPI"
+msgid "IPI Rules"
 msgstr "Regras IPI"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_irrf_tax_rule_ids
-msgid "Regras IRRF"
+msgid "IRRF Rules"
 msgstr "Regras IRRF"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_issqn_tax_rule_ids
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras ISSQN"
+msgid "ISSQN Rules"
 msgstr "Regras ISSQN"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_pis_tax_rule_ids
-msgid "Regras PIS"
+msgid "PIS Rules"
 msgstr "Regras PIS"
 
 #. module: br_account
@@ -2345,7 +2345,7 @@ msgstr "Retida"
 #: selection:account.fiscal.position,fiscal_type:0
 #: selection:br_account.cfop,type:0
 #: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
-msgid "Saída"
+msgid "Out"
 msgstr "Saída"
 
 #. module: br_account
@@ -2414,12 +2414,12 @@ msgstr "Série"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_product_serie_id
-msgid "Série Produto"
+msgid "Product Serie"
 msgstr "Série Produto"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_service_serie_id
-msgid "Série Serviço"
+msgid "Service Serie"
 msgstr "Série Serviço"
 
 #. module: br_account
@@ -2503,7 +2503,7 @@ msgstr "Tipo Interno"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_type
-msgid "Tipo da posição"
+msgid "Fiscal Type"
 msgstr "Tipo da posição"
 
 #. module: br_account
