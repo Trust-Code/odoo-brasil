@@ -29,5 +29,6 @@
         'views/res_config_settings.xml',
         'wizard/br_product_fiscal_classification_wizard.xml',
         'security/ir.model.access.csv',
+        'reports/account_invoice.xml',
     ],
 }
