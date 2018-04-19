@@ -238,7 +238,7 @@ msgstr "1 - Marítima"
 
 #. module: br_account
 #: selection:account.invoice.line,icms_tipo_base:0
-msgid "1 - Pauta (valor)"
+msgid "1 - Pauta (value)"
 msgstr "1 - Pauta (valor)"
 
 #. module: br_account
@@ -293,7 +293,7 @@ msgstr "2 - Lista Positiva (valor)"
 
 #. module: br_account
 #: selection:account.invoice.line,icms_tipo_base:0
-msgid "2 - Preço Tabelado Máximo (valor)"
+msgid "2 - Maximum Tabulated Price (value)"
 msgstr "2 - Preço Tabelado Máximo (valor)"
 
 #. module: br_account
@@ -343,7 +343,7 @@ msgstr "3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a
 
 #. module: br_account
 #: selection:account.invoice.line,icms_tipo_base:0
-msgid "3 - Valor da Operação"
+msgid "3 - Operation Value"
 msgstr "3 - Valor da Operação"
 
 #. module: br_account
@@ -768,7 +768,7 @@ msgstr "Alíquota CSLL"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_id
-msgid "Alíquota ICMS"
+msgid "ICMS Tax"
 msgstr "Alíquota ICMS"
 
 #. module: br_account
@@ -1103,7 +1103,7 @@ msgstr "Calcular Difal por Dentro?"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_calculate_tax
-msgid "Calcular Imposto?"
+msgid "Calculate Tax?"
 msgstr "Calcular Imposto?"
 
 #. module: br_account
@@ -1781,7 +1781,7 @@ msgstr "Imposto Municipal"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_price_tax
-msgid "Impostos"
+msgid "Taxes"
 msgstr "Impostos"
 
 #. module: br_account
@@ -2026,7 +2026,7 @@ msgstr "Observação"
 #: selection:br_account.fiscal.observation,tipo:0
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_fiscal_comment
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_fiscal_comment
-msgid "Observação Fiscal"
+msgid "Fiscal Comment"
 msgstr "Observação Fiscal"
 
 #. module: br_account
@@ -2050,7 +2050,7 @@ msgstr "Observações Fiscais"
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_origem
 #: model:ir.model.fields,field_description:br_account.field_product_product_origin
 #: model:ir.model.fields,field_description:br_account.field_product_template_origin
-msgid "Origem"
+msgid "Origin"
 msgstr "Origem"
 
 #. module: br_account
@@ -2218,7 +2218,7 @@ msgstr "Regime Normal"
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_company_fiscal_type
 #: model:ir.model.fields,field_description:br_account.field_res_company_fiscal_type
 #: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
-msgid "Regime Tributário"
+msgid "Tax Regime"
 msgstr "Regime Tributário"
 
 #. module: br_account
@@ -2237,7 +2237,7 @@ msgstr "Registrar Pagamento"
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_rule_id
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_rule_id
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_rule_id
-msgid "Regra"
+msgid "Rule"
 msgstr "Regra"
 
 #. module: br_account
@@ -2581,7 +2581,7 @@ msgstr "Total Bruto ( = )"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados
-msgid "Total Est. Tributos"
+msgid "Total Estimated Tax"
 msgstr "Total Est. Tributos"
 
 #. module: br_account
@@ -2621,17 +2621,17 @@ msgstr "Transporte Internacional"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados_estaduais
-msgid "Tributos Estaduais"
+msgid "State Taxes"
 msgstr "Tributos Estaduais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados_federais
-msgid "Tributos Federais"
+msgid "Federal Taxes"
 msgstr "Tributos Federais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados_municipais
-msgid "Tributos Municipais"
+msgid "Municipal Taxes"
 msgstr "Tributos Municipais"
 
 #. module: br_account
@@ -2768,12 +2768,12 @@ msgstr "Visualização"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_valor_bruto
-msgid "Vlr. Bruto"
+msgid "Gross Value"
 msgstr "Vlr. Bruto"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_valor_desconto
-msgid "Vlr. desconto"
+msgid "Discount Value"
 msgstr "Vlr. desconto"
 
 #. module: br_account

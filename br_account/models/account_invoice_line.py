@@ -163,58 +163,58 @@ class AccountInvoiceLine(models.Model):
                 if item.company_fiscal_type == '3' else item.icms_csosn_simples
 
     price_tax = fields.Float(
-        compute='_compute_price', string='Impostos', store=True,
+        compute='_compute_price', string='Taxes', store=True,
         digits=dp.get_precision('Account'))
     price_total = fields.Float(
-        u'Valor Líquido', digits=dp.get_precision('Account'), store=True,
+        u'Net Value', digits=dp.get_precision('Account'), store=True,
         default=0.00, compute='_compute_price')
     valor_desconto = fields.Float(
-        string='Vlr. desconto', store=True, compute='_compute_price',
+        string='Discount Value', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
     valor_bruto = fields.Float(
-        string='Vlr. Bruto', store=True, compute='_compute_price',
+        string='Gross Value', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
     tributos_estimados = fields.Float(
-        string='Total Est. Tributos', default=0.00,
+        string='Total Estimated Tax', default=0.00,
         digits=dp.get_precision('Account'))
     tributos_estimados_federais = fields.Float(
-        string='Tributos Federais', default=0.00,
+        string='Federal Taxes', default=0.00,
         digits=dp.get_precision('Account'))
     tributos_estimados_estaduais = fields.Float(
-        string='Tributos Estaduais', default=0.00,
+        string='State Taxes', default=0.00,
         digits=dp.get_precision('Account'))
     tributos_estimados_municipais = fields.Float(
-        string='Tributos Municipais', default=0.00,
+        string='Municipal Taxes', default=0.00,
         digits=dp.get_precision('Account'))
 
-    rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
+    rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
     cfop_id = fields.Many2one('br_account.cfop', 'CFOP')
     fiscal_classification_id = fields.Many2one(
-        'product.fiscal.classification', u'Classificação Fiscal')
+        'product.fiscal.classification', u'Fiscal Classification')
     product_type = fields.Selection(
-        [('product', 'Produto'), ('service', u'Serviço')],
-        string='Tipo do Produto', required=True, default='product')
+        [('product', 'Product'), ('service', u'Service')],
+        string='Product Type', required=True, default='product')
     company_fiscal_type = fields.Selection(
         COMPANY_FISCAL_TYPE,
-        default=_default_company_fiscal_type, string=u"Regime Tributário")
-    calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
-    fiscal_comment = fields.Text(u'Observação Fiscal')
+        default=_default_company_fiscal_type, string=u"Tax Regime")
+    calculate_tax = fields.Boolean(string="Calculate Tax?", default=True)
+    fiscal_comment = fields.Text(u'Fiscal Comment')
 
     # =========================================================================
     # ICMS Normal
     # =========================================================================
-    icms_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_icms_id = fields.Many2one('account.tax', string=u"Alíquota ICMS",
+    icms_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_icms_id = fields.Many2one('account.tax', string=u"ICMS Tax",
                                   domain=[('domain', '=', 'icms')])
     icms_cst = fields.Char('CST ICMS', size=10,
                            store=True, compute='_compute_cst_icms')
     icms_cst_normal = fields.Selection(CST_ICMS, string="CST ICMS")
-    icms_origem = fields.Selection(ORIGEM_PROD, 'Origem', default='0')
+    icms_origem = fields.Selection(ORIGEM_PROD, 'Origin', default='0')
     icms_tipo_base = fields.Selection(
         [('0', u'0 - Value-Added Margin (%)'),
-         ('1', u'1 - Pauta (valor)'),
-         ('2', u'2 - Preço Tabelado Máximo (valor)'),
-         ('3', u'3 - Valor da Operação')],
+         ('1', u'1 - Pauta (value)'),
+         ('2', u'2 - Maximum Tabulated Price (value)'),
+         ('3', u'3 - Operation Value')],
         'Tipo Base ICMS', required=True, default='3')
     incluir_ipi_base = fields.Boolean(
         string="Incl. Valor IPI?",
