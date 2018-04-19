@@ -6,19 +6,19 @@
           <div class="row" name="total">
                <div class="col-xs-4 pull-right">
                    <table class="table table-condensed" style="min-width: 200px;max-width: 350px;">
-                       <tr>
+                       <tr name="tr_subtotal">
                            <td><strong>Subtotal</strong></td>
                            <td class="text-right">
                                <span t-field="doc.total_bruto" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
                            </td>
                       </tr>
-                      <tr groups="sale.group_discount_per_so_line" style="border-bottom:1px solid #dddddd;">
+                      <tr t-if="doc.total_desconto" name="tr_discount" groups="sale.group_discount_per_so_line" style="border-bottom:1px solid #dddddd;">
                           <td><strong>Discount ( - )</strong></td>
                           <td class="text-right">
                               <span t-field="doc.total_desconto" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
                           </td>
                      </tr>
-                      <tr name="tr_taxes" style="border-bottom:1px solid #dddddd;">
+                      <tr t-if="doc.total_tax" name="tr_taxes" style="border-bottom:1px solid #dddddd;">
                            <td>
                                <strong>Tax ( + )</strong>
                            </td>
