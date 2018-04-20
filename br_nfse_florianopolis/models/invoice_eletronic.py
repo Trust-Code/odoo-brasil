@@ -85,7 +85,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         items = []
         for line in self.eletronic_item_ids:
             aliquota = line.issqn_aliquota / 100
-            base = line.issqn_base
+            base = line.issqn_base_calculo
             if self.company_id.fiscal_type != '3':
                 aliquota, base = 0.0, 0.0
             items.append({
