@@ -22,7 +22,7 @@ msgstr "% Crédito de ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_aliquota_credito
-msgid "% Cŕedito ICMS"
+msgid "% ICMS Credit"
 msgstr "% Cŕedito ICMS"
 
 #. module: br_account
@@ -758,12 +758,12 @@ msgstr "Agrupar Por..."
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_cofins_id
-msgid "Alíquota COFINS"
+msgid "COFINS Tax"
 msgstr "Alíquota COFINS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_csll_id
-msgid "Alíquota CSLL"
+msgid "CSLL Tax"
 msgstr "Alíquota CSLL"
 
 #. module: br_account
@@ -774,29 +774,29 @@ msgstr "Alíquota ICMS"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_st_id
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_tax_icms_st_id
-msgid "Alíquota ICMS ST"
+msgid "ICMS ST Tax"
 msgstr "Alíquota ICMS ST"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_ii_id
-msgid "Alíquota II"
+msgid "II Tax"
 msgstr "Alíquota II"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_ipi_id
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_tax_ipi_id
-msgid "Alíquota IPI"
+msgid "IPI Tax"
 msgstr "Alíquota IPI"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_inss_id
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_irrf_id
-msgid "Alíquota IRRF"
+msgid "IRRF Tax"
 msgstr "Alíquota IRRF"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_issqn_id
-msgid "Alíquota ISSQN"
+msgid "ISSQN Tax"
 msgstr "Alíquota ISSQN"
 
 #. module: br_account
@@ -806,7 +806,7 @@ msgstr "Alíquota MVA"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_pis_id
-msgid "Alíquota PIS"
+msgid "PIS Tax"
 msgstr "Alíquota PIS"
 
 #. module: br_account
@@ -873,7 +873,7 @@ msgstr "Base ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_base_calculo_manual
-msgid "Base ICMS Manual"
+msgid "Manual ICMS Basis"
 msgstr "Base ICMS Manual"
 
 #. module: br_account
@@ -1023,7 +1023,7 @@ msgstr "COFINS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_cofins_retention
-msgid "COFINS Retido"
+msgid "Retained COFINS"
 msgstr "COFINS Retido"
 
 #. module: br_account
@@ -1041,7 +1041,7 @@ msgstr "CSLL"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_csll_retention
-msgid "CSLL Retido"
+msgid "Retained CSLL"
 msgstr "CSLL Retido"
 
 #. module: br_account
@@ -1315,7 +1315,7 @@ msgstr "Data de Registro"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_import_declaration_ids
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Declaração de Importação"
+msgid "Import Declaration"
 msgstr "Declaração de Importação"
 
 #. module: br_account
@@ -1325,7 +1325,7 @@ msgstr "Delimitador"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_desconto
-msgid "Desconto ( - )"
+msgid "Discount ( - )"
 msgstr "Desconto ( - )"
 
 #. module: br_account
@@ -1454,7 +1454,7 @@ msgstr "Documento Fiscal"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_fiscal_document_related_ids
-msgid "Documento Fiscal Relacionado"
+msgid "Related Fiscal Document"
 msgstr "Documento Fiscal Relacionado"
 
 #. module: br_account
@@ -1474,12 +1474,12 @@ msgstr "Documento Serviço"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_product_document_id
-msgid "Documento produtos"
+msgid "Products Document"
 msgstr "Documento produtos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_service_document_id
-msgid "Documento serviços"
+msgid "Services Document"
 msgstr "Documento serviços"
 
 #. module: br_account
@@ -1640,7 +1640,7 @@ msgstr "ICMS Intra"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_uf_remet
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_valor_icms_uf_remet
-msgid "ICMS Remetente"
+msgid "Sender ICMS"
 msgstr "ICMS Remetente"
 
 #. module: br_account
@@ -1686,7 +1686,7 @@ msgstr "INSS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_inss_retention
-msgid "INSS Retido"
+msgid "Retained INSS"
 msgstr "INSS Retido"
 
 #. module: br_account
@@ -1708,7 +1708,7 @@ msgstr "IRRF"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_irrf_retention
-msgid "IRRF Retido"
+msgid "Retained IRRF"
 msgstr "IRRF Retido"
 
 #. module: br_account
@@ -1721,7 +1721,7 @@ msgstr "ISSQN"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_issqn_retention
-msgid "ISSQN Retido"
+msgid "Retained ISSQN"
 msgstr "ISSQN Retido"
 
 #. module: br_account
@@ -1786,7 +1786,7 @@ msgstr "Impostos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tax
-msgid "Impostos ( + )"
+msgid "Taxes ( + )"
 msgstr "Impostos ( + )"
 
 #. module: br_account
@@ -1796,7 +1796,7 @@ msgstr "Incl. IPI na base ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_incluir_ipi_base
-msgid "Incl. Valor IPI?"
+msgid "Include IPI Value?"
 msgstr "Incl. Valor IPI?"
 
 #. module: br_account
@@ -1806,7 +1806,7 @@ msgstr "Indicador de Pagamento"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_informacao_adicional
-msgid "Informações Adicionais"
+msgid "Aditional Information"
 msgstr "Informações Adicionais"
 
 #. module: br_account
@@ -1833,7 +1833,7 @@ msgstr "Invoice must be in draft, Pro-forma or open                             
 
 #. module: br_account
 #: selection:account.invoice.line,issqn_tipo:0
-msgid "Isenta"
+msgid "Except"
 msgstr "Isenta"
 
 #. module: br_account
@@ -2043,7 +2043,7 @@ msgstr "Observações"
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Observações Fiscais"
+msgid "Fiscal Observations"
 msgstr "Observações Fiscais"
 
 #. module: br_account
@@ -2076,7 +2076,7 @@ msgstr "PIS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_pis_retention
-msgid "PIS Retido"
+msgid "Retained PIS"
 msgstr "PIS Retido"
 
 #. module: br_account
@@ -2155,7 +2155,7 @@ msgstr "Perc PIS"
 #: selection:account.invoice.line,ipi_tipo:0
 #: selection:account.invoice.line,pis_tipo:0
 #: selection:product.fiscal.classification,ipi_tipo:0
-msgid "Percentual"
+msgid "Percent"
 msgstr "Percentual"
 
 #. module: br_account
@@ -2338,7 +2338,7 @@ msgstr "Retenções"
 
 #. module: br_account
 #: selection:account.invoice.line,issqn_tipo:0
-msgid "Retida"
+msgid "Retained"
 msgstr "Retida"
 
 #. module: br_account
@@ -2350,7 +2350,7 @@ msgstr "Saída"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_invoice_line_incluir_ipi_base
-msgid "Se marcado o valor do IPI inclui a base de cálculo"
+msgid "If checked IPI value will include calulation basis"
 msgstr "Se marcado o valor do IPI inclui a base de cálculo"
 
 #. module: br_account
@@ -2404,7 +2404,7 @@ msgstr "Substituição Tributária ICMS"
 
 #. module: br_account
 #: selection:account.invoice.line,issqn_tipo:0
-msgid "Substituta"
+msgid "Substitute"
 msgstr "Substituta"
 
 #. module: br_account
@@ -2429,12 +2429,12 @@ msgstr "Série de documentos fiscais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_product_serie_id
-msgid "Série produtos"
+msgid "Products Serie"
 msgstr "Série produtos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_service_serie_id
-msgid "Série serviços"
+msgid "Services Serie"
 msgstr "Série serviços"
 
 #. module: br_account
@@ -2524,7 +2524,7 @@ msgstr "Tipo de Importação"
 #: model:ir.ui.menu,name:br_account.menu_action_service_type_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_service_type_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_service_type_tree
-msgid "Tipo de Serviço"
+msgid "Service Type"
 msgstr "Tipo de Serviço"
 
 #. module: br_account
@@ -2551,17 +2551,17 @@ msgstr "Tipo do COFINS"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_tipo
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_ipi_tipo
-msgid "Tipo do IPI"
+msgid "IPI Type"
 msgstr "Tipo do IPI"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_tipo
-msgid "Tipo do ISSQN"
+msgid "ISSQN Type"
 msgstr "Tipo do ISSQN"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_tipo
-msgid "Tipo do PIS"
+msgid "PIS Type"
 msgstr "Tipo do PIS"
 
 #. module: br_account
@@ -2576,7 +2576,7 @@ msgstr "Tipo produto"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_bruto
-msgid "Total Bruto ( = )"
+msgid "Total Gross ( = )"
 msgstr "Total Bruto ( = )"
 
 #. module: br_account
@@ -2591,28 +2591,28 @@ msgstr "Total ICMS FCP"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_estimados
-msgid "Total de Tributos"
+msgid "Total Taxes"
 msgstr "Total de Tributos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_estaduais
-msgid "Total de Tributos Estaduais"
+msgid "Total State Taxes"
 msgstr "Total de Tributos Estaduais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_federais
-msgid "Total de Tributos Federais"
+msgid "Total Federal Taxes"
 msgstr "Total de Tributos Federais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_municipais
-msgid "Total de Tributos Municipais"
+msgid "Total Municipal Taxes"
 msgstr "Total de Tributos Municipais"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_invoice_valor_icms_fcp_uf_dest
-msgid "Total total do ICMS relativo Fundo de Combate à Pobreza (FCP)         da UF de destino"
-msgstr "Total total do ICMS relativo Fundo de Combate à Pobreza (FCP)         da UF de destino"
+msgid "Total ICMS related to FCP from the destination state"
+msgstr "Total do ICMS relativo Fundo de Combate à Pobreza (FCP)         da UF de destino"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_type_transportation
@@ -2657,13 +2657,13 @@ msgstr "Valor"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_cofins_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_valor
-msgid "Valor COFINS"
+msgid "COFINS Value"
 msgstr "Valor COFINS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_csll_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_csll_valor
-msgid "Valor CSLL"
+msgid "CSLL Value"
 msgstr "Valor CSLL"
 
 #. module: br_account
@@ -2674,36 +2674,36 @@ msgstr "Valor FCP"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_icms_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_valor
-msgid "Valor ICMS"
+msgid "ICMS Value"
 msgstr "Valor ICMS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_icms_st_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_valor
-msgid "Valor ICMS ST"
+msgid "ICMS ST Value"
 msgstr "Valor ICMS ST"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_ii_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_valor
-msgid "Valor II"
+msgid "II Value"
 msgstr "Valor II"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_inss_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_inss_valor
-msgid "Valor INSS"
+msgid "INSS Value"
 msgstr "Valor INSS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_valor_iof
-msgid "Valor IOF"
+msgid "IOF Value"
 msgstr "Valor IOF"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_ipi_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_valor
-msgid "Valor IPI"
+msgid "IPI Value"
 msgstr "Valor IPI"
 
 #. module: br_account
@@ -2713,19 +2713,19 @@ msgstr "Valor IRFF"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_irrf_value
-msgid "Valor IRRF"
+msgid "IRRF Value"
 msgstr "Valor IRRF"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_issqn_value
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_valor
-msgid "Valor ISSQN"
+msgid "ISSQN Value"
 msgstr "Valor ISSQN"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_valor
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_pis_value
-msgid "Valor PIS"
+msgid "PIS Value"
 msgstr "Valor PIS"
 
 #. module: br_account
@@ -2735,17 +2735,17 @@ msgstr "Valor da AFRMM"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_valor_credito
-msgid "Valor de Crédito"
+msgid "Credit Value"
 msgstr "Valor de Crédito"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_invoice_valor_icms_uf_dest
-msgid "Valor total do ICMS Interestadual para a UF de destino"
+msgid "Total interstate ICMS to the destination state"
 msgstr "Valor total do ICMS Interestadual para a UF de destino"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_account_invoice_valor_icms_uf_remet
-msgid "Valor total do ICMS Interestadual para a UF do Remetente"
+msgid "Total ICMS interstate value from the sender state"
 msgstr "Valor total do ICMS Interestadual para a UF do Remetente"
 
 #. module: br_account

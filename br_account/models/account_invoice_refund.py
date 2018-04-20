@@ -9,7 +9,7 @@ class AccountInvoiceRefund(models.TransientModel):
     _inherit = 'account.invoice.refund'
 
     fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', string="Posição Fiscal")
+        'account.fiscal.position', string="Fiscal Position")
 
     @api.multi
     def invoice_refund(self):

@@ -96,7 +96,7 @@ class AccountInvoice(models.Model):
             list(set(payable_lines)))
 
     total_tax = fields.Float(
-        string='Impostos ( + )', readonly=True, compute='_compute_amount',
+        string='Taxes ( + )', readonly=True, compute='_compute_amount',
         digits=dp.get_precision('Account'), store=True)
 
     receivable_move_line_ids = fields.Many2many(
@@ -108,69 +108,68 @@ class AccountInvoice(models.Model):
         compute='_compute_payables')
 
     product_serie_id = fields.Many2one(
-        'br_account.document.serie', string=u'Série produtos',
+        'br_account.document.serie', string=u'Products Serie',
         domain="[('fiscal_document_id', '=', product_document_id),\
         ('company_id','=',company_id)]", readonly=True,
         states={'draft': [('readonly', False)]})
     product_document_id = fields.Many2one(
-        'br_account.fiscal.document', string='Documento produtos',
+        'br_account.fiscal.document', string='Products Document',
         readonly=True, states={'draft': [('readonly', False)]})
     service_serie_id = fields.Many2one(
-        'br_account.document.serie', string=u'Série serviços',
+        'br_account.document.serie', string=u'Services Serie',
         domain="[('fiscal_document_id', '=', service_document_id),\
         ('company_id','=',company_id)]", readonly=True,
         states={'draft': [('readonly', False)]})
     service_document_id = fields.Many2one(
-        'br_account.fiscal.document', string='Documento serviços',
+        'br_account.fiscal.document', string='Services Document',
         readonly=True, states={'draft': [('readonly', False)]})
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_id',
-        'Documento Fiscal Relacionado', readonly=True,
+        'Related Fiscal Document', readonly=True,
         states={'draft': [('readonly', False)]})
     fiscal_observation_ids = fields.Many2many(
-        'br_account.fiscal.observation', string=u"Observações Fiscais",
+        'br_account.fiscal.observation', string=u"Fiscal Observations",
         readonly=True, states={'draft': [('readonly', False)]})
     fiscal_comment = fields.Text(
-        u'Observação Fiscal', readonly=True,
+        u'Fiscal Comment', readonly=True,
         states={'draft': [('readonly', False)]})
 
     total_bruto = fields.Float(
-        string='Total Bruto ( = )', store=True,
+        string='Total Gross ( = )', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     total_desconto = fields.Float(
-        string='Desconto ( - )', store=True,
+        string='Discount ( - )', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
 
     icms_base = fields.Float(
         string='Base ICMS', store=True, compute='_compute_amount',
         digits=dp.get_precision('Account'))
     icms_value = fields.Float(
-        string='Valor ICMS', digits=dp.get_precision('Account'),
+        string='ICMS Value', digits=dp.get_precision('Account'),
         compute='_compute_amount', store=True)
     icms_st_base = fields.Float(
         string='Base ICMS ST', store=True, compute='_compute_amount',
         digits=dp.get_precision('Account'))
     icms_st_value = fields.Float(
-        string='Valor ICMS ST', store=True, compute='_compute_amount',
+        string='ICMS ST Value', store=True, compute='_compute_amount',
         digits=dp.get_precision('Account'))
     valor_icms_fcp_uf_dest = fields.Float(
         string="Total ICMS FCP", store=True, compute='_compute_amount',
-        help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
-        da UF de destino')
+        help=u'Total ICMS related to FCP from the destination state')
     valor_icms_uf_dest = fields.Float(
-        string="ICMS Destino", store=True, compute='_compute_amount',
-        help='Valor total do ICMS Interestadual para a UF de destino')
+        string="Destination ICMS", store=True, compute='_compute_amount',
+        help='Total interstate ICMS to the destination state')
     valor_icms_uf_remet = fields.Float(
-        string="ICMS Remetente", store=True, compute='_compute_amount',
-        help='Valor total do ICMS Interestadual para a UF do Remetente')
+        string="Sender ICMS", store=True, compute='_compute_amount',
+        help='Total ICMS interstate value from the sender state')
     issqn_base = fields.Float(
         string='Base ISSQN', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     issqn_value = fields.Float(
-        string='Valor ISSQN', store=True,
+        string='ISSQN Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     issqn_retention = fields.Float(
-        string='ISSQN Retido', store=True,
+        string='Retained ISSQN', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     ipi_base = fields.Float(
         string='Base IPI', store=True, digits=dp.get_precision('Account'),
@@ -179,78 +178,78 @@ class AccountInvoice(models.Model):
         string="Base IPI Outras", store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     ipi_value = fields.Float(
-        string='Valor IPI', store=True,
+        string='IPI Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     pis_base = fields.Float(
         string='Base PIS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     pis_value = fields.Float(
-        string='Valor PIS', store=True,
+        string='PIS Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     pis_retention = fields.Float(
-        string='PIS Retido', store=True,
+        string='Retained PIS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     cofins_base = fields.Float(
         string='Base COFINS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     cofins_value = fields.Float(
-        string='Valor COFINS', store=True,
+        string='COFINS Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
     cofins_retention = fields.Float(
-        string='COFINS Retido', store=True,
+        string='Retained COFINS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         readonly=True)
     ii_base = fields.Float(
         string='Base II', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     ii_value = fields.Float(
-        string='Valor II', store=True,
+        string='II Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     csll_base = fields.Float(
         string='Base CSLL', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     csll_value = fields.Float(
-        string='Valor CSLL', store=True,
+        string='CSLL Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     csll_retention = fields.Float(
-        string='CSLL Retido', store=True,
+        string='Retained CSLL', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     irrf_base = fields.Float(
         string='Base IRRF', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     irrf_value = fields.Float(
-        string='Valor IRRF', store=True,
+        string='IRRF Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     irrf_retention = fields.Float(
-        string='IRRF Retido', store=True,
+        string='Retained IRRF', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     inss_base = fields.Float(
         string='Base INSS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     inss_value = fields.Float(
-        string='Valor INSS', store=True,
+        string='INSS Value', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     inss_retention = fields.Float(
-        string='INSS Retido', store=True,
+        string='Retained INSS', store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount')
     total_tributos_federais = fields.Float(
-        string='Total de Tributos Federais',
+        string='Total Federal Taxes',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
     total_tributos_estaduais = fields.Float(
-        string='Total de Tributos Estaduais',
+        string='Total State Taxes',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
     total_tributos_municipais = fields.Float(
-        string='Total de Tributos Municipais',
+        string='Total Municipal Taxes',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
     total_tributos_estimados = fields.Float(
-        string='Total de Tributos',
+        string='Total Taxes',
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')

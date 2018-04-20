@@ -217,13 +217,13 @@ class AccountInvoiceLine(models.Model):
          ('3', u'3 - Operation Value')],
         'Tipo Base ICMS', required=True, default='3')
     incluir_ipi_base = fields.Boolean(
-        string="Incl. Valor IPI?",
-        help=u"Se marcado o valor do IPI inclui a base de cálculo")
+        string="Include IPI Value?",
+        help=u"If checked IPI value will include calulation basis")
     icms_base_calculo = fields.Float(
         'Base ICMS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_valor = fields.Float(
-        'Valor ICMS', required=True, compute='_compute_price', store=True,
+        'ICMS Value', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_aliquota = fields.Float(
         'Perc ICMS', digits=dp.get_precision('Discount'), default=0.00)
@@ -231,12 +231,12 @@ class AccountInvoiceLine(models.Model):
         '% Red. Base ICMS', digits=dp.get_precision('Discount'),
         default=0.00)
     icms_base_calculo_manual = fields.Float(
-        'Base ICMS Manual', digits=dp.get_precision('Account'), default=0.00)
+        'Manual ICMS Basis', digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Substituição
     # =========================================================================
-    tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
+    tax_icms_st_id = fields.Many2one('account.tax', string=u"ICMS ST Tax",
                                      domain=[('domain', '=', 'icmsst')])
     icms_st_tipo_base = fields.Selection(
         [('0', u'0 - Tabulated Price or Maximum Suggested Price'),
@@ -247,7 +247,7 @@ class AccountInvoiceLine(models.Model):
          ('5', u'5 - Pauta (valor)')],
         'Tipo Base ICMS ST', required=True, default='4')
     icms_st_valor = fields.Float(
-        'Valor ICMS ST', required=True, compute='_compute_price', store=True,
+        'ICMS ST Value', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     icms_st_base_calculo = fields.Float(
         'Base ICMS ST', required=True, compute='_compute_price', store=True,
@@ -274,10 +274,11 @@ class AccountInvoiceLine(models.Model):
         u'Base ICMS', compute='_compute_price',
         digits=dp.get_precision('Discount'))
     tax_icms_inter_id = fields.Many2one(
-        'account.tax', help=u"Alíquota utilizada na operação Interestadual",
+        'account.tax', help=u"Tax rate for interstate operations",
         string="ICMS Inter", domain=[('domain', '=', 'icms_inter')])
     tax_icms_intra_id = fields.Many2one(
-        'account.tax', help=u"Alíquota interna do produto no estado destino",
+        'account.tax',
+        help=u"Product's internal tax rate at the destination state",
         string="ICMS Intra", domain=[('domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
@@ -297,30 +298,31 @@ class AccountInvoiceLine(models.Model):
     # ICMS Simples Nacional
     # =========================================================================
     icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
-    icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS")
+    icms_aliquota_credito = fields.Float(u"% ICMS Credit")
     icms_valor_credito = fields.Float(
-        u"Valor de Crédito", compute='_compute_price', store=True)
+        u"Credit Value", compute='_compute_price', store=True)
     icms_st_aliquota_deducao = fields.Float(
         string=u"% ICMS Próprio",
-        help=u"Alíquota interna ou interestadual aplicada \
-         sobre o valor da operação para deduzir do ICMS ST - Para empresas \
-         do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS")
+        help=u"Internal or applied tax rate \
+         over the operation value to deduct from ICMS ST - For companies \
+         from Simples Nacional or used in cases where there's only ST without \
+         ICMS")
 
     # =========================================================================
     # ISSQN
     # =========================================================================
     issqn_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra')
-    tax_issqn_id = fields.Many2one('account.tax', string=u"Alíquota ISSQN",
+        'account.fiscal.position.tax.rule', 'Rule')
+    tax_issqn_id = fields.Many2one('account.tax', string=u"ISSQN Tax",
                                    domain=[('domain', '=', 'issqn')])
     issqn_tipo = fields.Selection([('N', 'Normal'),
-                                   ('R', 'Retida'),
-                                   ('S', 'Substituta'),
-                                   ('I', 'Isenta')],
-                                  string='Tipo do ISSQN',
+                                   ('R', 'Retained'),
+                                   ('S', 'Substitute'),
+                                   ('I', 'Except')],
+                                  string='ISSQN Type',
                                   required=True, default='N')
     service_type_id = fields.Many2one(
-        'br_account.service.type', u'Tipo de Serviço')
+        'br_account.service.type', u'Service Type')
     issqn_base_calculo = fields.Float(
         'Base ISSQN', digits=dp.get_precision('Account'),
         compute='_compute_price', store=True)
@@ -328,18 +330,18 @@ class AccountInvoiceLine(models.Model):
         'Perc ISSQN', required=True, digits=dp.get_precision('Discount'),
         default=0.00)
     issqn_valor = fields.Float(
-        'Valor ISSQN', required=True, digits=dp.get_precision('Account'),
+        'ISSQN Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
 
     # =========================================================================
     # IPI
     # =========================================================================
-    ipi_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_ipi_id = fields.Many2one('account.tax', string=u"Alíquota IPI",
+    ipi_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_ipi_id = fields.Many2one('account.tax', string=u"IPI Tax",
                                  domain=[('domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
-        [('percent', 'Percentual')],
-        'Tipo do IPI', required=True, default='percent')
+        [('percent', 'Percent')],
+        'IPI Type', required=True, default='percent')
     ipi_base_calculo = fields.Float(
         'Base IPI', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True,)
@@ -347,7 +349,7 @@ class AccountInvoiceLine(models.Model):
         u'% Redução Base', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     ipi_valor = fields.Float(
-        'Valor IPI', required=True, digits=dp.get_precision('Account'),
+        'IPI Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     ipi_aliquota = fields.Float(
         'Perc IPI', required=True, digits=dp.get_precision('Discount'),
@@ -359,18 +361,18 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # PIS
     # =========================================================================
-    pis_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_pis_id = fields.Many2one('account.tax', string=u"Alíquota PIS",
+    pis_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_pis_id = fields.Many2one('account.tax', string=u"PIS Tax",
                                  domain=[('domain', '=', 'pis')])
     pis_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS')
-    pis_tipo = fields.Selection([('percent', 'Percentual')],
-                                string='Tipo do PIS', required=True,
+    pis_tipo = fields.Selection([('percent', 'Percent')],
+                                string='PIS Type', required=True,
                                 default='percent')
     pis_base_calculo = fields.Float(
         'Base PIS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)
     pis_valor = fields.Float(
-        'Valor PIS', required=True, digits=dp.get_precision('Account'),
+        'PIS Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     pis_aliquota = fields.Float(
         'Perc PIS', required=True, digits=dp.get_precision('Discount'),
@@ -382,18 +384,18 @@ class AccountInvoiceLine(models.Model):
     # COFINS
     # =========================================================================
     cofins_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', 'Regra')
-    tax_cofins_id = fields.Many2one('account.tax', string=u"Alíquota COFINS",
+        'account.fiscal.position.tax.rule', 'Rule')
+    tax_cofins_id = fields.Many2one('account.tax', string=u"COFINS Tax",
                                     domain=[('domain', '=', 'cofins')])
     cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST COFINS')
-    cofins_tipo = fields.Selection([('percent', 'Percentual')],
+    cofins_tipo = fields.Selection([('percent', 'Percent')],
                                    string='Tipo do COFINS', required=True,
                                    default='percent')
     cofins_base_calculo = fields.Float(
         'Base COFINS', compute='_compute_price', store=True,
         digits=dp.get_precision('Account'))
     cofins_valor = fields.Float(
-        'Valor COFINS', digits=dp.get_precision('Account'),
+        'COFINS Value', digits=dp.get_precision('Account'),
         compute='_compute_price', store=True)
     cofins_aliquota = fields.Float(
         'Perc COFINS', digits=dp.get_precision('Discount'))
@@ -403,8 +405,8 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # Imposto de importação
     # =========================================================================
-    ii_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_ii_id = fields.Many2one('account.tax', string=u"Alíquota II",
+    ii_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_ii_id = fields.Many2one('account.tax', string=u"II Tax",
                                 domain=[('domain', '=', 'ii')])
     ii_base_calculo = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
@@ -413,29 +415,29 @@ class AccountInvoiceLine(models.Model):
         '% II', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     ii_valor = fields.Float(
-        'Valor II', required=True, digits=dp.get_precision('Account'),
+        'II Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     ii_valor_iof = fields.Float(
-        'Valor IOF', required=True, digits=dp.get_precision('Account'),
+        'IOF Value', required=True, digits=dp.get_precision('Account'),
         default=0.00)
     ii_valor_despesas = fields.Float(
         'Desp. Aduaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
     import_declaration_ids = fields.One2many(
         'br_account.import.declaration',
-        'invoice_line_id', u'Declaração de Importação')
+        'invoice_line_id', u'Import Declaration')
 
     # =========================================================================
     # Impostos de serviço - CSLL
     # =========================================================================
-    csll_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_csll_id = fields.Many2one('account.tax', string=u"Alíquota CSLL",
+    csll_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_csll_id = fields.Many2one('account.tax', string=u"CSLL Tax",
                                   domain=[('domain', '=', 'csll')])
     csll_base_calculo = fields.Float(
         'Base CSLL', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     csll_valor = fields.Float(
-        'Valor CSLL', required=True, digits=dp.get_precision('Account'),
+        'CSLL Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     csll_aliquota = fields.Float(
         'Perc CSLL', required=True, digits=dp.get_precision('Account'),
@@ -444,14 +446,14 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # Impostos de serviço - IRRF
     # =========================================================================
-    irrf_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_irrf_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+    irrf_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_irrf_id = fields.Many2one('account.tax', string=u"IRRF Tax",
                                   domain=[('domain', '=', 'irrf')])
     irrf_base_calculo = fields.Float(
         'Base IRRF', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     irrf_valor = fields.Float(
-        'Valor IRFF', required=True, digits=dp.get_precision('Account'),
+        'IRFF Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     irrf_aliquota = fields.Float(
         'Perc IRRF', required=True, digits=dp.get_precision('Account'),
@@ -460,20 +462,20 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # Impostos de serviço - INSS
     # =========================================================================
-    inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+    inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Rule')
+    tax_inss_id = fields.Many2one('account.tax', string=u"IRRF  Tax",
                                   domain=[('domain', '=', 'inss')])
     inss_base_calculo = fields.Float(
         u'Base INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     inss_valor = fields.Float(
-        u'Valor INSS', required=True, digits=dp.get_precision('Account'),
+        u'INSS Value', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
     inss_aliquota = fields.Float(
         u'Perc INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00)
 
-    informacao_adicional = fields.Text(string=u"Informações Adicionais")
+    informacao_adicional = fields.Text(string=u"Aditional Information")
 
     def _update_tax_from_ncm(self):
         if self.product_id:
