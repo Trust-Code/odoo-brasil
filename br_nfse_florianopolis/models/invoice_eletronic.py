@@ -88,6 +88,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             base = line.issqn_base_calculo
             if self.company_id.fiscal_type != '3':
                 aliquota, base = 0.0, 0.0
+            unitario = round(line.valor_liquido / line.quantidade, 2)
             items.append({
                 'name': line.product_id.name,
                 'cnae': re.sub(
@@ -95,7 +96,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                 'cst_servico': '1',
                 'aliquota': aliquota,
                 'base_calculo': base,
-                'valor_unitario': line.valor_liquido / line.quantidade,
+                'valor_unitario': unitario,
                 'quantidade': int(line.quantidade),
                 'valor_total': line.valor_liquido,
             })
