@@ -59,7 +59,8 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'nSeqEvento': numero_evento,
             'idLote': self.id,
             'Id': "ID110110%s%02d" % (self.eletronic_doc_id.chave_nfe,
-                                      numero_evento)
+                                      numero_evento),
+            'modelo': self.eletronic_doc_id.model,
         }
         cert = self.eletronic_doc_id.company_id.with_context(
             {'bin_size': False}).nfe_a1_file
@@ -96,9 +97,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             self.write({
                 'state': 'error',
                 'message': mensagem,
-                'sent_xml': base64.b64encode(resposta['sent_xml']),
+                'sent_xml': base64.b64encode(
+                    resposta['sent_xml'].encode('utf-8')),
                 'sent_xml_name': 'cce-envio.xml',
-                'received_xml': base64.b64encode(resposta['received_xml']),
+                'received_xml': base64.b64encode(
+                    resposta['received_xml'].encode('utf-8')),
                 'received_xml_name': 'cce-retorno.xml',
             })
 

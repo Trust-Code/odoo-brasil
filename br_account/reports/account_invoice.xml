@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <template id="br_account_report_invoice" inherit_id="account.report_invoice_document">
+        <div id="total" position="replace">
+          <div class="row" id="total">
+               <div class="col-xs-4 pull-right">
+                   <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
+                       <tr name="tr_subtotal">
+                           <td><strong>Subtotal</strong></td>
+                           <td class="text-right">
+                               <span t-field="o.total_bruto" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                           </td>
+                      </tr>
+                      <tr t-if="o.total_desconto" name="tr_discount" groups="sale.group_discount_per_so_line" style="border-bottom:1px solid #dddddd;">
+                          <td><strong>Discount ( - )</strong></td>
+                          <td class="text-right">
+                              <span t-field="o.total_desconto" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                          </td>
+                     </tr>
+                      <tr t-if="o.total_tax" name="tr_taxes" style="border-bottom:1px solid #dddddd;">
+                           <td>
+                               <strong>Tax ( + )</strong>
+                           </td>
+                           <td class="text-right">
+                               <span t-field="o.total_tax" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                           </td>
+                       </tr>
+                       <tr class="border-black">
+                           <td><strong>Total</strong></td>
+                           <td class="text-right">
+                               <span t-field="o.amount_total" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                           </td>
+                       </tr>
+                   </table>
+               </div>
+           </div>
+
+        </div>
+    </template>
+
+</odoo>

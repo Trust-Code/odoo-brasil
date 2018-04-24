@@ -74,9 +74,9 @@ class AccountInvoice(models.Model):
 
         if inv_inutilized.numeration_end >= \
                 serie_id.internal_sequence_id.number_next_actual:
-            serie_id.internal_sequence_id.write(
+            serie_id.internal_sequence_id.sudo().write(
                 {'number_next_actual': inv_inutilized.numeration_end + 1})
-            return serie_id.internal_sequence_id.next_by_id()
+        return serie_id.internal_sequence_id.next_by_id()
 
     def _prepare_edoc_vals(self, inv, inv_lines):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
@@ -186,6 +186,8 @@ class AccountInvoice(models.Model):
         vals['icms_uf_remet'] = invoice_line.icms_uf_remet or 0.0
         vals['icms_uf_dest'] = invoice_line.icms_uf_dest or 0.0
         vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
+        vals['icms_aliquota_inter_part'] = \
+            invoice_line.icms_aliquota_inter_part or 0.0
 
         di_importacao = []
         for di in invoice_line.import_declaration_ids:

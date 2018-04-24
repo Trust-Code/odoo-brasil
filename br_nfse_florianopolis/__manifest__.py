@@ -21,5 +21,7 @@
         'views/res_company.xml',
         'views/br_account.xml',
         'wizard/nfse_florianopolis_export_view.xml',
+        'reports/danfpse.xml',
     ],
+    'application': True,
 }

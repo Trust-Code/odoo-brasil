@@ -21,7 +21,8 @@ try:
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
+        gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
 except ImportError:
@@ -245,11 +246,17 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if self.model not in ('55', '65'):
             return res
 
+        if self.ambiente != 'homologacao':
+            xProd = item.product_id.with_context(
+                display_default_code=False).name_get()[0][1]
+        else:
+            xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
+ SEM VALOR FISCAL'
+
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or '',
-            'xProd': item.product_id.with_context(
-                display_default_code=False).name_get()[0][1],
+            'xProd': xProd,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
@@ -493,6 +500,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'indIEDest': self.ind_ie_dest,
                 'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
+            if self.model == '65':
+                dest.update(
+                    {'CPF': re.sub('[^0-9]', '', partner.cnpj_cpf or '')})
+
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
                     u'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
@@ -659,7 +670,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
                 'infNFe': nfe_values
-            }]
+            }],
+            'modelo': self.model,
         }
 
     def _find_attachment_ids_email(self):
@@ -762,7 +774,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         resposta = autorizar_nfe(
             certificado, xml=xml_to_send,
             estado=self.company_id.state_id.ibge_code,
-            ambiente=1 if self.ambiente == 'producao' else 2)
+            ambiente=1 if self.ambiente == 'producao' else 2,
+            modelo=self.model)
         retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
@@ -772,7 +785,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'obj': {
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
                     'numero_recibo': retorno.infRec.nRec
-                }
+                },
+                'modelo': self.model,
             }
             self.recibo_nfe = obj['obj']['numero_recibo']
             import time
@@ -792,20 +806,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
                 self.write({
-                    'state': 'done', 'nfe_exception': False,
+                    'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
                 self.write({'state': 'done', 'codigo_retorno': '100',
-                            'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
             # Denegada e nota já está denegada
             if self.codigo_retorno in ('302', '205'):
-                self.write({'state': 'denied',
-                            'nfe_exception': True})
+                self.write({'state': 'denied'})
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -875,7 +887,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
-        id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
+        id_canc = "ID110111%s%02d" % (
+            self.chave_nfe, self.sequencial_evento)
         cancelamento = {
             'idLote': self.id,
             'estado': self.company_id.state_id.ibge_code,
@@ -891,12 +904,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
-            }]
+            }],
+            'modelo': self.model,
         }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
         if resposta.cStat == 128 and \
-           resposta.retEvento.infEvento.cStat in (135, 136, 155):
+                resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'
             self.codigo_retorno = resposta.retEvento.infEvento.cStat
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
@@ -904,7 +918,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         else:
             if resposta.cStat == 128:
                 self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
+                self.mensagem_retorno = \
+                    resposta.retEvento.infEvento.xMotivo
             else:
                 self.codigo_retorno = resposta.cStat
                 self.mensagem_retorno = resposta.xMotivo
@@ -916,3 +931,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
+        nfe_processada = base64.decodestring(self.nfe_processada)
+
+        nfe_proc_cancel = gerar_nfeproc_cancel(
+            nfe_processada, resp['received_xml'])
+        if nfe_proc_cancel:
+            self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero

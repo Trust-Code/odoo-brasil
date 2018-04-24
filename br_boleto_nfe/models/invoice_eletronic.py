@@ -15,15 +15,16 @@ class InvoiceEletronic(models.Model):
             return atts
 
         attachment_obj = self.env['ir.attachment']
-        boleto_report = self.env['ir.actions.report.xml'].search(
+        boleto_report = self.env['ir.actions.report'].search(
             [('report_name', '=',
               'br_boleto.report.print')])
-        report_service = boleto_report.report_name
-        boleto = self.env['report'].get_pdf([self.id], report_service)
+        report_service = boleto_report.xml_id
+        boleto, dummy = self.env.ref(report_service).render_qweb_pdf(
+            [self.invoice_id.id])
         if boleto:
             boleto_id = attachment_obj.create(dict(
-                name="boleto-%s.pdf" % self.number,
-                datas_fname="boleto-%s.pdf" % self.number,
+                name="boleto-%s.pdf" % self.invoice_id.number,
+                datas_fname="boleto-%s.pdf" % self.invoice_id.number,
                 datas=base64.b64encode(boleto),
                 mimetype='application/pdf',
                 res_model='account.invoice',

@@ -3,8 +3,10 @@
 
 import re
 import base64
+import time
 import logging
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -26,6 +28,17 @@ class InvoiceEletronic(models.Model):
 
     model = fields.Selection(
         selection_add=[('012', 'NFS-e Florianópolis')])
+
+    def qrcode_floripa_url(self):
+        import urllib
+
+        url_consulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
+consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.inscr_mun)
+
+        url = '<img class="center-block"\
+style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
+?type=QR&value=' + urllib.parse.quote(url_consulta) + '"/>'
+        return url
 
     @api.multi
     def _hook_validation(self):
@@ -72,15 +85,18 @@ class InvoiceEletronic(models.Model):
         items = []
         for line in self.eletronic_item_ids:
             aliquota = line.issqn_aliquota / 100
+            base = line.issqn_base_calculo
             if self.company_id.fiscal_type != '3':
-                aliquota = 0.0
+                aliquota, base = 0.0, 0.0
+            unitario = round(line.valor_liquido / line.quantidade, 2)
             items.append({
                 'name': line.product_id.name,
                 'cnae': re.sub(
                     '[^0-9]', '', self.company_id.cnae_main_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
-                'valor_unitario': line.preco_unitario,
+                'base_calculo': base,
+                'valor_unitario': unitario,
                 'quantidade': int(line.quantidade),
                 'valor_total': line.valor_liquido,
             })
@@ -105,6 +121,48 @@ class InvoiceEletronic(models.Model):
             'cfps': cfps,
             'observacoes': '',
         }
+
+    def _find_attachment_ids_email(self):
+        atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        if self.model not in ('012'):
+            return atts
+        attachment_obj = self.env['ir.attachment']
+        attachment_ids = attachment_obj.search(
+            [('res_model', '=', 'invoice.eletronic'),
+             ('res_id', '=', self.id),
+             ('name', 'like', 'nfse-ret')], limit=1, order='id desc')
+
+        for attachment in attachment_ids:
+            xml_id = attachment_obj.create(dict(
+                name=attachment.name,
+                datas_fname=attachment.datas_fname,
+                datas=attachment.datas,
+                mimetype=attachment.mimetype,
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(xml_id.id)
+
+        danfe_report = self.env['ir.actions.report'].search(
+            [('report_name', '=',
+              'br_nfse_florianopolis.main_template_br_nfse_danfpse')])
+        report_service = danfe_report.xml_id
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
+        filename = "%s.%s" % (report_name, "pdf")
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name=filename,
+                datas_fname=filename,
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.invoice',
+                res_id=self.invoice_id.id,
+            ))
+            atts.append(danfe_id.id)
+
+        return atts
 
     @api.multi
     def action_post_validate(self):

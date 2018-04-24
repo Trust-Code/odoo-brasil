@@ -50,7 +50,8 @@ class InvoiceEletronic(models.Model):
          ('002', u'NFS-e - Provedor GINFES'),
          ('008', u'NFS-e - Provedor SIMPLISS'),
          ('009', u'NFS-e - Provedor SUSESU'),
-         ('010', u'NFS-e Imperial - Petrópolis')],
+         ('010', u'NFS-e Imperial - Petrópolis'),
+         ('012', u'NFS-e - Florianópolis')],
         string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
@@ -488,7 +489,7 @@ class InvoiceEletronicEvent(models.Model):
 class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
 
-    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
+    name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
     invoice_eletronic_id = fields.Many2one(

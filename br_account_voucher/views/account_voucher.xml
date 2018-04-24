@@ -9,6 +9,9 @@
             <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="attributes">
                 <attribute name="domain">[('account_type', '=', 'expense')]</attribute>
             </xpath>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='account_analytic_id']" position="after">
+                <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </xpath>
         </field>
     </record>
 
@@ -19,6 +22,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="attributes">
                 <attribute name="domain">[('account_type', '=', 'income')]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='account_analytic_id']" position="after">
+                <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
             </xpath>
         </field>
     </record>

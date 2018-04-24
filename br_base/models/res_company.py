@@ -11,7 +11,7 @@ import re
 import logging
 import base64
 from datetime import datetime
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 _logger = logging.getLogger(__name__)
 
@@ -101,8 +101,9 @@ class ResCompany(models.Model):
             self.cert_state = 'invalid_password'
         except:
             self.cert_state = 'unknown'
-            _logger.error(
-                u'Erro desconhecido ao consultar certificado', exc_info=True)
+            _logger.warning(
+                _(u'Unknown error when validating certificate'),
+                exc_info=True)
 
     cnpj_cpf = fields.Char(
         compute=_get_br_data, inverse=_set_br_cnpj_cpf, size=18,
@@ -110,11 +111,11 @@ class ResCompany(models.Model):
 
     inscr_est = fields.Char(
         compute=_get_br_data, inverse=_set_br_inscr_est, size=16,
-        string=u'Inscr. Estadual')
+        string=u'State Inscription')
 
     inscr_mun = fields.Char(
         compute=_get_br_data, inverse=_set_br_inscr_mun, size=18,
-        string=u'Inscr. Municipal')
+        string=u'Municipal Inscription')
 
     suframa = fields.Char(
         compute=_get_br_data, inverse=_set_br_suframa, size=18,
@@ -122,7 +123,7 @@ class ResCompany(models.Model):
 
     legal_name = fields.Char(
         compute=_get_br_data, inverse=_set_br_legal_name, size=128,
-        string=u'Razão Social')
+        string=u'Legal Name')
 
     city_id = fields.Many2one(
         compute=_get_address_data, inverse='_set_city_id',
@@ -130,27 +131,27 @@ class ResCompany(models.Model):
 
     district = fields.Char(
         compute=_get_address_data, inverse='_set_br_district', size=32,
-        string=u"Bairro", multi='address')
+        string=u"District", multi='address')
 
     number = fields.Char(
         compute=_get_address_data, inverse='_set_br_number', size=10,
-        string=u"Número", multi='address')
+        string=u"Number", multi='address')
 
-    nfe_a1_file = fields.Binary(u'Arquivo NFe A1')
-    nfe_a1_password = fields.Char(u'Senha NFe A1', size=64)
+    nfe_a1_file = fields.Binary(u'NFe A1 File')
+    nfe_a1_password = fields.Char(u'NFe A1 Password', size=64)
 
     cert_state = fields.Selection(
-        [('not_loaded', u'Não carregado'),
-         ('expired', u'Expirado'),
-         ('invalid_password', u'Senha Inválida'),
-         ('unknown', u'Desconhecido'),
-         ('valid', u'Válido')],
-        string=u"Situação Cert.", compute=_compute_expiry_date,
+        [('not_loaded', u'Not loaded'),
+         ('expired', u'Expired'),
+         ('invalid_password', u'Invalid Password'),
+         ('unknown', u'Unknown'),
+         ('valid', u'Valid')],
+        string=u"Cert. State", compute=_compute_expiry_date,
         default='not_loaded')
     cert_information = fields.Text(
-        string=u"Informações Cert.", compute=_compute_expiry_date)
+        string=u"Cert. Info", compute=_compute_expiry_date)
     cert_expire_date = fields.Date(
-        string=u"Validade Cert.", compute=_compute_expiry_date)
+        string=u"Cert. Expiration Date", compute=_compute_expiry_date)
 
     @api.onchange('cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):

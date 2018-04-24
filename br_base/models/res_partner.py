@@ -28,21 +28,21 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     cnpj_cpf = fields.Char('CNPJ/CPF', size=18, copy=False)
-    inscr_est = fields.Char('Inscr. Estadual', size=16, copy=False)
+    inscr_est = fields.Char('State Inscription', size=16, copy=False)
     rg_fisica = fields.Char('RG', size=16, copy=False)
-    inscr_mun = fields.Char('Inscr. Municipal', size=18)
+    inscr_mun = fields.Char('Municipal Inscription', size=18)
     suframa = fields.Char('Suframa', size=18)
     legal_name = fields.Char(
-        u'Razão Social', size=60, help="Nome utilizado em documentos fiscais")
+        u'Legal Name', size=60, help="Name used in fiscal documents")
     city_id = fields.Many2one(
-        'res.state.city', u'Município',
+        'res.state.city', u'City',
         domain="[('state_id','=',state_id)]")
-    district = fields.Char('Bairro', size=32)
-    number = fields.Char(u'Número', size=10)
+    district = fields.Char('District', size=32)
+    number = fields.Char(u'Number', size=10)
 
     _sql_constraints = [
         ('res_partner_cnpj_cpf_uniq', 'unique (cnpj_cpf)',
-         u'Já existe um parceiro cadastrado com este CPF/CNPJ!')
+         _(u'This CPF/CNPJ number is already being used by another partner!'))
     ]
 
     @api.v8
@@ -88,9 +88,9 @@ class ResPartner(models.Model):
             if item.cnpj_cpf and country_code.upper() == 'BR':
                 if item.is_company:
                     if not fiscal.validate_cnpj(item.cnpj_cpf):
-                        raise UserError(_(u'CNPJ inválido!'))
+                        raise UserError(_(u'Invalid CNPJ Number!'))
                 elif not fiscal.validate_cpf(item.cnpj_cpf):
-                    raise UserError(_(u'CPF inválido!'))
+                    raise UserError(_(u'Invalid CPF Number!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
@@ -120,7 +120,7 @@ class ResPartner(models.Model):
         uf = self.state_id and self.state_id.code.lower() or ''
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
-            raise UserError(_(u'Inscrição Estadual inválida!'))
+            raise UserError(_(u'Invalid State Inscription!'))
         return True
 
     @api.one
@@ -134,8 +134,8 @@ class ResPartner(models.Model):
             ['&', ('inscr_est', '=', self.inscr_est), ('id', '!=', self.id)])
 
         if len(partner_ids) > 0:
-            raise UserError(_(u'Já existe um parceiro cadastrado com'
-                            u'esta Inscrição Estadual/RG!'))
+            raise UserError(_(u'This State Inscription/RG number '
+                              u'is already being used by another partner!'))
         return True
 
     @api.onchange('cnpj_cpf')
@@ -152,7 +152,7 @@ class ResPartner(models.Model):
                     % (val[0:3], val[3:6], val[6:9], val[9:11])
                 self.cnpj_cpf = cnpj_cpf
             else:
-                raise UserError(_(u'Verifique o CNPJ/CPF'))
+                raise UserError(_(u'Verify CNPJ/CPF number'))
 
     @api.onchange('city_id')
     def _onchange_city_id(self):
@@ -184,13 +184,14 @@ class ResPartner(models.Model):
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
             if self.state_id.code == 'AL':
-                raise UserError(u'Alagoas não possui consulta de cadastro')
+                raise UserError(_(u'Alagoas doesn\'t have this service'))
             if self.state_id.code == 'RJ':
-                raise UserError(
-                    u'Rio de Janeiro não possui consulta de cadastro')
+                raise UserError(_(
+                    u'Rio de Janeiro doesn\'t have this service'))
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
-                raise UserError(u'Configurar o certificado e senha na empresa')
+                raise UserError(_(
+                    u'Configure the company\'s certificate and password'))
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
             certificado = Certificado(cert_pfx, company.nfe_a1_password)
@@ -239,7 +240,8 @@ class ResPartner(models.Model):
                     msg = "%s - %s" % (info.cStat, info.xMotivo)
                     raise UserError(msg)
             else:
-                raise UserError(u"Nenhuma resposta - verificou se seu \
-                                certificado é válido?")
+                raise UserError(_(
+                    u"No answer - did you verify if your "
+                    u"certificate is valid?"))
         else:
-            raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
+            raise UserError(_(u'Fill the State and CNPJ fields to search'))
