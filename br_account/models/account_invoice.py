@@ -327,7 +327,7 @@ class AccountInvoice(models.Model):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
-            res[contador]['price'] = round(res[contador]['price'], 4)
+            res[contador]['price'] = round(res[contador]['price'], 2)
             contador += 1
 
         return res
