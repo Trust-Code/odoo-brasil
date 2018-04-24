@@ -12,21 +12,21 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     fiscal_type = fields.Selection(
-        [('service', u'Serviço'), ('product', 'Produto')], 'Tipo Fiscal',
+        [('service', u'Service'), ('product', 'Product')], 'Fiscal Type',
         required=True, default='product')
 
-    origin = fields.Selection(ORIGEM_PROD, 'Origem', default='0')
+    origin = fields.Selection(ORIGEM_PROD, 'Origin', default='0')
     fiscal_classification_id = fields.Many2one(
-        'product.fiscal.classification', string=u"Classificação Fiscal (NCM)")
+        'product.fiscal.classification', string=u"Fiscal Classification (NCM)")
     service_type_id = fields.Many2one(
-        'br_account.service.type', u'Tipo de Serviço')
+        'br_account.service.type', u'Service Type')
     cest = fields.Char(string="CEST", size=10,
                        help=u"Código Especificador da Substituição Tributária")
     fiscal_observation_ids = fields.Many2many(
-        'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico")
+        'br_account.fiscal.observation', string=u"Eletronic Doc. Messages")
     fiscal_category_id = fields.Many2one(
         'br_account.fiscal.category',
-        string='Categoria Fiscal')
+        string='Fiscal Category')
 
     @api.onchange('type')
     def onchange_product_type(self):

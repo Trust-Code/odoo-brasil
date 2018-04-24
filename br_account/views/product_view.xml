@@ -23,7 +23,7 @@
                 </group>
             </group>
             <group name="description" position="inside">
-                <separator string="Mensagens Documento Eletrônico" colspan="4"/>
+                <separator string="Eletronic Document Messages" colspan="4"/>
                 <field name="fiscal_observation_ids" colspan="4" nolabel="1"/>
             </group>
         </field>

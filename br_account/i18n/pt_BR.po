@@ -233,7 +233,7 @@ msgstr "1 - Lista Negativa (valor)"
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "1 - Marítima"
+msgid "1 - Sea"
 msgstr "1 - Marítima"
 
 #. module: br_account
@@ -243,7 +243,7 @@ msgstr "1 - Pauta (valor)"
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "10 - Entrada / Saída ficta"
+msgid "10 - Ficta In / Out"
 msgstr "10 - Entrada / Saída ficta"
 
 #. module: br_account
@@ -278,7 +278,7 @@ msgstr "2 - Estrangeira - Adquirida no mercado interno"
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "2 - Fluvial"
+msgid "2 - River"
 msgstr "2 - Fluvial"
 
 #. module: br_account
@@ -327,7 +327,7 @@ msgstr "3 - Importação por encomenda"
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "3 - Lacustre"
+msgid "3 - Lake"
 msgstr "3 - Lacustre"
 
 #. module: br_account
@@ -360,7 +360,7 @@ msgstr "300 - Imune"
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "4 - Aérea"
+msgid "4 - Air"
 msgstr "4 - Aérea"
 
 #. module: br_account
@@ -547,7 +547,7 @@ msgstr "6 - Estrangeira - Importação direta, sem similar nacional, constante e
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "6 - Ferroviária"
+msgid "6 - Rail"
 msgstr "6 - Ferroviária"
 
 #. module: br_account
@@ -628,7 +628,7 @@ msgstr "7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, co
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "7 - Rodoviária"
+msgid "7 - Road"
 msgstr "7 - Rodoviária"
 
 #. module: br_account
@@ -687,7 +687,7 @@ msgstr "75 - Operação de Aquisição por Substituição Tributária"
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "8 - Conduto / Rede Transmissão"
+msgid "8 - Conduit / Transmission Network"
 msgstr "8 - Conduto / Rede Transmissão"
 
 #. module: br_account
@@ -698,7 +698,7 @@ msgstr "8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a
 
 #. module: br_account
 #: selection:br_account.import.declaration,type_transportation:0
-msgid "9 - Meios Próprios"
+msgid "9 - Own Means"
 msgstr "9 - Meios Próprios"
 
 #. module: br_account
@@ -743,7 +743,7 @@ msgstr "Conta"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_name
-msgid "Adição"
+msgid "Addition"
 msgstr "Adição"
 
 #. module: br_account
@@ -753,7 +753,7 @@ msgstr "Adições"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
-msgid "Agrupar Por..."
+msgid "Group By..."
 msgstr "Agrupar Por..."
 
 #. module: br_account
@@ -834,7 +834,7 @@ msgstr "Aplicar Difal?"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
-msgid "Aplicar esta regra quando:"
+msgid "Apply this rule when:"
 msgstr "Aplicar esta regra quando:"
 
 #. module: br_account
@@ -844,7 +844,7 @@ msgstr "Arquivo CSV"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_active
-msgid "Ativo"
+msgid "Active"
 msgstr "Ativo"
 
 #. module: br_account
@@ -940,7 +940,7 @@ msgstr "Base PIS Manual"
 
 #. module: br_account
 #: model:ir.ui.menu,name:br_account.menu_br_account
-msgid "Brasil"
+msgid "Brazil"
 msgstr "Brasil"
 
 #. module: br_account
@@ -964,12 +964,12 @@ msgstr "CFOP"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cfop_child_ids
-msgid "CFOP Filhos"
+msgid "Child CFOP"
 msgstr "CFOP Filhos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cfop_parent_id
-msgid "CFOP Pai"
+msgid "Parent CFOP"
 msgstr "CFOP Pai"
 
 #. module: br_account
@@ -983,23 +983,23 @@ msgstr "CNAE"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cnae_parent_id
-msgid "CNAE Pai"
+msgid "Parent CNAE"
 msgstr "CNAE Pai"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_res_company_cnae_main_id
-msgid "CNAE Primário"
+msgid "Primary CNAE"
 msgstr "CNAE Primário"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_res_company_cnae_secondary_ids
 #: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
-msgid "CNAE Secundários"
+msgid "Secondaries CNAE"
 msgstr "CNAE Secundários"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cnae_child_ids
-msgid "CNAEs Filhos"
+msgid "Childs CNAE"
 msgstr "CNAEs Filhos"
 
 #. module: br_account
@@ -1083,17 +1083,17 @@ msgstr "CT-e"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_br_account_cnae
-msgid "Cadastro de CNAE"
+msgid "CNAE Register"
 msgstr "Cadastro de CNAE"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_br_account_service_type
-msgid "Cadastro de Operações Fiscais de Serviço"
+msgid "Fiscal Service Operations Register"
 msgstr "Cadastro de Operações Fiscais de Serviço"
 
 #. module: br_account
 #: model:ir.ui.menu,name:br_account.menu_br_account_fiscal_manager
-msgid "Cadastros"
+msgid "Registration"
 msgstr "Cadastros"
 
 #. module: br_account
@@ -1114,7 +1114,7 @@ msgstr "Cancelar"
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_cancel_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_cancel_form
-msgid "Cancelar Fatura"
+msgid "Cancel Invoice"
 msgstr "Cancelar Fatura"
 
 #. module: br_account
@@ -1124,7 +1124,7 @@ msgstr "Caracter de Citação"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_category
-msgid "Categoria"
+msgid "Category"
 msgstr "Categoria"
 
 #. module: br_account
@@ -1134,7 +1134,7 @@ msgstr "Categoria"
 #: model:ir.ui.menu,name:br_account.menu_action_fiscal_category_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_category_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_category_tree
-msgid "Categoria Fiscal"
+msgid "Fiscal Category"
 msgstr "Categoria Fiscal"
 
 #. module: br_account
@@ -1145,7 +1145,7 @@ msgstr "Categorias Fiscais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_access_key
-msgid "Chave de Acesso"
+msgid "Acess Key"
 msgstr "Chave de Acesso"
 
 #. module: br_account
@@ -1163,7 +1163,7 @@ msgstr "Classificação Fiscal"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_classification_id
 #: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_classification_id
-msgid "Classificação Fiscal (NCM)"
+msgid "Fiscal Classification (NCM)"
 msgstr "Classificação Fiscal (NCM)"
 
 #. module: br_account
@@ -1172,7 +1172,7 @@ msgstr "Classificação Fiscal (NCM)"
 #: model:ir.ui.menu,name:br_account.menu_br_account_product_fiscal_classification
 #: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_tree
-msgid "Classificações Fiscais (NCM)"
+msgid "Fiscal Classifications (NCM)"
 msgstr "Classificações Fiscais (NCM)"
 
 #. module: br_account
@@ -1198,18 +1198,18 @@ msgstr "Conta Contábil a ser utilizada na fatura."
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_tax_deduced_account_id
 #: model:ir.model.fields,field_description:br_account.field_account_tax_template_deduced_account_id
-msgid "Conta de Dedução da Venda"
+msgid "Sale Deduction Account"
 msgstr "Conta de Dedução da Venda"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_tax_refund_deduced_account_id
 #: model:ir.model.fields,field_description:br_account.field_account_tax_template_refund_deduced_account_id
-msgid "Conta de Dedução do Reembolso"
+msgid "Refund Deduction Account"
 msgstr "Conta de Dedução do Reembolso"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_res_company_accountant_id
-msgid "Contador"
+msgid "Accountant"
 msgstr "Contador"
 
 #. module: br_account
@@ -1267,7 +1267,7 @@ msgstr "Cód. Enquadramento"
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_code
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_code
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_code
-msgid "Código"
+msgid "Code"
 msgstr "Código"
 
 #. module: br_account
@@ -1279,12 +1279,12 @@ msgstr "Código Especificador da Substituição Tributária"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_exporting_code
-msgid "Código do Exportador"
+msgid "Exporting Code"
 msgstr "Código do Exportador"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_manufacturer_code
-msgid "Código do Fabricante"
+msgid "Manufacturer Code"
 msgstr "Código do Fabricante"
 
 #. module: br_account
@@ -1294,7 +1294,7 @@ msgstr "DI"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
-msgid "Dados Fiscais"
+msgid "Fiscal Data"
 msgstr "Dados Fiscais"
 
 #. module: br_account
@@ -1304,12 +1304,12 @@ msgstr "Dados"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_date_release
-msgid "Data de Liberação"
+msgid "Release Date"
 msgstr "Data de Liberação"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_date_registration
-msgid "Data de Registro"
+msgid "Registration Date"
 msgstr "Data de Registro"
 
 #. module: br_account
@@ -1337,17 +1337,17 @@ msgstr "Desconto ( - )"
 #: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_name
 #: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_name
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_name
-msgid "Name"
+msgid "Description"
 msgstr "Descrição"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_descricao_unidade
-msgid "Descrição Unidade"
+msgid "Unit Description"
 msgstr "Descrição Unidade"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_cfop_form
-msgid "Descrição do CFOP"
+msgid "CFOP Description"
 msgstr "Descrição do CFOP"
 
 #. module: br_account
@@ -1358,44 +1358,44 @@ msgstr "Desp. Aduaneiras"
 #. module: br_account
 #: selection:account.account,account_type:0
 #: selection:account.account.template,account_type:0
-msgid "Despesa"
+msgid "Expense"
 msgstr "Despesa"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Detalhes do COFINS"
+msgid "COFINS Details"
 msgstr "Detalhes do COFINS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Detalhes do ICMS"
+msgid "ICMS Details"
 msgstr "Detalhes do ICMS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Detalhes do IPI"
+msgid "IPI Details"
 msgstr "Detalhes do IPI"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Detalhes do Imposto de Importação"
+msgid "Importation Tax Details"
 msgstr "Detalhes do Imposto de Importação"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Detalhes do PIS"
+msgid "PIS Details"
 msgstr "Detalhes do PIS"
 
 #. module: br_account
 #: selection:account.tax,domain:0
 #: selection:account.tax.template,domain:0
-msgid "Difal - Alíquota Inter"
+msgid "Difal - Inter Tax"
 msgstr "Difal - Alíquota Inter"
 
 #. module: br_account
 #: selection:account.tax,domain:0
 #: selection:account.tax.template,domain:0
-msgid "Difal - Alíquota Intra"
+msgid "Difal - Intra Tax"
 msgstr "Difal - Alíquota Intra"
 
 #. module: br_account
@@ -1437,7 +1437,7 @@ msgstr "Document Serie"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_fiscal_document_id
-msgid "Documento"
+msgid "Document"
 msgstr "Documento"
 
 #. module: br_account
@@ -1449,7 +1449,7 @@ msgstr "Documento"
 #: model:ir.ui.menu,name:br_account.menu_action_br_account_fiscal_document_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_document_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_document_tree
-msgid "Documento Fiscal"
+msgid "Fiscal Document"
 msgstr "Documento Fiscal"
 
 #. module: br_account
@@ -1459,7 +1459,7 @@ msgstr "Documento Fiscal Relacionado"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_res_company_fiscal_document_for_product_id
-msgid "Documento Fiscal para produto"
+msgid "Product Fiscal Document"
 msgstr "Documento Fiscal para produto"
 
 #. module: br_account
@@ -1485,18 +1485,18 @@ msgstr "Documento serviços"
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Documentos Fiscais"
+msgid "Fiscal Documents"
 msgstr "Documentos Fiscais"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Documentos Relacionados"
+msgid "Related Documents"
 msgstr "Documentos Relacionados"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_electronic
-msgid "Eletrônico"
+msgid "Eletronic"
 msgstr "Eletrônico"
 
 #. module: br_account
@@ -1507,7 +1507,7 @@ msgstr "Emite NFS-e?"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_company_id
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_company_id
-msgid "Empresa"
+msgid "Company"
 msgstr "Empresa"
 
 #. module: br_account
@@ -1519,19 +1519,19 @@ msgstr "Entrada"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
-msgid "Escritório de contabilidade"
+msgid "Accounting Office"
 msgstr "Escritório de contabilidade"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Esta conta vai ser usada para faturamento"
+msgid "This account will be used when invoicing"
 msgstr "Esta conta vai ser usada para faturamento"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_state_id
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_state_id
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_thirdparty_state_id
-msgid "Estado"
+msgid "State"
 msgstr "Estado"
 
 #. module: br_account
@@ -1541,33 +1541,33 @@ msgstr "Estado Destino"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
-msgid "Estados"
+msgid "States"
 msgstr "Estados"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Este diário vai ser usado no faturamento"
+msgid "This journal will be used when invoicing"
 msgstr "Este diário vai ser usado no faturamento"
 
 #. module: br_account
 #: model:ir.actions.act_window,name:br_account.action_br_account_service_type_structure
 #: model:ir.ui.menu,name:br_account.menu_action_service_type_structure
 #: model:ir.ui.view,arch_db:br_account.view_br_account_service_type_structure
-msgid "Estrutura de Tipo de Serviço"
+msgid "Service Type Structure"
 msgstr "Estrutura de Tipo de Serviço"
 
 #. module: br_account
 #: model:ir.actions.act_window,name:br_account.br_account_cfop_structure_action
 #: model:ir.ui.menu,name:br_account.br_account_cfop_structure_menu
 #: model:ir.ui.view,arch_db:br_account.br_account_cfop_structure
-msgid "Estrutura do CFOP"
+msgid "CFOP Structure"
 msgstr "Estrutura do CFOP"
 
 #. module: br_account
 #: model:ir.actions.act_window,name:br_account.action_br_account_cnae_structure
 #: model:ir.ui.menu,name:br_account.menu_action_cnae_structure
 #: model:ir.ui.view,arch_db:br_account.view_br_account_cnae_structure
-msgid "Estrutura do CNAE"
+msgid "CNAE Structure"
 msgstr "Estrutura do CNAE"
 
 #. module: br_account
@@ -1578,17 +1578,17 @@ msgstr "FCP"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_res_company_annual_revenue
-msgid "Faturamento Anual"
+msgid "Annual Revenue"
 msgstr "Faturamento Anual"
 
 #. module: br_account
 #: model:ir.model.fields,help:br_account.field_res_company_annual_revenue
-msgid "Faturamento Bruto dos últimos 12 meses"
+msgid "Gross Revenue for the past 12 months"
 msgstr "Faturamento Bruto dos últimos 12 meses"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
-msgid "Faturamento dos últimos 12 meses"
+msgid "Revenue for the past 12 months"
 msgstr "Faturamento dos últimos 12 meses"
 
 #. module: br_account
@@ -1603,7 +1603,7 @@ msgstr "Posição Fiscal"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Geral"
+msgid "General"
 msgstr "Geral"
 
 #. module: br_account
@@ -1750,33 +1750,33 @@ msgstr "Imposto"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_estadual_imposto
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_estadual_imposto
-msgid "Imposto Estadual"
+msgid "State Tax"
 msgstr "Imposto Estadual"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_federal_importado
-msgid "Imposto Fed. Sobre Produto Importado"
+msgid "Federal Tax over Imported Product"
 msgstr "Imposto Fed. Sobre Produto Importado"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_federal_nacional
-msgid "Imposto Fed. Sobre Produto Nacional"
+msgid "Federal Tax over National Product"
 msgstr "Imposto Fed. Sobre Produto Nacional"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_federal_importado
-msgid "Imposto Fed. Sobre Serviço Importado"
+msgid "Federal Tax over Imported Service"
 msgstr "Imposto Fed. Sobre Serviço Importado"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_federal_nacional
-msgid "Imposto Fed. Sobre Serviço Nacional"
+msgid "Federal Tax over National Service"
 msgstr "Imposto Fed. Sobre Serviço Nacional"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_municipal_imposto
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_municipal_imposto
-msgid "Imposto Municipal"
+msgid "Municipal Tax"
 msgstr "Imposto Municipal"
 
 #. module: br_account
@@ -1811,7 +1811,7 @@ msgstr "Informações Adicionais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_inscr_est
-msgid "Inscr. Estadual/RG"
+msgid "State Subs./RG"
 msgstr "Inscr. Estadual/RG"
 
 #. module: br_account
@@ -1843,7 +1843,7 @@ msgstr "Item de Diário"
 
 #. module: br_account
 #: sql_constraint:br_account.cfop:0
-msgid "Já existe um CFOP com esse código !"
+msgid "There's a CFOP with that code already !"
 msgstr "Já existe um CFOP com esse código !"
 
 #. module: br_account
@@ -1899,17 +1899,17 @@ msgstr "Última atualização em"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_invoice_line_id
-msgid "Linha de Documento Fiscal"
+msgid "Fiscal Document Line"
 msgstr "Linha de Documento Fiscal"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_ids
-msgid "Linhas da DI"
+msgid "DI Lines"
 msgstr "Linhas da DI"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_location
-msgid "Local"
+msgid "Location"
 msgstr "Local"
 
 #. module: br_account
@@ -1920,30 +1920,30 @@ msgstr "MVA Ajustado ST"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_message
-msgid "Mensagem"
+msgid "Message"
 msgstr "Mensagem"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_fiscal_observation_form
-msgid "Mensagem a ser destacada no documento eletrônico"
+msgid "Message to be highlighted at the eletronic document"
 msgstr "Mensagem a ser destacada no documento eletrônico"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_br_account_fiscal_observation
-msgid "Mensagen Documento Eletrônico"
+msgid "Eletronic Document Message"
 msgstr "Mensagen Documento Eletrônico"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_observation_ids
 #: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_observation_ids
 #: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_observation_ids
-msgid "Mensagens Doc. Eletrônico"
+msgid "Eletronic Doc. Messages"
 msgstr "Mensagens Doc. Eletrônico"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_product_template_form_view
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
-msgid "Mensagens Documento Eletrônico"
+msgid "Eletronic Document Messages"
 msgstr "Mensagens Documento Eletrônico"
 
 #. module: br_account
@@ -1980,12 +1980,12 @@ msgstr "NF-e/CT-e"
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cfop_name
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_name
-msgid "Nome"
+msgid "Name"
 msgstr "Nome"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cfop_small_name
-msgid "Nome Reduzido"
+msgid "Small Name"
 msgstr "Nome Reduzido"
 
 #. module: br_account
@@ -2004,17 +2004,17 @@ msgstr "Nota Fiscal/Produtor/Cupom Fiscal"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_internal_number
-msgid "Número"
+msgid "Number"
 msgstr "Número"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_drawback_number
-msgid "Número Drawback"
+msgid "Drawback Number"
 msgstr "Número Drawback"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_name
-msgid "Número da DI"
+msgid "DI Number"
 msgstr "Número da DI"
 
 #. module: br_account
@@ -2055,7 +2055,7 @@ msgstr "Origem"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Outras Informações"
+msgid "Other Information"
 msgstr "Outras Informações"
 
 #. module: br_account
@@ -2081,18 +2081,18 @@ msgstr "PIS Retido"
 
 #. module: br_account
 #: selection:account.payment.term,indPag:0
-msgid "Pagamento à Prazo"
+msgid "Deferred Payment"
 msgstr "Pagamento à Prazo"
 
 #. module: br_account
 #: selection:account.payment.term,indPag:0
-msgid "Pagamento à Vista"
+msgid "Cash Payment"
 msgstr "Pagamento à Vista"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Pago"
+msgid "Paid"
 msgstr "Pago"
 
 #. module: br_account
@@ -2185,7 +2185,7 @@ msgstr "Produto"
 #. module: br_account
 #: selection:account.account,account_type:0
 #: selection:account.account.template,account_type:0
-msgid "Receita"
+msgid "Income"
 msgstr "Receita"
 
 #. module: br_account
@@ -2288,52 +2288,52 @@ msgstr "Regras PIS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de COFINS"
+msgid "COFINS Rules"
 msgstr "Regras de COFINS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de CSLL"
+msgid "CSLL Rules"
 msgstr "Regras de CSLL"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de ICMS"
+msgid "ICMS Rules"
 msgstr "Regras de ICMS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de II"
+msgid "II Rules"
 msgstr "Regras de II"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de INSS"
+msgid "INSS Rules"
 msgstr "Regras de INSS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de IPI"
+msgid "IPI Rules"
 msgstr "Regras de IPI"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de IRRF"
+msgid "IRRF Rules"
 msgstr "Regras de IRRF"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de Impostos"
+msgid "Taxes Rules"
 msgstr "Regras de Impostos"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_position_form
-msgid "Regras de PIS"
+msgid "PIS Rules"
 msgstr "Regras de PIS"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
-msgid "Retenções"
+msgid "Withholdings"
 msgstr "Retenções"
 
 #. module: br_account
@@ -2362,18 +2362,18 @@ msgstr "Sequência"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_internal_sequence_id
-msgid "Sequência Interna"
+msgid "Internal Sequence"
 msgstr "Sequência Interna"
 
 #. module: br_account
 #: model:ir.ui.menu,name:br_account.menu_action_document_serie_form
-msgid "Serie de Documento Fiscal"
+msgid "Fiscal Document Serie"
 msgstr "Serie de Documento Fiscal"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_document_serie_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_document_serie_tree
-msgid "Serie de Documentos Fiscais"
+msgid "Fiscal Documents Serie"
 msgstr "Serie de Documentos Fiscais"
 
 #. module: br_account
@@ -2409,7 +2409,7 @@ msgstr "Substituta"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_serie
-msgid "Série"
+msgid "Serie"
 msgstr "Série"
 
 #. module: br_account
@@ -2424,7 +2424,7 @@ msgstr "Série Serviço"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_br_account_document_serie
-msgid "Série de documentos fiscais"
+msgid "Fiscal Documents Serie"
 msgstr "Série de documentos fiscais"
 
 #. module: br_account
@@ -2479,26 +2479,26 @@ msgstr "Tipo Base ICMS ST"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_cpfcnpj_type
-msgid "Tipo Doc."
+msgid "Doc. Type"
 msgstr "Tipo Doc."
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_related_document_type
-msgid "Tipo Documento"
+msgid "Document Type"
 msgstr "Tipo Documento"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_fiscal_type
 #: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_type
 #: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_type
-msgid "Tipo Fiscal"
+msgid "Fiscal Type"
 msgstr "Tipo Fiscal"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cfop_internal_type
 #: model:ir.model.fields,field_description:br_account.field_br_account_cnae_internal_type
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_internal_type
-msgid "Tipo Interno"
+msgid "Internal Type"
 msgstr "Tipo Interno"
 
 #. module: br_account
@@ -2508,12 +2508,12 @@ msgstr "Tipo da posição"
 
 #. module: br_account
 #: model:ir.model,name:br_account.model_br_account_fiscal_document
-msgid "Tipo de Documento Fiscal"
+msgid "Fiscal Document Type"
 msgstr "Tipo de Documento Fiscal"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_type_import
-msgid "Tipo de Importação"
+msgid "Importation Type"
 msgstr "Tipo de Importação"
 
 #. module: br_account
@@ -2529,18 +2529,18 @@ msgstr "Tipo de Serviço"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_child_ids
-msgid "Tipo de Serviço Filhos"
+msgid "Childs Service Type"
 msgstr "Tipo de Serviço Filhos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_service_type_parent_id
-msgid "Tipo de Serviço Pai"
+msgid "Parent Service Type"
 msgstr "Tipo de Serviço Pai"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_account_account_account_type
 #: model:ir.model.fields,field_description:br_account.field_account_account_template_account_type
-msgid "Tipo de conta"
+msgid "Account Type"
 msgstr "Tipo de conta"
 
 #. module: br_account
@@ -2616,7 +2616,7 @@ msgstr "Total do ICMS relativo Fundo de Combate à Pobreza (FCP)         da UF d
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_type_transportation
-msgid "Transporte Internacional"
+msgid "International Transportation"
 msgstr "Transporte Internacional"
 
 #. module: br_account
@@ -2636,22 +2636,22 @@ msgstr "Tributos Municipais"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_unidade_tributacao
-msgid "Unidade Tributável"
+msgid "Taxable Unit"
 msgstr "Unidade Tributável"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
-msgid "Usar a seguinte tributação"
+msgid "Use the following taxation"
 msgstr "Usar a seguinte tributação"
 
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.br_account_fiscal_observation_form
-msgid "Utilize ${invoice.origin} para campos dinâmicos"
+msgid "Use ${invoice.origin} for the dynamic fields"
 msgstr "Utilize ${invoice.origin} para campos dinâmicos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_amount_discount
-msgid "Valor"
+msgid "Amount"
 msgstr "Valor"
 
 #. module: br_account
@@ -2730,7 +2730,7 @@ msgstr "Valor PIS"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_afrmm_value
-msgid "Valor da AFRMM"
+msgid "AFRMM Value"
 msgstr "Valor da AFRMM"
 
 #. module: br_account
@@ -2751,19 +2751,19 @@ msgstr "Valor total do ICMS Interestadual para a UF do Remetente"
 #. module: br_account
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
 #: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
-msgid "Vencimentos"
+msgid "Maturity"
 msgstr "Vencimentos"
 
 #. module: br_account
 #: model:ir.model.fields,field_description:br_account.field_br_account_cnae_version
-msgid "Versão"
+msgid "Version"
 msgstr "Versão"
 
 #. module: br_account
 #: selection:br_account.cfop,internal_type:0
 #: selection:br_account.cnae,internal_type:0
 #: selection:br_account.service.type,internal_type:0
-msgid "Visualização"
+msgid "View"
 msgstr "Visualização"
 
 #. module: br_account

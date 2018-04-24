@@ -85,7 +85,7 @@ class AccountFiscalPosition(models.Model):
         'account.account', string=u"Account",
         help=u"Account to be used at the invoice.")
     fiscal_observation_ids = fields.Many2many(
-        'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico")
+        'br_account.fiscal.observation', string=u"Eletronic Doc. Messages")
     note = fields.Text(u'Notes')
 
     product_serie_id = fields.Many2one(

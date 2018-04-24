@@ -17,20 +17,20 @@ class BrAccountCFOP(models.Model):
     _name = 'br_account.cfop'
     _description = 'CFOP'
 
-    code = fields.Char(u'Código', size=4, required=True)
-    name = fields.Char('Nome', size=256, required=True)
-    small_name = fields.Char('Nome Reduzido', size=32, required=True)
-    description = fields.Text(u'Descrição')
-    type = fields.Selection([('input', u'Entrada'),
-                             ('output', u'Saída')],
-                            'Tipo', required=True)
+    code = fields.Char(u'Code', size=4, required=True)
+    name = fields.Char('Name', size=256, required=True)
+    small_name = fields.Char('Small Name', size=32, required=True)
+    description = fields.Text(u'Description')
+    type = fields.Selection([('input', u'In'),
+                             ('output', u'Out')],
+                            'Type', required=True)
     parent_id = fields.Many2one(
-        'br_account.cfop', 'CFOP Pai')
+        'br_account.cfop', 'Parent CFOP')
     child_ids = fields.One2many(
-        'br_account.cfop', 'parent_id', 'CFOP Filhos')
+        'br_account.cfop', 'parent_id', 'Child CFOP')
     internal_type = fields.Selection(
-        [('view', u'Visualização'), ('normal', 'Normal')],
-        'Tipo Interno', required=True, default='normal')
+        [('view', u'View'), ('normal', 'Normal')],
+        'Internal Type', required=True, default='normal')
 
     _sql_constraints = [
         ('br_account_cfop_code_uniq', 'unique (code)',
@@ -57,22 +57,22 @@ class BrAccountCFOP(models.Model):
 
 class BrAccountServiceType(models.Model):
     _name = 'br_account.service.type'
-    _description = u'Cadastro de Operações Fiscais de Serviço'
+    _description = u'Fiscal Service Operations Register'
 
-    code = fields.Char(u'Código', size=16, required=True)
-    name = fields.Char(u'Descrição', size=256, required=True)
+    code = fields.Char(u'Code', size=16, required=True)
+    name = fields.Char(u'Description', size=256, required=True)
     parent_id = fields.Many2one(
-        'br_account.service.type', u'Tipo de Serviço Pai')
+        'br_account.service.type', u'Parent Service Type')
     child_ids = fields.One2many(
         'br_account.service.type', 'parent_id',
-        u'Tipo de Serviço Filhos')
+        u'Childs Service Type')
     internal_type = fields.Selection(
-        [('view', u'Visualização'), ('normal', 'Normal')], 'Tipo Interno',
+        [('view', u'View'), ('normal', 'Normal')], 'Internal Type',
         required=True, default='normal')
-    federal_nacional = fields.Float(u'Imposto Fed. Sobre Serviço Nacional')
-    federal_importado = fields.Float(u'Imposto Fed. Sobre Serviço Importado')
-    estadual_imposto = fields.Float(u'Imposto Estadual')
-    municipal_imposto = fields.Float(u'Imposto Municipal')
+    federal_nacional = fields.Float(u'Federal Tax over National Service')
+    federal_importado = fields.Float(u'Federal Tax over Imported Service')
+    estadual_imposto = fields.Float(u'State Tax')
+    municipal_imposto = fields.Float(u'Municipal Tax')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
@@ -94,30 +94,30 @@ class BrAccountServiceType(models.Model):
 
 class BrAccountFiscalDocument(models.Model):
     _name = 'br_account.fiscal.document'
-    _description = 'Tipo de Documento Fiscal'
+    _description = 'Fiscal Document Type'
 
-    code = fields.Char(u'Codigo', size=8, required=True)
-    name = fields.Char(u'Descrição', size=64)
-    electronic = fields.Boolean(u'Eletrônico')
+    code = fields.Char(u'Code', size=8, required=True)
+    name = fields.Char(u'Description', size=64)
+    electronic = fields.Boolean(u'Eletronic')
     nfse_eletronic = fields.Boolean('Emite NFS-e?')
 
 
 class BrAccountDocumentSerie(models.Model):
     _name = 'br_account.document.serie'
-    _description = u'Série de documentos fiscais'
+    _description = u'Fiscal Documents Serie'
 
-    code = fields.Char(u'Código', size=3, required=True)
-    name = fields.Char(u'Descrição', required=True)
-    active = fields.Boolean('Ativo')
-    fiscal_type = fields.Selection([('service', u'Serviço'),
-                                    ('product', 'Produto')], 'Tipo Fiscal',
+    code = fields.Char(u'Code', size=3, required=True)
+    name = fields.Char(u'Description', required=True)
+    active = fields.Boolean('Active')
+    fiscal_type = fields.Selection([('service', u'Service'),
+                                    ('product', 'Product')], 'Fiscal Type',
                                    default='service')
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
-                                         'Documento Fiscal', required=True)
-    company_id = fields.Many2one('res.company', 'Empresa',
+                                         'Fiscal Document', required=True)
+    company_id = fields.Many2one('res.company', 'Company',
                                  required=True)
     internal_sequence_id = fields.Many2one('ir.sequence',
-                                           u'Sequência Interna')
+                                           u'Internal Sequence')
 
     @api.model
     def _create_sequence(self, vals):
@@ -143,17 +143,17 @@ class BrAccountDocumentSerie(models.Model):
 
 class BrAccountCNAE(models.Model):
     _name = 'br_account.cnae'
-    _description = 'Cadastro de CNAE'
+    _description = 'CNAE Register'
 
-    code = fields.Char(u'Código', size=16, required=True)
-    name = fields.Char(u'Descrição', size=64, required=True)
-    version = fields.Char(u'Versão', size=16, required=True)
-    parent_id = fields.Many2one('br_account.cnae', 'CNAE Pai')
+    code = fields.Char(u'Code', size=16, required=True)
+    name = fields.Char(u'Description', size=64, required=True)
+    version = fields.Char(u'Version', size=16, required=True)
+    parent_id = fields.Many2one('br_account.cnae', 'Parent CNAE')
     child_ids = fields.One2many(
-        'br_account.cnae', 'parent_id', 'CNAEs Filhos')
+        'br_account.cnae', 'parent_id', 'Childs CNAEs')
     internal_type = fields.Selection(
-        [('view', u'Visualização'), ('normal', 'Normal')],
-        'Tipo Interno', required=True, default='normal')
+        [('view', u'View'), ('normal', 'Normal')],
+        'Internal Type', required=True, default='normal')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
@@ -177,43 +177,43 @@ class ImportDeclaration(models.Model):
     _name = 'br_account.import.declaration'
 
     invoice_line_id = fields.Many2one(
-        'account.invoice.line', u'Linha de Documento Fiscal',
+        'account.invoice.line', u'Fiscal Document Line',
         ondelete='cascade', index=True)
-    name = fields.Char(u'Número da DI', size=10, required=True)
-    date_registration = fields.Date(u'Data de Registro', required=True)
+    name = fields.Char(u'DI Number', size=10, required=True)
+    date_registration = fields.Date(u'Registration Date', required=True)
     state_id = fields.Many2one(
-        'res.country.state', u'Estado',
+        'res.country.state', u'State',
         domain="[('country_id.code', '=', 'BR')]", required=True)
-    location = fields.Char(u'Local', required=True, size=60)
-    date_release = fields.Date(u'Data de Liberação', required=True)
+    location = fields.Char(u'Location', required=True, size=60)
+    date_release = fields.Date(u'Release Date', required=True)
     type_transportation = fields.Selection([
-        ('1', u'1 - Marítima'),
-        ('2', u'2 - Fluvial'),
-        ('3', u'3 - Lacustre'),
-        ('4', u'4 - Aérea'),
+        ('1', u'1 - Sea'),
+        ('2', u'2 - River'),
+        ('3', u'3 - Lake'),
+        ('4', u'4 - Air'),
         ('5', u'5 - Postal'),
-        ('6', u'6 - Ferroviária'),
-        ('7', u'7 - Rodoviária'),
-        ('8', u'8 - Conduto / Rede Transmissão'),
-        ('9', u'9 - Meios Próprios'),
-        ('10', u'10 - Entrada / Saída ficta'),
-    ], u'Transporte Internacional', required=True, default="1")
+        ('6', u'6 - Rail'),
+        ('7', u'7 - Road'),
+        ('8', u'8 - Conduit / Transmission Network'),
+        ('9', u'9 - Own Means'),
+        ('10', u'10 - Ficta In / Out'),
+    ], u'International Transportation', required=True, default="1")
     afrmm_value = fields.Float(
-        'Valor da AFRMM', digits=dp.get_precision('Account'), default=0.00)
+        'AFRMM Value', digits=dp.get_precision('Account'), default=0.00)
     type_import = fields.Selection([
         ('1', u'1 - Importação por conta própria'),
         ('2', u'2 - Importação por conta e ordem'),
         ('3', u'3 - Importação por encomenda'),
-    ], u'Tipo de Importação', default='1', required=True)
+    ], u'Importation Type', default='1', required=True)
     thirdparty_cnpj = fields.Char('CNPJ', size=18)
     thirdparty_state_id = fields.Many2one(
-        'res.country.state', u'Estado',
+        'res.country.state', u'State',
         domain="[('country_id.code', '=', 'BR')]")
     exporting_code = fields.Char(
-        u'Código do Exportador', required=True, size=60)
+        u'Exporting Code', required=True, size=60)
     line_ids = fields.One2many(
         'br_account.import.declaration.line',
-        'import_declaration_id', 'Linhas da DI')
+        'import_declaration_id', 'DI Lines')
 
 
 class ImportDeclarationLine(models.Model):
@@ -221,39 +221,39 @@ class ImportDeclarationLine(models.Model):
 
     import_declaration_id = fields.Many2one(
         'br_account.import.declaration', u'DI', ondelete='cascade')
-    sequence = fields.Integer(u'Sequência', default=1, required=True)
-    name = fields.Char(u'Adição', size=3, required=True)
+    sequence = fields.Integer(u'Sequence', default=1, required=True)
+    name = fields.Char(u'Addition', size=3, required=True)
     manufacturer_code = fields.Char(
-        u'Código do Fabricante', size=60, required=True)
+        u'Manufacturer Code', size=60, required=True)
     amount_discount = fields.Float(
-        string=u'Valor', digits=dp.get_precision('Account'), default=0.00)
-    drawback_number = fields.Char(u'Número Drawback', size=11)
+        string=u'Amount', digits=dp.get_precision('Account'), default=0.00)
+    drawback_number = fields.Char(u'Drawback Number', size=11)
 
 
 class AccountDocumentRelated(models.Model):
     _name = 'br_account.document.related'
 
-    invoice_id = fields.Many2one('account.invoice', 'Documento Fiscal',
+    invoice_id = fields.Many2one('account.invoice', 'Fiscal Document',
                                  ondelete='cascade')
     invoice_related_id = fields.Many2one(
-        'account.invoice', 'Documento Fiscal', ondelete='cascade')
+        'account.invoice', 'Fiscal Document', ondelete='cascade')
     document_type = fields.Selection(
         [('nf', 'NF'), ('nfe', 'NF-e'), ('cte', 'CT-e'),
             ('nfrural', 'NF Produtor'), ('cf', 'Cupom Fiscal')],
-        'Tipo Documento', required=True)
-    access_key = fields.Char('Chave de Acesso', size=44)
-    serie = fields.Char(u'Série', size=12)
-    internal_number = fields.Char(u'Número', size=32)
-    state_id = fields.Many2one('res.country.state', 'Estado',
+        'Document Type', required=True)
+    access_key = fields.Char('Acess Key', size=44)
+    serie = fields.Char(u'Serie', size=12)
+    internal_number = fields.Char(u'Number', size=32)
+    state_id = fields.Many2one('res.country.state', 'State',
                                domain="[('country_id.code', '=', 'BR')]")
     cnpj_cpf = fields.Char('CNPJ/CPF', size=18)
     cpfcnpj_type = fields.Selection(
-        [('cpf', 'CPF'), ('cnpj', 'CNPJ')], 'Tipo Doc.',
+        [('cpf', 'CPF'), ('cnpj', 'CNPJ')], 'Doc. Type',
         default='cnpj')
-    inscr_est = fields.Char('Inscr. Estadual/RG', size=16)
-    date = fields.Date('Data')
+    inscr_est = fields.Char('State Subs./RG', size=16)
+    date = fields.Date('Date')
     fiscal_document_id = fields.Many2one(
-        'br_account.fiscal.document', 'Documento')
+        'br_account.fiscal.document', 'Document')
 
     @api.one
     @api.constrains('cnpj_cpf')
@@ -320,20 +320,20 @@ class AccountDocumentRelated(models.Model):
 
 class BrAccountFiscalObservation(models.Model):
     _name = 'br_account.fiscal.observation'
-    _description = u'Mensagen Documento Eletrônico'
+    _description = u'Eletronic Document Message'
     _order = 'sequence'
 
-    sequence = fields.Integer(u'Sequência', default=1, required=True)
-    name = fields.Char(u'Descrição', required=True, size=50)
-    message = fields.Text(u'Mensagem', required=True)
-    tipo = fields.Selection([('fiscal', 'Observação Fiscal'),
-                             ('observacao', 'Observação')], string=u"Tipo")
+    sequence = fields.Integer(u'Sequence', default=1, required=True)
+    name = fields.Char(u'Description', required=True, size=50)
+    message = fields.Text(u'Message', required=True)
+    tipo = fields.Selection([('fiscal', 'Fiscal Comment'),
+                             ('observacao', 'Comment')], string=u"Type")
     document_id = fields.Many2one(
-        'br_account.fiscal.document', string="Documento Fiscal")
+        'br_account.fiscal.document', string="Fiscal Document")
 
 
 class BrAccountCategoriaFiscal(models.Model):
     _name = 'br_account.fiscal.category'
-    _description = 'Categoria Fiscal'
+    _description = 'Fiscal Category'
 
-    name = fields.Char('Descrição', required=True)
+    name = fields.Char('Description', required=True)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <menuitem id="menu_br_account" name="Brasil" parent="account.menu_finance_configuration" sequence="0"/>
+    <menuitem id="menu_br_account" name="Brazil" parent="account.menu_finance_configuration" sequence="0"/>
 
     <record id="view_br_account_import_declaration_line_form" model="ir.ui.view">
         <field name="name">br_account.import.declaration.line.form</field>
@@ -37,7 +37,7 @@
         <field name="name">br_account.fiscal.document</field>
         <field name="model">br_account.fiscal.document</field>
         <field name="arch" type="xml">
-            <form string="Documento Fiscal">
+            <form string="Fiscal Document">
                 <sheet>
                     <group>
                         <field name="code" select="1"/>
@@ -54,7 +54,7 @@
         <field name="name">br_account.fiscal.document</field>
         <field name="model">br_account.fiscal.document</field>
         <field name="arch" type="xml">
-            <tree string="Documento Fiscal">
+            <tree string="Fiscal Document">
                 <field name="code" select="1"/>
                 <field name="name" select="1"/>
                 <field name="electronic" select="2"/>
@@ -67,7 +67,7 @@
         <field name="name">br_account.document.serie</field>
         <field name="model">br_account.document.serie</field>
         <field name="arch" type="xml">
-            <form string="Serie de Documentos Fiscais">
+            <form string="Fiscal Documents Serie">
                 <sheet>
                     <group>
                         <field name="code" select="1"/>
@@ -87,7 +87,7 @@
         <field name="name">br_account.document.serie</field>
         <field name="model">br_account.document.serie</field>
         <field name="arch" type="xml">
-            <tree string="Serie de Documentos Fiscais">
+            <tree string="Fiscal Documents Serie">
                 <field name="code" select="1"/>
                 <field name="name" select="1"/>
                 <field name="fiscal_document_id" select="1"/>
@@ -133,7 +133,7 @@
         <field name="model">br_account.cnae</field>
         <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
-            <tree string="Estrutura do CNAE">
+            <tree string="CNAE Structure">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="version"/>
@@ -146,7 +146,7 @@
         <field name="name">br_account.service.type.form</field>
         <field name="model">br_account.service.type</field>
         <field name="arch" type="xml">
-            <form string="Tipo de Serviço">
+            <form string="Service Type">
                 <sheet>
                     <group>
                         <field name="code"/>
@@ -167,7 +167,7 @@
         <field name="name">br_account.service.type.tree</field>
         <field name="model">br_account.service.type</field>
         <field name="arch" type="xml">
-            <tree string="Tipo de Serviço">
+            <tree string="Service Type">
                 <field name="code" select="1"/>
                 <field name="name" select="1"/>
                 <field name="parent_id" select="1"/>
@@ -180,7 +180,7 @@
         <field name="model">br_account.service.type</field>
         <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
-            <tree string="Estrutura de Tipo de Serviço">
+            <tree string="Service Type Structure">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="internal_type"/>
@@ -202,7 +202,7 @@
                         <field name="internal_type" select="2"/>
                         <field name="parent_id"/>
                     </group>
-                    <group string="Descrição do CFOP" colspan="4">
+                    <group string="CFOP Description" colspan="4">
                         <field name="description" nolabel="1" colspan="4" select="2"/>
                     </group>
                 </sheet>
@@ -215,15 +215,15 @@
         <field name="model">br_account.cfop</field>
         <field name="arch" type="xml">
             <search string="CFOP">
-                <filter string="Entrada" icon="terp-accessories-archiver+" domain="[('type', '=', 'input')]" />
-                <filter string="Saída" icon="terp-accessories-archiver-minus" domain="[('type','=','output')]"/>
+                <filter string="In" icon="terp-accessories-archiver+" domain="[('type', '=', 'input')]" />
+                <filter string="Out" icon="terp-accessories-archiver-minus" domain="[('type','=','output')]"/>
                 <separator orientation="vertical"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="small_name"/>
                 <newline/>
-                <group  expand='0' string='Agrupar Por...' groups="base.group_extended">
-                    <filter string='Tipo' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
+                <group  expand='0' string='Group By...' groups="base.group_extended">
+                    <filter string='Type' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
                 </group>
             </search>
         </field>
@@ -246,7 +246,7 @@
         <field name="model">br_account.cfop</field>
         <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
-            <tree string="Estrutura do CFOP">
+            <tree string="CFOP Structure">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="internal_type"/>
@@ -258,14 +258,14 @@
         <field name="name">br_account.fiscal.observation.form</field>
         <field name="model">br_account.fiscal.observation</field>
         <field name="arch" type="xml">
-            <form string="Observações Fiscais">
+            <form string="Fiscal Observations">
                 <group>
                     <field name="name" />
                     <field name="document_id"/>
                     <field name="tipo"/>
                 </group>
-                <group string="Mensagem a ser destacada no documento eletrônico">
-                    <field name="message" nolabel="1" placeholder="Utilize ${invoice.origin} para campos dinâmicos"/>
+                <group string="Message to be highlighted at the eletronic document">
+                    <field name="message" nolabel="1" placeholder="Use ${invoice.origin} for the dynamic fields"/>
                 </group>
             </form>
         </field>
@@ -275,7 +275,7 @@
         <field name="name">br_account.fiscal.observation.tree</field>
         <field name="model">br_account.fiscal.observation</field>
         <field name="arch" type="xml">
-            <tree string="Observações Fiscais">
+            <tree string="Fiscal Observations">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="document_id"/>
@@ -287,7 +287,7 @@
         <field name="name">br_account.fiscal.category.form</field>
         <field name="model">br_account.fiscal.category</field>
         <field name="arch" type="xml">
-            <form string="Categoria Fiscal">
+            <form string="Fiscal Category">
                 <sheet>
                     <group>
                         <field name="name"/>
@@ -301,7 +301,7 @@
         <field name="name">br_account.fiscal.category.tree</field>
         <field name="model">br_account.fiscal.category</field>
         <field name="arch" type="xml">
-            <tree string="Categoria Fiscal">
+            <tree string="Fiscal Category">
                 <field name="name" />
             </tree>
         </field>
@@ -317,7 +317,7 @@
     </record>
 
     <record id="br_account_cfop_structure_action" model="ir.actions.act_window">
-        <field name="name">Estrutura do CFOP</field>
+        <field name="name">CFOP Structure</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">br_account.cfop</field>
         <field name="view_type">tree</field>
@@ -326,7 +326,7 @@
     </record>
 
     <record id="action_br_account_fiscal_document_form" model="ir.actions.act_window">
-        <field name="name">Documento Fiscal</field>
+        <field name="name">Fiscal Document</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">br_account.fiscal.document</field>
         <field name="view_mode">tree,form</field>
@@ -353,7 +353,7 @@
     </record>
 
     <record id="action_br_account_cnae_structure" model="ir.actions.act_window">
-        <field name="name">Estrutura do CNAE</field>
+        <field name="name">CNAE Structure</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">br_account.cnae</field>
         <field name="view_type">tree</field>
@@ -362,7 +362,7 @@
     </record>
 
     <record id="action_br_account_service_type_form" model="ir.actions.act_window">
-        <field name="name">Tipo de Serviço</field>
+        <field name="name">Service Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">br_account.service.type</field>
         <field name="view_mode">tree,form</field>
@@ -371,7 +371,7 @@
     </record>
 
     <record id="action_br_account_service_type_structure" model="ir.actions.act_window">
-        <field name="name">Estrutura de Tipo de Serviço</field>
+        <field name="name">Service Type Structure</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">br_account.service.type</field>
         <field name="view_type">tree</field>
@@ -390,7 +390,7 @@
 
     <menuitem
     id="menu_br_account_fiscal_manager"
-    name="Cadastros"
+    name="Registration"
     parent="menu_br_account"
     sequence="0"/>
 
@@ -403,7 +403,7 @@
 
     <menuitem
     id="br_account_cfop_structure_menu"
-    name="Estrutura do CFOP"
+    name="CFOP Structure"
     parent="br_account.menu_br_account_fiscal_manager"
     action="br_account_cfop_structure_action"
     sequence="20" />
@@ -417,40 +417,40 @@
 
     <menuitem
     id="menu_action_cnae_structure"
-    name="Estrutura do CNAE"
+    name="CNAE Structure"
     parent="menu_br_account_fiscal_manager"
     action="action_br_account_cnae_structure"
     sequence="40" />
 
     <menuitem
     id="menu_action_service_type_form"
-    name="Tipo de Serviço"
+    name="Service Type"
     parent="menu_br_account_fiscal_manager"
     action="action_br_account_service_type_form"
     sequence="50" />
 
     <menuitem
     id="menu_action_service_type_structure"
-    name="Estrutura de Tipo de Serviço"
+    name="Service Type Structure"
     parent="menu_br_account_fiscal_manager"
     action="action_br_account_service_type_structure"
     sequence="60" />
 
     <menuitem
     id="menu_action_br_account_fiscal_document_form"
-    name="Documento Fiscal"
+    name="Fiscal Document"
     parent="menu_br_account"
     action="action_br_account_fiscal_document_form"/>
 
     <menuitem
     id="menu_action_document_serie_form"
-    name="Serie de Documento Fiscal"
+    name="Fiscal Document Serie"
     parent="menu_br_account"
     action="action_br_account_document_serie_form"/>
 
     <menuitem
     id="menu_action_fiscal_category_form"
-    name="Categoria Fiscal"
+    name="Fiscal Category"
     parent="br_account.menu_br_account_fiscal_manager"
     action="action_br_account_fiscal_category"/>
 

@@ -19,19 +19,19 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     fiscal_document_for_product_id = fields.Many2one(
-        'br_account.fiscal.document', "Documento Fiscal para produto")
+        'br_account.fiscal.document', "Product Fiscal Document")
 
     annual_revenue = fields.Float(
-        'Faturamento Anual', required=True,
+        'Annual Revenue', required=True,
         digits=dp.get_precision('Account'), default=0.00,
-        help=u"Faturamento Bruto dos últimos 12 meses")
+        help=u"Gross Revenue for the past 12 months")
     fiscal_type = fields.Selection(
-        COMPANY_FISCAL_TYPE, u'Regime Tributário', required=True,
+        COMPANY_FISCAL_TYPE, u'Tax Regime', required=True,
         default=COMPANY_FISCAL_TYPE_DEFAULT)
     cnae_main_id = fields.Many2one(
-        'br_account.cnae', u'CNAE Primário')
+        'br_account.cnae', u'Primary CNAE')
     cnae_secondary_ids = fields.Many2many(
         'br_account.cnae', 'res_company_br_account_cnae',
-        'company_id', 'cnae_id', u'CNAE Secundários')
+        'company_id', 'cnae_id', u'Secondaries CNAE')
 
-    accountant_id = fields.Many2one('res.partner', string="Contador")
+    accountant_id = fields.Many2one('res.partner', string="Accountant")

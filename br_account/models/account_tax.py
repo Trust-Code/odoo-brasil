@@ -33,9 +33,9 @@ class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
     deduced_account_id = fields.Many2one(
-        'account.account.template', string=u"Conta de Dedução da Venda")
+        'account.account.template', string=u"Sale Deduction Account")
     refund_deduced_account_id = fields.Many2one(
-        'account.account.template', string=u"Conta de Dedução do Reembolso")
+        'account.account.template', string=u"Refund Deduction Account")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('pis', 'PIS'),
@@ -43,13 +43,13 @@ class AccountTaxTemplate(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('icms_inter', u'Difal - Alíquota Inter'),
-                               ('icms_intra', u'Difal - Alíquota Intra'),
+                               ('icms_inter', u'Difal - Inter Tax'),
+                               ('icms_intra', u'Difal - Intra Tax'),
                                ('fcp', 'FCP'),
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),
                                ('inss', 'INSS'),
-                               ('outros', 'Outros')], string="Tipo")
+                               ('outros', 'Other')], string="Type")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
     def _get_tax_vals(self, company, tax_template_to_tax):
@@ -64,9 +64,9 @@ class AccountTax(models.Model):
     _inherit = 'account.tax'
 
     deduced_account_id = fields.Many2one(
-        'account.account', string=u"Conta de Dedução da Venda")
+        'account.account', string=u"Sale Deduction Account")
     refund_deduced_account_id = fields.Many2one(
-        'account.account', string=u"Conta de Dedução do Reembolso")
+        'account.account', string=u"Refund Deduction Account")
     domain = fields.Selection([('icms', 'ICMS'),
                                ('icmsst', 'ICMS ST'),
                                ('pis', 'PIS'),
@@ -74,13 +74,13 @@ class AccountTax(models.Model):
                                ('ipi', 'IPI'),
                                ('issqn', 'ISSQN'),
                                ('ii', 'II'),
-                               ('icms_inter', u'Difal - Alíquota Inter'),
-                               ('icms_intra', u'Difal - Alíquota Intra'),
+                               ('icms_inter', u'Difal - Inter Tax'),
+                               ('icms_intra', u'Difal - Intra Tax'),
                                ('fcp', 'FCP'),
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),
                                ('inss', 'INSS'),
-                               ('outros', 'Outros')], string="Tipo")
+                               ('outros', 'Other')], string="Type")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
 

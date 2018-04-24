@@ -39,21 +39,21 @@
                 <field name="valor_desconto" invisible="1" />
             </xpath>
             <page name="other_info" position="before">
-                <page name="vencimentos" string="Vencimentos">
+                <page name="vencimentos" string="Maturity">
                     <field nolabel="1" name="receivable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
+                        <tree name="vencimentos" string="Maturity" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
-                            <field name="reconciled" string="Pago" />
+                            <field name="reconciled" string="Paid" />
                         </tree>
                     </field>
                 </page>
             </page>
             <field name="tax_line_ids" position="after">
-                <group name="documentos_relacionados" string="Documentos Relacionados">
+                <group name="documentos_relacionados" string="Related Documents">
                     <field colspan="4" nolabel="1" name="fiscal_document_related_ids">
                         <tree>
                             <field name="document_type"/>
@@ -61,7 +61,7 @@
                             <field name="serie"/>
                             <field name="internal_number"/>
                         </tree>
-                        <form string="Documentos Fiscais">
+                        <form string="Fiscal Documents">
                             <group>
                                 <field name="invoice_related_id" />
                             </group>
@@ -84,13 +84,13 @@
                         </form>
                     </field>
                 </group>
-                <group string="Mensagens Documento Eletrônico">
+                <group string="Eletronic Document Messages">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>
-                <group string="Observações">
+                <group string="Notes">
                     <field name="comment" nolabel="1"/>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Fiscal Observations">
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </field>
@@ -112,7 +112,7 @@
         <field name="inherit_id" ref="account_cancel.invoice_form_cancel_inherit"/>
         <field name="arch" type="xml">
             <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/></button>
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancel Invoice" groups="account.group_account_invoice"/></button>
         </field>
     </record>
     <record id="view_br_account_invoice_supplier_form" model="ir.ui.view">
@@ -148,21 +148,21 @@
                 <field name="valor_desconto" invisible="1" />
             </xpath>
             <xpath expr="//notebook/page" position="after">
-                <page name="vencimentos" string="Vencimentos">
+                <page name="vencimentos" string="Maturity">
                     <field nolabel="1" name="payable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
+                        <tree name="vencimentos" string="Maturity" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
                             <field name="debit"/>
                             <field name="credit"/>
-                            <field name="reconciled" string="Pago" />
+                            <field name="reconciled" string="Paid" />
                         </tree>
                     </field>
                 </page>
             </xpath>
             <xpath expr="//notebook/page[last()]/group" position="after">
-                <group name="documentos_relacionados" string="Documentos Relacionados">
+                <group name="documentos_relacionados" string="Related Documents">
                     <field colspan="4" nolabel="1" name="fiscal_document_related_ids">
                         <tree>
                             <field name="document_type"/>
@@ -170,7 +170,7 @@
                             <field name="serie"/>
                             <field name="internal_number"/>
                         </tree>
-                        <form string="Documentos Fiscais">
+                        <form string="Fiscal Documents">
                             <group>
                                 <field name="invoice_related_id" />
                             </group>
@@ -193,13 +193,13 @@
                         </form>
                     </field>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Fiscal Observations">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>
-                <group string="Observações">
+                <group string="Notes">
                     <field name="comment" nolabel="1"/>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Fiscal Observations">
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </xpath>
@@ -221,7 +221,7 @@
         <field name="inherit_id" ref="account_cancel.invoice_supplier_cancel_form_inherit"/>
         <field name="arch" type="xml">
             <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/></button>
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancel Invoice" groups="account.group_account_invoice"/></button>
         </field>
     </record>
     <!-- Invoice Line views -->
@@ -244,7 +244,7 @@
             <form position="replace">
                 <form string="Invoice Line">
                     <notebook>
-                        <page string="Geral">
+                        <page string="General">
                             <group>
                                 <group>
                                     <field name="product_id" />
@@ -280,7 +280,7 @@
                             <field name="informacao_adicional"/>
                         </page>
                         <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
-                            <group name="detalhes_icms" string="Detalhes do ICMS">
+                            <group name="detalhes_icms" string="ICMS Details">
                                 <group>
                                     <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
                                     <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
@@ -336,7 +336,7 @@
                             </group>
                         </page>
                         <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
-                            <group string="Detalhes do IPI">
+                            <group string="IPI Details">
                                 <group>
                                     <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="ipi_tipo"/>
@@ -353,7 +353,7 @@
                             </group>
                         </page>
                         <page name="pis" string="PIS">
-                            <group string="Detalhes do PIS">
+                            <group string="PIS Details">
                                 <group>
                                     <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="pis_tipo"/>
@@ -369,7 +369,7 @@
                             </group>
                         </page>
                         <page name="cofins" string="COFINS">
-                            <group string="Detalhes do COFINS">
+                            <group string="COFINS Details">
                                 <group>
                                     <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
                                     <field name="cofins_tipo"/>
@@ -385,7 +385,7 @@
                             </group>
                         </page>
                         <page name="ii" string="II" attrs="{'invisible': [('product_type','=', 'service')]}">
-                            <group string="Detalhes do Imposto de Importação">
+                            <group string="Importation Tax Details">
                                 <field name="ii_rule_id" />
                                 <field name="ii_valor_despesas"/>
                                 <field name="ii_valor_iof"/>
@@ -394,7 +394,7 @@
                                 <field name="ii_aliquota" invisible="1"/>
                                 <field name="ii_valor"/>
                             </group>
-                            <group string="Declaração de Importação">
+                            <group string="Import Declaration">
                                 <field name="import_declaration_ids" colspan="4" nolabel="1">
                                     <tree>
                                         <field name="name"/>
@@ -404,7 +404,7 @@
                                         <field name="date_release"/>
                                         <field name="type_transportation"/>
                                     </tree>
-                                    <form string="Declaração de Importação">
+                                    <form string="Import Declaration">
                                         <group>
                                             <group>
                                                 <field name="name"/>
@@ -429,7 +429,7 @@
                                 </field>
                             </group>
                         </page>
-                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('product_type','!=', 'service')]}">
+                        <page name="retencoes" string="Withholdings" attrs="{'invisible': [('product_type','!=', 'service')]}">
                             <group>
                                 <group string="CSLL">
                                     <field name="csll_rule_id" />

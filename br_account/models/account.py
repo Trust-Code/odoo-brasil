@@ -9,21 +9,21 @@ class AccountAccountTemplate(models.Model):
     _inherit = 'account.account.template'
 
     account_type = fields.Selection(
-        [('tax', 'Imposto'), ('income', 'Receita'), ('expense', 'Despesa')],
-        string="Tipo de conta")
+        [('tax', 'Tax'), ('income', 'Income'), ('expense', 'Expense')],
+        string="Account Type")
 
 
 class AccountAccount(models.Model):
     _inherit = 'account.account'
 
     account_type = fields.Selection(
-        [('tax', 'Imposto'), ('income', 'Receita'), ('expense', 'Despesa')],
-        string="Tipo de conta")
+        [('tax', 'Tax'), ('income', 'Income'), ('expense', 'Expense')],
+        string="Account Type")
 
 
 class AccountPaymentTerm(models.Model):
     _inherit = 'account.payment.term'
 
     indPag = fields.Selection(
-        [('0', u'Pagamento à Vista'), ('1', u'Pagamento à Prazo'),
-         ('2', 'Outros')], 'Indicador de Pagamento', default='1')
+        [('0', u'Cash Payment'), ('1', u'Deferred Payment'),
+         ('2', 'Other')], 'Payment Indicator', default='1')

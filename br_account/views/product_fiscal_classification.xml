@@ -5,7 +5,7 @@
         <field name="name">br_account.product.fiscal.classification.form</field>
         <field name="model">product.fiscal.classification</field>
         <field name="arch" type="xml">
-            <form string="Classificações Fiscais (NCM)">
+            <form string="Fiscal Classifications (NCM)">
                 <group name="general">
                     <group>
                         <field name="code"/>
@@ -46,7 +46,7 @@
         <field name="name">br_account.product.fiscal.classification.tree</field>
         <field name="model">product.fiscal.classification</field>
         <field name="arch" type="xml">
-            <tree string="Classificações Fiscais (NCM)">
+            <tree string="Fiscal Classifications (NCM)">
                 <field name="code"/>
                 <field name="category"/>
                 <field name="name"/>
@@ -70,7 +70,7 @@
     </record>
 
     <record id="action_br_account_product_fiscal_classification" model="ir.actions.act_window">
-        <field name="name">Classificações Fiscais (NCM)</field>
+        <field name="name">Fiscal Classifications (NCM)</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.fiscal.classification</field>
         <field name="view_type">form</field>
