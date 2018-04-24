@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <odoo>
-        <record id="ir_cron_nfe_send" model="ir.cron" forcecreate="True">
+        <record id="ir_cron_nfe_send" model="ir.cron">
             <field name="name">Cron Enviar NFe</field>
             <field name="user_id" ref="base.user_root" />
             <field name="interval_number">1</field>
@@ -12,7 +12,7 @@
             <field name="code">model.cron_send_nfe()</field>
         </record>
 
-        <record id="ir_cron_nfe_send_email" model="ir.cron" forcecreate="True">
+        <record id="ir_cron_nfe_send_email" model="ir.cron">
             <field name="name">Enviar NFe por Email</field>
             <field name="user_id" ref="base.user_root" />
             <field name="interval_number">1</field>
