@@ -225,16 +225,16 @@ class AccountInvoice(models.Model):
             if item.product_document_id.electronic:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'product')
-                edoc_vals = self._prepare_edoc_vals(item, inv_lines)
-                if edoc_vals:
+                if inv_lines:
+                    edoc_vals = self._prepare_edoc_vals(item, inv_lines)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
             if item.service_document_id.nfse_eletronic:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'service')
-                edoc_vals = self._prepare_edoc_vals(item, inv_lines)
-                if edoc_vals:
+                if inv_lines:
+                    edoc_vals = self._prepare_edoc_vals(item, inv_lines)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
