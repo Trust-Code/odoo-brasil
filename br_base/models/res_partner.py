@@ -140,8 +140,8 @@ class ResPartner(models.Model):
 
     @api.onchange('cnpj_cpf')
     def _onchange_cnpj_cpf(self):
-        country_code = self.country_id.code or ''
-        if self.cnpj_cpf and country_code.upper() == 'BR':
+        self._check_cnpj_cpf()
+        if self.cnpj_cpf:
             val = re.sub('[^0-9]', '', self.cnpj_cpf)
             if len(val) == 14:
                 cnpj_cpf = "%s.%s.%s/%s-%s"\
