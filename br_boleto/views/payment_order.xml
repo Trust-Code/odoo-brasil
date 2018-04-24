@@ -57,6 +57,41 @@
         </field>
     </record>
 
+    <record id="trustcode_payment_order_line_tree_view" model="ir.ui.view">
+        <field name="name">trustcode.payment_order.line.tree.view</field>
+        <field name="model">payment.order.line</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml" >
+            <tree string='Itens de Pagamento'  colors="red:state=='rejected'" default_order="nosso_numero desc">
+                <field name="move_id"/>
+                <field name="state"/>
+                <field name="name"/>
+                <field name="date_maturity"/>
+                <field name="value"/>
+                <field name="partner_id"/>
+                <field name="nosso_numero"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="trustcode_payment_order_line_search" model="ir.ui.view">
+        <field name="name">trustcode.payment.order.line.search</field>
+        <field name="model">payment.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Itens de Cobrança">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="partner_id"/>
+                <field name="nosso_numero"/>
+                <field name="payment_mode_id"/>
+                <group expand="1" string="Group By">
+                        <!-- <filter string="Parceiro" context="{'group_by': 'partner_id'}" /> -->
+                        <filter string="Modo de Pagamento" context="{'group_by':'payment_mode_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="action_payment_order_form" model="ir.actions.act_window">
         <field name="name">Ordens de Cobrança</field>
         <field name="res_model">payment.order</field>
@@ -65,8 +100,20 @@
         <field name="view_id" ref="trustcode_payment_order_tree_view"/>
     </record>
 
+    <record id="action_payment_order_line_form" model="ir.actions.act_window">
+        <field name="name">Itens de Cobrança</field>
+        <field name="res_model">payment.order.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="trustcode_payment_order_line_tree_view"/>
+    </record>
+
     <menuitem sequence="30" action="action_payment_order_form"
               id="menu_action_payment_order"
               parent="br_account_payment.menu_br_payments"/>
+
+    <menuitem sequence="30" action="action_payment_order_line_form"
+              id="menu_action_payment_order_line"
+              parent="account.menu_finance_entries"/>
 
 </odoo>

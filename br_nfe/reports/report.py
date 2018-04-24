@@ -6,6 +6,7 @@
 
 from __future__ import with_statement
 
+import pytz
 import odoo
 import base64
 import logging
@@ -79,8 +80,10 @@ class ReportCustom(report_int):
         else:
             tmpLogo = False
 
+        timezone = pytz.timezone(context['tz']) or pytz.utc
+
         oDanfe = danfe(list_xml=xml_element, logo=tmpLogo,
-                       cce_xml=cce_xml_element)
+                       cce_xml=cce_xml_element, timezone=timezone)
 
         tmpDanfe = StringIO()
         oDanfe.writeto_pdf(tmpDanfe)
