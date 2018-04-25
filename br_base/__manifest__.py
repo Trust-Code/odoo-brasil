@@ -30,6 +30,7 @@
         'views/res_partner_view.xml',
         'views/res_bank_view.xml',
         'views/res_company_view.xml',
+        'views/res_users.xml',
         'security/ir.model.access.csv',
     ],
     'test': [
