@@ -5,16 +5,37 @@ odoo.define('web_notify.WebClient', function (require) {
     var core = require('web.core');
     var WebClient = require('web.WebClient');
     var session = require('web.session');
+    var Notification = require('web.notification').Notification;
 
-    var _t = core._t;
+    var UsersNotification = Notification.extend({
+        template: "UsersNotification",
+
+        init: function (parent, title, text, redirect) {
+            this._super(parent, title, text);
+            this.redirect = redirect;
+            this.events = _.extend(this.events || {}, {
+                'click .go_to_activity': function () {
+                    var self = this;
+                    this._rpc({
+                        model: this.redirect.model,
+                        method: this.redirect.method,
+                        args: this.redirect.args
+                    })
+                        .then(function (result) {
+                            self.do_action(result);
+                        });
+                },
+            });
+        },
+    });
 
     WebClient.include({
         init: function (parent, client_options) {
             this._super(parent, client_options);
         },
         show_application: function () {
-            this._super();
             this.start_polling();
+            return this._super.apply(this, arguments);
         },
         on_logout: function () {
             var self = this;
@@ -34,12 +55,20 @@ odoo.define('web_notify.WebClient', function (require) {
             _.each(notifications, function (notification) {
                 var channel = notification[0];
                 var message = notification[1];
-                if (channel === self.channel_warning) {
+                if (message.redirect) {
+                    self.on_message_redirect(message)
+                } else if (channel === self.channel_warning) {
                     self.on_message_warning(message);
                 } else if (channel == self.channel_info) {
                     self.on_message_info(message);
                 }
             });
+        },
+        on_message_redirect: function (message) {
+            if (this.notification_manager) {
+                var notification = new UsersNotification(this.notification_manager, message.title, message.message, message.redirect);
+                this.notification_manager.display(notification);
+            }
         },
         on_message_warning: function (message) {
             if (this.notification_manager) {
@@ -52,5 +81,4 @@ odoo.define('web_notify.WebClient', function (require) {
             }
         }
     });
-
 });
