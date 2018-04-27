@@ -905,8 +905,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
                 'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
                 'chNFe': self.chave_nfe,
-                'dhEvento': dt_evento.strftime(
-                    '%Y-%m-%dT%H:%M:%S-03:00'),
+                'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
