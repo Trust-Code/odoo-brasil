@@ -10,16 +10,18 @@ odoo.define('web_notify.WebClient', function (require) {
     var UsersNotification = Notification.extend({
         template: "UsersNotification",
 
-        init: function (parent, title, text, redirect) {
-            this._super(parent, title, text);
+        init: function (parent, title, text, sticky, redirect) {
+            this._super(parent, title, text, sticky);
             this.redirect = redirect;
             this.events = _.extend(this.events || {}, {
                 'click .go_to_activity': function () {
                     var self = this;
                     this._rpc({
-                        model: this.redirect.model,
-                        method: this.redirect.method,
-                        args: this.redirect.args
+                        route: '/web/action/load',
+                        params: {
+                            action_id: this.redirect.action_id,
+                            context: this.redirect.context
+                        },
                     })
                         .then(function (result) {
                             self.do_action(result);
@@ -66,7 +68,7 @@ odoo.define('web_notify.WebClient', function (require) {
         },
         on_message_redirect: function (message) {
             if (this.notification_manager) {
-                var notification = new UsersNotification(this.notification_manager, message.title, message.message, message.redirect);
+                var notification = new UsersNotification(this.notification_manager, message.title, message.message, message.sticky, message.redirect);
                 this.notification_manager.display(notification);
             }
         },
