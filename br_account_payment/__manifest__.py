@@ -18,6 +18,7 @@
         'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br',
     ],
     'depends': [
+        'account',
         'br_account',
     ],
     'data': [
@@ -27,6 +28,7 @@
         'views/payment_mode.xml',
         'views/account_payment.xml',
         'views/account_journal.xml',
+        'views/financial_management.xml',
         'security/account_security.xml',
     ],
     'installable': True,

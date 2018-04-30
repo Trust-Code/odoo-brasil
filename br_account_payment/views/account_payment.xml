@@ -6,13 +6,46 @@
         <field name="model">account.payment</field>
         <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="before">
+                <div class="alert alert-warning" role="alert" style="margin-bottom:0px;">
+                    REGISTRAR PAGAMENTO REFERENTE A FATURA <b><field name="move_line_id" readonly="1"
+                    options="{'no_open': True}"/></b><br></br>PARCELA: <field name="move_number"/>/
+                    <field name="move_all_quota"/>
+                </div>
+            </xpath>
+            <xpath expr="//label[@for='amount']" position="attributes">
+                <attribute name="string">Valor do Pagamento</attribute>
+            </xpath>
+            <xpath expr="//field[@name='journal_id']" position="replace">
+                <field name="payment_mode_id" required="1" options="{'no_open': True}"/>
+                <field name="journal_id" attrs="{'readonly':[('payment_mode_id','!=',False)]}"/>
+            </xpath>
+            <xpath expr="//group/group[3]" position="replace"/>
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <group>
+                        <field name="payment_difference_handling" widget="radio" nolabel="1"/>
+                    </group>
+                    <group attrs="{'invisible': [('payment_difference_handling','=','open')]}">
+                        <field name="writeoff_account_id" string="Lançar Diferença em: " attrs="{'required': [('payment_difference_handling', '=', 'reconcile')]}"/>
+                        <field name="journal_id" string="Journal" widget="selection" attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                        <field name="writeoff_label" string="Comentário" attrs="{'required': [('payment_difference_handling', '=', 'reconcile')]}"/>
+                    </group>
+                </group>
+                <group class="oe_subtotal_footer oe_right" colspan="2" name="payment_total">
+                    <field name="payment_difference" string="Saldo Restante da Fatura"/>
+                    <field name="amount_move_line" string="Valor da Parcela" readonly="1"/>
+                    <field name="payment_difference_move" string="Saldo Restante da Parcela"/>
+                </group>
+            </xpath>
             <field name="state" position="after">
-                <field name="move_line_id" invisible="1" />
             </field>
+            <xpath expr="//footer" position="before">
+            </xpath>
         </field>
     </record>
 
-    <record id="view_br_account_payment_payment_form_inherit" model="ir.ui.view">
+    <record id="view_br_account_payment_form_inherit" model="ir.ui.view">
         <field name="name">view.br.account.payment.form.inherit</field>
         <field name="model">account.payment</field>
         <field name="inherit_id" ref="account.view_account_payment_form"/>
@@ -23,11 +56,9 @@
                     <field name="total_moves" widget="statinfo"/>
                 </button>
             </xpath>
-
             <field name="partner_type" position="replace"/>
             <field name="partner_id" position="replace"/>
             <field name="journal_id" position="replace"/>
-
             <xpath expr="//field[@name='payment_type']" position="after">
                 <field name="partner_type" widget="selection"
                        string="Tipo de Parceiro"
@@ -35,7 +66,7 @@
                 <field name="partner_id"
                        attrs="{'required': [('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"
                        context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound'}"/>
-                <!--<field name="payment_type" widget="radio" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Tipo de Pagamento"/>-->
+                <!-- <field name="payment_type" widget="radio" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Tipo de Pagamento"/>-->
             </xpath>
             <xpath expr="//field[@name='payment_date']" position="after">
                 <field name="journal_id" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -48,8 +79,8 @@
             <xpath expr="//field[@name='payment_date']" position="attributes">
                 <attribute name="string">Data de Pagamento</attribute>
             </xpath>
-
         </field>
     </record>
+
 
 </odoo>

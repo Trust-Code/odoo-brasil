@@ -13,6 +13,10 @@ IMPLEMENTADOS = (u'1', u'3', u'4', u'7', u'9', u'10')
 class PaymentMode(models.Model):
     _inherit = "payment.mode"
 
+    payment_method = fields.Selection([('dinheiro', u'Dinheiro'),('cheque', u'Cheque'),
+                                       ('deposito',u'Depósito em Conta'),
+                                       ('boleto',u'Boleto Bancário'),('outro', u'Outro'),],
+                                      string='Método de Pagamento')
     boleto = fields.Boolean(string="Boleto?")
     nosso_numero_sequence = fields.Many2one(
         'ir.sequence', string=u'Seq. do Nosso Número')

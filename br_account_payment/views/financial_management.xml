@@ -1,0 +1,237 @@
+<odoo>
+    <record id="action_financial_management_tree_view" model="ir.ui.view">
+        <field name="name">financial.management_account.move.line.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <tree default_order="date_maturity desc" string="Payments"
+                  decoration-danger="billing_status=='overdue'"
+                  decoration-primary="billing_status=='pay'"
+                  create="false">
+                <field name="billing_type" string="Tipo"/>
+                <button string="Pago" readonly="True" class="oe_inline oe_stat_button"
+                        icon="fa-check-square" attrs="{'invisible': [('billing_status','!=','pay')]}"/>
+                <button string="Atrasado" readonly="True" class="oe_inline oe_stat_button"
+                        icon="fa-warning" attrs="{'invisible':[('billing_status','!=','overdue')]}"/>
+                <field name="partner_id" readonly="1"/>
+                <field name="account_id" readonly="1"/>
+                <field name="payment_value" sum="Total das Parcelas" />
+                <field name="amount_residual" readonly="1" sum="Total"/>
+                <field name="date_maturity"/>
+                <field name="move_id" readonly="1"/>
+                <field name="billing_status" invisible="1"/>
+                <field name="reconciled" string="Pago" invisible="1"/>
+                <button name="action_register_payment" type="object" string="Registrar Pagamento"
+                        groups="account.group_account_invoice"
+                        attrs="{'invisible': [('reconciled', '!=', False)]}" icon="fa-usd"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_financial_management_form_view" model="ir.ui.view">
+        <field name="name">financial.management_account.move.line.form</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <form string="Contas a Pagar/Receber">
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                    attrs="{'invisible': [('billing_status', '!=', 'overdue')]}">
+                    O Título Financeiro esta com pagamento em atraso!
+                </div>
+                <header>
+                    <button name="action_register_payment" type="object" string="Registrar Pagamento"
+                        groups="account.group_account_invoice"
+                        attrs="{'invisible': [('reconciled', '!=', False)]}" icon="fa-usd"/>
+                    <field name="billing_status" widget="statusbar" statusbar_colors='{"overdue":"red"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- -->
+                    </div>
+                    <div class="oe_title oe_inline">
+                        <h4><strong>
+                            <field name="invoice_id" options="{'no_open': True}" readonly="1"/>
+                            <span> - </span><field name="billing_type"/> / Parcela <field name="name" readonly="1"/> de
+                            <field name="total_quota_invoice"/>
+                        </strong></h4>
+                    </div>
+                    <field name="company_id" invisible="1"/>
+                    <field name="parent_state" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="name" string="Parcela" readonly="1"/>
+                            <field name="billing_type" string="Tipo"/>
+                            <field name="debit" widget="monetary" options="{'currency_field': 'company_currency_id'}" string="Valor do Título"
+                                   attrs="{'invisible':[('billing_type','=','2')],'readonly':[('parent_state','=','posted')]}"/>
+                            <field name="credit" widget="monetary" options="{'currency_field': 'company_currency_id'}" string="Valor da Título"
+                                   attrs="{'invisible':[('billing_type','=','1')],'readonly':[('parent_state','=','posted')]}"/>
+                        </group>
+                        <group>
+                            <field name="partner_id" readonly="1" domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"/>
+                            <field name="date_maturity" string="Data de Vencimento"
+                                   attrs="{'readonly':[('billing_status','==','pay')]}"/>
+                            <field name="amount_residual" widget="monetary" string="Valor Restante" readonly="True"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Amortizações Parciais">
+                            <field name="matched_credit_ids" mode="tree" readonly="1" attrs="{'invisible':[('billing_type','=','2')]}">
+                                <tree string="Linhas de Amortizações">
+                                    <field name="company_currency_id" invisible="1"/>
+                                    <field name="id" string="Sequência"/>
+                                    <field name="max_date" string="Data do Pagamento"/>
+                                    <field name="amount" string="Valor" widget="monetary"
+                                           options="{'currency_field': 'company_currency_id'}" />
+                                    <field name="payment_mode_id"/>
+                                </tree>
+                            </field>
+                            <field name="matched_debit_ids" mode="tree" readonly="1" attrs="{'invisible':[('billing_type','=','1')]}">
+                                <tree string="Linhas de Amortizações">
+                                    <field name="company_currency_id" invisible="1"/>
+                                    <field name="id" string="Sequência"/>
+                                    <field name="max_date" string="Data do Pagamento"/>
+                                    <field name="amount" string="Valor" widget="monetary"
+                                           options="{'currency_field': 'company_currency_id'}" />
+                                    <field name="payment_mode_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Contabilidade">
+                            <group>
+                                <field name="account_id" domain="[('company_id','=',company_id)]" attrs="{'readonly':[('parent_state','=','posted')]}"/>
+                                <field name="quantity" invisible="1"/>
+                                <field name="reconciled" invisible="1"/>
+                                <field name="move_id" string="Lançamento na Contabilidade"
+                                       readonly="1" attrs="{'readonly':[('parent_state','=','posted')]}"/>
+                                <field name="statement_id" readonly="True" attrs="{'invisible': [('statement_id','=',False)]}"/>
+                            </group>
+
+                            <group string="Impostos" attrs="{'invisible': [('tax_line_id','=',False), ('tax_ids','=',[])]}">
+                                <field name="tax_line_id" readonly="1" attrs="{'invisible': [('tax_line_id','=',False)]}"/>
+                                <field name="tax_ids" widget="many2many_tags" readonly="1" attrs="{'invisible': [('tax_ids','=',[])]}"/>
+                            </group>
+                            <group string="Pagamentos" attrs="{'invisible':[('full_reconcile_id','=',False)]}">
+                                <label for="full_reconcile_id"/>
+                                <div>
+                                    <field name="full_reconcile_id" readonly="1"/>
+                                    <button name="open_reconcile_view" class="oe_link" type="object" string="-&gt; View partially reconciled entries" attrs="{'invisible': ['|', ('full_reconcile_id', '!=', False), '&amp;', ('matched_debit_ids', '=', []),('matched_credit_ids', '=', [])]}">
+                                    </button>
+                                </div>
+                            </group>
+                            <group string="States">
+                                <field readonly="1" name="blocked"/>
+                            </group>
+                            <group groups="analytic.group_analytic_accounting" string="Analytic">
+                                <field name="analytic_account_id"/>
+                                <field name="analytic_tag_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Analytic Lines" groups="analytic.group_analytic_accounting">
+                            <field name="date" invisible="1"/>
+                            <field name="analytic_line_ids" context="{'default_general_account_id':account_id,
+                            'default_name': name, 'default_date':date, 'amount': (debit or 0.0)-(credit or 0.0)}"/>
+                        </page>
+                    </notebook>
+                    <field name="narration" colspan="4" nolabel="1" placeholder="Adicionar comentário a cobrança..."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_financial_management_graph_view" model="ir.ui.view">
+        <field name="name">financial.management.graph.view</field>
+        <field name="model">account.move.line</field>
+        <field name="domain">[('reconciled','=',True)('user_type_id.type', '=', 'payable'), ('debit', '=', 0)]</field>
+        <field name="arch" type="xml">
+            <graph string="Gráfico Contas à Pagar/Receber" type="bar">
+                <field name="date_maturity" interval="week"/>
+                <field string="Contas a Receber" domain="[('user_type_id.type', '=', 'receivable'), ('credit', '=', 0)]"
+                       name="amount_residual" operator="+" type="measure"/>
+                <field string="Contas a Pagar" domain="[('user_type_id.type', '=', 'payable'), ('debit', '=', 0)]"
+                       name="amount_residual" operator="-" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="financial_management_payments_filter" model="ir.ui.view">
+        <field name="name">Filtros de Pagamentos</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Payments">
+                <filter string="Contas em Atraso" domain="[('billing_status','=','overdue')]" help="Contas em atraso"
+                        name="overdue"/>
+                <separator orientation="vertical"/>
+                <filter string="A Pagar" domain="[('billing_type', '=', '2')]"
+                        help="Registros pagos" name="payables"/>
+                <filter string="A Receber" domain="[('billing_type', '=', '1')]"
+                        help="Pagamentos em aberto" name="receivables"/>
+                <separator orientation="vertical"/>
+                <filter string="Pagos" domain="[('reconciled','=', True)]" help="Registros Pagos" name="paid"/>
+                <filter string="Abertos" domain="[('reconciled','=', False)]" help="Pagamentos em Aberto" name="open"/>
+                <separator orientation="vertical"/>
+                <filter string="Mês Atual" name="current_month" domain="[('date_maturity','&lt;',
+                        (context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')),
+                        ('date_maturity','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mês Anterior" name="prev_month" domain="[('date_maturity','&gt;=',
+                        (context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),
+                        ('date_maturity','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Esta Semana" name="current_week" domain="[
+                    ('date_maturity','&gt;=',(context_today()+relativedelta(weeks=-1,days=1,weekday=-1)).strftime('%Y-%m-%d')),
+                    ('date_maturity','&lt;',(context_today()+relativedelta(weekday=6)).strftime('%Y-%m-%d'))]"/>
+                <separator orientation="vertical"/>
+                <field name="account_id"/>
+                <field name="partner_id"/>
+                <field name="date_maturity"/>
+                <field name="move_id"/>
+                <group expand="0" string="Agrupar por...">
+                    <filter string="A Pagar/Receber" domain="[]" context="{'group_by': 'billing_type'}"/>
+                    <filter string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity:day'}"/>
+                    <filter string="Mês" domain="[]" context="{'group_by':'date_maturity'}"/>
+               </group>
+           </search>
+        </field>
+    </record>
+
+    <record id="action_financial_management" model="ir.actions.act_window">
+        <field name="name">Gestor Financeiro</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="search_view_id" ref="financial_management_payments_filter"/>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="domain">[('billing_line', '=', True)]
+        </field>
+    </record>
+
+    <record id="action_financial_management_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="action_financial_management_tree_view"/>
+        <field name="act_window_id" ref="action_financial_management"/>
+    </record>
+
+    <record id="action_financial_management_form" model="ir.actions.act_window.view">
+        <field eval="5" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="action_financial_management_form_view"/>
+        <field name="act_window_id" ref="action_financial_management"/>
+    </record>
+
+    <record id="action_financial_management_graph" model="ir.actions.act_window.view">
+        <field eval="3" name="sequence"/>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="action_financial_management_graph_view"/>
+        <field name="act_window_id" ref="action_financial_management"/>
+    </record>
+
+    <menuitem sequence="40"
+              id="menu_financial_management"
+              name="Gestor Financeiro"
+              action="action_financial_management"
+              parent="menu_br_payments"/>
+
+</odoo>

@@ -58,7 +58,7 @@ class AccountMoveLine(models.Model):
     def action_register_boleto(self):
         boleto_list = []
         for move in self:
-            if not move.payment_mode_id:
+            if move.payment_mode_id.payment_method != 'boleto':
                 raise UserError(
                     u'O modo de pagamento configurado não é boleto')
             if not move.payment_mode_id.nosso_numero_sequence.id:

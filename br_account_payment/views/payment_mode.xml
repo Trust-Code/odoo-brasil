@@ -9,6 +9,8 @@
                 <group name="main">
                     <field name="name"/>
                     <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="payment_method"/>
+                    <field name="journal_id" string="Diário"/>
                     <field name="bank_account_id" />
                     <field name="active"/>
                 </group>
