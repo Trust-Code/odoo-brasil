@@ -16,16 +16,15 @@ odoo.define('web_notify.WebClient', function (require) {
             this.events = _.extend(this.events || {}, {
                 'click .go_to_activity': function () {
                     var self = this;
-                    this._rpc({
-                        route: '/web/action/load',
-                        params: {
-                            action_id: this.redirect.action_id,
-                            context: this.redirect.context
-                        },
-                    })
-                        .then(function (result) {
-                            self.do_action(result);
-                        });
+                    this.do_action({
+                        name: this.redirect.name,
+                        type: 'ir.actions.act_window',
+                        res_model: this.redirect.model,
+                        target: 'current',
+                        views: [[false, this.redirect.view], [false, 'form']],
+                        domain: this.redirect.domain,
+                        context: this.redirect.context
+                    });
                 },
             });
         },
