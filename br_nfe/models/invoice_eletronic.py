@@ -6,6 +6,7 @@ import re
 import io
 import base64
 import logging
+import pytz
 from lxml import etree
 from datetime import datetime
 from odoo import api, fields, models
@@ -889,6 +890,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         id_canc = "ID110111%s%02d" % (
             self.chave_nfe, self.sequencial_evento)
+
+        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
+        dt_evento = datetime.utcnow()
+        dt_evento = pytz.utc.localize(dt_evento).astimezone(tz)
+
         cancelamento = {
             'idLote': self.id,
             'estado': self.company_id.state_id.ibge_code,
@@ -899,14 +905,14 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
                 'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
                 'chNFe': self.chave_nfe,
-                'dhEvento': datetime.utcnow().strftime(
-                    '%Y-%m-%dT%H:%M:%S-00:00'),
+                'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
             }],
             'modelo': self.model,
         }
+
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
         if resposta.cStat == 128 and \
