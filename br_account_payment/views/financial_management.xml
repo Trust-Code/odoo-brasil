@@ -1,4 +1,10 @@
 <odoo>
+
+    <menuitem sequence="3"
+        id="menu_br_payments"
+        name="Receber e Pagar"
+        parent="account.menu_finance"/>
+
     <record id="action_financial_management_tree_view" model="ir.ui.view">
         <field name="name">financial.management_account.move.line.tree</field>
         <field name="model">account.move.line</field>
@@ -43,9 +49,6 @@
                     <field name="billing_status" widget="statusbar" statusbar_colors='{"overdue":"red"}'/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <!-- -->
-                    </div>
                     <div class="oe_title oe_inline">
                         <h4><strong>
                             <field name="invoice_id" options="{'no_open': True}" readonly="1"/>
@@ -65,7 +68,7 @@
                                    attrs="{'invisible':[('billing_type','=','1')],'readonly':[('parent_state','=','posted')]}"/>
                         </group>
                         <group>
-                            <field name="partner_id" readonly="1" domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"/>
+                            <field name="partner_id" readonly="1" domain="['|',('parent_id','=',False),('is_company','=',True)]"/>
                             <field name="date_maturity" string="Data de Vencimento"
                                    attrs="{'readonly':[('billing_status','==','pay')]}"/>
                             <field name="amount_residual" widget="monetary" string="Valor Restante" readonly="True"/>
@@ -132,10 +135,6 @@
                     </notebook>
                     <field name="narration" colspan="4" nolabel="1" placeholder="Adicionar comentário a cobrança..."/>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
             </form>
         </field>
     </record>
@@ -144,7 +143,7 @@
     <record id="action_financial_management_graph_view" model="ir.ui.view">
         <field name="name">financial.management.graph.view</field>
         <field name="model">account.move.line</field>
-        <field name="domain">[('reconciled','=',True)('user_type_id.type', '=', 'payable'), ('debit', '=', 0)]</field>
+        <!-- <field name="domain">[('reconciled','=',True)('user_type_id.type','=','payable'),('debit','=',0)]</field> -->
         <field name="arch" type="xml">
             <graph string="Gráfico Contas à Pagar/Receber" type="bar">
                 <field name="date_maturity" interval="week"/>

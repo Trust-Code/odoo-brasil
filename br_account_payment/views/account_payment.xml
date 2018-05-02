@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/group" position="before">
-                <div class="alert alert-warning" role="alert" style="margin-bottom:0px;">
-                    REGISTRAR PAGAMENTO REFERENTE A FATURA <b><field name="move_line_id" readonly="1"
+                <div class="alert alert-warning" role="alert" style="margin-bottom:0px;" attrs="{'invisible':[('move_line_id','=',False)]}">
+                    REGISTRAR PAGAMENTO REFERENTE A FATURA <b><field name="move_line_id"
                     options="{'no_open': True}"/></b><br></br>PARCELA: <field name="move_number"/>/
                     <field name="move_all_quota"/>
                 </div>
@@ -17,8 +17,8 @@
                 <attribute name="string">Valor do Pagamento</attribute>
             </xpath>
             <xpath expr="//field[@name='journal_id']" position="replace">
-                <field name="payment_mode_id" required="1" options="{'no_open': True}"/>
-                <field name="journal_id" attrs="{'readonly':[('payment_mode_id','!=',False)]}"/>
+                <field name="payment_mode_id" required="True" options="{'no_open': True}"/>
+                <field name="journal_id" invisible="1" attrs="{'readonly':[('payment_mode_id','!=',False)]}"/>
             </xpath>
             <xpath expr="//group/group[3]" position="replace"/>
             <xpath expr="//sheet" position="inside">
@@ -45,7 +45,7 @@
         </field>
     </record>
 
-    <record id="view_br_account_payment_form_inherit" model="ir.ui.view">
+    <record id="view_br_account_payment_payment_form_inherit" model="ir.ui.view">
         <field name="name">view.br.account.payment.form.inherit</field>
         <field name="model">account.payment</field>
         <field name="inherit_id" ref="account.view_account_payment_form"/>
@@ -81,6 +81,4 @@
             </xpath>
         </field>
     </record>
-
-
 </odoo>

@@ -2,7 +2,8 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class AccountPayment(models.Model):
@@ -36,6 +37,7 @@ class AccountPayment(models.Model):
     def set_amount(self):
         self.amount = self.residual_amount_move_line
         self.payment_mode_id = self.move_line_id.payment_mode_id
+
     @api.onchange('payment_mode_id')
     def set_journal_id(self):
         self.journal_id = self.payment_mode_id.journal_id
@@ -80,3 +82,13 @@ class AccountPayment(models.Model):
         action['context'] = {'search_default_partner_id': self.partner_id.id}
 
         return action
+    '''
+    def action_validate_invoice_payment(self):
+        if self.payment_mode_id.payment_method == 'boleto':
+            raise ValidationError(_("Pagamentos realizados através de Boleto Bancário só podem ser liquidados através "
+                                    "de documento eletrônico. Escolha outro método de Pagamento ou faça a importação"
+                                    "do arquivo de retorno do seu Banco."))
+        res = super(AccountPayment, self).action_validate_invoice_payment()
+
+        return res
+    '''

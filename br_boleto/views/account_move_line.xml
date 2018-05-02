@@ -26,4 +26,43 @@
         </field>
     </record>
 
+    <record id="boleto_financial_management_form_view" model="ir.ui.view">
+        <field name="name">account.move.line.form</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="br_account_payment.action_financial_management_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div" position="before">
+                <div class="oe_button_box" name="button_box" modifiers="{}">
+                    <button name="open_wizard_print_boleto" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
+                            string="Gerar Boleto" attrs="{'invisible': ['|', ('billing_status','==','pay'),
+                            ('payment_method','!=','boleto'),('billing_type','==','2')]}" modifiers="{'invisible':
+                            ['|',['billing_status','==','pay'],['payment_method','!=','boleto']]}" options="{}"/>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Boleto">
+                    <group name="boleto">
+                        <field name="payment_method" invisible="1"/>
+                        <field name="payment_mode_id"/>
+                        <field name="nosso_numero"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_br_boleto_financial_management_tree_view" model="ir.ui.view">
+        <field name="name">account.move.line.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="br_account_payment.action_financial_management_tree_view"/>
+        <field name="arch" type="xml">
+            <button name="action_register_payment" position="after">
+                <field name="payment_mode_id" invisible="1"/>
+                <field name="payment_method" invisible="1"/>
+                <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"
+                    attrs="{'invisible': ['|',('payment_method','!=','boleto'),('billing_type','==','2')]}"/>
+            </button>
+        </field>
+    </record>
+
 </odoo>

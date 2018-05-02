@@ -7,23 +7,21 @@ import datetime
 
 class AccountMoveLine(models.Model):
     _name = 'account.move.line'
-    _inherit = ['account.move.line','mail.thread']
+    _inherit = 'account.move.line'
 
     payment_mode_id = fields.Many2one(
         'payment.mode', string=u"Modo de pagamento")
-    overdue = fields.Boolean(compute="_compute_overdue", store=True,
-                             string="Pagamento Atrasado")
-
+    payment_method = fields.Selection(related='payment_mode_id.payment_method')
     billing_line = fields.Boolean(compute="_compute_billing", store=True,
                                   string="Linha de Cobrança")
     billing_type = fields.Selection([('1',u'A Receber'),('2',u'A Pagar')],store=True,
                                     compute="_compute_billing")
-
     billing_status = fields.Selection([('open',u'Em Aberto'),('partially',u'Parcialmente Pago'),
                                        ('overdue',u'Título em Atraso'),('pay',u'Pago')],
-                                      compute='_compute_billing_status', store=True,track_visibility='onchange')
-    total_quota_invoice = fields.Char(compute="_compute_all_quotas", size=2)
+                                      compute='_compute_billing_status', store=True)
+    total_quota_invoice = fields.Char(compute='_compute_all_quotas', size=2)
 
+    @api.multi
     @api.depends('invoice_id')
     def _compute_all_quotas(self):
         for record in self:
@@ -32,7 +30,8 @@ class AccountMoveLine(models.Model):
             if record.billing_type == '2':
                 record.total_quota_invoice = "%02d" %(len(record.invoice_id.payable_move_line_ids))
 
-    @api.depends('billing_status','billing_type','billing_line','matched_credit_ids',
+    @api.multi
+    @api.depends('billing_type','billing_line','matched_credit_ids',
                  'date_maturity','matched_debit_ids','reconciled')
     def _compute_billing_status(self):
         date_now = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -48,8 +47,8 @@ class AccountMoveLine(models.Model):
                 if record.reconciled:
                     record.billing_status = 'pay'
 
-
-    @api.depends('user_type_id','debit','credit','billing_line','billing_type')
+    @api.multi
+    @api.depends('user_type_id','debit','credit')
     def _compute_billing(self):
         for record in self:
             #Títulos a Receber
@@ -64,7 +63,7 @@ class AccountMoveLine(models.Model):
                 record.billing_line = False
 
     @api.multi
-    @api.depends('debit', 'credit', 'user_type_id', 'amount_residual')
+    @api.depends('debit','credit','user_type_id','amount_residual')
     def _compute_payment_value(self):
         for item in self:
             item.payment_value = item.debit \
@@ -94,22 +93,14 @@ class AccountMoveLine(models.Model):
 
 class AccountPartialReconcile(models.Model):
     _inherit = "account.partial.reconcile"
-    payment_mode_id = fields.Many2one('payment.mode', string=u"Modo de pagamento", readonly=True)
 
-    @api.model
-    def create(self, vals):
-        aml = []
-        if vals.get('debit_move_id', False):
-            aml.append(vals['debit_move_id'])
-        if vals.get('credit_move_id', False):
-            aml.append(vals['credit_move_id'])
-        # Get value of matched percentage from both move before reconciliating
-        lines = self.env['account.move.line'].browse(aml)
-        if lines[0].payment_mode_id:
-            vals['payment_mode_id'] = lines[0].payment_mode_id.id
-        res = super(AccountPartialReconcile, self).create(vals)
+    payment_mode_id = fields.Many2one('payment.mode', compute="_compute_payment_mode",string=u"Modo de Pagamento")
 
-        return res
-
-
-        res.update('')
+    @api.multi
+    @api.depends('debit_move_id','credit_move_id')
+    def _compute_payment_mode(self):
+        for record in self:
+            if record.debit_move_id.payment_id:
+                record.payment_mode_id = record.debit_move_id.payment_id.payment_mode_id.id
+            elif record.credit_move_id.payment_id:
+                record.payment_mode_id = record.credit_move_id.payment_id.payment_mode_id.id

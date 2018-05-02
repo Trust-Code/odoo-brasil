@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <menuitem sequence="3"
-        id="menu_br_payments"
-        name="Receber e Pagar"
-        parent="account.menu_finance"/>
-
     <record id="view_payments_tree_a_receber" model="ir.ui.view">
         <field name="name">Payments</field>
         <field name="model">account.move.line</field>
@@ -86,5 +81,4 @@
               action="action_receivable_move_line"
               id="menu_action_receivable_move_line"
               parent="menu_br_payments"/>
-
 </odoo>
