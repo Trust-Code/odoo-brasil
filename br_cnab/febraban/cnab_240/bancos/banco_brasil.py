@@ -32,6 +32,15 @@ class BancoBrasil240(Cnab240):
         vals['prazo_baixa'] = '0'
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
+        # Codigo juro mora:
+        # 1 - Ao dia
+        # 2 - Mensal
+        # 3 - Isento (deve ser cadastrado no banco)
+        vals['juros_cod_mora'] = 2
+        # Banco do Brasil aceita apenas código de protesto 1, 2, ou
+        # 3 (dias corridos, dias úteis ou não protestar, respectivamente)
+        if vals['codigo_protesto'] not in [1, 2, 3]:
+            vals['codigo_protesto'] = 3
         return vals
 
     def nosso_numero(self, format):
