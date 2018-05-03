@@ -35,8 +35,9 @@ class AccountPayment(models.Model):
 
     @api.onchange('move_line_id')
     def set_amount(self):
-        self.amount = self.residual_amount_move_line
-        self.payment_mode_id = self.move_line_id.payment_mode_id
+        if self.move_line_id:
+            self.amount = self.residual_amount_move_line
+            self.payment_mode_id = self.move_line_id.payment_mode_id
 
     @api.onchange('payment_mode_id')
     def set_journal_id(self):

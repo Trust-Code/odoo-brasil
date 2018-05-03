@@ -3,12 +3,22 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
-from odoo import api, models
+from odoo import api, models, fields
 from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    boleto = fields.Boolean(string='Boleto Bancário?',compute='_check_payment_mode',store=False)
+
+    @api.multi
+    @api.depends('payment_mode_id')
+    def _check_payment_mode(self):
+        if self.payment_mode_id.payment_method == 'boleto':
+            self.boleto = True
+        else:
+            self.boleto = False
 
     @api.multi
     def send_email_boleto_queue(self):
@@ -99,6 +109,9 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
 
     @api.multi
     def action_register_boleto(self):
+        if self.payment_mode_id.payment_method != 'boleto':
+            raise UserError(
+                u'O método de pagamento definido é diferente de boleto!')
         if self.state in ('draft', 'cancel'):
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')

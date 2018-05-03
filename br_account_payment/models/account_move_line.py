@@ -12,10 +12,8 @@ class AccountMoveLine(models.Model):
     payment_mode_id = fields.Many2one(
         'payment.mode', string=u"Modo de pagamento")
     payment_method = fields.Selection(related='payment_mode_id.payment_method')
-    billing_line = fields.Boolean(compute="_compute_billing", store=True,
-                                  string="Linha de Cobrança")
-    billing_type = fields.Selection([('1',u'A Receber'),('2',u'A Pagar')],store=True,
-                                    compute="_compute_billing")
+    billing_line = fields.Boolean(compute="_compute_billing", store=True,string="Linha de Cobrança")
+    billing_type = fields.Selection([('1',u'A Receber'),('2',u'A Pagar')],store=True,compute="_compute_billing")
     billing_status = fields.Selection([('open',u'Em Aberto'),('partially',u'Parcialmente Pago'),
                                        ('overdue',u'Título em Atraso'),('pay',u'Pago')],
                                       compute='_compute_billing_status', store=True)
@@ -94,7 +92,7 @@ class AccountMoveLine(models.Model):
 class AccountPartialReconcile(models.Model):
     _inherit = "account.partial.reconcile"
 
-    payment_mode_id = fields.Many2one('payment.mode', compute="_compute_payment_mode",string=u"Modo de Pagamento")
+    payment_mode_id = fields.Many2one('payment.mode',compute="_compute_payment_mode",string=u"Modo de Pagamento")
 
     @api.multi
     @api.depends('debit_move_id','credit_move_id')

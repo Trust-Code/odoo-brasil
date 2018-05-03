@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/group" position="before">
                 <div class="alert alert-warning" role="alert" style="margin-bottom:0px;" attrs="{'invisible':[('move_line_id','=',False)]}">
-                    REGISTRAR PAGAMENTO REFERENTE A FATURA <b><field name="move_line_id"
+                    REGISTRAR PAGAMENTO REFERENTE A FATURA <b><field name="move_line_id" readonly="1"
                     options="{'no_open': True}"/></b><br></br>PARCELA: <field name="move_number"/>/
                     <field name="move_all_quota"/>
                 </div>

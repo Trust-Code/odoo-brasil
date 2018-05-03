@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
-
+from odoo.exceptions import UserError
 
 class BrBoletoWizard(models.TransientModel):
     _name = 'br.boleto.wizard'
@@ -14,6 +14,9 @@ class BrBoletoWizard(models.TransientModel):
 
     @api.multi
     def imprimir_boleto(self):
+        if self.move_line_id.payment_mode_id.payment_method != 'boleto':
+            raise UserError(
+                u'O método de pagamento definido é diferente de boleto!')
         if self.date_change:
             self.move_line_id.date_maturity = self.date_change
             self.move_line_id.boleto_emitido = False
