@@ -13,6 +13,19 @@ class AccountMoveLine(models.Model):
 
     boleto_emitido = fields.Boolean(string=u"Emitido")
     nosso_numero = fields.Char(string=u"Nosso Número", size=30)
+    print_boleto = fields.Boolean(compute='_compute_print_boleto')
+
+    @api.multi
+    @api.depends('billing_status','billing_type','payment_method')
+    def _compute_print_boleto(self):
+        for record in self:
+            if record.billing_status in ['open','overdue','partially']:
+                if record.billing_type == '1' and record.payment_method == 'boleto':
+                    record.print_boleto = True
+                else:
+                    record.print_boleto = False
+            else:
+                record.print_boleto = False
 
     @api.multi
     def action_print_boleto(self):

@@ -21,7 +21,11 @@
         <field name="inherit_id" ref="br_account_payment.view_payments_tree_a_receber" />
         <field name="arch" type="xml">
             <button name="action_register_payment" position="after">
-                <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"/>
+                <field name="payment_mode_id" invisible="1"/>
+                <field name="payment_method" invisible="1"/>
+                <field name="print_boleto" invisible="1"/>
+                <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"
+                    attrs="{'invisible': [('print_boleto','==',False)]}"/>
             </button>
         </field>
     </record>
@@ -34,19 +38,17 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Boleto">
                     <group name="boleto">
-                        <field name="payment_method" invisible="1"/>
+                        <field name="print_boleto" invisible="1"/>
+                        <field name="payment_method"/>
                         <field name="payment_mode_id"/>
                         <field name="nosso_numero"/>
                     </group>
                 </page>
             </xpath>
             <xpath expr="//header" position="inside">
-
                     <button name="open_wizard_print_boleto" type="object" icon="fa-file-pdf-o"
                             string="Gerar Boleto"
-                            attrs="{'invisible': ['|',('billing_type','==','2'),('billing_status','==','pay'),
-                            ('payment_method','not in','boleto')]}"/>
-
+                            attrs="{'invisible': [('print_boleto','==',False)]}"/>
             </xpath>
         </field>
     </record>
@@ -59,8 +61,9 @@
             <button name="action_register_payment" position="after">
                 <field name="payment_mode_id" invisible="1"/>
                 <field name="payment_method" invisible="1"/>
+                <field name="print_boleto" invisible="1"/>
                 <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"
-                    attrs="{'invisible':['|',('billing_status','==','pay'),('payment_method','!=','boleto'),('billing_type','==','2')]}"/>
+                    attrs="{'invisible': [('print_boleto','==',False)]}"/>
             </button>
         </field>
     </record>

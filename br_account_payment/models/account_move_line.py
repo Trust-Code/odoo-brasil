@@ -9,8 +9,7 @@ class AccountMoveLine(models.Model):
     _name = 'account.move.line'
     _inherit = 'account.move.line'
 
-    payment_mode_id = fields.Many2one(
-        'payment.mode', string=u"Modo de pagamento")
+    payment_mode_id = fields.Many2one('payment.mode', string=u"Modo de pagamento")
     payment_method = fields.Selection(related='payment_mode_id.payment_method')
     billing_line = fields.Boolean(compute="_compute_billing", store=True,string="Linha de Cobrança")
     billing_type = fields.Selection([('1',u'A Receber'),('2',u'A Pagar')],store=True,compute="_compute_billing")
