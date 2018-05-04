@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import logging
-import tempfile
+import logging, tempfile
 
 from decimal import Decimal
 from datetime import datetime
-from odoo import fields, models
+from odoo import fields, models, api
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -15,27 +13,24 @@ _logger = logging.getLogger(__name__)
 try:
     from cnab240.tipos import Arquivo
 except ImportError:
-    _logger.debug('Cannot import cnab240 dependencies.')
+    _logger.debug('Cannot import CNAB240 dependencies.')
 
 
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    file_format = fields.Selection(
-        selection_add=[('cnab240', 'Cobrança CNAB 240')])
+    file_format = fields.Selection(selection_add=[('cnab240', 'Cobrança CNAB 240')])
 
     def _parse_file(self, data_file):
         if self.force_format:
             if self.file_format == 'cnab240':
                 self._check_cnab(data_file, raise_error=True)
                 return self._parse_cnab(data_file)
-            return super(AccountBankStatementImport, self)._parse_file(
-                data_file)
+            return super(AccountBankStatementImport, self)._parse_file(data_file)
         else:
             if self._check_cnab(data_file):
                 return self._parse_cnab(data_file)
-            return super(AccountBankStatementImport, self)._parse_file(
-                data_file)
+            return super(AccountBankStatementImport, self)._parse_file(data_file)
 
     def _check_cnab(self, data_file, raise_error=False):
         try:
@@ -48,7 +43,7 @@ class AccountBankStatementImport(models.TransientModel):
                 journal_id = self.journal_id.id
 
             bank = self.get_bank(journal_id)
-            Arquivo(bank, arquivo=open(cnab240_file.name, 'r', encoding='utf-8'))
+            Arquivo(bank, arquivo=open(cnab240_file.name, 'r', encoding='ISO-8859-1'))
             return True
         except Exception as e:
             if raise_error:
@@ -100,13 +95,11 @@ class AccountBankStatementImport(models.TransientModel):
         cnab240_file = tempfile.NamedTemporaryFile()
         cnab240_file.write(data_file)
         cnab240_file.flush()
-
         journal_id = self.env.context['journal_id']
         if self.force_journal_account:
             journal_id = self.journal_id.id
-
         bank = self.get_bank(journal_id)
-        arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r', encoding='utf-8'))
+        arquivo = Arquivo(bank, arquivo=open(cnab240_file.name, 'r',encoding='ISO-8859-1'))
         transacoes = []
         valor_total = Decimal('0.0')
         for lote in arquivo.lotes:
@@ -118,29 +111,27 @@ class AccountBankStatementImport(models.TransientModel):
                 # Liquidação Santander ('06', '17')
                 if evento.servico_codigo_movimento in (6, 17, '06', '17',):
                     valor_total += valor
-
                     nosso_numero = self._get_nosso_numero(
                         journal_id, evento.nosso_numero)
-
-                    move_line = self.env['account.move.line'].search(
-                        [('nosso_numero', '=', nosso_numero)])
-
+                    nosso_numero = '%s%s' % ('0' * (6 - len(str(nosso_numero))), nosso_numero)
+                    move_line = self.env['account.move.line'].search([('nosso_numero', '=', nosso_numero)])
+                    date = str(evento.data_ocorrencia)
+                    data_str = "%s-%s-%s" % (date[:1], date[1:3], date[3:7]) if len(date) == 7 \
+                            else "%s-%s-%s" % (date[0:2], date[2:4], date[4:8])
                     transacoes.append({
                         'name': "%s : %s" % (
                             move_line.partner_id.name or evento.sacado_nome,
                             evento.numero_documento or "%s: %s" % (
                                 move_line.move_id.name, move_line.name)),
-                        'date': datetime.strptime(
-                            str(evento.data_ocorrencia), '%d%m%Y'),
+                        'date': datetime.strptime(data_str, '%d-%m-%Y'),
                         'amount': valor,
-                        'partner_name':
-                        move_line.partner_id.name or evento.sacado_nome,
+                        'partner_name': move_line.partner_id.name or evento.sacado_nome,
                         'partner_id': move_line.partner_id.id,
                         'ref': evento.numero_documento,
-                        'unique_import_id': str(evento.nosso_numero),
+                        'unique_import_id': nosso_numero,
+                        #'account_number': str(arquivo.header.cedente_conta),
                         'nosso_numero': nosso_numero,
                     })
-
         inicio = final = datetime.now()
         if len(transacoes):
             primeira_transacao = min(transacoes, key=lambda x: x["date"])
@@ -153,17 +144,14 @@ class AccountBankStatementImport(models.TransientModel):
             order="date desc, id desc", limit=1)
         last_balance = last_bank_stmt and last_bank_stmt[0].balance_end or 0.0
 
-        vals_bank_statement = {
-            'name': u"%s - %s até %s" % (
-                arquivo.header.nome_do_banco,
-                inicio.strftime('%d/%m/%Y'),
-                final.strftime('%d/%m/%Y')),
-            'date': inicio,
-            'balance_start': last_balance,
-            'balance_end_real': Decimal(last_balance) + valor_total,
-            'transactions': transacoes
-        }
-        account_number = ''  # str(arquivo.header.cedente_conta)
+        vals_bank_statement = {'name': u"%s - %s até %s" % (arquivo.header.nome_do_banco,
+                                                            inicio.strftime('%d/%m/%Y'),
+                                                            final.strftime('%d/%m/%Y')),
+                                'date': inicio,
+                                'balance_start': last_balance,
+                                'balance_end_real': Decimal(last_balance) + valor_total,
+                                'transactions': transacoes}
+        account_number = str(arquivo.header.cedente_conta)
         if self.force_journal_account:
             account_number = self.journal_id.bank_acc_number
         return (
@@ -171,3 +159,16 @@ class AccountBankStatementImport(models.TransientModel):
             account_number,
             [vals_bank_statement]
         )
+
+    def _complete_stmts_vals(self, stmts_vals, journal, account_number):
+        for st_vals in stmts_vals:
+            for vals in st_vals['transactions']:
+                if not 'partner' in vals:
+                    vals['partner'] = vals['partner_id']
+        res = super(AccountBankStatementImport, self)._complete_stmts_vals(stmts_vals, journal, account_number)
+        for st_vals in res:
+            for vals in st_vals['transactions']:
+                vals['partner_id'] = vals['partner']
+                del vals['partner']
+
+        return res
