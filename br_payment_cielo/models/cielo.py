@@ -71,7 +71,7 @@ class AcquirerCielo(models.Model):
             "City": order.partner_id.city_id.name,
             "State": order.partner_id.state_id.code,
         }
-        if (order.partner_id.street2) > 0:
+        if len(order.partner_id.street2) > 0:
             address['Complement'] = order.partner_id.street2
         payment = {"BoletoDiscount": 0, "DebitDiscount": 0}
         customer = {
