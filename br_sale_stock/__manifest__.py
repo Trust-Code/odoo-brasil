@@ -16,6 +16,7 @@
         'sale_stock', 'br_sale', 'br_stock_account'
     ],
     'data': [
+        'reports/sale_order.xml',
         'views/sale_stock_view.xml',
     ],
     'auto_install': True,

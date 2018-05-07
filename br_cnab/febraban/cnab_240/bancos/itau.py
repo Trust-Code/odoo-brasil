@@ -22,7 +22,7 @@ class Itau240(Cnab240):
         vals['cedente_conta_dv'] = int(vals['cedente_conta_dv'])
         vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
         vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
-        vals['data_credito_hd_lote'] = datetime.now().strftime('%d%m%Y')
+        vals['data_credito_hd_lote'] = int(datetime.now().strftime('%d%m%Y'))
         return vals
 
     def _prepare_segmento(self, line):
@@ -41,7 +41,7 @@ class Itau240(Cnab240):
         vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
         vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
         vals['codigo_multa'] = int(vals['codigo_multa'])
-        vals['data_multa'] = str(vals['data_multa'])
+        vals['data_multa'] = str(vals['data_multa']).zfill(8)
         return vals
 
     def dv_nosso_numero(self, agencia, conta, carteira, nosso_numero):

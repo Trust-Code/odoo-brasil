@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <template id="br_sale_stock_report_sale_order" inherit_id="br_account.br_account_report_invoice">
+        <tr name="tr_taxes" position="before">
+            <tr t-if="o.ipi_value" name="tr_ipi">
+                 <td>
+                     <strong>IPI</strong>
+                 </td>
+                 <td class="text-right">
+                     <span t-field="o.ipi_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                 </td>
+             </tr>
+             <tr t-if="o.icms_st_value" name="tr_icms_st">
+                  <td>
+                      <strong>ICMS ST</strong>
+                  </td>
+                  <td class="text-right">
+                      <span t-field="o.icms_st_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                  </td>
+              </tr>
+        </tr>
+        <tr name="tr_taxes" position="after">
+            <tr t-if="o.total_despesas" name="tr_expenses" style="border-top:1px solid #dddddd;">
+                <td><strong>Expenses ( + )</strong></td>
+                <td class="text-right">
+                    <span t-field="o.total_despesas" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                </td>
+            </tr>
+            <tr t-if="o.total_seguro" name="tr_insurance">
+                <td><strong>Insurance ( + )</strong></td>
+                <td class="text-right">
+                    <span t-field="o.total_seguro" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                </td>
+            </tr>
+            <tr t-if="o.total_frete" name="tr_freight">
+                <td><strong>Freight ( + )</strong></td>
+                <td class="text-right">
+                    <span t-field="o.total_frete" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                </td>
+            </tr>
+        </tr>
+    </template>
+
+</odoo>

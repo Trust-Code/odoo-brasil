@@ -2,9 +2,11 @@
 # © 2016 Alessandro Fernandes Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import re
+import pytz
 import base64
 import logging
-import re
+
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -43,7 +45,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
     def send_letter(self):
         self.valida_carta_correcao_eletronica()
 
+        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
+        dt_evento = datetime.utcnow()
+        dt_evento = pytz.utc.localize(dt_evento).astimezone(tz)
         numero_evento = len(self.eletronic_doc_id.cartas_correcao_ids) + 1
+
         carta = {
             'invoice_id': self.eletronic_doc_id.id,
             'CNPJ': re.sub(
@@ -52,7 +58,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'tpAmb': self.eletronic_doc_id.company_id.tipo_ambiente,
             'estado':  self.eletronic_doc_id.company_id.state_id.ibge_code,
             'ambiente': int(self.eletronic_doc_id.company_id.tipo_ambiente),
-            'dhEvento': datetime.now().strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhEvento':  dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'chNFe': self.eletronic_doc_id.chave_nfe,
             'xCorrecao': self.correcao,
             'tpEvento': '110110',
@@ -97,9 +103,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             self.write({
                 'state': 'error',
                 'message': mensagem,
-                'sent_xml': base64.b64encode(resposta['sent_xml']),
+                'sent_xml': base64.b64encode(
+                    resposta['sent_xml'].encode('utf-8')),
                 'sent_xml_name': 'cce-envio.xml',
-                'received_xml': base64.b64encode(resposta['received_xml']),
+                'received_xml': base64.b64encode(
+                    resposta['received_xml'].encode('utf-8')),
                 'received_xml_name': 'cce-retorno.xml',
             })
 
