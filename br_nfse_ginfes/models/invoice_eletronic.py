@@ -10,6 +10,7 @@ import logging
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.safe_eval import safe_eval
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -128,7 +129,7 @@ class InvoiceEletronic(models.Model):
                     'quantidade': str("%.2f" % item.quantidade),
                     'valor_unitario': str("%.2f" % item.preco_unitario)
                 })
-                codigo_servico = item.issqn_codigo
+                codigo_servico = re.sub('[^0-9]', '', item.issqn_codigo)
 
             rps = {
                 'numero': self.numero,
@@ -155,7 +156,7 @@ class InvoiceEletronic(models.Model):
                 'aliquota_issqn': str("%.4f" % (
                     self.eletronic_item_ids[0].issqn_aliquota / 100)),
                 'valor_liquido_nfse': str("%.2f" % self.valor_final),
-                'codigo_servico': str("%.2f" % float(codigo_servico)),
+                'codigo_servico': int(codigo_servico),
                 'codigo_tributacao_municipio':
                 self.eletronic_item_ids[0].codigo_tributacao_municipio,
                 # '01.07.00 / 00010700',
@@ -201,15 +202,18 @@ class InvoiceEletronic(models.Model):
             return atts
 
         attachment_obj = self.env['ir.attachment']
-        danfe_report = self.env['ir.actions.report.xml'].search(
+        danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=',
-              'br_nfse.main_template_br_nfse_danfe_ginfes')])
-        report_service = danfe_report.report_name
-        danfse = self.env['report'].get_pdf([self.id], report_service)
+              'br_nfse_ginfes.main_template_br_nfse_danfe_ginfes')])
+        report_service = danfe_report.xml_id
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        filename = "%s.%s" % (report_name, "pdf")
         if danfse:
             danfe_id = attachment_obj.create(dict(
-                name="ginfes-%08d.pdf" % int(self.numero_nfse),
-                datas_fname="ginfes-%08d.pdf" % int(self.numero_nfse),
+                name=filename,
+                datas_fname=filename,
                 datas=base64.b64encode(danfse),
                 mimetype='application/pdf',
                 res_model='account.invoice',
@@ -251,7 +255,8 @@ class InvoiceEletronic(models.Model):
                     self.codigo_retorno = mensagem_retorno.Codigo
                     self.mensagem_retorno = mensagem_retorno.Mensagem
                     self._create_attachment(
-                        'nfse-ret', self, recebe_lote['received_xml'])
+                        'nfse-ret', self,
+                        recebe_lote['received_xml'].decode('utf-8'))
                     return
             # Monta a consulta de situação do lote
             # 1 - Não Recebido
@@ -311,12 +316,14 @@ class InvoiceEletronic(models.Model):
             })
             if recebe_lote:
                 self._create_attachment(
-                    'nfse-ret', self, recebe_lote['received_xml'])
+                    'nfse-ret', self,
+                    recebe_lote['received_xml'].decode('utf-8'))
             if consulta_lote:
                 self._create_attachment(
                     'rec', self, consulta_lote['sent_xml'])
                 self._create_attachment(
-                    'rec-ret', self, consulta_lote['received_xml'])
+                    'rec-ret', self,
+                    consulta_lote['received_xml'].decode('utf-8'))
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
