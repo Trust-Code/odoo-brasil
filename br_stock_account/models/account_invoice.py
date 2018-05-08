@@ -77,7 +77,7 @@ class AccountInvoice(models.Model):
         res['valor_seguro'] = inv.total_seguro
 
         res['modalidade_frete'] = inv.freight_responsibility
-        res['transportadora_id'] = inv.carrier_id.id
+        res['transportadora_id'] = inv.shipping_supplier_id.id
         res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
         res['uf_veiculo'] = inv.vehicle_state_id.code
         res['rntc'] = inv.vehicle_rntc
