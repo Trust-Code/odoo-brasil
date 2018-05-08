@@ -219,7 +219,6 @@ class Cnab240(Cnab):
 
     def remessa(self, order):
         cobrancasimples_valor_titulos = 0
-
         self.order = order
         header = self._prepare_header()
         self.arquivo = Arquivo(self.bank, **header)
@@ -232,7 +231,6 @@ class Cnab240(Cnab):
             self.arquivo.lotes[0].trailer.cobrancasimples_valor_titulos = \
                 Decimal(cobrancasimples_valor_titulos).quantize(
                     Decimal('1.00'))
-
         return str(self.arquivo)
 
     def data_hoje(self):
