@@ -15,6 +15,7 @@
             </field>
             <field name="name" position="after">
                 <field name="domain" />
+                <field name="difal_por_dentro" />
             </field>
         </field>
     </record>

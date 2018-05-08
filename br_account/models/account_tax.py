@@ -83,6 +83,7 @@ class AccountTax(models.Model):
                                ('inss', 'INSS'),
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
+    difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
@@ -242,6 +243,13 @@ class AccountTax(models.Model):
 
         base_icms *= 1 - (reducao_icms / 100.0)
         interestadual = icms_inter._compute_amount(base_icms, 1.0)
+        vals_inter['base'] = base_icms
+        vals_intra['base'] = base_icms
+
+        if icms_inter.difal_por_dentro or icms_intra.difal_por_dentro:
+            base_icms = base_icms - interestadual
+            base_icms = base_icms / (1 - (icms_intra.amount) / 100)
+
         interno = icms_intra._compute_amount(base_icms, 1.0)
 
         if 'icms_aliquota_inter_part' in self.env.context:
