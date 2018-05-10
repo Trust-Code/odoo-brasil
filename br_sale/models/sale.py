@@ -74,6 +74,8 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    edit_price_unit = fields.Boolean(default=False, readonly=True, compute='_check_user_group_price_unit')
+
     def _prepare_tax_context(self):
         return {
             'incluir_ipi_base': self.incluir_ipi_base,
@@ -369,3 +371,7 @@ class SaleOrderLine(models.Model):
 
         res['ii_aliquota'] = ii.amount or 0.0
         return res
+
+    @api.one
+    def _check_user_group_price_unit(self):
+        self.edit_price_unit = self.env.user.has_group('br_sale.group_unit_price')

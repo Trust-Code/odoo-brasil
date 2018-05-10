@@ -6,6 +6,10 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='price_unit']" position="replace">
+                <field name="edit_price_unit" invisible="1"/>
+                <field name="price_unit" attrs="{'readonly':['|',('edit_price_unit', '=', False),('qty_invoiced', '&gt;', 0)]}"/>
+            </xpath>
             <field name="fiscal_position_id" position="attributes">
                 <attribute name="domain">['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]</attribute>
             </field>
@@ -86,5 +90,4 @@
             </field>
         </field>
     </record>
-
 </odoo>
