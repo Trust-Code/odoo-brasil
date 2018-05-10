@@ -9,7 +9,8 @@ from odoo.addons import decimal_precision as dp
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'l10n.br']
 
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
@@ -18,6 +19,8 @@ class AccountInvoice(models.Model):
                  'currency_id', 'company_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
+        if not self.is_l10n_br_localization:
+            return
         lines = self.invoice_line_ids
         self.total_tax = sum(l.price_tax for l in lines)
         self.icms_base = sum(l.icms_base_calculo for l in lines)
@@ -257,6 +260,8 @@ class AccountInvoice(models.Model):
 
     @api.onchange('fiscal_position_id')
     def _onchange_br_account_fiscal_position_id(self):
+        if not self.is_l10n_br_localization:
+            return
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
             self.account_id = self.fiscal_position_id.account_id.id
         if self.fiscal_position_id and self.fiscal_position_id.journal_id:
@@ -275,7 +280,8 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_invoice_cancel_paid(self):
-        if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft',
+        if self.filtered(lambda inv: inv.is_l10n_br_locacalization and
+                                     inv.state not in ['proforma2', 'draft',
                                                        'open', 'paid']):
             raise UserError(_("Invoice must be in draft, Pro-forma or open \
                               state in order to be cancelled."))
@@ -284,7 +290,8 @@ class AccountInvoice(models.Model):
     @api.model
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
-
+        if not self.is_l10n_br_localization:
+            return res
         contador = 0
 
         for line in self.invoice_line_ids:
@@ -320,6 +327,8 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
+        if not self.is_l10n_br_localization:
+            return res
         count = 1
         for invoice_line in res:
             line = invoice_line[2]
@@ -364,7 +373,8 @@ class AccountInvoice(models.Model):
     @api.model
     def tax_line_move_line_get(self):
         res = super(AccountInvoice, self).tax_line_move_line_get()
-
+        if not self.is_l10n_br_localization:
+            return res
         done_taxes = []
         for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
             if tax_line.amount and tax_line.tax_id.deduced_account_id:
@@ -392,7 +402,8 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_refund(
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
-
+        if not self.is_l10n_br_localization:
+            return res
         res['product_document_id'] = invoice.product_document_id.id
         res['product_serie_id'] = invoice.product_serie_id.id
         res['service_document_id'] = invoice.service_document_id.id
