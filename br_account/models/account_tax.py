@@ -202,10 +202,6 @@ class AccountTax(models.Model):
             icms_value = base_icmsst * (deducao_st_simples / 100.0)
 
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
-
-        import ipdb
-        ipdb.set_trace()
-
         if 'icms_st_base_calculo_manual' in self.env.context and\
                 self.env.context['icms_st_base_calculo_manual'] > 0:
             base_icmsst = self.env.context['icms_st_base_calculo_manual']
