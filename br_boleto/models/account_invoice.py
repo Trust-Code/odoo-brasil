@@ -10,15 +10,15 @@ from odoo.exceptions import UserError
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    boleto = fields.Boolean(string='Boleto Bancário?',compute='_check_payment_mode',store=False)
+    boleto = fields.Boolean(string='Boleto Bancário?', compute='_check_payment_mode', store=False)
 
-    @api.multi
     @api.depends('payment_mode_id')
     def _check_payment_mode(self):
-        if self.payment_mode_id.payment_method == 'boleto':
-            self.boleto = True
-        else:
-            self.boleto = False
+        for record in self:
+            if record.payment_mode_id.payment_method == 'boleto':
+                record.boleto = True
+            else:
+                record.boleto = False
 
     @api.multi
     def send_email_boleto_queue(self):
