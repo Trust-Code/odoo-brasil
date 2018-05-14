@@ -16,6 +16,7 @@
             <field name="name" position="after">
                 <field name="domain" />
                 <field name="difal_por_dentro" />
+                <field name="icms_st_incluso" />
             </field>
         </field>
     </record>
