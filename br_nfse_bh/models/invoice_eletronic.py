@@ -39,8 +39,20 @@ class InvoiceEletronicItem(models.Model):
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    @api.depends('valor_retencao_pis', 'valor_retencao_cofins',
+                 'valor_retencao_irrf', 'valor_retencao_inss',
+                 'valor_retencao_csll')
+    def _compute_total_retencoes(self):
+        for item in self:
+            total = item.valor_retencao_pis + item.valor_retencao_cofins + \
+                item.valor_retencao_irrf + item.valor_retencao_inss + \
+                item.valor_retencao_csll
+            item.retencoes_federais = total
+
     model = fields.Selection(
         selection_add=[('014', 'Nota Belo Horizonte')])
+
+    retencoes_federais = fields.Monetary(compute="_compute_total_retencoes")
 
     @api.multi
     def _hook_validation(self):
@@ -140,7 +152,7 @@ class InvoiceEletronic(models.Model):
             'aliquota_issqn': str("%.4f" % (
                 self.eletronic_item_ids[0].issqn_aliquota / 100)),
             'valor_liquido_nfse': str("%.2f" % self.valor_final),
-            'codigo_servico': re.sub('[^0-9]', '', codigo_servico),
+            'codigo_servico': str("%.2f" % float(codigo_servico)),
             'codigo_tributacao_municipio':
             self.eletronic_item_ids[0].codigo_tributacao_municipio,
             # '01.07.00 / 00010700',
@@ -233,16 +245,17 @@ class InvoiceEletronic(models.Model):
 
         enviar_nfse = gerar_nfse(
             certificado, xml=xml_to_send, ambiente=self.ambiente)
-
         retorno = enviar_nfse['object']
-        if "CompNfse" in dir(retorno):
+
+        if "ListaNfse" in dir(retorno):
             self.state = 'done'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'NFSe emitida com sucesso'
-            self.verify_code = retorno.CompNfse.Nfse.InfNfse.CodigoVerificacao
-            self.numero_nfse = retorno.CompNfse.Nfse.InfNfse.Numero
+            self.verify_code = \
+                retorno.ListaNfse.CompNfse.Nfse.InfNfse.CodigoVerificacao.text
+            self.numero_nfse = retorno.ListaNfse.CompNfse.Nfse.InfNfse.Numero
         else:
-            mensagem_retorno = retorno.ListaMensagemRetorno \
+            mensagem_retorno = retorno.ListaMensagemRetornoLote \
                 .MensagemRetorno
             self.codigo_retorno = mensagem_retorno.Codigo
             self.mensagem_retorno = mensagem_retorno.Mensagem
