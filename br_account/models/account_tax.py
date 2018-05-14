@@ -83,7 +83,8 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
-    icms_st_incluso = fields.Boolean(string="Incluir ICMS ST na Base de Calculo?")
+    icms_st_incluso = fields.Boolean(
+        string="Incluir ICMS ST na Base de Calculo?")
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
