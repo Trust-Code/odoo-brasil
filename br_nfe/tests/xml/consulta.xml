@@ -1,0 +1,39 @@
+<soap:Envelope 
+    xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <soap:Header>
+        <nfeCabecMsg 
+            xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsulta2">
+            <cUF>53</cUF>
+            <versaoDados>3.10</versaoDados>
+        </nfeCabecMsg>
+    </soap:Header>
+    <soap:Body>
+        <nfeConsultaNF2Result 
+            xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsulta2">
+            <retConsSitNFe versao="3.10" 
+                xmlns="http://www.portalfiscal.inf.br/nfe">
+                <tpAmb>2</tpAmb>
+                <verAplic>SVRS201710241713</verAplic>
+                <cStat>100</cStat>
+                <xMotivo>Autorizado o uso da NF-e</xMotivo>
+                <cUF>53</cUF>
+                <dhRecbto>2018-03-19T17:02:12-03:00</dhRecbto>
+                <chNFe>53180301929144000190550010000000111425608529</chNFe>
+                <protNFe versao="3.10">
+                    <infProt Id="ID353180000120999">
+                        <tpAmb>2</tpAmb>
+                        <verAplic>SVRS201803141609</verAplic>
+                        <chNFe>53180301929144000190550010000000111425608529</chNFe>
+                        <dhRecbto>2018-03-19T15:53:13-03:00</dhRecbto>
+                        <nProt>353180000120999</nProt>
+                        <digVal>R+4GfYd0MKpxbaLk0hRG30BD5oc=</digVal>
+                        <cStat>100</cStat>
+                        <xMotivo>Autorizado o uso da NF-e</xMotivo>
+                    </infProt>
+                </protNFe>
+            </retConsSitNFe>
+        </nfeConsultaNF2Result>
+    </soap:Body>
+</soap:Envelope>

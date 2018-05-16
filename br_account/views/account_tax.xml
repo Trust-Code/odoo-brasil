@@ -6,7 +6,7 @@
         <field name="model">account.tax</field>
         <field name="inherit_id" ref="account.view_tax_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div" position="attributes">
+            <xpath expr="//notebook/page/group/group/div" position="attributes">
                 <attribute name="attrs">{'invisible':[('amount_type','not in', ('fixed', 'percent', 'division', 'icmsst'))]}</attribute>
             </xpath>
             <field name="refund_account_id" position="after">
@@ -16,6 +16,7 @@
             <field name="name" position="after">
                 <field name="domain" />
                 <field name="difal_por_dentro" />
+                <field name="icms_st_incluso" />
             </field>
         </field>
     </record>

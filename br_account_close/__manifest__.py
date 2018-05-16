@@ -4,10 +4,10 @@
 
 
 {  # pylint: disable=C8101,C8103
-    'name': 'Fechamento de Impostos',
-    'summary': """Realiza a contabilização de impostos mensais
-    - Mantido por Trustcode""",
-    'description': """Realiza a contabilização de impostos mensais""",
+    'name': 'Tax Accounting',
+    'summary': """Executes a monthly tax accouting
+    - Maintained by Trustcode""",
+    'description': """Executes a monthly tax accouting""",
     'version': '11.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',

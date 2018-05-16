@@ -1,0 +1,329 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="report_br_nfse_danfe_bh"
+        string="Nota de Serviço - Belo Horizonte"
+        model="invoice.eletronic"
+        report_type="qweb-pdf"
+        file="br_nfse_bh.main_template_br_nfse_bh"
+        name="br_nfse_bh.main_template_br_nfse_bh" />
+
+      <record id="paperformat_br_nfse_danfse" model="report.paperformat">
+          <field name="name">Danfe Belo Horizonte</field>
+          <field name="default" eval="True" />
+          <field name="orientation">Portrait</field>
+          <field name="margin_top">3</field>
+          <field name="margin_bottom">3</field>
+          <field name="margin_left">3</field>
+          <field name="margin_right">3</field>
+          <field name="header_line" eval="False" />
+          <field name="header_spacing">3</field>
+      </record>
+
+    <record id="report_br_nfse_danfe_bh" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
+        <field name="name">Nota de Serviço - Nota Belo Horizonte</field>
+        <field name="print_report_name">'%s - NF - %s.pdf' % (object.numero, object.partner_id.name)</field>
+    </record>
+
+    <template id="danfse_report_template_bh">
+        <style type="text/css">
+            .col-xs-1, .col-xs-2,
+            .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
+            .col-xs-8,
+            .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+                padding:0px;
+            }
+            td, th { padding: 0 4px; }
+        </style>
+        <div class="page">
+            <div class="row" style="border: 1px solid black;">
+                <div class="col-xs-12" style="padding:0px;text-align:center;font-size:18px;">
+                    <t t-if="doc.state != 'done'">
+                        <strong style="font-size:20px;">RECIBO PROVISÓRIO DE SERVIÇOS - RPS
+                        </strong>
+                    </t>
+                    <t t-if="doc.state == 'done'">
+                        <strong style="font-size:20px;">NFS-e  - NOTA FISCAL ELETRÔNICA DE SERVIÇOS</strong><br />
+                        <strong style="font-size:20px;">- NOTA BH -</strong><br />
+                    </t>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div style="border: 1px solid black; padding: 2px;text-align:center;">
+                        <t t-if="doc.state == 'done'">
+                            <span style="font-size:9px;">Número da Nota</span>
+                            <br />
+                            <strong t-field="doc.numero_nfse"></strong>
+                        </t>
+                        <t t-if="doc.state != 'done'">
+                            <span style="font-size:9px;">Número RPS</span>
+                            <br />
+                            <strong t-field="doc.numero"></strong>
+                        </t>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div style="border: 1px solid black; padding: 2px;text-align:center;">
+                        <span style="font-size:9px;">Data e Hora de Emissão</span>
+                        <br />
+                        <strong t-field="doc.data_emissao"></strong>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <t t-if="doc.state == 'done'">
+                        <div style="border: 1px solid black; padding: 2px;text-align:center;">
+                            <span style="font-size:8px;">Código de verificação</span>
+                            <br />
+                            <strong t-field="doc.verify_code"></strong>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
+                <div class="col-xs-2">
+                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                </div>
+                <div class="col-xs-10">
+                    <div class="col-xs-12" style="text-align:center;">
+                        <strong>PRESTADOR DE SERVIÇOS</strong>
+                    </div>
+                    <div class="col-xs-12">
+                        Nome/Razão Social:
+                        <strong t-field="doc.company_id.partner_id.legal_name"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        CNPJ:
+                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        Inscrição Municipal:
+                        <strong t-field="doc.company_id.partner_id.inscr_mun"></strong>
+                    </div>
+                    <div class="col-xs-12">
+                        Endereço:
+                        <strong t-field="doc.company_id.partner_id.street">
+                        </strong>
+                        <strong t-field="doc.company_id.partner_id.number">
+                        </strong>
+                        <strong t-field="doc.company_id.partner_id.district">
+                        </strong>
+                    </div>
+                    <div class="col-xs-6">
+                        Município:
+                        <strong t-field="doc.company_id.partner_id.city_id"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        UF:
+                        <strong t-field="doc.company_id.partner_id.state_id"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        Telefone:
+                        <strong t-field="doc.company_id.partner_id.phone"></strong>
+                    </div>
+                    <div class="col-xs-6">
+                        E-mail:
+                        <strong t-field="doc.company_id.partner_id.email"></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong>TOMADOR DE SERVIÇOS</strong>
+                </div>
+                <div class="col-xs-12">
+                    Nome/Razão Social:
+                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
+                </div>
+                <div class="col-xs-6">
+                    CNPJ:
+                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
+                </div>
+                <div class="col-xs-6">
+                    Inscrição Municipal:
+                    <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
+                    <t t-if="not doc.commercial_partner_id.inscr_mun">
+                      <span>Não informado</span>
+                    </t>
+                </div>
+                <div class="col-xs-12">
+                    Endereço:
+                    <strong t-field="doc.commercial_partner_id.street">
+                    </strong>
+                    <strong t-field="doc.commercial_partner_id.number">
+                    </strong>
+                    <strong t-field="doc.commercial_partner_id.district">
+                    </strong>
+                </div>
+                <div class="col-xs-6">
+                    Município:
+                    <strong t-field="doc.commercial_partner_id.city_id"></strong>
+                </div>
+                <div class="col-xs-6">
+                    UF:
+                    <strong t-field="doc.commercial_partner_id.state_id"></strong>
+                </div>
+                <div class="col-xs-6">
+                    Telefone:
+                    <strong t-field="doc.partner_id.phone"></strong>
+                </div>
+                <div class="col-xs-6">
+                    E-mail:
+                    <strong t-field="doc.partner_id.email"></strong>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:250px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
+                </div>
+                <div class="col-xs-12">
+                    <br />
+                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
+                        <p t-field="line.name"></p>
+                    </t>
+                    <span t-field="doc.informacoes_legais"></span>
+                    <span t-field="doc.informacoes_complementares"></span>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 10px;">
+                <div class="col-xs-12 rotulo">
+                    <h4 style="margin:0px;font-weight:bold;">Código de Tributação do Município (CTISS)</h4>
+                </div>
+                <div class="col-xs-12">
+                    <span t-field="doc.eletronic_item_ids[0].codigo_tributacao_municipio" /> -
+                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 10px;">
+                <div class="col-xs-12 rotulo">
+                    <h4 style="margin:0px;font-weight:bold;">Subitem Lista de Serviços LC 116/03 / Descrição:</h4>
+                </div>
+                <div class="col-xs-12">
+                    <span t-field="doc.eletronic_item_ids[0].issqn_codigo" /> -
+                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 10px;">
+                <div class="col-xs-6 rotulo">
+                    <h5 style="margin:0px;font-weight:bold;">Cod/Município da incidência do ISSQN:</h5>
+                    <span>3106200 / Belo Horizonte</span>
+                </div>
+                <div class="col-xs-6">
+                    <h5 style="margin:0px;font-weight:bold;">Natureza da Operação:</h5>
+                    <span>Tributação no município</span>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 10px;">
+                <div class="col-xs-6">
+                    <table style="width: 95%;">
+                        <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;">
+                            <td>Valor dos serviços:</td>
+                            <td style="text-align:right;">
+                                <span t-field="doc.valor_bruto"
+                                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid gray;">
+                            <td>(-) Descontos:</td>
+                            <td style="text-align:right;">
+                                <span t-field="doc.valor_desconto"
+                                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid gray;">
+                            <td>(-) Retenções Federais:</td>
+                            <td style="text-align:right;">
+                                <span t-field="doc.retencoes_federais"
+                                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid gray;">
+                            <td>(-) ISS Retido na Fonte:</td>
+                            <td style="text-align:right;">
+                                <span t-field="doc.valor_retencao_issqn"
+                                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;color:red;">
+                            <td>Valor Líquido:</td>
+                            <td style="text-align:right;">
+                                <span t-field="doc.valor_final"
+                                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-xs-6">
+                  <table style="width: 95%;">
+                      <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;">
+                          <td>Valor dos serviços:</td>
+                          <td style="text-align:right;">
+                              <span t-field="doc.valor_bruto"
+                                  t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                          </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid gray;">
+                          <td>(-) Deduções:</td>
+                          <td style="text-align:right;">
+                              <span>R$ 0,00</span>
+                          </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid gray;">
+                          <td>(-) Desconto Incondicionado:</td>
+                          <td style="text-align:right;">
+                              <span>R$ 0,00</span>
+                          </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid gray;font-weight:bold;">
+                          <td>(=) Base de Cálculo:</td>
+                          <td style="text-align:right;">
+                              <span t-field="doc.valor_bc_issqn"
+                                  t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                          </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid gray;">
+                          <td>(x) Alíquota:</td>
+                          <td style="text-align:right;">
+                              <span t-field="doc.eletronic_item_ids[0].issqn_aliquota"></span> %
+                          </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;">
+                          <td style="color:red;">(=) Valor do ISS:</td>
+                          <td style="text-align:right;">
+                              <span style="color:red;" t-field="doc.valor_issqn"
+                                  t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
+                          </td>
+                      </tr>
+                  </table>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding: 10px;">
+                <div class="col-xs-2">
+                    <img src="/br_nfse_bh/static/img/prefeitura-bh.png" alt="Logo Prefeitura BH"
+                        style="max-height:80px; margin-top:4px; margin-left:10px;" />
+                </div>
+                <div class="col-xs-8">
+                    <strong>Prefeitura de Belo Horizonte - Secretaria Municipal de Fazenda</strong><br />
+                    <span>Rua Espírito Santo, 605 - 3º andar - Centro - CEP: 30160-919 - Belo Horizonte MG.</span><br />
+                    <span>Dúvidas: SIGESP</span>
+                </div>
+                <div class="col-xs-2">
+                    <img src="/br_nfse_bh/static/img/nota-bh.png" alt="Logo Nota BH"
+                        style="max-height:80px; margin-top:4px; margin-left:10px;" />
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="main_template_br_nfse_bh">
+        <div class="article">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="br_nfse_bh.danfse_report_template_bh" t-lang="doc.partner_id.lang"/>
+            </t>
+        </div>
+    </template>
+
+
+</odoo>

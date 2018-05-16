@@ -9,8 +9,8 @@ from odoo import api, fields, models
 class AccountClose(models.TransientModel):
     _name = 'account.close.wizard'
 
-    start_date = fields.Date(string="Inicio")
-    end_date = fields.Date(string="Final")
+    start_date = fields.Date(string="Start Date")
+    end_date = fields.Date(string="End Date")
 
     @api.multi
     def action_close_period(self):

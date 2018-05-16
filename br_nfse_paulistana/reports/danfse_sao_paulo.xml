@@ -181,11 +181,7 @@
                 </div>
                 <div class="col-xs-12">
                     <br />
-                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
-                        <p t-field="line.name"></p>
-                    </t>
-                    <span t-field="doc.informacoes_legais"></span>
-                    <span t-field="doc.informacoes_complementares"></span>
+                    <span t-raw="doc.discriminacao_servicos"></span>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
