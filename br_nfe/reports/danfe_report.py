@@ -12,6 +12,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pytrustnfe.nfe.danfe import danfe
+    from pytrustnfe.nfe.danfce import danfce
 except ImportError:
     _logger.warning('Cannot import pytrustnfe', exc_info=True)
 
@@ -56,8 +57,11 @@ class IrActionsReport(models.Model):
         timezone = pytz.timezone(self.env.context.get('tz')) or pytz.utc
 
         xml_element = etree.fromstring(nfe_xml)
-        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo,
-                       cce_xml=cce_xml_element, timezone=timezone)
+        obj_danfe = danfe
+        if nfe.model == '65':
+            obj_danfe = danfce
+        oDanfe = obj_danfe(list_xml=[xml_element], logo=tmpLogo,
+                           cce_xml=cce_xml_element, timezone=timezone)
 
         tmpDanfe = BytesIO()
         oDanfe.writeto_pdf(tmpDanfe)
