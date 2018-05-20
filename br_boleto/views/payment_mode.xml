@@ -11,24 +11,24 @@
             </field>
             <xpath expr="//field[@name='bank_account_id']" position="attributes">
                 <attribute name="attrs">
-                    {'invisible': [('payment_method','not in',['deposito','boleto'])]}
+                    {'invisible': [('payment_method','not in',['99'])]}
                 </attribute>
             </xpath>
             <group name="main" position="after">
-                <group name="boletos" string="Boletos">
-                  <field name="boleto_type" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="nosso_numero_sequence" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_carteira" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_modalidade" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_variacao" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_cnab_code" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_aceite" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_especie" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_protesto" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="boleto_protesto_prazo" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="late_payment_fee" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="late_payment_interest" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
-                  <field name="instrucoes" attrs="{'invisible': [('payment_method','!=','boleto')]}"/>
+                <group name="boletos" string="Boletos" attrs="{'invisible': [('payment_method','!=','99')]}">
+                  <field name="boleto_type" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="nosso_numero_sequence" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_carteira" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_modalidade" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_variacao" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_cnab_code" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_aceite" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_especie" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_protesto" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="boleto_protesto_prazo" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="late_payment_fee" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="late_payment_interest" attrs="{'invisible': [('payment_method','!=','99')]}"/>
+                  <field name="instrucoes" attrs="{'invisible': [('payment_method','!=','99')]}"/>
                 </group>
             </group>
         </field>

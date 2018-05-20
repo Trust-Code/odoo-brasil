@@ -184,6 +184,7 @@ class AccountInvoice(models.Model):
             'finalidade_emissao': '1',
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.payment_term_id.id,
+            'metodo_pagamento': invoice.payment_mode_id.payment_method,
             'fiscal_position_id': invoice.fiscal_position_id.id,
             'valor_icms': invoice.icms_value,
             'valor_icms_deson': invoice.icms_des_value,

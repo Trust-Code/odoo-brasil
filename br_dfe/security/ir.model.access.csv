@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_br_dfe_br_dfe,br_dfe.br_dfe,model_br_dfe_br_dfe,,1,0,0,0
