@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="legal_name"/>
-                <field name="cnpj_cpf" />
+                <field name="l10n_br_cnpj_cpf" />
             </field>
         </field>
     </record>
@@ -20,8 +20,8 @@
         <field name="inherit_id" ref="base.view_partner_tree" />
         <field name="arch" type="xml">
             <field name="display_name" position="after">
-                <field name="cnpj_cpf" />
-                <field name="inscr_est" />
+                <field name="l10n_br_cnpj_cpf" />
+                <field name="l10n_br_inscr_est" />
             </field>
         </field>
     </record>
@@ -32,6 +32,7 @@
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="l10n_br_localization" invisible="1" />
                 <button name="action_check_sefaz" type="object" class="oe_stat_button"
                     icon="fa-search" string="Search" attrs="{'invisible': [('company_type', '=', 'person')]}">
                 </button>
@@ -41,7 +42,7 @@
                     <field name="legal_name" placeholder="Legal Name" nolabel="1" />
                 </h3>
                 <h3>
-                    <field name="cnpj_cpf" placeholder="CNPJ/CPF" nolabel="1" />
+                    <field name="l10n_br_cnpj_cpf" placeholder="CNPJ/CPF" nolabel="1" />
                 </h3>
             </xpath>
             <field name="zip" position="replace" />
@@ -74,8 +75,8 @@
                 <page string="Fiscal Data">
                     <group>
                         <group>
-                            <field name="inscr_est" />
-                            <field name="rg_fisica" attrs="{'invisible': [('is_company','=', True)]}" />
+                            <field name="l10n_br_inscr_est" />
+                            <field name="l10n_br_rg_fisica" attrs="{'invisible': [('is_company','=', True)]}" />
                             <field name="inscr_mun" attrs="{'invisible': [('is_company','!=', True)]}" />
                         </group>
                         <group>
