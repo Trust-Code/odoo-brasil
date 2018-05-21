@@ -169,6 +169,7 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_item_vals(self, invoice_line):
         vals = super(AccountInvoice, self).\
             _prepare_edoc_item_vals(invoice_line)
+
         vals['cest'] = invoice_line.product_id.cest or \
             invoice_line.fiscal_classification_id.cest or ''
         vals['classe_enquadramento_ipi'] = \

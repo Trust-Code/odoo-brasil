@@ -40,12 +40,12 @@ class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
     model = fields.Selection(
-        selection_add=[('014', 'Nota Maringá')])
+        selection_add=[('015', 'NFS-e Maringá,PR')])
 
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if self.model == '014':
+        if self.model == '015':
             if not self.company_id.inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             if not self.company_id.cnae_main_id.code:
@@ -63,7 +63,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
-        if self.model != '014':
+        if self.model != '015':
             return res
 
         tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
@@ -156,7 +156,7 @@ class InvoiceEletronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        if self.model not in ('014'):
+        if self.model not in ('015'):
             return atts
         attachment_obj = self.env['ir.attachment']
         attachment_ids = attachment_obj.search(
@@ -199,7 +199,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
-        if self.model not in ('014'):
+        if self.model not in ('015'):
             return
 
         cert = self.company_id.with_context(
@@ -218,7 +218,7 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
-        if self.model != '014' or self.state in ('done', 'cancel'):
+        if self.model != '015' or self.state in ('done', 'cancel'):
             return
 
         self.state = 'error'
@@ -259,7 +259,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
-        if self.model not in ('014'):
+        if self.model not in ('015'):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
@@ -296,7 +296,7 @@ class InvoiceEletronic(models.Model):
         if "Cancelamento" in dir(retorno):
             self.state = 'cancel'
             self.codigo_retorno = '100'
-            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+            self.mensagem_retorno = 'Nota Fiscal de Serviço Cancelada'
         else:
             # E79 - Nota já está cancelada
             if retorno.ListaMensagemRetorno.MensagemRetorno.Codigo != 'E79':
@@ -308,7 +308,7 @@ class InvoiceEletronic(models.Model):
 
             self.state = 'cancel'
             self.codigo_retorno = '100'
-            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+            self.mensagem_retorno = 'Nota Fiscal de Serviço Cancelada'
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
