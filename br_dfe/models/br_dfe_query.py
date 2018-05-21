@@ -3,8 +3,9 @@
 import base64, re, logging, zlib, pytz
 from lxml import etree, objectify
 from datetime import datetime
-from odoo import models, fields, api, exceptions, _
+from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -38,6 +39,28 @@ class SpedDFeQueryNSU(models.Model):
 
     _name = 'sped.dfe.query.nsu'
 
+    @api.one
+    @api.depends('nsu_type')
+    def _discovery_state_nfe(self):
+        for record in self:
+            res_event = self.env['sped.dfe.query.nsu'].search([('chave_nfe', '=', record.chave_nfe),
+                                            ('id', '!=', record.id), ('nsu_type', '=', 'res_nfe')])
+            proc_event = self.env['sped.dfe.query.nsu'].search([('chave_nfe', '=', record.chave_nfe),
+                                            ('id', '!=', record.id), ('nsu_type', '=', 'proc_evento')])
+            if len(record.event_line) > 0:
+                if record.event_line.code == '210200':
+                    record.write({'nfe_state': '1'})
+                elif record.event_line.code == '210240':
+                    record.write({'nfe_state': '3'})
+                else:
+                    continue
+            elif proc_event.cod_evento == '110111':
+                record.write({'nfe_state': '3'})
+            elif record.nsu_type == 'nfe' and proc_event.cod_evento != '110111':
+                record.write({'nfe_state': res_event.nfe_state})
+
+
+
     company_id = fields.Many2one('res.company', u'Empresa', index=True, readonly=True)
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string="Moeda")
     name = fields.Char('Nome', compute='_compute_name')
@@ -46,9 +69,9 @@ class SpedDFeQueryNSU(models.Model):
                                  copy=False, readonly=True, auto_join=True)
     nsu = fields.Integer(string='Seq. Único', readonly=True)
     nsu_type = fields.Selection([('res_nfe', 'Resumo NF-e'), ('nfe', 'Nota Fiscal'), ('res_evento', 'Resumo de Evento'),
-                                 ('proc_evento', 'Manifestação do Cliente')],string='Tipo de Evento',
+                                 ('proc_evento', 'Manifestação do Cliente')], string='Tipo de Evento',
                                 store=True, readonly=True)
-    partner_id = fields.Many2one('res.partner', compute='_search_partner', string='Parceiro no Sistema',readonly=True,
+    partner_id = fields.Many2one('res.partner', compute='_search_partner', string='Parceiro no Sistema', readonly=True,
                                  store=True)
     evento_manifestado = fields.Boolean('Manifestado', compute='_search_manifesto', default=False)
     data_evento = fields.Date(string='Data do Evento', readonly=True)
@@ -60,6 +83,8 @@ class SpedDFeQueryNSU(models.Model):
     xml = fields.Binary(string='XML do Documento', readonly=True)
     xml_name = fields.Char(readonly=True)
     chave_nfe = fields.Char(string='Chave do Documento Eletrônico', readonly=True)
+    nfe_state = fields.Selection([('1', 'Uso Autorizado'), ('2', 'Uso Denegado'), ('3', 'NF-e Cancelada')], store=True,
+                                 string='Situação da NF-e', readonly=True)
     tpnf = fields.Char(string='Tipo da NF-e', readonly=True)
     cod_evento = fields.Char(string='Código do Evento', readonly=True)
     nome_evento = fields.Char(string='Nome do Evento', readonly=True)
@@ -79,6 +104,7 @@ class SpedDFeQueryNSU(models.Model):
                 record.evento_manifestado = True
             else:
                 record.evento_manifestado = False
+            record._discovery_state_nfe()
 
     @api.multi
     @api.depends('nsu_type', 'chave_nfe')
@@ -134,7 +160,23 @@ class SpedDFeQueryNSU(models.Model):
             self.partner_id = partner.id
 
     @api.multi
+    def _validation_manifest(self):
+        for record in self:
+            if record.nfe_state == '3':
+                raise UserError(
+                    u'Documento Eletrônico já Cancelado, não pode ser manifestado!')
+            elif len(record.event_line) > 0:
+                raise UserError(
+                    u'Documento Eletrônico já manifestado!')
+
+    @api.multi
+    def _search_events(self):
+        search = self.env['sped.dfe.query.wizard'].create({})
+        search.automated_search_dfe()
+
+    @api.multi
     def confirm_operation(self):
+        self._validation_manifest()
         company_id = self.env['res.company']._company_default_get('account.account')
         res = []
         for record in self:
@@ -148,7 +190,7 @@ class SpedDFeQueryNSU(models.Model):
                 })
             manifestar = manifest.send_manifesto()
             res.append(manifestar)
-
+        self._search_events()
         mensagem = ''
         for message in res:
             mensagem += message + '\n'
@@ -165,6 +207,7 @@ class SpedDFeQueryNSU(models.Model):
 
     @api.multi
     def deny_operation(self):
+        self._validation_manifest()
         company_id = self.env['res.company']._company_default_get('account.account')
         res = []
         for record in self:
@@ -178,7 +221,7 @@ class SpedDFeQueryNSU(models.Model):
                 })
             manifestar = manifest.send_manifesto()
             res.append(manifestar)
-
+        self._search_events()
         mensagem = ''
         for message in res:
             mensagem += message + '\n'

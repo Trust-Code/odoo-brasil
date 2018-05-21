@@ -7,7 +7,7 @@
     'summary': 'Web Service de Distribuição de DF-e de Interesse dos Atores da NF-e (PF ou PJ)',
     'description': """Permite a Consulta e Download de Eventos e Documentos Eletrônicos
     através do Web Service do Ambiente Nacional DF-e\n
-    ****** Funcionalidades inclusas******\n
+    ****** Funcionalidades inclusas ******\n
     - Busca de Eventos e Documentos Eletrônicos\n
     - Manifestar um Documento Eletrônico\n
     - Busca Automática de Documentos Eletrônicos Através de Ação Agendada\n
@@ -30,7 +30,7 @@
     },
 
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/br_dfe.xml',
         'views/templates.xml',
         'data/search_events.xml',

@@ -119,10 +119,11 @@ class SpedDFeQueryWizard(models.TransientModel):
         if schema == 'resNFe_v1.01.xsd':
             vals['cnpj'] = xml.CNPJ.text
             vals['xnome'] = xml.xNome
-            vals['valor_nfe'] = xml.vNF
             vals['ie'] = xml.IE.text
-            vals['chave_nfe'] = xml.chNFe.text
             vals['nsu_type'] = 'res_nfe'
+            vals['chave_nfe'] = xml.chNFe.text
+            vals['nfe_state'] = xml.cSitNFe.text
+            vals['valor_nfe'] = xml.vNF
             vals['tpnf'] = xml.tpNF
             data_evento = xml.dhEmi.text[0:10]
             data_evento = datetime.strptime(data_evento, '%Y-%m-%d').date()

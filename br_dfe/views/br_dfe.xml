@@ -1,7 +1,10 @@
 <odoo>
   <data>
 
-    <menuitem id="br_fiscal" name="SPED/Fiscal" parent="account.menu_finance"/>
+    <menuitem id="br_fiscal"
+              name="SPED/Fiscal"
+              groups="account.group_account_manager"
+              parent="account.menu_finance"/>
 
     <record model="ir.ui.view" id="br_dfe_query_form">
       <field name="name">br_dfe_query_form</field>
@@ -166,10 +169,12 @@
               </group>
               <group string="Dados do Evento">
                 <field name="nsu"/>
+                <field name="data_evento"/>
                 <field name="nsu_type"/>
                 <field name="cod_evento" attrs="{'invisible': [('nsu_type','not in',['proc_evento','res_evento'])]}"/>
                 <field name="nome_evento" attrs="{'invisible': [('nsu_type','not in',['proc_evento','res_evento'])]}"/>
                 <field name="chave_nfe" string="Chave da NF-e"/>
+                <field name="nfe_state" attrs="{'invisible': [('nsu_type','not in',['res_nfe','nfe'])]}"/>
                 <field name="nfe_relacionada" attrs="{'invisible': [('nsu_type','!=','proc_evento')]}"/>
                 <field name="valor_nfe" string="Valor" attrs="{'invisible': [('nsu_type','in',['proc_evento','res_evento'])]}"/>
                 <field name="nfe_xml" filename="xml_name" invisible="1"/>
@@ -203,7 +208,7 @@
       <field name="name">Lista de Documentos de Retorno / DF-e</field>
       <field name="model">sped.dfe.query.nsu</field>
       <field name="arch" type="xml">
-        <tree string="Arquivos" default_order="nsu"
+        <tree string="Arquivos" default_order="nsu desc, data_evento desc"
               decoration-primary="cod_evento in ['210200','210210']"
               decoration-danger="cod_evento=='110111'">
             <field name="evento_manifestado" invisible="1"/>
@@ -213,9 +218,11 @@
             <field name="nsu" invisible="1"/>
             <field name="nsu_type"/>
             <field name="cod_evento" invisible="1"/>
-            <field name="partner_id"/>
+            <field name="partner_id" invisible="1"/>
+            <field name="xnome"/>
             <field name="cnpj"/>
-            <field name="ie"/>
+            <field name="data_evento"/>
+            <field name="ie" invisible="1"/>
             <field name="chave_nfe" invisible="1"/>
             <field name="valor_nfe"/>
             <button name="confirm_operation" type="object" string="Manifestar Documento"
@@ -273,17 +280,25 @@
       <field name="target">new</field>
     </record>
 
-    <menuitem name="Consultar Documentos Fiscais Eletrônicos" id="dfe_distribution_query_menu"
-          action="dfe_distribution_query_action"
-          parent="br_fiscal"/>
-
-    <menuitem name="Extratos das Buscas" id="dfe_distribution_results_menu"
-          action="dfe_distribution_results"
-          parent="br_fiscal"/>
+    <menuitem id="br_fiscal_dfe"
+              name="Web Service DF-e"
+              parent="br_fiscal"
+              sequence="4"/>
 
     <menuitem name="Documentos e Eventos Eletrônicos" id="dfe_distribution_nsu_menu"
           action="dfe_distribution_query_nsu"
-          parent="br_fiscal"/>
+          sequence="10"
+          parent="br_fiscal_dfe"/>
+
+    <menuitem name="Consultar Documentos Fiscais Eletrônicos" id="dfe_distribution_query_menu"
+          action="dfe_distribution_query_action"
+          sequence="20"
+          parent="br_fiscal_dfe"/>
+
+    <menuitem name="Extratos das Buscas" id="dfe_distribution_results_menu"
+          action="dfe_distribution_results"
+          sequence="30"
+          parent="br_fiscal_dfe"/>
 
   </data>
 </odoo>
