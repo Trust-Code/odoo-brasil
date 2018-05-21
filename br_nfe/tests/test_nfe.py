@@ -171,6 +171,13 @@ class TestNFeBrasil(TransactionCase):
             'amount': 7,
             'price_include': True,
         })
+        self.icms_difal_intra_1700 = self.env['account.tax'].create({
+            'name': "ICMS Difal Intra",
+            'amount_type': 'division',
+            'domain': 'icms_intra',
+            'amount': 17,
+            'price_include': True,
+        })
 
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda',
@@ -224,6 +231,7 @@ class TestNFeBrasil(TransactionCase):
                     'fiscal_classification_id': self.default_ncm.id,
                     'tem_difal': True,
                     'tax_icms_inter_id': self.icms_difal_inter_700.id,
+                    'tax_icms_intra_id': self.icms_difal_intra_1700.id,
                 }
              ),
             (0, 0,

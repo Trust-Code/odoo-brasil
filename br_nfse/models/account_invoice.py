@@ -23,14 +23,15 @@ class AccountInvoice(models.Model):
     numero_nfse = fields.Char(
         'NFS-e', size=30, compute='_compute_nfse_number', store=True)
 
-    def _prepare_edoc_vals(self, inv, inv_lines):
-        res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
+    def _prepare_edoc_vals(self, inv, inv_lines, serie_id):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(
+            inv, inv_lines, serie_id)
         res['nfse_eletronic'] = inv.nfse_eletronic
         res['ambiente'] = inv.ambiente_nfse
         res['serie'] = inv.service_serie_id.id
         res['serie_documento'] = inv.service_serie_id.code
         res['model'] = inv.service_document_id.code
-        res['numero'] = inv.service_serie_id.internal_sequence_id.next_by_id()
+        res['numero'] = serie_id.internal_sequence_id.next_by_id()
         return res
 
 
