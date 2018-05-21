@@ -167,7 +167,7 @@ class AccountInvoice(models.Model):
         }
         return vals
 
-    def _prepare_edoc_vals(self, invoice, inv_lines):
+    def _prepare_edoc_vals(self, invoice, inv_lines, serie_id):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         vals = {
@@ -226,7 +226,8 @@ class AccountInvoice(models.Model):
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'product')
                 if inv_lines:
-                    edoc_vals = self._prepare_edoc_vals(item, inv_lines)
+                    edoc_vals = self._prepare_edoc_vals(
+                        item, inv_lines, item.product_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
@@ -234,7 +235,8 @@ class AccountInvoice(models.Model):
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'service')
                 if inv_lines:
-                    edoc_vals = self._prepare_edoc_vals(item, inv_lines)
+                    edoc_vals = self._prepare_edoc_vals(
+                        item, inv_lines, item.service_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
