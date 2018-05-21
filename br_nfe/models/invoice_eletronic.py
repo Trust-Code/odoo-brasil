@@ -189,11 +189,6 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string=u"Cartas de Correção", readonly=True, states=STATE)
 
-    def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
-src="/report/barcode/Code128/' + self.chave_nfe + '" />'
-        return url
-
     def can_unlink(self):
         res = super(InvoiceEletronic, self).can_unlink()
         if self.state == 'denied':
@@ -741,6 +736,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             cert_pfx, self.company_id.nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
+
         lote = self._prepare_lote(self.id, nfe_values)
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
