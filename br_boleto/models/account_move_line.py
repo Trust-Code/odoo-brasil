@@ -20,7 +20,7 @@ class AccountMoveLine(models.Model):
     def _compute_print_boleto(self):
         for record in self:
             if record.billing_status in ['open','overdue','partially']:
-                if record.billing_type == '1' and record.payment_method == 'boleto':
+                if record.billing_type == '1' and record.payment_method == '99':
                     record.print_boleto = True
                 else:
                     record.print_boleto = False
@@ -71,7 +71,7 @@ class AccountMoveLine(models.Model):
     def action_register_boleto(self):
         boleto_list = []
         for move in self:
-            if move.payment_mode_id.payment_method != 'boleto':
+            if move.payment_mode_id.payment_method != '99':
                 raise UserError(
                     u'O modo de pagamento configurado não é boleto')
             if not move.payment_mode_id.nosso_numero_sequence.id:

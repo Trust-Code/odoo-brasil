@@ -8,11 +8,9 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    tipo_ambiente = fields.Selection([('1', u'Produção'),
-                                      ('2', u'Homologação')],
-                                     string="Ambiente NFe", default='2')
+    tipo_ambiente = fields.Selection([('1', u'Produção'), ('2', u'Homologação')], string="Ambiente NFe", default='2')
 
-    cabecalho_danfe = fields.Selection([('vertical', 'Modelo Vertical'),
-                                        ('horizontal', 'Modelo Horizontal')],
-                                       string=u"Cabeçalho Danfe",
-                                       default='vertical')
+    cabecalho_danfe = fields.Selection([('vertical', 'Modelo Vertical'), ('horizontal', 'Modelo Horizontal')],
+                                       string=u"Cabeçalho Danfe", default='vertical')
+    id_token_csc = fields.Char(string="Identificador do CSC")
+    csc = fields.Char(string=u'Código de Segurança do Contribuinte')

@@ -29,6 +29,16 @@ except ImportError:
 
 STATE = {'edit': [('readonly', False)]}
 
+metodos = [
+    ('01', u'Dinheiro'),
+    ('02', u'Cheque'),
+    ('03', u'Cartão de Crédito'),
+    ('04', u'Cartão de Débito'),
+    ('05', u'Crédito Loja'),
+    ('10', u'Vale Alimentacão'),
+    ('11', u'Vale Presente'),
+    ('13', u'Vale Combustível'),
+    ('99', u'Outros'),]
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
@@ -186,6 +196,10 @@ class InvoiceEletronic(models.Model):
     cartas_correcao_ids = fields.One2many(
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string=u"Cartas de Correção", readonly=True, states=STATE)
+    # NFC-e
+    qrcode_hash = fields.Char(string='QR-Code hash')
+    qrcode_url = fields.Char(string='QR-Code URL')
+    metodo_pagamento = fields.Selection(metodos, string=u'Método de Pagamento')
 
     def barcode_url(self):
         url = '<img style="width:380px;height:50px;margin:2px 1px;"\
@@ -646,6 +660,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'xPed': self.pedido_compra or '',
             'xCont': self.contrato_compra or '',
         }
+
+        codigo_seguranca = {
+            'cid_token': self.company_id.id_token_csc,
+            'csc': self.company_id.csc,
+        }
+
         vals = {
             'Id': '',
             'ide': ide,
@@ -661,6 +681,11 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         }
         if len(duplicatas) > 0:
             vals['cobr'] = cobr
+
+        if self.model == '65':
+            vals['codigo_seguranca'] = codigo_seguranca
+            vals['pagamento'] = self.metodo_pagamento
+
         return vals
 
     @api.multi
@@ -750,8 +775,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if mensagens_erro:
             raise UserError(mensagens_erro)
 
-        self.xml_to_send = base64.encodestring(
-            xml_enviar.encode('utf-8'))
+        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
     @api.multi

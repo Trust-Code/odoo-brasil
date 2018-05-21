@@ -1,8 +1,7 @@
 # © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import base64
-import logging
+import base64, logging, pytz
 from lxml import etree
 from io import BytesIO
 from odoo import models
@@ -11,6 +10,8 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pytrustnfe.nfe.danfe import danfe
+    from pytrustnfe.nfe.danfce import danfce
+
 except ImportError:
     _logger.warning('Cannot import pytrustnfe', exc_info=True)
 
@@ -27,6 +28,18 @@ class IrActionsReport(models.Model):
 
         nfe_xml = base64.decodestring(nfe.nfe_processada)
 
+        cce_xml_element = []
+        cce_list = self.env['ir.attachment'].search([
+            ('res_model', '=', 'invoice.eletronic'),
+            ('res_id', '=', nfe.id),
+            ('name', 'like', 'cce-')
+        ])
+
+        if cce_list:
+            for cce in cce_list:
+                cce_xml = base64.decodestring(cce.datas)
+                cce_xml_element.append(etree.fromstring(cce_xml))
+
         logo = False
         if nfe.invoice_id.company_id.logo:
             logo = base64.decodestring(nfe.invoice_id.company_id.logo)
@@ -40,8 +53,13 @@ class IrActionsReport(models.Model):
         else:
             tmpLogo = False
 
+        timezone = pytz.timezone(self.env.context.get('tz')) or pytz.utc
+
         xml_element = etree.fromstring(nfe_xml)
-        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+        if nfe.model == '65':
+            oDanfe = danfce(list_xml=[xml_element], logo=tmpLogo)
+        elif nfe.model == '55':
+            oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo, cce_xml=cce_xml_element, timezone=timezone)
 
         tmpDanfe = BytesIO()
         oDanfe.writeto_pdf(tmpDanfe)

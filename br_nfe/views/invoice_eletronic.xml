@@ -93,6 +93,8 @@
             </field>
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
+                <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
                 <field name="nfe_processada_name" invisible="1"/>
                 <field name="nfe_processada" filename="nfe_processada_name"/>
             </field>
@@ -102,6 +104,7 @@
                 <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_ie_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="metodo_pagamento" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
             </field>
             <field name="valor_cofins" position="after">
                 <field name="valor_icms_fcp_uf_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />

@@ -15,7 +15,7 @@ class AccountInvoice(models.Model):
     @api.depends('payment_mode_id')
     def _check_payment_mode(self):
         for record in self:
-            if record.payment_mode_id.payment_method == 'boleto':
+            if record.payment_mode_id.payment_method == '99':
                 record.boleto = True
             else:
                 record.boleto = False
@@ -109,7 +109,7 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
 
     @api.multi
     def action_register_boleto(self):
-        if self.payment_mode_id.payment_method != 'boleto':
+        if self.payment_mode_id.payment_method != '99':
             raise UserError(
                 u'O método de pagamento definido é diferente de boleto!')
         if self.state in ('draft', 'cancel'):

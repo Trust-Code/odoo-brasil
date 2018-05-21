@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_br_dfe_sped_dfe_query,br_dfe.sped_dfe_query,model_sped_dfe_query,account.group_account_manager,1,1,1,0
+access_br_dfe_sped_dfe_query_nsu,br_dfe.sped_dfe_query_nsu,model_sped_dfe_query_nsu,account.group_account_manager,1,1,1,0
+access_br_dfe_sped_dfe_query_nsu_event,br_dfe.sped_dfe_query_nsu_event,model_sped_dfe_query_nsu_event,account.group_account_manager,1,1,1,0
