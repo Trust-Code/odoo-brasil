@@ -15,31 +15,32 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/label" position="before">
                 <div class="oe_button_box" name="button_box"></div>
+                <field name="is_l10n_br_localization" invisible="1"/>
             </xpath>
             <field name="fiscal_position_id" position="replace"></field>
             <field name="payment_term_id" position="after">
                 <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]" />
             </field>
             <field name="partner_bank_id" position="after">
-                <field name="product_document_id" />
-                <field name="product_serie_id" />
+                <field name="product_document_id" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
+                <field name="product_serie_id" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
             </field>
             <xpath expr="//page[@name='other_info']/group/group/field[@name='name']" position="after">
-                <field name="service_document_id" />
-                <field name="service_serie_id" />
+                <field name="service_document_id" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
+                <field name="service_serie_id" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"></attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="invisible">[('is_l10n_br_localization', '=', False)]</attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="valor_bruto" invisible="1" />
                 <field name="valor_desconto" invisible="1" />
             </xpath>
             <page name="other_info" position="before">
-                <page name="vencimentos" string="Vencimentos">
+                <page name="vencimentos" string="Vencimentos" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}">
                     <field nolabel="1" name="receivable_move_line_ids">
                         <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
@@ -53,7 +54,7 @@
                 </page>
             </page>
             <field name="tax_line_ids" position="after">
-                <group name="documentos_relacionados" string="Documentos Relacionados">
+                <group name="documentos_relacionados" string="Documentos Relacionados" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}">
                     <field colspan="4" nolabel="1" name="fiscal_document_related_ids">
                         <tree>
                             <field name="document_type"/>
@@ -84,26 +85,27 @@
                         </form>
                     </field>
                 </group>
-                <group string="Mensagens Documento Eletrônico">
+                <group string="Mensagens Documento Eletrônico" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}">
                     <field name="fiscal_observation_ids" nolabel="1"/>
                 </group>
-                <group string="Observações">
+                <group string="Observações" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}">
                     <field name="comment" nolabel="1"/>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Observações Fiscais" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}">
                     <field name="fiscal_comment" nolabel="1"/>
                 </group>
             </field>
             <field name="amount_untaxed" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="invisible">[('is_l10n_br_localization', '=', False)]</attribute>
             </field>
             <field name="amount_tax" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="invisible">[('is_l10n_br_localization', '=', False)]</attribute>
             </field>
             <field name="amount_tax" position="before">
-                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/></field>
+                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
+                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
+                <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible': [('is_l10n_br_localization', '=', False)]}"/>
+            </field>
         </field>
     </record>
     <record id="view_br_account_invoice_cancel_form" model="ir.ui.view">
@@ -111,8 +113,18 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account_cancel.invoice_form_cancel_inherit"/>
         <field name="arch" type="xml">
-            <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/></button>
+            <!-- Replace position shouldn't be used to avoid future mistakes with multicompany environment. We should use
+               invisible attribute with localization field and then add action_invoice_cancel_paid button  -->
+            <button name="action_invoice_cancel" position="attributes">
+                <attribute name="invisible">[('is_l10n_br_localization', '=', False)]</attribute>
+            </button>
+            <button name="action_invoice_cancel" position="after">
+                <button name="action_invoice_cancel_paid"
+                        type="object"
+                        string="Cancelar Fatura"
+                        attrs="{'invisible':['|', ('state', 'in', ('draft','proforma2','open','paid')), ('is_l10n_br_localization', '=', False)]}"
+                        groups="account.group_account_invoice"/>
+            </button>
         </field>
     </record>
     <record id="view_br_account_invoice_supplier_form" model="ir.ui.view">
@@ -161,7 +173,7 @@
                     </field>
                 </page>
             </xpath>
-            <xpath expr="//notebook/page[last()]/group" position="after">
+            <xpath expr="//notebook/page[last()]" position="after">
                 <group name="documentos_relacionados" string="Documentos Relacionados">
                     <field colspan="4" nolabel="1" name="fiscal_document_related_ids">
                         <tree>
