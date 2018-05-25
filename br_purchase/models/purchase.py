@@ -161,7 +161,10 @@ class PurchaseOrderLine(models.Model):
                     vals.get('tax_pis_id', empty) | \
                     vals.get('tax_cofins_id', empty) | \
                     vals.get('tax_ii_id', empty) | \
-                    vals.get('tax_issqn_id', empty)
+                    vals.get('tax_issqn_id', empty) | \
+                    vals.get('tax_csll_id', empty) | \
+                    vals.get('tax_irrf_id', empty) | \
+                    vals.get('tax_inss_id', empty)
 
                 line.update({
                     'taxes_id': [(6, None, [x.id for x in tax_ids if x])]
