@@ -112,6 +112,7 @@ class PurchaseOrderLine(models.Model):
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
+    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
 
     valor_bruto = fields.Float(
         compute='_compute_amount', string='Vlr. Bruto', store=True,

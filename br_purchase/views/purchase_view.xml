@@ -24,6 +24,7 @@
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
                 <field name="cofins_cst" invisible="1" />
+                <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/sheet/group/group/field[@name='price_unit']" position="after">
                 <field name="valor_bruto" />
@@ -41,6 +42,7 @@
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
                 <field name="cofins_cst" invisible="1" />
+                <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
                 <attribute name="invisible">0</attribute>

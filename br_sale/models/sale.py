@@ -197,6 +197,7 @@ class SaleOrderLine(models.Model):
 
     pis_cst = fields.Char(string=u'CST PIS', size=5)
     cofins_cst = fields.Char(string=u'CST COFINS', size=5)
+    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
 
     valor_desconto = fields.Float(
         compute='_compute_amount', string=u'Vlr. Desc. (-)', store=True,
@@ -356,6 +357,7 @@ class SaleOrderLine(models.Model):
         res['cofins_aliquota'] = cofins.amount or 0.0
 
         res['issqn_aliquota'] = issqn.amount or 0.0
+        res['l10n_br_issqn_deduction'] = self.l10n_br_issqn_deduction
 
         res['ii_aliquota'] = ii.amount or 0.0
         res['csll_aliquota'] = csll.amount or 0.0

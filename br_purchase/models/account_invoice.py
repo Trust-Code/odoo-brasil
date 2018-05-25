@@ -98,6 +98,7 @@ class AccountInvoice(models.Model):
 
         res['issqn_aliquota'] = issqn.amount or 0.0
         res['issqn_tipo'] = 'N'
+        res['l10n_br_issqn_deduction'] = line.l10n_br_issqn_deduction
 
         res['ii_aliquota'] = ii.amount or 0.0
 
