@@ -14,6 +14,11 @@
                 <field name="date_end"/>
             </group>
             <group col="4">
+                <field name="data_vencimento_e316"/>
+                <field name="cod_obrigacao"/>
+                <field name="cod_receita"/>
+            </group>    
+            <group col="4">
                 <field name="vl_sld_cred_ant_difal"/>
                 <field name="vl_sld_cred_transp_difal"/>
                 <field name="vl_sld_cred_ant_fcp"/>

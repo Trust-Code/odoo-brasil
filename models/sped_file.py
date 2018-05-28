@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from unicodedata import normalize 
 import datetime
 import base64
 from sped.efd.icms_ipi.arquivos import ArquivoDigital
@@ -14,9 +15,16 @@ from sped.efd.icms_ipi.registros import RegistroC100
 from sped.efd.icms_ipi.registros import RegistroC101
 from sped.efd.icms_ipi.registros import RegistroC170
 from sped.efd.icms_ipi.registros import RegistroC190
+from sped.efd.icms_ipi.registros import RegistroD001
+from sped.efd.icms_ipi.registros import RegistroD100
+from sped.efd.icms_ipi.registros import RegistroD110
+from sped.efd.icms_ipi.registros import RegistroD120
+from sped.efd.icms_ipi.registros import RegistroD190
 from sped.efd.icms_ipi.registros import Registro9001
 from sped.efd.icms_ipi.registros import RegistroE100
 from sped.efd.icms_ipi.registros import RegistroE110
+from sped.efd.icms_ipi.registros import RegistroE200
+from sped.efd.icms_ipi.registros import RegistroE210
 from sped.efd.icms_ipi.registros import RegistroE500
 from sped.efd.icms_ipi.registros import RegistroE510
 from sped.efd.icms_ipi.registros import RegistroE520
@@ -31,6 +39,12 @@ class SpedFile(models.Model):
 
     date_start= fields.Date(string='Faturar de')
     date_end = fields.Date(string='Até')
+    data_vencimento_e316 = fields.Date(string='Vencimento E-316')
+    cod_obrigacao = fields.Char(
+        string=u"Código Obrigação", dafault='090')
+    cod_receita = fields.Char(
+        string=u"Código Receita", default='100102')
+        
     tipo_arquivo = fields.Selection([
         ('0', 'Remessa do arquivo original'),
         ('1', 'Remessa do arquivo substituto'),
@@ -46,8 +60,22 @@ class SpedFile(models.Model):
     vl_sld_cred_ant_fcp = fields.Float('Saldo Credor per. ant. FCP', default=0.0)
     vl_sld_cred_transp_fcp = fields.Float('Saldo Credor per. seguinte FCP', default=0.0)
 
+
     #arq = ArquivoDigital()
     fatura = 0
+
+    def normalize_str(self, string):
+        """
+        Remove special characters and strip spaces
+        """
+        if string:
+            if not isinstance(string, str):
+                string = str(string, 'utf-8', 'replace')
+
+            string = string.encode('utf-8')
+            return normalize(
+                'NFKD', string.decode('utf-8')).encode('ASCII', 'ignore').decode()
+        return ''
 
     @api.multi
     def create_file(self):
@@ -136,22 +164,23 @@ class SpedFile(models.Model):
         reg0005.EMAIL = self.company_id.email
         arq._blocos['0'].add(reg0005)            
 
-        contabilista = Registro0100()
-        cod_mun = '%s%s' %(self.company_id.accountant_id.state_id.ibge_code, self.company_id.accountant_id.city_id.ibge_code)
-        contabilista.NOME = self.company_id.accountant_id.legal_name
-        contabilista.CPF = self.limpa_formatacao(self.company_id.accountant_id.cnpj_cpf)
-        contabilista.CRC = self.limpa_formatacao(self.company_id.accountant_id.rg_fisica)
-        contabilista.END = self.company_id.accountant_id.street
-        contabilista.CEP = self.limpa_formatacao(self.company_id.accountant_id.zip)
-        contabilista.NUM = self.company_id.accountant_id.number
-        contabilista.COMPL = self.company_id.accountant_id.street2
-        contabilista.BAIRRO = self.company_id.accountant_id.district
-        contabilista.FONE = self.limpa_formatacao(self.company_id.accountant_id.phone)
-        #contabilista.FAX = self.company_id.accountant_id.fax
-        contabilista.EMAIL = self.company_id.accountant_id.email
-        contabilista.COD_MUN = cod_mun
+        if self.company_id.accountant_id.legal_name:
+            contabilista = Registro0100()
+            cod_mun = '%s%s' %(self.company_id.accountant_id.state_id.ibge_code, self.company_id.accountant_id.city_id.ibge_code)
+            contabilista.NOME = self.company_id.accountant_id.legal_name
+            contabilista.CPF = self.limpa_formatacao(self.company_id.accountant_id.cnpj_cpf)
+            contabilista.CRC = self.limpa_formatacao(self.company_id.accountant_id.rg_fisica)
+            contabilista.END = self.company_id.accountant_id.street
+            contabilista.CEP = self.limpa_formatacao(self.company_id.accountant_id.zip)
+            contabilista.NUM = self.company_id.accountant_id.number
+            contabilista.COMPL = self.company_id.accountant_id.street2
+            contabilista.BAIRRO = self.company_id.accountant_id.district
+            contabilista.FONE = self.limpa_formatacao(self.company_id.accountant_id.phone)
+            #contabilista.FAX = self.company_id.accountant_id.fax
+            contabilista.EMAIL = self.company_id.accountant_id.email
+            contabilista.COD_MUN = cod_mun
 
-        arq._blocos['0'].add(contabilista)
+            arq._blocos['0'].add(contabilista)
         
         for item_lista in self.query_registro0150():
             arq.read_registro(self.junta_pipe(item_lista))
@@ -161,6 +190,13 @@ class SpedFile(models.Model):
 
         for item_lista in self.query_registro0200():
             arq.read_registro(self.junta_pipe(item_lista))
+            # 0205 - ALTERACAO NO ITEM
+            for item_lista in self.query_registro0205(item_lista.COD_ITEM):
+                arq.read_registro(self.junta_pipe(item_lista))
+            # 0220 - Conversão Unidade Medida
+            for item_lista in self.query_registro0220(item_lista.COD_ITEM):            
+                arq.read_registro(self.junta_pipe(item_lista))
+            
             
         for item_lista in self.query_registro0400():
             arq.read_registro(self.junta_pipe(item_lista))
@@ -193,10 +229,9 @@ class SpedFile(models.Model):
         for id in query_resposta:
             if id[2] == '55' and id[1] == 'cancel':
                 continue
-            #import pudb;pu.db
+
             self.fatura = id[0]
             #if self.fatura == 222:
-            #    import pudb;pu.db
             # TODO C100 - Notas Fiscais - Feito        
             for item_lista in self.query_registroC100(self.fatura):
                 arq.read_registro(self.junta_pipe(item_lista))
@@ -214,6 +249,52 @@ class SpedFile(models.Model):
             for item_lista in self.query_registroC190(self.fatura):
                 arq.read_registro(self.junta_pipe(item_lista))
                 
+        # TODO BLOCO D - prestações ou contratações de serviços 
+        # de comunicação, transporte interestadual e intermunicipa
+        # TODO D100 - Periodo Apuracao
+
+        query = """
+                    select distinct
+                        d.id, d.state, trim(d.nfe_modelo), d.product_document_id 
+                    from
+                        account_invoice as d
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    where
+                        d.date_invoice between '%s' and '%s'
+                        and ((fd.code='57') or (fd.code='67') or (d.nfe_modelo = '57') or (d.nfe_modelo = '67'))
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null                        
+                """ % (self.date_start, self.date_end)
+        self._cr.execute(query)
+        query_resposta = self._cr.fetchall()
+        lista = []
+        cont = 1
+
+        registro_D001 = RegistroD001()
+        if query_resposta:
+            registro_D001.IND_MOV = '0'
+        else:
+            registro_D001.IND_MOV = '1'
+        arq._blocos['D'].add(registro_D001)
+
+        resposta_cte = self.env['account.invoice'].search([
+            ('nfe_modelo','in',('57','67')),
+            ('state', 'in',('open','paid')),
+            ('date_invoice','>=',self.date_start),
+            ('date_invoice','<=',self.date_end),
+            ])
+        for cte in resposta_cte:
+            # TODO D100 - Documentos Transporte
+            for item_lista in self.query_registroD100(cte.id):
+                arq.read_registro(self.junta_pipe(item_lista))
+                
+            # TODO D190 - Totalizacao por CST
+            for item_lista in self.query_registroD190(cte.id):
+                arq.read_registro(self.junta_pipe(item_lista))
+                
+                
         # TODO BLOCO E - Apuracao ICMS
         # TODO E100 - Periodo Apuracao
         registro_E100 = RegistroE100()
@@ -224,6 +305,14 @@ class SpedFile(models.Model):
         # TODO E110 - Apuracao do ICMS
         for item_lista in self.query_registroE110():
             arq.read_registro(self.junta_pipe(item_lista))
+
+        # TODO E200 - Apuracao do ICMS ST
+        for item_lista in self.query_registroE200():
+            arq.read_registro(self.junta_pipe(item_lista))
+            # TODO E200 - Apuracao do ICMS ST Valor
+            for item in self.query_registroE210(item_lista.UF):
+                arq.read_registro(self.junta_pipe(item))
+
         
         # TODO E300 - DIFAL
         for item_lista in self.query_registroE300():
@@ -231,6 +320,10 @@ class SpedFile(models.Model):
             # TODO E310 - DIFAL - Detalhe
             for uf_lista in self.query_registroE310(self.company_id.state_id.code, item_lista.UF):
                 arq.read_registro(self.junta_pipe(uf_lista))
+            # TODO E316 - DIFAL - Detalhe
+            for uf_lista in self.query_registroE316(self.company_id.state_id.code, item_lista.UF):
+                arq.read_registro(self.junta_pipe(uf_lista))
+                
         
         # TODO E500 - Apuracao IPI
         registro_E500 = RegistroE500()
@@ -267,19 +360,19 @@ class SpedFile(models.Model):
         arq._blocos['1'].add(registro_1010)        
         
         #reg9001 = Registro9001()
-        #import pudb;pu.db
         #if inv:
         #    reg9001.IND_MOV = '0'
         #else:
         #    reg9001.IND_MOV = '1'
         #arq._blocos['9'].add(reg9001)
-        #import pudb;pu.db
         arq.prepare()
         #self.assertEqual(txt, )
         #sped_f = codecs.open(os.path.abspath(), mode='r', encoding='utf-8')
         self.sped_file_name =  "Sped-%s_%s.txt" % (self.date_end[5:7],self.date_end[:4])
         self.sped_file = base64.encodestring(bytes(arq.getstring(), 'utf-8'))
         #self.sped_file = arq.getstring()
+        
+
 
     def query_registro0150(self):
         query = """
@@ -294,20 +387,22 @@ class SpedFile(models.Model):
                         invoice_eletronic nf
                             on nf.invoice_id = d.id        
                     where
-                        d.date_invoice between '%s' and '%s'                        
-                        and ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        d.date_invoice between '%s' and '%s'       
+                        and ((fd.code in ('55','1','57','67'))
+                           or (d.nfe_modelo in ('55','1','57','67')))
                         and d.state in ('open','paid', 'cancel')
-                        and ((nf.state = 'done') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and ((nf.state = 'done') or (nf.state is null))
                         and d.fiscal_position_id is not null 
                 """ % (self.date_start, self.date_end)
         self._cr.execute(query)
         query_resposta = self._cr.fetchall()
         lista = []
+        
         for id in query_resposta:
             resposta_participante = self.env['res.partner'].browse(id[0])
             registro_0150 = registros.Registro0150()
             registro_0150.COD_PART = str(resposta_participante.id)
-            registro_0150.NOME = resposta_participante.legal_name or resposta_participante.name
+            registro_0150.NOME = self.normalize_str(resposta_participante.legal_name or resposta_participante.name) 
             registro_0150.COD_PAIS = resposta_participante.country_id.bc_code
             cpnj_cpf = self.limpa_formatacao(resposta_participante.cnpj_cpf)
             if len(cpnj_cpf) == 11:
@@ -318,10 +413,10 @@ class SpedFile(models.Model):
             cod_mun = '%s%s' %(resposta_participante.state_id.ibge_code, resposta_participante.city_id.ibge_code)
             registro_0150.COD_MUN = self.formata_cod_municipio(cod_mun)
             registro_0150.SUFRAMA = self.limpa_formatacao(resposta_participante.suframa)
-            registro_0150.END = resposta_participante.street
+            registro_0150.END = self.normalize_str(resposta_participante.street)
             registro_0150.NUM = resposta_participante.number
-            registro_0150.COMPL = resposta_participante.street2
-            registro_0150.BAIRRO = resposta_participante.district
+            registro_0150.COMPL = self.normalize_str(resposta_participante.street2)
+            registro_0150.BAIRRO = self.normalize_str(resposta_participante.district)
             lista.append(registro_0150)
 
         return lista
@@ -338,7 +433,8 @@ class SpedFile(models.Model):
                             on d.id = det.invoice_id 
                     inner join
                         product_uom pu
-                            on pu.id = det.uom_id
+                            on ((pu.id = det.uom_id) or (pu.id = det.product_uom_xml))
+                            on ((pu.id = det.product_uom_xml) or ((pu.id = det.uom_id) and (det.product_uom_xml is null)))
                     left join     
                         br_account_fiscal_document fd 
                             on fd.id = d.product_document_id
@@ -370,6 +466,9 @@ class SpedFile(models.Model):
                         det.product_id
                     from
                         account_invoice as d
+                    inner join 
+                        invoice_eletronic as ie
+                            on ie.invoice_id = d.id
                     left join
                         account_invoice_line as det 
                             on d.id = det.invoice_id 
@@ -378,7 +477,9 @@ class SpedFile(models.Model):
                             on fd.id = d.product_document_id
                     where
                         d.date_invoice between '%s' and '%s' 
-                        and ((d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and ((fd.code in ('55','1','57','67'))
+                           or (d.nfe_modelo in ('55','1','57','67')))
+                        and ie.emissao_doc = '2'
                         and d.state in ('open','paid')
                 """ % (self.date_start, self.date_end)
 
@@ -394,7 +495,7 @@ class SpedFile(models.Model):
             #if not (resposta_produto.codigo_unico in hash):
             registro_0200 = registros.Registro0200()
             registro_0200.COD_ITEM = resposta_produto.default_code
-            registro_0200.DESCR_ITEM = resposta_produto.name
+            registro_0200.DESCR_ITEM = self.normalize_str(resposta_produto.name.strip())
             registro_0200.COD_BARRA = resposta_produto.barcode
             if resposta_produto.uom_id.name.find('-') != -1:
                 unidade = resposta_produto.uom_id.name[:resposta_produto.uom_id.name.find('-')]
@@ -404,8 +505,95 @@ class SpedFile(models.Model):
             registro_0200.TIPO_ITEM = resposta_produto.type_product
             registro_0200.COD_NCM = self.limpa_formatacao(resposta_produto.fiscal_classification_id.code)
             
-            lista.append(registro_0200)
+            lista.append(registro_0200)                
 
+        return lista
+
+    def query_registro0205(self, item):
+        lista = []
+        resposta_produto = self.env['product.template.sped'].search([
+            ('product_id.default_code','=',item),
+            ('date_change', '>=', self.date_start),
+            ('date_change', '<=', self.date_end)
+            ],limit=1,order='date_change desc')
+        # 0205 - Alteracao no Item
+        ultima_alteracao = self.date_start
+        for alterado in resposta_produto:
+
+            ultima_mudanca = self.env['product.template.sped'].search([
+                ('product_id.default_code','=',item),
+                ('date_change', '<', ultima_alteracao)
+                ],limit=1,order='date_change desc')
+            if ultima_mudanca:
+                data_inicio = ultima_mudanca.date_change
+            else:
+                data_inicio = alterado.product_id.create_date    
+            registro_0205 = registros.Registro0205()
+            if alterado.name == 'Descrição':
+                registro_0205.DESCR_ANT_ITEM = self.normalize_str(alterado.valor_anterior.strip())
+                registro_0205.DT_INI = self.transforma_data(data_inicio)
+                registro_0205.DT_FIM = self.transforma_data(alterado.date_change)
+                registro_0205.COD_ANT_ITEM = ''
+            if alterado.name == 'Código':
+                registro_0205.DESCR_ANT_ITEM = ''
+                registro_0205.DT_INI = self.transforma_data(data_inicio)
+                registro_0205.DT_FIM = self.transforma_data(alterado.date_change)
+                registro_0205.COD_ANT_ITEM = alterado.valor_anterior
+            ultima_alteracao = alterado.date_change    
+            lista.append(registro_0205)
+
+        return lista
+
+    def query_registro0220(self, ITEM):
+        query = """
+            select distinct
+                   sum(dl.quantity) as fatura
+                   ,sum(det.quantidade) as xml
+                   ,pu.name
+                   ,det.product_id
+                   ,uom_edoc.name 
+                    from
+                        invoice_eletronic as d                
+                    inner join
+                        invoice_eletronic_item as det
+                            on d.id = det.invoice_eletronic_id
+                    inner join 
+                        account_invoice_line as dl
+                            on dl.invoice_id = d.invoice_id
+                            and dl.product_id = det.product_id
+                    inner join
+                        product_product p
+                            on p.id = det.product_id
+                    inner join
+                        product_template pt
+                            on p.product_tmpl_id = pt.id                            
+                    inner join
+                        product_uom pu
+                            on pu.id = pt.uom_id
+                    inner join
+                        product_uom as uom_edoc
+                            on uom_edoc.id = det.uom_id
+                            
+                    where
+                        d.data_fatura between '%s' and '%s'
+                        and (d.model in ('55','1','57','67'))
+                        and d.state = 'done'
+                        and d.emissao_doc = '2' 
+                        and UPPER(TRIM(pu.name)) <> UPPER(TRIM(uom_edoc.name))
+                        and p.default_code = '%s'
+                        group by  det.product_id ,pu.name,uom_edoc.name                                 
+                """ % (self.date_start, self.date_end, ITEM)
+        self._cr.execute(query)
+        query_resposta = self._cr.fetchall()
+        lista = []
+        registro_0220 = registros.Registro0220()
+        for resposta in query_resposta:
+            conversao = 0.0
+            if resposta[1] > 0.0:
+                conversao = resposta[0]/resposta[1]
+            registro_0220.UNID_CONV = str(resposta[4])
+            registro_0220.FAT_CONV = self.transforma_valor(conversao)
+            lista.append(registro_0220)
         return lista
         
     def query_registro0400(self):
@@ -430,7 +618,7 @@ class SpedFile(models.Model):
             resposta_nat = self.env['account.fiscal.position'].browse(resposta[0])
             registro_0400 = registros.Registro0400()
             registro_0400.COD_NAT = str(resposta_nat.id)
-            registro_0400.DESCR_NAT = resposta_nat.natureza_operacao
+            registro_0400.DESCR_NAT = self.normalize_str(resposta_nat.natureza_operacao)
             lista.append(registro_0400)
         return lista        
 
@@ -457,7 +645,7 @@ class SpedFile(models.Model):
                     registro_c100.IND_OPER = '0'
                 else:
                     registro_c100.IND_OPER = '1'
-                if resposta.product_document_id:    
+                if resposta_nfe.emissao_doc == '1':    
                     registro_c100.IND_EMIT = '0'
                 else:
                     registro_c100.IND_EMIT = '1'
@@ -530,12 +718,8 @@ class SpedFile(models.Model):
                     registro_c100.COD_PART = str(resposta.partner_id.id)
                     #registro_c100.VL_PIS_ST = 0,0
                     #registro_c100.VL_COFINS_ST = 0.0
-                #else:
-                #    x = resposta.id
-                #    print (x)
-                #    print ('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')        
-    
                 lista.append(registro_c100)
+                
 
         return lista
                 
@@ -610,12 +794,25 @@ class SpedFile(models.Model):
             n_item = 1
             for item in resposta.invoice_line_ids:
                 registro_c170 = registros.RegistroC170()
-                registro_c170.NUM_ITEM = str(n_item)
+                #registro_c170.NUM_ITEM = str(n_item)
+                registro_c170.NUM_ITEM = item.num_item # str(item.num_item_xml or n_item)
                 #if item.product_id.default_code == '02805':
                 #    import pudb;pu.db
                 registro_c170.COD_ITEM = item.product_id.default_code
-                registro_c170.DESCR_COMPL = item.name.strip()
+                registro_c170.DESCR_COMPL = self.normalize_str(item.name.strip())
+                #if item.product_qty_xml:
+                #    registro_c170.QTD = self.transforma_valor(item.product_qty_xml)
+                #else:
                 registro_c170.QTD = self.transforma_valor(item.quantity)
+                """
+                if item.product_uom_xml.name:
+                    if item.product_uom_xml.name.find('-') != -1:
+                        unidade = item.product_uom_xml.name[:item.product_uom_xml.name.find('-')]
+                    else:
+                        unidade = item.product_uom_xml.name
+                    registro_c170.UNID = unidade[:6]
+                else:
+                """
                 if item.uom_id.name.find('-') != -1:
                     unidade = item.uom_id.name[:item.uom_id.name.find('-')]
                 else:
@@ -656,15 +853,10 @@ class SpedFile(models.Model):
                 # TODO incluir na empresa o IND_APUR
                 registro_c170.IND_APUR = '0'
                 registro_c170.CST_IPI = item.ipi_cst
-                #
-                # TODO adicionar na Fatura de entrada a opcao de informar o Cod. Enquadramento
-                # 
-                #if item.fiscal_classification_id.codigo_enquadramento != '999':
+                #if item.codigo_enquadramento_ipi:
+                #    registro_c170.COD_ENQ = item.codigo_enquadramento_ipi
+                #elif item.fiscal_classification_id.codigo_enquadramento != '999':
                 #    registro_c170.COD_ENQ = item.fiscal_classification_id.codigo_enquadramento
-                #item_eletronic = self.env['invoice.eletronic.item'].search([('account_invoice_line_id','=', item.id)])
-                #if item_eletronic:
-                #    import pudb;pu.db
-                #registro_c170.COD_ENQ = item_eletronic.codigo_enquadramento_ipi
                 registro_c170.VL_BC_IPI = self.transforma_valor(item.ipi_base_calculo)
                 if item.tax_ipi_id:
                     registro_c170.ALIQ_IPI = self.transforma_valor(item.tax_ipi_id.amount)
@@ -763,6 +955,152 @@ class SpedFile(models.Model):
 
         return lista
 
+    # transporte
+    def query_registroD100(self, fatura):
+        lista = []
+        resposta_cte = self.env['account.invoice'].browse(fatura)
+        for resposta in resposta_cte:
+            cte = self.env['invoice.eletronic'].search([('invoice_id','=',fatura)])
+            registro_d100 = registros.RegistroD100()
+            registro_d100.IND_OPER = '0' # Aquisicao
+            registro_d100.IND_EMIT = '1' # Terceiros
+            registro_d100.COD_PART = str(resposta.partner_id.id)
+            registro_d100.COD_MOD = str(resposta.nfe_modelo)  # or resposta_nfe.product_document_id.code).zfill(2)
+            registro_d100.COD_SIT = '00'
+            registro_d100.SER = resposta.nfe_serie[:3] # resposta.product_serie_id.code
+            if resposta.nfe_chave:
+                if len(resposta.nfe_chave) != 44:
+                    msg_err = 'Tamanho da Chave NFe invalida - Fatura %s.' %(str(resposta.number or resposta.id))
+                    #raise UserError(msg_err)
+                    self.log_faturamento += msg_err
+            registro_d100.CHV_CTE = str(resposta.nfe_chave) # or resposta_nfe.chave_nfe
+            registro_d100.NUM_DOC = self.limpa_formatacao(str(resposta.nfe_num)) # or resposta_nfe.numero))
+            registro_d100.DT_A_P = self.transforma_data(resposta.nfe_data_entrada or resposta.date_invoice)
+            registro_d100.DT_DOC = self.transforma_data(resposta.nfe_emissao or resposta.date_invoice)
+            #registro_d100.TP_CT-e = '0' # NORMAL
+            registro_d100.VL_DOC = self.transforma_valor(resposta.amount_total)
+            registro_d100.VL_DESC = self.transforma_valor(resposta.total_desconto)
+            registro_d100.IND_FRT = '1' # Destinatario
+            registro_d100.VL_SERV = self.transforma_valor(resposta.amount_total)
+            registro_d100.VL_BC_ICMS = self.transforma_valor(resposta.icms_base)
+            registro_d100.VL_ICMS = self.transforma_valor(resposta.icms_value)
+            registro_d100.VL_NT = '0'
+            registro_d100.COD_INF = ''
+            registro_d100.COD_MUN_ORIG = cte.cod_mun_ini
+            registro_d100.COD_MUN_DEST = cte.cod_mun_fim
+            lista.append(registro_d100)
+
+        return lista
+
+    """ SOMENTE DE SAIDA    
+    # transporte - detalhe
+    def query_registroD110(self, fatura):
+        lista = []
+        resposta = self.env['account.invoice'].search([
+            ('nfe_modelo','in',('57','67')),
+            ('state', 'in',('open','paid'))
+            ])
+        item = 1    
+        for itens in resposta.invoice_line_ids:
+            registro_d110 = registros.RegistroD110()
+            registro_d110.NUM_ITEM = str(item) # 
+            registro_d110.COD_ITEM = itens.product_id.default_code # Terceiros
+            registro_d110.VL_SERV = self.transforma_valor(itens.price_subtotal)
+            registro_d110.VL_OUT = '0'
+            item += 1
+
+    # transporte - complemento
+    def query_registroD120(self, fatura):
+        lista = []
+        resposta = self.env['account.invoice'].search([
+            ('nfe_modelo','in',('57','67')),
+            ('state', 'in',('open','paid'))
+            ])
+        item = 1    
+        for itens in resposta.invoice_line_ids:
+            registro_d110 = registros.RegistroD110()
+            registro_d110.NUM_ITEM = str(item) # 
+            registro_d110.COD_ITEM = itens.product_id.default_code # Terceiros
+            registro_d110.VL_SERV = self.transforma_valor(itens.price_subtotal)
+            registro_d110.VL_OUT = '0'
+            item += 1
+    """        
+
+    # transporte - analitico
+    def query_registroD190(self, fatura):
+        query = """
+                select distinct
+                        pt.origin || dl.icms_cst_normal,
+                        cfop.code,
+                        COALESCE(at.amount, 0.0) as ALIQUOTA ,
+                        sum(dl.price_subtotal+dl.outras_despesas) as VL_OPR,
+                        sum(dl.icms_base_calculo) as VL_BC_ICMS,
+                        sum(dl.icms_valor) as VL_ICMS,
+                        sum(dl.icms_st_base_calculo) as VL_BC_ICMS_ST,
+                        sum(dl.icms_st_valor) as VL_ICMS_ST,
+                        case when (dl.icms_aliquota_reducao_base > 0) then
+                          sum((dl.price_subtotal+dl.outras_despesas)-dl.icms_base_calculo) else 0 end as VL_RED_BC, 
+                        sum(dl.ipi_valor) as VL_IPI
+                    from
+                        account_invoice as d
+                    inner join
+                        account_invoice_line dl
+                            on dl.invoice_id = d.id 
+                    left join
+                        invoice_eletronic il
+                            on il.invoice_id = d.id
+                    left join
+                        account_tax at
+                            on at.id = dl.tax_icms_id
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    inner join 
+                        account_fiscal_position fp 
+                            on d.fiscal_position_id = fp.id
+                    inner join
+                        br_account_cfop cfop
+                            on dl.cfop_id = cfop.id
+                    inner join
+                        product_product pp
+                            on pp.id = dl.product_id
+                    inner join
+                        product_template pt
+                            on pt.id = pp.product_tmpl_id
+                    where    
+                        d.nfe_modelo in ('57','67')
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null
+                        and ((il.state is null) or (il.state = 'done'))
+                        and d.id = '%s' 
+                    group by 
+                        dl.icms_aliquota_reducao_base,
+                        dl.icms_cst_normal,
+                        cfop.code,
+                        at.amount,
+                        pt.origin 
+                    order by 1,2,3    
+                """ % (fatura)
+        self._cr.execute(query)
+        query_resposta = self._cr.fetchall()
+        lista = []
+        cont = 1
+        for id in query_resposta:
+            registro_d190 = registros.RegistroD190()
+            registro_d190.CST_ICMS = id[0]
+            registro_d190.CFOP = id[1]
+            registro_d190.ALIQ_ICMS = self.transforma_valor(id[2])
+            registro_d190.VL_OPR = self.transforma_valor(id[3])
+            registro_d190.VL_BC_ICMS = self.transforma_valor(id[4])
+            registro_d190.VL_ICMS = self.transforma_valor(id[5])
+            registro_d190.VL_RED_BC = self.transforma_valor(id[8])
+            registro_d190.COD_OBS = ''
+
+            lista.append(registro_d190)
+
+        return lista
+            
+
     def query_registroE110(self):
         query = """
                 select  
@@ -782,7 +1120,7 @@ class SpedFile(models.Model):
                         br_account_cfop cfop
                             on dl.cfop_id = cfop.id
                     where    
-                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        ((fd.code='55') or (d.nfe_modelo in ('55','1','57','67'))
                         and d.state in ('open','paid')
                         and d.fiscal_position_id is not null 
                         and ((ie.state is null) or (ie.state = 'done'))
@@ -816,7 +1154,7 @@ class SpedFile(models.Model):
                         br_account_cfop cfop
                             on dl.cfop_id = cfop.id
                     where    
-                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        ((fd.code='55') or (d.nfe_modelo in ('55','1','57','67'))
                         and d.state in ('open','paid')
                         and d.fiscal_position_id is not null 
                         and ((ie.state is null) or (ie.state = 'done'))
@@ -828,8 +1166,10 @@ class SpedFile(models.Model):
         for id in query_resposta:
             registro_E110.VL_TOT_CREDITOS = self.transforma_valor(id[0])
             sld_transp -= id[0]
-        if sld_transp < 0.0:
+        if sld_transp > 0.0:
             sld_transp = 0.0
+        else:
+            sld_transp = sld_transp * (-1)
 
         registro_E110.VL_AJ_DEBITOS = '0'
         registro_E110.VL_TOT_AJ_DEBITOS = '0'
@@ -846,6 +1186,123 @@ class SpedFile(models.Model):
 
         lista.append(registro_E110)
         return lista
+
+    def query_registroE200(self):
+        import pudb;pu.db
+        query = """
+                select distinct
+                        rs.code
+                    from
+                        account_invoice as d
+                    inner join
+                        account_invoice_line dl
+                            on dl.invoice_id = d.id 
+                    left join
+                        invoice_eletronic il
+                            on il.invoice_id = d.id
+                    left join
+                        account_tax at
+                            on at.id = dl.tax_icms_id
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    inner join 
+                        account_fiscal_position fp 
+                            on d.fiscal_position_id = fp.id
+                    inner join
+                        br_account_cfop cfop
+                            on dl.cfop_id = cfop.id
+                    inner join
+                        res_partner rp
+                            on rp.id = d.partner_id
+                    inner join 
+                        res_country_state rs
+                            on rs.id = rp.state_id                                                        
+                    where    
+                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null
+                        and ((il.state is null) or (il.state = 'done'))
+                        and dl.icms_st_valor > 0
+                        and d.date_invoice between '%s' and '%s'
+                """ % (self.date_start, self.date_end)
+        self._cr.execute(query)
+        query_resposta = self._cr.fetchall()
+        lista = []
+        cont = 1
+        for id in query_resposta:
+            registro_e200 = registros.RegistroE200()
+            registro_e200.DT_INI = self.transforma_data(self.date_start)
+            registro_e200.DT_FIN = self.transforma_data(self.date_end)
+            registro_e200.UF = str(id[0])
+
+            lista.append(registro_e200)
+
+        return lista
+
+    def query_registroE210(self, uf):
+        query = """
+                select sum(dl.icms_st_valor),
+                      sum(dl.icms_st_base_calculo)
+                    from
+                        account_invoice as d
+                    inner join
+                        account_invoice_line dl
+                            on dl.invoice_id = d.id 
+                    left join
+                        invoice_eletronic il
+                            on il.invoice_id = d.id
+                    left join
+                        account_tax at
+                            on at.id = dl.tax_icms_id
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    inner join 
+                        account_fiscal_position fp 
+                            on d.fiscal_position_id = fp.id
+                    inner join
+                        br_account_cfop cfop
+                            on dl.cfop_id = cfop.id
+                    inner join
+                        res_partner rp
+                            on rp.id = d.partner_id
+                    inner join 
+                        res_country_state rs
+                            on rs.id = rp.state_id                                                        
+                    where    
+                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null
+                        and ((il.state is null) or (il.state = 'done'))
+                        and dl.icms_st_valor > 0
+                        and rs.code = '%s'
+                        and d.date_invoice between '%s' and '%s'
+                """ % (uf, self.date_start, self.date_end)
+        self._cr.execute(query)
+        query_resposta = self._cr.fetchall()
+        lista = []
+        cont = 1
+        for id in query_resposta:
+            registro_e210 = registros.RegistroE210()
+            registro_e210.IND_MOV_ST = '1'
+            registro_e210.VL_ICMS_RECOL_ST = self.transforma_valor(id[0])
+            registro_e210.VL_RETENÇAO_ST = self.transforma_valor(id[0])
+            registro_e210.VL_SLD_CRED_ANT_ST = '0'
+            registro_e210.VL_DEVOL_ST = '0'
+            registro_e210.VL_RESSARC_ST = '0'
+            registro_e210.VL_OUT_CRED_ST = '0'
+            registro_e210.VL_AJ_CREDITOS_ST = '0'
+            registro_e210.VL_OUT_DEB_ST = '0'
+            registro_e210.VL_AJ_DEBITOS_ST = '0'
+            registro_e210.VL_SLD_DEV_ANT_ST = self.transforma_valor(id[0])
+            registro_e210.VL_DEDUÇÕES_ST = '0'
+            registro_e210.VL_SLD_CRED_ST_TRANSPORTAR = '0'
+            registro_e210.DEB_ESP_ST = '0'
+            lista.append(registro_e210)
+
+        return lista
+
 
     def query_registroE300(self):
         query = """
@@ -892,56 +1349,12 @@ class SpedFile(models.Model):
         return lista
 
     def query_registroE310(self, uf_informante, uf_dif):
-        query = """
+        if uf_informante != uf_dif:
+            tipo_mov = '1'
+            query = """
                     select 
-                        sum(d.valor_icms_uf_remet) as icms_uf_remet, 
                         sum(d.valor_icms_uf_dest) as icms_uf_dest,
-                        sum(d.valor_icms_fcp_uf_dest) as fcp_uf_dest,
-                        fp.fiscal_type
-                    from
-                        account_invoice as d
-                    inner join
-                        res_partner as rp
-                            on rp.id = d.partner_id
-                    inner join
-                        res_country_state as rs
-                            on rs.id = rp.state_id                                                        
-                    left join     
-                        br_account_fiscal_document fd
-                            on fd.id = d.product_document_id  
-                    inner join 
-                        account_fiscal_position fp 
-                            on d.fiscal_position_id = fp.id
-                    where
-                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
-                        and d.state in ('open','paid')
-                        and d.fiscal_position_id is not null 
-                        and ((d.valor_icms_uf_dest > 0) or 
-                        (d.valor_icms_uf_remet > 0))
-                        and rs.code = '%s'
-                        and d.date_invoice between '%s' and '%s'
-                    group by fp.fiscal_type
-                """ % (uf_informante, self.date_start, self.date_end)
-        self._cr.execute(query)
-        query_resposta = self._cr.fetchall()
-        vl_tot_creditos = 0.0
-        vl_tot_debitos = 0.0
-        tot_fcp_deb = 0.0
-        tot_fcp_cred = 0.0
-        for id in query_resposta:
-            if id[3] == 'entrada':
-                tot_fcp_cred += id[2]
-            else:
-                tot_fcp_deb += id[2]
-            if id[1]:
-                vl_tot_creditos += id[1]
-            if id[0]:
-                vl_tot_debitos += id[0]
-        #cred_ent = vl_tot_creditos        
-        query = """
-                    select 
-                        sum(d.valor_icms_uf_remet) as icms_uf_remet, 
-                        sum(d.valor_icms_uf_dest) as icms_uf_dest,
+                        0,
                         sum(d.valor_icms_fcp_uf_dest) as fcp_uf_dest,
                         fp.fiscal_type
                     from
@@ -968,44 +1381,56 @@ class SpedFile(models.Model):
                         and d.date_invoice between '%s' and '%s'
                     group by fp.fiscal_type
                 """ % (uf_dif, self.date_start, self.date_end)
+        else:   
+            # mesmo uf
+            tipo_mov = '0'
+            query = """
+                    select 
+                        sum(d.valor_icms_uf_remet) as icms_uf_remet,
+                        0, 
+                        sum(d.valor_icms_fcp_uf_dest) as fcp_uf_dest,
+                        fp.fiscal_type
+                    from
+                        account_invoice as d
+                    inner join
+                        res_partner as rp
+                            on rp.id = d.partner_id
+                    inner join
+                        res_country_state as rs
+                            on rs.id = rp.state_id                                                        
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    inner join 
+                        account_fiscal_position fp 
+                            on d.fiscal_position_id = fp.id
+                    where
+                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null 
+                        and ((d.valor_icms_uf_dest > 0) or 
+                        (d.valor_icms_uf_remet > 0))
+                        and d.date_invoice between '%s' and '%s'
+                    group by fp.fiscal_type
+                """ % (self.date_start, self.date_end)
+               
         self._cr.execute(query)
         query_resposta = self._cr.fetchall()
-        tot_deb_uf_inf = 0.0
-        for id in query_resposta:
-            if id[3] == 'entrada':
-                tot_fcp_cred += id[2]
-            else:
-                tot_fcp_deb += id[2]
-            if id[0]:
-                vl_tot_creditos += id[0]
-            if id[1]:    
-                tot_deb_uf_inf += id[1]
-                vl_tot_debitos += id[1]
-        #cred_ent += vl_tot_creditos   
-        tot_fcp_deb = tot_fcp_deb + tot_fcp_cred                               
-        tot_fcp_cred = 0.0
-        lista = []
         registro_e310 = registros.RegistroE310()
-        sld_ant_difal = vl_tot_debitos - self.vl_sld_cred_ant_difal - vl_tot_creditos
-        if sld_ant_difal < 0.0:
-            sld_ant_difal = 0.0
-        sld_transp_difal = self.vl_sld_cred_ant_difal - vl_tot_debitos + vl_tot_creditos    
-        if sld_transp_difal < 0.0:
-            sld_transp_difal = 0.0
-    
-        if not query_resposta:
-            registro_e310.IND_MOV_FCP_DIFAL = '0'
-            registro_e310.VL_SLD_CRED_ANT_DIFAL = '0'
-            registro_e310.VL_TOT_DEBITOS_DIFAL = '0'
+        lista = []
+        for id in query_resposta:
+            registro_e310.IND_MOV_FCP_DIFAL = tipo_mov
+            registro_e310.VL_SLD_CRED_ANT_DIFAL = self.transforma_valor(self.vl_sld_cred_ant_difal)
+            registro_e310.VL_TOT_DEBITOS_DIFAL = self.transforma_valor(id[0])
             registro_e310.VL_OUT_DEB_DIFAL = '0'
-            registro_e310.VL_TOT_DEB_FCP = self.transforma_valor(tot_fcp_deb)
+            registro_e310.VL_TOT_DEB_FCP = self.transforma_valor(id[2])            
             registro_e310.VL_TOT_CREDITOS_DIFAL = '0'
-            registro_e310.VL_TOT_CRED_FCP = self.transforma_valor(tot_fcp_cred)
+            registro_e310.VL_TOT_CRED_FCP = '0'
             registro_e310.VL_OUT_CRED_DIFAL = '0'
-            registro_e310.VL_SLD_DEV_ANT_DIFAL = '0'
+            registro_e310.VL_SLD_DEV_ANT_DIFAL = self.transforma_valor(id[0])
             registro_e310.VL_DEDUCOES_DIFAL = '0'
-            registro_e310.VL_RECOL_DIFAL = '0'
-            registro_e310.VL_SLD_CRED_TRANSPORTAR_DIFAL = self.transforma_valor(sld_transp_difal)
+            registro_e310.VL_RECOL_DIFAL = self.transforma_valor(id[0])
+            registro_e310.VL_SLD_CRED_TRANSPORTAR_DIFAL = '0'
             registro_e310.DEB_ESP_DIFAL = '0'
             registro_e310.VL_SLD_CRED_ANT_FCP = '0'
             registro_e310.VL_OUT_DEB_FCP = '0'
@@ -1016,19 +1441,22 @@ class SpedFile(models.Model):
             registro_e310.VL_RECOL_FCP = '0'
             registro_e310.VL_SLD_CRED_TRANSPORTAR_FCP = '0'
             registro_e310.DEB_ESP_FCP = '0'
-        else:
+            
+        lista.append(registro_e310)
+        """    
+            #if uf_informante != 'U':
             registro_e310.IND_MOV_FCP_DIFAL = '1'
             registro_e310.VL_SLD_CRED_ANT_DIFAL = self.transforma_valor(self.vl_sld_cred_ant_difal)
-            registro_e310.VL_TOT_DEBITOS_DIFAL = self.transforma_valor(vl_tot_debitos)
+            registro_e310.VL_TOT_DEBITOS_DIFAL = self.transforma_valor(id[1])
             registro_e310.VL_OUT_DEB_DIFAL = '0'
-            registro_e310.VL_TOT_DEB_FCP = self.transforma_valor(tot_fcp_deb)
-            registro_e310.VL_TOT_CREDITOS_DIFAL = self.transforma_valor(vl_tot_creditos)
-            registro_e310.VL_TOT_CRED_FCP = self.transforma_valor(tot_fcp_cred)
+            registro_e310.VL_TOT_DEB_FCP = self.transforma_valor(id[1])
+            registro_e310.VL_TOT_CREDITOS_DIFAL = '0' #self.transforma_valor(vl_tot_creditos)
+            registro_e310.VL_TOT_CRED_FCP = '0' #self.transforma_valor(tot_fcp_cred)
             registro_e310.VL_OUT_CRED_DIFAL = '0'
-            registro_e310.VL_SLD_DEV_ANT_DIFAL = self.transforma_valor(sld_ant_difal)
+            registro_e310.VL_SLD_DEV_ANT_DIFAL = self.transforma_valor(id[1])
             registro_e310.VL_DEDUCOES_DIFAL = '0'
             registro_e310.VL_RECOL_DIFAL = '0'
-            registro_e310.VL_SLD_CRED_TRANSPORTAR_DIFAL = self.transforma_valor(sld_transp_difal)
+            registro_e310.VL_SLD_CRED_TRANSPORTAR_DIFAL = self.transforma_valor(id[1])
             registro_e310.DEB_ESP_DIFAL = '0'
             registro_e310.VL_SLD_CRED_ANT_FCP = '0'
             registro_e310.VL_OUT_DEB_FCP = '0'
@@ -1040,10 +1468,98 @@ class SpedFile(models.Model):
             registro_e310.VL_SLD_CRED_TRANSPORTAR_FCP = '0'
             registro_e310.DEB_ESP_FCP = '0'             
                 
-        lista.append(registro_e310)
-
+            lista.append(registro_e310)
+        """  
         return lista
 
+    def query_registroE316(self, uf_informante, uf_dif):
+        if uf_informante != uf_dif:
+            tipo_mov = '1'
+            query = """
+                    select 
+                        sum(d.valor_icms_uf_dest) as icms_uf_dest,
+                        0,
+                        sum(d.valor_icms_fcp_uf_dest) as fcp_uf_dest,
+                        fp.fiscal_type
+                    from
+                        account_invoice as d
+                    inner join
+                        res_partner as rp
+                            on rp.id = d.partner_id
+                    inner join
+                        res_country_state as rs
+                            on rs.id = rp.state_id                                                        
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    inner join 
+                        account_fiscal_position fp 
+                            on d.fiscal_position_id = fp.id
+                    where
+                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null 
+                        and ((d.valor_icms_uf_dest > 0) or 
+                        (d.valor_icms_uf_remet > 0))
+                        and rs.code = '%s'
+                        and d.date_invoice between '%s' and '%s'
+                    group by fp.fiscal_type
+                """ % (uf_dif, self.date_start, self.date_end)
+        else:   
+            # mesmo uf
+            tipo_mov = '0'
+            query = """
+                    select 
+                        sum(d.valor_icms_uf_remet) as icms_uf_remet,
+                        0, 
+                        sum(d.valor_icms_fcp_uf_dest) as fcp_uf_dest,
+                        fp.fiscal_type
+                    from
+                        account_invoice as d
+                    inner join
+                        res_partner as rp
+                            on rp.id = d.partner_id
+                    inner join
+                        res_country_state as rs
+                            on rs.id = rp.state_id                                                        
+                    left join     
+                        br_account_fiscal_document fd
+                            on fd.id = d.product_document_id  
+                    inner join 
+                        account_fiscal_position fp 
+                            on d.fiscal_position_id = fp.id
+                    where
+                        ((fd.code='55') or (d.nfe_modelo = '55') or (d.nfe_modelo = '1'))
+                        and d.state in ('open','paid')
+                        and d.fiscal_position_id is not null 
+                        and ((d.valor_icms_uf_dest > 0) or 
+                        (d.valor_icms_uf_remet > 0))
+                        and d.date_invoice between '%s' and '%s'
+                    group by fp.fiscal_type
+                """ % (self.date_start, self.date_end)
+               
+        self._cr.execute(query)
+        query_resposta = self._cr.fetchall()
+        registro_e316 = registros.RegistroE316()
+        lista = []
+
+        data = self.transforma_data(self.data_vencimento_e316)
+        data = data[2:4] + data[4:8]
+        
+        for id in query_resposta:
+            registro_e316.COD_OR = self.cod_obrigacao
+            registro_e316.VL_OR = self.transforma_valor(id[0]+id[2])
+            registro_e316.DT_VCTO = self.transforma_data(self.data_vencimento_e316)
+            registro_e316.COD_REC = self.cod_receita
+            registro_e316.NUM_PROC = ''
+            registro_e316.IND_PROC = ''
+            registro_e316.PROC = ''
+            registro_e316.TXT_COMPL = ''
+            registro_e316.MES_REF = data
+            
+        lista.append(registro_e316)
+        return lista
+        
     def query_registroE510(self):
         query = """
                 select distinct
