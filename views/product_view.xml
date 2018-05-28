@@ -6,11 +6,30 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="br_account.br_account_product_template_form_view"/>
         <field name="arch" type="xml">
-            <group name="accounting" position="inside">
-                <group>
-                    <field name="type_product" />
-                </group>
-            </group>
+            <field name="cest" position="after">
+                <field name="type_product" />
+            </field>
+            <field name="uom_id" position="replace">
+                <field name="uom_id" domain="[('type_uom', '=', 'int')]"/>
+            </field>
+            <field name="uom_po_id" position="replace">
+                <field name="uom_po_id" domain="[('type_uom', '=', 'int')]"/>
+            </field>
+            
+            <xpath expr='//notebook' position='inside'>
+                <page string='Historico Alterações'>
+                    <field name="sped_ids">
+                        <tree string="Alt. Cadastro" create="false" delete="false" editable="false">
+                            <field name="date_change" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="valor_anterior" readonly="1"/>
+                            <field name="valor_novo" readonly="1"/>
+                            <field name="ocorrido" readonly="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 
@@ -21,6 +40,7 @@
         <field name="arch" type="xml">
             <field name="name" position="after" >
                 <field name="description" />
+                <field name="type_uom" />
             </field>
         </field>
     </record>
