@@ -332,7 +332,7 @@ class AccountInvoiceLine(models.Model):
         default=0.00, compute='_compute_price', store=True)
     l10n_br_issqn_deduction = fields.Float(
         '% Dedução Base ISSQN', digits=dp.get_precision('Discount'),
-        default=0.00)
+        default=0.00, store=True)
 
     # =========================================================================
     # IPI
