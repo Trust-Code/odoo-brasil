@@ -649,7 +649,7 @@ class SpedFile(models.Model):
                     registro_c100.IND_EMIT = '0'
                 else:
                     registro_c100.IND_EMIT = '1'
-                #import pudb;pu.db
+
                 registro_c100.COD_MOD = (resposta.nfe_modelo or resposta.product_document_id.code).zfill(2)
                 if not resposta_nfe:
                     registro_c100.COD_SIT = '00'
@@ -796,8 +796,7 @@ class SpedFile(models.Model):
                 registro_c170 = registros.RegistroC170()
                 #registro_c170.NUM_ITEM = str(n_item)
                 registro_c170.NUM_ITEM = item.num_item # str(item.num_item_xml or n_item)
-                #if item.product_id.default_code == '02805':
-                #    import pudb;pu.db
+
                 registro_c170.COD_ITEM = item.product_id.default_code
                 registro_c170.DESCR_COMPL = self.normalize_str(item.name.strip())
                 #if item.product_qty_xml:
@@ -1188,7 +1187,6 @@ class SpedFile(models.Model):
         return lista
 
     def query_registroE200(self):
-        import pudb;pu.db
         query = """
                 select distinct
                         rs.code
