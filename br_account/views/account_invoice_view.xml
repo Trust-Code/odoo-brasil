@@ -332,7 +332,7 @@
                                     <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
                                 </group>
                                 <group>
-                                    <field name="l10n_br_issqn_deduction" readonly="1" />
+                                    <field name="l10n_br_issqn_deduction" />
                                     <field name="issqn_base_calculo"/>
                                     <field name="tax_issqn_id" />
                                     <field name="issqn_aliquota" invisible="1" />
