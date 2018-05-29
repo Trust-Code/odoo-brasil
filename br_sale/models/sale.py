@@ -197,6 +197,7 @@ class SaleOrderLine(models.Model):
 
     pis_cst = fields.Char(string=u'CST PIS', size=5)
     cofins_cst = fields.Char(string=u'CST COFINS', size=5)
+    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
 
     valor_desconto = fields.Float(
         compute='_compute_amount', string=u'Vlr. Desc. (-)', store=True,
@@ -251,7 +252,10 @@ class SaleOrderLine(models.Model):
                     vals.get('tax_pis_id', empty) | \
                     vals.get('tax_cofins_id', empty) | \
                     vals.get('tax_ii_id', empty) | \
-                    vals.get('tax_issqn_id', empty)
+                    vals.get('tax_issqn_id', empty) | \
+                    vals.get('tax_csll_id', empty) | \
+                    vals.get('tax_irrf_id', empty) | \
+                    vals.get('tax_inss_id', empty)
 
                 line.update({
                     'tax_id': [(6, None, [x.id for x in tax_ids if x])]
@@ -277,6 +281,9 @@ class SaleOrderLine(models.Model):
         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
         ii = self.tax_id.filtered(lambda x: x.domain == 'ii')
         issqn = self.tax_id.filtered(lambda x: x.domain == 'issqn')
+        csll = self.tax_id.filtered(lambda x: x.domain == 'csll')
+        inss = self.tax_id.filtered(lambda x: x.domain == 'inss')
+        irrf = self.tax_id.filtered(lambda x: x.domain == 'irrf')
 
         res['icms_cst_normal'] = self.icms_cst_normal
         res['icms_csosn_simples'] = self.icms_csosn_simples
@@ -291,6 +298,9 @@ class SaleOrderLine(models.Model):
         res['tax_cofins_id'] = cofins and cofins.id or False
         res['tax_ii_id'] = ii and ii.id or False
         res['tax_issqn_id'] = issqn and issqn.id or False
+        res['tax_csll_id'] = csll and csll.id or False
+        res['tax_irrf_id'] = inss and inss.id or False
+        res['tax_inss_id'] = irrf and irrf.id or False
 
         res['product_type'] = self.product_id.fiscal_type
         res['company_fiscal_type'] = self.company_id.fiscal_type
@@ -347,6 +357,10 @@ class SaleOrderLine(models.Model):
         res['cofins_aliquota'] = cofins.amount or 0.0
 
         res['issqn_aliquota'] = issqn.amount or 0.0
+        res['l10n_br_issqn_deduction'] = self.l10n_br_issqn_deduction
 
         res['ii_aliquota'] = ii.amount or 0.0
+        res['csll_aliquota'] = csll.amount or 0.0
+        res['inss_aliquota'] = inss.amount or 0.0
+        res['irrf_aliquota'] = irrf.amount or 0.0
         return res

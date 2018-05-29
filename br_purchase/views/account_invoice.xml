@@ -19,6 +19,9 @@
                 <field name="tax_cofins_id" invisible="1"/>
                 <field name="tax_ii_id" invisible="1"/>
                 <field name="tax_issqn_id" invisible="1"/>
+                <field name="tax_csll_id" invisible="1"/>
+                <field name="tax_inss_id" invisible="1"/>
+                <field name="tax_irrf_id" invisible="1"/>
 
                 <field name="product_type" invisible="1"/>
                 <field name="company_fiscal_type" invisible="1"/>
@@ -75,6 +78,20 @@
                 <field name="ii_aliquota" invisible="1"/>
                 <field name="ii_base_calculo" invisible="1"/>
                 <field name="ii_valor" invisible="1"/>
+
+                <field name="csll_aliquota" invisible="1"/>
+                <field name="csll_base_calculo" invisible="1"/>
+                <field name="csll_valor" invisible="1"/>
+
+                <field name="inss_aliquota" invisible="1"/>
+                <field name="inss_base_calculo" invisible="1"/>
+                <field name="inss_valor" invisible="1"/>
+
+                <field name="irrf_aliquota" invisible="1"/>
+                <field name="irrf_base_calculo" invisible="1"/>
+                <field name="irrf_valor" invisible="1"/>
+
+                <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
         </field>
     </record>

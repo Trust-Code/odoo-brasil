@@ -44,7 +44,8 @@ class AccountInvoiceLine(models.Model):
             'cofins_base_calculo_manual': self.cofins_base_calculo_manual,
             'ii_base_calculo': self.ii_base_calculo,
             'issqn_base_calculo': self.issqn_base_calculo,
-            'icms_aliquota_inter_part': self.icms_aliquota_inter_part
+            'icms_aliquota_inter_part': self.icms_aliquota_inter_part,
+            'l10n_br_issqn_deduction': self.l10n_br_issqn_deduction,
         }
 
     @api.one
@@ -62,7 +63,7 @@ class AccountInvoiceLine(models.Model):
                  'icms_base_calculo_manual', 'ipi_base_calculo_manual',
                  'pis_base_calculo_manual', 'cofins_base_calculo_manual',
                  'icms_st_aliquota_deducao', 'ii_base_calculo',
-                 'icms_aliquota_inter_part')
+                 'icms_aliquota_inter_part', 'l10n_br_issqn_deduction')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
@@ -70,7 +71,6 @@ class AccountInvoiceLine(models.Model):
         valor_bruto = self.price_unit * self.quantity
         desconto = valor_bruto * self.discount / 100.0
         subtotal = valor_bruto - desconto
-
         taxes = False
         self._update_invoice_line_ids()
         if self.invoice_line_tax_ids:
@@ -330,6 +330,9 @@ class AccountInvoiceLine(models.Model):
     issqn_valor = fields.Float(
         'Valor ISSQN', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True)
+    l10n_br_issqn_deduction = fields.Float(
+        '% Dedução Base ISSQN', digits=dp.get_precision('Discount'),
+        default=0.00, store=True)
 
     # =========================================================================
     # IPI

@@ -301,7 +301,6 @@ class AccountInvoice(models.Model):
             taxes_dict = tax_ids.compute_all(
                 price, self.currency_id, line.quantity,
                 product=line.product_id, partner=self.partner_id)
-
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(
                     x for x in taxes_dict['taxes'] if x['id'] == tax.id)

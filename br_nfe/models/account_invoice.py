@@ -78,10 +78,11 @@ class AccountInvoice(models.Model):
                 {'number_next_actual': inv_inutilized.numeration_end + 1})
         return serie_id.internal_sequence_id.next_by_id()
 
-    def _prepare_edoc_vals(self, inv, inv_lines):
-        res = super(AccountInvoice, self)._prepare_edoc_vals(inv, inv_lines)
+    def _prepare_edoc_vals(self, inv, inv_lines, serie_id):
+        res = super(AccountInvoice, self)._prepare_edoc_vals(
+            inv, inv_lines, serie_id)
 
-        numero_nfe = self.action_number(inv.product_serie_id)
+        numero_nfe = self.action_number(serie_id)
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
@@ -169,6 +170,7 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_item_vals(self, invoice_line):
         vals = super(AccountInvoice, self).\
             _prepare_edoc_item_vals(invoice_line)
+
         vals['cest'] = invoice_line.product_id.cest or \
             invoice_line.fiscal_classification_id.cest or ''
         vals['classe_enquadramento_ipi'] = \

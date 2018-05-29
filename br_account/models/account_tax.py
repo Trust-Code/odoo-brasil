@@ -312,6 +312,8 @@ class AccountTax(models.Model):
         issqn_tax = self.filtered(lambda x: x.domain == 'issqn')
         if not issqn_tax:
             return []
+        issqn_deduction = self.env.context.get('l10n_br_issqn_deduction', 0.0)
+        price_base *= (1 - (issqn_deduction / 100.0))
         vals = self._tax_vals(issqn_tax)
         vals['amount'] = issqn_tax._compute_amount(price_base, 1.0)
         vals['base'] = price_base
