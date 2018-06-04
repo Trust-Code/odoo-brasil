@@ -187,11 +187,11 @@ class Cnab240(Cnab):
                 ).quantize(Decimal('1.00')),
             # Multa padrão em percentual no Odoo, valor '2'
             'codigo_multa': '2',
-            'data_multa': self.format_date(
-                line.date_maturity),
-            'juros_multa':  Decimal(
+            'data_multa': unicode(self.format_date(
+                line.date_maturity)),
+            'juros_multa':  unicode(Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
-                    Decimal('1.00')),
+                    Decimal('1.00'))),
             # TODO Remover taxa dia - deixar apenas taxa normal
             'juros_mora_taxa_dia': Decimal('0.00'),
             'valor_abatimento': Decimal('0.00'),
