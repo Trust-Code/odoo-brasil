@@ -24,6 +24,9 @@ class AccountInvoice(models.Model):
         cofins = line.taxes_id.filtered(lambda x: x.domain == 'cofins')
         ii = line.taxes_id.filtered(lambda x: x.domain == 'ii')
         issqn = line.taxes_id.filtered(lambda x: x.domain == 'issqn')
+        csll = line.taxes_id.filtered(lambda x: x.domain == 'csll')
+        inss = line.taxes_id.filtered(lambda x: x.domain == 'inss')
+        irrf = line.taxes_id.filtered(lambda x: x.domain == 'irrf')
 
         res['icms_cst_normal'] = line.icms_cst_normal
         res['icms_csosn_simples'] = line.icms_csosn_simples
@@ -38,6 +41,9 @@ class AccountInvoice(models.Model):
         res['tax_cofins_id'] = cofins and cofins.id or False
         res['tax_ii_id'] = ii and ii.id or False
         res['tax_issqn_id'] = issqn and issqn.id or False
+        res['tax_csll_id'] = csll and csll.id or False
+        res['tax_irrf_id'] = inss and inss.id or False
+        res['tax_inss_id'] = irrf and irrf.id or False
 
         res['product_type'] = line.product_id.fiscal_type
         res['company_fiscal_type'] = line.company_id.fiscal_type
@@ -92,6 +98,11 @@ class AccountInvoice(models.Model):
 
         res['issqn_aliquota'] = issqn.amount or 0.0
         res['issqn_tipo'] = 'N'
+        res['l10n_br_issqn_deduction'] = line.l10n_br_issqn_deduction
 
         res['ii_aliquota'] = ii.amount or 0.0
+
+        res['csll_aliquota'] = csll.amount or 0.0
+        res['inss_aliquota'] = inss.amount or 0.0
+        res['irrf_aliquota'] = irrf.amount or 0.0
         return res

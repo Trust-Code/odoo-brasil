@@ -353,6 +353,7 @@ class TestNFeBrasil(TransactionCase):
             nfe_values['ide']['cNF'] = '66382470'
             nfe_values['ide']['dhEmi'] = '2018-05-21T14:19:37-00:00'
             nfe_values['ide']['dhSaiEnt'] = '2018-05-21T14:19:37-00:00'
+            nfe_values['cobr']['dup'][0]['dVenc'] = '2018-05-21'
             return {
                 'idLote': nfe_values['ide']['nNF'],
                 'indSinc': 0,

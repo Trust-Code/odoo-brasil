@@ -46,6 +46,12 @@
                     </group>
                     <group></group>
                 </group>
+                <group name="issqn" attrs="{'invisible': [('domain', '!=', 'issqn')]}">
+                    <group>
+                        <field name="l10n_br_issqn_deduction" />
+                    </group>
+                    <group></group>
+                </group>
                 <group string="Aplicar esta regra quando:">
                     <field name="tipo_produto" />
                 </group>
