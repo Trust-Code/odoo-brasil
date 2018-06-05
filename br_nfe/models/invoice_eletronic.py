@@ -936,7 +936,7 @@ class InvoiceEletronic(models.Model):
         nfe_processada = base64.decodestring(self.nfe_processada)
 
         nfe_proc_cancel = gerar_nfeproc_cancel(
-            nfe_processada, resp['received_xml'])
+            nfe_processada, resp['received_xml'].encode())
         if nfe_proc_cancel:
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
             self.nfe_processada_name = "NFe%08d.xml" % self.numero
