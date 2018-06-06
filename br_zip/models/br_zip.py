@@ -108,7 +108,7 @@ class BrZip(models.Model):
             res = obj_viacep.json()
             if not res.get('erro', False):
                 city = self.env['res.state.city'].search(
-                    [('ibge_code', '=', res['ibge'][2:]),
+                    [('l10n_br_ibge_code', '=', res['ibge'][2:]),
                      ('state_id.code', '=', res['uf'])])
 
                 self.env['br.zip'].create(
@@ -132,7 +132,7 @@ class BrZip(models.Model):
             if results:
                 for res in results:
                     city = self.env['res.state.city'].search(
-                        [('ibge_code', '=', res['ibge'][2:]),
+                        [('l10n_br_ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
 
                     self.env['br.zip'].create(

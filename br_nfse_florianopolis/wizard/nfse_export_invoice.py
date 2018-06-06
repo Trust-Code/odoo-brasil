@@ -37,8 +37,8 @@ class NfseExportInvoice(models.TransientModel):
             'district': inv.commercial_partner_id.district,
             'zip': re.sub('[^0-9]', '', inv.commercial_partner_id.zip or ''),
             'city_code': '%s%s' % (
-                inv.commercial_partner_id.state_id.ibge_code,
-                inv.commercial_partner_id.city_id.ibge_code),
+                inv.commercial_partner_id.state_id.l10n_br_ibge_code,
+                inv.commercial_partner_id.city_id.l10n_br_ibge_code),
             'uf_code': inv.commercial_partner_id.state_id.code,
             'email': inv.partner_id.email,
             'phone': re.sub('[^0-9]', '', inv.partner_id.phone or ''),

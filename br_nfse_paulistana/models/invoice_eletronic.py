@@ -126,8 +126,8 @@ class InvoiceEletronic(models.Model):
                 'numero': partner.number or '',
                 'complemento': partner.street2 or '',
                 'bairro': partner.district or 'Sem Bairro',
-                'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
-                                    city_tomador.ibge_code),
+                'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
+                                    city_tomador.l10n_br_ibge_code),
                 'cidade_descricao': city_tomador.name or '',
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
@@ -143,8 +143,8 @@ class InvoiceEletronic(models.Model):
                 'razao_social': self.company_id.partner_id.legal_name or '',
                 'inscricao_municipal': re.sub(
                     '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
-                'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                    city_prestador.ibge_code),
+                'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                    city_prestador.l10n_br_ibge_code),
                 'telefone': re.sub('[^0-9]', '', self.company_id.phone or ''),
                 'email': self.company_id.partner_id.email or '',
             }

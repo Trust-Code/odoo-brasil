@@ -50,29 +50,29 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         dt_evento = pytz.utc.localize(dt_evento).astimezone(tz)
         numero_evento = len(self.eletronic_doc_id.cartas_correcao_ids) + 1
 
+        edoc_id = self.eletronic_doc_id
         carta = {
-            'invoice_id': self.eletronic_doc_id.id,
+            'invoice_id': edoc_id.id,
             'CNPJ': re.sub(
-                "[^0-9]", "", self.eletronic_doc_id.company_id.l10n_br_cnpj_cpf or ''),
-            'cOrgao':  self.eletronic_doc_id.company_id.state_id.ibge_code,
-            'tpAmb': self.eletronic_doc_id.company_id.tipo_ambiente,
-            'estado':  self.eletronic_doc_id.company_id.state_id.ibge_code,
-            'ambiente': int(self.eletronic_doc_id.company_id.tipo_ambiente),
+            "[^0-9]", "", edoc_id.company_id.l10n_br_cnpj_cpf or ''),
+            'cOrgao':  edoc_id.company_id.state_id.ibge_code,
+            'tpAmb': edoc_id.company_id.tipo_ambiente,
+            'estado':  edoc_id.company_id.state_id.ibge_code,
+            'ambiente': int(edoc_id.company_id.tipo_ambiente),
             'dhEvento':  dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
-            'chNFe': self.eletronic_doc_id.chave_nfe,
+            'chNFe': edoc_id.chave_nfe,
             'xCorrecao': self.correcao,
             'tpEvento': '110110',
             'nSeqEvento': numero_evento,
             'idLote': self.id,
-            'Id': "ID110110%s%02d" % (self.eletronic_doc_id.chave_nfe,
-                                      numero_evento),
-            'modelo': self.eletronic_doc_id.model,
+            'Id': "ID110110%s%02d" % (edoc_id.chave_nfe, numero_evento),
+            'modelo': edoc_id.model,
         }
-        cert = self.eletronic_doc_id.company_id.with_context(
+        cert = edoc_id.company_id.with_context(
             {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(
-            cert_pfx, self.eletronic_doc_id.company_id.l10n_br_nfe_a1_password)
+            cert_pfx, edoc_id.company_id.l10n_br_nfe_a1_password)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
 
         retorno = resposta['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
@@ -82,7 +82,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             eventos = self.env['carta.correcao.eletronica.evento']
             eventos.create({
                 'id_cce': carta['Id'],
-                'eletronic_doc_id': self.eletronic_doc_id.id,
+                'eletronic_doc_id': edoc_id.id,
                 'datahora_evento': datetime.now(),
                 'tipo_evento': carta['tpEvento'],
                 'sequencial_evento': carta['nSeqEvento'],
@@ -90,10 +90,10 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 'message': retorno.retEvento.infEvento.xMotivo,
                 'protocolo': retorno.retEvento.infEvento.nProt,
             })
-            self.eletronic_doc_id._create_attachment(
-                'cce', self.eletronic_doc_id, resposta['sent_xml'])
-            self.eletronic_doc_id._create_attachment(
-                'cce_ret', self.eletronic_doc_id, resposta['received_xml'])
+            edoc_id._create_attachment(
+                'cce', edoc_id, resposta['sent_xml'])
+            edoc_id._create_attachment(
+                'cce_ret', edoc_id, resposta['received_xml'])
 
         else:
             mensagem = "%s - %s" % (retorno.cStat, retorno.xMotivo)

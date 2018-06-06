@@ -82,8 +82,8 @@ class InvoiceEletronic(models.Model):
             'numero': partner.number or '',
             'complemento': partner.street2 or '',
             'bairro': partner.district or 'Sem Bairro',
-            'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
-                                city_tomador.ibge_code),
+            'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
+                                city_tomador.l10n_br_ibge_code),
             'uf': partner.state_id.code,
             'cep': re.sub('[^0-9]', '', partner.zip),
             'telefone': re.sub('[^0-9]', '', partner.phone or ''),
@@ -97,8 +97,8 @@ class InvoiceEletronic(models.Model):
                 '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
                 '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
-            'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                city_prestador.ibge_code),
+            'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                city_prestador.l10n_br_ibge_code),
             'cnae': re.sub('[^0-9]', '', self.company_id.cnae_main_id.code)
         }
 
@@ -287,8 +287,8 @@ class InvoiceEletronic(models.Model):
             'cnpj_prestador': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
             'inscricao_municipal': re.sub('[^0-9]', '',
                                           company.l10n_br_inscr_mun),
-            'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                city_prestador.ibge_code),
+            'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                city_prestador.l10n_br_ibge_code),
             'numero_nfse': self.numero_nfse,
             'codigo_cancelamento': '1',  # Erro na emissão
         }

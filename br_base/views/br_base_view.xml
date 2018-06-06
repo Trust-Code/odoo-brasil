@@ -12,7 +12,7 @@
             <tree string="Cities">
                 <field name="name" select="1"/>
                 <field name="state_id" select="1"/>
-                <field name="ibge_code"/>
+                <field name="l10n_br_ibge_code"/>
             </tree>
         </field>
     </record>
