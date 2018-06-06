@@ -33,7 +33,7 @@ class InvoiceEletronic(models.Model):
         import urllib
 
         url_consulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
-consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.inscr_mun)
+consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.l10n_br_inscr_mun)
 
         url = '<img class="center-block"\
 style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
@@ -171,11 +171,11 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             return
 
         cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_processar_nota(certificado, rps=nfse_values)
@@ -196,7 +196,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             None, xml=xml_to_send, ambiente=self.ambiente,
             client_id=self.company_id.client_id,
             secret_id=self.company_id.client_secret,
-            username=self.company_id.inscr_mun,
+            username=self.company_id.l10n_br_inscr_mun,
             password=self.company_id.user_password)
 
         retorno = recebe_lote['object']
@@ -241,9 +241,10 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                     'default_edoc_id': self.id
                 }
             }
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = self.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         company = self.company_id
         canc = {
@@ -256,7 +257,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                                  ambiente=self.ambiente,
                                  client_id=self.company_id.client_id,
                                  secret_id=self.company_id.client_secret,
-                                 username=self.company_id.inscr_mun,
+                                 username=self.company_id.l10n_br_inscr_mun,
                                  password=self.company_id.user_password)
         retorno = resposta['object']
         msg_cancelada = 'A Nota Fiscal já está com a situação cancelada.'

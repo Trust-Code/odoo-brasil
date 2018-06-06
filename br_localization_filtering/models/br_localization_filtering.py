@@ -7,7 +7,7 @@ from odoo import api, fields, models
 
 
 class BrLocalizationFiltering(models.AbstractModel):
-    _name = 'bl.localization.filtering'
+    _name = 'br.localization.filtering'
 
     def _get_br_localization_template(self):
         return self.env['ir.model.data'].get_object(

@@ -37,7 +37,7 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '010':
             issqn_codigo = ''
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -89,9 +89,9 @@ class InvoiceEletronic(models.Model):
                 'inscricao_municipal': re.sub(
                     '[^0-9]', '', company.partner_id.inscr_mun or ''),
                 'logradouro': company.street or '',
-                'numero': company.number or '',
+                'numero': company.l10n_br_number or '',
                 'complemento': company.street2 or '',
-                'bairro': company.district or 'Sem Bairro',
+                'bairro': company.l10n_br_district or 'Sem Bairro',
                 'municipio': company.city_id.name,
                 'uf': company.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),

@@ -80,7 +80,7 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '001':
             issqn_codigo = ''
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -256,11 +256,11 @@ class InvoiceEletronic(models.Model):
 
             nfse_values = self._prepare_eletronic_invoice_values()
             cert = self.company_id.with_context(
-                {'bin_size': False}).nfe_a1_file
+                {'bin_size': False}).l10n_br_nfe_a1_file
             cert_pfx = base64.decodestring(cert)
 
             certificado = Certificado(
-                cert_pfx, self.company_id.nfe_a1_password)
+                cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
             if self.ambiente == 'producao':
                 resposta = envio_lote_rps(certificado, nfse=nfse_values)
@@ -307,18 +307,21 @@ class InvoiceEletronic(models.Model):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = self.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(cert_pfx,
+                                  self.company_id.l10n_br_nfe_a1_password)
 
         company = self.company_id
         canc = {
-            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'cnpj_remetente': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '',
+                                          company.l10n_br_inscr_mun),
             'numero_nfse': self.numero_nfse,
             'codigo_verificacao': self.verify_code,
             'assinatura': '%s%s' % (
-                re.sub('[^0-9]', '', company.inscr_mun),
+                re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
                 self.numero_nfse.zfill(12)
             )
         }

@@ -43,13 +43,13 @@ class TestBoletoSicoob(TestBoleto):
     def _update_main_company(self):
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
-            'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
+            'l10n_br_legal_name': 'Trustcode Tecnologia da Informação',
+            'l10n_br_cnpj_cpf': '92.743.275/0001-33',
+            'l10n_br_inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
-            'number': '42',
-            'district': 'Córrego Grande',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,

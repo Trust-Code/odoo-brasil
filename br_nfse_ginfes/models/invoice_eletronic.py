@@ -58,7 +58,7 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '002':
             issqn_codigo = ''
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             if not self.company_id.cnae_main_id.code:
                 errors.append(u'CNAE Principal da empresa obrigatório')
@@ -184,11 +184,11 @@ class InvoiceEletronic(models.Model):
             return
 
         cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_recepcionar_lote_rps(certificado, nfse=nfse_values)
@@ -229,11 +229,11 @@ class InvoiceEletronic(models.Model):
             self.state = 'error'
 
             cert = self.company_id.with_context(
-                {'bin_size': False}).nfe_a1_file
+                {'bin_size': False}).l10n_br_nfe_a1_file
             cert_pfx = base64.decodestring(cert)
 
             certificado = Certificado(
-                cert_pfx, self.company_id.nfe_a1_password)
+                cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
             consulta_lote = None
             recebe_lote = None
@@ -265,9 +265,9 @@ class InvoiceEletronic(models.Model):
             # 4 - Processado com sucesso
             obj = {
                 'cnpj_prestador': re.sub(
-                    '[^0-9]', '', self.company_id.cnpj_cpf),
+                    '[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', self.company_id.inscr_mun),
+                    '[^0-9]', '', self.company_id.l10n_br_inscr_mun),
                 'protocolo': self.recibo_nfe,
             }
             consulta_situacao = consultar_situacao_lote(
@@ -332,17 +332,18 @@ class InvoiceEletronic(models.Model):
                 justificativa=justificativa)
 
         cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         company = self.company_id
         city_prestador = self.company_id.partner_id.city_id
         canc = {
-            'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'cnpj_prestador': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '',
+                                          company.l10n_br_inscr_mun),
             'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
                                 city_prestador.ibge_code),
             'numero_nfse': self.numero_nfse,

@@ -53,9 +53,9 @@ class AccountInvoice(models.Model):
             if item.payment_mode_id and item.payment_mode_id.boleto_type != '':
                 if not item.company_id.partner_id.legal_name:
                     error += u'Empresa - Razão Social\n'
-                if not item.company_id.cnpj_cpf:
+                if not item.company_id.l10n_br_cnpj_cpf:
                     error += u'Empresa - CNPJ\n'
-                if not item.company_id.district:
+                if not item.company_id.l10n_br_district:
                     error += u'Empresa - Bairro\n'
                 if not item.company_id.zip:
                     error += u'Empresa - CEP\n'
@@ -63,7 +63,7 @@ class AccountInvoice(models.Model):
                     error += u'Empresa - Cidade\n'
                 if not item.company_id.street:
                     error += u'Empresa - Logradouro\n'
-                if not item.company_id.number:
+                if not item.company_id.l10n_br_number:
                     error += u'Empresa - Número\n'
                 if not item.company_id.state_id.code:
                     error += u'Empresa - Estado\n'

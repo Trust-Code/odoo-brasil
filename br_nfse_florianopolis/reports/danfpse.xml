@@ -53,21 +53,21 @@
             <div class="row completa">
                 <div class="col-xs-6 br" style="padding:0px;text-align:center;">
                     <div style="font-size:18px;">
-                        <strong t-field="doc.company_id.legal_name" />
+                        <strong t-field="doc.company_id.l10n_br_legal_name" />
                         <br />
                     <br />
                     </div>
                     <div style="font-size:12px;">
                         <span t-field="doc.company_id.street" />
-                        <span t-field="doc.company_id.number" />
-                        <span t-field="doc.company_id.district" />
+                        <span t-field="doc.company_id.l10n_br_number" />
+                        <span t-field="doc.company_id.l10n_br_district" />
                         CEP: <span t-field="doc.company_id.zip" />
                         <br />
                         Telefone: <span t-field="doc.company_id.phone" />
                         <br />
-                        CNPJ: <span t-field="doc.company_id.cnpj_cpf" />
+                        CNPJ: <span t-field="doc.company_id.l10n_br_cnpj_cpf" />
                         <br />
-                        CMC: <span t-field="doc.company_id.inscr_mun"/>
+                        CMC: <span t-field="doc.company_id.l10n_br_inscr_mun"/>
                     </div>
                 </div>
                 <div class="col-xs-6" style="padding:0px;">
@@ -262,7 +262,7 @@
                         PODERÃO SER COMPROVADAS MEDIANTE CONSULTA À PÁGINA DA SECRETARIA MUNICIPAL DA FAZENDA -SMF NA <br />
                         INTERNET, NO ENDEREÇO portal.pmf.sc.gov.br/sites/notaeletronica, EM VERIFICAR AUTENTICIDADE >>> PRODUÇÃO, <br />
                         INFORMANDO O CÓDIGO DE VERIFICAÇÃO: <span t-field="doc.verify_code" /> E O NÚMERO DE INSCRIÇÃO DO EMITENTE NO CADASTRO <br />
-                        MUNICIPAL DE CONTRIBUINTES - CMC: <span t-field="doc.company_id.inscr_mun" />
+                        MUNICIPAL DE CONTRIBUINTES - CMC: <span t-field="doc.company_id.l10n_br_inscr_mun" />
                     </p>
                 </div>
             </div>

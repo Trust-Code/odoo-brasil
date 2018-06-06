@@ -46,7 +46,7 @@ class InvoiceEletronic(models.Model):
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '015':
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             if not self.company_id.cnae_main_id.code:
                 errors.append(u'CNAE Principal da empresa obrigatório')
@@ -203,11 +203,11 @@ class InvoiceEletronic(models.Model):
             return
 
         cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_gerar_nfse(certificado, rps=nfse_values)
@@ -225,11 +225,11 @@ class InvoiceEletronic(models.Model):
         xml_to_send = base64.decodestring(self.xml_to_send)
 
         cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         enviar_nfse = gerar_nfse(
             certificado, xml=xml_to_send, ambiente=self.ambiente)
@@ -275,15 +275,18 @@ class InvoiceEletronic(models.Model):
                     'default_edoc_id': self.id
                 }
             }
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = self.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(cert_pfx,
+                                  self.company_id.l10n_br_nfe_a1_password)
 
         company = self.company_id
         city_prestador = self.company_id.partner_id.city_id
         canc = {
-            'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'cnpj_prestador': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '',
+                                          company.l10n_br_inscr_mun),
             'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
                                 city_prestador.ibge_code),
             'numero_nfse': self.numero_nfse,

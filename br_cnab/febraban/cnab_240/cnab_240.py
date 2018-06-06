@@ -64,7 +64,7 @@ class Cnab240(Cnab):
 
     def _prepare_header(self):
         cnpj_cpf = re.sub('[^0-9]', '',
-                          self.order.payment_mode_id.company_id.cnpj_cpf)
+                          self.order.payment_mode_id.company_id.l10n_br_cnpj_cpf)
         cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
             acc_number_dig
         cedente_conta_dv = str(cedente_conta_dv)
@@ -85,7 +85,7 @@ class Cnab240(Cnab):
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
             bank_account_id.bra_number_dig,
-            'cedente_nome': self.order.user_id.company_id.legal_name,
+            'cedente_nome': self.order.user_id.company_id.l10n_br_legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),

@@ -108,11 +108,12 @@ class Boleto:
             company_legal_name = company_legal_name[0:42] + '...'
 
         self.boleto.cedente = company_legal_name
-        self.boleto.cedente_documento = company.cnpj_cpf
-        self.boleto.cedente_bairro = company.district
+        self.boleto.cedente_documento = company.l10n_br_cnpj_cpf
+        self.boleto.cedente_bairro = company.l10n_br_district
         self.boleto.cedente_cep = company.zip
         self.boleto.cedente_cidade = company.city_id.name
-        self.boleto.cedente_logradouro = company.street + ', ' + company.number
+        self.boleto.cedente_logradouro = (company.street + ', ' +
+                                          company.l10n_br_number)
         self.boleto.cedente_uf = company.state_id.code
         self.boleto.agencia_cedente = self.getBranchNumber()
         self.boleto.conta_cedente = self.getAccountNumber()

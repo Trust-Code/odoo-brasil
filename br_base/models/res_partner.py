@@ -189,12 +189,12 @@ class ResPartner(models.Model):
                 raise UserError(_(
                     u'Rio de Janeiro doesn\'t have this service'))
             company = self.env.user.company_id
-            if not company.nfe_a1_file and not company.nfe_a1_password:
+            if not company.nfe_a1_file and not company.l10n_br_nfe_a1_password:
                 raise UserError(_(
                     u'Configure the company\'s certificate and password'))
             cert = company.with_context({'bin_size': False}).nfe_a1_file
             cert_pfx = base64.decodestring(cert)
-            certificado = Certificado(cert_pfx, company.nfe_a1_password)
+            certificado = Certificado(cert_pfx, company.l10n_br_nfe_a1_password)
             cnpj = re.sub('[^0-9]', '', self.cnpj_cpf)
             obj = {'cnpj': cnpj, 'estado': self.state_id.code}
             resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,

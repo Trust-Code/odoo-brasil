@@ -209,9 +209,9 @@ class InvoiceEletronic(models.Model):
         """
         errors = []
         # Emitente
-        if not self.company_id.nfe_a1_file:
+        if not self.company_id.l10n_br_nfe_a1_file:
             errors.append(u'Emitente - Certificado Digital')
-        if not self.company_id.nfe_a1_password:
+        if not self.company_id.l10n_br_nfe_a1_password:
             errors.append(u'Emitente - Senha do Certificado Digital')
         if not self.company_id.partner_id.legal_name:
             errors.append(u'Emitente - Razão Social')
