@@ -95,9 +95,9 @@ class AccountInvoice(models.Model):
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
-        res['serie'] = inv.product_serie_id.id
-        res['serie_documento'] = inv.product_document_id.code
-        res['model'] = inv.product_document_id.code
+        res['serie'] = serie_id.id
+        res['serie_documento'] = serie_id.code
+        res['model'] = serie_id.fiscal_document_id.code
         res['numero_nfe'] = numero_nfe
         res['numero'] = numero_nfe
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,
