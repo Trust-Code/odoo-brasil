@@ -391,7 +391,7 @@
             <hr style="border-top: dashed 1px; margin:4px;" />
             <div class="row" style="border: 1px solid black; padding: 0px;">
                 <div class="col-xs-8" style="border-right: 1px solid black;">
-                    Recebi(emos) de: <span t-field="doc.company_id.legal_name" /><br />
+                    Recebi(emos) de: <span t-field="doc.company_id.l10n_br_legal_name" /><br />
                     Os serviços constantes nesta Nota Fiscal de Serviços Eletrônica.<br />
                     ________/_____/____________ &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                     _____________________________________<br />

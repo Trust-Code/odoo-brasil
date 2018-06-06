@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -60,17 +61,17 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         error = ''
         for item in self:
-            if not item.payment_mode_id:
+            if not item.l10n_br_payment_mode_id:
                 continue
-            if item.payment_mode_id.type != 'receivable':
+            if item.l10n_br_payment_mode_id.type != 'receivable':
                 continue
-            if not item.payment_mode_id.boleto:
+            if not item.l10n_br_payment_mode_id.boleto:
                 continue
-            if not item.company_id.partner_id.legal_name:
+            if not item.company_id.partner_id.l10n_br_legal_name:
                 error += u'Empresa - Razão Social\n'
-            if not item.company_id.cnpj_cpf:
+            if not item.company_id.l10n_br_cnpj_cpf:
                 error += u'Empresa - CNPJ\n'
-            if not item.company_id.district:
+            if not item.company_id.l10n_br_district:
                 error += u'Empresa - Bairro\n'
             if not item.company_id.zip:
                 error += u'Empresa - CEP\n'
@@ -78,7 +79,7 @@ class AccountInvoice(models.Model):
                 error += u'Empresa - Cidade\n'
             if not item.company_id.street:
                 error += u'Empresa - Logradouro\n'
-            if not item.company_id.number:
+            if not item.company_id.l10n_br_number:
                 error += u'Empresa - Número\n'
             if not item.company_id.state_id.code:
                 error += u'Empresa - Estado\n'
