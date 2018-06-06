@@ -95,8 +95,8 @@ class InvoiceEletronic(models.Model):
             'numero': partner.number or '',
             'complemento': partner.street2 or '',
             'bairro': partner.district or 'Sem Bairro',
-            'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
-                                city_tomador.ibge_code),
+            'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
+                                city_tomador.l10n_br_ibge_code),
             'uf': partner.state_id.code,
             'codigo_pais': int(partner.country_id.bc_code),
             'cep': re.sub('[^0-9]', '', partner.zip),
@@ -111,15 +111,14 @@ class InvoiceEletronic(models.Model):
                 '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
                 '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
-            'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                city_prestador.ibge_code),
+            'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                city_prestador.l10n_br_ibge_code),
             'cnae': re.sub('[^0-9]', '', self.company_id.cnae_main_id.code)
         }
 
         itens_servico = []
         descricao = ''
         codigo_servico = ''
-        exigibilidade_iss = 0
         for item in self.eletronic_item_ids:
             descricao += item.name + '\n'
             itens_servico.append({
@@ -128,7 +127,6 @@ class InvoiceEletronic(models.Model):
                 'valor_unitario': str("%.2f" % item.preco_unitario)
             })
             codigo_servico = item.issqn_codigo
-            exigibilidade_iss = item.exigibilidade_iss
 
         rps = {
             'numero_lote': self.id,
@@ -307,8 +305,8 @@ class InvoiceEletronic(models.Model):
             'cnpj_prestador': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
             'inscricao_municipal': re.sub('[^0-9]', '',
                                           company.l10n_br_inscr_mun),
-            'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                city_prestador.ibge_code),
+            'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                city_prestador.l10n_br_ibge_code),
             'numero_nfse': self.numero_nfse,
             'codigo_cancelamento': '1',  # Erro na emissão
         }

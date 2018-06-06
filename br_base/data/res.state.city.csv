@@ -1,4 +1,4 @@
-"id","name","ibge_code","state_id:id"
+"id","name","l10n_br_ibge_code","state_id:id"
 "city_1100015","Alta Floresta D'Oeste","00015","base.state_br_ro"
 "city_1100106","Guajará-Mirim","00106","base.state_br_ro"
 "city_1301704","Humaitá","01704","base.state_br_am"

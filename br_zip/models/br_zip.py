@@ -137,7 +137,7 @@ class BrZip(models.Model):
             if results:
                 for res in results:
                     city = self.env['res.state.city'].search(
-                        [('ibge_code', '=', res['ibge'][2:]),
+                        [('l10n_br_ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
 
                     zip_code = re.sub('[^0-9]', '', res['cep'])

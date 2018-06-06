@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -458,7 +459,7 @@ class InvoiceEletronic(models.Model):
             dt_saida = dt_emissao
 
         ide = {
-            'cUF': self.company_id.state_id.ibge_code,
+            'cUF': self.company_id.state_id.l10n_br_ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
             'mod': self.model,
@@ -468,8 +469,8 @@ class InvoiceEletronic(models.Model):
             'dhSaiEnt': dt_saida,
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
-            'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
-                                self.company_id.city_id.ibge_code),
+            'cMunFG': "%s%s" % (self.company_id.state_id.l10n_br_ibge_code,
+                                self.company_id.city_id.l10n_br_ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
             'tpImp': '1' if self.model == '55' else '4',
             'tpEmis': int(self.tipo_emissao),
@@ -491,7 +492,7 @@ class InvoiceEletronic(models.Model):
             elif doc.document_type == 'nf':
                 documentos.append({
                     'refNF': {
-                        'cUF': doc.state_id.ibge_code,
+                        'cUF': doc.state_id.l10n_br_ibge_code,
                         'AAMM': data.strftime("%y%m"),
                         'CNPJ': re.sub('[^0-9]', '', doc.cnpj_cpf),
                         'mod': doc.fiscal_document_id.code,
@@ -508,7 +509,7 @@ class InvoiceEletronic(models.Model):
                 cnpj_cpf = re.sub('[^0-9]', '', doc.cnpj_cpf)
                 documentos.append({
                     'refNFP': {
-                        'cUF': doc.state_id.ibge_code,
+                        'cUF': doc.state_id.l10n_br_ibge_code,
                         'AAMM': data.strftime("%y%m"),
                         'CNPJ': cnpj_cpf if len(cnpj_cpf) == 14 else '',
                         'CPF': cnpj_cpf if len(cnpj_cpf) == 11 else '',
@@ -539,12 +540,12 @@ class InvoiceEletronic(models.Model):
                 'xCpl': self.company_id.street2 or '',
                 'xBairro': self.company_id.l10n_br_district,
                 'cMun': '%s%s' % (
-                    self.company_id.partner_id.state_id.ibge_code,
-                    self.company_id.partner_id.city_id.ibge_code),
+                    self.company_id.partner_id.state_id.l10n_br_ibge_code,
+                    self.company_id.partner_id.city_id.l10n_br_ibge_code),
                 'xMun': self.company_id.city_id.name,
                 'UF': self.company_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.company_id.zip),
-                'cPais': self.company_id.country_id.ibge_code,
+                'cPais': self.company_id.country_id.l10n_br_ibge_code,
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
@@ -570,12 +571,12 @@ class InvoiceEletronic(models.Model):
                     'nro': partner.number,
                     'xCpl': partner.street2 or '',
                     'xBairro': partner.district,
-                    'cMun': '%s%s' % (partner.state_id.ibge_code,
-                                      partner.city_id.ibge_code),
+                    'cMun': '%s%s' % (partner.state_id.l10n_br_ibge_code,
+                                      partner.city_id.l10n_br_ibge_code),
                     'xMun': partner.city_id.name,
                     'UF': partner.state_id.code,
                     'CEP': re.sub('[^0-9]', '', partner.zip or ''),
-                    'cPais': (partner.country_id.bc_code or '')[-4:],
+                    'cPais': (partner.country_id.l10n_br_bc_code or '')[-4:],
                     'xPais': partner.country_id.name,
                     'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
@@ -868,7 +869,7 @@ class InvoiceEletronic(models.Model):
         return {
             'idLote': lote,
             'indSinc': 1 if self.company_id.nfe_sinc else 0,
-            'estado': self.company_id.partner_id.state_id.ibge_code,
+            'estado': self.company_id.partner_id.state_id.l10n_br_ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{
                 'infNFe': nfe_values
@@ -924,7 +925,7 @@ class InvoiceEletronic(models.Model):
             return
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
-            'estado': self.company_id.state_id.ibge_code,
+            'estado': self.company_id.state_id.l10n_br_ibge_code,
             'emissao': self.data_emissao[2:4] + self.data_emissao[5:7],
             'modelo': self.model,
             'numero': self.numero,
@@ -983,13 +984,14 @@ class InvoiceEletronic(models.Model):
         resposta_recibo = None
         resposta = autorizar_nfe(
             certificado, xml=xml_to_send,
-            estado=self.company_id.state_id.ibge_code,
+            estado=self.company_id.state_id.l10n_br_ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
         retorno = resposta['object'].getchildren()[0]
         if retorno.cStat == 103:
             obj = {
-                'estado': self.company_id.partner_id.state_id.ibge_code,
+                'estado':
+                self.company_id.partner_id.state_id.l10n_br_ibge_code,
                 'ambiente': 1 if self.ambiente == 'producao' else 2,
                 'obj': {
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
@@ -1119,11 +1121,11 @@ class InvoiceEletronic(models.Model):
 
         cancelamento = {
             'idLote': self.id,
-            'estado': self.company_id.state_id.ibge_code,
+            'estado': self.company_id.state_id.l10n_br_ibge_code,
             'ambiente': 2 if self.ambiente == 'homologacao' else 1,
             'eventos': [{
                 'Id': id_canc,
-                'cOrgao': self.company_id.state_id.ibge_code,
+                'cOrgao': self.company_id.state_id.l10n_br_ibge_code,
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
                 'CNPJ': re.sub('[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
                 'chNFe': self.chave_nfe,

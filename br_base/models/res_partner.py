@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2009 Gabriel C. Stabel
 # © 2009 Renato Lima (Akretion)
 # © 2012 Raphaël Valyi (Akretion)
@@ -196,8 +197,9 @@ class ResPartner(models.Model):
             certificado = Certificado(cert_pfx, company.l10n_br_nfe_a1_password)
             cnpj = re.sub('[^0-9]', '', self.cnpj_cpf)
             obj = {'cnpj': cnpj, 'estado': self.state_id.code}
-            resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,
-                                         estado=self.state_id.ibge_code)
+            resposta = consulta_cadastro(
+                certificado, obj=obj, ambiente=1,
+                estado=self.state_id.l10n_br_ibge_code)
 
             info = resposta['object'].getchildren()[0]
             info = info.infCons
@@ -228,7 +230,7 @@ class ResPartner(models.Model):
                 city = None
                 if cMun:
                     city = self.env['res.state.city'].search(
-                        [('ibge_code', '=', str(cMun)[2:]),
+                        [('l10n_br_ibge_code', '=', str(cMun)[2:]),
                          ('state_id', '=', self.state_id.id)])
                 if not city and xMun:
                     city = self.env['res.state.city'].search(

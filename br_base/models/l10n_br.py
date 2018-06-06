@@ -16,7 +16,7 @@ class L10nBR(models.AbstractModel):
         template_id = self.env['res.users'].browse(
             user_id).company_id.chart_template_id.id
         br_template = self.env['ir.model.data'].get_object(
-            'br_coa_simple', 'br_account_chart_template')
+            'br_coa', 'br_account_chart_template')
         br_template_id = br_template and br_template.id
         return br_template_id == template_id
 
@@ -54,7 +54,6 @@ class L10nBR(models.AbstractModel):
         return ret_val
 
     @api.multi
-    @api.depends('company_id')
     def _compute_is_br_localization(self):
         user_template_id = self._get_user_localization()
         for record in self:
@@ -62,7 +61,7 @@ class L10nBR(models.AbstractModel):
                 user_template_id = (record.company_id.chart_template_id.id
                                     or user_template_id)
             br_template = record.env['ir.model.data'].get_object(
-                'br_coa_simple', 'br_account_chart_template')
+                'br_coa', 'br_account_chart_template')
             br_template_id = br_template and br_template.id
             record.l10n_br_localization = br_template_id == user_template_id
 
