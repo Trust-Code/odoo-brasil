@@ -77,7 +77,7 @@ class InutilizedNfe(models.Model):
         if not self.env.user.company_id.cnpj_cpf:
             errors.append('Cadastre o CNPJ da empresa.')
         estado = self.env.user.company_id.state_id
-        if not estado or not estado.ibge_code:
+        if not estado or not estado.l10n_br_ibge_code:
             errors.append('Cadastre o Estado da empresa.')
         if len(errors):
             raise UserError('\n'.join(errors))
@@ -124,7 +124,7 @@ class InutilizedNfe(models.Model):
     def send_sefaz(self):
         company = self.env.user.company_id
         ambiente = company.tipo_ambiente
-        estado = company.state_id.ibge_code
+        estado = company.state_id.l10n_br_ibge_code
 
         obj = self._prepare_obj(company=company, estado=estado,
                                 ambiente=ambiente)

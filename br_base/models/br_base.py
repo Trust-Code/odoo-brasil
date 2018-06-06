@@ -20,7 +20,8 @@ class ResStateCity(models.Model):
     state_id = fields.Many2one(comodel_name='res.country.state',
                                string='State',
                                required=True)
-    ibge_code = fields.Char(string=u'IBGE Code', size=7, copy=False)
+    l10n_br_ibge_code = fields.Char(
+        string='IBGE Code', size=7, copy=False, oldname="ibge_code")
 
 
 class ResRegion(models.Model):

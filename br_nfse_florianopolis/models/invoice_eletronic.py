@@ -76,8 +76,8 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             'bairro': partner.district,
             'cep': re.sub('[^0-9]', '', partner.zip or ''),
             'cidade': '%s%s' % (
-                partner.state_id.ibge_code,
-                partner.city_id.ibge_code),
+                partner.state_id.l10n_br_ibge_code,
+                partner.city_id.l10n_br_ibge_code),
             'uf': partner.state_id.code,
             'email': self.partner_id.email,
             'phone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
