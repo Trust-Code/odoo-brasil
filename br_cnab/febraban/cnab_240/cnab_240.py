@@ -203,7 +203,7 @@ class Cnab240(Cnab):
             'sacado_nome': (line.partner_id.l10n_br_legal_name
                             or line.partner_id.name),
             'sacado_endereco': (
-                line.partner_id.street + ' ' + line.partner_id.number),
+                line.partner_id.street + ' ' + line.partner_id.l10n_br_number),
             'sacado_bairro': line.partner_id.l10n_br_district,
             'sacado_cep': int(prefixo),
             'sacado_cep_sufixo': int(sulfixo),

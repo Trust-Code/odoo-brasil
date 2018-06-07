@@ -105,16 +105,16 @@ class CrmLead(models.Model):
             partner = self.env['res.partner'].browse(partner_id)
             val = re.sub('[^0-9]', '', partner.l10n_br_cnpj_cpf or '')
             if len(val) == 11:
-                l10n_br_cnpj_cpf = 'l10n_br_cpf'
+                cnpj_cpf = 'cpf'
             else:
-                l10n_br_cnpj_cpf = 'l10n_br_cnpj'
+                cnpj_cpf = 'cnpj'
             res.update({
-                'l10n_br_legal_name': partner.l10n_br_legal_name,
-                l10n_br_cnpj_cpf: partner.l10n_br_cnpj_cpf,
-                'l10n_br_inscr_est': partner.l10n_br_inscr_est,
-                'l10n_br_suframa': partner.l10n_br_suframa,
-                'l10n_br_number': partner.l10n_br_number,
-                'l10n_br_district': partner.l10n_br_district,
+                'legal_name': partner.l10n_br_legal_name,
+                cnpj_cpf: partner.l10n_br_cnpj_cpf,
+                'inscr_est': partner.l10n_br_inscr_est,
+                'suframa': partner.l10n_br_suframa,
+                'number': partner.l10n_br_number,
+                'district': partner.l10n_br_district,
                 'city_id': partner.city_id.id,
             })
         return res

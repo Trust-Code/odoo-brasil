@@ -79,7 +79,7 @@ class InvoiceEletronic(models.Model):
                                partner.l10n_br_cnpj_cpf or ''),
             'razao_social': partner.l10n_br_legal_name or partner.name,
             'logradouro': partner.street or '',
-            'numero': partner.number or '',
+            'numero': partner.l10n_br_number or '',
             'complemento': partner.street2 or '',
             'bairro': partner.l10n_br_district or 'Sem Bairro',
             'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,

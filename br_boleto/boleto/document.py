@@ -124,7 +124,9 @@ class Boleto:
         :param partner:
         :return:
         """
-        self.boleto.sacado_endereco = partner.street + ', ' + partner.number
+        self.boleto.sacado_endereco = (partner.street
+                                       + ', '
+                                       + partner.l10n_br_number)
         self.boleto.sacado_cidade = partner.city_id.name
         self.boleto.sacado_bairro = partner.l10n_br_district
         self.boleto.sacado_uf = partner.state_id.code

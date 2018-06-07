@@ -67,7 +67,6 @@ class AccountInvoice(models.Model):
                     error += u'Empresa - Número\n'
                 if not item.company_id.state_id.code:
                     error += u'Empresa - Estado\n'
-
                 if not item.commercial_partner_id.name:
                     error += u'Cliente - Nome\n'
                 if item.commercial_partner_id.is_company and \

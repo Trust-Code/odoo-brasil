@@ -66,10 +66,11 @@ class InvoiceEletronic(models.Model):
             partner = self.commercial_partner_id
             city_tomador = partner.city_id
             tomador = {
-                'l10n_br_cpf_cnpj': re.sub('[^0-9]',
-                                           '', partner.l10n_br_cnpj_cpf or ''),
+                'cpf_cnpj': re.sub('[^0-9]', '',
+                                   partner.l10n_br_cnpj_cpf or ''),
                 'razao_social': partner.l10n_br_legal_name or '',
-                'logradouro': "%s, %s" % (partner.street, partner.number),
+                'logradouro': "%s, %s" % (partner.street,
+                                          partner.l10n_br_number),
                 'bairro': partner.l10n_br_district or 'Sem Bairro',
                 'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
                                     city_tomador.l10n_br_ibge_code),

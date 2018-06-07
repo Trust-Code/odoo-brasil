@@ -271,7 +271,7 @@ class InvoiceEletronic(models.Model):
         if not partner.street:
             errors.append(u'Destinatário / Endereço - Logradouro')
 
-        if not partner.number:
+        if not partner.l10n_br_number:
             errors.append(u'Destinatário / Endereço - Número')
 
         if partner.country_id.id == company.partner_id.country_id.id:

@@ -484,7 +484,7 @@ class InvoiceEletronic(models.Model):
                 'xNome': partner.l10n_br_legal_name or partner.name,
                 'enderDest': {
                     'xLgr': partner.street,
-                    'nro': partner.number,
+                    'nro': partner.l10n_br_number,
                     'xBairro': partner.l10n_br_district,
                     'cMun': '%s%s' % (partner.state_id.l10n_br_ibge_code,
                                       partner.city_id.l10n_br_ibge_code),
