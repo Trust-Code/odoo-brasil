@@ -63,8 +63,8 @@ class Cnab240(Cnab):
             return 1
 
     def _prepare_header(self):
-        cnpj_cpf = re.sub('[^0-9]', '',
-                          self.order.payment_mode_id.company_id.l10n_br_cnpj_cpf)
+        cnpj_cpf = re.sub('[^0-9]', '', self.order.payment_mode_id.company_id.
+                          l10n_br_cnpj_cpf)
         cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
             acc_number_dig
         cedente_conta_dv = str(cedente_conta_dv)

@@ -244,7 +244,8 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         cert = self.company_id.with_context(
             {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.l10n_br_nfe_a1_password)
+        certificado = Certificado(cert_pfx,
+                                  self.company_id.l10n_br_nfe_a1_password)
 
         company = self.company_id
         canc = {

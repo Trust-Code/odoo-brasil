@@ -34,7 +34,7 @@ class ResCompany(models.Model):
     @api.one
     def _get_br_data(self):
         """ Read the l10n_br specific functional fields. """
-        self.ll10n_br_legal_name = self.partner_id.legal_name
+        self.l10n_br_legal_name = self.partner_id.legal_name
         self.l10n_br_cnpj_cpf = self.partner_id.cnpj_cpf
         self.l10n_br_inscr_est = self.partner_id.inscr_est
         self.l10n_br_inscr_mun = self.partner_id.inscr_mun
@@ -160,7 +160,7 @@ class ResCompany(models.Model):
     @api.onchange('l10n_br_cnpj_cpf')
     def onchange_mask_cnpj_cpf(self):
         if self.l10n_br_cnpj_cpf:
-            val = re.sub('[^0-9]', '', self.cnpj_cpf)
+            val = re.sub('[^0-9]', '', self.l10n_br_cnpj_cpf)
             if len(val) == 14:
                 cnpj_cpf = "%s.%s.%s/%s-%s"\
                     % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])

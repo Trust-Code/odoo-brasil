@@ -303,7 +303,6 @@ class InvoiceEletronic(models.Model):
             'cnpj_prestador': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
             'inscricao_municipal': re.sub('[^0-9]', '',
                                           company.l10n_br_inscr_mun),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
             'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
                                 city_prestador.l10n_br_ibge_code),
             'numero_nfse': self.numero_nfse,

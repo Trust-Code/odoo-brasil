@@ -86,7 +86,7 @@ class InutilizedNfe(models.Model):
     def _prepare_obj(self, company, estado, ambiente):
         ano = str(datetime.now().year)[2:]
         serie = self.serie.code
-        cnpj = re.sub(r'\D', '', company.cnpj_cpf)
+        cnpj = re.sub(r'\D', '', company.l10n_br_cnpj_cpf)
         ID = ('ID{estado:2}{ano:2}{cnpj:14}{modelo:2}'
               '{serie:03}{num_inicial:09}{num_final:09}')
         ID = ID.format(estado=estado, ano=ano, cnpj=cnpj, modelo=self.modelo,

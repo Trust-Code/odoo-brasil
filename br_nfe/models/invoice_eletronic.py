@@ -718,7 +718,7 @@ class InvoiceEletronic(models.Model):
         if self.model not in ('55', '65'):
             return
         chave_dict = {
-            'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+            'cnpj': re.sub('[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
             'estado': self.company_id.state_id.l10n_br_ibge_code,
             'emissao': self.data_emissao[2:4] + self.data_emissao[5:7],
             'modelo': self.model,

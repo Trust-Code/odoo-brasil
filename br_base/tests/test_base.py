@@ -171,8 +171,9 @@ class TestBase(TransactionCase):
         with self.assertRaises(UserError):
             partner.action_check_sefaz()
         self.env.ref('base.main_company').l10n_br_nfe_a1_password = '123456'
-        self.env.ref('base.main_company').l10n_br_nfe_a1_file = base64.b64encode(
-            open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read())
+        self.env.ref('base.main_company').l10n_br_nfe_a1_file = \
+            base64.b64encode(open(os.path.join(
+                self.caminho, 'teste.pfx'), 'rb').read())
 
         # Consulta cadastro com sucesso
         xml_recebido = open(os.path.join(
@@ -203,7 +204,8 @@ class TestBase(TransactionCase):
         company.l10n_br_number = 12
         company.l10n_br_district = 'Centro'
         company.city_id = self.env.ref('br_base.city_3205002').id
-        self.assertEquals(company.partner_id.cnpj_cpf, company.cnpj_cpf)
+        self.assertEquals(company.partner_id.cnpj_cpf,
+                          company.l10n_br_cnpj_cpf)
         self.assertEquals(company.partner_id.suframa, company.l10n_br_suframa)
         self.assertEquals(company.partner_id.legal_name,
                           company.l10n_br_legal_name)
@@ -225,7 +227,8 @@ class TestBase(TransactionCase):
         company.partner_id.number = 12
         company.partner_id.district = 'Centro'
         company.partner_id.city_id = self.env.ref('br_base.city_3205002').id
-        self.assertEquals(company.partner_id.cnpj_cpf, company.l10n_br_cnpj_cpf)
+        self.assertEquals(company.partner_id.cnpj_cpf,
+                          company.l10n_br_cnpj_cpf)
         self.assertEquals(company.partner_id.suframa, company.l10n_br_suframa)
         self.assertEquals(company.partner_id.legal_name,
                           company.l10n_br_legal_name)
@@ -253,4 +256,4 @@ class TestBase(TransactionCase):
         })
         self.assertEquals(company.city_id, city)
         company.onchange_city_id()
-        self.assertEquals(company.city_id, city.name)
+        self.assertEquals(company.city, city.name)
