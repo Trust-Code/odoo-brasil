@@ -93,27 +93,29 @@ class InvoiceEletronic(models.Model):
             tomador = {
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cnpj_cpf': re.sub('[^0-9]', '',
-                                   partner.cnpj_cpf or ''),
-                'razao_social': partner.legal_name or partner.name,
+                                   partner.l10n_br_cnpj_cpf or ''),
+                'razao_social': partner.l10n_br_legal_name or partner.name,
                 'logradouro': partner.street or '',
-                'numero': partner.number or '',
+                'numero': partner.l10n_br_number or '',
                 'complemento': partner.street2 or '',
-                'bairro': partner.district or 'Sem Bairro',
+                'bairro': partner.l10n_br_district or 'Sem Bairro',
                 'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
                                     city_tomador.l10n_br_ibge_code),
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
                 'telefone': re.sub('[^0-9]', '', partner.phone or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', partner.inscr_mun or ''),
+                    '[^0-9]', '', partner.l10n_br_inscr_mun or ''),
                 'email': self.partner_id.email or partner.email or '',
             }
             city_prestador = self.company_id.partner_id.city_id
             prestador = {
                 'cnpj': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
+                    '[^0-9]', '',
+                    self.company_id.partner_id.l10n_br_cnpj_cpf or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
+                    '[^0-9]', '',
+                    self.company_id.partner_id.l10n_br_inscr_mun or ''),
                 'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
                                     city_prestador.l10n_br_ibge_code),
                 'cnae': re.sub('[^0-9]', '', self.company_id.cnae_main_id.code)

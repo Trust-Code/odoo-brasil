@@ -28,52 +28,52 @@ class ResCompany(models.Model):
     @api.one
     def _get_address_data(self):
         self.city_id = self.partner_id.city_id
-        self.l10n_br_district = self.partner_id.district
-        self.l10n_br_number = self.partner_id.number
+        self.l10n_br_district = self.partner_id.l10n_br_district
+        self.l10n_br_number = self.partner_id.l10n_br_number
 
     @api.one
     def _get_br_data(self):
         """ Read the l10n_br specific functional fields. """
-        self.l10n_br_legal_name = self.partner_id.legal_name
-        self.l10n_br_cnpj_cpf = self.partner_id.cnpj_cpf
-        self.l10n_br_inscr_est = self.partner_id.inscr_est
-        self.l10n_br_inscr_mun = self.partner_id.inscr_mun
-        self.l10n_br_suframa = self.partner_id.suframa
+        self.l10n_br_legal_name = self.partner_id.l10n_br_legal_name
+        self.l10n_br_cnpj_cpf = self.partner_id.l10n_br_cnpj_cpf
+        self.l10n_br_inscr_est = self.partner_id.l10n_br_inscr_est
+        self.l10n_br_inscr_mun = self.partner_id.l10n_br_inscr_mun
+        self.l10n_br_suframa = self.partner_id.l10n_br_suframa
 
     @api.one
     def _set_br_suframa(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.suframa = self.l10n_br_suframa
+        self.partner_id.l10n_br_suframa = self.l10n_br_suframa
 
     @api.one
     def _set_br_legal_name(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.legal_name = self.l10n_br_legal_name
+        self.partner_id.l10n_br_legal_name = self.l10n_br_legal_name
 
     @api.one
     def _set_br_cnpj_cpf(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.cnpj_cpf = self.l10n_br_cnpj_cpf
+        self.partner_id.l10n_br_cnpj_cpf = self.l10n_br_cnpj_cpf
 
     @api.one
     def _set_br_inscr_est(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.inscr_est = self.l10n_br_inscr_est
+        self.partner_id.l10n_br_inscr_est = self.l10n_br_inscr_est
 
     @api.one
     def _set_br_inscr_mun(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.inscr_mun = self.l10n_br_inscr_mun
+        self.partner_id.l10n_br_inscr_mun = self.l10n_br_inscr_mun
 
     @api.one
     def _set_br_number(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.number = self.l10n_br_number
+        self.partner_id.l10n_br_number = self.l10n_br_number
 
     @api.one
     def _set_br_district(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.district = self.l10n_br_district
+        self.partner_id.l10n_br_district = self.l10n_br_district
 
     @api.one
     def _set_city_id(self):

@@ -102,7 +102,7 @@ class Boleto:
         :param company:
         :return:
         """
-        company_legal_name = company.partner_id.legal_name
+        company_legal_name = company.partner_id.l10n_br_legal_name
 
         if len(company_legal_name) > 45:
             company_legal_name = company_legal_name[0:42] + '...'
@@ -126,12 +126,12 @@ class Boleto:
         """
         self.boleto.sacado_endereco = partner.street + ', ' + partner.number
         self.boleto.sacado_cidade = partner.city_id.name
-        self.boleto.sacado_bairro = partner.district
+        self.boleto.sacado_bairro = partner.l10n_br_district
         self.boleto.sacado_uf = partner.state_id.code
         self.boleto.sacado_cep = partner.zip
-        self.boleto.sacado_nome = partner.legal_name\
+        self.boleto.sacado_nome = partner.l10n_br_legal_name\
             if partner.company_type == 'company' else partner.name
-        self.boleto.sacado_documento = partner.cnpj_cpf
+        self.boleto.sacado_documento = partner.l10n_br_cnpj_cpf
 
     @classmethod
     def get_pdfs(cls, boleto_list):

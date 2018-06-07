@@ -27,14 +27,15 @@ class NfseExportInvoice(models.TransientModel):
     def _invoice_vals(self, inv):
         tomador = {
             'cnpj_cpf': re.sub(
-                '[^0-9]', '', inv.commercial_partner_id.cnpj_cpf or ''),
+                '[^0-9]', '',
+                inv.commercial_partner_id.l10n_br_cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
-                '[^0-9]', '', inv.commercial_partner_id.inscr_mun or
+                '[^0-9]', '', inv.commercial_partner_id.l10n_br_inscr_mun or
                 '0000000'),
-            'name': inv.commercial_partner_id.legal_name,
+            'name': inv.commercial_partner_id.l10n_br_legal_name,
             'street': inv.commercial_partner_id.street,
-            'number': inv.commercial_partner_id.number,
-            'district': inv.commercial_partner_id.district,
+            'number': inv.commercial_partner_id.l10n_br_number,
+            'district': inv.commercial_partner_id.l10n_br_district,
             'zip': re.sub('[^0-9]', '', inv.commercial_partner_id.zip or ''),
             'city_code': '%s%s' % (
                 inv.commercial_partner_id.state_id.l10n_br_ibge_code,
@@ -112,7 +113,7 @@ class NfseExportInvoice(models.TransientModel):
         for invoice in invoice_ids:
             errors = []
             if invoice.commercial_partner_id.is_company and\
-                    not invoice.commercial_partner_id.legal_name:
+                    not invoice.commercial_partner_id.l10n_br_legal_name:
                 errors += ['Razão Social incompleta.']
             if not invoice.partner_id.phone and invoice.partner_id.mobile:
                 invoice.partner_id.phone = invoice.partner_id.mobile
@@ -123,7 +124,7 @@ class NfseExportInvoice(models.TransientModel):
                 errors += ['Munícipio incompleto.']
             if not invoice.commercial_partner_id.zip:
                 errors += ['CEP incompleto.']
-            if not invoice.commercial_partner_id.cnpj_cpf:
+            if not invoice.commercial_partner_id.l10n_br_cnpj_cpf:
                 errors += ['CPF / CNPJ incompleto.']
             if not invoice.commercial_partner_id.street:
                 errors += ['Logradouro incompleto.']

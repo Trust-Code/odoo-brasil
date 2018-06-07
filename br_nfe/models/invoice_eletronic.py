@@ -207,7 +207,7 @@ class InvoiceEletronic(models.Model):
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '55':
-            if not self.company_id.partner_id.inscr_est:
+            if not self.company_id.partner_id.l10n_br_inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
@@ -479,12 +479,13 @@ class InvoiceEletronic(models.Model):
             partner = self.commercial_partner_id
             dest = {
                 'tipo': partner.company_type,
-                'cnpj_cpf': re.sub('[^0-9]', '', partner.cnpj_cpf or ''),
-                'xNome': partner.legal_name or partner.name,
+                'cnpj_cpf': re.sub('[^0-9]', '',
+                                   partner.l10n_br_cnpj_cpf or ''),
+                'xNome': partner.l10n_br_legal_name or partner.name,
                 'enderDest': {
                     'xLgr': partner.street,
                     'nro': partner.number,
-                    'xBairro': partner.district,
+                    'xBairro': partner.l10n_br_district,
                     'cMun': '%s%s' % (partner.state_id.l10n_br_ibge_code,
                                       partner.city_id.l10n_br_ibge_code),
                     'xMun': partner.city_id.name,
@@ -495,11 +496,12 @@ class InvoiceEletronic(models.Model):
                     'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
                 'indIEDest': self.ind_ie_dest,
-                'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
+                'IE':  re.sub('[^0-9]', '', partner.l10n_br_inscr_est or ''),
             }
             if self.model == '65':
                 dest.update(
-                    {'CPF': re.sub('[^0-9]', '', partner.cnpj_cpf or '')})
+                    {'CPF': re.sub('[^0-9]', '',
+                                   partner.l10n_br_cnpj_cpf or '')})
 
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
@@ -507,7 +509,7 @@ class InvoiceEletronic(models.Model):
  SEM VALOR FISCAL'
             if partner.country_id.id != self.company_id.country_id.id:
                 dest['idEstrangeiro'] = re.sub(
-                    '[^0-9]', '', partner.cnpj_cpf or '')
+                    '[^0-9]', '', partner.l10n_br_cnpj_cpf or '')
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'
@@ -556,18 +558,19 @@ class InvoiceEletronic(models.Model):
         }
         if self.transportadora_id.street:
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
-                                          self.transportadora_id.number or '',
-                                          self.
-                                          transportadora_id.district or '')
+                                          self.transportadora_id.
+                                          l10n_br_number or '',
+                                          self.transportadora_id.
+                                          l10n_br_district or '')
         else:
             end_transp = ''
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'xNome': self.transportadora_id.legal_name or
+                'xNome': self.transportadora_id.l10n_br_legal_name or
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
-                             self.transportadora_id.inscr_est or ''),
+                             self.transportadora_id.l10n_br_inscr_est or ''),
                 'xEnder': end_transp
                 if self.transportadora_id else '',
                 'xMun': self.transportadora_id.city_id.name or '',
@@ -579,7 +582,8 @@ class InvoiceEletronic(models.Model):
                 'RNTC': self.rntc or '',
             }
         }
-        cnpj_cpf = re.sub('[^0-9]', '', self.transportadora_id.cnpj_cpf or '')
+        cnpj_cpf = re.sub('[^0-9]', '',
+                          self.transportadora_id.l10n_br_cnpj_cpf or '')
         if self.transportadora_id.is_company:
             transp['transporta']['CNPJ'] = cnpj_cpf
         else:

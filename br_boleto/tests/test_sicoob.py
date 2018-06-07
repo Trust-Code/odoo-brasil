@@ -58,8 +58,8 @@ class TestBoletoSicoob(TestBoleto):
 
     def _update_partner_fisica(self):
         self.partner_fisica.write({
-            'cnpj_cpf': '075.932.961-30',
-            'district': 'Centro',
+            'l10n_br_cnpj_cpf': '075.932.961-30',
+            'l10n_br_district': 'Centro',
             'zip': '88032-050',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,

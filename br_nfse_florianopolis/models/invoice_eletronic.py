@@ -66,14 +66,14 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
 
         tomador = {
             'cnpj_cpf': re.sub(
-                '[^0-9]', '', partner.cnpj_cpf or ''),
+                '[^0-9]', '', partner.l10n_br_cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
-                '[^0-9]', '', partner.inscr_mun or
+                '[^0-9]', '', partner.l10n_br_inscr_mun or
                 '0000000'),
-            'razao_social': partner.legal_name or partner.name,
+            'razao_social': partner.l10n_br_legal_name or partner.name,
             'logradouro': partner.street,
-            'numero': partner.number,
-            'bairro': partner.district,
+            'numero': partner.l10n_br_number,
+            'bairro': partner.l10n_br_district,
             'cep': re.sub('[^0-9]', '', partner.zip or ''),
             'cidade': '%s%s' % (
                 partner.state_id.l10n_br_ibge_code,

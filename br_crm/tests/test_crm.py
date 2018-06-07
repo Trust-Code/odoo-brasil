@@ -65,22 +65,22 @@ class TestCrm(TransactionCase):
         })
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
-            'inscr_est': '112.632.165',
+            'l10n_br_cnpj_cpf': '22814429000155',
+            'l10n_br_inscr_est': '112.632.165',
             'is_company': True,
-            'legal_name': 'Razão social',
-            'suframa': '123456',
-            'district': 'Centro',
+            'l10n_br_legal_name': 'Razão social',
+            'l10n_br_suframa': '123456',
+            'l10n_br_district': 'Centro',
             'city_id': self.env.ref('br_base.city_3205002').id,
         })
         lead.partner_id = partner.id
         lead._onchange_partner_id()
         lead.onchange_city_id()
-        self.assertEquals(lead.legal_name, partner.legal_name)
-        self.assertEquals(lead.cnpj, partner.cnpj_cpf)
-        self.assertEquals(lead.inscr_est, partner.inscr_est)
-        self.assertEquals(lead.suframa, partner.suframa)
-        self.assertEquals(lead.district, partner.district)
+        self.assertEquals(lead.legal_name, partner.l10n_br_legal_name)
+        self.assertEquals(lead.cnpj, partner.l10n_br_cnpj_cpf)
+        self.assertEquals(lead.inscr_est, partner.l10n_br_inscr_est)
+        self.assertEquals(lead.suframa, partner.l10n_br_suframa)
+        self.assertEquals(lead.district, partner.l10n_br_district)
         self.assertEquals(lead.city_id, partner.city_id)
         self.assertEquals(lead.city, partner.city_id.name)
 
@@ -102,11 +102,11 @@ class TestCrm(TransactionCase):
         values = {'lead_ids': [lead.id]}
         wiz._convert_opportunity(values)
         self.assertTrue(lead.partner_id)
-        self.assertEquals(lead.partner_id.legal_name, lead.legal_name)
-        self.assertEquals(lead.partner_id.cnpj_cpf, lead.cnpj)
-        self.assertEquals(lead.partner_id.inscr_est, lead.inscr_est)
-        self.assertEquals(lead.partner_id.suframa, lead.suframa)
-        self.assertEquals(lead.partner_id.inscr_mun, lead.inscr_mun)
+        self.assertEquals(lead.partner_id.l10n_br_legal_name, lead.legal_name)
+        self.assertEquals(lead.partner_id.l10n_br_cnpj_cpf, lead.cnpj)
+        self.assertEquals(lead.partner_id.l10n_br_inscr_est, lead.inscr_est)
+        self.assertEquals(lead.partner_id.l10n_br_suframa, lead.suframa)
+        self.assertEquals(lead.partner_id.l10n_br_inscr_mun, lead.inscr_mun)
 
     def test_convert_lead_contact(self):
         wiz = self.env['crm.lead2opportunity.partner'].create({
@@ -123,6 +123,7 @@ class TestCrm(TransactionCase):
         values = {'lead_ids': [lead.id]}
         wiz._convert_opportunity(values)
         self.assertTrue(lead.partner_id)
-        self.assertEquals(lead.partner_id.legal_name, lead.name_surname)
-        self.assertEquals(lead.partner_id.cnpj_cpf, lead.cpf)
-        self.assertEquals(lead.partner_id.inscr_est, lead.rg)
+        self.assertEquals(lead.partner_id.l10n_br_legal_name,
+                          lead.name_surname)
+        self.assertEquals(lead.partner_id.l10n_br_cnpj_cpf, lead.cpf)
+        self.assertEquals(lead.partner_id.l10n_br_inscr_est, lead.rg)

@@ -195,7 +195,7 @@
                     Razão Social/Nome
                 </div>
                 <div class="col-xs-10 linha">
-                    <span t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name" />
+                    <span t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name" />
                 </div>
             </div>
             <div class="row bb bl br">
@@ -203,13 +203,13 @@
                     CNPJ/CPF
                 </div>
                 <div class="col-xs-2 linha br">
-                    <span t-field="doc.commercial_partner_id.cnpj_cpf" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf" />
                 </div>
                 <div class="col-xs-1 rotulo br">
                     Inscr. Municipal
                 </div>
                 <div class="col-xs-2 linha br">
-                    <span t-field="doc.commercial_partner_id.inscr_mun" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_inscr_mun" />
                 </div>
                 <div class="col-xs-1 rotulo br">
                     Município
@@ -224,8 +224,8 @@
                 </div>
                 <div class="col-xs-10 linha">
                     <span t-field="doc.commercial_partner_id.street" />
-                    <span t-field="doc.commercial_partner_id.number" />
-                    <span t-field="doc.commercial_partner_id.district" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_number" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_district" />
                     CEP: <span t-field="doc.commercial_partner_id.zip" />
                 </div>
             </div>

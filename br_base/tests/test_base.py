@@ -24,7 +24,7 @@ class TestBase(TransactionCase):
     def test_parceiro_cpf_valido(self):
         partner = self.env['res.partner'].create({
             'name': 'Parceiro Ok',
-            'cnpj_cpf': '99644045491',
+            'l10n_br_cnpj_cpf': '99644045491',
             'country_id': self.env.ref('base.br').id
         })
         self.assertTrue(partner)
@@ -32,8 +32,8 @@ class TestBase(TransactionCase):
     def test_parceiro_com_rg(self):
         partner = self.env['res.partner'].create({
             'name': 'Parceiro Ok',
-            'cnpj_cpf': '99644045491',
-            'inscr_est': '123',
+            'l10n_br_cnpj_cpf': '99644045491',
+            'l10n_br_inscr_est': '123',
             'country_id': self.env.ref('base.br').id
         })
         self.assertTrue(partner)
@@ -42,14 +42,14 @@ class TestBase(TransactionCase):
         with self.assertRaises(ValidationError):
             self.env['res.partner'].create({
                 'name': 'Parceiro Ok',
-                'cnpj_cpf': '99644045490',
+                'l10n_br_cnpj_cpf': '99644045490',
                 'country_id': self.env.ref('base.br').id
             })
 
     def test_cnpj_valido(self):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
+            'l10n_br_cnpj_cpf': '22814429000155',
             'is_company': True,
             'country_id': self.env.ref('base.br').id
         })
@@ -59,7 +59,7 @@ class TestBase(TransactionCase):
         with self.assertRaises(ValidationError):
             self.env['res.partner'].create({
                 'name': 'Empresa',
-                'cnpj_cpf': '99644045490',
+                'l10n_br_cnpj_cpf': '99644045490',
                 'is_company': True,
                 'country_id': self.env.ref('base.br').id
             })
@@ -67,8 +67,8 @@ class TestBase(TransactionCase):
     def test_ie_valido(self):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
-            'inscr_est': '112.632.165',
+            'l10n_br_cnpj_cpf': '22814429000155',
+            'l10n_br_inscr_est': '112.632.165',
             'is_company': True,
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
@@ -79,8 +79,8 @@ class TestBase(TransactionCase):
         with self.assertRaises(ValidationError):
             self.env['res.partner'].create({
                 'name': 'Empresa',
-                'cnpj_cpf': '22814429000155',
-                'inscr_est': '112165',
+                'l10n_br_cnpj_cpf': '22814429000155',
+                'l10n_br_inscr_est': '112165',
                 'is_company': True,
                 'country_id': self.env.ref('base.br').id,
                 'state_id': self.env.ref('base.state_br_sc').id,
@@ -89,8 +89,8 @@ class TestBase(TransactionCase):
     def test_ie_duplicated(self):
         vals = {
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
-            'inscr_est': '112.632.165',
+            'l10n_br_cnpj_cpf': '22814429000155',
+            'l10n_br_inscr_est': '112.632.165',
             'is_company': True,
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
@@ -98,33 +98,33 @@ class TestBase(TransactionCase):
         partner = self.env['res.partner'].create(vals)
         self.assertTrue(partner)
         with self.assertRaises(ValidationError):
-            vals['cnpj_cpf'] = '63.116.726/0001-04'
+            vals['l10n_br_cnpj_cpf'] = '63.116.726/0001-04'
             self.env['res.partner'].create(vals)
-        vals['inscr_est'] = False
-        vals['cnpj_cpf'] = '07.343.961/0001-48'
+        vals['l10n_br_inscr_est'] = False
+        vals['l10n_br_cnpj_cpf'] = '07.343.961/0001-48'
         partner = self.env['res.partner'].create(vals)
         self.assertTrue(partner)
 
     def test_onchange_cnpj(self):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
+            'l10n_br_cnpj_cpf': '22814429000155',
             'is_company': True,
             'country_id': self.env.ref('base.br').id,
         })
-        self.assertEquals(partner.cnpj_cpf, '22814429000155')
+        self.assertEquals(partner.l10n_br_cnpj_cpf, '22814429000155')
         partner._onchange_cnpj_cpf()
-        self.assertEquals(partner.cnpj_cpf, '22.814.429/0001-55')
+        self.assertEquals(partner.l10n_br_cnpj_cpf, '22.814.429/0001-55')
 
     def test_onchange_cpf(self):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '71194004016',
+            'l10n_br_cnpj_cpf': '71194004016',
             'country_id': self.env.ref('base.br').id,
         })
-        self.assertEquals(partner.cnpj_cpf, '71194004016')
+        self.assertEquals(partner.l10n_br_cnpj_cpf, '71194004016')
         partner._onchange_cnpj_cpf()
-        self.assertEquals(partner.cnpj_cpf, '711.940.040-16')
+        self.assertEquals(partner.l10n_br_cnpj_cpf, '711.940.040-16')
 
     def test_onchange_zip(self):
         partner = self.env['res.partner'].create({
@@ -148,8 +148,8 @@ class TestBase(TransactionCase):
     def test_display_address(self):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
-            'inscr_est': '112.632.165',
+            'l10n_br_cnpj_cpf': '22814429000155',
+            'l10n_br_inscr_est': '112.632.165',
             'is_company': True,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_3205002').id,
@@ -163,7 +163,7 @@ class TestBase(TransactionCase):
     def test_consulta_cadastro(self, consulta):
         partner = self.env['res.partner'].create({
             'name': 'Empresa',
-            'cnpj_cpf': '22814429000155',
+            'l10n_br_cnpj_cpf': '22814429000155',
             'is_company': True,
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
@@ -186,10 +186,10 @@ class TestBase(TransactionCase):
         }
 
         partner.action_check_sefaz()
-        self.assertEquals(partner.cnpj_cpf, '22814429000155')
-        self.assertEquals(partner.inscr_est, '112632165')
+        self.assertEquals(partner.l10n_br_cnpj_cpf, '22814429000155')
+        self.assertEquals(partner.l10n_br_inscr_est, '112632165')
         self.assertEquals(partner.street, 'RUA PADRE JOAO')
-        self.assertEquals(partner.district, 'Centro')
+        self.assertEquals(partner.l10n_br_district, 'Centro')
         self.assertEquals(partner.city_id.id, 3776)
         self.assertEquals(partner.zip, '88032050')
 
@@ -204,39 +204,43 @@ class TestBase(TransactionCase):
         company.l10n_br_number = 12
         company.l10n_br_district = 'Centro'
         company.city_id = self.env.ref('br_base.city_3205002').id
-        self.assertEquals(company.partner_id.cnpj_cpf,
+        self.assertEquals(company.partner_id.l10n_br_cnpj_cpf,
                           company.l10n_br_cnpj_cpf)
-        self.assertEquals(company.partner_id.suframa, company.l10n_br_suframa)
-        self.assertEquals(company.partner_id.legal_name,
+        self.assertEquals(company.partner_id.l10n_br_suframa,
+                          company.l10n_br_suframa)
+        self.assertEquals(company.partner_id.l10n_br_legal_name,
                           company.l10n_br_legal_name)
-        self.assertEquals(company.partner_id.inscr_est,
+        self.assertEquals(company.partner_id.l10n_br_inscr_est,
                           company.l10n_br_inscr_est)
-        self.assertEquals(company.partner_id.inscr_mun,
+        self.assertEquals(company.partner_id.l10n_br_inscr_mun,
                           company.l10n_br_inscr_mun)
-        self.assertEquals(company.partner_id.number, company.l10n_br_number)
+        self.assertEquals(company.partner_id.l10n_br_number,
+                          company.l10n_br_number)
         self.assertEquals(company.partner_id.city_id, company.city_id)
 
     def test_company_inverse_fields(self):
         company = self.env.ref('base.main_company')
 
-        company.partner_id.cnpj_cpf = '62.565.938/0001-06'
-        company.partner_id.suframa = '456'
-        company.partner_id.legal_name = 'Razão Social'
-        company.partner_id.inscr_est = 'ISENTO'
-        company.partner_id.inscr_mun = '987654'
-        company.partner_id.number = 12
-        company.partner_id.district = 'Centro'
+        company.partner_id.l10n_br_cnpj_cpf = '62.565.938/0001-06'
+        company.partner_id.l10n_br_suframa = '456'
+        company.partner_id.l10n_br_legal_name = 'Razão Social'
+        company.partner_id.l10n_br_inscr_est = 'ISENTO'
+        company.partner_id.l10n_br_inscr_mun = '987654'
+        company.partner_id.l10n_br_number = 12
+        company.partner_id.l10n_br_district = 'Centro'
         company.partner_id.city_id = self.env.ref('br_base.city_3205002').id
-        self.assertEquals(company.partner_id.cnpj_cpf,
+        self.assertEquals(company.partner_id.l10n_br_cnpj_cpf,
                           company.l10n_br_cnpj_cpf)
-        self.assertEquals(company.partner_id.suframa, company.l10n_br_suframa)
-        self.assertEquals(company.partner_id.legal_name,
+        self.assertEquals(company.partner_id.l10n_br_suframa,
+                          company.l10n_br_suframa)
+        self.assertEquals(company.partner_id.l10n_br_legal_name,
                           company.l10n_br_legal_name)
-        self.assertEquals(company.partner_id.inscr_est,
+        self.assertEquals(company.partner_id.l10n_br_inscr_est,
                           company.l10n_br_inscr_est)
-        self.assertEquals(company.partner_id.inscr_mun,
+        self.assertEquals(company.partner_id.l10n_br_inscr_mun,
                           company.l10n_br_inscr_mun)
-        self.assertEquals(company.partner_id.number, company.l10n_br_number)
+        self.assertEquals(company.partner_id.l10n_br_number,
+                          company.l10n_br_number)
         self.assertEquals(company.partner_id.city_id, company.city_id)
 
     def test_onchanges_company(self):
