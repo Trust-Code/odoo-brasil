@@ -94,7 +94,7 @@
             <div class="row completa">
                 <div class="col-xs-9 br">
                     <span class="mini-rotulo" style="padding:5px">Razão Social/Nome</span><br />
-                    <span style="padding:5px" t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name" />
+                    <span style="padding:5px" t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name" />
                 </div>
                 <div class="col-xs-3">
                     <span class="mini-rotulo">CFPS</span><br />
@@ -112,12 +112,12 @@
                 <div class="col-xs-6 br bl">
                     <span class="mini-rotulo">Endereço</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.street" />
-                    <span t-field="doc.commercial_partner_id.number" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_number" />
                     <span t-field="doc.commercial_partner_id.street2" />
                 </div>
                 <div class="col-xs-3 br">
                     <span class="mini-rotulo">Bairro/Distrito</span><br />
-                    <span style="padding:5px" t-field="doc.commercial_partner_id.district" />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.l10n_br_district" />
                 </div>
                 <div class="col-xs-3 br">
                     <span class="mini-rotulo">CEP</span><br />
@@ -139,13 +139,13 @@
                 </div>
                 <div class="col-xs-3 row bl">
                     <span class="mini-rotulo">CNPJ/CPF</span><br />
-                    <span style="padding:5px" t-field="doc.commercial_partner_id.cnpj_cpf" />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf" />
                 </div>
                 <div class="col-xs-2 row bl">
                     <span class="mini-rotulo">CMC</span><br />
                     <t t-set="cmc" t-value="'000000000'" />
-                    <t t-if="doc.commercial_partner_id.inscr_mun">
-                        <t t-set="cmc" t-value="doc.commercial_partner_id.inscr_mun" />
+                    <t t-if="doc.commercial_partner_id.l10n_br_inscr_mun">
+                        <t t-set="cmc" t-value="doc.commercial_partner_id.l10n_br_inscr_mun" />
                     </t>
                     <span style="padding:5px" t-esc="cmc" />
                 </div>

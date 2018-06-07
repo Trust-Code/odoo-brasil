@@ -87,11 +87,11 @@ class AccountInvoice(models.Model):
             if not item.commercial_partner_id.name:
                 error += u'Cliente - Nome\n'
             if item.commercial_partner_id.is_company and \
-               not item.commercial_partner_id.legal_name:
+               not item.commercial_partner_id.l10n_br_legal_name:
                 error += u'Cliente - Razão Social\n'
-            if not item.commercial_partner_id.cnpj_cpf:
+            if not item.commercial_partner_id.l10n_br_cnpj_cpf:
                 error += u'Cliente - CNPJ/CPF \n'
-            if not item.commercial_partner_id.district:
+            if not item.commercial_partner_id.l10n_br_district:
                 error += u'Cliente - Bairro\n'
             if not item.commercial_partner_id.zip:
                 error += u'Cliente - CEP\n'
@@ -99,7 +99,7 @@ class AccountInvoice(models.Model):
                 error += u'Cliente - Cidade\n'
             if not item.commercial_partner_id.street:
                 error += u'Cliente - Logradouro\n'
-            if not item.commercial_partner_id.number:
+            if not item.commercial_partner_id.l10n_br_number:
                 error += u'Cliente - Número\n'
             if not item.commercial_partner_id.state_id.code:
                 error += u'Cliente - Estado\n'

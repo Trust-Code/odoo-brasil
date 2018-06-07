@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -42,7 +43,7 @@ class AcquirerCielo(models.Model):
             "Street": tx_values['partner'].street,
             "Number": tx_values['partner'].number,
             "Complement": tx_values['partner'].street2,
-            "District": tx_values['partner'].district,
+            "District": tx_values['partner'].l10n_br_district,
             "City": tx_values['partner'].city_id.name,
             "State": tx_values['partner'].state_id.code,
         }
@@ -53,7 +54,7 @@ class AcquirerCielo(models.Model):
             "FullName": tx_values['partner'].name,
             "Email": tx_values['partner'].email,
         }
-        cnpj_cpf = re.sub('[^0-9]', '', tx_values['partner'].cnpj_cpf or '')
+        cnpj_cpf = re.sub('[^0-9]', '', tx_values['partner'].l10n_br_cnpj_cpf or '')
         phone = re.sub('[^0-9]', '', tx_values['partner'].phone or '')
         if len(cnpj_cpf) in (11, 14):
             customer['Identity'] = cnpj_cpf

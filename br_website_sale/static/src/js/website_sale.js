@@ -6,7 +6,7 @@ odoo.define('br_website_sale.address', function (require) {
     function cnpj_cpf_mask () {
         var company = $('#radioCompany').prop('checked');
         if (company) {
-            $('input[type=text][name=cnpj_cpf]').mask('00.000.000/0000-00');
+            $('input[type=text][name=l10n_br_cnpj_cpf]').mask('00.000.000/0000-00');
             $('label[for=contact_name]').text('CNPJ');
         } else {
             $('input[type=text][name=cnpj_cpf]').mask('000.000.000-00');

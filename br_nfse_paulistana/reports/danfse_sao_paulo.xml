@@ -107,21 +107,21 @@
                     </div>
                     <div class="col-xs-12">
                         Nome/Razão Social:
-                        <strong t-field="doc.company_id.partner_id.legal_name"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_legal_name"></strong>
                     </div>
                     <div class="col-xs-8">
                         CNPJ:
-                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_cnpj_cpf"></strong>
                     </div>
                     <div class="col-xs-4">
                         Inscrição Municipal:
-                        <strong t-field="doc.company_id.partner_id.inscr_mun"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_inscr_mun"></strong>
                     </div>
                     <div class="col-xs-12">
                         Endereço:
                         <strong t-field="doc.company_id.partner_id.street" />
-                        <strong t-field="doc.company_id.partner_id.number" />
-                        <strong t-field="doc.company_id.partner_id.district" />
+                        <strong t-field="doc.company_id.partner_id.l10n_br_number" />
+                        <strong t-field="doc.company_id.partner_id.l10n_br_district" />
                         <strong>CEP: </strong>
                         <strong t-field="doc.company_id.partner_id.zip" />
                     </div>
@@ -141,21 +141,21 @@
                 </div>
                 <div class="col-xs-12">
                     Nome/Razão Social:
-                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
+                    <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"></strong>
                 </div>
                 <div class="col-xs-8">
                     CNPJ:
-                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
+                    <strong t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf"></strong>
                 </div>
                 <div class="col-xs-4">
                     Inscrição Municipal:
-                    <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
+                    <strong t-field="doc.commercial_partner_id.l10n_br_inscr_mun"></strong>
                 </div>
                 <div class="col-xs-12">
                     Endereço:
                     <strong t-field="doc.commercial_partner_id.street" />
-                    <strong t-field="doc.commercial_partner_id.number" />
-                    <strong t-field="doc.commercial_partner_id.district" />
+                    <strong t-field="doc.commercial_partner_id.l10n_br_number" />
+                    <strong t-field="doc.commercial_partner_id.l10n_br_district" />
                     <strong>CEP: </strong>
                     <strong t-field="doc.commercial_partner_id.zip" />
                 </div>
@@ -344,7 +344,7 @@
                 </div>
             </div>
         </div>
-        
+
     </template>
 
     <template id="main_template_br_nfse_danfe">

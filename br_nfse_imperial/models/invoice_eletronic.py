@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2017 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -68,8 +69,8 @@ class InvoiceEletronic(models.Model):
             partner = self.commercial_partner_id
             company = self.company_id
             nota_fiscal = {
-                'ccm': re.sub('[^0-9]', '', company.inscr_mun),
-                'cnpj': re.sub('[^0-9]', '', company.cnpj_cpf),
+                'ccm': re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
+                'cnpj': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
                 'senha': company.senha_nfse_imperial,
                 'aliquota_simples': fmt_number(company.iss_simples_nacional),
 
@@ -81,15 +82,15 @@ class InvoiceEletronic(models.Model):
                 'valor': fmt_number(self.valor_final),
 
                 'tomador_tipo': 2 if not partner.is_company else 4,
-                'tomador_cnpj': re.sub('[^0-9]', '', partner.cnpj_cpf or ''),
+                'tomador_cnpj': re.sub('[^0-9]', '', partner.l10n_br_cnpj_cpf or ''),
                 'tomador_email': self.partner_id.email or partner.email or '',
                 'tomador_ie': partner.inscr_est or '',
-                'tomador_razao': partner.legal_name or partner.name or '',
+                'tomador_razao': partner.l10n_br_legal_name or partner.name or '',
                 'tomador_fantasia': partner.name or '',
                 'tomador_endereco': partner.street or '',
-                'tomador_numero': partner.number or '',
+                'tomador_numero': partner.l10n_br_number or '',
                 'tomador_complemento': partner.street2 or '',
-                'tomador_bairro': partner.district or 'Sem Bairro',
+                'tomador_bairro': partner.l10n_br_district or 'Sem Bairro',
                 'tomador_cod_cidade': '%s%s' % (partner.state_id.ibge_code,
                                                 partner.city_id.ibge_code),
                 'tomador_CEP': re.sub('[^0-9]', '', partner.zip),

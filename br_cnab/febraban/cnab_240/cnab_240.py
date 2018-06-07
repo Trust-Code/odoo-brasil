@@ -146,7 +146,7 @@ class Cnab240(Cnab):
             'cedente_convenio': self.order.src_bank_account_id.codigo_convenio,
             'cedente_agencia_dv':
             self.order.src_bank_account_id.bra_number_dig,
-            'cedente_nome': self.order.company_id.legal_name,
+            'cedente_nome': self.order.company_id.l10n_br_legal_name,
             # DV ag e cc
             'cedente_dv_ag_cc': self.order.src_bank_account_id.bra_number_dig,
             'identificacao_titulo': u'0000000',  # TODO
@@ -182,11 +182,12 @@ class Cnab240(Cnab):
             'sacado_inscricao_tipo': int(
                 self.sacado_inscricao_tipo(line.partner_id)),
             'sacado_inscricao_numero': int(
-                self.rmchar(line.partner_id.cnpj_cpf)),
-            'sacado_nome': line.partner_id.legal_name or line.partner_id.name,
+                self.rmchar(line.partner_id.l10n_br_cnpj_cpf)),
+            'sacado_nome': (line.partner_id.l10n_br_legal_name
+                            or line.partner_id.name),
             'sacado_endereco': (
                 line.partner_id.street + ' ' + line.partner_id.number),
-            'sacado_bairro': line.partner_id.district,
+            'sacado_bairro': line.partner_id.l10n_br_district,
             'sacado_cep': int(prefixo),
             'sacado_cep_sufixo': int(sulfixo),
             'sacado_cidade': line.partner_id.city_id.name,

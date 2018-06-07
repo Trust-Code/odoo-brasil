@@ -10,8 +10,8 @@
             <div name="div_address" position="replace">
                 <field name="zip" />
                 <field name="street" placeholder="Logradouro" />
-                <field name="number" placeholder="Número" />
-                <field name="district" placeholder="Bairro" />
+                <field name="l10n_br_number" placeholder="Número" />
+                <field name="l10n_br_district" placeholder="Bairro" />
                 <field name="street2" placeholder="Complemento" />
                 <field name="country_id" placeholder="País" />
                 <field name="state_id" placeholder="Estado" />
