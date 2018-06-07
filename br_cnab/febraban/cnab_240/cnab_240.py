@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2015 Luis Felipe Mileo
 #        Fernando Marcato Rodrigues
 #        Daniel Sadamo Hirayama
