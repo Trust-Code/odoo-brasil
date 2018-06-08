@@ -21,12 +21,12 @@ msgid "<span style=\"color:#5F9EA0\">Trustcode</span>"
 msgstr "<span style=\"color:#5F9EA0\">Trustcode</span>"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_bank_acc_number_format
+#: model:ir.model.fields,field_description:br_base.field_res_bank_l10n_br_acc_number_format
 msgid "Acc Number Format"
 msgstr "Formato do número acc"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number_dig
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_l10n_br_number_dig
 msgid "Account Agency Digit"
 msgstr "Dígito da agência da conta"
 
@@ -36,7 +36,7 @@ msgid "Account Number Digit"
 msgstr "Dígito do número da conta"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_l10n_br_number
 msgid "Agency"
 msgstr "Agência"
 
@@ -439,14 +439,14 @@ msgid "Verify CNPJ/CPF number"
 msgstr "Verifique o numero do CNPJ/CPF"
 
 #. module: br_base
-#: model:ir.model.fields,help:br_base.field_res_bank_acc_number_format
+#: model:ir.model.fields,help:br_base.field_res_bank_l10n_br_acc_number_format
 msgid "You can enter here the format as    the bank accounts are referenced in ofx files for the import of bank    statements.\n"
 "You can use the python patern string with the entire bank     account field.\n"
 "Valid Fields:\n"
 "\n"
-"          %(bra_number): Bank Branch Number\n"
+"          %(l10n_br__number): Bank Branch Number\n"
 "\n"
-"          %(bra_number_dig): Bank Branch Number's Digit\n"
+"          %(l10n_br__number_dig): Bank Branch Number's Digit\n"
 "\n"
 "          %(acc_number): Bank Account Number\n"
 "\n"
@@ -457,9 +457,9 @@ msgstr "You can enter here the format as    the bank accounts are referenced in 
 "You can use the python patern string with the entire bank     account field.\n"
 "Valid Fields:\n"
 "\n"
-"          %(bra_number): Bank Branch Number\n"
+"          %(l10n_br_number): Bank Branch Number\n"
 "\n"
-"          %(bra_number_dig): Bank Branch Number's Digit\n"
+"          %(l10n_br_number_dig): Bank Branch Number's Digit\n"
 "\n"
 "          %(acc_number): Bank Account Number\n"
 "\n"
