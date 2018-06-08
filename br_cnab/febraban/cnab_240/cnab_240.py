@@ -77,18 +77,18 @@ class Cnab240(Cnab):
             'cedente_inscricao_tipo': self.inscricao_tipo,
             'cedente_inscricao_numero': int(cnpj_cpf),
             'cedente_agencia': int(
-                self.order.payment_mode_id.bank_account_id.bra_number),
+                self.order.payment_mode_id.bank_account_id.l10n_br_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             'cedente_conta_dv': cedente_conta_dv,
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
-            bank_account_id.bra_number_dig,
+            bank_account_id.l10n_br_number_dig,
             'cedente_nome': self.order.user_id.company_id.l10n_br_legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
-                                 bank_account_id.bra_number_dig),
+                                 bank_account_id.l10n_br_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
             'nome_banco': str(self.order.payment_mode_id.bank_account_id
@@ -149,7 +149,7 @@ class Cnab240(Cnab):
             'controle_banco': int(self.order.payment_mode_id.bank_account_id.
                                   bank_bic),
             'cedente_agencia': int(self.order.payment_mode_id.bank_account_id.
-                                   bra_number),
+                                   l10n_br_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
@@ -157,13 +157,13 @@ class Cnab240(Cnab):
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
-            bra_number_dig,
+            l10n_br_number_dig,
             'cedente_nome':
             self.order.payment_mode_id.bank_account_id.partner_id.
                 l10n_br_legal_name,
             # DV ag e cc
             'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
-                                 bra_number_dig),
+                                 l10n_br_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),

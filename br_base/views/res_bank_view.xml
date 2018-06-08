@@ -11,9 +11,9 @@
                <field name="street" position="replace">
                    <field name="zip" placeholder="Zip Code" style="width:50%" />
                    <field name="street" placeholder="Street" />
-                   <field name="number" placeholder="Number"/>
+                   <field name="l10n_br_number" placeholder="Number"/>
                    <field name="street2" placeholder="Complement"/>
-                   <field name="district" placeholder="District"/>
+                   <field name="l10n_br_district" placeholder="District"/>
                    <field name="country_id" placeholder="Country" options="{'no_create': True, 'no_create_edit': True}" />
                    <field name="state_id" placeholder="State" options="{'no_create': True, 'no_create_edit': True}" />
                    <field name="city_id" placeholder="City" options="{'no_create': True, 'no_create_edit': True}" />
@@ -33,7 +33,7 @@
                </field>
                <group position="after">
                    <group string="Configuration">
-                       <field name="acc_number_format" placeholder="OFX Account Number Format"/>
+                       <field name="l10n_br_acc_number_format" placeholder="OFX Account Number Format"/>
                    </group>
                </group>
         </field>
@@ -50,8 +50,8 @@
                 <field name="acc_number" select="1" />
                 <field name="acc_number_dig" select="1" />
                 <newline />
-                <field name="bra_number" select="1" />
-                <field name="bra_number_dig" select="1" />
+                <field name="l10n_br_number" select="1" />
+                <field name="l10n_br_number_dig" select="1" />
             </field>
         </field>
     </record>
@@ -64,8 +64,8 @@
             <field name="acc_number" position="replace">
                 <field name="acc_number" />
                 <field name="acc_number_dig" />
-                <field name="bra_number" />
-                <field name="bra_number_dig" />
+                <field name="l10n_br_number" />
+                <field name="l10n_br_number_dig" />
             </field>
         </field>
     </record>

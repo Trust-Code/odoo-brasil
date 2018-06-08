@@ -13,9 +13,9 @@ from odoo.addons.base.res.res_bank import sanitize_account_number
 class ResBank(models.Model):
     _inherit = 'res.bank'
 
-    number = fields.Char(u'Number', size=10)
+    l10n_br_number = fields.Char(u'Number', size=10, oldname='number')
     street2 = fields.Char('Complement', size=128)
-    district = fields.Char('District', size=32)
+    l10n_br_district = fields.Char('District', size=32, oldname='district')
     city_id = fields.Many2one(comodel_name='res.state.city',
                               string=u'City',
                               domain="[('state_id','=',state_id)]")
@@ -27,17 +27,17 @@ class ResBank(models.Model):
                                related='state',
                                string='State')
 
-    acc_number_format = fields.Text(help="""You can enter here the format as\
-    the bank accounts are referenced in ofx files for the import of bank\
-    statements.\nYou can use the python patern string with the entire bank \
-    account field.\nValid Fields:\n
-          %(bra_number): Bank Branch Number\n
-          %(bra_number_dig): Bank Branch Number's Digit\n
+    l10n_br_acc_number_format = fields.Text(help="""You can enter here the \
+    format as the bank accounts are referenced in ofx files for the import of \
+    bank statements.\nYou can use the python patern string with the entire \
+    bank account field.\nValid Fields:\n
+          %(l10n_br_number): Bank Branch Number\n
+          %(l10n_br_number_dig): Bank Branch Number's Digit\n
           %(acc_number): Bank Account Number\n
           %(acc_number_dig): Bank Account Number's Digit\n
     For example, use '%(acc_number)s' to display the field 'Bank Account \
     Number' plus '%(acc_number_dig)s' to display the field 'Bank Account \
-    Number s Digit'.""", default='%(acc_number)s')
+    Number s Digit'.""", default='%(acc_number)s', oldname='acc_number_format')
 
     @api.onchange('city_id')
     def onchange_city_id(self):
@@ -57,24 +57,27 @@ class ResPartnerBank(models.Model):
 
     acc_number = fields.Char('Account Number', size=64, required=False)
     acc_number_dig = fields.Char(u'Account Number Digit', size=8)
-    bra_number = fields.Char(u'Agency', size=8)
-    bra_number_dig = fields.Char(u'Account Agency Digit', size=8)
+    l10n_br_number = fields.Char(u'Agency', size=8, oldname='bra_number')
+    l10n_br_number_dig = fields.Char(u'Account Agency Digit', size=8,
+                                     oldname='bra_number_dig')
 
     @api.depends('bank_id', 'acc_number', 'acc_number_dig',
-                 'bra_number', 'bra_number_dig')
+                 'l10n_br_number', 'l10n_br_number_dig')
     def _compute_sanitized_acc_number(self):
         for bank_account in self:
             if bank_account.bank_id:
-                acc_number_format = bank_account.bank_id.acc_number_format \
-                    or '%(acc_number)s'
+                l10n_br_acc_number_format = \
+                    (bank_account.bank_id.l10n_br_acc_number_format
+                     or '%(acc_number)s')
                 args = {
-                    'bra_number': bank_account.bra_number or '',
-                    'bra_number_dig': bank_account.bra_number_dig or '',
+                    'l10n_br_number': bank_account.l10n_br_number or '',
+                    'l10n_br_number_dig': (bank_account.l10n_br_number_dig
+                                           or ''),
                     'acc_number': bank_account.acc_number or '',
                     'acc_number_dig': bank_account.acc_number_dig or ''
                 }
                 self.sanitized_acc_number = sanitize_account_number(
-                    acc_number_format % args)
+                    l10n_br_acc_number_format % args)
             else:
                 self.sanitized_acc_number = sanitize_account_number(
                     bank_account.acc_number)

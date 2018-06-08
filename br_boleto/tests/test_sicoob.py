@@ -17,8 +17,8 @@ class TestBoletoSicoob(TestBoleto):
         conta = self.env['res.partner.bank'].create({
             'acc_number': '12345',  # 5 digitos
             'acc_number_dig': '0',  # 1 digito
-            'bra_number': '1234',  # 4 digitos
-            'bra_number_dig': '0',
+            'l10n_br_number': '1234',  # 4 digitos
+            'l10n_br_number_dig': '0',
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
         })
