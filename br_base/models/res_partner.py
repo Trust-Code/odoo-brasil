@@ -25,7 +25,8 @@ except ImportError:
 
 
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _name = 'res.partner'
+    _inherit = ['res.partner', 'br.localization.filtering']
 
     l10n_br_cnpj_cpf = fields.Char('CNPJ/CPF', size=18, copy=False,
                                    oldname='cnpj_cpf')
