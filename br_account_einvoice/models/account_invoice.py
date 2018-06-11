@@ -76,13 +76,27 @@ class AccountInvoice(models.Model):
             if doc.state not in ('done', 'cancel'):
                 raise UserError('Nota Fiscal na fila de envio. Aguarde!')
 
-        report = self._return_pdf_invoice(docs[0])
+        if len(docs) > 1:
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'invoice.eletronic.selection.wizard',
+                'name': "Escolha a nota a ser impressa",
+                'view_mode': 'form',
+                'context': self.env.context,
+                'target': 'new',
+                }
+        else:
+            return self._action_preview_danfe(docs[0])
+
+    def _action_preview_danfe(self, doc):
+
+        report = self._return_pdf_invoice(doc)
         if not report:
             raise UserError(
                 'Nenhum relatório implementado para este modelo de documento')
         if not isinstance(report, str):
             return report
-        action = self.env.ref(report).report_action(docs)
+        action = self.env.ref(report).report_action(doc)
         return action
 
     def _prepare_edoc_item_vals(self, line):
