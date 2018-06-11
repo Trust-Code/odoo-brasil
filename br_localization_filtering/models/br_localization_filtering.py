@@ -22,6 +22,17 @@ class BrLocalizationFiltering(models.AbstractModel):
         return (self._get_br_localization_template() ==
                 self._get_user_localization())
 
+    @staticmethod
+    def _add_localization_field(doc):
+        elem = etree.Element(
+            'field', {
+                'name': 'l10n_br_localization',
+                'readonly': 'True'
+            })
+        nodes = doc.xpath("//tree//field") or doc.xpath("//form//field")
+        if len(nodes):
+            nodes[0].addnext(elem)
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form',
                         toolbar=False, submenu=False):
@@ -33,6 +44,7 @@ class BrLocalizationFiltering(models.AbstractModel):
             return ret_val
 
         doc = etree.XML(ret_val['arch'])
+        self._set_localization_field(doc)
         for field in ret_val['fields']:
             if not field.startswith("l10n_br_"):
                 continue
