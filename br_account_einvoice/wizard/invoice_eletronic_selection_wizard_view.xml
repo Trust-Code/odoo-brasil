@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="invoice_eletronic_selection_wizard_view" model="ir.ui.view">
+        <field name="name">invoice.eletronic.selection.wizard.view</field>
+        <field name="model">invoice.eletronic.selection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="E-Invoice a ser impresso">
+                <sheet>
+                    <group class="col-xs-9">
+                        <field name="invoice_id" invisible="1"/>
+                        <field name="einvoice_id" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button type="object" name="action_confirm" class="oe_highlight" string="Confirm"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
