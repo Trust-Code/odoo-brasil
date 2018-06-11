@@ -49,7 +49,7 @@ class AccountInvoice(models.Model):
 
     def invoice_print(self):
         doc = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', self.id)], limit=1)
+            [('invoice_id', '=', self.id)], limit=1)
         if doc.model == '55':
             return self.env.ref(
                 'br_nfe.report_br_nfe_danfe').report_action(doc)
