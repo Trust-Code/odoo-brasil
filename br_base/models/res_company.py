@@ -23,7 +23,7 @@ except ImportError:
 
 class ResCompany(models.Model):
     _name = 'res.company'
-    _inherit = ['res.company']
+    _inherit = ['res.company', 'br.localization.filtering']
 
     @api.one
     def _get_address_data(self):

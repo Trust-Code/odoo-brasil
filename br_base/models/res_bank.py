@@ -11,7 +11,8 @@ from odoo.addons.base.res.res_bank import sanitize_account_number
 
 
 class ResBank(models.Model):
-    _inherit = 'res.bank'
+    _name = 'res.bank'
+    _inherit = ['res.bank', 'br.localization.filtering']
 
     l10n_br_number = fields.Char(u'Number', size=10, oldname='number')
     street2 = fields.Char('Complement', size=128)
@@ -53,7 +54,8 @@ class ResBank(models.Model):
 class ResPartnerBank(models.Model):
     """ Adiciona campos necessários para o cadastramentos de contas
     bancárias no Brasil."""
-    _inherit = 'res.partner.bank'
+    _name = 'res.partner.bank'
+    _inherit = ['res.partner.bank', 'br.localization.filtering']
 
     acc_number = fields.Char('Account Number', size=64, required=False)
     acc_number_dig = fields.Char(u'Account Number Digit', size=8)
