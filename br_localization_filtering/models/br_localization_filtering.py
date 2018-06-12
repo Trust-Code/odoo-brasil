@@ -9,25 +9,28 @@ from odoo import api, fields, models
 class BrLocalizationFiltering(models.AbstractModel):
     _name = 'br.localization.filtering'
 
+    # TODO add br_coa_simple
     def _get_br_localization_template(self):
-        return self.env['ir.model.data'].get_object(
-            'br_coa_simple', 'br_account_chart_template')
+        template_ids = self.env['ir.model.data'].search([
+            ('module', '=', 'br_coa'),
+            ('name', '=', 'br_account_chart_template'),
+        ])
+        return len(template_ids) and template_ids[0] or False
 
     def _get_user_localization(self):
-        user_id = self.env.context.get('uid')
-        return self.env['res.users'].browse(
-            user_id).company_id.chart_template_id
+        return self.env.user.company_id.chart_template_id
 
     def _is_user_localization(self):
         return (self._get_br_localization_template() ==
                 self._get_user_localization())
 
+    # TODO add invisible attribute to l10n_br_localization field
     @staticmethod
     def _add_localization_field(doc):
         elem = etree.Element(
             'field', {
                 'name': 'l10n_br_localization',
-                'readonly': 'True'
+                # 'invisible': '1',
             })
         nodes = doc.xpath("//tree//field") or doc.xpath("//form//field")
         if len(nodes):
@@ -44,7 +47,7 @@ class BrLocalizationFiltering(models.AbstractModel):
             return ret_val
 
         doc = etree.XML(ret_val['arch'])
-        self._set_localization_field(doc)
+        self._add_localization_field(doc)
         for field in ret_val['fields']:
             if not field.startswith("l10n_br_"):
                 continue
@@ -56,7 +59,7 @@ class BrLocalizationFiltering(models.AbstractModel):
                              or 'invisible')
                 modifiers = json.loads(node.get("modifiers"))
                 if view_type == 'tree':
-                    modifiers[mod_field] = not self._get_user_localization()
+                    modifiers[mod_field] = not self._is_user_localization()
                 if view_type == 'form':
                     domain = modifiers.get(mod_field, [])
                     domain = expression.OR([domain, [
@@ -67,8 +70,14 @@ class BrLocalizationFiltering(models.AbstractModel):
         ret_val['arch'] = etree.tostring(doc, encoding='unicode')
         return ret_val
 
+    def _default_l10n_br_localization(self):
+        if not hasattr(self.env.user.company_id, 'chart_template_id'):
+            return True
+
+        return self._is_user_localization()
+
     @api.multi
-    @api.depends('company_id')
+    @api.depends()
     def _compute_is_br_localization(self):
         user_template = self._get_user_localization()
         for record in self:
@@ -80,4 +89,5 @@ class BrLocalizationFiltering(models.AbstractModel):
 
     l10n_br_localization = fields.Boolean(
         compute=_compute_is_br_localization,
+        default=lambda self: self._default_l10n_br_localization(),
         string='Is BR localization?')

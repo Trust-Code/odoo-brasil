@@ -446,7 +446,7 @@ msgid "You can enter here the format as    the bank accounts are referenced in o
 "\n"
 "          %(l10n_br__number): Bank Branch Number\n"
 "\n"
-"          %(l10n_br__number_dig): Bank Branch Number's Digit\n"
+"          %(l10n_br_number_dig): Bank Branch Number's Digit\n"
 "\n"
 "          %(acc_number): Bank Account Number\n"
 "\n"
