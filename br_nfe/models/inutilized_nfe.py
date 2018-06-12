@@ -71,10 +71,10 @@ class InutilizedNfe(models.Model):
             errors.append('A Justificativa deve ter no mínimo 15 caracteres')
         if len(self.justificativa) > 255:
             errors.append('A Justificativa deve ter no máximo 255 caracteres')
-        if not self.env.user.company_id.nfe_a1_file:
+        if not self.env.user.company_id.l10n_br_nfe_a1_file:
             errors.append('A empresa não possui um certificado de NFe '
                           'cadastrado')
-        if not self.env.user.company_id.cnpj_cpf:
+        if not self.env.user.company_id.l10n_br_cnpj_cpf:
             errors.append('Cadastre o CNPJ da empresa.')
         estado = self.env.user.company_id.state_id
         if not estado or not estado.l10n_br_ibge_code:
@@ -86,7 +86,7 @@ class InutilizedNfe(models.Model):
     def _prepare_obj(self, company, estado, ambiente):
         ano = str(datetime.now().year)[2:]
         serie = self.serie.code
-        cnpj = re.sub(r'\D', '', company.cnpj_cpf)
+        cnpj = re.sub(r'\D', '', company.l10n_br_cnpj_cpf)
         ID = ('ID{estado:2}{ano:2}{cnpj:14}{modelo:2}'
               '{serie:03}{num_inicial:09}{num_final:09}')
         ID = ID.format(estado=estado, ano=ano, cnpj=cnpj, modelo=self.modelo,
@@ -129,9 +129,9 @@ class InutilizedNfe(models.Model):
         obj = self._prepare_obj(company=company, estado=estado,
                                 ambiente=ambiente)
 
-        cert = company.with_context({'bin_size': False}).nfe_a1_file
+        cert = company.with_context({'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, company.nfe_a1_password)
+        certificado = Certificado(cert_pfx, company.l10n_br_nfe_a1_password)
 
         resposta = inutilizar_nfe(certificado, obj=obj, estado=estado,
                                   ambiente=int(ambiente))

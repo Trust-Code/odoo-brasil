@@ -20,5 +20,8 @@ class ResCompany(models.Model):
     def zip_search(self, cep):
         self.zip = "%s-%s" % (cep[0:5], cep[5:8])
         res = self.env['br.zip'].search_by_zip(zip_code=self.zip)
+        # TODO: To remove after district field in br_zip module is prefixed
+        res['l10n_br_district'] = res['district']
+        res.pop('district')
         if res:
             self.update(res)

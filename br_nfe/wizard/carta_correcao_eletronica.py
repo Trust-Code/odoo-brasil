@@ -53,10 +53,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         edoc_id = self.eletronic_doc_id
         carta = {
             'invoice_id': edoc_id.id,
-            'CNPJ': re.sub("[^0-9]", "", edoc_id.company_id.cnpj_cpf or ''),
-            'cOrgao': edoc_id.company_id.state_id.l10n_br_ibge_code,
+            'CNPJ': re.sub("[^0-9]", "",
+                           edoc_id.company_id.l10n_br_cnpj_cpf or ''),
+            'cOrgao':  edoc_id.company_id.state_id.l10n_br_ibge_code,
             'tpAmb': edoc_id.company_id.tipo_ambiente,
-            'estado': edoc_id.company_id.state_id.l10n_br_ibge_code,
+            'estado':  edoc_id.company_id.state_id.l10n_br_ibge_code,
             'ambiente': int(edoc_id.company_id.tipo_ambiente),
             'dhEvento':  dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
             'chNFe': edoc_id.chave_nfe,
@@ -67,9 +68,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'Id': "ID110110%s%02d" % (edoc_id.chave_nfe, numero_evento),
             'modelo': edoc_id.model,
         }
-        cert = edoc_id.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = edoc_id.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, edoc_id.company_id.nfe_a1_password)
+        certificado = Certificado(
+            cert_pfx, edoc_id.company_id.l10n_br_nfe_a1_password)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
 
         retorno = resposta['object'].Body.nfeRecepcaoEventoResult.retEnvEvento

@@ -8,8 +8,8 @@
         <field name="inherit_id" ref="base.view_res_partner_filter" />
         <field name="arch" type="xml">
             <field name="name" position="after">
-                <field name="legal_name"/>
-                <field name="cnpj_cpf" />
+                <field name="l10n_br_legal_name"/>
+                <field name="l10n_br_cnpj_cpf" />
             </field>
         </field>
     </record>
@@ -20,8 +20,8 @@
         <field name="inherit_id" ref="base.view_partner_tree" />
         <field name="arch" type="xml">
             <field name="display_name" position="after">
-                <field name="cnpj_cpf" />
-                <field name="inscr_est" />
+                <field name="l10n_br_cnpj_cpf" />
+                <field name="l10n_br_inscr_est" />
             </field>
         </field>
     </record>
@@ -38,18 +38,18 @@
             </xpath>
             <xpath expr="//div[hasclass('o_row')]" position="before">
                 <h3 attrs="{'invisible': [('is_company', '=', False)]}">
-                    <field name="legal_name" placeholder="Legal Name" nolabel="1" />
+                    <field name="l10n_br_legal_name" placeholder="Legal Name" nolabel="1" />
                 </h3>
                 <h3>
-                    <field name="cnpj_cpf" placeholder="CNPJ/CPF" nolabel="1" />
+                    <field name="l10n_br_cnpj_cpf" placeholder="CNPJ/CPF" nolabel="1" />
                 </h3>
             </xpath>
             <field name="zip" position="replace" />
             <field name="street" position="replace">
                 <field name="zip" placeholder="Zip Code" class="o_address_zip oe_inline" />
                 <field name="street" class="o_address_street" placeholder="Street" />
-                <field name="number" class="o_address_city" placeholder="Number" />
-                <field name="district" class="o_address_state" placeholder="District" />
+                <field name="l10n_br_number" class="o_address_city" placeholder="Number" />
+                <field name="l10n_br_district" class="o_address_state" placeholder="District" />
             </field>
             <field name="street2" position="replace">
                 <field name="street2" placeholder="Complement" class="o_address_street" />
@@ -74,12 +74,12 @@
                 <page string="Fiscal Data">
                     <group>
                         <group>
-                            <field name="inscr_est" />
-                            <field name="rg_fisica" attrs="{'invisible': [('is_company','=', True)]}" />
-                            <field name="inscr_mun" attrs="{'invisible': [('is_company','!=', True)]}" />
+                            <field name="l10n_br_inscr_est" />
+                            <field name="l10n_br_rg_fisica" attrs="{'invisible': [('is_company','=', True)]}" />
+                            <field name="l10n_br_inscr_mun" attrs="{'invisible': [('is_company','!=', True)]}" />
                         </group>
                         <group>
-                            <field name="suframa" attrs="{'invisible': [('is_company','!=', True)]}" />
+                            <field name="l10n_br_suframa" attrs="{'invisible': [('is_company','!=', True)]}" />
                         </group>
                     </group>
                 </page>
@@ -93,8 +93,8 @@
                 <field name="zip" />
             </xpath>
             <xpath expr="//div[@name='div_address']/field[@name='street']" potition="after">
-                <field name="number" placeholder="Number" />
-                <field name="district" placeholder="District" />
+                <field name="l10n_br_number" placeholder="Number" />
+                <field name="l10n_br_district" placeholder="District" />
                 <field name="country_id" placeholder="Country" />
             </xpath>
             <xpath expr="//div[@name='div_address']/field[@name='state_id']" potition="after">

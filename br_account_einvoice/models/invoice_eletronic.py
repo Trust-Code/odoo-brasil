@@ -209,17 +209,17 @@ class InvoiceEletronic(models.Model):
         """
         errors = []
         # Emitente
-        if not self.company_id.nfe_a1_file:
+        if not self.company_id.l10n_br_nfe_a1_file:
             errors.append(u'Emitente - Certificado Digital')
-        if not self.company_id.nfe_a1_password:
+        if not self.company_id.l10n_br_nfe_a1_password:
             errors.append(u'Emitente - Senha do Certificado Digital')
-        if not self.company_id.partner_id.legal_name:
+        if not self.company_id.partner_id.l10n_br_legal_name:
             errors.append(u'Emitente - Razão Social')
-        if not self.company_id.partner_id.cnpj_cpf:
+        if not self.company_id.partner_id.l10n_br_cnpj_cpf:
             errors.append(u'Emitente - CNPJ/CPF')
         if not self.company_id.partner_id.street:
             errors.append(u'Emitente / Endereço - Logradouro')
-        if not self.company_id.partner_id.number:
+        if not self.company_id.partner_id.l10n_br_number:
             errors.append(u'Emitente / Endereço - Número')
         if not self.company_id.partner_id.zip or len(
                 re.sub(r"\D", "", self.company_id.partner_id.zip)) != 8:
@@ -261,17 +261,17 @@ class InvoiceEletronic(models.Model):
             return errors
         company = self.company_id
         # Destinatário
-        if partner.is_company and not partner.legal_name:
+        if partner.is_company and not partner.l10n_br_legal_name:
             errors.append(u'Destinatário - Razão Social')
 
         if partner.country_id.id == company.partner_id.country_id.id:
-            if not partner.cnpj_cpf:
+            if not partner.l10n_br_cnpj_cpf:
                 errors.append(u'Destinatário - CNPJ/CPF')
 
         if not partner.street:
             errors.append(u'Destinatário / Endereço - Logradouro')
 
-        if not partner.number:
+        if not partner.l10n_br_number:
             errors.append(u'Destinatário / Endereço - Número')
 
         if partner.country_id.id == company.partner_id.country_id.id:

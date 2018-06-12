@@ -21,12 +21,12 @@ msgid "<span style=\"color:#5F9EA0\">Trustcode</span>"
 msgstr "<span style=\"color:#5F9EA0\">Trustcode</span>"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_bank_acc_number_format
+#: model:ir.model.fields,field_description:br_base.field_res_bank_l10n_br_acc_number_format
 msgid "Acc Number Format"
 msgstr "Formato do número acc"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number_dig
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_l10n_br_number_dig
 msgid "Account Agency Digit"
 msgstr "Dígito da agência da conta"
 
@@ -36,7 +36,7 @@ msgid "Account Number Digit"
 msgstr "Dígito do número da conta"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_bra_number
+#: model:ir.model.fields,field_description:br_base.field_res_partner_bank_l10n_br_number
 msgid "Agency"
 msgstr "Agência"
 
@@ -69,13 +69,13 @@ msgid "Zip Code"
 msgstr "CEP"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_cnpj_cpf
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_cnpj_cpf
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
 msgid "CNPJ"
 msgstr "CNPJ"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_partner_cnpj_cpf
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_cnpj_cpf
 #: model:ir.model.fields,field_description:br_base.field_res_users_cnpj_cpf
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
 msgid "CNPJ/CPF"
@@ -87,12 +87,12 @@ msgid "Cert. Expiration Date"
 msgstr "Validade do Certificado"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_cert_information
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_cert_information
 msgid "Cert. Info"
 msgstr "Informação do Certificado"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_cert_state
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_cert_state
 msgid "Cert. State"
 msgstr "Situação do Certificado"
 
@@ -186,8 +186,8 @@ msgstr "Nome exibido"
 
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_bank_district
-#: model:ir.model.fields,field_description:br_base.field_res_company_district
-#: model:ir.model.fields,field_description:br_base.field_res_partner_district
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_district
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_district
 #: model:ir.model.fields,field_description:br_base.field_res_users_district
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
 #: model:ir.ui.view,arch_db:br_base.view_br_base_res_bank_form
@@ -196,7 +196,7 @@ msgid "District"
 msgstr "Bairro"
 
 #. module: br_base
-#: selection:res.company,cert_state:0
+#: selection:res.company,l10n_br_cert_state:0
 msgid "Expired"
 msgstr "Expirado"
 
@@ -237,7 +237,7 @@ msgid "Invalid CPF Number!"
 msgstr "Número do CPF inválido"
 
 #. module: br_base
-#: selection:res.company,cert_state:0
+#: selection:res.company,l10n_br_cert_state:0
 msgid "Invalid Password"
 msgstr "Senha inválida"
 
@@ -266,8 +266,8 @@ msgid "Last Updated on"
 msgstr "Última atualização em"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_inscr_mun
-#: model:ir.model.fields,field_description:br_base.field_res_partner_inscr_mun
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_inscr_mun
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_inscr_mun
 #: model:ir.model.fields,field_description:br_base.field_res_users_inscr_mun
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
 msgid "Municipal Inscription"
@@ -279,12 +279,12 @@ msgid "City"
 msgstr "Município"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_nfe_a1_file
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_nfe_a1_file
 msgid "NFe A1 File"
 msgstr "Arquivo NFe A1"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_nfe_a1_password
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_nfe_a1_password
 msgid "NFe A1 Password"
 msgstr "Senha NFe A1"
 
@@ -295,7 +295,7 @@ msgid "Name"
 msgstr "Nome"
 
 #. module: br_base
-#: model:ir.model.fields,help:br_base.field_res_partner_legal_name
+#: model:ir.model.fields,help:br_base.field_res_partner_l10n_br_legal_name
 #: model:ir.model.fields,help:br_base.field_res_users_legal_name
 msgid "Name used in fiscal documents"
 msgstr "Nome utilizado em documentos fiscais"
@@ -307,7 +307,7 @@ msgid "No answer - did you verify if your certificate is valid?"
 msgstr "Sem resposta - verificou se o certificado é válido?"
 
 #. module: br_base
-#: selection:res.company,cert_state:0
+#: selection:res.company,l10n_br_cert_state:0
 msgid "Not loaded"
 msgstr "Não carregado"
 
@@ -333,7 +333,7 @@ msgid "Country"
 msgstr "País"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_partner_rg_fisica
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_rg_fisica
 #: model:ir.model.fields,field_description:br_base.field_res_users_rg_fisica
 msgid "RG"
 msgstr "RG"
@@ -355,8 +355,8 @@ msgid "Siscomex Code"
 msgstr "Código Siscomex"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_legal_name
-#: model:ir.model.fields,field_description:br_base.field_res_partner_legal_name
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_legal_name
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_legal_name
 #: model:ir.model.fields,field_description:br_base.field_res_users_legal_name
 #: model:ir.ui.view,arch_db:br_base.view_br_base_partner_form
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
@@ -371,8 +371,8 @@ msgid "State"
 msgstr "Estado"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_inscr_est
-#: model:ir.model.fields,field_description:br_base.field_res_partner_inscr_est
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_inscr_est
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_inscr_est
 #: model:ir.model.fields,field_description:br_base.field_res_users_inscr_est
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
 msgid "State Inscription"
@@ -391,8 +391,8 @@ msgid "Street"
 msgstr "Endereço"
 
 #. module: br_base
-#: model:ir.model.fields,field_description:br_base.field_res_company_suframa
-#: model:ir.model.fields,field_description:br_base.field_res_partner_suframa
+#: model:ir.model.fields,field_description:br_base.field_res_company_l10n_br_suframa
+#: model:ir.model.fields,field_description:br_base.field_res_partner_l10n_br_suframa
 #: model:ir.model.fields,field_description:br_base.field_res_users_suframa
 #: model:ir.ui.view,arch_db:br_base.view_company_form_inherited
 msgid "Suframa"
@@ -417,7 +417,7 @@ msgid "This State Inscription/RG number is already being used by another partner
 msgstr "Já existe um parceiro cadastrado com esta Inscrição Estadual/RG!"
 
 #. module: br_base
-#: selection:res.company,cert_state:0
+#: selection:res.company,l10n_br_cert_state:0
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -428,7 +428,7 @@ msgid "Unknown error when validating certificate"
 msgstr "Erro desconhecido ao consultar o certificado"
 
 #. module: br_base
-#: selection:res.company,cert_state:0
+#: selection:res.company,l10n_br_cert_state:0
 msgid "Valid"
 msgstr "Valido"
 
@@ -439,14 +439,14 @@ msgid "Verify CNPJ/CPF number"
 msgstr "Verifique o numero do CNPJ/CPF"
 
 #. module: br_base
-#: model:ir.model.fields,help:br_base.field_res_bank_acc_number_format
+#: model:ir.model.fields,help:br_base.field_res_bank_l10n_br_acc_number_format
 msgid "You can enter here the format as    the bank accounts are referenced in ofx files for the import of bank    statements.\n"
 "You can use the python patern string with the entire bank     account field.\n"
 "Valid Fields:\n"
 "\n"
-"          %(bra_number): Bank Branch Number\n"
+"          %(l10n_br__number): Bank Branch Number\n"
 "\n"
-"          %(bra_number_dig): Bank Branch Number's Digit\n"
+"          %(l10n_br_number_dig): Bank Branch Number's Digit\n"
 "\n"
 "          %(acc_number): Bank Account Number\n"
 "\n"
@@ -457,9 +457,9 @@ msgstr "You can enter here the format as    the bank accounts are referenced in 
 "You can use the python patern string with the entire bank     account field.\n"
 "Valid Fields:\n"
 "\n"
-"          %(bra_number): Bank Branch Number\n"
+"          %(l10n_br_number): Bank Branch Number\n"
 "\n"
-"          %(bra_number_dig): Bank Branch Number's Digit\n"
+"          %(l10n_br_number_dig): Bank Branch Number's Digit\n"
 "\n"
 "          %(acc_number): Bank Account Number\n"
 "\n"

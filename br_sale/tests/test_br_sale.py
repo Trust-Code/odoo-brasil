@@ -60,17 +60,17 @@ class TestSaleOrder(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'l10n_br_legal_name': 'Razão Social',
             'zip': '88037-240',
             'street': 'Endereço Rua',
-            'number': '42',
-            'district': 'Centro',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Centro',
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='545.770.154-98',
+            l10n_br_cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
             country_id=self.env.ref('base.br').id,
@@ -79,10 +79,10 @@ class TestSaleOrder(TransactionCase):
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='05.075.837/0001-13',
+            l10n_br_cnpj_cpf='05.075.837/0001-13',
             company_type='company',
             is_company=True,
-            inscr_est='433.992.727',
+            l10n_br_inscr_est='433.992.727',
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id,

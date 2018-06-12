@@ -65,9 +65,9 @@ class AcquirerCielo(models.Model):
         }
         address = {
             "Street": order.partner_id.street,
-            "Number": order.partner_id.number,
+            "Number": order.partner_id.l10n_br_number,
             "Complement": order.partner_id.street2,
-            "District": order.partner_id.district,
+            "District": order.partner_id.l10n_br_district,
             "City": order.partner_id.city_id.name,
             "State": order.partner_id.state_id.code,
         }
@@ -75,7 +75,8 @@ class AcquirerCielo(models.Model):
             address['Complement'] = order.partner_id.street2
         payment = {"BoletoDiscount": 0, "DebitDiscount": 0}
         customer = {
-            "Identity": re.sub('[^0-9]', '', order.partner_id.cnpj_cpf or ''),
+            "Identity": re.sub('[^0-9]', '',
+                               order.partner_id.l10n_br_cnpj_cpf or ''),
             "FullName": order.partner_id.name,
             "Email": order.partner_id.email,
             "Phone": re.sub('[^0-9]', '', order.partner_id.phone or ''),

@@ -17,8 +17,8 @@ class TestBoletoSicoob(TestBoleto):
         conta = self.env['res.partner.bank'].create({
             'acc_number': '12345',  # 5 digitos
             'acc_number_dig': '0',  # 1 digito
-            'bra_number': '1234',  # 4 digitos
-            'bra_number_dig': '0',
+            'l10n_br_number': '1234',  # 4 digitos
+            'l10n_br_number_dig': '0',
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
         })
@@ -43,13 +43,13 @@ class TestBoletoSicoob(TestBoleto):
     def _update_main_company(self):
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
-            'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_est': '219.882.606',
+            'l10n_br_legal_name': 'Trustcode Tecnologia da Informação',
+            'l10n_br_cnpj_cpf': '92.743.275/0001-33',
+            'l10n_br_inscr_est': '219.882.606',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
-            'number': '42',
-            'district': 'Córrego Grande',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
@@ -58,8 +58,8 @@ class TestBoletoSicoob(TestBoleto):
 
     def _update_partner_fisica(self):
         self.partner_fisica.write({
-            'cnpj_cpf': '075.932.961-30',
-            'district': 'Centro',
+            'l10n_br_cnpj_cpf': '075.932.961-30',
+            'l10n_br_district': 'Centro',
             'zip': '88032-050',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,

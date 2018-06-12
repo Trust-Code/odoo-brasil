@@ -120,7 +120,7 @@ class AccountInvoice(models.Model):
         # Indicador IE Destinatário
         ind_ie_dest = False
         if inv.commercial_partner_id.is_company:
-            if inv.commercial_partner_id.inscr_est:
+            if inv.commercial_partner_id.l10n_br_inscr_est:
                 ind_ie_dest = '1'
             elif inv.commercial_partner_id.state_id.code in ('AM', 'BA', 'CE',
                                                              'GO', 'MG', 'MS',

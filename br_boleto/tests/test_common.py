@@ -53,7 +53,7 @@ class TestBoleto(TransactionCase):
             company_type='person',
             is_company=False,
             street='Donicia',
-            number=45,
+            l10n_br_number=45,
             property_account_receivable_id=self.receivable_account.id
         ))
         self.journalrec = self.env['account.journal'].create({

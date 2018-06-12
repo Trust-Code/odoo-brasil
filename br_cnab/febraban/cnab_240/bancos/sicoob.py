@@ -22,7 +22,7 @@ class Sicoob240(Cnab240):
     def _prepare_segmento(self, line):
         vals = super(Sicoob240, self)._prepare_segmento(line)
         digito = self.dv_nosso_numero(
-            line.payment_mode_id.bank_account_id.bra_number,
+            line.payment_mode_id.bank_account_id.l10n_br_number,
             re.sub('[^0-9]', '',
                    line.payment_mode_id.bank_account_id.codigo_convenio),
             line.nosso_numero)

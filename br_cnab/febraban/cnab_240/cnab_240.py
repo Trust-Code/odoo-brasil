@@ -63,8 +63,8 @@ class Cnab240(Cnab):
             return 1
 
     def _prepare_header(self):
-        cnpj_cpf = re.sub('[^0-9]', '',
-                          self.order.payment_mode_id.company_id.cnpj_cpf)
+        cnpj_cpf = re.sub('[^0-9]', '', self.order.payment_mode_id.company_id.
+                          l10n_br_cnpj_cpf)
         cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
             acc_number_dig
         cedente_conta_dv = str(cedente_conta_dv)
@@ -77,18 +77,18 @@ class Cnab240(Cnab):
             'cedente_inscricao_tipo': self.inscricao_tipo,
             'cedente_inscricao_numero': int(cnpj_cpf),
             'cedente_agencia': int(
-                self.order.payment_mode_id.bank_account_id.bra_number),
+                self.order.payment_mode_id.bank_account_id.l10n_br_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             'cedente_conta_dv': cedente_conta_dv,
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
-            bank_account_id.bra_number_dig,
-            'cedente_nome': self.order.user_id.company_id.legal_name,
+            bank_account_id.l10n_br_number_dig,
+            'cedente_nome': self.order.user_id.company_id.l10n_br_legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
-                                 bank_account_id.bra_number_dig),
+                                 bank_account_id.l10n_br_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
             'nome_banco': str(self.order.payment_mode_id.bank_account_id
@@ -149,7 +149,7 @@ class Cnab240(Cnab):
             'controle_banco': int(self.order.payment_mode_id.bank_account_id.
                                   bank_bic),
             'cedente_agencia': int(self.order.payment_mode_id.bank_account_id.
-                                   bra_number),
+                                   l10n_br_number),
             'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
                                  acc_number),
             'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
@@ -157,12 +157,13 @@ class Cnab240(Cnab):
             'cedente_convenio': self.order.payment_mode_id.bank_account_id.
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
-            bra_number_dig,
+            l10n_br_number_dig,
             'cedente_nome':
-            self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
+            self.order.payment_mode_id.bank_account_id.partner_id.
+                l10n_br_legal_name,
             # DV ag e cc
             'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
-                                 bra_number_dig),
+                                 l10n_br_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
@@ -198,11 +199,12 @@ class Cnab240(Cnab):
             'sacado_inscricao_tipo': int(
                 self.sacado_inscricao_tipo(line.partner_id)),
             'sacado_inscricao_numero': int(
-                self.rmchar(line.partner_id.cnpj_cpf)),
-            'sacado_nome': line.partner_id.legal_name or line.partner_id.name,
+                self.rmchar(line.partner_id.l10n_br_cnpj_cpf)),
+            'sacado_nome': (line.partner_id.l10n_br_legal_name
+                            or line.partner_id.name),
             'sacado_endereco': (
-                line.partner_id.street + ' ' + line.partner_id.number),
-            'sacado_bairro': line.partner_id.district,
+                line.partner_id.street + ' ' + line.partner_id.l10n_br_number),
+            'sacado_bairro': line.partner_id.l10n_br_district,
             'sacado_cep': int(prefixo),
             'sacado_cep_sufixo': int(sulfixo),
             'sacado_cidade': line.partner_id.city_id.name,

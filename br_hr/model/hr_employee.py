@@ -87,7 +87,7 @@ class HrEmployee(models.Model):
     dependent_ids = fields.One2many('hr.employee.dependent',
                                     'employee_id', 'Dependentes')
     rg = fields.Char('RG', help=u'Número do RG')
-    cpf = fields.Char(related='address_home_id.cnpj_cpf',
+    cpf = fields.Char(related='address_home_id.l10n_br_cnpj_cpf',
                       string='CPF')
     organ_exp = fields.Char(u"Orgão de expedição")
     rg_emission = fields.Date(u'Data de emissão')
