@@ -119,9 +119,15 @@ class AccountInvoiceLine(models.Model):
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         if self.icms_aliquota_credito:
-            base_icms_credito = subtotal + self.valor_frete \
-                + self.valor_seguro \
-                + self.outras_despesas
+            # Calcular o valor da base_icms para o calculo de
+            # credito de ICMS
+            ctx = self._prepare_tax_context()
+            valor_frete = ctx.get('valor_frete', 0.0)
+            valor_seguro = ctx.get('valor_seguro', 0.0)
+            outras_despesas = ctx.get('outras_despesas', 0.0)
+
+            base_icms_credito = subtotal + valor_frete \
+                + valor_seguro + outras_despesas
         else:
             base_icms_credito = 0.0
 
