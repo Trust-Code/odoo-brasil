@@ -7,8 +7,9 @@
         <field name="arch" type="xml" >
             <field name="mov_finality"/>
             <field name="operation_code"/>
-            <field name="cpf_cnpj"/>
+            <field name="reg_type"/>
             <field name="lote_serv"/>
+            <!-- <field name="receiver_warning"/> -->
         </field>
     </record>
 
