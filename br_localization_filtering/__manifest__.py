@@ -13,8 +13,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
         'Susana Vázquez <svazquez@netquest.com>',
     ],
-    'depends': [],
-    'data': [],
-    'installable': True,
-    'application': False,
+    'depends': [
+        'base', 'web',
+    ],
 }

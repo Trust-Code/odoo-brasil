@@ -15,7 +15,7 @@
         'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br',
     ],
     'depends': [
-        'base', 'web', 'br_localization_filtering'
+        'br_localization_filtering'
     ],
     'external_dependencies': {
         'python': [
