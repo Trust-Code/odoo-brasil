@@ -11,11 +11,8 @@ class BrLocalizationFiltering(models.AbstractModel):
 
     # TODO add br_coa_simple
     def _get_br_localization_template(self):
-        template_ids = self.env['ir.model.data'].search([
-            ('module', '=', 'br_coa'),
-            ('name', '=', 'br_account_chart_template'),
-        ])
-        return len(template_ids) and template_ids[0] or False
+        return self.env['ir.model.data'].xmlid_to_object(
+            'br_coa.br_account_chart_template', False)
 
     def _get_user_localization(self):
         return self.env.user.company_id.chart_template_id
