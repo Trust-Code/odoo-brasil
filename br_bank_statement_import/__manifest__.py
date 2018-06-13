@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account_bank_statement_import'
+        'br_data_base', 'account_bank_statement_import'
     ],
     'external_dependencies': {
         'python': [
