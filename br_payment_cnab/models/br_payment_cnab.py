@@ -16,29 +16,34 @@ class PaymentCnabInformation(models.Model):
         return result
 
     mov_finality = fields.Selection([
-        ('01 - Current Account Credit', u'Current Account Credit'),
-        ('02 - Rent Payment/Condominium', u'Rent Payment/Condominium'),
-        ('03 - Dept Security Payment', u'Dept Security Payment'),
-        ('04 - Dividend Payment', u'Dividend Payment'),
-        ('05 - Tuition Payment', u'Tuition Payment'),
-        ('07 - Provider/Fees Payment', u'Provider/Fees Payment'),
-        ('08 - Currency Exchange/Fund/Stock Exchange Payment', u'Currency Exchange/Fund/Stock Exchange Payment'),
-        ('09 - Transfer of Collection / Payment of Taxes', u'Transfer of Collection / Payment of Taxes'),
-        ('11 - DOC/TED to Saving Account', u'DOC/TED to Saving Account'),
-        ('12 - DOC/TED to Judicial Deposit', u'DOC/TED to Judicial Deposit'),
-        ('13 - DOC/TED to Judicial Deposit', u'Child Support/Alimony'),
-        ('14 - Income Tax Rebate', u'Income Tax Rebate'),
-        ('99 - Other', u'Other')
-        ], string=u'Movimentation Purpose', default='99')
+        ('01', u'Current Account Credit'),
+        ('02', u'Rent Payment/Condominium'),
+        ('03', u'Dept Security Payment'),
+        ('04', u'Dividend Payment'),
+        ('05', u'Tuition Payment'),
+        ('07', u'Provider/Fees Payment'),
+        ('08', u'Currency Exchange/Fund/Stock Exchange Payment'),
+        ('09', u'Transfer of Collection / Payment of Taxes'),
+        ('11', u'DOC/TED to Saving Account'),
+        ('12', u'DOC/TED to Judicial Deposit'),
+        ('13', u'Child Support/Alimony'),
+        ('14', u'Income Tax Rebate'),
+        ('99', u'Other')
+        ], string=u'Movimentation Purpose')
 
     operation_code = fields.Selection([
         ('018', u'TED CIP'),
         ('810', u'TED STR'),
         ('700', u'DOC'),
         ('000', u'CC')
-    ], string=u'Operation Code', default='000')
+    ], string=u'Operation Code')
 
-    #receiver_warning = fields.Selection([('0', 'No Warning'), ('2', 'Warning only for addresser'), ('5' 'Warning only for receiver'), ('6', 'Warning for both, addresser and receiver')], string=u'Warnings', default='6')
+    operation_code = fields.Selection([
+        ('0', u'No Warning'),
+        ('2', u'Warning only for addresser'),
+        ('5', u'Warning only for receiver'),
+        ('6', u'Warning for both, addresser and receiver')
+    ], string=u'Operation Code', default='6')
 
     lote_serv =  fields.Integer('Order of Service')
 

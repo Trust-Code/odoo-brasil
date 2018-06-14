@@ -7,7 +7,7 @@
         <field name="type">form</field>
         <field name="arch" type="xml" >
           <field name="value" position="after">
-              <field name="other_payment"/>
+              <field name="other_payment" invisible="1"/>
           </field>
         </field>
     </record>
