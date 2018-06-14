@@ -9,6 +9,6 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     def _return_pdf_invoice(self, doc):
-        if self.service_document_id.code == '008':  # Simpliss
+        if doc.model == '008':  # Simpliss
             return 'br_nfse_simpliss.report_br_nfse_danfe_simpliss'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)

@@ -118,6 +118,19 @@ class AccountInvoiceLine(models.Model):
                 price_subtotal_signed, self.invoice_id.company_id.currency_id)
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
+        if self.icms_aliquota_credito:
+            # Calcular o valor da base_icms para o calculo de
+            # credito de ICMS
+            ctx = self._prepare_tax_context()
+            valor_frete = ctx.get('valor_frete', 0.0)
+            valor_seguro = ctx.get('valor_seguro', 0.0)
+            outras_despesas = ctx.get('outras_despesas', 0.0)
+
+            base_icms_credito = subtotal + valor_frete \
+                + valor_seguro + outras_despesas
+        else:
+            base_icms_credito = 0.0
+
         price_subtotal_signed = price_subtotal_signed * sign
         self.update({
             'price_total': taxes['total_included'] if taxes else subtotal,
@@ -135,7 +148,7 @@ class AccountInvoiceLine(models.Model):
             'icms_uf_remet': sum([x['amount'] for x in icms_inter]),
             'icms_uf_dest': sum([x['amount'] for x in icms_intra]),
             'icms_fcp_uf_dest': sum([x['amount'] for x in icms_fcp]),
-            'icms_valor_credito': sum([x['base'] for x in icms]) *
+            'icms_valor_credito': base_icms_credito *
             (self.icms_aliquota_credito / 100),
             'ipi_base_calculo': sum([x['base'] for x in ipi]),
             'ipi_valor': sum([x['amount'] for x in ipi]),

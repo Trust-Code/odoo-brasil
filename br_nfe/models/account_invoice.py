@@ -48,16 +48,16 @@ class AccountInvoice(models.Model):
         return super(AccountInvoice, self).action_invoice_draft()
 
     def invoice_print(self):
-        if self.product_document_id.code == '55':
-            docs = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', self.id)])
+        doc = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)], limit=1)
+        if doc.model == '55':
             return self.env.ref(
-                'br_nfe.report_br_nfe_danfe').report_action(docs)
+                'br_nfe.report_br_nfe_danfe').report_action(doc)
         else:
             return super(AccountInvoice, self).invoice_print()
 
     def _return_pdf_invoice(self, doc):
-        if self.product_document_id.code == '55':
+        if doc.model == '55':
             return 'br_nfe.report_br_nfe_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
@@ -100,7 +100,7 @@ class AccountInvoice(models.Model):
         res['model'] = serie_id.fiscal_document_id.code
         res['numero_nfe'] = numero_nfe
         res['numero'] = numero_nfe
-        res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,
+        res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
 
