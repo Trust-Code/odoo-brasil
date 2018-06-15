@@ -53,6 +53,9 @@ class InvoiceEletronic(models.Model):
             "context": {'default_eletronic_doc_id': self.id},
         }
 
+    payment_mode_id = fields.Many2one(
+        'payment.mode', string='Modo de Pagamento',
+        readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.tipo_ambiente",
@@ -68,6 +71,7 @@ class InvoiceEletronic(models.Model):
         ('2', u'Operação não presencial, pela Internet'),
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('5', u'Operação presencial, fora do estabelecimento'),
         ('9', u'Operação não presencial, outros'),
     ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
@@ -99,10 +103,12 @@ class InvoiceEletronic(models.Model):
 
     # Transporte
     modalidade_frete = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
         string=u'Modalidade do frete', default="9",
         readonly=True, states=STATE)
     transportadora_id = fields.Many2one(
@@ -379,7 +385,6 @@ class InvoiceEletronic(models.Model):
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': self.payment_term_id.indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
@@ -532,14 +537,18 @@ class InvoiceEletronic(models.Model):
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': '0.00',
+            'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
+            'vFCPST': '0.00',
+            'vFCPSTRet': '0.00',
             'vProd': "%.02f" % self.valor_bruto,
             'vFrete': "%.02f" % self.valor_frete,
             'vSeg': "%.02f" % self.valor_seguro,
             'vDesc': "%.02f" % self.valor_desconto,
             'vII': "%.02f" % self.valor_ii,
             'vIPI': "%.02f" % self.valor_ipi,
+            'vIPIDevol': '0.00',
             'vPIS': "%.02f" % self.valor_pis,
             'vCOFINS': "%.02f" % self.valor_cofins,
             'vOutro': "%.02f" % self.valor_despesas,
@@ -627,6 +636,12 @@ class InvoiceEletronic(models.Model):
             },
             'dup': duplicatas
         }
+        pag = [{
+            'indPag': self.payment_term_id.indPag or '0',
+            'tPag': self.payment_mode_id.tipo_pagamento or '15',
+            'vPag': "%.02f" % self.fatura_liquido
+            if self.fatura_liquido else ''
+        }]
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
         self.informacoes_legais = self.informacoes_legais.replace(
@@ -648,6 +663,7 @@ class InvoiceEletronic(models.Model):
             'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
+            'pag': pag,
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
@@ -773,8 +789,7 @@ class InvoiceEletronic(models.Model):
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
-        retorno = retorno.getchildren()[0]
+        retorno = resposta['object'].getchildren()[0]
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
@@ -790,8 +805,7 @@ class InvoiceEletronic(models.Model):
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                retorno = resposta_recibo['object'].getchildren()[0]
                 if retorno.cStat != 105:
                     break
 

@@ -88,7 +88,7 @@ class InvoiceEletronic(models.Model):
     partner_shipping_id = fields.Many2one(
         'res.partner', string=u'Entrega', readonly=True, states=STATE)
     payment_term_id = fields.Many2one(
-        'account.payment.term', string=u'Forma pagamento',
+        'account.payment.term', string='Condição pagamento',
         readonly=True, states=STATE)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',

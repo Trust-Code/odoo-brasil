@@ -206,9 +206,9 @@ class ResPartner(models.Model):
                 info = obj.Body.consultaCadastro2Result.retConsCad.infCons
                 if info.cStat == 111 or info.cStat == 112:
                     if not self.inscr_est:
-                        self.inscr_est = info.infCad.IE
+                        self.inscr_est = info.infCad.IE.text
                     if not self.cnpj_cpf:
-                        self.cnpj_cpf = info.infCad.IE
+                        self.cnpj_cpf = info.infCad.CNPJ.text
 
                     def get_value(obj, prop):
                         if prop not in dir(obj):

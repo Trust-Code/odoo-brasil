@@ -23,6 +23,4 @@
         'security/ir.model.access.csv',
     ],
     'category': 'Localisation',
-    'application': True,
-    'installable': False,
 }

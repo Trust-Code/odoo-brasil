@@ -83,6 +83,7 @@ class AccountInvoice(models.Model):
             inv, inv_lines, serie_id)
 
         numero_nfe = self.action_number(serie_id)
+        res['payment_mode_id'] = inv.payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
