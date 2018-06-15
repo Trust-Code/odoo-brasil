@@ -7,7 +7,6 @@
         <field name="arch" type="xml" >
                 <field name="mov_finality"/>
                 <field name="lote_serv"/>
-            <!-- <field name="receiver_warning"/> -->
         </field>
     </record>
 
@@ -18,9 +17,9 @@
         <field name="arch" type="xml" >
             <form name= "other_information" position= "after">
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
+                    <!-- <div class="oe_button_box" name="button_box">
                         <button name="generate_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="CNAB Generate"/>
-                    </div>
+                    </div> -->
                         <group>
                             <group>
                                 <field name="mov_finality"/>
@@ -35,48 +34,7 @@
                         </group>
                 </sheet>
             </form>
-            <!-- <field name="receiver_warning"/> -->
         </field>
     </record>
-
-    <!-- actions opening views on models -->
-    <!--
-    <record model="ir.actions.act_window" id="br_payment_cnab.action_window">
-      <field name="name">br_payment_cnab window</field>
-      <field name="res_model">br_payment_cnab.br_payment_cnab</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-<!--
-    <record model="ir.actions.server" id="br_payment_cnab.action_server">
-      <field name="name">br_payment_cnab server</field>
-      <field name="model_id" ref="model_br_payment_cnab_br_payment_cnab"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": self._name,
-        }
-      </field>
-    </record>
--->
-    <!-- Top menu item -->
-    <!--
-    <menuitem name="br_payment_cnab" id="br_payment_cnab.menu_root"/>
-    -->
-    <!-- menu categories -->
-    <!--
-    <menuitem name="Menu 1" id="br_payment_cnab.menu_1" parent="br_payment_cnab.menu_root"/>
-    <menuitem name="Menu 2" id="br_payment_cnab.menu_2" parent="br_payment_cnab.menu_root"/>
-    -->
-    <!-- actions -->
-    <!--
-    <menuitem name="List" id="br_payment_cnab.menu_1_list" parent="br_payment_cnab.menu_1"
-              action="br_payment_cnab.action_window"/>
-    <menuitem name="Server to list" id="br_payment_cnab" parent="br_payment_cnab.menu_2"
-              action="br_payment_cnab.action_server"/>
-    -->
   </data>
 </odoo>
