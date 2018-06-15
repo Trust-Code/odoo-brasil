@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-
+import base64
+#from ..febraban.cnab import Cnab
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 #campo novo para decidir modo de pagamento deve ser adicionado ao account.voucher
 class PaymentCnabInformation(models.Model):
@@ -14,6 +16,17 @@ class PaymentCnabInformation(models.Model):
         for rec in self:
             result.append((rec.id, "%s" % (rec.mov_finality or '')))
         return result
+
+    @api.multi
+    def generate_cnab(self):
+        raise UserError(self.mov_finality)
+        # for order_id in self:
+        #     order = self.env['l10n_br.payment_cnab'].browse(order_id.id)
+        #     cnab = Cnab.get_cnab(
+        #         order.payment_mode_id.bank_account_id.bank_bic, '240')()
+        #     remessa = cnab.remessa(order)
+        #     self.cnab_file = base64.b64encode(remessa.encode('UTF-8'))
+        #     self.data_emissao_cnab = datetime.now()
 
     mov_finality = fields.Selection([
         ('01', u'Current Account Credit'),
@@ -38,17 +51,25 @@ class PaymentCnabInformation(models.Model):
         ('000', u'CC')
     ], string=u'Operation Code')
 
+<<<<<<< HEAD
+    warning_code = fields.Selection([
+        ('0', u'No Warning'),
+        ('2', u'Warning only for addresser'),
+        ('5', u'Warning only for receiver'),
+        ('6', u'Warning for both, addresser and receiver')
+    ], string=u'Warning Code', default='0')
+=======
     # operation_code = fields.Selection([
     #     ('0', u'No Warning'),
     #     ('2', u'Warning only for addresser'),
     #     ('5', u'Warning only for receiver'),
     #     ('6', u'Warning for both, addresser and receiver')
     # ], string=u'Operation Code', default='6')
+>>>>>>> 3dafb875ec45116e082e7673c9eb095dab9e77b2
 
     lote_serv =  fields.Integer('Order of Service')
-
     reg_type = fields.Integer('Register Type') #muda de acordo com o segmento, pra A e B é 3, deve ser implementado depois como readonly
-
+    cnab_get = fields.Binary('Get CNAB', readonly=True)
 
     # def geraDicionario(self):
     #     dictionaryA = {"controle_banco": 33 , "controle_lote": , "controle_registro": 3, "sequencial_registro_lote": A , "servico_segmento": , "tipo_movimento": , "codigo_instrucao_movimento": , "codigo_camara_compensacao": , "favorecido_banco": , "favorecido_agencia": , "favorecido_agencia_dv":,

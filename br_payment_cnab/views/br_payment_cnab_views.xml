@@ -5,10 +5,36 @@
         <field name="model">l10n_br.payment_cnab</field>
         <field name="type">tree</field>
         <field name="arch" type="xml" >
-            <field name="mov_finality"/>
-            <field name="operation_code"/>
-            <field name="reg_type"/>
-            <field name="lote_serv"/>
+                <field name="mov_finality"/>
+                <field name="lote_serv"/>
+            <!-- <field name="receiver_warning"/> -->
+        </field>
+    </record>
+
+    <record id="br_payment_cnab_form_view" model="ir.ui.view">
+        <field name="name">trustcode.payment_other_form_information.view</field>
+        <field name="model">l10n_br.payment_cnab</field>
+        <field name="form">form</field>
+        <field name="arch" type="xml" >
+            <form name= "other_information" position= "after">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="generate_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="CNAB Generate"/>
+                    </div>
+                        <group>
+                            <group>
+                                <field name="mov_finality"/>
+                                <field name="lote_serv"/>
+                                <field name="reg_type"/>
+                            </group>
+                            <group>
+                                <field name="warning_code"/>
+                                <field name="operation_code"/>
+                                <field name="cnab_get"/>
+                            </group>
+                        </group>
+                </sheet>
+            </form>
             <!-- <field name="receiver_warning"/> -->
         </field>
     </record>
