@@ -38,12 +38,12 @@ class PaymentCnabInformation(models.Model):
         ('000', u'CC')
     ], string=u'Operation Code')
 
-    operation_code = fields.Selection([
-        ('0', u'No Warning'),
-        ('2', u'Warning only for addresser'),
-        ('5', u'Warning only for receiver'),
-        ('6', u'Warning for both, addresser and receiver')
-    ], string=u'Operation Code', default='6')
+    # operation_code = fields.Selection([
+    #     ('0', u'No Warning'),
+    #     ('2', u'Warning only for addresser'),
+    #     ('5', u'Warning only for receiver'),
+    #     ('6', u'Warning for both, addresser and receiver')
+    # ], string=u'Operation Code', default='6')
 
     lote_serv =  fields.Integer('Order of Service')
 
