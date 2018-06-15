@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="trustcode_payment_order_form_other_info" model="ir.ui.view">
+        <field name="name"> payment_order_form_plus_other_information</field>
+        <field name="model">payment.order.line</field>
+        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_line_tree_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+          <field name="value" position="after">
+              <field name="other_payment" invisible="1"/>
+          </field>
+        </field>
+    </record>
+</odoo>
