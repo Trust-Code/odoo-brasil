@@ -97,13 +97,16 @@
                 <form string="Importação de Fatura Através de Arquivo XML">
                     <header>
                         <field name="procedure_state" widget="statusbar"/>
-                        <button name="validate_xml_file" type="object" string="Validar Arquivo"
+                        <button name="validate_xml_file" type="object" string="Validar Arquivo XML"
                             attrs="{'invisible': ['|',('xml_file', '=', False),('procedure_state', '!=', 'draft')]}"/>
                         <button name="validate_products" type="object" string="Validar Produtos"
                             attrs="{'invisible': [('procedure_state', '!=', 'product_check')]}"/>
-                        <button name="compute_payments" type="object" string="Calcular Pagamentos"
+                        <button name="compute_payments" type="object" string="Buscar Pagamentos"
                             attrs="{'invisible': [('procedure_state', '!=', 'payment_check')]}"/>
-                        <button name="import_edoc" type="object" string="Importar Dados"/>
+                        <button name="check_amount_payments" type="object" string="Validar Pagamentos"
+                            attrs="{'invisible': [('procedure_state', '!=', 'payment_check')]}"/>
+                        <button name="import_edoc" type="object" string="Importar Dados"
+                            attrs="{'invisible': [('procedure_state', '!=', 'confirmed')]}"/>
                     </header>
                     <div class="alert alert-info" role="alert" style="margin-bottom:0px;"
                         attrs="{'invisible': ['|',('payment_create_type', '!=', 'manual'),
@@ -111,12 +114,20 @@
                         Não foram localizados dados de cobrança no documento eletrônico, informe os
                         dados da(s) cobrança(s) manualmente.
                     </div>
+                    <div class="alert alert-info" role="success" style="margin-bottom:0px;"
+                        attrs="{'invisible': [('procedure_state', '!=', 'draft')]}">
+                        Faça o Upload do arquivo XML e clique no botão 'Validar Arquivo XML'
+                        para iniciar a importação do Documento Eletrônico.
+                    </div>
+                    <div class="alert alert-info" role="success" style="margin-bottom:0px;"
+                        attrs="{'invisible': [('procedure_state', '!=', 'confirmed')]}">
+                        Clique em Importar Dados para concluir a operação.
+                    </div>
                     <sheet>
                         <field name="partner_not_found" invisible="1"/>
                         <field name="currency_id" invisible="1"/>
                         <field name="file_validate" invisible="1"/>
                         <field name="payment_create_type" invisible="1"/>
-                        <field name="payment_balance" invisible="1"/>
                         <h4>
                             <field name="name" attrs="{'invisible': [('name','=',False)]}" readonly="1"/>
                         </h4>
@@ -302,8 +313,7 @@
                             <page string="Vencimentos">
                                 <field name="payment_lines" mode="tree" editable="top"
                                        attrs="{'readonly': [('payment_create_type','=','invoice')],
-                                        'create': ['|',('payment_create_type','!=','invoice'),
-                                        ('payment_balance','!=',0)]}">
+                                        'create': [('payment_create_type','!=','invoice')]}">
                                     <tree editable="bottom">
                                         <field name="currency_id" invisible="1"/>
                                         <field name="payment_dup"/>

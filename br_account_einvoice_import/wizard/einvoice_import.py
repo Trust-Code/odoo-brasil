@@ -34,7 +34,8 @@ class BrAccountInvoiceImport(models.Model):
     # Dados de Controle da Importação
     procedure_state = fields.Selection([('draft', 'Rascunho'), ('partner_check','Verificação do Parceiro'),
                                         ('product_check', 'Verificação dos Produtos'),
-                                        ('payment_check', 'Verificação dos Pagamentos')],
+                                        ('payment_check', 'Verificação dos Pagamentos'),
+                                        ('confirmed', u'Pronto Para Importar')],
                                         default='draft')
 
     currency_id = fields.Many2one("res.currency", string="Moeda", readonly=True, compute='_get_default_values')
@@ -89,7 +90,6 @@ class BrAccountInvoiceImport(models.Model):
     # Dados da Cobrança
     payment_lines = fields.One2many('br.account.invoice.import.payment', 'order_id', string=u'Vencimentos da Fatura',
                                     auto_join=True)
-    payment_balance = fields.Monetary(string=u'Balanço', compute='check_amount_payments')
     payment_create_type = fields.Selection([('invoice', u'Dados da Cobrança Gerados Através da NF-e'),
                                             ('manual', u'Informar Dados da Cobrança Manualmente'), ],
                                            string=u'Lançar Cobranças',
@@ -150,6 +150,7 @@ class BrAccountInvoiceImport(models.Model):
         if hasattr(inv_object.NFe.infNFe, 'cobr') and hasattr(inv_object.NFe.infNFe.cobr, 'dup'):
             payments = inv_object.NFe.infNFe.cobr.dup
             self.prepare_payment_lines(payments)
+            self.check_amount_payments()
         else:
             self.payment_create_type = 'manual'
 
@@ -171,29 +172,24 @@ class BrAccountInvoiceImport(models.Model):
     def create_payment(self, payment_values):
         self.env['br.account.invoice.import.payment'].create(payment_values)
         payments = self.env['br.account.invoice.import.payment'].search([('order_id', '=', self.id)])
-        self.check_amount_payments()
         self.payment_lines = payments.browse(payments.ids)
 
-
-
-    @api.multi
-    @api.depends('payment_lines.payment_amount')
     def check_amount_payments(self):
-        amount_total = self.vlr_fatura
+        amount_total = self.vlr_produtos
         amount_payment_lines = 0
-        '''
-        if self.payment_lines:
-            for payment in self.payment_lines:
+
+        for record in self:
+            for payment in record.payment_lines:
                 amount_payment_lines += payment.payment_amount
             balance = amount_total - amount_payment_lines
             if balance < 0:
                 raise UserError(_(u'O Valor das cobranças não pode ser maior que o valor da Nota Fiscal!\n'
                                   u'Por Favor corrija o(s) lançamento(s) da(s) cobrança(s)'))
-            else:
-                self.payment_balance = balance
-        else:
-            self.payment_balance = amount_total
-        '''
+            elif balance > 0:
+                raise UserError(_(u'O Valor das cobranças não pode ser menor que o valor da Nota Fiscal!\n'
+                                  u'Por Favor corrija o(s) lançamento(s) da(s) cobrança(s)'))
+            elif balance == 0:
+                record.procedure_state = 'confirmed'
 
 
     @api.multi
@@ -581,6 +577,8 @@ class BrAccountInvoiceImport(models.Model):
                            u'CHAVE DA NFE DE ORIGEM: ' + self.chave_nfe,
                 # Informações Complementares da NF-e
                 'fiscal_comment': self.fiscal_comment,
+                # Status da Fatura
+                'state': 'open',
                 # Partner/Fornecedor
                 'partner_id': i.partner_id.id,
                 'commercial_partner_id': i.partner_id.id,
@@ -727,6 +725,7 @@ class BrAccountInvoiceImport(models.Model):
         invoice = self.env['account.invoice']
         invoice_values = self.prepare_account_invoice_values(purchase_order)
         new_invoice = invoice.create(invoice_values)
+        new_invoice.fiscal_position_id = False
         invoice_items = self.env['account.invoice.line']
         new_invoice_item = []
         taxes = []
@@ -795,6 +794,7 @@ class BrAccountInvoiceImport(models.Model):
                 aliquota = product_not_found.icms_st_aliquota
                 base = product_not_found.icms_st_base_calculo
                 amount = product_not_found.icms_st_valor
+                aliquota_mva = product_not_found.icms_st_aliquota_mva
             elif tax == 'ipi':
                 aliquota = product_not_found.ipi_aliquota
                 base = product_not_found.ipi_base_calculo
@@ -809,12 +809,18 @@ class BrAccountInvoiceImport(models.Model):
                 amount = product_not_found.cofins_valor
 
             if amount != 0:
-                tax_id = taxes.search([('domain', '=', tax), ('amount', '=', aliquota),
-                                       ('type_tax_use', '=', 'purchase'),
-                                       ('active', '=', True), ('price_include', '=', True)])
+                if tax != 'icmsst':
+                    tax_id = taxes.search([('domain', '=', tax), ('amount', '=', aliquota),
+                                           ('type_tax_use', '=', 'purchase'),
+                                           ('active', '=', True), ('price_include', '=', True)])
+                elif tax == 'icmsst':
+                    tax_id = taxes.search([('domain', '=', tax), ('amount', '=', aliquota),
+                                           ('type_tax_use', '=', 'purchase'),('aliquota_mva', '=', aliquota_mva),
+                                           ('active', '=', True), ('price_include', '=', True)])
 
                 if len(tax_id) == 0:
-                    taxes.create({
+
+                    tax_vals = {
                         'name': names[tax] + ' ' + str(aliquota) + '%',
                         'type_tax_use': 'purchase',
                         'amount_type': 'percent',
@@ -822,7 +828,13 @@ class BrAccountInvoiceImport(models.Model):
                         'description': names[tax] + ' ' + str(aliquota) + '%',
                         'tax_exigibility': 'on_invoice',
                         'domain': tax,
-                    })
+                    }
+
+                    if tax == 'icmsst':
+                        tax_vals['aliquota_mva'] = aliquota_mva
+
+                    taxes.create(tax_vals)
+
                 if len(tax_id) > 0:
                     #invoice_line.update({'invoice_line_tax_ids': [(6, _, [tax_id.id])]})
                     tax_ids.append(tax_id.id)
@@ -887,7 +899,6 @@ class BrAccountInvoiceImport(models.Model):
                                              partner=invoice.partner_id)
 
             for tax in line.invoice_line_tax_ids:
-                import pudb;pu.db
                 tax_dict = next(x for x in taxes_dict['taxes'] if x['id'] == tax.id)
                 if not tax.price_include and tax.account_id:
                     move_line_dict['price'] += tax_dict['amount']
@@ -942,18 +953,13 @@ class BrAccountInvoiceImport(models.Model):
             ctx = dict(invoice._context, lang=i.partner_id.lang)
             company_currency = self.currency_id
             iml = self.invoice_line_move_line_get(invoice)
-            print(iml)
             iml += self.tax_line_move_line_get(invoice)
-            diff_currency = i.currency_id != company_currency
-            total, total_currency, iml = i.with_context(ctx).compute_invoice_totals(company_currency, iml)
-            print('Total')
-            print(total)
-            print('Total Currency')
-            print(total_currency)
-            for l in iml:
-                l['price'] = round(l['price'], 4)
             print('IML')
             print(iml)
+            diff_currency = i.currency_id != company_currency
+            total, total_currency, iml = i.with_context(ctx).compute_invoice_totals(company_currency, iml)
+            for l in iml:
+                l['price'] = round(l['price'], 4)
             name = i.name or '/'
             for pay in self.payment_lines:
 
@@ -1021,7 +1027,21 @@ class BrAccountInvoiceImport(models.Model):
         purchase_order = self.create_purchase_order()
         invoice = self.create_account_invoice(purchase_order)
 
-        return
+        if invoice != False:
+
+            open_invoice = {
+                'type': 'ir.actions.act_window',
+                'name': 'account.invoice_supplier_form',
+                'res_model': 'account.invoice',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_id': invoice.id,
+                'target': 'current',
+            }
+
+            self.unlink()
+
+        return open_invoice
 
 
 class PartnerNotFound(models.Model):
@@ -1277,14 +1297,3 @@ class BrAccountInvoiceImportPayment(models.Model):
     payment_dup = fields.Char(string=u'Número da Duplicata')
     payment_venc = fields.Date(string=u'Data de Vencimento', required=True)
     payment_amount = fields.Monetary(string=u'Valor da Parcela')
-
-    @api.multi
-    @api.onchange('payment_amount')
-    def validate_payment(self):
-        for record in self:
-            record.order_id.check_amount_payments()
-            '''
-            if record.payment_amount > record.order_id.vlr_fatura:
-                raise UserError(_(u'O Valor das cobranças não pode ser maior que o valor da Nota Fiscal!\n'
-                                  u'Por Favor corrija o(s) lançamento(s) da(s) cobrança(s)'))
-            '''
