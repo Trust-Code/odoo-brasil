@@ -56,6 +56,22 @@ class PaymentCnabInformation(models.Model):
     ], string=u'Operation Code')
 
 
+    entry_mode = fields.Selection([('01', u'Current Account Credit'),
+        ('03', u'Transfer to Other Banks (DOC, TED CIP e TED STR)'),
+        ('05', 'Saving Account Credit'),
+        ('10', 'Payment Order/acquittance'),
+        ('11', 'Barcode paymet'), #ajeitar
+        ('16', 'regular DARF'), #traduzir daqui pra baixo - se necessário
+        ('17', u'GPS - Guia de previdência Social'),
+        ('18', 'Simple DARF'),
+        ('20', u'"caixa" Autentication'),
+        ('22', 'GARE SP ICMS'),
+        ('23','GARE SP DR'),
+        ('24','GARE SP ITCMD'),
+        ('25','IPVA SP'),
+        ('26','LICENCIAMENTO SP'),
+        ('27','DPVAT SP')], string="Entry mode")
+
     warning_code = fields.Selection([
         ('0', u'No Warning'),
         ('2', u'Warning only for addresser'),

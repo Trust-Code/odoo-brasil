@@ -10,16 +10,11 @@ class PaymentOrder(models.Model):
     @api.multi
     def gerar_cnab(self):
 
-        cnab = Cnab_240()
+        cnab = Cnab_240(self)
+        cnab.create_cnab()
 
-        # # Inicializa o cabecalho
-        create_other = cnab.createCnab(self)
+        for line in cnab.ordenate_lines(self.line_ids):
+            cnab.create_detail(line.other_payment.entry_mode, line)
 
-        for linha in self.line_ids:
-            cnab.add_order_line(linha)
-
-        #texto = cnab.generate_cnab_text()
-            linha.other_payment.operation_code
-
-        self.cnab_file = base64.b64encode(create_other.encode())
+        self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = 'cnab_pagamento.rem'

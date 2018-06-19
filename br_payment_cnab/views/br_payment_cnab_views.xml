@@ -25,6 +25,7 @@
                                 <field name="mov_finality"/>
                                 <field name="lote_serv"/>
                                 <field name="reg_type"/>
+                                <field name="entry_mode"/>
                             </group>
                             <group>
                                 <field name="warning_code"/>
