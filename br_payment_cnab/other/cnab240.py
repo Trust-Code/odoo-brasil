@@ -81,18 +81,15 @@ class Cnab_240(object):
         else:
             return 1
 
-
-    def _initialize_header(self, order_line, cnabFile):
+    def _initialize_header(self, ):
         vals = self.getHeaderArq(order_line)
         cnabFile.add_header(vals)
-        #vals['cedente_nome'] = 'Guilherme Lenon da silva'
-        #cnabFile.add_segment('SegmentoJ', vals)
 
-    def createHeaderLot(self, order_line, cnabFile):
+    def createHeaderLot(self, ):
         vals = self.getHeaderLot(order_line)
         cnabFile.add_segment('HeaderLote', vals)
 
-    def createSegment(self, order_line, cnabFile):
+    def createSegment(self, ):
         lista = [1,2]
         sortear = choice(lista)
             if sortear == 1:
@@ -102,24 +99,30 @@ class Cnab_240(object):
                 vals = self.getSegmentoB(order_line)
                 cnabFile.add_segment('SegmentoB', vals)
 
-    def createTrailerLote(self, order_line, cnabFile):
+    def createTrailerLote(self, ):
         vals = self.getTrailerLot(order_line)
         cnabFile.add_segment('TrailerLote' vals)
 
-    def close_and_write(self, order_line, cnabFile):
-        arquivo = StringIO()
-        cnabFile.close_file()
-        cnabFile.write_to_file(arquivo)
-        return arquivo.getvalue()
+    def _inicialize_trailer(self, ):
+        vals = self.setTrailerArq(order_line)
+        cnabFile.add_trailer(vals)
 
-    def _inicialize_service(self, order_line, cnabFile):
-        createheader = createHeaderLot()
-        segmento = createSegment()
-        createtreiler = createTrailerLote()
-        close = close_and_write()
+    def _inicialize_service(self, ):
+        self.createHeaderLot()
+        self.createSegment()
+        self.createTrailerLote()
+
+    def create_arq(self, ):
+        self._inicialize_header()
+        self._inicialize_service()
+        self._inicialize_trailer()
 
 
     def createCnab(self, payment_order):
-        self.order = payment_order
+        arquivo = StringIO()
         cnabFile = File(santander)
-        return self._initialize_header(payment_order, cnabFile)
+        self.create_arq()
+        #self.order = payment_order
+        cnabFile.close_file()
+        cnabFile.write_to_file(arquivo)
+        return arquivo.getvalue()
