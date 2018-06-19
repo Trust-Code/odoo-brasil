@@ -3,8 +3,11 @@ import datetime
 import re
 import string
 import time
+from random import choice
+from io import StringIO
 from pycnab240.file import File
 from pycnab240.bancos import santander
+
 
 class Cnab_240(object):
 
@@ -62,11 +65,10 @@ class Cnab_240(object):
         "favorecido_conta":" " , "favorecido_conta_dv":" " , "favorecido_agencia_conta_dv":" " , "favorecido_nome":" " , "numero_documento_cliente": int(re.sub('[^0-9]', self.order.payment_mode_id.company_id.cnpj_cpf)) , "data_pagamento":" " , "tipo_moeda": "BRL", "vazio1":" " , "valor_pagamento":" " , "numero_documento_banco":" " , "data_real_pagamento":" " , "valor_real_pagamento":" " ,  "mensagem2":" ",
         "finalidade_doc_ted":" " ,"vazio2":" " , "favorecido_emissao_aviso":" " , "ocorrencias_retorno":" "  }
         return segmentoA
-        pass
 
     def setSegmentoB(self):
-        pass
-
+        SegmentoB = {"controle_lote": 1001, "sequencial_registro_lote": 102, "favorecido_inscricao_tipo": 103}
+        return SegmentoB
     def dateToday(self):
         return (int(time.strftime("%d%m%Y")))
 
@@ -81,19 +83,41 @@ class Cnab_240(object):
 
 
     def _initialize_header(self, order_line, cnabFile):
-        from io import StringIO
-
-        arquivo = StringIO()
-
         vals = self.getHeaderArq(order_line)
         cnabFile.add_header(vals)
+        #vals['cedente_nome'] = 'Guilherme Lenon da silva'
+        #cnabFile.add_segment('SegmentoJ', vals)
 
-        vals['cedente_nome'] = 'Guilherme Lenon da silva'
-        cnabFile.add_segment('SegmentoJ', vals)
+    def createHeaderLot(self, order_line, cnabFile):
+        vals = self.getHeaderLot(order_line)
+        cnabFile.add_segment('HeaderLote', vals)
+
+    def createSegment(self, order_line, cnabFile):
+        lista = [1,2]
+        sortear = choice(lista)
+            if sortear == 1:
+                vals = self.getSegmentoA(order_line)
+                cnabFile.add_segment('SegmentoA', vals)
+            else:
+                vals = self.getSegmentoB(order_line)
+                cnabFile.add_segment('SegmentoB', vals)
+
+    def createTrailerLote(self, order_line, cnabFile):
+        vals = self.getTrailerLot(order_line)
+        cnabFile.add_segment('TrailerLote' vals)
+
+    def close_and_write(self, order_line, cnabFile):
+        arquivo = StringIO()
         cnabFile.close_file()
         cnabFile.write_to_file(arquivo)
-
         return arquivo.getvalue()
+
+    def _inicialize_service(self, order_line, cnabFile):
+        createheader = createHeaderLot()
+        segmento = createSegment()
+        createtreiler = createTrailerLote()
+        close = close_and_write()
+
 
     def createCnab(self, payment_order):
         self.order = payment_order
