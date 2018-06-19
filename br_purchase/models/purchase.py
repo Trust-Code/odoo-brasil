@@ -20,6 +20,8 @@ class PurchaseOrder(models.Model):
                 'amount_tax': price_total - price_subtotal,
                 'amount_total': price_total,
                 'total_tax': price_total - price_subtotal,
+                'total_desconto': sum(l.valor_desconto
+                                      for l in order.order_line),
                 'total_bruto': sum(l.valor_bruto
                                    for l in order.order_line),
             })
@@ -39,6 +41,10 @@ class PurchaseOrder(models.Model):
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True)
+    total_desconto = fields.Float(
+        string='Desconto Total ( - )', readonly=True, compute='_amount_all',
+        digits=dp.get_precision('Account'), store=True,
+        help="The discount amount.")
 
     @api.onchange('fiscal_position_id')
     def _compute_tax_id(self):
@@ -70,7 +76,7 @@ class PurchaseOrderLine(models.Model):
                  'incluir_ipi_base', 'icms_st_aliquota_mva')
     def _compute_amount(self):
         for line in self:
-            price = line.price_unit
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             ctx = line._prepare_tax_context()
             tax_ids = line.taxes_id.with_context(**ctx)
             taxes = tax_ids.compute_all(
@@ -79,11 +85,15 @@ class PurchaseOrderLine(models.Model):
                 partner=line.order_id.partner_id)
 
             valor_bruto = line.price_unit * line.product_qty
+            desconto = valor_bruto * line.discount / 100.0
+            desconto = line.order_id.currency_id.round(desconto)
+
             line.update({
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
                 'price_subtotal': taxes['total_excluded'],
                 'valor_bruto': valor_bruto,
+                'valor_desconto': desconto,
             })
 
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
@@ -114,6 +124,14 @@ class PurchaseOrderLine(models.Model):
     cofins_cst = fields.Char(string='CST COFINS', size=5)
     l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
 
+    discount = fields.Float(
+        string='Discount (%)',
+        digits=dp.get_precision('Discount'),
+        default=0.0)
+
+    valor_desconto = fields.Float(
+        compute='_compute_amount', string=u'Vlr. Desc. (-)', store=True,
+        digits=dp.get_precision('Sale Price'))
     valor_bruto = fields.Float(
         compute='_compute_amount', string='Vlr. Bruto', store=True,
         digits=dp.get_precision('Sale Price'))
