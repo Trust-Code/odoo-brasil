@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_br_account_invoice_xml_invoice_form" model="ir.ui.view">
+        <field name="name">br_account_invoice_xml_invoice_form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <button name="action_invoice_draft" position="before">
+                <!--<button name="%(open_wizard_xml_action_id)d" type="action" string="Importar NFe" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('issuer', '=', 1)]}"/> -->
+                <button name="import_xml_nfe_entrada" type="object" string="Importar NFe/CTe" attrs="{'invisible': [('state', 'in', ('draft','cancel'))]}" />
+            </button>
+        </field>
+    </record>
+
+    <record id="view_br_account_fiscal_doc_emit_form" model="ir.ui.view">
+        <field name="name">view_br_account_fiscal_doc_emit_form</field>
+        <field name="model">br_account.fiscal.document</field>
+        <field name="inherit_id" ref="br_account.view_br_account_fiscal_document_form"/>
+        <field name="arch" type="xml">
+            <field name="electronic" position="after">
+                <field name="emissao_doc" />
+            </field>
+            
+        </field>
+    </record>
+
+
+</odoo>
+
+

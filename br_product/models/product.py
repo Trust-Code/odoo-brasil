@@ -24,6 +24,18 @@ class ProductTemplate(models.Model):
                     self.barcode = cod_barras
                 else:
                     raise UserError(_(u'Código de Barras inválido, insira um código de barras válido!'))
+            elif len(cod_barras) == 13:
+                position_impar = [cod_barras[0], cod_barras[2], cod_barras[4], cod_barras[6], cod_barras[8],
+                                  cod_barras[10]]
+                position_par = [cod_barras[1], cod_barras[3], cod_barras[5], cod_barras[7], cod_barras[9], cod_barras[11]]
+                dig_validador = int(cod_barras[12])
+                total_impar = [int(x) for x in position_impar]
+                total_par = [int(x) for x in position_par]
+                total = sum(total_impar) + sum(total_par) * 3
+                if ((total + dig_validador) % 10) == 0:
+                    self.barcode = cod_barras
+                else:
+                    raise UserError(_(u'Código de Barras inválido, insira um código de barras válido!'))
             else:
                 raise UserError(_(u'Código de Barras inválido, insira um código de barras válido!'))
 
