@@ -77,11 +77,24 @@ class PaymentCnabInformation(models.Model):
         ('2', u'Warning only for addresser'),
         ('5', u'Warning only for receiver'),
         ('6', u'Warning for both, addresser and receiver')
-    ], string=u'Warning Code', default='0')
+    ], string='Warning Code', default='0')
 
     lote_serv =  fields.Integer('Order of Service')
     reg_type = fields.Integer('Register Type') #muda de acordo com o segmento, pra A e B é 3, deve ser implementado depois como readonly
     # cnab_get = fields.Binary('Get CNAB', readonly=True)
+
+    mov_type =  fields.Selection([('0', 'Inclusion'),
+                                  ('5', 'Modification'),
+                                  ('9','Exclusion' )
+                                  ], string='Movimentation Type', default='0')
+
+    mov_instruc = fields.Selection([('00', 'Inclusion of Released Detail Register'),
+                                  ('09', 'Inclusion of Blocked Detail Register(Pending Authorization)'),
+                                  ('10', 'Payment Modification - Released to Blocked'),
+                                  ('11', 'Payment Modification - Blocked to Released'),
+                                  ('14', 'Payment Authorization'),
+                                  ('33', 'Refund Chargeback')
+                                  ], string='Movimentation Instrution', default='00')
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'

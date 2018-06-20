@@ -26,10 +26,13 @@
                                 <field name="lote_serv"/>
                                 <field name="reg_type"/>
                                 <field name="entry_mode"/>
+                                <field name="mov_instruc"/>
                             </group>
                             <group>
                                 <field name="warning_code"/>
                                 <field name="operation_code"/>
+                                <field name="mov_type"/>
+                                
                             </group>
                         </group>
                 </sheet>
