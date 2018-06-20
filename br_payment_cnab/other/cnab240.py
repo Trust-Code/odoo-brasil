@@ -15,54 +15,80 @@ class Cnab_240(object):
     # _order = None
     # _bank = None
 
-    def _getSegmentoA(self, order_line):
-        #cpf_cnpj = re.sub('[^0-9]', self._order.payment_mode_id.company_id.cnpj_cpf)
-        segmentoA = {"controle_banco": 33, "controle_lote": 159, "controle_registro": 3, "sequencial_registro_lote": 'A' , "servico_segmento":" ", "tipo_movimento":" " , "codigo_instrucao_movimento":" " , "codigo_camara_compensacao":" " , "favorecido_banco": " ", "favorecido_agencia":" " , "favorecido_agencia_dv":" ",
-        "favorecido_conta":'0'*12 , "favorecido_conta_dv":"0" , "favorecido_agencia_conta_dv":" " , "favorecido_nome":" " , "numero_documento_cliente": int(156341546546546) , "data_pagamento":" " , "tipo_moeda": "BRL", "vazio1":" " , "valor_pagamento":" " , "numero_documento_banco":" " , "data_real_pagamento":" " , "valor_real_pagamento":" " ,  "mensagem2":" ",
-        "finalidade_doc_ted":self._order.other_information.mov_finality ,"vazio2":" " , "favorecido_emissao_aviso":" " , "ocorrencias_retorno":" "  }
-        return segmentoA
-
-    def _getSegmentoB(self, order_line):
-        SegmentoB = {"controle_lote": 1001, "sequencial_registro_lote": 102, "favorecido_inscricao_tipo": 103}
-        return SegmentoB
-
-    def _getSegmentoJ(self, order_line):
-        pass
-
-    def _getSegmentoO(self, order_line):
-        pass
-
-    def _dateToday(self):
-        return (int(time.strftime("%d%m%Y")))
-
-    def _hourNow(self):
-        return (int(time.strftime("%H%M%S")))
-
-    def _getTypeInscription(self):
-        if self._order.payment_mode_id.company_id.partner_id.is_company:
-            return 2
-        else:
-            return 1
-
-    def _getHeaderArq(self):
+    def _get_header_arq(self):
         headerArq = {'bankCode': 33, 'loteServ': 0000, 'registerType': 0, # Tipo de registro da empresa
-                    'filler': 000, 'idRegisterCompany': self._getTypeInscription(), #0 = Isento, 1 = CPF, 2 = CNPJ
+                    'filler': 000, 'idRegisterCompany': self._get_type_inscription(), #0 = Isento, 1 = CPF, 2 = CNPJ
                     'nunRegisterCompany': 000000000000000, #número do registro da empresa
                     'contractId':000000000000000000000, #Código adotado pelo Banco para identificar o contrato -númerodo banco(4), códigode agência(4 "sem DV"), número do convênio(12).
                     'agency': int(self._order.payment_mode_id.bank_account_id.bra_number),   #Conta com letra substituir-se por zero. Para ordem de pagamento -saque em uma agência -número da agência, caso contrário preencher com zeros.
                     'agencyDv': 0, 'accountNumber': 0000000000000, 'accountDv': 0,
                     'agencyAccountDv': 0,'companyName': 0000000000000000000000000000000,
                     'bankName':  0000000000000000000000000000000, #Banco Santander
-                    'filler2': 0000000000, 'remittanceId': 1, 'dateFileGeneration': self._dateToday(),
-                    'hourFileGeneration': self._hourNow(), 'fileNumber': 1, #Número sequêncial onde cada novo arquivo adicionado 1.
+                    'filler2': 0000000000, 'remittanceId': 1, 'dateFileGeneration': self._date_today(),
+                    'hourFileGeneration': self._hour_now(), 'fileNumber': 1, #Número sequêncial onde cada novo arquivo adicionado 1.
                     'layoutVersion':0, 'fileDensity': 00000, 'bankspace': " "*20, # Uso Resenvado do banco.
                     'companyspace': " "*20, # Uso opcional.
                     'filler3': 0000000000000000000, 'codeRecurrence': 00000000000} #Ocorrências para ocorrencias_retorno.
         return headerArq
 
+    def _get_segmento_a(self, order_line):
+        #cpf_cnpj = re.sub('[^0-9]', self._order.payment_mode_id.company_id.cnpj_cpf)
+        segmentoA = {"controle_lote": 159, "sequencial_registro_lote": 00000 , "tipo_movimento":5 , "codigo_instrucao_movimento":14 , "codigo_camara_compensacao":157 , "favorecido_banco":212, "favorecido_agencia":00000 , "favorecido_agencia_dv":"R",
+        "favorecido_conta":000000000000 , "favorecido_conta_dv":0 , "favorecido_agencia_conta_dv":" " , "favorecido_nome":" " , "numero_documento_cliente": "156341546546546" , "data_pagamento":19062018 , "valor_pagamento":Decimal('32.03') , "numero_documento_banco":"000" , "data_real_pagamento":20062018, "valor_real_pagamento":Decimal('33.00') ,  "mensagem2":"Warning",
+        "finalidade_doc_ted":str(55) , "favorecido_emissao_aviso":" " , "ocorrencias_retorno":" "  }
+        return segmentoA
+# order_line.other_payment.mov_finality
+    def _get_segmento_b(self, order_line):
+        SegmentoB = {"controle_lote": 1001, "sequencial_registro_lote": 102, "favorecido_inscricao_tipo":1}
+        return SegmentoB
+
+    def _get_segmento_g(self, order_line):
+        SegmentoG = {"controle_lote": 1002}
+        return SegmentoG
+
+    def _get_segmento_h(self, order_line):
+        SegmentoH = {"controle_lote": 1003}
+        return SegmentoH
+
+    def _get_segmento_j(self, order_line):
+        SegmentoJ = {"controle_lote": 1004}
+        return SegmentoJ
+
+    def _get_segmento_n(self, order_line):
+        SegmentoN = {"controle_lote": 1005}
+        return SegmentoN
+
+    def _get_segmento_o(self, order_line):
+        SegmentoO = {"controle_lote": 1006}
+        return SegmentoO
+
+    def _get_segmento_w(self, order_line):
+        SegmentoW = {"controle_lote": 1006}
+        return SegmentoW
+
+    def _get_segmento_z(self):
+        SegmentoZ = {"controle_lote": 1007}
+        return SegmentoZ
+
     def _get_trailer_arq(self):
         trailerArq = {'bankCode': 0, 'loteServ': 0000, 'registerType': 9, 'filler': 000, 'numLotes': 0, 'numReg': 0, 'filler2': 0}
         return trailerArq
+
+    def _get_trailer_lot(self, order_line):
+        trailerLot = {'bankCode': 0}
+        return trailerLot
+
+    def _date_today(self):
+        return (int(time.strftime("%d%m%Y")))
+
+    def _hour_now(self):
+        return (int(time.strftime("%H%M%S")))
+
+    def _get_type_inscription(self):
+        if self._order.payment_mode_id.company_id.partner_id.is_company:
+            return 2
+        else:
+            return 1
 
         #determinar depois se essa é a melhor forma
         #pois desse jeito toda vez que vai criar um detalhe testa todas as opcoes
@@ -70,8 +96,7 @@ class Cnab_240(object):
         #será possivel saber quando o lote é trocado.
 
     def create_cnab(self):
-        self._cnab_file.add_header(self._getHeaderArq())
-    #    self._create_lot()
+        self._cnab_file.add_header(self._get_header_arq())
 
     def __init__(self, payment_order):
         self._order = payment_order
@@ -84,22 +109,18 @@ class Cnab_240(object):
 
     def create_detail(self, operation, order_line): #descobrir quais dos tributos sao titulos de cobranca e quais usam barcode
         if(int(operation) <= 10 or operation == '20'):
-            self._create_segment('SegmentoA', self._getSegmentoA(order_line))
-            self._create_segment('SegmentoB', self._getSegmentoB(order_line))
+            self._create_segment('SegmentoA', self._get_segmento_a(order_line))
+            self._create_segment('SegmentoB', self._get_segmento_b(order_line))
             pass
         elif (operation == '11'): #com barcode
-            self._create_segment('SegmentoO', self._getSegmentoO(order_line))
+            self._create_segment('SegmentoO', self._get_segmento_o(order_line))
         else: #titulos de cobranca
-            self._create_segment('SegmentoJ', self._getSegmentoJ(order_line))
-            self._create_segment('SegmentoB', self._getSegmentoB(order_line)) #opcional
-        self._cnab_lot.get_active_event().close_event()
+            self._create_segment('SegmentoJ', self._get_segmento_j(order_line))
+            self._create_segment('SegmentoB', self._get_segmento_b(order_line)) #opcional
+        self._cnab_file.get_active_lot().get_active_event().close_event()
 
-    def _create_lot(self):
-        self._cnab_lot = self._cnab_file.create_new_lot()
-        self._cnab_file.add_segment('TrailerLote', self._get_trailer_lot())
-
-    def _createTrailerLote(self, ):
-        self._cnabFile.add_segment('TrailerLote', self._getTrailerLot())
+    def _create_trailer_lote(self):
+        self._cnabFile.add_segment('TrailerLote', self._get_trailer_lot())
 
     def _generate_file(self):
         arquivo = StringIO()
@@ -109,8 +130,9 @@ class Cnab_240(object):
     def write_cnab(self):
         self._cnab_file.add_trailer(self._get_trailer_arq())
         self._cnab_file.close_file()
-        return self._generate_file()
+        return self._generate_file().encode()
 
 
     def ordenate_lines(self, listOfLines):
+
         return listOfLines #deve ordenar as payment order lines de forma a juntar as mesmas operações em blocos.

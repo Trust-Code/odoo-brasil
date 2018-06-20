@@ -30,7 +30,6 @@
                             <group>
                                 <field name="warning_code"/>
                                 <field name="operation_code"/>
-                                <field name="cnab_get"/>
                             </group>
                         </group>
                 </sheet>

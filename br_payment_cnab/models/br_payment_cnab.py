@@ -46,7 +46,7 @@ class PaymentCnabInformation(models.Model):
         ('13', u'Child Support/Alimony'),
         ('14', u'Income Tax Rebate'),
         ('99', u'Other')
-        ], string=u'Movimentation Purpose')
+        ], string=u'Movimentation Purpose', required=True)
 
     operation_code = fields.Selection([
         ('018', u'TED CIP'),
@@ -81,7 +81,7 @@ class PaymentCnabInformation(models.Model):
 
     lote_serv =  fields.Integer('Order of Service')
     reg_type = fields.Integer('Register Type') #muda de acordo com o segmento, pra A e B é 3, deve ser implementado depois como readonly
-    cnab_get = fields.Binary('Get CNAB', readonly=True)
+    # cnab_get = fields.Binary('Get CNAB', readonly=True)
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
