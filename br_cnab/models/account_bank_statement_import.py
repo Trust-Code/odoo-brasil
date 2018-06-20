@@ -85,8 +85,8 @@ class AccountBankStatementImport(models.TransientModel):
             from cnab240.bancos import cecred
             return cecred
         elif bank == '341':
-            from cnab240.bancos import itau
-            return itau
+            from cnab240.bancos import itauRetorno
+            return itauRetorno
         elif bank == '033':
             from cnab240.bancos import santander
             return santander
