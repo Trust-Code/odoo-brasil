@@ -34,4 +34,4 @@ class InutilizationNFeNumeration(models.TransientModel):
             serie=self.serie.id,
             state='error',
         ))
-        inut_inv.action_send_inutilization()
+        return inut_inv.action_send_inutilization()

@@ -21,6 +21,7 @@ try:
     from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
+    from pytrustnfe.nfe import consultar_protocolo_nfe
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
         gerar_nfeproc_cancel
@@ -639,8 +640,7 @@ class InvoiceEletronic(models.Model):
         pag = [{
             'indPag': self.payment_term_id.indPag or '0',
             'tPag': self.payment_mode_id.tipo_pagamento or '15',
-            'vPag': "%.02f" % self.fatura_liquido
-            if self.fatura_liquido else ''
+            'vPag': "%.02f" % self.valor_final
         }]
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
@@ -918,13 +918,15 @@ class InvoiceEletronic(models.Model):
                 'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
-                'xJust': justificativa
+                'xJust': justificativa,
+                'tpEvento': '110111',
+                'descEvento': 'Cancelamento',
             }],
             'modelo': self.model,
         }
 
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        resposta = resp['object'].getchildren()[0]
         if resposta.cStat == 128 and \
                 resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'
@@ -932,13 +934,18 @@ class InvoiceEletronic(models.Model):
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
             self.sequencial_evento += 1
         else:
+            code, motive = None, None
             if resposta.cStat == 128:
-                self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = \
-                    resposta.retEvento.infEvento.xMotivo
+                code = resposta.retEvento.infEvento.cStat
+                motive = resposta.retEvento.infEvento.xMotivo
             else:
-                self.codigo_retorno = resposta.cStat
-                self.mensagem_retorno = resposta.xMotivo
+                code = resposta.cStat
+                motive = resposta.xMotivo
+            if code == 573:  # Duplicidade, já cancelado
+                return self.action_get_status()
+
+            return self._create_response_cancel(
+                code, motive, resp, justificativa)
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -953,4 +960,66 @@ class InvoiceEletronic(models.Model):
             nfe_processada, resp['received_xml'].encode())
         if nfe_proc_cancel:
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+
+    def action_get_status(self):
+        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        consulta = {
+            'estado': self.company_id.state_id.ibge_code,
+            'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+            'modelo': self.model,
+            'obj': {
+                'chave_nfe': self.chave_nfe,
+                'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+            }
+        }
+        resp = consultar_protocolo_nfe(certificado, **consulta)
+        retorno_consulta = resp['object'].getchildren()[0]
+        if retorno_consulta.cStat == 101:
+            self.state = 'cancel'
+            self.codigo_retorno = retorno_consulta.cStat
+            self.mensagem_retorno = retorno_consulta.xMotivo
+            resp['received_xml'] = etree.tostring(retorno_consulta, encoding=str)
+
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            self._create_attachment('canc', self, resp['sent_xml'])
+            self._create_attachment('canc-ret', self, resp['received_xml'])
+            nfe_processada = base64.decodestring(self.nfe_processada)
+
+            nfe_proc_cancel = gerar_nfeproc_cancel(
+                nfe_processada, resp['received_xml'].encode())
+            if nfe_proc_cancel:
+                self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+        else:
+            message = "%s - %s" % (retorno_consulta.cStat,
+                                   retorno_consulta.xMotivo)
+            raise UserError(message)
+
+    def _create_response_cancel(self, code, motive, response, justificativa):
+        message = "%s - %s" % (code, motive)
+        wiz = self.env['wizard.cancel.nfe'].create({
+            'edoc_id': self.id,
+            'justificativa': justificativa,
+            'state': 'error',
+            'message': message,
+            'sent_xml': base64.b64encode(
+                response['sent_xml'].encode('utf-8')),
+            'sent_xml_name': 'cancelamento-envio.xml',
+            'received_xml': base64.b64encode(
+                response['received_xml'].encode('utf-8')),
+            'received_xml_name': 'cancelamento-retorno.xml',
+        })
+        return {
+            'name': 'Cancelamento NFe',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.cancel.nfe',
+            'res_id': wiz.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+        }
