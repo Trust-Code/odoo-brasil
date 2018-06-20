@@ -44,4 +44,6 @@
 "fiscal_document_009","009","NFS-e - Provedor SUSESU","True","True"
 "fiscal_document_010","010","NFS-e - Nota Imperial Petrópolis","True","True"
 "fiscal_document_012","012","NFS-e - Florianópolis","True","True"
-"fiscal_document_013","013","NFS-e - Nota Carioca","True","True"
+"fiscal_document_013","013","NFS-e - Nota Carioca","False","True"
+"fiscal_document_014","014","NFS-e - Nota Belo Horizonte","False","True"
+"fiscal_document_015","015","NFS-e - Maringá,PR","False","True"

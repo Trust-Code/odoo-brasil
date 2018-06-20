@@ -189,11 +189,6 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string=u"Cartas de Correção", readonly=True, states=STATE)
 
-    def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
-src="/report/barcode/Code128/' + self.chave_nfe + '" />'
-        return url
-
     def can_unlink(self):
         res = super(InvoiceEletronic, self).can_unlink()
         if self.state == 'denied':
@@ -329,8 +324,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'vBCST': "%.02f" % item.icms_st_base_calculo,
                 'pICMSST': "%.02f" % item.icms_st_aliquota,
                 'vICMSST': "%.02f" % item.icms_st_valor,
-                'pCredSN': "%.02f" % item.icms_valor_credito,
-                'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
+                'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                'vCredICMSSN': "%.02f" % item.icms_valor_credito
             },
             'IPI': {
                 'clEnq': item.classe_enquadramento_ipi or '',
@@ -741,6 +736,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             cert_pfx, self.company_id.nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
+
         lote = self._prepare_lote(self.id, nfe_values)
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
@@ -940,7 +936,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         nfe_processada = base64.decodestring(self.nfe_processada)
 
         nfe_proc_cancel = gerar_nfeproc_cancel(
-            nfe_processada, resp['received_xml'])
+            nfe_processada, resp['received_xml'].encode())
         if nfe_proc_cancel:
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
             self.nfe_processada_name = "NFe%08d.xml" % self.numero

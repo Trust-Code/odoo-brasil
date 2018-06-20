@@ -327,12 +327,17 @@
                         </page>
                         <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
                             <group>
-                                <field name="tax_issqn_id" />
-                                <field name="issqn_tipo"/>
-                                <field name="issqn_base_calculo"/>
-                                <field name="issqn_aliquota" invisible="1" />
-                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
-                                <field name="issqn_valor"/>
+                                <group>
+                                    <field name="issqn_tipo"/>
+                                    <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                </group>
+                                <group>
+                                    <field name="l10n_br_issqn_deduction" />
+                                    <field name="issqn_base_calculo"/>
+                                    <field name="tax_issqn_id" />
+                                    <field name="issqn_aliquota" invisible="1" />
+                                    <field name="issqn_valor"/>
+                                </group>
                             </group>
                         </page>
                         <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">

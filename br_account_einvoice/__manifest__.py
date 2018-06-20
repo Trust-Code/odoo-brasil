@@ -28,6 +28,7 @@
         'views/account_invoice.xml',
         'views/account_config_settings.xml',
         'views/res_company.xml',
+        'wizard/invoice_eletronic_selection_wizard_view.xml',
     ],
     'installable': True
 }

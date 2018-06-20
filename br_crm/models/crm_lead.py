@@ -99,20 +99,25 @@ class CrmLead(models.Model):
         if self.city_id:
             self.city = self.city_id.name
 
-    @api.onchange('partner_id')
-    def _onchange_partner_id(self):
-        if self.partner_id:
-            val = re.sub('[^0-9]', '', self.partner_id.cnpj_cpf or '')
-            self.legal_name = self.partner_id.legal_name
+    def _onchange_partner_id_values(self, partner_id):
+        res = super(CrmLead, self)._onchange_partner_id_values(partner_id)
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            val = re.sub('[^0-9]', '', partner.cnpj_cpf or '')
             if len(val) == 11:
-                self.cpf = self.partner_id.cnpj_cpf
+                cnpj_cpf = 'cpf'
             else:
-                self.cnpj = self.partner_id.cnpj_cpf
-            self.inscr_est = self.partner_id.inscr_est
-            self.suframa = self.partner_id.suframa
-            self.number = self.partner_id.number
-            self.district = self.partner_id.district
-            self.city_id = self.partner_id.city_id.id
+                cnpj_cpf = 'cnpj'
+            res.update({
+                'legal_name': partner.legal_name,
+                cnpj_cpf: partner.cnpj_cpf,
+                'inscr_est': partner.inscr_est,
+                'suframa': partner.suframa,
+                'number': partner.number,
+                'district': partner.district,
+                'city_id': partner.city_id.id,
+            })
+        return res
 
     @api.multi
     def _create_lead_partner_data(self, name, is_company, parent_id=False):
@@ -138,3 +143,9 @@ class CrmLead(models.Model):
                 'inscr_est': self.rg,
                 })
         return partner
+
+    @api.model
+    def create(self, vals):
+        vals.update(self._onchange_partner_id_values(
+            vals['partner_id'] if vals.get('partner_id') else False))
+        return super(CrmLead, self).create(vals)

@@ -49,7 +49,7 @@ msgstr "Alagoas não possui consulta de cadastro"
 #. module: br_base
 #: model:ir.model.fields,field_description:br_base.field_res_country_bc_code
 msgid "BC Code"
-msgstr "Cóidgo BC"
+msgstr "Código BC"
 
 #. module: br_base
 #: model:ir.model,name:br_base.model_res_bank
@@ -471,4 +471,3 @@ msgstr "You can enter here the format as    the bank accounts are referenced in 
 #: model:ir.model,name:br_base.model_res_region
 msgid "res.region"
 msgstr "res.region"
-
