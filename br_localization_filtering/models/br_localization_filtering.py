@@ -59,6 +59,8 @@ class BrLocalizationFiltering(models.AbstractModel):
                     modifiers[mod_field] = not self._is_user_localization()
                 if view_type == 'form':
                     domain = modifiers.get(mod_field, [])
+                    if isinstance(domain, bool):
+                        continue
                     domain = expression.OR([domain, [
                         ('l10n_br_localization', '=', False)]])
                     modifiers[mod_field] = domain
