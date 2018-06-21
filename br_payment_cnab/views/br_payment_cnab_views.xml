@@ -32,7 +32,6 @@
                                 <field name="warning_code"/>
                                 <field name="operation_code"/>
                                 <field name="mov_type"/>
-                                
                             </group>
                         </group>
                 </sheet>

@@ -11,10 +11,6 @@ class PaymentOrder(models.Model):
     def gerar_cnab(self):
 
         cnab = Cnab_240(self)
-        cnab.create_cnab()
-
-        for line in self.line_ids:
-            cnab.create_detail(line.other_payment.entry_mode, line)
-
+        cnab.create_cnab(self.line_ids)
         self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = 'cnab_pagamento.rem'
