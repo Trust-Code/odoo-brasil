@@ -33,16 +33,23 @@ class Cnab_240(object):
     def _hour_now(self):
         return (int(time.strftime("%H%M%S")))
 
+    def _get_inscription(self, inscription):
+        if inscription:
+            return 2
+        else:
+            return 1
+
+
     def _get_header_arq(self):
         payment = self._order.payment_mode_id
         headerArq = {
-                    'bankCode': 33,
+                    'bankCode': 34,
                     'loteServ': 0000,
                     'registerType': 0,  # Tipo de registro da empresa
                     'filler': 000,
                     'idRegisterCompany': self._get_inscription(payment.company_id.partner_id.is_company),  # 0 = Isento, 1 = CPF, 2 = CNPJ
                     'nunRegisterCompany': 000000000000000,  # número do registro da empresa
-                    'contractId': 000000000000000000000,  # Código adotado pelo Banco para identificar o contrato -númerodo banco(4), códigode agência(4 "sem DV"), número do convênio(12).
+                    'contractId': 123456789101112131415,  # Código adotado pelo Banco para identificar o contrato -númerodo banco(4), códigode agência(4 "sem DV"), número do convênio(12).
                     'agency': int(payment.bank_account_id.bra_number),   #Conta com letra substituir-se por zero. Para ordem de pagamento -saque em uma agência -número da agência, caso contrário preencher com zeros.
                     'agencyDv': 0,
                     'accountNumber': 0000000000000,
@@ -63,33 +70,32 @@ class Cnab_240(object):
                     'codeRecurrence': 00000000000}  # Ocorrências para ocorrencias_retorno.
         return headerArq
 
-    def _get_segmento(self, order_line):
-        other = order_line.other_payment
+    def _get_segmento(self, line):
+        other = line.other_payment
+        payment = self._order.payment_mode_id
         # cpf_cnpj = re.sub('[^0-9]', self._order.payment_mode_id.company_id.cnpj_cpf)
-        segmento = {"controle_lote": 159,
-                    "sequencial_registro_lote": 00000,
-                    "tipo_movimento": int(other.mov_type),
+        segmento = {"tipo_movimento": int(other.mov_type),
                     "codigo_instrucao_movimento": int(other.mov_instruc),
-                    "codigo_camara_compensacao": 157,
-                    "favorecido_banco": 212,
+                    "codigo_camara_compensacao":int(other.operation_code),
+                    "favorecido_banco": int(246), #adicionar campo para o banco do clinte com um valor default
                     "favorecido_agencia": 00000,
                     "favorecido_agencia_dv": "R",
                     "favorecido_conta": 000000000000,
                     "favorecido_conta_dv": 0,
                     "favorecido_agencia_conta_dv": " ",
-                    "favorecido_nome": " ",
-                    "numero_documento_cliente": "156341546546546",
-                    "data_pagamento": 19062018,
-                    "valor_pagamento": Decimal('32.03'),
+                    "favorecido_nome": line.partner_id.name,
+                    "numero_documento_cliente":line.partner_id.cnpj_cpf,
+                    "data_pagamento": int(re.sub('[^0-9]', '',line.date_maturity)),
+                    "valor_pagamento": round(Decimal(line.value), 2),
                     "numero_documento_banco": "000",
-                    "data_real_pagamento": 20062018,
+                    "data_real_pagamento": int(re.sub('[^0-9]', '',self._order.data_emissao_cnab[0:10])) , # verificar se essa data é a data de emissao do cnab
                     "valor_real_pagamento": Decimal('33.00'),
-                    "mensagem2": "Warning",
+                    "mensagem2": other.message2,
                     "finalidade_doc_ted": str(other.mov_finality),
-                    # "favorecido_emissao_aviso":str(order_line.other_payment.warning_code),
+                    # "favorecido_emissao_aviso": int(other.warning_code),
                     # "ocorrencias_retorno":"",
-                    # "favorecido_inscricao_tipo":" ",
-                    # "favorecido_inscricao_numero": 000,
+                    "favorecido_inscricao_tipo":self._get_inscription(payment.company_id.partner_id.is_company),
+                    "favorecido_inscricao_numero": 000,
                     # "favorecido_endereco_rua":"",
                     # "favorecido_endereco_numero":"",
                     # "favorecido_endereco_complemento":"",
@@ -128,34 +134,29 @@ class Cnab_240(object):
     def _get_header_lot(self, line):
         other = line.other_payment
         payment = self._order.payment_mode_id
-        header_lot = {"controle_lote": 0,
-                      "tipo_servico": int(other.serv_type),
-                      "forma_lancamento": int(other.entry_mode),
+        header_lot = {"tipo_servico": int(other.serv_type),
+                      "forma_lancamento": str(other.entry_mode),
                       "numero_versao_lote": 31,
-                      "cedente_inscricao_tipo": self._get_inscription(payment.company_id.partner_id.is_company),
+                      "cedente_inscricao_tipo": 2,
                       "cedente_inscricao_numero": int(re.sub('[^0-9]', '',payment.company_id.cnpj_cpf)),
-                      "codigo_convenio": "naosabemos",
-                      "cedente_agencia":" ",
-                      "cedente_agencia_dv": " ",
-                      "cedente_conta": " ",
-                      "cedente_conta_dv":" " ,
-                      "cedente_nome":" " ,
-                      "mensagem1": "teste 01 ",
-                      "cedente_endereco_rua": str'(line.partner_id),
-                      "cedente_endereco_numero": int(line.partner_id.number),
-                      "cedente_endereco_complemento":str(line.partner_id.street2) ,
-                      "cedente_cidade":str(line.partner_id),
-                      "cedente_cep":int(line.partner_id.zip),
-                      "cedente_cep_complemento":line.partner_id.number,
-                      "cedente_uf":line.partner_id,
-                      "ocorrencias_retorno":" " }
+                      "codigo_convenio": payment.bank_account_id.codigo_convenio,
+                      "cedente_agencia": int(payment.bank_account_id.bra_number),
+                      "cedente_agencia_dv":payment.bank_account_id.acc_number_dig,
+                      "cedente_conta": int(payment.bank_account_id.acc_number),
+                      "cedente_conta_dv":payment.bank_account_id.acc_number_dig ,
+                      "cedente_nome":payment.company_id.name ,
+                      "mensagem1": str(other.message1),
+                      "cedente_endereco_rua": str(line.partner_id.street),
+                      "cedente_endereco_numero": int(re.sub('[^0-9]', '0',line.partner_id.number)),
+                      "cedente_endereco_complemento":str(line.partner_id.street2)[0:15],
+                      "cedente_cidade":str(line.partner_id.city_id.name),
+                      "cedente_cep":int(line.partner_id.zip[0:5]),
+                      "cedente_cep_complemento":int(line.partner_id.zip[5:8]),
+                      "cedente_uf":str(line.partner_id.state_id.code),
+                      # "ocorrencias_retorno":" " Campo esperando confirmacao de necessidade
+                      }
         return header_lot
 
-    def _get_inscription(self, inscription):
-        if inscription:
-            return 2
-        else:
-            return 1
 
     def _ordenate_lines(self, listOfLines):
         operacoes = {}

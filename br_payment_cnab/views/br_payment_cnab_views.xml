@@ -27,12 +27,14 @@
                                 <field name="reg_type"/>
                                 <field name="entry_mode"/>
                                 <field name="mov_instruc"/>
+                                <field name="message2"/>
                             </group>
                             <group>
                                 <field name="warning_code"/>
                                 <field name="operation_code"/>
                                 <field name="mov_type"/>
                                 <field name="serv_type"/>
+                                <field name="message1"/>
                             </group>
                         </group>
                 </sheet>

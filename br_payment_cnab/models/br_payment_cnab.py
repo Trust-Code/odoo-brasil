@@ -35,7 +35,7 @@ class PaymentCnabInformation(models.Model):
         ('99', u'Other')
         ], string=u'Movimentation Purpose', required=True)
 
-    operation_code = fields.Selection([
+    operation_code = fields.Selection([     # G14
         ('018', u'TED CIP'),
         ('810', u'TED STR'),
         ('700', u'DOC'),
@@ -99,10 +99,14 @@ class PaymentCnabInformation(models.Model):
                                   ('98', 'Pagamentos Diversos')
                                   ], string='Service Type')
 
+    message2 = fields.Char(string= 'Note Detail', size = 40)
+
     # variaveis para o header arquivo
 
 
     # variaveis para o header de lote
+
+    message1 = fields.Char(string= 'Note Header', size = 40)
 
 
 class PaymentOrderLine(models.Model):
