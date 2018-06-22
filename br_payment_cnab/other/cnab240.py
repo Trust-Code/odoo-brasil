@@ -97,7 +97,7 @@ class Cnab_240(object):
                     # "favorecido_cidade":"",
                     # "favorecido_cep":0,
                     # "favorecido_uf":"",
-                    "valor_documento": round(Decimal(self._order.amount_total), 2),
+                    "valor_documento": round(Decimal(self._order.amount_total), 2)
                     # "valor_abatimento":"",
                     # "valor_desconto":"",
                     # "valor_mora":"",
@@ -128,26 +128,27 @@ class Cnab_240(object):
     def _get_header_lot(self, line):
         other = line.other_payment
         payment = self._order.payment_mode_id
-        header_lot = {"controle_lote": 0, "tipo_servico": int(other.serv_type),
-                      "forma_lancamento": int(other.entry_mode), 
+        header_lot = {"controle_lote": 0,
+                      "tipo_servico": int(other.serv_type),
+                      "forma_lancamento": int(other.entry_mode),
                       "numero_versao_lote": 31,
                       "cedente_inscricao_tipo": self._get_inscription(payment.company_id.partner_id.is_company),
-                      "cedente_inscricao_numero": payment.company_id.cnpj_cpf,
+                      "cedente_inscricao_numero": int(re.sub('[^0-9]', '',payment.company_id.cnpj_cpf)),
                       "codigo_convenio": "naosabemos",
-                      "cedente_agencia": ,
-                      "cedente_agencia_dv": ,
-                      "cedente_conta": ,
-                      "cedente_conta_dv": ,
-                      "cedente_nome": , 
-                      "mensagem1": ,
-                      "cedente_endereco_rua": ,
-                      "cedente_endereco_numero": ,
-                      "cedente_endereco_complemento":,
-                      "cedente_cidade":,
-                      "cedente_cep":,
-                      "cedente_cep_complemento":,
-                      "cedente_uf":,
-                      "ocorrencias_retorno": }
+                      "cedente_agencia":" ",
+                      "cedente_agencia_dv": " ",
+                      "cedente_conta": " ",
+                      "cedente_conta_dv":" " ,
+                      "cedente_nome":" " ,
+                      "mensagem1": "teste 01 ",
+                      "cedente_endereco_rua": str'(line.partner_id),
+                      "cedente_endereco_numero": int(line.partner_id.number),
+                      "cedente_endereco_complemento":str(line.partner_id.street2) ,
+                      "cedente_cidade":str(line.partner_id),
+                      "cedente_cep":int(line.partner_id.zip),
+                      "cedente_cep_complemento":line.partner_id.number,
+                      "cedente_uf":line.partner_id,
+                      "ocorrencias_retorno":" " }
         return header_lot
 
     def _get_inscription(self, inscription):
@@ -183,12 +184,12 @@ class Cnab_240(object):
         self._cnab_file.add_segment('TrailerLote', self._get_trailer_lot())
         self._cnab_file.get_active_lot().close_lot()
 
-    def _create_header_lote(self):
-        self._cnab_file.add_segment('HeaderLote', self._get_header_lot())
+    def _create_header_lote(self, line):
+        self._cnab_file.add_segment('HeaderLote', self._get_header_lot(line))
 
     def create_details(self, operacoes):
         for lote in operacoes:
-            self._create_header_lote(operacoes[lote])
+            self._create_header_lote(operacoes[lote][0])
             for event in operacoes[lote]:
                 self.create_detail(lote, event)
             self._create_trailer_lote()

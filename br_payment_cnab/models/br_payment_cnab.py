@@ -71,10 +71,10 @@ class PaymentCnabInformation(models.Model):
 
     mov_type = fields.Selection([('0', 'Inclusion'),
                                 ('5', 'Modification'),
-                                ('9', 'Exclusion'), ]
+                                ('9', 'Exclusion')],
                                 string='Movimentation Type', default='0')
 
-    mov_instruc = fields.Selection([
+    mov_instruc = fields.Selection([  #
                                 ('00', 'Inclusion of Released Detail Register'),
                                 ('09', 'Inclusion of Blocked Detail Register(Pending Authorization)'),
                                 ('10', 'Payment Modification - Released to Blocked'),
@@ -98,6 +98,11 @@ class PaymentCnabInformation(models.Model):
                                   ('90', 'Pagamento Beneficios'),
                                   ('98', 'Pagamentos Diversos')
                                   ], string='Service Type')
+
+    # variaveis para o header arquivo
+
+
+    # variaveis para o header de lote
 
 
 class PaymentOrderLine(models.Model):
