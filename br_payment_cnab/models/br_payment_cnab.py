@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 # from ..febraban.cnab import Cnab
 from odoo import models, fields, api
-from odoo.exceptions import UserError
 
 # campo novo para decidir modo de pagamento
 # deve ser adicionado ao account.voucher
@@ -74,7 +73,7 @@ class PaymentCnabInformation(models.Model):
                                 ('9', 'Exclusion')],
                                 string='Movimentation Type', default='0')
 
-    mov_instruc = fields.Selection([  #
+    mov_instruc = fields.Selection([ 
                                 ('00', 'Inclusion of Released Detail Register'),
                                 ('09', 'Inclusion of Blocked Detail Register(Pending Authorization)'),
                                 ('10', 'Payment Modification - Released to Blocked'),
@@ -99,17 +98,17 @@ class PaymentCnabInformation(models.Model):
                                   ('98', 'Pagamentos Diversos')
                                   ], string='Service Type')
 
-    message2 = fields.Char(string= 'Note Detail', size = 40)
+    message2 = fields.Char(string='Note Detail', size=40)
 
     # variaveis para o header arquivo
 
-
     # variaveis para o header de lote
 
-    message1 = fields.Char(string= 'Note Header', size = 40)
+    message1 = fields.Char(string='Note Header', size=40)
 
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
-    other_payment = fields.Many2one('l10n_br.payment_cnab', string="Other Payment Information")
+    other_payment = fields.Many2one('l10n_br.payment_cnab',
+                                    string="Other Payment Information")
