@@ -197,6 +197,7 @@
                                                         <field name="product_hint" domain="[('fiscal_classification_id.code', '=', 'inv_prod_ncm')]"
                                                                attrs="{'invisible': [('product_id', '!=', False)]}"/>
                                                         <field name="product_uom" attrs="{'invisible': [('product_id', '=', False)]}"/>
+                                                        <field name="product_uom_fraction" attrs="{'invisible': [('product_id', '=', False)]}"/>
                                                         <field name="product_uom_qty" attrs="{'invisible': [('product_id', '=', False)]}"/>
                                                         <field name="product_price_unit"/>
                                                     </group>

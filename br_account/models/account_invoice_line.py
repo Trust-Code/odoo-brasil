@@ -13,9 +13,34 @@ from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
 from odoo.addons.br_account.models.res_company import COMPANY_FISCAL_TYPE
 
+import math
+
 
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
+
+    def should_round_down(self, val):
+        if val < 0:
+            return ((val * -1) % 1) < 0.5
+        return (val % 1) < 0.5
+
+    def round_value(self, val, ndigits=0):
+        if ndigits > 0:
+            val *= 10 ** (ndigits - 1)
+
+        is_positive = val > 0
+        tmp_val = val
+        if not is_positive:
+            tmp_val *= -1
+
+        rounded_value = math.floor(tmp_val) if self.should_round_down(val) else math.ceil(tmp_val)
+        if not is_positive:
+            rounded_value *= -1
+
+        if ndigits > 0:
+            rounded_value /= 10 ** (ndigits - 1)
+
+        return rounded_value
 
     @api.model
     def _default_company_fiscal_type(self):
@@ -68,7 +93,8 @@ class AccountInvoiceLine(models.Model):
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
 
         valor_bruto = self.price_unit * self.quantity
-        desconto = valor_bruto * self.discount / 100.0
+        desconto = self.round_value(valor_bruto * self.discount / 100.0, 3)
+        import pudb;pu.db
         subtotal = valor_bruto - desconto
 
         taxes = False
@@ -120,12 +146,21 @@ class AccountInvoiceLine(models.Model):
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
         price_subtotal_signed = price_subtotal_signed * sign
-        vlr_icms_desonerado = sum([x['desoneracao'] for x in icms]) if self.desoneracao_icms == True else 0.0
+
+        if self.desoneracao_icms == True and sum(
+                [x['desoneracao'] for x in icms]) == 0 and self.icms_des_valor_manual > 0:
+            vlr_icms_desonerado = self.icms_des_valor_manual
+        elif self.desoneracao_icms == True and self.icms_des_valor_manual == 0:
+            vlr_icms_desonerado = sum([x['desoneracao'] for x in icms])
+        else:
+            vlr_icms_desonerado = 0
+        total_included = taxes['total_included'] - vlr_icms_desonerado if taxes else 0
+        #import pudb;pu.db
         self.update({
-            'price_total': taxes['total_included'] if taxes else subtotal,
-            'price_tax': taxes['total_included'] - taxes['total_excluded'] if taxes else 0,
-            'price_subtotal': taxes['total_excluded'] - vlr_icms_desonerado
-                if taxes else subtotal,
+            'price_total': total_included if taxes else subtotal - vlr_icms_desonerado,
+            'price_tax': total_included if taxes else 0,
+            'price_subtotal': taxes[
+                                  'total_excluded'] - vlr_icms_desonerado if taxes else subtotal - vlr_icms_desonerado,
             'price_subtotal_signed': price_subtotal_signed - vlr_icms_desonerado,
             'valor_bruto': self.quantity * self.price_unit,
             'valor_desconto': desconto,
@@ -133,8 +168,7 @@ class AccountInvoiceLine(models.Model):
                 if self.desoneracao_icms == False else 0,
             'icms_valor': sum([x['amount'] for x in icms])
                 if self.desoneracao_icms == False else 0,
-            'icms_des_valor': sum([x['desoneracao'] for x in icms])
-                if self.desoneracao_icms == True else 0,
+            'icms_des_valor': vlr_icms_desonerado,
             'icms_st_base_calculo': sum([x['base'] for x in icmsst]),
             'icms_st_valor': sum([x['amount'] for x in icmsst]),
             'icms_bc_uf_dest': sum([x['base'] for x in icms_inter]),
@@ -245,6 +279,9 @@ class AccountInvoiceLine(models.Model):
     icms_des_valor = fields.Float(string='Vlr ICMS Desonerado', required=True,
                                   compute='_compute_price', store=True,
                                   digits=dp.get_precision('Account'), default=0.00)
+    # Campo para informar a desoneração do ICMS Manual, como nos casos de importação de Doc Eletrônico
+    icms_des_valor_manual = fields.Float(string='Vlr ICMS Desonerado', required=True, store=True,
+                                         digits=dp.get_precision('Account'), default=0.00)
 
     # =========================================================================
     # ICMS Substituição

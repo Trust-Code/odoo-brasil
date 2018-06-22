@@ -2,6 +2,7 @@ import base64, re
 
 from lxml import objectify
 from decimal import Decimal, ROUND_HALF_UP
+import math
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError, ValidationError
@@ -14,7 +15,6 @@ from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
 from odoo.addons.br_account.models.cst import CST_IPI
 from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
-
 
 
 icms_tags = [u'ICMS00', u'ICMS10', u'ICMS20', u'ICMS30', u'ICMS40', u'ICMS51', u'ICMS60', u'ICMS70', u'ICMS90',
@@ -175,7 +175,7 @@ class BrAccountInvoiceImport(models.Model):
         self.payment_lines = payments.browse(payments.ids)
 
     def check_amount_payments(self):
-        amount_total = self.vlr_produtos
+        amount_total = self.vlr_fatura
         amount_payment_lines = 0
 
         for record in self:
@@ -433,10 +433,18 @@ class BrAccountInvoiceImport(models.Model):
     def validate_products(self):
         products = self.product_not_found
         msg = []
+        product_ids = []
         for product in products:
+            if product.product_id.id in product_ids:
+                msg.append(u'O Produto %s foi informado para mais de um produto no XML!\n'
+                           u'Corrija e tente novamente.\n' % (product.product_id.name))
+            product_ids.append(product.product_id.id)
+
             if product.product_validate == False:
                 msg.append(u'O Produto %s não esta validado, verifique se todos os campos foram preenchidos'
                            u' corretamente\n' %(product.inv_prod_name))
+
+
 
         if len(msg) > 0:
             errors = ''
@@ -598,6 +606,7 @@ class BrAccountInvoiceImport(models.Model):
                 # Total de Imposto
                 'amount_tax': self.vlr_icms + self.vlr_icms_st + self.vlr_ipi + self.vlr_pis + self.vlr_cofins,
                 # Total da Fatura
+                # Valor é racalculado dentro da invoice através de função
                 'amount_total': self.vlr_fatura,
                 'amount_total_signed': self.vlr_fatura,
                 'currency_id': self.currency_id.id,
@@ -659,7 +668,7 @@ class BrAccountInvoiceImport(models.Model):
             'price_total': p_order.price_total,
             'price_subtotal_signed': p_order.price_total,
             'quantity': p_order.product_qty,
-            'discount': round(p.inv_prod_desc / p.inv_prod_vlr, 2) * 100,
+            'discount': self.round_value((p.inv_prod_desc / p.inv_prod_vlr) * 100, 5),
             'partner_id': p_order.partner_id.id,
             'currency_id': self.currency_id.id,
             'product_type': p_order.product_id.type,
@@ -710,7 +719,7 @@ class BrAccountInvoiceImport(models.Model):
             # Dados da Desoneração do ICMS
             'desoneracao_icms': True if p.icms_valor_desonerado > 0 else False,
             'mot_desoneracao_icms': p.icms_motivo_desoneracao,
-            'icms_des_valor': p.icms_valor_desonerado,
+            'icms_des_valor_manual': p.icms_valor_desonerado,
         }
 
         return values
@@ -729,12 +738,15 @@ class BrAccountInvoiceImport(models.Model):
         invoice_items = self.env['account.invoice.line']
         new_invoice_item = []
         taxes = []
+        taxes_created = []
         for line in purchase_order.order_line:
             product_not_found = self.product_not_found.search([('product_id', '=', line.product_id.id),
                                                                ('order_id', '=', self.id)])
             invoice_item_values = self.prepare_account_invoice_item_values(new_invoice, line, product_not_found)
             invoice_item = invoice_items.create(invoice_item_values)
-            new_tax = self.discovery_taxes_ids(invoice, invoice_item, product_not_found)
+            invoice_item['icms_base_calculo_manual'] = invoice_item_values['icms_base_calculo_manual']
+            print(invoice_item_values)
+            new_tax, taxes_created = self.discovery_taxes_ids(invoice, invoice_item, product_not_found, taxes_created)
             if new_tax != None:
                 taxes.append(new_tax)
 
@@ -749,23 +761,23 @@ class BrAccountInvoiceImport(models.Model):
                     account_invoice_taxes[key] = t
                     account_invoice_taxes[key]['invoice_id'] = new_invoice.id
                     account_invoice_taxes[key]['manual'] = True
-                    account_invoice_taxes[key]['amount'] = float(Decimal(Decimal(t['value']).quantize(Decimal('.01'),
+                    account_invoice_taxes[key]['amount'] = float(Decimal(Decimal(t['value']).quantize(Decimal('.0123'),
                                                                                                 rounding=ROUND_HALF_UP)))
 
                 elif key in account_invoice_taxes:
-                    account_invoice_taxes[key]['amount'] += float(Decimal(Decimal(t['value']).quantize(Decimal('.01'),
+                    account_invoice_taxes[key]['amount'] += float(Decimal(Decimal(t['value']).quantize(Decimal('.0123'),
                                                                                             rounding=ROUND_HALF_UP)))
 
         if len(account_invoice_taxes) > 0:
             for t in account_invoice_taxes:
                 self.env['account.invoice.tax'].create(account_invoice_taxes[t])
 
-        account_move = self.action_move_create(new_invoice)
+        #account_move = self.action_move_create(new_invoice)
 
         return new_invoice
 
     @api.multi
-    def discovery_taxes_ids(self, invoice, invoice_line, product_not_found):
+    def discovery_taxes_ids(self, invoice, invoice_line, product_not_found, taxes_created = []):
         '''
         Função para descobrir regras de imposto no sistema que atendam aos impostos
         destacados na NF-e
@@ -790,53 +802,76 @@ class BrAccountInvoiceImport(models.Model):
                 aliquota = product_not_found.icms_aliquota
                 base = product_not_found.icms_base_calculo
                 amount = product_not_found.icms_valor
+
             elif tax == 'icmsst':
                 aliquota = product_not_found.icms_st_aliquota
                 base = product_not_found.icms_st_base_calculo
                 amount = product_not_found.icms_st_valor
-                aliquota_mva = product_not_found.icms_st_aliquota_mva
+
             elif tax == 'ipi':
                 aliquota = product_not_found.ipi_aliquota
                 base = product_not_found.ipi_base_calculo
                 amount = product_not_found.ipi_valor
+
             elif tax == 'pis':
                 aliquota = product_not_found.pis_aliquota
                 base = product_not_found.pis_base_calculo
                 amount = product_not_found.pis_valor
+
             elif tax == 'cofins':
                 aliquota = product_not_found.cofins_aliquota
                 base = product_not_found.cofins_base_calculo
                 amount = product_not_found.cofins_valor
 
             if amount != 0:
-                if tax != 'icmsst':
-                    tax_id = taxes.search([('domain', '=', tax), ('amount', '=', aliquota),
-                                           ('type_tax_use', '=', 'purchase'),
-                                           ('active', '=', True), ('price_include', '=', True)])
-                elif tax == 'icmsst':
-                    tax_id = taxes.search([('domain', '=', tax), ('amount', '=', aliquota),
-                                           ('type_tax_use', '=', 'purchase'),('aliquota_mva', '=', aliquota_mva),
-                                           ('active', '=', True), ('price_include', '=', True)])
+                tax_id = taxes.search([('domain', '=', tax), ('amount', '=', aliquota),
+                                       ('type_tax_use', '=', 'purchase'),('active', '=', True)])
 
                 if len(tax_id) == 0:
 
                     tax_vals = {
                         'name': names[tax] + ' ' + str(aliquota) + '%',
                         'type_tax_use': 'purchase',
-                        'amount_type': 'percent',
+                        'amount_type': 'icmsst' if tax == 'icmsst' else 'division',
+                        'price_include': True if tax not in ['icmsst', 'ipi'] else False,
                         'amount': aliquota,
                         'description': names[tax] + ' ' + str(aliquota) + '%',
                         'tax_exigibility': 'on_invoice',
                         'domain': tax,
                     }
 
-                    if tax == 'icmsst':
-                        tax_vals['aliquota_mva'] = aliquota_mva
+                    if True not in [tax_vals['name'] in t['name'] for t in taxes_created]:
+                        taxes_created.append(tax_vals)
+                        new_t = taxes.create(tax_vals)
+                        tax_ids.append(new_t.id)
+                        vals = {
+                            'tax_id': new_t.id,
+                            'name': new_t.name,
+                            'base': base,
+                            'value': amount,
+                            'account_id': 24,
+                        }
+                        tax_vals['tax_id'] = new_t.id
+                        invoice_tax_lines.append(vals)
+                        taxes_created.append(tax_vals)
 
-                    taxes.create(tax_vals)
+                    else:
+                        match = False
+                        for t in taxes_created:
+                            if tax_vals['name'] == t['name'] and match == False:
+                                invoice_tax_lines.append({
+                                    'tax_id': t['tax_id'],
+                                    'name': t['name'],
+                                    'base': base,
+                                    'value': amount,
+                                    'account_id': 24,
+                                })
+                                tax_ids.append(t['tax_id'])
+
+                                match = True
+
 
                 if len(tax_id) > 0:
-                    #invoice_line.update({'invoice_line_tax_ids': [(6, _, [tax_id.id])]})
                     tax_ids.append(tax_id.id)
                     invoice_tax_lines.append({
                         'tax_id': tax_id.id,
@@ -847,7 +882,7 @@ class BrAccountInvoiceImport(models.Model):
                     })
         invoice_line.write({'invoice_line_tax_ids': [(6, _, tax_ids)]})
 
-        return invoice_tax_lines
+        return invoice_tax_lines, taxes_created
 
 
 
@@ -892,24 +927,63 @@ class BrAccountInvoiceImport(models.Model):
                 continue
 
             move_line_dict['price'] = line.price_total
+            dp_price = self.count_decimal_precision(move_line_dict['price'])
+            print('DEBUG ITENS')
+            print(move_line_dict['name'], move_line_dict['price_unit'], move_line_dict['price'])
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            print('New Price ', price)
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
-            taxes_dict = tax_ids.compute_all(price, invoice.currency_id, line.quantity, product=line.product_id,
-                                             partner=invoice.partner_id)
+            taxes_dict = tax_ids.compute_base_on_total(line.price_total)
+            total_tax_dict_amount = 0
 
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(x for x in taxes_dict['taxes'] if x['id'] == tax.id)
                 if not tax.price_include and tax.account_id:
-                    move_line_dict['price'] += tax_dict['amount']
+                    #move_line_dict['price'] += float(str(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.%s' %('1' * dp_price)), rounding=ROUND_UP))))
+                    move_line_dict['price'] += self.round_value(tax_dict['amount'], dp_price + 1 if dp_price >= 2 else 3)
+                    move_line_dict['price'] = self.round_value(move_line_dict['price'], dp_price + 1 if dp_price >= 2 else 3)
                 if tax.price_include and (not tax.account_id or not tax.deduced_account_id):
+                    print(tax_dict)
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
-                        move_line_dict['price'] -= float(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.01'),
-                                                                                            rounding=ROUND_HALF_UP)))
+                        #total_tax_dict_amount += float(str(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.%s' %('1' * dp_price)), rounding=ROUND_UP))))
+                        total_tax_dict_amount += self.round_value(tax_dict['amount'], dp_price + 1 if dp_price >= 2 else 3)
+                        #move_line_dict['price'] -= float(str(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.%s' %('1' * dp_price)), rounding=ROUND_UP))))
+                        move_line_dict['price'] -= self.round_value(tax_dict['amount'], dp_price + 1 if dp_price >= 2 else 3)
+                        move_line_dict['price'] = self.round_value(move_line_dict['price'], dp_price + 1 if dp_price >= 2 else 3)
+                        #move_line_dict['price'] = float(format(move_line_dict['price'], '.%sf' % dp_price))
+
+            if move_line_dict['price'] + total_tax_dict_amount != line.price_total:
+                diference = line.price_total - move_line_dict['price'] - total_tax_dict_amount
+                move_line_dict['price'] += diference
+                move_line_dict['price'] = self.round_value(move_line_dict['price'], dp_price + 1 if dp_price >= 2 else 3)
 
             res.append(move_line_dict)
 
         return res
+
+    def should_round_down(self, val):
+        if val < 0:
+            return ((val * -1) % 1) < 0.5
+        return (val % 1) < 0.5
+
+    def round_value(self, val, ndigits=0):
+        if ndigits > 0:
+            val *= 10 ** (ndigits - 1)
+
+        is_positive = val > 0
+        tmp_val = val
+        if not is_positive:
+            tmp_val *= -1
+
+        rounded_value = math.floor(tmp_val) if self.should_round_down(val) else math.ceil(tmp_val)
+        if not is_positive:
+            rounded_value *= -1
+
+        if ndigits > 0:
+            rounded_value /= 10 ** (ndigits - 1)
+
+        return rounded_value
 
     @api.multi
     def tax_line_move_line_get(self, invoice):
@@ -936,7 +1010,34 @@ class BrAccountInvoiceImport(models.Model):
                 })
                 done_taxes.append(tax.id)
 
+        done_taxes = []
+
+        for tax_line in sorted(invoice.tax_line_ids, key=lambda x: -x.sequence):
+            if tax_line.amount and tax_line.tax_id.deduced_account_id:
+                tax = tax_line.tax_id
+                done_taxes.append(tax.id)
+                res.append({
+                    'invoice_tax_line_id': tax_line.id,
+                    'tax_line_id': tax_line.tax_id.id,
+                    'type': 'tax',
+                    'name': tax_line.name,
+                    'price_unit': tax_line.amount * -1,
+                    'quantity': 1,
+                    'price': tax_line.amount * -1,
+                    'account_id': tax_line.tax_id.deduced_account_id.id,
+                    'account_analytic_id': tax_line.account_analytic_id.id,
+                    'invoice_id': invoice.id,
+                    'tax_ids': [(6, 0, done_taxes)]
+                    if tax_line.tax_id.include_base_amount else []
+                })
+
         return res
+
+    def count_decimal_precision(self, number):
+        str_number = str(number)
+        dp = str_number[::-1].find('.')
+
+        return dp
 
     @api.multi
     def action_move_create(self, invoice):
@@ -953,13 +1054,16 @@ class BrAccountInvoiceImport(models.Model):
             ctx = dict(invoice._context, lang=i.partner_id.lang)
             company_currency = self.currency_id
             iml = self.invoice_line_move_line_get(invoice)
+            print('IML')
+            print(iml)
             iml += self.tax_line_move_line_get(invoice)
             print('IML')
             print(iml)
             diff_currency = i.currency_id != company_currency
             total, total_currency, iml = i.with_context(ctx).compute_invoice_totals(company_currency, iml)
-            for l in iml:
-                l['price'] = round(l['price'], 4)
+            print('TOTAL')
+            print(total)
+            print(iml)
             name = i.name or '/'
             for pay in self.payment_lines:
 
@@ -1126,8 +1230,10 @@ class ProductNotFound(models.Model):
     product_match = fields.Boolean(string=u'Produto Combinou')
     product_uom = fields.Many2one('product.uom', string=u'UoM no Sistema')
     product_uom_qty = fields.Float(string=u'Qtd no Sistema', digits=dp.get_precision('Product Unit of Measure'))
-    product_price_unit = fields.Monetary(u'Vlr Unit no Sistema', required=True, digits=dp.get_precision('Product Price'),
-                                      readonly=True)
+    product_price_unit = fields.Float(u'Vlr Unit no Sistema', required=True, readonly=True,
+                                         digits=dp.get_precision('Product Price'))
+    product_uom_fraction = fields.Float(string=u'Fração UoM', help=u'Conversão de Unidade de Medida',
+                                        digits=dp.get_precision('Product Price'))
 
     # Dados dos Impostos dos Produtos - ICMS
     icms_cst = fields.Selection(CST_ICMS + CSOSN_SIMPLES, string=u'Situação Tributária', readonly=True)
@@ -1179,6 +1285,12 @@ class ProductNotFound(models.Model):
 
     # Boolean Para confirmar se os dados do produto estão ok
     product_validate = fields.Boolean(string='Produto Válidado', default=False, store=True, compute='validate_product')
+
+    @api.multi
+    @api.onchange('product_uom_fraction')
+    def compute_fraction(self):
+        for record in self:
+            record.product_uom_qty = record.product_uom_fraction * record.inv_prod_qty
 
     @api.multi
     @api.onchange('inv_prod_desc', 'inv_prod_vlr', )
