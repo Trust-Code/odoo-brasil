@@ -68,6 +68,14 @@ class PaymentCnabInformation(models.Model):
 
     reg_type = fields.Integer('Register Type')
 
+    mora_value = fields.Float('Interest Rate', default='00.00')
+
+    duty_value = fields.Float('Duty Value', default='00.00')
+
+    rebate_value = fields.Float('Rebate Value', default='00.00')
+
+    discount_value = fields.Float('Discount Value', default='00.00')
+
     mov_type = fields.Selection([('0', 'Inclusion'),
                                 ('5', 'Modification'),
                                 ('9', 'Exclusion')],
@@ -98,20 +106,26 @@ class PaymentCnabInformation(models.Model):
                                   ('98', 'Pagamentos Diversos')
                                   ], string='Service Type')
 
-    message2 = fields.Char(string='Note Detail', size=40)
+    message2 = fields.Char(string='Note Detail', size=40, default=' '*40)
 
     # variaveis para o header arquivo
 
 
     # variaveis para o header de lote
 
-
-
-    message1 = fields.Char(string='Note Header', size=40)
+    message1 = fields.Char(string='Note Header', size=40, default=' '*40)
 
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
+    def calc_final_value(self):
+        disconto = self.other_payment.rebate_value + self.other_payment.discount_value
+        acrescimo = self.other_payment.duty_value + self.other_payment.mora_value
+        self.value_final = (self.value - disconto + acrescimo)
+
     other_payment = fields.Many2one('l10n_br.payment_cnab',
                                     string="Other Payment Information")
+
+    value_final = fields.Float(string="Final Value")
+    calc_final_value()

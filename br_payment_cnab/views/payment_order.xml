@@ -6,9 +6,24 @@
         <field name="inherit_id" ref="br_boleto.trustcode_payment_order_line_tree_view"/>
         <field name="type">form</field>
         <field name="arch" type="xml" >
-          <field name="value" position="after">
-              <field name="other_payment" invisible="0"/>
+          <field name="date_maturity" position="after">
+              <field name="value" invisible="1"/>
+              <field name="value_final" widget="monetary"/>
+              <field name="other_payment" invisible="1"/>
           </field>
         </field>
     </record>
+
+    <record id="trustcode_payment_order_form" model="ir.ui.view">
+        <field name="name"> payment_order_form_plus_company</field>
+        <field name="model">payment.order</field>
+        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+          <field name="amount_total" position="after">
+              <field name="company_id" invisible="0"/>
+          </field>
+        </field>
+    </record>
+
 </odoo>

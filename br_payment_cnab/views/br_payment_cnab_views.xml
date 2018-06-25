@@ -27,7 +27,9 @@
                                 <field name="reg_type"/>
                                 <field name="entry_mode"/>
                                 <field name="mov_instruc"/>
-                                <field name="message2"/>                                
+                                <field name="message2"/> 
+                                <field name="rebate_value" widget="monetary"/> 
+                                <field name="discount_value" widget="monetary"/>                                                                
                             </group>
                             <group>
                                 <field name="warning_code"/>
@@ -35,6 +37,8 @@
                                 <field name="mov_type"/>
                                 <field name="serv_type"/>
                                 <field name="message1"/>
+                                <field name="duty_value" widget="monetary"/> 
+                                <field name="mora_value" widget="monetary"/> 
                             </group>
                         </group>
                 </sheet>
