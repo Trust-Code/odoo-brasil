@@ -73,7 +73,7 @@ class PaymentCnabInformation(models.Model):
                                 ('9', 'Exclusion')],
                                 string='Movimentation Type', default='0')
 
-    mov_instruc = fields.Selection([ 
+    mov_instruc = fields.Selection([
                                 ('00', 'Inclusion of Released Detail Register'),
                                 ('09', 'Inclusion of Blocked Detail Register(Pending Authorization)'),
                                 ('10', 'Payment Modification - Released to Blocked'),
@@ -102,7 +102,10 @@ class PaymentCnabInformation(models.Model):
 
     # variaveis para o header arquivo
 
+
     # variaveis para o header de lote
+
+
 
     message1 = fields.Char(string='Note Header', size=40)
 

@@ -1,5 +1,6 @@
 from decimal import Decimal
 import time
+import re
 from io import StringIO
 from pycnab240.file import File
 from pycnab240.bancos import santander
@@ -37,38 +38,34 @@ class Cnab_240(object):
         else:
             return 1
 
-    def _stringToNum(self, toTransform):
-        import re
-        return int(re.sub('[^0-9]', '', toTransform))
+    def _string_to_num(self, toTransform):
+
+        value = re.sub('[^0-9]', '', str(toTransform))
+        try:
+            return int(value)
+        except ValueError:
+            return 0
+
+    def get_bank
+        category = self.env['res.partner'].browse(bank_account_count)
+        return category
 
     def _get_header_arq(self):
         payment = self._order.payment_mode_id
         headerArq = {
-                    'bankCode': 34,
-                    'loteServ': 0000,
-                    'registerType': 0,  # Tipo de registro da empresa
-                    'filler': 000,
-                    'idRegisterCompany': self._get_inscription(payment.company_id.partner_id.is_company),  # 0 = Isento, 1 = CPF, 2 = CNPJ
-                    'nunRegisterCompany': 000000000000000,  # número do registro da empresa
-                    'contractId': 123456789101112131415,  # Código adotado pelo Banco para identificar o contrato -númerodo banco(4), códigode agência(4 "sem DV"), número do convênio(12).
-                    'agency': int(payment.bank_account_id.bra_number),   #Conta com letra substituir-se por zero. Para ordem de pagamento -saque em uma agência -número da agência, caso contrário preencher com zeros.
-                    'agencyDv': 0,
-                    'accountNumber': 0000000000000,
-                    'accountDv': 0,
-                    'agencyAccountDv': 0,
-                    'companyName': 0000000000000000000000000000000,
-                    'bankName': santander,  # Banco Santander
-                    'filler2': 0000000000,
-                    'remittanceId': 1,
-                    'dateFileGeneration': self._date_today(),
-                    'hourFileGeneration': self._hour_now(),
-                    'fileNumber': 1,  # Número sequêncial onde cada novo arquivo adicionado 1.
-                    'layoutVersion': 0,
-                    'fileDensity': 00000,
-                    'bankspace': " "*20,  # Uso Resenvado do banco.
-                    'companyspace': " "*20,  # Uso opcional.
-                    'filler3': 0000000000000000000,
-                    'codeRecurrence': 00000000000}  # Ocorrências para ocorrencias_retorno.
+                    'cedente_inscricao_tipo': self._get_inscription(payment.company_id.partner_id.is_company),  # 0 = Isento, 1 = CPF, 2 = CNPJ
+                    'cedente_inscricao_numero': self._string_to_num(payment.company_id.cnpj_cpf),  # número do registro da empresa
+                    'codigo_convenio': str(payment.boleto_cnab_code),  # Código adotado pelo Banco para identificar o contrato -númerodo banco(4), códigode agência(4 "sem DV"), número do convênio(12).
+                    'cedente_agencia': int(payment.bank_account_id.bra_number),   #Conta com letra substituir-se por zero. Para ordem de pagamento -saque em uma agência -número da agência, caso contrário preencher com zeros.
+                    'cedente_agencia_dv': str(payment.bank_account_id.acc_number_dig),
+                    'cedente_conta': int(payment.bank_account_id.acc_number),
+                    'cedente_conta_dv': str(int(payment.bank_account_id.bra_number_dig)),
+                    'cedente_nome': str( payment.company_id.name),
+                    'data_geracao_arquivo': self._date_today(),
+                    'hora_geracao_arquivo': self._hour_now(),
+                    'numero_sequencial_arquivo':self._order.file_number,  # Número sequêncial onde cada novo arquivo adicionado 1.
+                    }
+
         return headerArq
 
     def _get_segmento(self, line):
@@ -77,7 +74,7 @@ class Cnab_240(object):
         segmento = {"tipo_movimento": int(other.mov_type),
                     "codigo_instrucao_movimento": int(other.mov_instruc),
                     "codigo_camara_compensacao": int(other.operation_code),
-                    "favorecido_banco": int(246),  #adicionar campo para o banco do clinte com um valor default
+                    "favorecido_banco": line.partner_id.bank_account_count,  #adicionar campo para o banco do clinte com um valor default
                     "favorecido_agencia": 00000,
                     "favorecido_agencia_dv": "R",
                     "favorecido_conta": 000000000000,
@@ -85,10 +82,10 @@ class Cnab_240(object):
                     "favorecido_agencia_conta_dv": " ",
                     "favorecido_nome": line.partner_id.name,
                     "numero_documento_cliente": line.partner_id.cnpj_cpf,
-                    "data_pagamento": self._stringToNum(line.date_maturity),
+                    "data_pagamento": self._string_to_num(line.date_maturity),
                     "valor_pagamento": round(Decimal(line.value), 2),
                     "numero_documento_banco": "000",
-                    "data_real_pagamento":  self._stringToNum(self._order.data_emissao_cnab[0:10]),  # verificar se essa data é a data de emissao do cnab
+                    "data_real_pagamento":  self._string_to_num(self._order.data_emissao_cnab[0:10]),  # verificar se essa data é a data de emissao do cnab
                     "valor_real_pagamento": Decimal('33.00'),
                     "mensagem2": other.message2,
                     "finalidade_doc_ted": str(other.mov_finality),
@@ -138,7 +135,7 @@ class Cnab_240(object):
                       "forma_lancamento": str(other.entry_mode),
                       "numero_versao_lote": 31,
                       "cedente_inscricao_tipo": 2,
-                      "cedente_inscricao_numero": self._stringToNum(payment.company_id.cnpj_cpf),
+                      "cedente_inscricao_numero": self._string_to_num(payment.company_id.cnpj_cpf),
                       "codigo_convenio": payment.bank_account_id.codigo_convenio,
                       "cedente_agencia": int(payment.bank_account_id.bra_number),
                       "cedente_agencia_dv":payment.bank_account_id.acc_number_dig,
@@ -147,13 +144,13 @@ class Cnab_240(object):
                       "cedente_nome": payment.company_id.name,
                       "mensagem1": str(other.message1),
                       "cedente_endereco_rua": str(line.partner_id.street),
-                      "cedente_endereco_numero": self._stringToNum(line.partner_id.number),
+                      "cedente_endereco_numero": self._string_to_num(line.partner_id.number),
                       "cedente_endereco_complemento": str(line.partner_id.street2)[0:15],
                       "cedente_cidade": str(line.partner_id.city_id.name),
                       "cedente_cep": int(line.partner_id.zip[0:5]),
                       "cedente_cep_complemento": int(line.partner_id.zip[5:8]),
                       "cedente_uf": str(line.partner_id.state_id.code),
-                      # "ocorrencias_retorno":" " Campo esperando confirmacao de necessidade
+
                       }
         return header_lot
 
