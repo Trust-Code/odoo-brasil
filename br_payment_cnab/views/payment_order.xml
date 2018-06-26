@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="trustcode_payment_order_form_other_info" model="ir.ui.view">
+    <record id="trustcode_payment_order_tree_other_info" model="ir.ui.view">
         <field name="name"> payment_order_form_plus_other_information</field>
         <field name="model">payment.order.line</field>
         <field name="inherit_id" ref="br_boleto.trustcode_payment_order_line_tree_view"/>
-        <field name="type">form</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml" >
-          <field name="date_maturity" position="after">
-              <field name="value" invisible="1"/>
-              <field name="value_final" widget="monetary"/>
-              <field name="other_payment" invisible="1"/>
-          </field>
+            <field name="value" position="attributes">
+                <attribute name="invisible">{1}</attribute>
+            </field>
+            <field name= "date_maturity" position="after">
+                <field name="value_final"/>
+                <field name="other_payment" invisible="1"/>
+            </field>
+            <field name= "partner_id" position="after">
+            <field name="bank_information"/>
+            </field>
         </field>
     </record>
 

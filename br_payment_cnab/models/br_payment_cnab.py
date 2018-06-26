@@ -119,13 +119,14 @@ class PaymentCnabInformation(models.Model):
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
+    other_payment = fields.Many2one('l10n_br.payment_cnab', string="Other Payment Information")
+
+    @api.one
+    @api.depends('other_payment')
     def calc_final_value(self):
-        disconto = self.other_payment.rebate_value + self.other_payment.discount_value
+        desconto= self.other_payment.rebate_value + self.other_payment.discount_value
         acrescimo = self.other_payment.duty_value + self.other_payment.mora_value
-        self.value_final = (self.value - disconto + acrescimo)
+        self.value_final = (self.value- desconto + acrescimo)
+    value_final = fields.Float(string="Final Value", compute= "calc_final_value", digits=(18, 2))
 
-    other_payment = fields.Many2one('l10n_br.payment_cnab',
-                                    string="Other Payment Information")
-
-    value_final = fields.Float(string="Final Value")
-    calc_final_value()
+    bank_information = fields.Many2one('res.partner.bank_account_count', string="Bank Information", readonly=True)

@@ -91,7 +91,7 @@ class Cnab_240(object):
                     "valor_real_pagamento": Decimal('33.00'),
                     "mensagem2": str(other.message2),
                     "finalidade_doc_ted": str(other.mov_finality),
-                    "favorecido_emissao_aviso": int(other.warning_code),
+                    # "favorecido_emissao_aviso": int(other.warning_code),
                     "favorecido_inscricao_tipo": self._get_inscription(line.partner_id.is_company),
                     "favorecido_inscricao_numero": 000,
                     "favorecido_endereco_rua": str(line.partner_id.street),
@@ -133,7 +133,7 @@ class Cnab_240(object):
         other = line.other_payment
         payment = self._order.payment_mode_id
         header_lot = {"tipo_servico": int(other.serv_type),
-                      "forma_lancamento": int(other.entry_mode),
+                      "forma_lancamento": str(other.entry_mode),
                       "numero_versao_lote": 31,
                       "cedente_inscricao_tipo": 2,
                       "cedente_inscricao_numero": self._string_to_num(payment.company_id.cnpj_cpf),
