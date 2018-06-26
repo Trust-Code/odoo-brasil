@@ -70,7 +70,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         }
         cert = self.eletronic_doc_id.company_id.with_context(
             {'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert).decode()
+        cert_pfx = base64.decodestring(cert)
         certificado = Certificado(
             cert_pfx, self.eletronic_doc_id.company_id.nfe_a1_password)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)

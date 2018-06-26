@@ -130,7 +130,7 @@ class InutilizedNfe(models.Model):
                                 ambiente=ambiente)
 
         cert = company.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert).decode()
+        cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, company.nfe_a1_password)
 
         resposta = inutilizar_nfe(certificado, obj=obj, estado=estado,
