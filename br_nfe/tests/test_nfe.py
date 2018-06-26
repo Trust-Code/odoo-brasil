@@ -373,7 +373,7 @@ class TestNFeBrasil(TransactionCase):
             inv_eletr = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', invoice.id)])
 
-            xml_generated = base64.decodestring(inv_eletr.xml_to_send)
+            xml_generated = base64.decodestring(inv_eletr.xml_to_send).decode()
 
             name = '%s.xml' % invoice.number.replace('/', '-')
             with open(os.path.join(self.caminho, 'xml/%s' % name), 'r') as f:

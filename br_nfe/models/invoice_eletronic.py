@@ -676,8 +676,8 @@ class InvoiceEletronic(models.Model):
             return atts
 
         attachment_obj = self.env['ir.attachment']
-        nfe_xml = base64.decodestring(self.nfe_processada)
-        logo = base64.decodestring(self.invoice_id.company_id.logo)
+        nfe_xml = base64.decodestring(self.nfe_processada).decode()
+        logo = base64.decodestring(self.invoice_id.company_id.logo).decode()
 
         tmpLogo = io.BytesIO()
         tmpLogo.write(logo)
@@ -730,7 +730,7 @@ class InvoiceEletronic(models.Model):
 
         cert = self.company_id.with_context(
             {'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
+        cert_pfx = base64.decodestring(cert).decode()
 
         certificado = Certificado(
             cert_pfx, self.company_id.nfe_a1_password)
@@ -761,7 +761,7 @@ class InvoiceEletronic(models.Model):
         self.data_emissao = datetime.now()
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
+        cert_pfx = base64.decodestring(cert).decode()
 
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
@@ -841,20 +841,20 @@ class InvoiceEletronic(models.Model):
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'rec-ret')])
+                ('datas_fname', 'like', 'rec-ret')], limit=1)
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
                     ('res_model', '=', 'invoice.eletronic'),
                     ('res_id', '=', self.id),
-                    ('datas_fname', 'like', 'nfe-ret')])
+                    ('datas_fname', 'like', 'nfe-ret')], limit=1)
             nfe_envio = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'nfe-envio')])
+                ('datas_fname', 'like', 'nfe-envio')], limit=1)
             if nfe_envio.datas and recibo.datas:
                 nfe_proc = gerar_nfeproc(
-                    base64.decodestring(nfe_envio.datas),
-                    base64.decodestring(recibo.datas)
+                    base64.decodestring(nfe_envio.datas).decode(),
+                    base64.decodestring(recibo.datas).decode(),
                 )
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
@@ -881,7 +881,7 @@ class InvoiceEletronic(models.Model):
             }
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
+        cert_pfx = base64.decodestring(cert).decode()
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
         id_canc = "ID110111%s%02d" % (
@@ -933,7 +933,7 @@ class InvoiceEletronic(models.Model):
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
-        nfe_processada = base64.decodestring(self.nfe_processada)
+        nfe_processada = base64.decodestring(self.nfe_processada).decode()
 
         nfe_proc_cancel = gerar_nfeproc_cancel(
             nfe_processada, resp['received_xml'].encode())

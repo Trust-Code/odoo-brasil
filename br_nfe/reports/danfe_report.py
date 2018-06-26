@@ -27,7 +27,7 @@ class IrActionsReport(models.Model):
 
         nfe = self.env['invoice.eletronic'].search([('id', 'in', res_ids)])
 
-        nfe_xml = base64.decodestring(nfe.nfe_processada)
+        nfe_xml = base64.decodestring(nfe.nfe_processada).decode()
 
         cce_xml_element = []
         cce_list = self.env['ir.attachment'].search([
@@ -38,14 +38,15 @@ class IrActionsReport(models.Model):
 
         if cce_list:
             for cce in cce_list:
-                cce_xml = base64.decodestring(cce.datas)
+                cce_xml = base64.decodestring(cce.datas).decode()
                 cce_xml_element.append(etree.fromstring(cce_xml))
 
         logo = False
         if nfe.invoice_id.company_id.logo:
-            logo = base64.decodestring(nfe.invoice_id.company_id.logo)
+            logo = base64.decodestring(nfe.invoice_id.company_id.logo).decode()
         elif nfe.invoice_id.company_id.logo_web:
-            logo = base64.decodestring(nfe.invoice_id.company_id.logo_web)
+            logo = base64.decodestring(nfe.invoice_id.company_id.logo_web)\
+                .decode()
 
         if logo:
             tmpLogo = BytesIO()
