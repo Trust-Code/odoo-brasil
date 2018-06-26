@@ -47,7 +47,7 @@ class PaymentCnabInformation(models.Model):
                                    ('10', 'Payment Order/acquittance'),
                                    ('11', 'Barcode paymet'),  # ajeitar
                                    ('16', 'regular DARF'),  # traduzir daqui pra baixo - se necessário
-                                   ('17', 'GPS - Guia de previdencia Social'),
+                                   ('17',  'GPS - Guia de previdencia Social'),
                                    ('18', 'Simple DARF'),
                                    ('20', '"caixa" Autentication'),
                                    ('22', 'GARE SP ICMS'),
@@ -108,10 +108,17 @@ class PaymentCnabInformation(models.Model):
 
     message2 = fields.Char(string='Note Detail', size=40, default=' '*40)
 
-    # variaveis para o header arquivo
+    agency_name = fields.Char(string='Agency Name', size=30, default=' '*30)
 
-
-    # variaveis para o header de lote
+    currency_code = fields.Selection([('02', 'US Commercial Dolar'),
+                                     ('03', 'US tourism Dolar'),
+                                     ('04', 'ITRD'),
+                                     ('05', 'IDTR'),
+                                     ('06', 'Daily UFIR'),
+                                     ('07', 'Monthly UFIR'),
+                                     ('08', 'FAJ-TR'),
+                                     ('09', 'Real')],
+                                     string="Currency code", default='09')
 
     message1 = fields.Char(string='Note Header', size=40, default=' '*40)
 
@@ -124,9 +131,11 @@ class PaymentOrderLine(models.Model):
     @api.one
     @api.depends('other_payment')
     def calc_final_value(self):
-        desconto= self.other_payment.rebate_value + self.other_payment.discount_value
-        acrescimo = self.other_payment.duty_value + self.other_payment.mora_value
-        self.value_final = (self.value- desconto + acrescimo)
-    value_final = fields.Float(string="Final Value", compute= "calc_final_value", digits=(18, 2))
+        payment = self.other_payment
+        desconto = payment.rebate_value + payment.discount_value
+        acrescimo = payment.duty_value + payment.mora_value
+        self.value_final = (self.value - desconto + acrescimo)
 
-    bank_information = fields.Many2one('res.partner.bank_account_count', string="Bank Information", readonly=True)
+    value_final = fields.Float(string="Final Value", compute="calc_final_value", digits=(18, 2), readonly=True)
+
+    bank_account_id = fields.Many2one('res.partner.bank_account_id', string="Bank account")

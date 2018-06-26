@@ -14,7 +14,7 @@
                 <field name="other_payment" invisible="1"/>
             </field>
             <field name= "partner_id" position="after">
-            <field name="bank_information"/>
+            <field name="bank_account_id"/>
             </field>
         </field>
     </record>
