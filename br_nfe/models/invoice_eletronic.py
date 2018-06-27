@@ -773,7 +773,7 @@ class InvoiceEletronic(models.Model):
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = resposta['object'].Body.getchildren()[0]
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
@@ -791,7 +791,7 @@ class InvoiceEletronic(models.Model):
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
                 retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                    getchildren()[0].getchildren()[0]
                 if retorno.cStat != 105:
                     break
 
