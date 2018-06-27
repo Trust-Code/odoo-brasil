@@ -115,13 +115,13 @@ class Cnab_240(object):
                     "valor_mora": self._int_to_monetary(other.mora_value),
                     "valor_multa": self._int_to_monetary(other.duty_value),
                     "hora_envio_ted": self._hour_now(),
-                    # "codigo_historico_credito":"",
+                    "codigo_historico_credito": int(other.credit_hist_code),
                     "cedente_nome": self._order.company_id.name,
                     "valor_nominal_titulo": self._int_to_monetary(line.value),
                     "valor_desconto_abatimento": self._int_to_monetary(other.rebate_value + other.discount_value),
                     "valor_multa_juros": self._int_to_monetary(other.mora_value + other.duty_value),
                     "codigo_moeda": int(other.currency_code),
-                    "codigo_de_barras": self._order.payment_mode_id.boleto_cnab_code,
+                    "codigo_de_barras": self._composition_barcode(line),  ## tá errado, esse campo deve ser obtido a partir do payment_mode_id
                     "nome_concessionaria": other.agency_name,
                     "data_vencimento": self._string_to_num(line.date_maturity)
                     }
