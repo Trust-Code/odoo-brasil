@@ -122,6 +122,26 @@ class PaymentCnabInformation(models.Model):
 
     message1 = fields.Char(string='Note Header', size=40, default=' '*40)
 
+    credit_hist_code = fields.Selection([('0013', 'Dividends Credit'),
+                                         ('0091', 'Casualty Payment - insurance'),
+                                         ('0109', 'Expenses Payment - Travaler in transit'),
+                                         ('0137', 'Agent/Salesman Payment'),
+                                         ('0149', 'INSS Payment'),
+                                         ('0183', 'Provider Payment'),
+                                         ('0197', 'Entry Return'),
+                                         ('0295', 'Accredited Payment'),
+                                         ('2060', 'Same Ownership Transference'),
+                                         ('0367', 'Alimony Payment'),
+                                         ('0491', 'Foresight Rescue'),
+                                         ('0493', 'Foresight Payment'),
+                                         ('0495', 'Foresight Chargeback'),
+                                         ('1070', 'Balance Transference'),
+                                         ('2214', 'Several Credits'),
+                                         ('8051', 'Provider Payment - Receipt'),
+                                         ('2039', 'Several Payments - Provider'),
+                                         ('2644', 'Benefit')],
+                                        string='History Code', default='0000')
+
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'

@@ -121,7 +121,7 @@ class Cnab_240(object):
                     "valor_desconto_abatimento": self._int_to_monetary(other.rebate_value + other.discount_value),
                     "valor_multa_juros": self._int_to_monetary(other.mora_value + other.duty_value),
                     "codigo_moeda": int(other.currency_code),
-                    "codigo_de_barras": self._composition_barcode(line),  #sem o campo C
+                    "codigo_de_barras": self._order.payment_mode_id.boleto_cnab_code,
                     "nome_concessionaria": other.agency_name,
                     "data_vencimento": self._string_to_num(line.date_maturity)
                     }
