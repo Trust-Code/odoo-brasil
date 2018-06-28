@@ -38,20 +38,11 @@ class Cnab_240(object):
         else:
             return 1
 
-    def _get_E_field(self, date, value):
-        date = str(self._string_to_num(date))
-        value = str(self._string_to_num(value))
-        e_field = (date + value)
-        return '0'*(14-(len(e_field))) + e_field
+    def _format_alfa_size(self, value, size):
+        value = str(value)
+        return value + '0'*(size-(len(value)))
 
-    # TODO Descobrir o que diabos é o campo livre
-    def _format_barcode(self, currency_code, date_due, value):
-        bank_code = '033'
-        e_field = self._get_E_field(date_due, value)
-        c_field = '0'*25
-        return int(bank_code+currency_code+'1'+e_field+c_field)
-
-    def _int_to_monetary(self, numero, precision=2):
+    def _string_to_monetary(self, numero, precision=2):
         frmt = '{:.%df}' % precision
         return Decimal(frmt.format(numero))
 
@@ -70,17 +61,23 @@ class Cnab_240(object):
         bank = payment.bank_account_id
         headerArq = {
             'cedente_inscricao_tipo': 2,  # 0 = Isento, 1 = CPF, 2 = CNPJ
+            # número do registro da empresa
             'cedente_inscricao_numero': self._string_to_num(
-                self._order.company_id.cnpj_cpf),  # número do registro da empresa
-            'codigo_convenio': payment.boleto_cnab_code,  # Código adotado pelo Banco para identificar o contrato -númerodo banco(4), códigode agência(4 "sem DV"), número do convênio(12).
-            'cedente_agencia': self._string_to_num(bank.bra_number),   #Conta com letra substituir-se por zero. Para ordem de pagamento -saque em uma agência -número da agência, caso contrário preencher com zeros.
+                self._order.company_id.cnpj_cpf),
+            # Usado pelo Banco para identificar o contrato - númerodo banco(4),
+            # códigode agência(4 "sem DV"), número do convênio(12).
+            'codigo_convenio': payment.boleto_cnab_code,
+            # Para ordem de pagamento, saque em uma agência -número da agência,
+            # caso contrário preencher com zeros.
+            'cedente_agencia': self._string_to_num(bank.bra_number, 0),
             'cedente_agencia_dv': bank.acc_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
             'cedente_conta_dv': bank.bra_number_dig,
             'cedente_nome': self._order.company_id.name,
             'data_geracao_arquivo': self._date_today(),
             'hora_geracao_arquivo': self._hour_now(),
-            'numero_sequencial_arquivo': self._order.file_number,  # Número sequêncial onde cada novo arquivo adicionado 1.
+            # Número sequêncial onde cada novo arquivo adicionado 1.
+            'numero_sequencial_arquivo': self._order.file_number,
         }
         return headerArq
 
@@ -90,30 +87,35 @@ class Cnab_240(object):
             "tipo_movimento": int(other.mov_type),
             "codigo_instrucao_movimento": int(other.mov_instruc),
             "codigo_camara_compensacao": int(other.operation_code),
-            "favorecido_codigo_banco": line.bank_account_id.bank_id.name,  #adicionar campo para o banco do clinte com um valor default
+            # adicionar campo para o banco do clinte com um valor default
+            "favorecido_codigo_banco": line.bank_account_id.bank_id.name,
             "favorecido_agencia": self._string_to_num(
-                line.bank_account_id.bra_number),
+                line.bank_account_id.bra_number, 0),
             "favorecido_agencia_dv": line.bank_account_id.bra_number_dig,
             "favorecido_conta":  self._string_to_num(
-                line.bank_account_id.acc_number),
+                line.bank_account_id.acc_number, 0),
             "favorecido_conta_dv": self._string_to_num(
-                line.bank_account_id.acc_number_dig),
+                line.bank_account_id.acc_number_dig, 0),
             "favorecido_agencia_conta_dv": ' ',
             "favorecido_nome": line.partner_id.name,
-            "numero_documento_cliente": line.nosso_numero,  # TODO Esse campo é um identificador único da linha, utilizamos geralmente o campo nosso número
+            # TODO Esse campo é um identificador único da linha,
+            #  utilizamos geralmente o campo nosso número
+            "numero_documento_cliente":
+                self._format_alfa_size(line.nosso_numero, 20),
             "data_pagamento": self._string_to_num(line.date_maturity),
-            "valor_pagamento": self._int_to_monetary(line.value),
+            "valor_pagamento": self._string_to_monetary(line.value),
             "numero_documento_banco": "000",
+            # verificar se essa é a data de emissao do cnab
             "data_real_pagamento": self._string_to_num(
-                self._order.data_emissao_cnab[0:10]),  # verificar se essa data é a data de emissao do cnab
+                self._order.data_emissao_cnab[0:10]),
             "valor_real_pagamento": Decimal('33.00'),
             "mensagem2": str(other.message2),
             "finalidade_doc_ted": str(other.mov_finality),
-            # "favorecido_emissao_aviso": int(other.warning_code),
+            "favorecido_emissao_aviso": int(other.warning_code),
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
-            "favorecido_inscricao_numero":self._string_to_num(
-                line.partner_id.cnpj_cpf), # Rever este campo
+            "favorecido_inscricao_numero": self._string_to_num(
+                line.partner_id.cnpj_cpf),  # Rever este campo
             "favorecido_endereco_rua": str(line.partner_id.street),
             "favorecido_endereco_numero": self._string_to_num(
                 line.partner_id.number, default=0),
@@ -121,39 +123,37 @@ class Cnab_240(object):
                 line.partner_id.street2)[0:15],
             "favorecido_bairro": str(line.partner_id.district),
             "favorecido_cidade": str(line.partner_id.city),
-            "favorecido_cep": self._string_to_num(str(line.partner_id.zip)),
+            "favorecido_cep":
+                self._string_to_num(str(line.partner_id.zip), 0),
             "favorecido_uf": str(line.partner_id.state_id.code),
-            "valor_documento": self._int_to_monetary(line.value_final),
-            "valor_abatimento": self._int_to_monetary(other.rebate_value),
-            "valor_desconto": self._int_to_monetary(other.discount_value),
-            "valor_mora": self._int_to_monetary(other.mora_value),
-            "valor_multa": self._int_to_monetary(other.duty_value),
+            "valor_documento": self._string_to_monetary(line.value_final),
+            "valor_abatimento": self._string_to_monetary(other.rebate_value),
+            "valor_desconto": self._string_to_monetary(other.discount_value),
+            "valor_mora": self._string_to_monetary(other.mora_value),
+            "valor_multa": self._string_to_monetary(other.duty_value),
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": int(other.credit_hist_code),
             "cedente_nome": self._order.company_id.name,
-            "valor_nominal_titulo": self._int_to_monetary(line.value),
-            "valor_desconto_abatimento": self._int_to_monetary(
+            "valor_nominal_titulo": self._string_to_monetary(line.value),
+            "valor_desconto_abatimento": self._string_to_monetary(
                 other.rebate_value + other.discount_value),
-            "valor_multa_juros": self._int_to_monetary(
+            "valor_multa_juros": self._string_to_monetary(
                 other.mora_value + other.duty_value),
             "codigo_moeda": int(other.currency_code),
-            "codigo_de_barras": self._format_barcode(
-                line.other_payment.currency_code,
-                line.date_maturity,
-                line.value_final
-            ),  ## tá errado, esse campo deve ser obtido a partir do payment_mode_id
+            "codigo_de_barras": int("0"*44),
+            # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": other.agency_name,
             "data_vencimento": self._string_to_num(line.date_maturity)
         }
         return segmento
 
     def _get_trailer_arq(self):
-        trailerArq = { }
+        trailerArq = {}
         return trailerArq
 
-    def _get_trailer_lot(self):
+    def _get_trailer_lot(self, total):
         trailer_lot = {
-            "somatorio_valores": self._int_to_monetary(123456)   # Fazer funcao que calcula o somatorio dos valores de cada detalhe
+            "somatorio_valores": self._string_to_monetary(total)
         }
         return trailer_lot
 
@@ -163,7 +163,7 @@ class Cnab_240(object):
         bank = payment.bank_account_id
         header_lot = {
             "tipo_servico": int(other.serv_type),
-            # "forma_lancamento": int(other.entry_mode),
+            "forma_lancamento": int(other.entry_mode),
             "numero_versao_lote": 31,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
@@ -210,8 +210,9 @@ class Cnab_240(object):
             self._cnab_file.add_segment(segment, self._get_segmento(event))
         self._cnab_file.get_active_lot().get_active_event().close_event()
 
-    def _create_trailer_lote(self):
-        self._cnab_file.add_segment('TrailerLote', self._get_trailer_lot())
+    def _create_trailer_lote(self, total):
+        self._cnab_file.add_segment('TrailerLote',
+                                    self._get_trailer_lot(total))
         self._cnab_file.get_active_lot().close_lot()
 
     def _create_header_lote(self, line):
@@ -222,7 +223,8 @@ class Cnab_240(object):
             self._create_header_lote(operacoes[lote][0])
             for event in operacoes[lote]:
                 self.create_detail(lote, event)
-            self._create_trailer_lote()
+            total_lote = self._sum_lot_values(operacoes[lote])
+            self._create_trailer_lote(total_lote)
 
     def _generate_file(self):
         arquivo = StringIO()
@@ -234,7 +236,8 @@ class Cnab_240(object):
         self._cnab_file.close_file()
         return self._generate_file().encode()
 
-    def _calc_sum_lot(self, operacoes):
-        for di in operacoes.values():
-            for line in operacoes:
-                sama =
+    def _sum_lot_values(self, lot):
+        total = 0
+        for line in lot:
+            total = total + line.value_final
+        return total
