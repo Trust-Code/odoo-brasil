@@ -248,7 +248,17 @@ class InvoiceEletronic(models.Model):
             if not self.company_id.partner_id.country_id.bc_code:
                 errors.append(u'Emitente / Endereço - Código do BC do país')
 
+        # produtos
+        for eletr in self.eletronic_item_ids:
+            if eletr.product_id:
+                if not eletr.product_id.default_code:
+                    errors.append(
+                        u'Prod: %s - Código do produto' % (
+                            eletr.product_id.name))
+
         partner = self.partner_id.commercial_partner_id
+        if not partner:  # NFC-e pode não ter partner, mas se tiver valida
+            return errors
         company = self.company_id
         # Destinatário
         if partner.is_company and not partner.legal_name:
@@ -297,14 +307,6 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Destinatário / Endereço - Nome do país')
             if not partner.country_id.bc_code:
                 errors.append(u'Destinatário / Endereço - Cód. do BC do país')
-
-        # produtos
-        for eletr in self.eletronic_item_ids:
-            if eletr.product_id:
-                if not eletr.product_id.default_code:
-                    errors.append(
-                        u'Prod: %s - Código do produto' % (
-                            eletr.product_id.name))
         return errors
 
     @api.multi
@@ -489,7 +491,7 @@ class InvoiceEletronicEvent(models.Model):
 class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
 
-    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
+    name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
     invoice_eletronic_id = fields.Many2one(

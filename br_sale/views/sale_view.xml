@@ -30,6 +30,7 @@
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
                 <field name="cofins_cst" invisible="1" />
+                <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
                 <field name="icms_rule_id" invisible="1" />
@@ -53,6 +54,7 @@
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
                 <field name="cofins_cst" invisible="1" />
+                <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
                 <attribute name="invisible">1</attribute>

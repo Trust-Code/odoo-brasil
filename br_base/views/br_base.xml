@@ -13,7 +13,7 @@
      <template id="trust_menu_secondary" name="" inherit_id="web.menu_secondary">
          <xpath expr="div[hasclass('o_sub_menu_footer')]" position="inside">
              <div class="oe_footer" style="float:left;width:100%;">
-                 Suporte via <a href="http://www.trustcode.com.br" target="_blank"><span style="color:#5F9EA0">Trustcode</span></a>
+                 Support via <a href="http://www.trustcode.com.br" target="_blank"><span style="color:#5F9EA0">Trustcode</span></a>
              </div>
          </xpath>
      </template>

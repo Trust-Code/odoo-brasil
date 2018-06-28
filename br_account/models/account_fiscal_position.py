@@ -55,6 +55,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     reducao_icms = fields.Float(string=u"Redução de base")
     reducao_icms_st = fields.Float(string=u"Redução de base ST")
     reducao_ipi = fields.Float(string=u"Redução de base IPI")
+    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
     aliquota_mva = fields.Float(string=u"Alíquota MVA")
     icms_st_aliquota_deducao = fields.Float(
         string=u"% ICMS Próprio",
@@ -198,6 +199,8 @@ class AccountFiscalPosition(models.Model):
                 'pis_cst': rules[0].cst_pis,
                 # PIS
                 'cofins_cst': rules[0].cst_cofins,
+                # ISSQN
+                'l10n_br_issqn_deduction': rules[0].l10n_br_issqn_deduction,
             }
         else:
             return{}

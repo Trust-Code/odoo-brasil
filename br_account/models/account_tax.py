@@ -83,6 +83,8 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
+    icms_st_incluso = fields.Boolean(
+        string="Incluir ICMS ST na Base de Calculo?")
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
@@ -201,19 +203,18 @@ class AccountTax(models.Model):
             icms_value = base_icmsst * (deducao_st_simples / 100.0)
 
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
-
         if 'icms_st_base_calculo_manual' in self.env.context and\
                 self.env.context['icms_st_base_calculo_manual'] > 0:
+            base_icmsst = self.env.context['icms_st_base_calculo_manual']
+        if icmsst_tax.icms_st_incluso:
             icmsst = round(
-                (self.env.context['icms_st_base_calculo_manual'] *
-                 (icmsst_tax.amount / 100.0)) - icms_value, 2)
-            vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
-            vals['base'] = self.env.context['icms_st_base_calculo_manual']
+                ((base_icmsst - icms_value)*(icmsst_tax.amount / 100.0) / (
+                    1 - icmsst_tax.amount / 100.0)) - icms_value, 2)
         else:
             icmsst = round(
                 (base_icmsst * (icmsst_tax.amount / 100.0)) - icms_value, 2)
-            vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
-            vals['base'] = base_icmsst
+        vals['amount'] = icmsst if icmsst >= 0.0 else 0.0
+        vals['base'] = base_icmsst
         return [vals]
 
     def _compute_difal(self, price_base, ipi_value):
@@ -253,11 +254,11 @@ class AccountTax(models.Model):
         if 'icms_aliquota_inter_part' in self.env.context:
             icms_inter_part = self.env.context["icms_aliquota_inter_part"]
         else:
-            icms_inter_part = 20.0
+            icms_inter_part = 80.0
         vals_inter['amount'] = round((interno - interestadual) *
-                                     icms_inter_part / 100, 2)
-        vals_intra['amount'] = round((interno - interestadual) *
                                      (100 - icms_inter_part) / 100, 2)
+        vals_intra['amount'] = round((interno - interestadual) *
+                                     icms_inter_part / 100, 2)
 
         taxes = [vals_inter, vals_intra]
         if vals_fcp:
@@ -311,6 +312,8 @@ class AccountTax(models.Model):
         issqn_tax = self.filtered(lambda x: x.domain == 'issqn')
         if not issqn_tax:
             return []
+        issqn_deduction = self.env.context.get('l10n_br_issqn_deduction', 0.0)
+        price_base *= (1 - (issqn_deduction / 100.0))
         vals = self._tax_vals(issqn_tax)
         vals['amount'] = issqn_tax._compute_amount(price_base, 1.0)
         vals['base'] = price_base

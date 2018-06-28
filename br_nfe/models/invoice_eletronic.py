@@ -6,6 +6,7 @@ import re
 import io
 import base64
 import logging
+import pytz
 from lxml import etree
 from datetime import datetime
 from odoo import api, fields, models
@@ -21,7 +22,8 @@ try:
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
+        gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
 except ImportError:
@@ -187,11 +189,6 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string=u"Cartas de Correção", readonly=True, states=STATE)
 
-    def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
-src="/report/barcode/Code128/' + self.chave_nfe + '" />'
-        return url
-
     def can_unlink(self):
         res = super(InvoiceEletronic, self).can_unlink()
         if self.state == 'denied':
@@ -327,8 +324,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'vBCST': "%.02f" % item.icms_st_base_calculo,
                 'pICMSST': "%.02f" % item.icms_st_aliquota,
                 'vICMSST': "%.02f" % item.icms_st_valor,
-                'pCredSN': "%.02f" % item.icms_valor_credito,
-                'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
+                'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                'vCredICMSSN': "%.02f" % item.icms_valor_credito
             },
             'IPI': {
                 'clEnq': item.classe_enquadramento_ipi or '',
@@ -739,6 +736,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             cert_pfx, self.company_id.nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
+
         lote = self._prepare_lote(self.id, nfe_values)
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
@@ -775,7 +773,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = resposta['object'].Body.getchildren()[0]
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
@@ -793,7 +791,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
                 retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                    getchildren()[0].getchildren()[0]
                 if retorno.cStat != 105:
                     break
 
@@ -805,20 +803,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
                 self.write({
-                    'state': 'done', 'nfe_exception': False,
+                    'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
                 self.write({'state': 'done', 'codigo_retorno': '100',
-                            'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
             # Denegada e nota já está denegada
             if self.codigo_retorno in ('302', '205'):
-                self.write({'state': 'denied',
-                            'nfe_exception': True})
+                self.write({'state': 'denied'})
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -845,20 +841,20 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'rec-ret')])
+                ('datas_fname', 'like', 'rec-ret')], limit=1)
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
                     ('res_model', '=', 'invoice.eletronic'),
                     ('res_id', '=', self.id),
-                    ('datas_fname', 'like', 'nfe-ret')])
+                    ('datas_fname', 'like', 'nfe-ret')], limit=1)
             nfe_envio = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'nfe-envio')])
+                ('datas_fname', 'like', 'nfe-envio')], limit=1)
             if nfe_envio.datas and recibo.datas:
                 nfe_proc = gerar_nfeproc(
-                    base64.decodestring(nfe_envio.datas),
-                    base64.decodestring(recibo.datas)
+                    base64.decodestring(nfe_envio.datas).decode('utf-8'),
+                    base64.decodestring(recibo.datas).decode('utf-8'),
                 )
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
@@ -888,7 +884,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
-        id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
+        id_canc = "ID110111%s%02d" % (
+            self.chave_nfe, self.sequencial_evento)
+
+        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
+        dt_evento = datetime.utcnow()
+        dt_evento = pytz.utc.localize(dt_evento).astimezone(tz)
+
         cancelamento = {
             'idLote': self.id,
             'estado': self.company_id.state_id.ibge_code,
@@ -899,18 +901,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
                 'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
                 'chNFe': self.chave_nfe,
-                'dhEvento': datetime.utcnow().strftime(
-                    '%Y-%m-%dT%H:%M:%S-00:00'),
+                'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa
             }],
             'modelo': self.model,
         }
+
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
         if resposta.cStat == 128 and \
-           resposta.retEvento.infEvento.cStat in (135, 136, 155):
+                resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'
             self.codigo_retorno = resposta.retEvento.infEvento.cStat
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
@@ -918,7 +920,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         else:
             if resposta.cStat == 128:
                 self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
+                self.mensagem_retorno = \
+                    resposta.retEvento.infEvento.xMotivo
             else:
                 self.codigo_retorno = resposta.cStat
                 self.mensagem_retorno = resposta.xMotivo
@@ -930,3 +933,10 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
+        nfe_processada = base64.decodestring(self.nfe_processada)
+
+        nfe_proc_cancel = gerar_nfeproc_cancel(
+            nfe_processada, resp['received_xml'].encode())
+        if nfe_proc_cancel:
+            self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero

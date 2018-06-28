@@ -9,7 +9,7 @@
         <field name="name">l10n_br_base.res.state.city</field>
         <field name="model">res.state.city</field>
         <field name="arch" type="xml">
-            <tree string="Municípios">
+            <tree string="Cities">
                 <field name="name" select="1"/>
                 <field name="state_id" select="1"/>
                 <field name="ibge_code"/>
@@ -18,7 +18,7 @@
     </record>
 
     <record id="action_br_base_city_form" model="ir.actions.act_window">
-        <field name="name">Município</field>
+        <field name="name">City</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.state.city</field>
         <field name="view_mode">tree,form</field>

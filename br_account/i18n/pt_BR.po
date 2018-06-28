@@ -1,0 +1,2833 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_account
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-19 01:22+0000\n"
+"PO-Revision-Date: 2018-04-19 01:22+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_icms_aliquota_credito
+msgid "% Crédito de ICMS"
+msgstr "% Crédito de ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_aliquota_credito
+msgid "% Cŕedito ICMS"
+msgstr "% Cŕedito ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tax_icms_fcp_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_fcp_id
+msgid "% FCP"
+msgstr "% FCP"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_icms_st_aliquota_deducao
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_aliquota_deducao
+msgid "% ICMS Próprio"
+msgstr "% ICMS Próprio"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_aliquota
+msgid "% ICMS ST"
+msgstr "% ICMS ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_aliquota
+msgid "% II"
+msgstr "% II"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_aliquota_inter_part
+msgid "% Partilha"
+msgstr "% Partilha"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_aliquota_reducao_base
+msgid "% Red. Base ICMS"
+msgstr "% Red. Base ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_aliquota_reducao_base
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_icms_st_aliquota_reducao_base
+msgid "% Red. Base ST"
+msgstr "% Red. Base ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_reducao_bc
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_ipi_reducao_bc
+msgid "% Redução Base"
+msgstr "% Redução Base"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "(-) Desconto (%)"
+msgstr "(-) Desconto (%)"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "(=) Valor Líquido"
+msgstr "(=) Valor Líquido"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_tipo_base:0
+msgid "0 - Margem Valor Agregado (%)"
+msgstr "0 - Margem Valor Agregado (%)"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "0 - Nacional"
+msgstr "0 - Nacional"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_st_tipo_base:0
+msgid "0 - Preço tabelado ou máximo  sugerido"
+msgstr "0 - Preço tabelado ou máximo  sugerido"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "00 - Entrada com Recuperação de Crédito"
+msgstr "00 - Entrada com Recuperação de Crédito"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "00 - Tributada Integralmente"
+msgstr "00 - Tributada Integralmente"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "01 - Entrada Tributável com Alíquota Zero"
+msgstr "01 - Entrada Tributável com Alíquota Zero"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "01 - Operação Tributável com Alíquota Básica"
+msgstr "01 - Operação Tributável com Alíquota Básica"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "02 - Entrada Isenta"
+msgstr "02 - Entrada Isenta"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "02 - Operação Tributável com Alíquota Diferenciada"
+msgstr "02 - Operação Tributável com Alíquota Diferenciada"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "03 - Entrada Não-Tributada"
+msgstr "03 - Entrada Não-Tributada"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "03 - Operação Tributável com Alíquota por Unidade de Medida de Produto"
+msgstr "03 - Operação Tributável com Alíquota por Unidade de Medida de Produto"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "04 - Entrada Imune"
+msgstr "04 - Entrada Imune"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "04 - Operação Tributável Monofásica - Revenda a Alíquota Zero"
+msgstr "04 - Operação Tributável Monofásica - Revenda a Alíquota Zero"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "05 - Entrada com Suspensão"
+msgstr "05 - Entrada com Suspensão"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "05 - Operação Tributável por Substituição Tributária"
+msgstr "05 - Operação Tributável por Substituição Tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "06 - Operação Tributável a Alíquota Zero"
+msgstr "06 - Operação Tributável a Alíquota Zero"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "07 - Operação Isenta da Contribuição"
+msgstr "07 - Operação Isenta da Contribuição"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "08 - Operação sem Incidência da Contribuição"
+msgstr "08 - Operação sem Incidência da Contribuição"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "09 - Operação com Suspensão da Contribuiçã"
+msgstr "09 - Operação com Suspensão da Contribuiçã"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "1 - Estrangeira - Importação direta"
+msgstr "1 - Estrangeira - Importação direta"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_import:0
+msgid "1 - Importação por conta própria"
+msgstr "1 - Importação por conta própria"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_st_tipo_base:0
+msgid "1 - Lista Negativa (valor)"
+msgstr "1 - Lista Negativa (valor)"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "1 - Marítima"
+msgstr "1 - Marítima"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_tipo_base:0
+msgid "1 - Pauta (valor)"
+msgstr "1 - Pauta (valor)"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "10 - Entrada / Saída ficta"
+msgstr "10 - Entrada / Saída ficta"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "10 - Tributada e com cobrança do ICMS por substituição tributária"
+msgstr "10 - Tributada e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "101 - Tributada pelo Simples Nacional com permissão de crédito"
+msgstr "101 - Tributada pelo Simples Nacional com permissão de crédito"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "102 - Tributada pelo Simples Nacional sem permissão de crédito"
+msgstr "102 - Tributada pelo Simples Nacional sem permissão de crédito"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "103 -Isenção do ICMS no Simples Nacional para faixa de receita bruta"
+msgstr "103 -Isenção do ICMS no Simples Nacional para faixa de receita bruta"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "2 - Estrangeira - Adquirida no mercado interno"
+msgstr "2 - Estrangeira - Adquirida no mercado interno"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "2 - Fluvial"
+msgstr "2 - Fluvial"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_import:0
+msgid "2 - Importação por conta e ordem"
+msgstr "2 - Importação por conta e ordem"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_st_tipo_base:0
+msgid "2 - Lista Positiva (valor)"
+msgstr "2 - Lista Positiva (valor)"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_tipo_base:0
+msgid "2 - Preço Tabelado Máximo (valor)"
+msgstr "2 - Preço Tabelado Máximo (valor)"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "20 - Com redução de base de cálculo"
+msgstr "20 - Com redução de base de cálculo"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"
+msgstr "201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"
+msgstr "202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"
+msgstr "203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_import:0
+msgid "3 - Importação por encomenda"
+msgstr "3 - Importação por encomenda"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "3 - Lacustre"
+msgstr "3 - Lacustre"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_st_tipo_base:0
+msgid "3 - Lista Neutra (valor)"
+msgstr "3 - Lista Neutra (valor)"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%"
+msgstr "3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_tipo_base:0
+msgid "3 - Valor da Operação"
+msgstr "3 - Valor da Operação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "30 - Isenta ou não tributada e com cobrança do ICMS por substituição tributária"
+msgstr "30 - Isenta ou não tributada e com cobrança do ICMS por substituição tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "300 - Imune"
+msgstr "300 - Imune"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "4 - Aérea"
+msgstr "4 - Aérea"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_st_tipo_base:0
+msgid "4 - Margem Valor Agregado (%)"
+msgstr "4 - Margem Valor Agregado (%)"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes"
+msgstr "4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "40 - Isenta"
+msgstr "40 - Isenta"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "400 - Não tributada pelo Simples Nacional"
+msgstr "400 - Não tributada pelo Simples Nacional"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "41 - Não tributada"
+msgstr "41 - Não tributada"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "49 - Outras Entradas"
+msgstr "49 - Outras Entradas"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "49 - Outras Operações de Saída"
+msgstr "49 - Outras Operações de Saída"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%"
+msgstr "5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_st_tipo_base:0
+msgid "5 - Pauta (valor)"
+msgstr "5 - Pauta (valor)"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "5 - Postal"
+msgstr "5 - Postal"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+msgstr "50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "50 - Saída Tributada"
+msgstr "50 - Saída Tributada"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "50 - Suspensão"
+msgstr "50 - Suspensão"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+msgstr "500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "51 - Diferimento"
+msgstr "51 - Diferimento"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+msgstr "51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "51 - Saída Tributável com Alíquota Zero"
+msgstr "51 - Saída Tributável com Alíquota Zero"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação"
+msgstr "52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "52 - Saída Isenta"
+msgstr "52 - Saída Isenta"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+msgstr "53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "53 - Saída Não-Tributada"
+msgstr "53 - Saída Não-Tributada"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+msgstr "54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "54 - Saída Imune"
+msgstr "54 - Saída Imune"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "55 - Operação com Direito a Crédito - Vinculada a Receitas Não Tributadas no Mercado Interno e de Exportação"
+msgstr "55 - Operação com Direito a Crédito - Vinculada a Receitas Não Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "55 - Saída com Suspensão"
+msgstr "55 - Saída com Suspensão"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+msgstr "56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural"
+msgstr "6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "6 - Ferroviária"
+msgstr "6 - Ferroviária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+msgstr "60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "60 - ICMS cobrado anteriormente por substituição tributária"
+msgstr "60 - ICMS cobrado anteriormente por substituição tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+msgstr "61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação"
+msgstr "62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+msgstr "63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+msgstr "64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação"
+msgstr "65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+msgstr "66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno e de Exportação"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "67 - Crédito Presumido - Outras Operações"
+msgstr "67 - Crédito Presumido - Outras Operações"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural"
+msgstr "7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "7 - Rodoviária"
+msgstr "7 - Rodoviária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária"
+msgstr "70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "70 - Operação de Aquisição sem Direito a Crédito"
+msgstr "70 - Operação de Aquisição sem Direito a Crédito"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "71 - Operação de Aquisição com Isenção"
+msgstr "71 - Operação de Aquisição com Isenção"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "72 - Operação de Aquisição com Suspensão"
+msgstr "72 - Operação de Aquisição com Suspensão"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "73 - Operação de Aquisição a Alíquota Zero"
+msgstr "73 - Operação de Aquisição a Alíquota Zero"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "74 - Operação de Aquisição sem Incidência da Contribuição"
+msgstr "74 - Operação de Aquisição sem Incidência da Contribuição"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "75 - Operação de Aquisição por Substituição Tributária"
+msgstr "75 - Operação de Aquisição por Substituição Tributária"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "8 - Conduto / Rede Transmissão"
+msgstr "8 - Conduto / Rede Transmissão"
+
+#. module: br_account
+#: selection:account.invoice.line,icms_origem:0
+#: selection:product.template,origin:0
+msgid "8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%"
+msgstr "8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%"
+
+#. module: br_account
+#: selection:br_account.import.declaration,type_transportation:0
+msgid "9 - Meios Próprios"
+msgstr "9 - Meios Próprios"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_icms:0
+#: selection:account.invoice.line,icms_cst_normal:0
+msgid "90 - Outras"
+msgstr "90 - Outras"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,csosn_icms:0
+#: selection:account.invoice.line,icms_csosn_simples:0
+msgid "900 - Outros"
+msgstr "900 - Outros"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "98 - Outras Operações de Entrada"
+msgstr "98 - Outras Operações de Entrada"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_cofins:0
+#: selection:account.fiscal.position.tax.rule,cst_pis:0
+#: selection:account.invoice.line,cofins_cst:0
+#: selection:account.invoice.line,pis_cst:0
+msgid "99 - Outras Operações"
+msgstr "99 - Outras Operações"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,cst_ipi:0
+#: selection:account.invoice.line,ipi_cst:0
+#: selection:product.fiscal.classification,ipi_cst:0
+msgid "99 - Outras Saídas"
+msgstr "99 - Outras Saídas"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_report_invoice
+msgid "<strong>Discount ( - )</strong>"
+msgstr "<strong>Desconto ( - )</strong>"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_report_invoice
+msgid "<strong>Subtotal</strong>"
+msgstr "<strong>Subtotal</strong>"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_report_invoice
+msgid "<strong>Tax ( + )</strong>"
+msgstr "<strong>Impostos ( + )</strong>"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_report_invoice
+msgid "<strong>Total</strong>"
+msgstr "Total"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_account
+msgid "Account"
+msgstr "Conta"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_name
+msgid "Adição"
+msgstr "Adição"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Adições"
+msgstr "Adições"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
+msgid "Agrupar Por..."
+msgstr "Agrupar Por..."
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_cofins_id
+msgid "Alíquota COFINS"
+msgstr "Alíquota COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_csll_id
+msgid "Alíquota CSLL"
+msgstr "Alíquota CSLL"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_id
+msgid "Alíquota ICMS"
+msgstr "Alíquota ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_st_id
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_tax_icms_st_id
+msgid "Alíquota ICMS ST"
+msgstr "Alíquota ICMS ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_ii_id
+msgid "Alíquota II"
+msgstr "Alíquota II"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_ipi_id
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_tax_ipi_id
+msgid "Alíquota IPI"
+msgstr "Alíquota IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_inss_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_irrf_id
+msgid "Alíquota IRRF"
+msgstr "Alíquota IRRF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_issqn_id
+msgid "Alíquota ISSQN"
+msgstr "Alíquota ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_aliquota_mva
+msgid "Alíquota MVA"
+msgstr "Alíquota MVA"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_pis_id
+msgid "Alíquota PIS"
+msgstr "Alíquota PIS"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_fiscal_position_tax_rule_tax_icms_intra_id
+#: model:ir.model.fields,help:br_account.field_account_invoice_line_tax_icms_intra_id
+msgid "Alíquota interna do produto no estado destino"
+msgstr "Alíquota interna do produto no estado destino"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_fiscal_position_tax_rule_icms_st_aliquota_deducao
+#: model:ir.model.fields,help:br_account.field_account_invoice_line_icms_st_aliquota_deducao
+msgid "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS"
+msgstr "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional ou usado em casos onde existe apenas ST sem ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_fiscal_position_tax_rule_tax_icms_inter_id
+#: model:ir.model.fields,help:br_account.field_account_invoice_line_tax_icms_inter_id
+msgid "Alíquota utilizada na operação Interestadual"
+msgstr "Alíquota utilizada na operação Interestadual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tem_difal
+msgid "Aplicar Difal?"
+msgstr "Aplicar Difal?"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
+msgid "Aplicar esta regra quando:"
+msgstr "Aplicar esta regra quando:"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_product_fiscal_class_csv
+msgid "Arquivo CSV"
+msgstr "Arquivo CSV"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_active
+msgid "Ativo"
+msgstr "Ativo"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_cofins_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_base_calculo
+msgid "Base COFINS"
+msgstr "Base COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_base_calculo_manual
+msgid "Base COFINS Manual"
+msgstr "Base COFINS Manual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_csll_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_csll_base_calculo
+msgid "Base CSLL"
+msgstr "Base CSLL"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_icms_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_base_calculo
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_bc_uf_dest
+msgid "Base ICMS"
+msgstr "Base ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_base_calculo_manual
+msgid "Base ICMS Manual"
+msgstr "Base ICMS Manual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_icms_st_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_base_calculo
+msgid "Base ICMS ST"
+msgstr "Base ICMS ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_base_calculo_manual
+msgid "Base ICMS ST Manual"
+msgstr "Base ICMS ST Manual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_ii_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_base_calculo
+msgid "Base II"
+msgstr "Base II"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_inss_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_inss_base_calculo
+msgid "Base INSS"
+msgstr "Base INSS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_ipi_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_base_calculo
+msgid "Base IPI"
+msgstr "Base IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_base_calculo_manual
+msgid "Base IPI Manual"
+msgstr "Base IPI Manual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_ipi_base_other
+msgid "Base IPI Outras"
+msgstr "Base IPI Outras"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_irrf_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_irrf_base_calculo
+msgid "Base IRRF"
+msgstr "Base IRRF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_issqn_base
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_base_calculo
+msgid "Base ISSQN"
+msgstr "Base ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_base_calculo
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_pis_base
+msgid "Base PIS"
+msgstr "Base PIS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_base_calculo_manual
+msgid "Base PIS Manual"
+msgstr "Base PIS Manual"
+
+#. module: br_account
+#: model:ir.ui.menu,name:br_account.menu_br_account
+msgid "Brasil"
+msgstr "Brasil"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_cest
+#: model:ir.model.fields,field_description:br_account.field_product_product_cest
+#: model:ir.model.fields,field_description:br_account.field_product_template_cest
+msgid "CEST"
+msgstr "CEST"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.br_account_cfop_action
+#: model:ir.model,name:br_account.model_br_account_cfop
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cfop_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cfop_id
+#: model:ir.ui.menu,name:br_account.br_account_cfop_menu
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_form
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_tree
+msgid "CFOP"
+msgstr "CFOP"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_child_ids
+msgid "CFOP Filhos"
+msgstr "CFOP Filhos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_parent_id
+msgid "CFOP Pai"
+msgstr "CFOP Pai"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_cnae_form
+#: model:ir.ui.menu,name:br_account.menu_action_cnae_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_cnae_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_cnae_tree
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+msgid "CNAE"
+msgstr "CNAE"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_parent_id
+msgid "CNAE Pai"
+msgstr "CNAE Pai"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_res_company_cnae_main_id
+msgid "CNAE Primário"
+msgstr "CNAE Primário"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_res_company_cnae_secondary_ids
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+msgid "CNAE Secundários"
+msgstr "CNAE Secundários"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_child_ids
+msgid "CNAEs Filhos"
+msgstr "CNAEs Filhos"
+
+#. module: br_account
+#: selection:br_account.document.related,cpfcnpj_type:0
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_thirdparty_cnpj
+msgid "CNPJ"
+msgstr "CNPJ"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_cnpj_cpf
+msgid "CNPJ/CPF"
+msgstr "CNPJ/CPF"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "COFINS"
+msgstr "COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_cofins_retention
+msgid "COFINS Retido"
+msgstr "COFINS Retido"
+
+#. module: br_account
+#: selection:br_account.document.related,cpfcnpj_type:0
+msgid "CPF"
+msgstr "CPF"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "CSLL"
+msgstr "CSLL"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_csll_retention
+msgid "CSLL Retido"
+msgstr "CSLL Retido"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_csosn_icms
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_csosn_simples
+msgid "CSOSN ICMS"
+msgstr "CSOSN ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cst_cofins
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_cst
+msgid "CST COFINS"
+msgstr "CST COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cst_icms
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_cst
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_cst_normal
+msgid "CST ICMS"
+msgstr "CST ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cst_ipi
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_cst
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_ipi_cst
+msgid "CST IPI"
+msgstr "CST IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_cst_pis
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_cst
+msgid "CST PIS"
+msgstr "CST PIS"
+
+#. module: br_account
+#: selection:br_account.document.related,document_type:0
+msgid "CT-e"
+msgstr "CT-e"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_cnae
+msgid "Cadastro de CNAE"
+msgstr "Cadastro de CNAE"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_service_type
+msgid "Cadastro de Operações Fiscais de Serviço"
+msgstr "Cadastro de Operações Fiscais de Serviço"
+
+#. module: br_account
+#: model:ir.ui.menu,name:br_account.menu_br_account_fiscal_manager
+msgid "Cadastros"
+msgstr "Cadastros"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_tax_difal_por_dentro
+msgid "Calcular Difal por Dentro?"
+msgstr "Calcular Difal por Dentro?"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_calculate_tax
+msgid "Calcular Imposto?"
+msgstr "Calcular Imposto?"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_product_fiscal_classification_wizard
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_cancel_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_cancel_form
+msgid "Cancelar Fatura"
+msgstr "Cancelar Fatura"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_ncm_quote_char
+msgid "Caracter de Citação"
+msgstr "Caracter de Citação"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_category
+msgid "Categoria"
+msgstr "Categoria"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_fiscal_category
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_category_id
+#: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_category_id
+#: model:ir.ui.menu,name:br_account.menu_action_fiscal_category_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_category_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_category_tree
+msgid "Categoria Fiscal"
+msgstr "Categoria Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_fiscal_category_ids
+#: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
+msgid "Categorias Fiscais"
+msgstr "Categorias Fiscais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_access_key
+msgid "Chave de Acesso"
+msgstr "Chave de Acesso"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_classe_enquadramento
+msgid "Classe Enquadr."
+msgstr "Classe Enquadr."
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_product_fiscal_classification_ids
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_fiscal_classification_id
+#: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
+msgid "Classificação Fiscal"
+msgstr "Classificação Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_classification_id
+#: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_classification_id
+msgid "Classificação Fiscal (NCM)"
+msgstr "Classificação Fiscal (NCM)"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_product_fiscal_classification
+#: model:ir.model,name:br_account.model_product_fiscal_classification
+#: model:ir.ui.menu,name:br_account.menu_br_account_product_fiscal_classification
+#: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_tree
+msgid "Classificações Fiscais (NCM)"
+msgstr "Classificações Fiscais (NCM)"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_code
+msgid "Codigo"
+msgstr "Codigo"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_account_id_5890
+msgid "Conta Contábil"
+msgstr "Conta Contábil"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_fiscal_position_account_id_5890
+msgid "Conta Contábil a ser utilizada na fatura."
+msgstr "Conta Contábil a ser utilizada na fatura."
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_tax_deduced_account_id
+#: model:ir.model.fields,field_description:br_account.field_account_tax_template_deduced_account_id
+msgid "Conta de Dedução da Venda"
+msgstr "Conta de Dedução da Venda"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_tax_refund_deduced_account_id
+#: model:ir.model.fields,field_description:br_account.field_account_tax_template_refund_deduced_account_id
+msgid "Conta de Dedução do Reembolso"
+msgstr "Conta de Dedução do Reembolso"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_res_company_accountant_id
+msgid "Contador"
+msgstr "Contador"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_create_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_create_uid
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_create_uid
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_create_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_create_date
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_create_date
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_invoice_refund
+msgid "Credit Note"
+msgstr "Anotação de crédito"
+
+#. module: br_account
+#: selection:br_account.document.related,document_type:0
+msgid "Cupom Fiscal"
+msgstr "Cupom Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_codigo_enquadramento
+msgid "Cód. Enquadramento"
+msgstr "Cód. Enquadramento"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_code
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_code
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_code
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_code
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_code
+msgid "Código"
+msgstr "Código"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_product_fiscal_classification_cest
+#: model:ir.model.fields,help:br_account.field_product_product_cest
+#: model:ir.model.fields,help:br_account.field_product_template_cest
+msgid "Código Especificador da Substituição Tributária"
+msgstr "Código Especificador da Substituição Tributária"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_exporting_code
+msgid "Código do Exportador"
+msgstr "Código do Exportador"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_manufacturer_code
+msgid "Código do Fabricante"
+msgstr "Código do Fabricante"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_import_declaration_id
+msgid "DI"
+msgstr "DI"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+msgid "Dados Fiscais"
+msgstr "Dados Fiscais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_date
+msgid "Data"
+msgstr "Dados"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_date_release
+msgid "Data de Liberação"
+msgstr "Data de Liberação"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_date_registration
+msgid "Data de Registro"
+msgstr "Data de Registro"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_import_declaration_ids
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Declaração de Importação"
+msgstr "Declaração de Importação"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_ncm_csv_delimiter
+msgid "Delimitador"
+msgstr "Delimitador"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_desconto
+msgid "Desconto ( - )"
+msgstr "Desconto ( - )"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_description
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_name
+msgid "Descrição"
+msgstr "Descrição"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_descricao_unidade
+msgid "Descrição Unidade"
+msgstr "Descrição Unidade"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_form
+msgid "Descrição do CFOP"
+msgstr "Descrição do CFOP"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_valor_despesas
+msgid "Desp. Aduaneiras"
+msgstr "Desp. Aduaneiras"
+
+#. module: br_account
+#: selection:account.account,account_type:0
+#: selection:account.account.template,account_type:0
+msgid "Despesa"
+msgstr "Despesa"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Detalhes do COFINS"
+msgstr "Detalhes do COFINS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Detalhes do ICMS"
+msgstr "Detalhes do ICMS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Detalhes do IPI"
+msgstr "Detalhes do IPI"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Detalhes do Imposto de Importação"
+msgstr "Detalhes do Imposto de Importação"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Detalhes do PIS"
+msgstr "Detalhes do PIS"
+
+#. module: br_account
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+msgid "Difal - Alíquota Inter"
+msgstr "Difal - Alíquota Inter"
+
+#. module: br_account
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+msgid "Difal - Alíquota Intra"
+msgstr "Difal - Alíquota Intra"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tem_difal
+msgid "Difal?"
+msgstr "Difal?"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_display_name
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_display_name
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_display_name
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_journal_id
+msgid "Diário Contábil"
+msgstr "Diário Contábil"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_fiscal_position_journal_id
+msgid "Diário Contábil a ser utilizado na fatura."
+msgstr "Diário Contábil a ser utilizado na fatura."
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_document_serie_form
+msgid "Document Serie"
+msgstr "Document Serie"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_fiscal_document_id
+msgid "Documento"
+msgstr "Documento"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_fiscal_document_form
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_invoice_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_invoice_related_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_fiscal_document_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_document_id
+#: model:ir.ui.menu,name:br_account.menu_action_br_account_fiscal_document_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_document_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_fiscal_document_tree
+msgid "Documento Fiscal"
+msgstr "Documento Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_fiscal_document_related_ids
+msgid "Documento Fiscal Relacionado"
+msgstr "Documento Fiscal Relacionado"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_res_company_fiscal_document_for_product_id
+msgid "Documento Fiscal para produto"
+msgstr "Documento Fiscal para produto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_product_document_id
+msgid "Documento Produto"
+msgstr "Documento Produto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_service_document_id
+msgid "Documento Serviço"
+msgstr "Documento Serviço"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_product_document_id
+msgid "Documento produtos"
+msgstr "Documento produtos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_service_document_id
+msgid "Documento serviços"
+msgstr "Documento serviços"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Documentos Fiscais"
+msgstr "Documentos Fiscais"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Documentos Relacionados"
+msgstr "Documentos Relacionados"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_electronic
+msgid "Eletrônico"
+msgstr "Eletrônico"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_nfse_eletronic
+msgid "Emite NFS-e?"
+msgstr "Emite NFS-e?"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_company_id
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_company_id
+msgid "Empresa"
+msgstr "Empresa"
+
+#. module: br_account
+#: selection:account.fiscal.position,fiscal_type:0
+#: selection:br_account.cfop,type:0
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
+msgid "Entrada"
+msgstr "Entrada"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+msgid "Escritório de contabilidade"
+msgstr "Escritório de contabilidade"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Esta conta vai ser usada para faturamento"
+msgstr "Esta conta vai ser usada para faturamento"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_state_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_state_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_thirdparty_state_id
+msgid "Estado"
+msgstr "Estado"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_state_ids
+msgid "Estado Destino"
+msgstr "Estado Destino"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
+msgid "Estados"
+msgstr "Estados"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Este diário vai ser usado no faturamento"
+msgstr "Este diário vai ser usado no faturamento"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_service_type_structure
+#: model:ir.ui.menu,name:br_account.menu_action_service_type_structure
+#: model:ir.ui.view,arch_db:br_account.view_br_account_service_type_structure
+msgid "Estrutura de Tipo de Serviço"
+msgstr "Estrutura de Tipo de Serviço"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.br_account_cfop_structure_action
+#: model:ir.ui.menu,name:br_account.br_account_cfop_structure_menu
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_structure
+msgid "Estrutura do CFOP"
+msgstr "Estrutura do CFOP"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_cnae_structure
+#: model:ir.ui.menu,name:br_account.menu_action_cnae_structure
+#: model:ir.ui.view,arch_db:br_account.view_br_account_cnae_structure
+msgid "Estrutura do CNAE"
+msgstr "Estrutura do CNAE"
+
+#. module: br_account
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+msgid "FCP"
+msgstr "FCP"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_res_company_annual_revenue
+msgid "Faturamento Anual"
+msgstr "Faturamento Anual"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_res_company_annual_revenue
+msgid "Faturamento Bruto dos últimos 12 meses"
+msgstr "Faturamento Bruto dos últimos 12 meses"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+msgid "Faturamento dos últimos 12 meses"
+msgstr "Faturamento dos últimos 12 meses"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_fiscal_category
+msgid "Fiscal Category"
+msgstr "Fiscal Category"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_fiscal_position
+msgid "Fiscal Position"
+msgstr "Posição Fiscal"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Geral"
+msgstr "Geral"
+
+#. module: br_account
+#: model:res.groups,name:br_account.group_edit_bases_calculo
+msgid "Habilitar edição das bases de cálculo"
+msgstr "Habilitar edição das bases de cálculo"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "ICMS"
+msgstr "ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_uf_dest
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_valor_icms_uf_dest
+msgid "ICMS Destino"
+msgstr "ICMS Destino"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tax_icms_inter_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_inter_id
+msgid "ICMS Inter"
+msgstr "ICMS Inter"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tax_icms_intra_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tax_icms_intra_id
+msgid "ICMS Intra"
+msgstr "ICMS Intra"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_uf_remet
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_valor_icms_uf_remet
+msgid "ICMS Remetente"
+msgstr "ICMS Remetente"
+
+#. module: br_account
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tax_icms_st_id
+#: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_form
+msgid "ICMS ST"
+msgstr "ICMS ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_id
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_id
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_id
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_id
+msgid "ID"
+msgstr "ID"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "II"
+msgstr "II"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "INSS"
+msgstr "INSS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_inss_retention
+msgid "INSS Retido"
+msgstr "INSS Retido"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_form
+msgid "IPI"
+msgstr "IPI"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "IRRF"
+msgstr "IRRF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_irrf_retention
+msgid "IRRF Retido"
+msgstr "IRRF Retido"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "ISSQN"
+msgstr "ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_issqn_retention
+msgid "ISSQN Retido"
+msgstr "ISSQN Retido"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.br_product_fiscal_classification_action
+#: model:ir.ui.view,arch_db:br_account.br_product_fiscal_classification_wizard
+msgid "Importar Classificações Fiscais (NCM)"
+msgstr "Importar Classificações Fiscais (NCM)"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_product_fiscal_classification_wizard
+msgid "Importar NCM"
+msgstr "Importar NCM"
+
+#. module: br_account
+#: model:ir.ui.menu,name:br_account.menu_br_account_product_fiscal_classification_wizard
+msgid "Importar Tabela IBPT"
+msgstr "Importar Tabela IBPT"
+
+#. module: br_account
+#: selection:account.account,account_type:0
+#: selection:account.account.template,account_type:0
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tax_id
+msgid "Imposto"
+msgstr "Imposto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_estadual_imposto
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_estadual_imposto
+msgid "Imposto Estadual"
+msgstr "Imposto Estadual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_federal_importado
+msgid "Imposto Fed. Sobre Produto Importado"
+msgstr "Imposto Fed. Sobre Produto Importado"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_federal_nacional
+msgid "Imposto Fed. Sobre Produto Nacional"
+msgstr "Imposto Fed. Sobre Produto Nacional"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_federal_importado
+msgid "Imposto Fed. Sobre Serviço Importado"
+msgstr "Imposto Fed. Sobre Serviço Importado"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_federal_nacional
+msgid "Imposto Fed. Sobre Serviço Nacional"
+msgstr "Imposto Fed. Sobre Serviço Nacional"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_municipal_imposto
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_municipal_imposto
+msgid "Imposto Municipal"
+msgstr "Imposto Municipal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_price_tax
+msgid "Impostos"
+msgstr "Impostos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tax
+msgid "Impostos ( + )"
+msgstr "Impostos ( + )"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_incluir_ipi_base
+msgid "Incl. IPI na base ICMS"
+msgstr "Incl. IPI na base ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_incluir_ipi_base
+msgid "Incl. Valor IPI?"
+msgstr "Incl. Valor IPI?"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_payment_term_indPag
+msgid "Indicador de Pagamento"
+msgstr "Indicador de Pagamento"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_informacao_adicional
+msgid "Informações Adicionais"
+msgstr "Informações Adicionais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_inscr_est
+msgid "Inscr. Estadual/RG"
+msgstr "Inscr. Estadual/RG"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_invoice
+msgid "Invoice"
+msgstr "Fatura"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_invoice_line
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Invoice Line"
+msgstr "Linha da Fatura"
+
+#. module: br_account
+#: code:addons/br_account/models/account_invoice.py:280
+#, python-format
+msgid "Invoice must be in draft, Pro-forma or open                               state in order to be cancelled."
+msgstr "Invoice must be in draft, Pro-forma or open                               state in order to be cancelled."
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_product_is_product_variant
+msgid "Is a product variant"
+msgstr "Is a product variant"
+
+#. module: br_account
+#: selection:account.invoice.line,issqn_tipo:0
+msgid "Isenta"
+msgstr "Isenta"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_move_line
+msgid "Journal Item"
+msgstr "Item de Diário"
+
+#. module: br_account
+#: sql_constraint:br_account.cfop:0
+msgid "Já existe um CFOP com esse código !"
+msgstr "Já existe um CFOP com esse código !"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line___last_update
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type___last_update
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification___last_update
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard___last_update
+msgid "Last Modified on"
+msgstr "Última modificação em"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_write_uid
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_write_uid
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_write_uid
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_category_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_document_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_write_date
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_write_date
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_write_date
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_invoice_line_id
+msgid "Linha de Documento Fiscal"
+msgstr "Linha de Documento Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_ids
+msgid "Linhas da DI"
+msgstr "Linhas da DI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_location
+msgid "Local"
+msgstr "Local"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_aliquota_mva
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_icms_st_aliquota_mva
+msgid "MVA Ajustado ST"
+msgstr "MVA Ajustado ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_message
+msgid "Mensagem"
+msgstr "Mensagem"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_fiscal_observation_form
+msgid "Mensagem a ser destacada no documento eletrônico"
+msgstr "Mensagem a ser destacada no documento eletrônico"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_fiscal_observation
+msgid "Mensagen Documento Eletrônico"
+msgstr "Mensagen Documento Eletrônico"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_observation_ids
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_observation_ids
+#: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_observation_ids
+msgid "Mensagens Doc. Eletrônico"
+msgstr "Mensagens Doc. Eletrônico"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_product_template_form_view
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+msgid "Mensagens Documento Eletrônico"
+msgstr "Mensagens Documento Eletrônico"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.account_config_settings_email_templates
+msgid "Modelos de e-mail"
+msgstr "Modelos de e-mail"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_product_fiscal_classification_search
+msgid "NCM"
+msgstr "NCM"
+
+#. module: br_account
+#: selection:br_account.document.related,document_type:0
+msgid "NF"
+msgstr "NF"
+
+#. module: br_account
+#: selection:br_account.document.related,document_type:0
+msgid "NF Produtor"
+msgstr "NF Produtor"
+
+#. module: br_account
+#: selection:br_account.document.related,document_type:0
+msgid "NF-e"
+msgstr "NF-e"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "NF-e/CT-e"
+msgstr "NF-e/CT-e"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_name
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_name
+msgid "Nome"
+msgstr "Nome"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_small_name
+msgid "Nome Reduzido"
+msgstr "Nome Reduzido"
+
+#. module: br_account
+#: selection:account.invoice.line,issqn_tipo:0
+#: selection:br_account.cfop,internal_type:0
+#: selection:br_account.cnae,internal_type:0
+#: selection:br_account.service.type,internal_type:0
+msgid "Normal"
+msgstr "Normal"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Nota Fiscal/Produtor/Cupom Fiscal"
+msgstr "Nota Fiscal/Produtor/Cupom Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_internal_number
+msgid "Número"
+msgstr "Número"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_drawback_number
+msgid "Número Drawback"
+msgstr "Número Drawback"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_name
+msgid "Número da DI"
+msgstr "Número da DI"
+
+#. module: br_account
+#: selection:br_account.fiscal.observation,tipo:0
+msgid "Observação"
+msgstr "Observação"
+
+#. module: br_account
+#: selection:br_account.fiscal.observation,tipo:0
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_fiscal_comment
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_fiscal_comment
+msgid "Observação Fiscal"
+msgstr "Observação Fiscal"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Observações"
+msgstr "Observações"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_fiscal_observation_ids
+#: model:ir.ui.view,arch_db:br_account.br_account_fiscal_observation_form
+#: model:ir.ui.view,arch_db:br_account.br_account_fiscal_observation_tree
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Observações Fiscais"
+msgstr "Observações Fiscais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_origem
+#: model:ir.model.fields,field_description:br_account.field_product_product_origin
+#: model:ir.model.fields,field_description:br_account.field_product_template_origin
+msgid "Origem"
+msgstr "Origem"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Outras Informações"
+msgstr "Outras Informações"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.payment.term,indPag:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+msgid "Outros"
+msgstr "Outros"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,domain:0
+#: selection:account.tax,domain:0
+#: selection:account.tax.template,domain:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "PIS"
+msgstr "PIS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_pis_retention
+msgid "PIS Retido"
+msgstr "PIS Retido"
+
+#. module: br_account
+#: selection:account.payment.term,indPag:0
+msgid "Pagamento à Prazo"
+msgstr "Pagamento à Prazo"
+
+#. module: br_account
+#: selection:account.payment.term,indPag:0
+msgid "Pagamento à Vista"
+msgstr "Pagamento à Vista"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Pago"
+msgstr "Pago"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_payable_move_line_ids
+msgid "Payable Move Lines"
+msgstr "Payable Move Lines"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_payment_term
+msgid "Payment Terms"
+msgstr "Condições de Pagamento"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_aliquota
+msgid "Perc COFINS"
+msgstr "Perc COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_csll_aliquota
+msgid "Perc CSLL"
+msgstr "Perc CSLL"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_aliquota
+msgid "Perc ICMS"
+msgstr "Perc ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_inss_aliquota
+msgid "Perc INSS"
+msgstr "Perc INSS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_aliquota
+msgid "Perc IPI"
+msgstr "Perc IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_irrf_aliquota
+msgid "Perc IRRF"
+msgstr "Perc IRRF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_aliquota
+msgid "Perc ISSQN"
+msgstr "Perc ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_aliquota
+msgid "Perc PIS"
+msgstr "Perc PIS"
+
+#. module: br_account
+#: selection:account.invoice.line,cofins_tipo:0
+#: selection:account.invoice.line,ipi_tipo:0
+#: selection:account.invoice.line,pis_tipo:0
+#: selection:product.fiscal.classification,ipi_tipo:0
+msgid "Percentual"
+msgstr "Percentual"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_fiscal_position_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_refund_fiscal_position_id
+msgid "Posição Fiscal"
+msgstr "Posição Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_wizard_has_quote_char
+msgid "Possui caracter de citação?"
+msgstr "Possui caracter de citação?"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_product_template
+msgid "Product Template"
+msgstr "Modelo de Produto"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,tipo_produto:0
+#: selection:account.invoice.line,product_type:0
+#: selection:br_account.document.serie,fiscal_type:0
+#: selection:product.template,fiscal_type:0
+msgid "Produto"
+msgstr "Produto"
+
+#. module: br_account
+#: selection:account.account,account_type:0
+#: selection:account.account.template,account_type:0
+msgid "Receita"
+msgstr "Receita"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_receivable_move_line_ids
+msgid "Receivable Move Lines"
+msgstr "Receivable Move Lines"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_reducao_icms
+msgid "Redução de base"
+msgstr "Redução de base"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_reducao_ipi
+msgid "Redução de base IPI"
+msgstr "Redução de base IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_reducao_icms_st
+msgid "Redução de base ST"
+msgstr "Redução de base ST"
+
+#. module: br_account
+#: selection:account.invoice.line,company_fiscal_type:0
+#: selection:res.company,fiscal_type:0
+msgid "Regime Normal"
+msgstr "Regime Normal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_company_fiscal_type
+#: model:ir.model.fields,field_description:br_account.field_res_company_fiscal_type
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+msgid "Regime Tributário"
+msgstr "Regime Tributário"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_account_invoice_payment
+msgid "Register Payment"
+msgstr "Registrar Pagamento"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_csll_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_inss_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_irrf_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_rule_id
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_rule_id
+msgid "Regra"
+msgstr "Regra"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_cofins_tax_rule_ids
+msgid "Regras COFINS"
+msgstr "Regras COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_csll_tax_rule_ids
+msgid "Regras CSLL"
+msgstr "Regras CSLL"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_icms_tax_rule_ids
+msgid "Regras ICMS"
+msgstr "Regras ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_ii_tax_rule_ids
+msgid "Regras II"
+msgstr "Regras II"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_inss_tax_rule_ids
+msgid "Regras INSS"
+msgstr "Regras INSS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_ipi_tax_rule_ids
+msgid "Regras IPI"
+msgstr "Regras IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_irrf_tax_rule_ids
+msgid "Regras IRRF"
+msgstr "Regras IRRF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_issqn_tax_rule_ids
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras ISSQN"
+msgstr "Regras ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_pis_tax_rule_ids
+msgid "Regras PIS"
+msgstr "Regras PIS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de COFINS"
+msgstr "Regras de COFINS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de CSLL"
+msgstr "Regras de CSLL"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de ICMS"
+msgstr "Regras de ICMS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de II"
+msgstr "Regras de II"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de INSS"
+msgstr "Regras de INSS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de IPI"
+msgstr "Regras de IPI"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de IRRF"
+msgstr "Regras de IRRF"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de Impostos"
+msgstr "Regras de Impostos"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_position_form
+msgid "Regras de PIS"
+msgstr "Regras de PIS"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Retenções"
+msgstr "Retenções"
+
+#. module: br_account
+#: selection:account.invoice.line,issqn_tipo:0
+msgid "Retida"
+msgstr "Retida"
+
+#. module: br_account
+#: selection:account.fiscal.position,fiscal_type:0
+#: selection:br_account.cfop,type:0
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
+msgid "Saída"
+msgstr "Saída"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_invoice_line_incluir_ipi_base
+msgid "Se marcado o valor do IPI inclui a base de cálculo"
+msgstr "Se marcado o valor do IPI inclui a base de cálculo"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_sequence
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_sequence
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_sequence
+msgid "Sequência"
+msgstr "Sequência"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_internal_sequence_id
+msgid "Sequência Interna"
+msgstr "Sequência Interna"
+
+#. module: br_account
+#: model:ir.ui.menu,name:br_account.menu_action_document_serie_form
+msgid "Serie de Documento Fiscal"
+msgstr "Serie de Documento Fiscal"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_document_serie_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_document_serie_tree
+msgid "Serie de Documentos Fiscais"
+msgstr "Serie de Documentos Fiscais"
+
+#. module: br_account
+#: selection:account.fiscal.position.tax.rule,tipo_produto:0
+#: selection:account.invoice.line,product_type:0
+#: selection:br_account.document.serie,fiscal_type:0
+#: selection:product.template,fiscal_type:0
+msgid "Serviço"
+msgstr "Serviço"
+
+#. module: br_account
+#: selection:account.invoice.line,company_fiscal_type:0
+#: model:ir.ui.view,arch_db:br_account.view_br_account_company_form
+#: selection:res.company,fiscal_type:0
+msgid "Simples Nacional"
+msgstr "Simples Nacional"
+
+#. module: br_account
+#: selection:account.invoice.line,company_fiscal_type:0
+#: selection:res.company,fiscal_type:0
+msgid "Simples Nacional – excesso de sublimite de receita bruta"
+msgstr "Simples Nacional – excesso de sublimite de receita bruta"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_line_form
+msgid "Substituição Tributária ICMS"
+msgstr "Substituição Tributária ICMS"
+
+#. module: br_account
+#: selection:account.invoice.line,issqn_tipo:0
+msgid "Substituta"
+msgstr "Substituta"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_serie
+msgid "Série"
+msgstr "Série"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_product_serie_id
+msgid "Série Produto"
+msgstr "Série Produto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_service_serie_id
+msgid "Série Serviço"
+msgstr "Série Serviço"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_document_serie
+msgid "Série de documentos fiscais"
+msgstr "Série de documentos fiscais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_product_serie_id
+msgid "Série produtos"
+msgstr "Série produtos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_service_serie_id
+msgid "Série serviços"
+msgstr "Série serviços"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_tax
+msgid "Tax"
+msgstr "Imposto"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_chart_template
+msgid "Templates for Account Chart"
+msgstr "Modelos para Plano de Contas"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_account_template
+msgid "Templates for Accounts"
+msgstr "Modelos para Contas"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_tax_template
+msgid "Templates for Taxes"
+msgstr "Modelos para Impostos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_domain
+#: model:ir.model.fields,field_description:br_account.field_account_tax_domain
+#: model:ir.model.fields,field_description:br_account.field_account_tax_template_domain
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_type
+#: model:ir.model.fields,field_description:br_account.field_br_account_fiscal_observation_tipo
+#: model:ir.ui.view,arch_db:br_account.br_account_cfop_search
+msgid "Tipo"
+msgstr "Tipo"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_tipo_base
+msgid "Tipo Base ICMS"
+msgstr "Tipo Base ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_tipo_base
+msgid "Tipo Base ICMS ST"
+msgstr "Tipo Base ICMS ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_cpfcnpj_type
+msgid "Tipo Doc."
+msgstr "Tipo Doc."
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_related_document_type
+msgid "Tipo Documento"
+msgstr "Tipo Documento"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_document_serie_fiscal_type
+#: model:ir.model.fields,field_description:br_account.field_product_product_fiscal_type
+#: model:ir.model.fields,field_description:br_account.field_product_template_fiscal_type
+msgid "Tipo Fiscal"
+msgstr "Tipo Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cfop_internal_type
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_internal_type
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_internal_type
+msgid "Tipo Interno"
+msgstr "Tipo Interno"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_fiscal_type
+msgid "Tipo da posição"
+msgstr "Tipo da posição"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_fiscal_document
+msgid "Tipo de Documento Fiscal"
+msgstr "Tipo de Documento Fiscal"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_type_import
+msgid "Tipo de Importação"
+msgstr "Tipo de Importação"
+
+#. module: br_account
+#: model:ir.actions.act_window,name:br_account.action_br_account_service_type_form
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_service_type_id
+#: model:ir.model.fields,field_description:br_account.field_product_product_service_type_id
+#: model:ir.model.fields,field_description:br_account.field_product_template_service_type_id
+#: model:ir.ui.menu,name:br_account.menu_action_service_type_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_service_type_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_service_type_tree
+msgid "Tipo de Serviço"
+msgstr "Tipo de Serviço"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_child_ids
+msgid "Tipo de Serviço Filhos"
+msgstr "Tipo de Serviço Filhos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_service_type_parent_id
+msgid "Tipo de Serviço Pai"
+msgstr "Tipo de Serviço Pai"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_account_account_type
+#: model:ir.model.fields,field_description:br_account.field_account_account_template_account_type
+msgid "Tipo de conta"
+msgstr "Tipo de conta"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_tipo
+msgid "Tipo do COFINS"
+msgstr "Tipo do COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_tipo
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_ipi_tipo
+msgid "Tipo do IPI"
+msgstr "Tipo do IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_tipo
+msgid "Tipo do ISSQN"
+msgstr "Tipo do ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_tipo
+msgid "Tipo do PIS"
+msgstr "Tipo do PIS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_product_type
+msgid "Tipo do Produto"
+msgstr "Tipo do Produto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_fiscal_position_tax_rule_tipo_produto
+msgid "Tipo produto"
+msgstr "Tipo produto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_bruto
+msgid "Total Bruto ( = )"
+msgstr "Total Bruto ( = )"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados
+msgid "Total Est. Tributos"
+msgstr "Total Est. Tributos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_valor_icms_fcp_uf_dest
+msgid "Total ICMS FCP"
+msgstr "Total ICMS FCP"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_estimados
+msgid "Total de Tributos"
+msgstr "Total de Tributos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_estaduais
+msgid "Total de Tributos Estaduais"
+msgstr "Total de Tributos Estaduais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_federais
+msgid "Total de Tributos Federais"
+msgstr "Total de Tributos Federais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_total_tributos_municipais
+msgid "Total de Tributos Municipais"
+msgstr "Total de Tributos Municipais"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_invoice_valor_icms_fcp_uf_dest
+msgid "Total total do ICMS relativo Fundo de Combate à Pobreza (FCP)         da UF de destino"
+msgstr "Total total do ICMS relativo Fundo de Combate à Pobreza (FCP)         da UF de destino"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_type_transportation
+msgid "Transporte Internacional"
+msgstr "Transporte Internacional"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados_estaduais
+msgid "Tributos Estaduais"
+msgstr "Tributos Estaduais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados_federais
+msgid "Tributos Federais"
+msgstr "Tributos Federais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_tributos_estimados_municipais
+msgid "Tributos Municipais"
+msgstr "Tributos Municipais"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_product_fiscal_classification_unidade_tributacao
+msgid "Unidade Tributável"
+msgstr "Unidade Tributável"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_tax_rule_form
+msgid "Usar a seguinte tributação"
+msgstr "Usar a seguinte tributação"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_account_fiscal_observation_form
+msgid "Utilize ${invoice.origin} para campos dinâmicos"
+msgstr "Utilize ${invoice.origin} para campos dinâmicos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_line_amount_discount
+msgid "Valor"
+msgstr "Valor"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_cofins_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_cofins_valor
+msgid "Valor COFINS"
+msgstr "Valor COFINS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_csll_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_csll_valor
+msgid "Valor CSLL"
+msgstr "Valor CSLL"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_fcp_uf_dest
+msgid "Valor FCP"
+msgstr "Valor FCP"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_icms_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_valor
+msgid "Valor ICMS"
+msgstr "Valor ICMS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_icms_st_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_st_valor
+msgid "Valor ICMS ST"
+msgstr "Valor ICMS ST"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_ii_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_valor
+msgid "Valor II"
+msgstr "Valor II"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_inss_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_inss_valor
+msgid "Valor INSS"
+msgstr "Valor INSS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ii_valor_iof
+msgid "Valor IOF"
+msgstr "Valor IOF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_ipi_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_ipi_valor
+msgid "Valor IPI"
+msgstr "Valor IPI"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_irrf_valor
+msgid "Valor IRFF"
+msgstr "Valor IRFF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_irrf_value
+msgid "Valor IRRF"
+msgstr "Valor IRRF"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_issqn_value
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_issqn_valor
+msgid "Valor ISSQN"
+msgstr "Valor ISSQN"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_pis_valor
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_pis_value
+msgid "Valor PIS"
+msgstr "Valor PIS"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_import_declaration_afrmm_value
+msgid "Valor da AFRMM"
+msgstr "Valor da AFRMM"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_icms_valor_credito
+msgid "Valor de Crédito"
+msgstr "Valor de Crédito"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_invoice_valor_icms_uf_dest
+msgid "Valor total do ICMS Interestadual para a UF de destino"
+msgstr "Valor total do ICMS Interestadual para a UF de destino"
+
+#. module: br_account
+#: model:ir.model.fields,help:br_account.field_account_invoice_valor_icms_uf_remet
+msgid "Valor total do ICMS Interestadual para a UF do Remetente"
+msgstr "Valor total do ICMS Interestadual para a UF do Remetente"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_form
+#: model:ir.ui.view,arch_db:br_account.view_br_account_invoice_supplier_form
+msgid "Vencimentos"
+msgstr "Vencimentos"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_br_account_cnae_version
+msgid "Versão"
+msgstr "Versão"
+
+#. module: br_account
+#: selection:br_account.cfop,internal_type:0
+#: selection:br_account.cnae,internal_type:0
+#: selection:br_account.service.type,internal_type:0
+msgid "Visualização"
+msgstr "Visualização"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_valor_bruto
+msgid "Vlr. Bruto"
+msgstr "Vlr. Bruto"
+
+#. module: br_account
+#: model:ir.model.fields,field_description:br_account.field_account_invoice_line_valor_desconto
+msgid "Vlr. desconto"
+msgstr "Vlr. desconto"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_account_fiscal_position_tax_rule
+msgid "account.fiscal.position.tax.rule"
+msgstr "account.fiscal.position.tax.rule"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_document_related
+msgid "br_account.document.related"
+msgstr "br_account.document.related"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_import_declaration
+msgid "br_account.import.declaration"
+msgstr "br_account.import.declaration"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_br_account_import_declaration_line
+msgid "br_account.import.declaration.line"
+msgstr "br_account.import.declaration.line"
+
+#. module: br_account
+#: model:ir.ui.view,arch_db:br_account.br_product_fiscal_classification_wizard
+msgid "or"
+msgstr "ou"
+
+#. module: br_account
+#: model:ir.model,name:br_account.model_product_fiscal_classification_wizard
+msgid "product.fiscal.classification.wizard"
+msgstr "product.fiscal.classification.wizard"
+

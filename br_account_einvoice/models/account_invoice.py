@@ -73,22 +73,37 @@ class AccountInvoice(models.Model):
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
 
         for doc in docs:
-            if doc.state == 'draft':
+            if doc.state not in ('done', 'cancel'):
                 raise UserError('Nota Fiscal na fila de envio. Aguarde!')
 
-        report = self._return_pdf_invoice(docs[0])
+        if len(docs) > 1:
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'invoice.eletronic.selection.wizard',
+                'name': "Escolha a nota a ser impressa",
+                'view_mode': 'form',
+                'context': self.env.context,
+                'target': 'new',
+                }
+        else:
+            return self._action_preview_danfe(docs[0])
+
+    def _action_preview_danfe(self, doc):
+
+        report = self._return_pdf_invoice(doc)
         if not report:
             raise UserError(
                 'Nenhum relatório implementado para este modelo de documento')
         if not isinstance(report, str):
             return report
-        action = self.env.ref(report).report_action(docs)
+        action = self.env.ref(report).report_action(doc)
         return action
 
     def _prepare_edoc_item_vals(self, line):
         vals = {
             'name': line.name,
             'product_id': line.product_id.id,
+            'account_invoice_line_id': line.id,
             'tipo_produto': line.product_type,
             'cfop': line.cfop_id.code,
             'uom_id': line.uom_id.id,
@@ -166,7 +181,7 @@ class AccountInvoice(models.Model):
         }
         return vals
 
-    def _prepare_edoc_vals(self, invoice, inv_lines):
+    def _prepare_edoc_vals(self, invoice, inv_lines, serie_id):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         vals = {
@@ -224,16 +239,18 @@ class AccountInvoice(models.Model):
             if item.product_document_id.electronic:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'product')
-                edoc_vals = self._prepare_edoc_vals(item, inv_lines)
-                if edoc_vals:
+                if inv_lines:
+                    edoc_vals = self._prepare_edoc_vals(
+                        item, inv_lines, item.product_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
             if item.service_document_id.nfse_eletronic:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'service')
-                edoc_vals = self._prepare_edoc_vals(item, inv_lines)
-                if edoc_vals:
+                if inv_lines:
+                    edoc_vals = self._prepare_edoc_vals(
+                        item, inv_lines, item.service_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()

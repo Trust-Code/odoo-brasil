@@ -264,6 +264,7 @@
                                     <field name="fiscal_classification_id" />
                                     <field domain="[('user_type_id', '&lt;&gt;', 'view')]" name="account_id" groups="account.group_account_user"/>
                                     <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
+                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
                                     <field name="invoice_line_tax_ids" invisible="1" />
                                     <field name="tributos_estimados_federais" />
@@ -326,12 +327,17 @@
                         </page>
                         <page name="issqn" string="ISSQN" attrs="{'invisible': [('product_type','!=', 'service')]}">
                             <group>
-                                <field name="tax_issqn_id" />
-                                <field name="issqn_tipo"/>
-                                <field name="issqn_base_calculo"/>
-                                <field name="issqn_aliquota" invisible="1" />
-                                <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
-                                <field name="issqn_valor"/>
+                                <group>
+                                    <field name="issqn_tipo"/>
+                                    <field name="service_type_id" attrs="{'required': [('product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                </group>
+                                <group>
+                                    <field name="l10n_br_issqn_deduction" />
+                                    <field name="issqn_base_calculo"/>
+                                    <field name="tax_issqn_id" />
+                                    <field name="issqn_aliquota" invisible="1" />
+                                    <field name="issqn_valor"/>
+                                </group>
                             </group>
                         </page>
                         <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">

@@ -62,8 +62,8 @@ class AccountBankStatementImport(models.TransientModel):
             return int(nosso_numero[8:19])
         elif bank == '756':
             return int(nosso_numero[:9])
-        elif bank == '033':
-            return int(nosso_numero[:-1])
+        elif bank == '033':  # Santander
+            return int(str(nosso_numero)[:-1])
         elif bank == '748':
             return int(nosso_numero[:-1])
         elif bank == '001':
@@ -85,8 +85,8 @@ class AccountBankStatementImport(models.TransientModel):
             from cnab240.bancos import cecred
             return cecred
         elif bank == '341':
-            from cnab240.bancos import itau
-            return itau
+            from cnab240.bancos import itauRetorno
+            return itauRetorno
         elif bank == '033':
             from cnab240.bancos import santander
             return santander

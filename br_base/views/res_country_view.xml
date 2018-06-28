@@ -51,7 +51,7 @@
     </record>
 
     <record id="action_br_base_res_region_form" model="ir.actions.act_window">
-        <field name="name">Regiões</field>
+        <field name="name">Regions</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.region</field>
         <field name="view_mode">tree,form</field>
