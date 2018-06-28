@@ -41,21 +41,22 @@ class PaymentCnabInformation(models.Model):
         ('000', u'CC')
     ], string=u'Operation Code')
 
-    entry_mode = fields.Selection([('01', u'Current Account Credit'),
-                                   ('03', 'Transfer to Other Banks (DOC, TED CIP e TED STR)'),
-                                   ('05', 'Saving Account Credit'),
-                                   ('10', 'Payment Order/acquittance'),
-                                   ('11', 'Barcode paymet'),  # ajeitar
-                                   ('16', 'regular DARF'),  # traduzir daqui pra baixo - se necessário
-                                   ('17',  'GPS - Guia de previdencia Social'),
-                                   ('18', 'Simple DARF'),
-                                   ('20', '"caixa" Autentication'),
-                                   ('22', 'GARE SP ICMS'),
-                                   ('23', 'GARE SP DR'),
-                                   ('24', 'GARE SP ITCMD'),
-                                   ('25', 'IPVA SP'),
-                                   ('26', 'LICENCIAMENTO SP'),
-                                   ('27', 'DPVAT SP')], string="Entry mode")
+    entry_mode = fields.Selection(
+        [('01', u'Current Account Credit'),
+         ('03', 'Transfer to Other Banks (DOC, TED CIP e TED STR)'),
+         ('05', 'Saving Account Credit'),
+         ('10', 'Payment Order/acquittance'),
+         ('11', 'Barcode paymet'),  # ajeitar
+         ('16', 'regular DARF'),  # traduzir daqui pra baixo - se necessário
+         ('17',  'GPS - Guia de previdencia Social'),
+         ('18', 'Simple DARF'),
+         ('20', '"caixa" Autentication'),
+         ('22', 'GARE SP ICMS'),
+         ('23', 'GARE SP DR'),
+         ('24', 'GARE SP ITCMD'),
+         ('25', 'IPVA SP'),
+         ('26', 'LICENCIAMENTO SP'),
+         ('27', 'DPVAT SP')], string="Entry mode")
 
     warning_code = fields.Selection([
         ('0', u'No Warning'),
@@ -76,77 +77,81 @@ class PaymentCnabInformation(models.Model):
 
     discount_value = fields.Float('Discount Value', default='00.00')
 
-    mov_type = fields.Selection([('0', 'Inclusion'),
-                                ('5', 'Modification'),
-                                ('9', 'Exclusion')],
-                                string='Movimentation Type', default='0')
+    mov_type = fields.Selection(
+        [('0', 'Inclusion'),
+         ('5', 'Modification'),
+         ('9', 'Exclusion')],
+        string='Movimentation Type', default='0')
 
-    mov_instruc = fields.Selection([
-                                ('00', 'Inclusion of Released Detail Register'),
-                                ('09', 'Inclusion of Blocked Detail Register(Pending Authorization)'),
-                                ('10', 'Payment Modification - Released to Blocked'),
-                                ('11', 'Payment Modification - Blocked to Released'),
-                                ('14', 'Payment Authorization'),
-                                ('33', 'Refund Chargeback')
-                                ], string='Movimentation Instrution',
-                                   default='00')
+    mov_instruc = fields.Selection(
+        [('00', 'Inclusion of Released Detail Register'),
+         ('09', 'Inclusion of Blocked Detail Register(Pending Authorization)'),
+         ('10', 'Payment Modification - Released to Blocked'),
+         ('11', 'Payment Modification - Blocked to Released'),
+         ('14', 'Payment Authorization'),
+         ('33', 'Refund Chargeback')],
+        string='Movimentation Instrution', default='00')
 
-    serv_type = fields.Selection([('03', 'Bloqueto Eletronico'),
-                                  ('10', 'pagamento de dividendos'),
-                                  ('14', 'Consulta de tributos a pagar DETRAN com RENAVAM'),
-                                  ('20', 'Provider/Fees Payment'),
-                                  ('22', 'bill and tax payment'),
-                                  ('29', 'alegacao do sacado'),
-                                  ('50', 'pagamento de sinistros segurados'),
-                                  ('60', 'Pagamento Despesas Viajante em Transito'),
-                                  ('70', 'Pagamento Autorizado'),
-                                  ('75', 'Pagamento Credenciados'),
-                                  ('80', 'Pagamento Representantes / Vendedores Autorizados'),
-                                  ('90', 'Pagamento Beneficios'),
-                                  ('98', 'Pagamentos Diversos')
-                                  ], string='Service Type')
+    serv_type = fields.Selection(
+        [('03', 'Bloqueto Eletronico'),
+         ('10', 'pagamento de dividendos'),
+         ('14', 'Consulta de tributos a pagar DETRAN com RENAVAM'),
+         ('20', 'Provider/Fees Payment'),
+         ('22', 'bill and tax payment'),
+         ('29', 'alegacao do sacado'),
+         ('50', 'pagamento de sinistros segurados'),
+         ('60', 'Pagamento Despesas Viajante em Transito'),
+         ('70', 'Pagamento Autorizado'),
+         ('75', 'Pagamento Credenciados'),
+         ('80', 'Pagamento Representantes / Vendedores Autorizados'),
+         ('90', 'Pagamento Beneficios'),
+         ('98', 'Pagamentos Diversos')],
+        string='Service Type')
 
     message2 = fields.Char(string='Note Detail', size=40, default=' '*40)
 
     agency_name = fields.Char(string='Agency Name', size=30, default=' '*30)
 
-    currency_code = fields.Selection([('02', 'US Commercial Dolar'),
-                                     ('03', 'US tourism Dolar'),
-                                     ('04', 'ITRD'),
-                                     ('05', 'IDTR'),
-                                     ('06', 'Daily UFIR'),
-                                     ('07', 'Monthly UFIR'),
-                                     ('08', 'FAJ-TR'),
-                                     ('09', 'Real')],
-                                     string="Currency code", default='09')
+    currency_code = fields.Selection(
+        [('02', 'US Commercial Dolar'),
+         ('03', 'US tourism Dolar'),
+         ('04', 'ITRD'),
+         ('05', 'IDTR'),
+         ('06', 'Daily UFIR'),
+         ('07', 'Monthly UFIR'),
+         ('08', 'FAJ-TR'),
+         ('09', 'Real')],
+        string="Currency code", default='09')
 
     message1 = fields.Char(string='Note Header', size=40, default=' '*40)
 
-    credit_hist_code = fields.Selection([('0013', 'Dividends Credit'),
-                                         ('0091', 'Casualty Payment - insurance'),
-                                         ('0109', 'Expenses Payment - Travaler in transit'),
-                                         ('0137', 'Agent/Salesman Payment'),
-                                         ('0149', 'INSS Payment'),
-                                         ('0183', 'Provider Payment'),
-                                         ('0197', 'Entry Return'),
-                                         ('0295', 'Accredited Payment'),
-                                         ('2060', 'Same Ownership Transference'),
-                                         ('0367', 'Alimony Payment'),
-                                         ('0491', 'Foresight Rescue'),
-                                         ('0493', 'Foresight Payment'),
-                                         ('0495', 'Foresight Chargeback'),
-                                         ('1070', 'Balance Transference'),
-                                         ('2214', 'Several Credits'),
-                                         ('8051', 'Provider Payment - Receipt'),
-                                         ('2039', 'Several Payments - Provider'),
-                                         ('2644', 'Benefit')],
-                                        string='History Code', default='0000')
+    credit_hist_code = fields.Selection(
+        [('0013', 'Dividends Credit'),
+         ('0091', 'Casualty Payment - insurance'),
+         ('0109', 'Expenses Payment - Travaler in transit'),
+         ('0137', 'Agent/Salesman Payment'),
+         ('0149', 'INSS Payment'),
+         ('0183', 'Provider Payment'),
+         ('0197', 'Entry Return'),
+         ('0295', 'Accredited Payment'),
+         ('2060', 'Same Ownership Transference'),
+         ('0367', 'Alimony Payment'),
+         ('0491', 'Foresight Rescue'),
+         ('0493', 'Foresight Payment'),
+         ('0495', 'Foresight Chargeback'),
+         ('1070', 'Balance Transference'),
+         ('2214', 'Several Credits'),
+         ('8051', 'Provider Payment - Receipt'),
+         ('2039', 'Several Payments - Provider'),
+         ('2644', 'Benefit')],
+        string='History Code', default='0000')
 
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
-    other_payment = fields.Many2one('l10n_br.payment_cnab', string="Other Payment Information")
+    other_payment = fields.Many2one('l10n_br.payment_cnab',
+        string="Other Payment Information")
 
     @api.one
     @api.depends('other_payment')
@@ -156,5 +161,8 @@ class PaymentOrderLine(models.Model):
         acrescimo = payment.duty_value + payment.mora_value
         self.value_final = (self.value - desconto + acrescimo)
 
-    value_final = fields.Float(string="Final Value", compute="calc_final_value", digits=(18, 2), readonly=True)
-    bank_account_id = fields.Many2one('res.partner.bank', string="Bank account")
+    value_final = fields.Float(string="Final Value",
+        compute="calc_final_value", digits=(18, 2), readonly=True)
+    bank_account_id = fields.Many2one('res.partner.bank',
+        string="Bank account")
+    
