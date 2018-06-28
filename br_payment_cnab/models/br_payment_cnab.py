@@ -157,5 +157,4 @@ class PaymentOrderLine(models.Model):
         self.value_final = (self.value - desconto + acrescimo)
 
     value_final = fields.Float(string="Final Value", compute="calc_final_value", digits=(18, 2), readonly=True)
-
-    bank_account_id = fields.Many2one('res.partner.bank_account_id', string="Bank account")
+    bank_account_id = fields.Many2one('res.partner.bank', string="Bank account")
