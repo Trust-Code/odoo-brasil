@@ -111,7 +111,7 @@ class AccountBankStatementImport(models.TransientModel):
         valor_total = Decimal('0.0')
         for lote in arquivo.lotes:
             for evento in lote.eventos:
-                valor = evento.valor_lancamento
+                valor = evento.titulo_pago
                 # Apenas liquidação  (Sicoob:6)
                 # Liquidação Banco do Brasil (6, 17)
                 # Liquidação Bradesco (6, 177)
