@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="br_payment_cnab_payment_mode_form" model="ir.ui.view">
+        <field name="name">br_payment_cnab_payment_mode_form</field>
+        <field name="model">payment.mode</field>
+        <field name="inherit_id" ref="br_account_payment.account_payment_mode_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <group name="main" position="after">
+                <notebook attrs="{'invisible': [('type', '!=', 'payable')]}">
+                    <page string="Informações CNAB de Pagamento">
+                        <group>
+                            <field name="payment_type" />
+                        </group>
+                    </page>
+                </notebook>
+            </group>
+        </field>
+    </record>
+
+</odoo>

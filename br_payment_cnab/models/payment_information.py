@@ -1,10 +1,7 @@
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-# from ..febraban.cnab import Cnab
-from odoo import models, fields, api
 
-# campo novo para decidir modo de pagamento
-# deve ser adicionado ao account.voucher
+from odoo import models, fields, api
 
 
 class PaymentInformation(models.Model):
@@ -31,7 +28,7 @@ class PaymentInformation(models.Model):
         ('13', u'Child Support/Alimony'),
         ('14', u'Income Tax Rebate'),
         ('99', u'Other')
-        ], string=u'Movimentation Purpose', required=True)
+        ], string=u'Movimentation Purpose')
 
     operation_code = fields.Selection([     # G14
         ('018', u'TED CIP'),
@@ -40,22 +37,16 @@ class PaymentInformation(models.Model):
         ('000', u'CC')
     ], string=u'Operation Code')
 
-    entry_mode = fields.Selection(
-        [('01', u'Current Account Credit'),
-         ('03', 'Transfer to Other Banks (DOC, TED CIP e TED STR)'),
-         ('05', 'Saving Account Credit'),
-         ('10', 'Payment Order/acquittance'),
-         ('11', 'Barcode paymet'),  # ajeitar
-         ('16', 'regular DARF'),  # traduzir daqui pra baixo - se necessário
-         ('17',  'GPS - Guia de previdencia Social'),
-         ('18', 'Simple DARF'),
-         ('20', '"caixa" Autentication'),
-         ('22', 'GARE SP ICMS'),
-         ('23', 'GARE SP DR'),
-         ('24', 'GARE SP ITCMD'),
-         ('25', 'IPVA SP'),
-         ('26', 'LICENCIAMENTO SP'),
-         ('27', 'DPVAT SP')], string="Entry mode")
+    payment_type = fields.Selection(
+        [('01', 'TED - Transferência Bancária'),
+         ('02', 'DOC - Transferência Bancária'),
+         ('03', 'Pagamento de Títulos'),
+         ('04', 'Tributos com código de barras'),
+         ('05', 'GPS - Guia de previdencia Social'),
+         ('06', 'DARF Normal'),
+         ('07', 'DARF Simples'),
+         ('08', 'FGTS')],
+        string="Tipo de Operação")
 
     warning_code = fields.Selection([
         ('0', u'No Warning'),
@@ -143,4 +134,4 @@ class PaymentInformation(models.Model):
          ('8051', 'Provider Payment - Receipt'),
          ('2039', 'Several Payments - Provider'),
          ('2644', 'Benefit')],
-        string='History Code', default='0000')
+        string='History Code')

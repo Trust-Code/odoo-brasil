@@ -49,6 +49,7 @@
                             <field name="name"/>
                             <field name="user_id" />
                             <field name="amount_total" />
+                            <field name="type" />
                         </group>
 
                         <group name='data'>

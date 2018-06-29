@@ -21,11 +21,11 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="payment_type"/>
                             <field name="mov_finality"/>
                             <field name="currency_code"/>
                             <field name="lote_serv"/>
                             <field name="reg_type"/>
-                            <field name="entry_mode"/>
                             <field name="mov_instruc"/>
                             <field name="message2"/>
                             <field name="rebate_value" widget="monetary"/>

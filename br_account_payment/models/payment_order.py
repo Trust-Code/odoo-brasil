@@ -18,11 +18,12 @@ class PaymentOrderLine(models.Model):
     name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
         'payment.order', string="Ordem de Pagamento", ondelete="cascade")
+    type = fields.Selection(
+        related='payment_order_id.type', readonly=True, store=True)
     move_line_id = fields.Many2one(
         'account.move.line', string=u'Linhas de Cobrança')
     partner_id = fields.Many2one(
-        'res.partner', related='move_line_id.partner_id',
-        string="Parceiro", readonly=True)
+        'res.partner', string="Parceiro", readonly=True)
     move_id = fields.Many2one('account.move', string=u"Lançamento de Diário",
                               related='move_line_id.move_id', readonly=True)
     nosso_numero = fields.Char(string=u"Nosso Número", size=20)
@@ -49,6 +50,9 @@ class PaymentOrder(models.Model):
             item.amount_total = amount_total
 
     name = fields.Char(max_length=30, string="Nome", required=True)
+    type = fields.Selection(
+        [('receivable', 'Recebível'), ('payable', 'Pagável')],
+        string="Tipo de Ordem", default='receivable')
     user_id = fields.Many2one('res.users', string=u'Responsável',
                               required=True)
     payment_mode_id = fields.Many2one('payment.mode',

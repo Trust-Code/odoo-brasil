@@ -2,16 +2,17 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
+from datetime import datetime
 from odoo import api, fields, models
-from odoo.addons.br_payment_cnab.other.cnab240 import Cnab_240
+from odoo.addons.br_payment_cnab.serialize.cnab240 import Cnab_240
 
 
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
     @api.multi
-    def gerar_cnab(self):
-
+    def action_generate_payable_cnab(self):
+        self.data_emissao_cnab = datetime.now()
         cnab = Cnab_240(self)
         cnab.create_cnab(self.line_ids)
         self.cnab_file = base64.b64encode(cnab.write_cnab())
@@ -26,6 +27,7 @@ class PaymentOrder(models.Model):
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
+    voucher_id = fields.Many2one('account.voucher', "Recibo Origem")
     payment_information_id = fields.Many2one(
         'l10n_br.payment_information', string="Payment Information")
 
@@ -41,4 +43,4 @@ class PaymentOrderLine(models.Model):
         string="Final Value", compute="calc_final_value",
         digits=(18, 2), readonly=True)
     bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Bank account")
+        'res.partner.bank', string="Conta p/ Transferência")
