@@ -6,3 +6,4 @@ python3-cnab
 python3-boleto
 xmlsec
 lxml >= 3.5.0, < 4
+pycnab240

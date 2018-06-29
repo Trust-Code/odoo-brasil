@@ -20,10 +20,12 @@
         'Marina Domingues <mgd.marinadomingues@gmail.com>'
     ],
     'depends': [
-        'br_boleto'
+        'br_account_payment'
     ],
     'data': [
-        'views/br_payment_cnab_views.xml',
+        'security/ir.model.access.csv',
+        'views/payment_information.xml',
         'views/payment_order.xml',
     ],
+    'application': True,
 }

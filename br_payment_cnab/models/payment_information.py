@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 # from ..febraban.cnab import Cnab
@@ -8,8 +7,8 @@ from odoo import models, fields, api
 # deve ser adicionado ao account.voucher
 
 
-class PaymentCnabInformation(models.Model):
-    _name = 'l10n_br.payment_cnab'
+class PaymentInformation(models.Model):
+    _name = 'l10n_br.payment_information'
 
     @api.multi
     def name_get(self):
@@ -145,24 +144,3 @@ class PaymentCnabInformation(models.Model):
          ('2039', 'Several Payments - Provider'),
          ('2644', 'Benefit')],
         string='History Code', default='0000')
-
-
-class PaymentOrderLine(models.Model):
-    _inherit = 'payment.order.line'
-
-    other_payment = fields.Many2one('l10n_br.payment_cnab',
-        string="Other Payment Information")
-
-    @api.one
-    @api.depends('other_payment')
-    def calc_final_value(self):
-        payment = self.other_payment
-        desconto = payment.rebate_value + payment.discount_value
-        acrescimo = payment.duty_value + payment.mora_value
-        self.value_final = (self.value - desconto + acrescimo)
-
-    value_final = fields.Float(string="Final Value",
-        compute="calc_final_value", digits=(18, 2), readonly=True)
-    bank_account_id = fields.Many2one('res.partner.bank',
-        string="Bank account")
-    

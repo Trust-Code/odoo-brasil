@@ -1,0 +1,50 @@
+<odoo>
+  <data>
+    <record id="br_payment_cnab_view" model="ir.ui.view">
+        <field name="name">trustcode.payment_other_information.tree.view</field>
+        <field name="model">l10n_br.payment_information</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml" >
+            <tree>
+                <field name="mov_finality"/>
+                <field name="lote_serv"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="br_payment_cnab_form_view" model="ir.ui.view">
+        <field name="name">trustcode.payment_other_form_information.view</field>
+        <field name="model">l10n_br.payment_information</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <form name= "Payment Information">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="mov_finality"/>
+                            <field name="currency_code"/>
+                            <field name="lote_serv"/>
+                            <field name="reg_type"/>
+                            <field name="entry_mode"/>
+                            <field name="mov_instruc"/>
+                            <field name="message2"/>
+                            <field name="rebate_value" widget="monetary"/>
+                            <field name="discount_value" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="warning_code"/>
+                            <field name="agency_name"/>
+                            <field name="operation_code"/>
+                            <field name="mov_type"/>
+                            <field name="serv_type"/>
+                            <field name="message1"/>
+                            <field name="duty_value" widget="monetary"/>
+                            <field name="mora_value" widget="monetary"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+  </data>
+</odoo>

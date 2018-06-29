@@ -1,4 +1,5 @@
-
+# © 2018 Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
 from odoo import api, fields, models
@@ -20,3 +21,24 @@ class PaymentOrder(models.Model):
         'res.company', string='Company', required=True, ondelete='restrict',
         default=lambda self: self.env['res.company']._company_default_get(
             'account.payment.mode'))
+
+
+class PaymentOrderLine(models.Model):
+    _inherit = 'payment.order.line'
+
+    payment_information_id = fields.Many2one(
+        'l10n_br.payment_information', string="Payment Information")
+
+    @api.depends('payment_information_id')
+    def calc_final_value(self):
+        for item in self:
+            payment = item.payment_information_id
+            desconto = payment.rebate_value + payment.discount_value
+            acrescimo = payment.duty_value + payment.mora_value
+            item.value_final = (item.value - desconto + acrescimo)
+
+    value_final = fields.Float(
+        string="Final Value", compute="calc_final_value",
+        digits=(18, 2), readonly=True)
+    bank_account_id = fields.Many2one(
+        'res.partner.bank', string="Bank account")
