@@ -19,8 +19,9 @@
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
+                            <field name="carrier_id" string="Método de Entrega" />
                             <field name="freight_responsibility"/>
-                            <field name="carrier_id"/>
+                            <field name="shipping_supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="vehicle_rntc"/>
@@ -71,8 +72,9 @@
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
+                            <field name="carrier_id" string="Método de Entrega" />
                             <field name="freight_responsibility"/>
-                            <field name="carrier_id"/>
+                            <field name="shipping_supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="vehicle_rntc"/>
