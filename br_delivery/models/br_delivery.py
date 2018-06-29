@@ -45,8 +45,6 @@ class BrDeliveryShipment(models.Model):
     carrier_tracking_ref = fields.Char(u'Carrier Tracking Ref', size=32)
     number_of_packages = fields.Integer(u'Number of Packages')
 
-    # TODO Esta função deveria estar aqui?
-    # @api.depends('product_id', 'move_lines')
     def _cal_weight(self):
         for picking in self:
             picking.weight = sum(move.weight for move in picking.move_lines

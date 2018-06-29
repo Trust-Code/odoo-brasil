@@ -6,3 +6,4 @@ from . import sale
 from . import br_delivery
 from . import delivery
 from . import stock
+from . import account_invoice

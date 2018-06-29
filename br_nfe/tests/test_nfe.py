@@ -263,7 +263,7 @@ class TestNFeBrasil(TransactionCase):
             'invoice_line_ids': invoice_line_data,
             'product_serie_id': self.serie.id,
             'freight_responsibility': '0',
-            'carrier_id': self.partner_juridica.id,
+            'shipping_supplier_id': self.partner_juridica.id,
         }
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
