@@ -45,7 +45,8 @@ class AccountInvoice(models.Model):
          ('2', u'2 - Terceiros'),
          ('9', u'9 - Sem Frete')],
         u'Modalidade do frete', default="9")
-    carrier_id = fields.Many2one('res.partner', 'Transportadora')
+    carrier_id = fields.Many2one('delivery.carrier', 'Método de Entrega')
+    shipping_supplier_id = fields.Many2one('res.partner', 'Transportadora')
     vehicle_plate = fields.Char(u'Placa do Veículo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
     vehicle_rntc = fields.Char('RNTC', size=20)
@@ -77,7 +78,7 @@ class AccountInvoice(models.Model):
         res['valor_seguro'] = inv.total_seguro
 
         res['modalidade_frete'] = inv.freight_responsibility
-        res['transportadora_id'] = inv.carrier_id.id
+        res['transportadora_id'] = inv.shipping_supplier_id.id
         res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
         res['uf_veiculo'] = inv.vehicle_state_id.code
         res['rntc'] = inv.vehicle_rntc
