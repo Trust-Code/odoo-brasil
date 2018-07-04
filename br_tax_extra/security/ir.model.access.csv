@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_br_tax_extra_br_tax_extra,br_tax_extra.br_tax_extra,model_br_tax_extra_br_tax_extra,,1,0,0,0

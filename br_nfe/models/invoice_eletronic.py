@@ -745,7 +745,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
-        if self.model not in ('55', '65'):
+        if self.model not in ('55', '65') or self.emissao_doc == '2':
             return
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
@@ -782,7 +782,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
-        if self.model not in ('55', '65') or self.state in (
+        if self.emissao_doc == '2' or self.model not in ('55', '65') or self.state in (
            'done', 'denied', 'cancel'):
             return
 

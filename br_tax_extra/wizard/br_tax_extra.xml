@@ -1,0 +1,62 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="br_extra_tax_wizard">
+            <field name="name">br.tax.extra.wizard</field>
+            <field name="model">br.tax.extra</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="release_type" widget="radio"/>
+                                <field name="create_voucher"/>
+                                <field name="partner_id" attrs="{'invisible': [('create_voucher','=',False)],
+                                    'required':[('create_voucher','=',True)]}"/>
+                                <field name="journal_id" attrs="{'invisible': [('create_voucher','=',False)],
+                                    'required':[('create_voucher','=',True)]}"/>
+                            </group>
+                            <group>
+                                <field name="purchase_orders" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="total_icmsst_frete_manual"/>
+                            </group>
+                        </group>
+                        <field name="extra_tax_lines" mode="tree" options="{'no_create': True}">
+                            <tree string="Custos Extras" editable="bottom" create="0" delete="0">
+                                <field name="product_id" readonly="1"/>
+                                <field name="tax_ids" widget="many2many_tags" options="{'no_create': True}" invisible="1"/>
+                                <field name="qty_received" readonly="1"/>
+                                <field name="product_po_value" readonly="1"/>
+                                <field name="product_po_unit_cost" readonly="1"/>
+                                <field name="product_mva" invisible="1"/>
+                                <field name="icms_st_aliquota" invisible="1"/>
+                                <field name="icms_st_valor" invisible="1"/>
+                                <field name="icms_valor_manual"/>
+                                <field name="icms_st_valor_manual"/>
+                                <field name="icms_st_frete_valor_manual"/>
+                                <field name="product_extra_cost" readonly="1"/>
+                                <field name="product_total_cost" readonly="1"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button name="compute_extra_cost" clas="oe_highlight" type="object" string="Lançar"/>
+                        <button string="Cancelar" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="br_extra_tax_action">
+            <field name="name">Taxas Extras</field>
+            <field name="res_model">br.tax.extra</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="br_tax_extra_wizard" name="Lançar Taxas Extras"
+                  action="br_extra_tax_action"
+                  parent="br_account_einvoice_import.br_einvoice_import"/>
+
+    </data>
+</odoo>

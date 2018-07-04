@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <record id="br_dfe_query_nsu_import_invoice" model="ir.ui.view">
+            <field name="name">Documentos de Retorno / DF-e</field>
+            <field name="model">sped.dfe.query.nsu</field>
+            <field name="inherit_id" ref="br_dfe.br_dfe_query_nsu"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="import_xml_to_invoice" type="object" class="btn-primary" string="Importar Arquivo com Assistente"
+                    attrs="{'invisible': ['|',('nsu_type','not in', ['nfe', 'res_nfe']),('nfe_state','!=','1')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='xml']" position="after">
+                    <field name="doc_released"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="br_dfe_query_nsu_tree_import_invoice" model="ir.ui.view">
+            <field name="name">Lista de Documentos de Retorno / DF-e</field>
+            <field name="model">sped.dfe.query.nsu</field>
+            <field name="inherit_id" ref="br_dfe.br_dfe_query_nsu_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='evento_manifestado']" position="after">
+                    <button name="import_xml_to_invoice" type="object" string="Importar XML"
+                            icon="fa-magic" attrs="{'invisible': ['|',('nsu_type','not in',['res_nfe', 'nfe'])]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

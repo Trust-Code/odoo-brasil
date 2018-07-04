@@ -32,17 +32,15 @@ class InvoiceEletronic(models.Model):
         u'Nome', size=100, required=True, readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', readonly=True, states=STATE)
-    state = fields.Selection(
-        [('draft', u'Provisório'),
-         ('edit', 'Editar'),
-         ('error', 'Erro'),
-         ('done', 'Enviado'),
-         ('cancel', 'Cancelado')],
-        string=u'State', default='draft', readonly=True, states=STATE)
-    tipo_operacao = fields.Selection(
-        [('entrada', 'Entrada'),
-         ('saida', 'Saída')],
-        string=u'Tipo de Operação', readonly=True, states=STATE)
+    #state byothers deve ser usado quando o documento for emitido pela outra parte
+    state = fields.Selection([('draft', u'Provisório'), ('edit', 'Editar'), ('error', 'Erro'), ('done', 'Enviado'),
+         ('cancel', 'Cancelado'), ('byothers', 'Emitida Pela Outra Parte')], string=u'State', default='draft',
+                             readonly=True, states=STATE)
+    tipo_operacao = fields.Selection([('entrada', 'Entrada'), ('saida', 'Saída')], string=u'Tipo de Operação',
+                                     readonly=True, states=STATE)
+    emissao_doc = fields.Selection([('1', u'Emissão Própria'), ('2', u'Emitida Pela Outra Parte'),],
+                                   u'Indicador do Emitente', readonly=True,
+        states=STATE, required=False, default='1')
     model = fields.Selection(
         [('55', u'55 - NFe'),
          ('65', u'65 - NFCe'),

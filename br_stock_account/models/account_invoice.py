@@ -23,7 +23,7 @@ class AccountInvoice(models.Model):
         self.total_despesas = sum(l.outras_despesas for l in lines)
         self.amount_total = self.total_bruto - self.total_desconto + \
             self.total_tax + self.total_frete + self.total_seguro + \
-            self.total_despesas
+            self.total_despesas - self.icms_des_value
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign

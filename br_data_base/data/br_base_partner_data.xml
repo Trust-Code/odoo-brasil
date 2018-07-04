@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="base.res_partner_sefaz_am" model="res.partner">
+            <field name="name">SECRETARIA DE ESTADO DA FAZENDA SEFAZ</field>
+            <field name="comercial_company_name">SECRETARIA DE ESTADO DA FAZENDA SEFAZ - AM</field>
+            <field name="legal_name">SECRETARIA DE ESTADO DA FAZENDA SEFAZ - AM</field>
+            <field name="tz">America/Manaus</field>
+            <field name="client">True</field>
+            <field name="supplier">True</field>
+            <field name="street">Av Nhamunda</field>
+            <field name="number">586</field>
+            <field name="zip">69020-190</field>
+            <field name="city">Manaus</field>
+            <field name="state_id">74</field>
+            <field name="country_id">31</field>
+            <field name="phone">(92)3622-3907</field>
+            <field name="is_company">True</field>
+            <field name="cnpj_cpf">04.312.377/0001-37</field>
+        </record>
+    </data>
+</odoo>

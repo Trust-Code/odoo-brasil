@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="import_xml_wizard_view" model="ir.ui.view">
+        <field name="name">import.xml.wizard</field>
+        <field name="model">import.xml.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Escolha a NFe">
+                <group>
+                    <field name="nfe_xml"/>
+                    <field name="data_entrada"/>
+                    <field name="localiza_produto" />
+                    <field name="cnpj" readonly="1"/>
+                    <field name="not_found_product" attrs="{'invisible':[('confirma','=',False)]}" mode="tree,kanban">
+                        <form string="Produtos não encontrados">
+                            <group>
+                                <field name="name"/>
+                                <field name="product_invoice" domain="[('invoice_id','=',fatura)]"/>
+                                <field name="fatura" readonly="1"/>
+                            </group>
+                        </form>
+                        <tree>
+                            <field name="name"/>
+                            <field name="product_invoice" domain="[('invoice_id','=',fatura)]"/>
+                        </tree>
+                    </field>
+                </group>
+                <group>
+                    <field name="confirma" readonly="1"/>
+                </group>
+                <group>
+                    <button name="consulta_produtos_nfe" type="object" string="Importar NFe" attrs="{'invisible':[('confirma','=',True)]}"/>
+                    <button name="consulta_nfe" type="object" string="Importar NFe/CTe" attrs="{'invisible':[('confirma','=',False)]}"/>
+                </group>
+                <footer>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="open_wizard_xml_action_id" model="ir.actions.act_window">
+        <field name="name">Abrir wizard nfe</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">import.xml.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

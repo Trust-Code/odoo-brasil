@@ -155,22 +155,34 @@
             <field name="model">invoice.eletronic</field>
             <field name="arch" type="xml">
                 <form string="Documento Eletrônico">
-                    <header>
-                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
-                        <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
-                        <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
-                        <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
-                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
+                    <header attrs="{'invisible':[('emissao_doc','=','2')]}">
+                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight" attrs="{'invisible':[('emissao_doc','=','2')]}"/>
+                        <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object" attrs="{'invisible':[('emissao_doc','=','2')]}"/>
+                        <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"
+                                attrs="{'invisible':[('emissao_doc','=','2')]}"/>
+                        <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"
+                                attrs="{'invisible':[('emissao_doc','=','2')]}"/>
+                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': ['|',('state', '!=', 'done'),('emissao_doc','=','2')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
-                    <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
+                    <div name="alertas" id="alertas-nfe-saida" attrs="{'invisible':[('emissao_doc','=','2')]}"
+                         class="alert alert-info" role="alert" style="margin-bottom:0px;">
                         <div class="row">
-                            <div class="col-md-6 col-md-offset-1">
+                            <div class="col-md-6 col-md-offset-1" >
                                 <b>Situação: </b><field name="codigo_retorno" class="oe_inline" readonly="1"/><br />
                                 <b>Mensagem: </b><field name="mensagem_retorno"  class="oe_inline" readonly="1" />
                             </div>
                         </div>
                     </div>
+                    <div name="mensagens-entrada" class="alert alert-success" role="alert"
+                        attrs="{'invisible':[('emissao_doc','!=','2')]}">
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-1" >
+                                <b>Documento Eletrônico emitido por terceiro.</b>
+                            </div>
+                        </div>
+                    </div>
+
                     <sheet string="Documento Eletronico">
                         <group>
                             <group>
@@ -180,10 +192,11 @@
                                 <field name="partner_shipping_id"/>
                             </group>
                             <group>
-                                <field name="tipo_operacao" />
-                                <field name="payment_term_id"/>
+                                <field name="emissao_doc"/>
+                                <field name="tipo_operacao"/>
+                                <field name="payment_term_id" attrs="{'invisible':[('emissao_doc','=','2')]}"/>
                                 <field name="fiscal_position_id"/>
-                                <field name="email_sent" />
+                                <field name="email_sent" attrs="{'invisible':[('emissao_doc','=','2')]}"/>
                             </group>
                         </group>
                         <notebook>
@@ -194,12 +207,12 @@
                                         <field name="name"/>
                                         <field name="company_id"/>
                                         <field name="currency_id" invisible="1"/>
-                                        <field name="serie"/>
+                                        <field name="serie" attrs="{'invisible':[('emissao_doc','=','2')]}"/>
                                         <field name="serie_documento"/>
                                         <field name="numero"/>
                                         <field name="numero_controle"/>
                                         <field name="xml_to_send_name" invisible="1"/>
-                                        <field name="xml_to_send" filename="xml_to_send_name"/>
+                                        <field name="xml_to_send" filename="xml_to_send_name" attrs="{'invisible':[('emissao_doc','=','2')]}"/>
                                     </group>
                                     <group>
                                         <field name="data_emissao"/>
