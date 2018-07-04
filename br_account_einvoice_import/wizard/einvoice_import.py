@@ -536,7 +536,6 @@ class BrAccountInvoiceImport(models.Model):
         :return: retorna dicionário com valores para criação da linha do pedido de compras
         '''
         price_unit = product.product_price_unit
-        import pudb;pu.db
         if self.ignore_icms_st == False:
             price_unit += self.round_value(((product.icms_st_valor + product.inv_prod_frete_vlr + product.ipi_valor -
                                              product.icms_valor_desonerado - product.inv_prod_desc)
