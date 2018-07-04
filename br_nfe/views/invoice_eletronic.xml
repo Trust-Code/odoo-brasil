@@ -91,6 +91,9 @@
                     <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline" readonly="1"/>
                 </span>
             </field>
+            <xpath expr="//div[@name='mensagens-entrada']/div/div" position="inside">
+                <br /><b>Chave NFe:</b> <field name="chave_nfe" class="oe_inline" readonly="1"/><br />
+            </xpath>
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('65'))]}" />

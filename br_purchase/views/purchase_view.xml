@@ -56,6 +56,8 @@
             <field name="amount_tax" position="before">
                 <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
                 <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="total_des_icms" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="valor_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
         </field>
     </record>

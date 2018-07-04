@@ -6,8 +6,10 @@ account_account_1020,1020,Caixa Geral,False,,account.data_account_type_liquidity
 account_account_1030,1030,Banco (Cadastro Automático),False,,account.data_account_type_liquidity,br_account_chart_template
 account_account_1040,1040,Banco Aplicação,False,,account.data_account_type_liquidity,br_account_chart_template
 account_account_1100,1100,Produtos em Estoque,False,,account.data_account_type_current_assets,br_account_chart_template
-account_account_1101,1101,Matéria Prima em Estoque,False,,account.data_account_type_current_assets,br_account_chart_template
-account_account_1102,1102,Materiais de Uso e Consumo em Estoque,False,,account.data_account_type_current_assets,br_account_chart_template
+account_account_1101,1101,Conta Provisória de Estoque (Recebidos),False,,account.data_account_type_current_assets,br_account_chart_template
+account_account_1102,1102,Conta Provisória de Estoque (Entregue),False,,account.data_account_type_current_assets,br_account_chart_template
+account_account_1103,1103,Matéria Prima em Estoque,False,,account.data_account_type_current_assets,br_account_chart_template
+account_account_1104,1104,Materiais de Uso e Consumo em Estoque,False,,account.data_account_type_current_assets,br_account_chart_template
 account_account_1200,1200,Imobilizados,False,,account.data_account_type_fixed_assets,br_account_chart_template
 account_account_1300,1300,Intangíveis,False,,account.data_account_type_fixed_assets,br_account_chart_template
 account_account_2000,2000,Fornecedores (a Pagar),True,,account.data_account_type_payable,br_account_chart_template

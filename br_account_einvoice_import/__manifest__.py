@@ -5,13 +5,17 @@
     'name': "Brazilian Localization Import Eletronic Invoice",
 
     'summary': """
-        Criação de Faturas através da importação de Documentos Eletrônicos por meio
-        de arquivo XML
+        Importação de Documentos Eletrônicos por meio de arquivo XML
         """,
 
     'description': """
-        Criação de Faturas através da importação de Documentos Eletrônicos por meio
-        de arquivo XML
+        Permite importar Documentos Eletrônicos(NF-e) através do XML
+        Importando um XML serão criados os registros de:\n
+        - Pedido de Compras\n
+        - Faturas\n
+        - Documentos Eletrônicos\n
+        - Movimentos Contábeis\n
+        
     """,
 
     'author': 'Raphael Rodrigues <raphael0608@gmail.com>',
@@ -26,7 +30,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
         'wizard/einvoice_import.xml',

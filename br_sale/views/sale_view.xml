@@ -13,6 +13,11 @@
             <field name="fiscal_position_id" position="attributes">
                 <attribute name="domain">['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]</attribute>
             </field>
+            <xpath expr="//field[@name='fiscal_position_id']" position="replace"/>
+            <xpath expr="//group/group" position="inside">
+                <field name="fiscal_position_id" string="Operação" domain="[('fiscal_type','=','saida')]"
+                        options="{'no_create': True}"/>
+            </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
                 <field name="icms_rule_id" invisible="1" />
                 <field name="ipi_rule_id" invisible="1" />

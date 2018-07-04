@@ -60,11 +60,7 @@ class InvoiceEletronic(models.Model):
             "target": "new",
             "context": {'default_eletronic_doc_id': self.id},
         }
-    emissao_doc = fields.Selection([
-        ('1', u'1 - Emissão Própria'),
-        ('2', u'2 - Terceiros'),
-        ], u'Indicador do Emitente', readonly=True,
-        states=STATE, required=False, default='1')
+
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.tipo_ambiente",

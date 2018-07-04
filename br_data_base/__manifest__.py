@@ -16,6 +16,7 @@
         'data/res.country.csv',
         'data/res.country.state.csv',
         'data/br_base_data.xml',
+        'data/br_base_partner_data.xml',
     ],
     'demo': [],
     'category': 'Localisation',

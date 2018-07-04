@@ -38,7 +38,7 @@ class PurchaseOrder(models.Model):
         return res
 
     valor_desconto = fields.Float(
-        compute='_amount_all', string=u'Vlr. Desc. (-)', store=True,
+        compute='_amount_all', string=u'Vlr. Desc. ( - )', store=True,
         digits=dp.get_precision('Account'))
     total_des_icms = fields.Float(string='ICMS Desonerado Total ( - )', readonly=True,
                                   compute='_amount_all', digits=dp.get_precision('Account'), store=True,
@@ -116,7 +116,7 @@ class PurchaseOrderLine(models.Model):
                 'valor_bruto': valor_bruto,
             })
 
-    discount = fields.Float(string='Disconto (%)', digits=dp.get_precision('Discount'), default=0.0)
+    discount = fields.Float(string='Disconto ( % )', digits=dp.get_precision('Discount'), default=0.0)
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
     icms_csosn_simples = fields.Char(string="CSOSN ICMS", size=5)
@@ -144,8 +144,7 @@ class PurchaseOrderLine(models.Model):
     mot_desoneracao_icms = fields.Selection(
         [('7', u'7 - SUFRAMA'), ('9', '9 - Outros')], string=u"Motivo da Desoneração")
     icms_des_valor = fields.Float(
-        string="Valor Desoneração ICMS", store=True,
-        compute='_compute_amount', digits=dp.get_precision('Sale Price'))
+        string="Valor Desoneração ICMS", store=True, digits=dp.get_precision('Sale Price'))
     valor_desconto = fields.Float(
         compute='_compute_discount_value', inverse='_compute_discount', string=u'Vlr. Desc. (-)',
         store=True, digits=dp.get_precision('Account'))

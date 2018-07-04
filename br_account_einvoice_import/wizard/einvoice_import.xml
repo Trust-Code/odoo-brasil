@@ -1,41 +1,5 @@
 <odoo>
     <data>
-
-        <record model="ir.ui.view" id="partner_not_found_tree">
-            <field name="name">Fornecedor Não Encontrado</field>
-            <field name="model">partner.not.found</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="legal_name"/>
-                    <field name="city_id"/>
-                    <field name="state_id"/>
-                    <field name="cnpj_cpf"/>
-                    <field name="inscr_est"/>
-                    <button name="create_partner_from_file" string="Cadastrar" type="object" class="btn-primary"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="partner_not_found_form">
-            <field name="name">Fornecedor Não Encontrado</field>
-            <field name="model">partner.not.found</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <button name="create_partner_from_file" type="object" class="btn-primary"/>
-                        <button name="compute_xml" type="object" string="Iniciar Validação do Documento"/>
-                    </header>
-                    <sheet>
-                        <field name="legal_name"/>
-                        <field name="city_id"/>
-                        <field name="state_id"/>
-                        <field name="cnpj_cpf"/>
-                        <field name="inscr_est"/>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
         <record model="ir.ui.view" id="payment_discovery_tree">
             <field name="name">Vencimentos</field>
             <field name="model">br.account.invoice.import.payment</field>
@@ -57,22 +21,23 @@
             <field name="model">product.not.found</field>
             <field name="arch" type="xml">
                 <tree decoration-danger="product_validate==False" decoration-primary="product_validate==True">
-                    <field name="inv_prod_ean" invisible="1"/>
+                    <field name="product_validate" invisible="1"/>
+                    <field name="product_match" invisible="1"/>
                     <field name="inv_prod_ncm" invisible="1"/>
                     <field name="currency_id" invisible="1"/>
-                    <field name="product_validate" invisible="1"/>
-                    <field name="inv_prod_name"/>
+                    <field name="cfop_id"/>
                     <field name="inv_prod_code"/>
+                    <field name="inv_prod_name"/>
+                    <field name="product_id"/>
                     <field name="inv_prod_uom"/>
                     <field name="inv_prod_qty"/>
                     <field name="inv_prod_price_unit"/>
-                    <field name="inv_prod_vlr" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                    <field name="product_id"/>
-                    <field name="aliquota_mva"/>
-                    <field name="product_hint" domain="['|',('fiscal_classification_id.code', '=', inv_prod_ncm),
-                                ('barcode', '=', inv_prod_ean)]" invisible="1"/>
+                    <field name="product_uom_fraction"/>
+                    <field name="product_uom_qty"/>
+                    <field name="product_price_unit"/>
                 </tree>
             </field>
+
         </record>
 
         <record model="ir.ui.view" id="br_account_invoice_import_wizard_tree">
@@ -97,27 +62,40 @@
                 <form string="Importação de Fatura Através de Arquivo XML">
                     <header>
                         <field name="procedure_state" widget="statusbar"/>
+                        <button name="create_partner_vals" type="object" string="Cadastrar Fornecedor"
+                            attrs="{'invisible': [('partner_not_found', '!=', True)]}"/>
                         <button name="validate_xml_file" type="object" string="Validar Arquivo XML"
                             attrs="{'invisible': ['|',('xml_file', '=', False),('procedure_state', '!=', 'draft')]}"/>
                         <button name="validate_products" type="object" string="Validar Produtos"
                             attrs="{'invisible': [('procedure_state', '!=', 'product_check')]}"/>
                         <button name="compute_payments" type="object" string="Buscar Pagamentos"
-                            attrs="{'invisible': [('procedure_state', '!=', 'payment_check')]}"/>
+                            attrs="{'invisible': ['|',('procedure_state', '!=', 'payment_check'),
+                            ('payment_create_type','=','manual')]}"/>
                         <button name="check_amount_payments" type="object" string="Validar Pagamentos"
                             attrs="{'invisible': [('procedure_state', '!=', 'payment_check')]}"/>
                         <button name="import_edoc" type="object" string="Importar Dados"
                             attrs="{'invisible': [('procedure_state', '!=', 'confirmed')]}"/>
                     </header>
+                    <div class="alert alert-info" role="success" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|',('procedure_state', '!=', 'draft'),('xml_file', '!=', False)]}">
+                        Faça o Upload do arquivo XML e clique no botão 'Validar Arquivo XML'
+                        para iniciar a importação do Documento Eletrônico.
+                    </div>
+                    <div class="alert alert-info" role="success" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|',('procedure_state', '!=', 'draft'),('xml_file', '=', False)]}">
+                        Clique em Validar Arquivo de XML para iniciar o processamento das informações
+                        contidas no XML.
+                    </div>
+                    <div class="alert alert-info" role="success" style="margin-bottom:0px;"
+                        attrs="{'invisible': [('procedure_state', '!=', 'partner_check')]}">
+                        O Parceiro/Fornecedor não foi localizado no sistema. Deseja
+                        cadastrar o fornecedor conforme informações contidas no arquivo XML?
+                    </div>
                     <div class="alert alert-info" role="alert" style="margin-bottom:0px;"
                         attrs="{'invisible': ['|',('payment_create_type', '!=', 'manual'),
                         ('procedure_state', '!=', 'payment_check')]}">
                         Não foram localizados dados de cobrança no documento eletrônico, informe os
                         dados da(s) cobrança(s) manualmente.
-                    </div>
-                    <div class="alert alert-info" role="success" style="margin-bottom:0px;"
-                        attrs="{'invisible': [('procedure_state', '!=', 'draft')]}">
-                        Faça o Upload do arquivo XML e clique no botão 'Validar Arquivo XML'
-                        para iniciar a importação do Documento Eletrônico.
                     </div>
                     <div class="alert alert-info" role="success" style="margin-bottom:0px;"
                         attrs="{'invisible': [('procedure_state', '!=', 'confirmed')]}">
@@ -135,45 +113,71 @@
                                 'invisible': [('xml_file', '!=', False)]}">
                             <field name="xml_file"/>
                         </group>
-                        <group string="Informações da Fatura">
+                        <group string="Resumo do Documento">
                             <group>
                                 <field name="partner_id" colspan="2"/>
+                                <field name="nro_nfe" string="Doc. Eletrônico n°" readonly="1"/>
+                                <field name="dt_emissao" string="Data de Emissão" readonly="1"/>
+                                <field name="ignore_icms_st"
+                                       attrs="{'invisible': [('procedure_state', '!=', 'payment_check')]}"/>
                             </group>
                             <group>
                                 <field name="geral_cfop_id" colspan="2" domain="[('type', '=', 'input')]"
                                    attrs="{'invisible': [('procedure_state', '!=', 'product_check')]}"/>
+                                <field name="ignore_discount"/>
                             </group>
                             <field name="cnpj" attrs="{'invisible': [('cnpj', '=', False)]}"/>
                         </group>
-                        <notebook attrs="{'invisible': [('procedure_state', '!=', 'partner_check')]}">
-                            <page string="Fornecedor">
-                            <field name="partner_not_found" mode='tree' options="{'no_create': True}"
-                                   attrs="{'invisible': [('procedure_state', '!=', 'partner_check')]}">
-                                <tree>
-                                    <field name="legal_name"/>
-                                    <field name="city_id"/>
-                                    <field name="state_id"/>
-                                    <field name="cnpj_cpf"/>
-                                    <field name="inscr_est"/>
-                                    <button name="create_partner_from_file" type="object" string="Cadastrar Fornecedor"
-                                        style="color:green" icon="fa-check-square"/>
-                                </tree>
-                            </field>
-                            </page>
-                        </notebook>
-                        <notebook attrs="{'invisible': [('procedure_state', '!=', 'product_check')],
+                        <notebook attrs="{'invisible': [('procedure_state', 'not in', ['product_check', 'confirmed'])],
                                         'readonly': [('procedure_state', '!=', 'product_check')]}">
                             <page string="Produtos">
-                                <field name="product_not_found" mode="tree" editable="top"
-                                       attrs="{'invisible': [('procedure_state', '!=', 'product_check')],
+                                <field name="product_not_found" mode="tree"
+                                       attrs="{'invisible': [('procedure_state', 'not in', ['product_check', 'confirmed'])],
                                             'readonly': [('procedure_state', '!=', 'product_check')]}">
+                                    <tree create="0" delete="0" decoration-danger="product_validate==False"
+                                          decoration-primary="product_validate==True">
+                                        <field name="product_validate" invisible="1"/>
+                                        <field name="product_match" invisible="1"/>
+                                        <field name="inv_prod_ncm" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="new_product_create" invisible="1"/>
+                                        <field name="product_uom" invisible="1"/>
+                                        <field name="product_match" invisible="1"/>
+                                        <field name="new_product_name" invisible="1"/>
+                                        <field name="new_product_list_price" invisible="1"/>
+                                        <field name="new_product_uom" invisible="1"/>
+                                        <field name="new_product_ean" invisible="1"/>
+                                        <field name="cfop_id"/>
+                                        <field name="inv_prod_code"/>
+                                        <field name="inv_prod_name"/>
+                                        <field name="product_id"/>
+                                        <field name="inv_prod_uom"/>
+                                        <field name="inv_prod_qty"/>
+                                        <field name="inv_prod_price_unit"/>
+                                        <field name="product_uom_fraction"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_price_unit"/>
+                                    </tree>
                                     <form string="Produtos">
+                                        <field name="new_product_create" invisible="1"/>
                                         <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                                            attrs="{'invisible': [('product_match', '==', True)]}">
+                                            attrs="{'invisible': ['|',('product_match', '==', True),('new_product_create', '=', True)]}">
                                             O produto não foi encontrado deseja
                                             <button name="create_product" type="object" string="criar um produto" class="label label-primary"/>
                                             apartir do documento eletrônico ou selecione um produto correspondente no formulário.
+                                            Para criar um novo produto informe a Unid. de Medida para controle.
                                         </div>
+                                        <group string="Produto a Cadastrar" attrs="{'invisible': ['|',('new_product_create', '!=', True),('product_match', '==', True)]}">
+                                            <group>
+                                                <field name="new_product_name"/>
+                                                <field name="new_product_list_price"/>
+                                            </group>
+                                            <group>
+                                                <field name="new_product_uom"/>
+                                                <field name="new_product_ean"/>
+                                                 <button name="confirmed_create_product" type="object" string="Confirmar Cadastro" class="label label-primary"/>
+                                            </group>
+                                        </group>
                                         <notebook>
                                             <page string="Detalhes do Produto">
                                                 <field name="inv_prod_ncm" invisible="1"/>
@@ -199,7 +203,7 @@
                                                         <field name="product_uom" attrs="{'invisible': [('product_id', '=', False)]}"/>
                                                         <field name="product_uom_fraction" attrs="{'invisible': [('product_id', '=', False)]}"/>
                                                         <field name="product_uom_qty" attrs="{'invisible': [('product_id', '=', False)]}"/>
-                                                        <field name="product_price_unit"/>
+                                                        <field name="product_price_unit" readonly="1"/>
                                                     </group>
                                                     <group>
                                                         <field name="cfop_id" domain="[('type', '=', 'input')]"/>
@@ -216,6 +220,7 @@
                                                     <field name="cofins_valor" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                                     <field name="ipi_valor" widget="monetary" options="{'currency_field': 'currency_id'}"
                                                         attrs="{'invisible': [('ipi_cst', '=', False)]}"/>
+                                                    <field name="inv_prod_desc" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                                     <field name="inv_prod_vlr" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                                 </group>
                                             </page>
@@ -291,12 +296,17 @@
                                             </page>
                                         </notebook>
                                     </form>
+                                    <!--
                                     <tree create="0" delete="0" decoration-danger="product_validate==False"
                                           decoration-primary="product_validate==True">
                                         <field name="product_validate" invisible="1"/>
                                         <field name="product_uom" invisible="1"/>
                                         <field name="product_uom_qty" invisible="1"/>
                                         <field name="product_match" invisible="1"/>
+                                        <field name="inv_prod_ncm" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="inv_prod_price_unit"/>
+                                        <field name="cfop_id"/>
                                         <field name="inv_prod_name"/>
                                         <field name="inv_prod_code"/>
                                         <field name="inv_prod_uom"/>
@@ -307,13 +317,15 @@
                                         <field name="cfop_id"/>
                                         <field name="product_id" attrs="{'invisible': [('product_id','=',False)]}"/>
                                     </tree>
+                                    -->
                                 </field>
                             </page>
                         </notebook>
-                        <notebook attrs="{'invisible': [('procedure_state', '!=', 'payment_check')]}">
+                        <notebook attrs="{'invisible': [('procedure_state', 'not in', ['payment_check', 'confirmed'])],
+                                    'readonly': [('procedure_state', '=', 'confirmed')]}">
                             <page string="Vencimentos">
                                 <field name="payment_lines" mode="tree" editable="top"
-                                       attrs="{'readonly': [('payment_create_type','=','invoice')],
+                                       attrs="{'readonly': ['|',('payment_create_type','=','invoice'),('procedure_state', '=', 'confirmed')],
                                         'create': [('payment_create_type','!=','invoice')]}">
                                     <tree editable="bottom">
                                         <field name="currency_id" invisible="1"/>
@@ -324,11 +336,12 @@
                                 </field>
                             </page>
                         </notebook>
-                        <group attrs="{'invisible': [('procedure_state', '=', 'draft')]}">
+                        <group attrs="{'invisible': [('procedure_state', 'in', ['draft', 'partner_check'])]}">
                             <group class="oe_subtotal_footer oe_right" colspan="2" name="amount_total">
                                 <p class="text-right"><b>CUSTOS</b></p>
                                 <field name="vlr_produtos" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="vlr_frete" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="vlr_outros" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <p class="text-right"><b>IMPOSTOS</b></p>
                                 <field name="vlr_ii" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="vlr_pis" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -339,7 +352,10 @@
                                 <field name="vlr_cofins" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <p class="text-right"><b>TOTAL</b></p>
                                 <field name="vlr_desconto" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                <field name="vlr_fatura" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="vlr_fatura" readonly="1"
+                                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="vlr_pagar" readonly="1"
+                                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
                             </group>
                         </group>
                     </sheet>
@@ -354,20 +370,15 @@
             <field name="target">fullscreen</field>
         </record>
 
-        <record model="ir.actions.act_window" id="partner_not_found_action">
-            <field name="name">Cadastro Não Encontrado</field>
-            <field name="res_model">partner.not.found</field>
-            <field name="view_mode">tree</field>
-        </record>
-
         <menuitem id="br_einvoice_import"
                   name="Importar Documentos"
+                  sequence="4"
                   parent="account.menu_finance_payables"/>
 
         <menuitem id="br_einvoice_import_wizard"
                   name="Importar XML"
+                  sequence="1"
                   action="br_account_invoice_import_wizard_action"
                   parent="br_einvoice_import"/>
-
     </data>
 </odoo>

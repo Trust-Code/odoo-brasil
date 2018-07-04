@@ -44,11 +44,15 @@ class BrAccountInvoiceImport(models.Model):
     xml_file = fields.Binary(u'Arquivo XML')
     name = fields.Char()
     file_validate = fields.Boolean(string=u'Arquivo Válidado', default=False, store=True)
+    ignore_icms_st = fields.Boolean(string=u'Ignorar ICMS ST', help=u'Usar apenas quando o ICMS ST estiver presente no'
+                                        u'XML e não for cobrado.', default=False)
+    ignore_discount = fields.Boolean(string=u'Ignorar Descontos', help=u'Ignora os valores de descontos do XML',
+                                     default=False)
 
     # Dados do Parceiro/Fornecedor
     cnpj = fields.Char(string='CNPJ', readonly=True)
     partner_id = fields.Many2one('res.partner', string=u'Parceiro', readonly=True)
-    partner_not_found = fields.Many2many('partner.not.found', string=u'Fornecedor não Cadastrado', readonly=True)
+    partner_not_found = fields.Boolean(string=u'Fornecedor não Cadastrado', readonly=True)
     partner_crt = fields.Selection([('1', u'Simples Nacional'),
                                     ('2', u'Simples Nacional – excesso de sublimite de receita bruta'),
                                     ('3', u'Regime Normal')], string=u'CRT do Forneceddor',
@@ -63,8 +67,10 @@ class BrAccountInvoiceImport(models.Model):
 
     # Valores Totais da Fatura
     vlr_produtos = fields.Monetary(string=u'Valor dos Produtos ( + )', readonly=True)
+    vlr_tag_desconto = fields.Monetary(string=u'Desconto Informado no XML', readonly=True)
     vlr_desconto = fields.Monetary(string=u'Desconto ( - )', readonly=True)
     vlr_frete = fields.Monetary(string=u'Valor do Frete ( + )', readonly=True)
+    vlr_outros = fields.Monetary(string=u'Outros ( + )', readonly=True)
     base_icms = fields.Monetary(string=u'Base de Cálculo do ICMS ( % )', digits=dp.get_precision('Account'),
                                 readonly=True)
     vlr_icms = fields.Monetary(string=u'Valor do ICMS ( + )', readonly=True)
@@ -76,7 +82,8 @@ class BrAccountInvoiceImport(models.Model):
     vlr_ipi = fields.Monetary(string=u'Valor do IPI ( + )', readonly=True)
     vlr_pis = fields.Monetary(string=u'Valor do PIS ( + )', readonly=True)
     vlr_cofins = fields.Monetary(string=u'Valor do COFINS ( + )', readonly=True)
-    vlr_fatura = fields.Monetary(string=u'Valor da Nota Fiscal ( = )', readonly=True)
+    vlr_fatura = fields.Monetary(string=u'Valor da Nota Fiscal ( = )')
+    vlr_pagar = fields.Monetary(string=u'Valor Cobrado ( = )', compute='_compute_vlr_pagar')
 
     data_entrada = fields.Date(string=u'Data de Entrada')
 
@@ -95,6 +102,21 @@ class BrAccountInvoiceImport(models.Model):
                                            string=u'Lançar Cobranças',
                                            help=u'Modo de Lançamento das Cobranças no Contas a Pagar')
 
+    @api.onchange('ignore_discount')
+    def set_ignore_discount(self):
+        if self.ignore_discount == True:
+            self.vlr_desconto = 0
+        else:
+            self.vlr_desconto = self.vlr_tag_desconto
+
+
+    @api.depends('ignore_icms_st', 'vlr_fatura')
+    def _compute_vlr_pagar(self):
+        if self.ignore_icms_st == True:
+            self.vlr_pagar =  self.vlr_fatura - self.vlr_icms_st
+        elif self.ignore_icms_st == False:
+            self.vlr_pagar = self.vlr_fatura
+
     @api.multi
     @api.onchange('geral_cfop_id')
     def compute_all_cfop(self):
@@ -103,19 +125,18 @@ class BrAccountInvoiceImport(models.Model):
         for product in products:
             product.cfop_id = cfop
 
-
     @api.multi
     def _get_default_values(self):
         for record in self:
             record.currency_id = record.env.user.company_id.currency_id.id
 
-    def _compute_file_info(self, inv_object):
+    def compute_file_info(self, inv_object):
         ide = inv_object.NFe.infNFe.ide
         emit = inv_object.NFe.infNFe.emit
         total = inv_object.NFe.infNFe.total
         inf_protocolo = inv_object.protNFe.infProt
         nome_fornecedor = emit.xNome
-        num_nfe = ide.cNF.text
+        num_nfe = ide.nNF.text
         self.name = nome_fornecedor + ' - NF-e: ' + num_nfe
         self.nro_nfe = num_nfe
         self.chave_nfe = inf_protocolo.chNFe.text
@@ -124,8 +145,10 @@ class BrAccountInvoiceImport(models.Model):
         self.dt_emissao = datetime.strptime(ide.dhEmi.text[0:19], '%Y-%m-%dT%H:%M:%S')
         self.vlr_produtos = total.ICMSTot.vProd
         self.vlr_fatura = total.ICMSTot.vNF
-        self.vlr_desconto = total.ICMSTot.vDesc
+        self.vlr_tag_desconto = total.ICMSTot.vDesc
+        self.vlr_desconto = 0 if self.ignore_discount == True else total.ICMSTot.vDesc
         self.vlr_frete = total.ICMSTot.vFrete
+        self.vlr_outros = total.ICMSTot.vOutro if hasattr(total.ICMSTot, 'vOutro') else 0
         self.vlr_ii = total.ICMSTot.vII
         self.vlr_pis = total.ICMSTot.vPIS
         self.vlr_ipi = total.ICMSTot.vIPI
@@ -164,7 +187,7 @@ class BrAccountInvoiceImport(models.Model):
                 'payment_dup': payment.nDup if hasattr(payment, 'nDup') else '',
                 'payment_venc': datetime.strptime(payment.dVenc.text, '%Y-%m-%d').date() if hasattr(payment, 'dVenc')
                     else '',
-                'payment_amount': payment.vDup if hasattr(payment, 'vDup') else '',
+                'payment_amount': self.round_value(payment.vDup, 3) if hasattr(payment, 'vDup') else '',
             }
             self.create_payment(payment_values)
 
@@ -175,13 +198,14 @@ class BrAccountInvoiceImport(models.Model):
         self.payment_lines = payments.browse(payments.ids)
 
     def check_amount_payments(self):
-        amount_total = self.vlr_fatura
+        amount_total = self.round_value(self.vlr_pagar, 3)
         amount_payment_lines = 0
 
         for record in self:
             for payment in record.payment_lines:
-                amount_payment_lines += payment.payment_amount
-            balance = amount_total - amount_payment_lines
+                amount_payment_lines += self.round_value(payment.payment_amount, 3)
+
+            balance = amount_total - self.round_value(amount_payment_lines, 3)
             if balance < 0:
                 raise UserError(_(u'O Valor das cobranças não pode ser maior que o valor da Nota Fiscal!\n'
                                   u'Por Favor corrija o(s) lançamento(s) da(s) cobrança(s)'))
@@ -207,9 +231,12 @@ class BrAccountInvoiceImport(models.Model):
             'inv_cest': item.prod.CEST if hasattr(item.prod, 'CEST') else '',
             'product_uom_qty': item.prod.qCom,
             'inv_prod_price_unit': item.prod.vUnCom,
-            'product_price_unit': item.prod.vUnCom,
-            'inv_prod_desc': item.prod.vDesc if hasattr(item.prod, 'vDesc') else 0,
+            #'product_price_unit': item.prod.vUnCom,
+            'inv_prod_desc': 0 if self.ignore_discount == True else item.prod.vDesc if hasattr(item.prod,
+                                                                                               'vDesc') else 0,
             'inv_prod_vlr': item.prod.vProd,
+            'inv_prod_frete_vlr': item.prod.vFrete if hasattr(item.prod, 'vFrete') else 0,
+            'inv_prod_outro_vlr': item.prod.vOutro if hasattr(item.prod, 'vOutro') else 0,
         }
 
         icms_values = self.prepare_values_icms(item.imposto.ICMS)
@@ -230,6 +257,7 @@ class BrAccountInvoiceImport(models.Model):
             icms_values = {
                 'icms_cst': icms.CST.text if hasattr(icms, 'CST') else icms.CSOSN.text,
                 'icms_aliquota': icms.pICMS if hasattr(icms, 'pICMS') else '',
+                'icms_tipo_base': icms.modBC.text if hasattr(icms, 'modBC') else '',
                 'icms_base_calculo': icms.vBC if hasattr(icms, 'vBC') else '',
                 'icms_aliquota_reducao_base': icms.pRedBC if hasattr(icms, 'pRedBC') else '',
                 'icms_valor_credito': icms.vCredICMSSN if hasattr(icms, 'vCredICMSSN') else '',
@@ -335,12 +363,10 @@ class BrAccountInvoiceImport(models.Model):
             self.partner_id = partner.id
             self.partner_crt = emit.CRT.text
             return self.compute_xml()
-        else:
-            partner_vals = self.create_partner_vals()
-            partner = self.env['partner.not.found'].create(partner_vals)
-            self.partner_not_found = self.env['partner.not.found'].browse(partner.id)
-            self.procedure_state = 'partner_check'
 
+        else:
+            self.partner_not_found = True
+            self.procedure_state = 'partner_check'
 
     @api.multi
     def create_partner_vals(self):
@@ -352,16 +378,18 @@ class BrAccountInvoiceImport(models.Model):
             file_string = base64.b64decode(record.xml_file)
             inv_object = objectify.fromstring(file_string)
             partner_obj = inv_object.NFe.infNFe.emit
-            cnpj_cpf = self.format_doc_number(partner_obj)
-            country = self.env['res.country'].search([('ibge_code', '=', partner_obj.enderEmit.cPais.text)])
+            cnpj_cpf = self.format_doc_number(
+                partner_obj.CNPJ.text if hasattr(partner_obj, 'CNPJ') else partner_obj.CPF.text)
+            country = self.env['res.country'].search([('ibge_code', '=', partner_obj.enderEmit.cPais.text
+                                                       if hasattr(partner_obj.enderEmit, 'cPais') else '1058')])
             state = self.env['res.country.state'].search([('country_id', '=', country.id),
                                                           ('code', '=', partner_obj.enderEmit.UF)])
             city = self.env['res.state.city'].search([('state_id', '=', state.id),
                                                       ('ibge_code', 'like', partner_obj.enderEmit.cMun.text[2:7])])
             partner_vals = {
-                'xml_file': record.xml_file,
-                'name': partner_obj.xFant,
+                'name': partner_obj.xFant if hasattr(partner_obj, 'xFant') else partner_obj.xNome,
                 'legal_name': partner_obj.xNome,
+                'is_company': True,
                 'cnpj_cpf': cnpj_cpf,
                 'zip': partner_obj.enderEmit.CEP.text,
                 'street': partner_obj.enderEmit.xLgr,
@@ -372,12 +400,18 @@ class BrAccountInvoiceImport(models.Model):
                 'country_id': country.id,
                 'supplier': True,
             }
+
             if hasattr(partner_obj.enderEmit, 'fone'):
                 partner_vals['phone'] = partner_obj.enderEmit.fone.text
             if hasattr(partner_obj, 'IE'):
                 partner_vals['inscr_est'] = partner_obj.IE.text
 
-            return partner_vals
+            partner = self.env['res.partner'].create(partner_vals)
+            self.partner_id = partner.id
+            self.partner_not_found = False
+            self.procedure_state = 'product_check'
+
+            return self.compute_xml()
 
     @api.multi
     def _reopen_wizard(self, id):
@@ -395,20 +429,23 @@ class BrAccountInvoiceImport(models.Model):
         '''
         Função para validar o documento carregado
         '''
+        edocs = self.env['invoice.eletronic']
         dest = inv_object.NFe.infNFe.dest
         cnpj_file = self.format_doc_number(dest.CNPJ.text)
         cnpj = self.env.user.company_id.partner_id.cnpj_cpf
+        chave_nfe = inv_object.protNFe.infProt.chNFe.text
         # Verifica o destinatário no arquivo de XML
         if cnpj_file != cnpj:
-            self.xml_file = None
             raise UserError(_(u'O CNPJ de destinatário no Documento Fiscal é diferente do CNPJ da empresa.\n'
                                 u'CNPJ na NF-e: ' + cnpj_file +'\n'
                                 u'CNPJ da Empresa: ' + cnpj))
+
         documents = self.env['br.account.invoice.import.wizard']
-        chave_nfe = self.chave_nfe = inv_object.protNFe.infProt.chNFe.text
         if documents.search([('chave_nfe', '=', chave_nfe)]):
             raise UserError(_(u'Já existe um registro de importação deste documento em andamento.'))
 
+        if edocs.search([('chave_nfe', '=', chave_nfe)]):
+            raise UserError(_(u'Este documento já foi importado.'))
 
     @api.multi
     @api.onchange('xml_file')
@@ -418,14 +455,13 @@ class BrAccountInvoiceImport(models.Model):
             inv_object = objectify.fromstring(file_string)
             self.document_validation(inv_object)
 
-
     @api.multi
     def validate_xml_file(self):
         file_string = base64.b64decode(self.xml_file)
         inv_object = objectify.fromstring(file_string)
         emit = inv_object.NFe.infNFe.emit
         ide = inv_object.NFe.infNFe.ide
-        self.name = emit.xNome + ' - NF-e: ' + ide.cNF.text
+        self.name = emit.xNome + ' - NF-e: ' + ide.nNF.text
         self.file_validate = True
         self.compute_xml()
 
@@ -444,8 +480,6 @@ class BrAccountInvoiceImport(models.Model):
                 msg.append(u'O Produto %s não esta validado, verifique se todos os campos foram preenchidos'
                            u' corretamente\n' %(product.inv_prod_name))
 
-
-
         if len(msg) > 0:
             errors = ''
             for error in msg:
@@ -454,9 +488,6 @@ class BrAccountInvoiceImport(models.Model):
             raise ValidationError(_(errors))
         else:
             self.procedure_state = 'payment_check'
-
-
-            
 
     @api.multi
     def validate_all_product(self):
@@ -473,12 +504,9 @@ class BrAccountInvoiceImport(models.Model):
             file_string = base64.b64decode(self.xml_file)
             inv_object = objectify.fromstring(file_string)
             emit = inv_object.NFe.infNFe.emit
-            ide = inv_object.NFe.infNFe.ide
-            dest = inv_object.NFe.infNFe.dest
-            total = inv_object.NFe.infNFe.total
 
             self._get_default_values()
-            self._compute_file_info(inv_object)
+            self.compute_file_info(inv_object)
             if self.partner_id.id == False:
                 return self.search_partner(emit)
             if len(self.product_not_found) == 0:
@@ -494,6 +522,8 @@ class BrAccountInvoiceImport(models.Model):
                 'partner_id': value.partner_id.id,
                 'partner_ref': value.nro_nfe,
                 'date_order': value.dt_emissao,
+                'total_despesas': value.vlr_outros,
+                'total_frete': value.vlr_frete,
             }
         return values
 
@@ -505,6 +535,16 @@ class BrAccountInvoiceImport(models.Model):
         :param product: objeto produto do documento eletrônico
         :return: retorna dicionário com valores para criação da linha do pedido de compras
         '''
+        price_unit = product.product_price_unit
+        import pudb;pu.db
+        if self.ignore_icms_st == False:
+            price_unit += self.round_value(((product.icms_st_valor + product.inv_prod_frete_vlr + product.ipi_valor -
+                                             product.icms_valor_desonerado - product.inv_prod_desc)
+                                            / product.product_uom_qty), 5)
+        else:
+            price_unit += self.round_value(
+                ((product.ipi_valor - product.icms_valor_desonerado + product.inv_prod_frete_vlr + product.ipi_valor -
+                  product.inv_prod_desc) / product.product_uom_qty), 5)
 
         values = {
             'order_id': order_id,
@@ -513,7 +553,16 @@ class BrAccountInvoiceImport(models.Model):
             'product_id': product.product_id.id,
             'product_qty': product.product_uom_qty,
             'product_uom': product.product_uom.id,
-            'price_unit': product.product_price_unit,
+            # Inclui Valor do IPI e ICMS ST no Valor Unitário para calcular custo do produto
+            'price_unit': price_unit,
+                '''
+                product.product_price_unit + self.round_value(
+                ((product.icms_st_valor + product.ipi_valor - product.icms_valor_desonerado) / product.product_uom_qty),
+                5) if self.ignore_icms_st == False else product.product_price_unit + self.round_value(
+                ((product.ipi_valor - product.icms_valor_desonerado) / product.product_uom_qty), 5),
+                '''
+            'valor_seguro': 0,
+            'outras_despesas': product.inv_prod_outro_vlr,
             'cfop_id': product.cfop_id.id,
             'partner_id': self.partner_id.id,
             'icms_cst_normal': product.icms_cst if int(product.icms_cst) < 100 else '',
@@ -524,9 +573,12 @@ class BrAccountInvoiceImport(models.Model):
             'pis_cst': product.pis_cst,
             'cofins_cst': product.cofins_cst,
             'mot_desoneracao_icms': product.icms_motivo_desoneracao,
-            'icms_des_valor': product.icms_valor_desonerado,
-            'valor_desconto': product.inv_prod_desc_percent,
+            #não inserir valores em pedidos importados
+            #'icms_des_valor': product.icms_valor_desonerado,
+            #'valor_desconto': product.inv_prod_desc,
+            # 'valor_frete': product.inv_prod_frete_vlr,
         }
+        print(values)
 
         return values
 
@@ -601,17 +653,18 @@ class BrAccountInvoiceImport(models.Model):
                 # :TODO: CRIAR MODELO OPERACAO
                 'account_id': 13,
                 # VALORES TOTAIS DA INVOICE
-                'amount_untaxed': self.vlr_fatura,
-                'amount_untaxed_signed': self.vlr_fatura,
+                'amount_untaxed': self.vlr_pagar,
+                'amount_untaxed_signed': self.vlr_pagar,
                 # Total de Imposto
-                'amount_tax': self.vlr_icms + self.vlr_icms_st + self.vlr_ipi + self.vlr_pis + self.vlr_cofins,
+                'amount_tax': (self.vlr_icms + self.vlr_icms_st + self.vlr_ipi + self.vlr_pis + self.vlr_cofins)
+                    if self.ignore_icms_st == False else self.vlr_icms + self.vlr_ipi + self.vlr_pis + self.vlr_cofins,
                 # Total da Fatura
                 # Valor é racalculado dentro da invoice através de função
-                'amount_total': self.vlr_fatura,
-                'amount_total_signed': self.vlr_fatura,
+                'amount_total': self.vlr_produtos,
+                'amount_total_signed': self.vlr_produtos,
                 'currency_id': self.currency_id.id,
                 # Total da Fatura
-                'total_bruto': self.vlr_fatura,
+                'total_bruto': self.vlr_produtos,
                 # Total de Desconto
                 'total_desconto': self.vlr_desconto,
                 # Base de Cálculo do ICMS
@@ -619,9 +672,9 @@ class BrAccountInvoiceImport(models.Model):
                 # Valor Total do ICMS
                 'icms_value': self.vlr_icms,
                 # Base de Cálculo ICMS ST
-                'icms_st_base': self.base_icms_st,
+                'icms_st_base': self.base_icms_st if self.ignore_icms_st == False else 0,
                 # Valor ICMS ST
-                'icms_st_value': self.vlr_icms_st,
+                'icms_st_value': self.vlr_icms_st if self.ignore_icms_st == False else 0,
                 # Base Cálculo do IPI
                 'ipi_base': sum([x['ipi_base_calculo'] for x in self.product_not_found]),
                 # Valor do IPI
@@ -665,13 +718,19 @@ class BrAccountInvoiceImport(models.Model):
             'product_id': p_order.product_id.id,
             'price_unit': p_order.price_unit,
             'price_subtotal': p_order.price_subtotal,
-            'price_total': p_order.price_total,
+            'price_total': p.inv_prod_vlr,
             'price_subtotal_signed': p_order.price_total,
             'quantity': p_order.product_qty,
             'discount': self.round_value((p.inv_prod_desc / p.inv_prod_vlr) * 100, 5),
+            'valor_desconto': p.inv_prod_desc,
             'partner_id': p_order.partner_id.id,
             'currency_id': self.currency_id.id,
             'product_type': p_order.product_id.type,
+
+            # Valores Manuai Para Forçar
+            'valor_bruto_manual': p.inv_prod_vlr,
+            'price_subtotal_manual': p.inv_prod_vlr,
+            'price_total_manual': p.inv_prod_vlr,
 
             # Dados do ICMS
             'icms_cst': p.icms_cst,
@@ -685,17 +744,17 @@ class BrAccountInvoiceImport(models.Model):
             'icms_base_calculo_manual': p.icms_base_calculo,
 
             # Dados do ICMS ST
-            'icms_st_valor': p.icms_st_valor,
-            'icms_st_aliquota': p.icms_st_aliquota,
-            'icms_st_aliquota_reducao_base': p.icms_st_aliquota_reducao_base,
-            'icms_st_aliquota_mva': p.icms_st_aliquota_mva,
-            'icms_st_base_calculo_manual': p.icms_st_base_calculo,
+            'icms_st_valor': p.icms_st_valor if self.ignore_icms_st == False else 0,
+            'icms_st_aliquota': p.icms_st_aliquota if self.ignore_icms_st == False else 0,
+            'icms_st_aliquota_reducao_base': p.icms_st_aliquota_reducao_base if self.ignore_icms_st == False else 0,
+            'icms_st_aliquota_mva': p.icms_st_aliquota_mva if self.ignore_icms_st == False else 0,
+            'icms_st_base_calculo_manual': p.icms_st_base_calculo if self.ignore_icms_st == False else 0,
 
             # Dados do IPI
             'ipi_cst': p.ipi_cst,
             'ipi_tipo': 'percent',
             'ipi_base_calculo': p.ipi_base_calculo,
-            'ipi_reducao_base_calculo': p.ipi_reducao_bc,
+            'ipi_reducao_bc': p.ipi_reducao_bc,
             'ipi_valor': p.ipi_valor,
             'ipi_aliquota': p.ipi_aliquota,
             'ipi_base_calculo_manual': p.ipi_base_calculo,
@@ -745,8 +804,7 @@ class BrAccountInvoiceImport(models.Model):
             invoice_item_values = self.prepare_account_invoice_item_values(new_invoice, line, product_not_found)
             invoice_item = invoice_items.create(invoice_item_values)
             invoice_item['icms_base_calculo_manual'] = invoice_item_values['icms_base_calculo_manual']
-            print(invoice_item_values)
-            new_tax, taxes_created = self.discovery_taxes_ids(invoice, invoice_item, product_not_found, taxes_created)
+            new_tax, taxes_created = self.discovery_taxes_ids(invoice_item, product_not_found, taxes_created)
             if new_tax != None:
                 taxes.append(new_tax)
 
@@ -772,12 +830,25 @@ class BrAccountInvoiceImport(models.Model):
             for t in account_invoice_taxes:
                 self.env['account.invoice.tax'].create(account_invoice_taxes[t])
 
-        #account_move = self.action_move_create(new_invoice)
+        account_move = self.action_move_create(new_invoice)
+        edoc_values = self._prepare_edoc_vals(new_invoice)
+        if edoc_values['code'] == False:
+            edoc_values['code'] = account_move.name
+        edoc = self.env['invoice.eletronic'].create(edoc_values)
+        file_string = base64.b64decode(self.xml_file)
+        object = objectify.fromstring(file_string)
+        for det in object.NFe.infNFe.det:
+            for i_item in new_invoice_item:
+                for product in self.product_not_found:
+                    if product.product_id.id == i_item.product_id.id and product.inv_prod_name == det.prod.xProd.text:
+                        item = self._prepare_edoc_item_vals(det, i_item)
+                        item['invoice_eletronic_id'] = edoc.id
+                        self.env['invoice.eletronic.item'].create(item)
 
         return new_invoice
 
     @api.multi
-    def discovery_taxes_ids(self, invoice, invoice_line, product_not_found, taxes_created = []):
+    def discovery_taxes_ids(self, invoice_line, product_not_found, taxes_created=[]):
         '''
         Função para descobrir regras de imposto no sistema que atendam aos impostos
         destacados na NF-e
@@ -804,9 +875,9 @@ class BrAccountInvoiceImport(models.Model):
                 amount = product_not_found.icms_valor
 
             elif tax == 'icmsst':
-                aliquota = product_not_found.icms_st_aliquota
-                base = product_not_found.icms_st_base_calculo
-                amount = product_not_found.icms_st_valor
+                aliquota = product_not_found.icms_st_aliquota if self.ignore_icms_st == False else 0
+                base = product_not_found.icms_st_base_calculo if self.ignore_icms_st == False else 0
+                amount = product_not_found.icms_st_valor if self.ignore_icms_st == False else 0
 
             elif tax == 'ipi':
                 aliquota = product_not_found.ipi_aliquota
@@ -884,11 +955,46 @@ class BrAccountInvoiceImport(models.Model):
 
         return invoice_tax_lines, taxes_created
 
-
-
     @api.multi
     def create_account_invoice_taxes(self):
         pass
+
+    @api.multi
+    def hook_iml(self, iml):
+        for product in self.product_not_found:
+            if iml['product_id'] == product.product_id.id:
+                if product.icms_valor_desonerado > 0:
+                    iml['price'] = self.round_value(
+                        product.inv_prod_vlr - product.inv_prod_desc - product.icms_valor_desonerado, 3)
+                if product.inv_prod_frete_vlr > 0:
+                    iml['price'] += self.round_value(product.inv_prod_frete_vlr, 3)
+                if product.inv_prod_outro_vlr > 0:
+                    iml['price'] += self.round_value(product.inv_prod_outro_vlr, 3)
+
+        return iml
+
+    def should_round_down(self, val):
+        if val < 0:
+            return ((val * -1) % 1) < 0.5
+        return (val % 1) < 0.5
+
+    def round_value(self, val, ndigits=0):
+        if ndigits > 0:
+            val *= 10 ** (ndigits - 1)
+
+        is_positive = val > 0
+        tmp_val = val
+        if not is_positive:
+            tmp_val *= -1
+
+        rounded_value = math.floor(tmp_val) if self.should_round_down(val) else math.ceil(tmp_val)
+        if not is_positive:
+            rounded_value *= -1
+
+        if ndigits > 0:
+            rounded_value /= 10 ** (ndigits - 1)
+
+        return rounded_value
 
     @api.multi
     def invoice_line_move_line_get(self, invoice):
@@ -913,7 +1019,7 @@ class BrAccountInvoiceImport(models.Model):
                 'name': line.name.split('\n')[0][:64],
                 'price_unit': line.price_unit,
                 'quantity': line.quantity,
-                'price': line.price_subtotal,
+                'price': line.price_total_manual,
                 'account_id': line.account_id.id,
                 'product_id': line.product_id.id,
                 'uom_id': line.uom_id.id,
@@ -928,10 +1034,7 @@ class BrAccountInvoiceImport(models.Model):
 
             move_line_dict['price'] = line.price_total
             dp_price = self.count_decimal_precision(move_line_dict['price'])
-            print('DEBUG ITENS')
-            print(move_line_dict['name'], move_line_dict['price_unit'], move_line_dict['price'])
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            print('New Price ', price)
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
             taxes_dict = tax_ids.compute_base_on_total(line.price_total)
@@ -940,50 +1043,29 @@ class BrAccountInvoiceImport(models.Model):
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(x for x in taxes_dict['taxes'] if x['id'] == tax.id)
                 if not tax.price_include and tax.account_id:
-                    #move_line_dict['price'] += float(str(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.%s' %('1' * dp_price)), rounding=ROUND_UP))))
-                    move_line_dict['price'] += self.round_value(tax_dict['amount'], dp_price + 1 if dp_price >= 2 else 3)
-                    move_line_dict['price'] = self.round_value(move_line_dict['price'], dp_price + 1 if dp_price >= 2 else 3)
+                    move_line_dict['price'] += self.round_value(tax_dict['amount'],
+                                                                dp_price + 1 if dp_price >= 2 else 3)
+                    move_line_dict['price'] = self.round_value(move_line_dict['price'],
+                                                               dp_price + 1 if dp_price >= 2 else 3)
                 if tax.price_include and (not tax.account_id or not tax.deduced_account_id):
-                    print(tax_dict)
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
-                        #total_tax_dict_amount += float(str(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.%s' %('1' * dp_price)), rounding=ROUND_UP))))
-                        total_tax_dict_amount += self.round_value(tax_dict['amount'], dp_price + 1 if dp_price >= 2 else 3)
-                        #move_line_dict['price'] -= float(str(Decimal(Decimal(tax_dict['amount']).quantize(Decimal('.%s' %('1' * dp_price)), rounding=ROUND_UP))))
-                        move_line_dict['price'] -= self.round_value(tax_dict['amount'], dp_price + 1 if dp_price >= 2 else 3)
-                        move_line_dict['price'] = self.round_value(move_line_dict['price'], dp_price + 1 if dp_price >= 2 else 3)
-                        #move_line_dict['price'] = float(format(move_line_dict['price'], '.%sf' % dp_price))
+                        total_tax_dict_amount += self.round_value(tax_dict['amount'],
+                                                                  dp_price + 1 if dp_price >= 2 else 3)
+                        move_line_dict['price'] -= self.round_value(tax_dict['amount'],
+                                                                    dp_price + 1 if dp_price >= 2 else 3)
+                        move_line_dict['price'] = self.round_value(move_line_dict['price'],
+                                                                   dp_price + 1 if dp_price >= 2 else 3)
 
             if move_line_dict['price'] + total_tax_dict_amount != line.price_total:
                 diference = line.price_total - move_line_dict['price'] - total_tax_dict_amount
                 move_line_dict['price'] += diference
-                move_line_dict['price'] = self.round_value(move_line_dict['price'], dp_price + 1 if dp_price >= 2 else 3)
+                move_line_dict['price'] = self.round_value(move_line_dict['price'],
+                                                           dp_price + 1 if dp_price >= 2 else 3)
+            move_line_dict = self.hook_iml(move_line_dict)
 
             res.append(move_line_dict)
 
         return res
-
-    def should_round_down(self, val):
-        if val < 0:
-            return ((val * -1) % 1) < 0.5
-        return (val % 1) < 0.5
-
-    def round_value(self, val, ndigits=0):
-        if ndigits > 0:
-            val *= 10 ** (ndigits - 1)
-
-        is_positive = val > 0
-        tmp_val = val
-        if not is_positive:
-            tmp_val *= -1
-
-        rounded_value = math.floor(tmp_val) if self.should_round_down(val) else math.ceil(tmp_val)
-        if not is_positive:
-            rounded_value *= -1
-
-        if ndigits > 0:
-            rounded_value /= 10 ** (ndigits - 1)
-
-        return rounded_value
 
     @api.multi
     def tax_line_move_line_get(self, invoice):
@@ -1038,6 +1120,24 @@ class BrAccountInvoiceImport(models.Model):
         dp = str_number[::-1].find('.')
 
         return dp
+    @api.multi
+    def hook_total(self, iml):
+        total = 0
+        max_price = 0
+        for i in iml:
+            total += i['price']
+            if i['price'] > max_price and 'product_id' in i:
+                max_price = i['price']
+                max_price_product_id = i['product_id']
+        if total != self.vlr_pagar:
+            diference = self.round_value(total - self.vlr_pagar, 3)
+            for i in iml:
+                if 'product_id' in i:
+                    if i['product_id'] == max_price_product_id:
+                        i['price'] -= diference
+                        i['price'] = self.round_value(i['price'], 3)
+
+        return iml
 
     @api.multi
     def action_move_create(self, invoice):
@@ -1054,24 +1154,16 @@ class BrAccountInvoiceImport(models.Model):
             ctx = dict(invoice._context, lang=i.partner_id.lang)
             company_currency = self.currency_id
             iml = self.invoice_line_move_line_get(invoice)
-            print('IML')
-            print(iml)
             iml += self.tax_line_move_line_get(invoice)
-            print('IML')
-            print(iml)
+            total = 0
+            iml = self.hook_total(iml)
             diff_currency = i.currency_id != company_currency
-            total, total_currency, iml = i.with_context(ctx).compute_invoice_totals(company_currency, iml)
-            print('TOTAL')
-            print(total)
-            print(iml)
+            for t in iml:
+                total += (t['price'])
+            total = self.round_value(total, 3)
+            total_currency = total
             name = i.name or '/'
             for pay in self.payment_lines:
-
-                # last line: add the diff
-                #res_amount_currency -= amount_currency or 0
-                #if i + 1 == len(totlines):
-                #    amount_currency += res_amount_currency
-
                 pay_values = {
                     'type': 'dest',
                     'name': name,
@@ -1117,8 +1209,7 @@ class BrAccountInvoiceImport(models.Model):
             }
             i.with_context(ctx).write(vals)
 
-        return True
-
+        return move
 
     @api.multi
     def import_edoc(self):
@@ -1147,56 +1238,162 @@ class BrAccountInvoiceImport(models.Model):
 
         return open_invoice
 
+    def _prepare_edoc_vals(self, inv):
 
-class PartnerNotFound(models.Model):
+        file_string = base64.b64decode(self.xml_file)
+        object = objectify.fromstring(file_string)
+        emit = object.NFe.infNFe.emit
+        ide = object.NFe.infNFe.ide
+        dest = object.NFe.infNFe.dest
+        total = object.NFe.infNFe.total.ICMSTot
+        prot = object.protNFe.infProt
+        inf = object.NFe.infNFe.infAdic
 
-    _name = 'partner.not.found'
-
-    xml_file = fields.Binary(u'Arquivo XML')
-    name = fields.Char('Nome Fantasia')
-    legal_name = fields.Char('Razão Social')
-    cnpj_cpf = fields.Char('CNPJ/CPF', size=18)
-    inscr_est = fields.Char('Insc. Estadual', size=16)
-    zip = fields.Char('CEP')
-    street = fields.Char('Logradouro')
-    number = fields.Char('Nro.')
-    district = fields.Char('Bairro')
-    state_id = fields.Many2one("res.country.state", string='UF')
-    city_id = fields.Many2one('res.state.city', u'Cidade')
-    country_id = fields.Many2one('res.country', string='País')
-    supplier = fields.Boolean('Fornecedor', default=True)
-    phone = fields.Char('Telefone p/ Contato')
-
-    @api.multi
-    def create_partner_from_file(self):
-        '''
-        Cadastrar parceiro no sistema apartir das informações obtidas no arquivo XML,
-        caso o parceiro ainda não possua cadastro no sistema
-        '''
-        for record in self:
-            partners = self.env['res.partner']
-            partner_vals = {
-                'name': record.name, 'legal_name': record.legal_name, 'cnpj_cpf': record.cnpj_cpf,
-                'zip': record.zip, 'street': record.street, 'number': record.number, 'district': record.district,
-                'state_id': record.state_id.id, 'city_id': record.city_id.id, 'country_id': record.country_id.id,
-                'supplier': True, 'inscr_est': record.inscr_est, 'is_company': True,
-            }
-
-            partners.create(partner_vals)
-            return self._reopen_form()
-            #self.invoice_import_id.compute_xml()
-
-    @api.multi
-    def _reopen_form(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'br.account.invoice.import.wizard',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'target': 'inline',
-            'context': {'default_xml_file': self.xml_file}
+        edoc = {
+            'ind_pres': ide.indPres.text,
+            'emissao_doc': '2',
+            'tipo_operacao': 'entrada',
+            'code': inv.number,
+            'state': 'byothers',
+            'finalidade_emissao': ide.finNFe.text,
+            'chave_nfe': prot.chNFe,
+            'nfe_processada': self.xml_file,
+            'nfe_processada_name': 'NF-e' + ide.nNF.text,
+            'company_id': self.env.user.company_id.id,
+            'partner_id': self.partner_id.id,
+            'invoice_id': inv.id,
+            'comercial_partner_id': self.partner_id.id,
+            'informacoes_legais': inf.infAdFisco.text if hasattr(inf, 'infAdFisco') else '',
+            'informacoes_complementares': inf.infCpl.text if hasattr(inf, 'infCpl') else '',
+            'numero_fatura': inv.number, #todo: check later
+            'pedido_compra': inv.name,
+            'serie_documento': ide.serie.text,
+            'model': ide.mod.text,
+            'numero_nfe': ide.nNF.text,
+            'numero': ide.nNF.text,
+            'numero_controle': ide.cNF,
+            'name': 'Documento Eletrônico: nº ' + ide.nNF.text,
+            'ambiente': 'producao',
+            'ind_final': ide.indFinal.text,
+            'ind_dest': ide.idDest.text,
+            'ind_ie_dest': dest.indIEDest.text,
+            'valor_icms_uf_remet': total.vICMSUFRemet if hasattr(total, 'vICMSUFRemet') else '',
+            'valor_icms_uf_dest': total.vICMSUFDest if hasattr(total, 'vICMSUFDest') else '',
+            'valor_icms_fcp_uf_dest': total.vFCPUFDest if hasattr(total, 'vFCPUFDest') else '',
+            'fatura_bruto': total.vProd,
+            'fatura_desconto': total.vDesc,
+            'valor_frete': total.vFrete,
+            'valor_bc_icms': total.vBC,
+            'valor_icms': total.vICMS,
+            'valor_ii': total.vII,
+            'valor_ipi': total.vIPI,
+            'valor_pis': total.vPIS,
+            'valor_cofins': total.vCOFINS,
+            'valor_despesas': total.vOutro,
+            'valor_bc_icmsst': total.vBCST,
+            'valor_icmsst': total.vST,
+            'valor_seguro': total.vSeg,
+            'valor_desconto': total.vDesc,
+            'valor_bruto': total.vProd,
+            'valor_final': total.vNF,
+            'fatura_liquido': inv.amount_total,
+            'valor_estimado_tributos': total.vTotTrib if hasattr(total, 'vTotTrib') else 0,
         }
+
+        # Duplicatas
+        duplicatas = []
+        count = 1
+        for parcela in inv.payable_move_line_ids.sorted(lambda x: x.name):
+            duplicatas.append((0, None, {
+                'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
+                'data_vencimento': parcela.date_maturity,
+                'valor': parcela.credit or parcela.debit,
+            }))
+            count += 1
+        edoc['duplicata_ids'] = duplicatas
+
+        # Documentos Relacionados
+        documentos = []
+        for doc in inv.fiscal_document_related_ids:
+            documentos.append((0, None, {
+                'invoice_related_id': doc.invoice_related_id.id,
+                'document_type': doc.document_type,
+                'access_key': doc.access_key,
+                'serie': doc.serie,
+                'internal_number': doc.internal_number,
+                'state_id': doc.state_id.id,
+                'cnpj_cpf': doc.cnpj_cpf,
+                'cpfcnpj_type': doc.cpfcnpj_type,
+                'inscr_est': doc.inscr_est,
+                'date': doc.date,
+                'fiscal_document_id': doc.fiscal_document_id.id,
+            }))
+
+        edoc['fiscal_document_related_ids'] = documentos
+
+        return edoc
+
+    def _prepare_edoc_item_vals(self, e_line, i_line):
+        '''VALORES DOS ITENS'''
+        for product in self.product_not_found:
+            if product.inv_prod_name == e_line.prod.xProd:
+                edoc_item_values = {
+                    'name': e_line.prod.xProd.text,
+                    'product_id': product.product_id.id,
+                    'account_invoice_line_id': i_line.id,
+                    'tipo_produto': i_line.product_type,
+                    'cfop': product.cfop_id.code,
+                    'uom_id': product.product_uom.id,
+                    'quantidade': product.product_uom_qty,
+                    'preco_unitario': product.product_price_unit,
+                    'valor_bruto': product.inv_prod_vlr,
+                    'desconto': product.inv_prod_desc,
+                    'valor_liquido': i_line.price_subtotal,
+                    'origem': product.inv_origem,
+                    'tributos_estimados': e_line.imposto.vTotTrib if hasattr(e_line.imposto, 'vTotTrib') else '',
+                    'ncm': e_line.prod.NCM.text,
+                    'item_pedido_compra': e_line.prod.nItemPed if hasattr(e_line.prod, 'nItemPed') else '',
+                     'cest':  e_line.prod.CEST.text if hasattr(e_line.prod, 'CEST') else '',
+                    # - ICMS -
+                    'icms_cst': product.icms_cst,
+                    'icms_aliquota': product.icms_aliquota,
+                    'icms_tipo_base': product.icms_tipo_base,
+                    'icms_aliquota_reducao_base': product.icms_aliquota_reducao_base,
+                    'icms_base_calculo': product.icms_base_calculo,
+                    'icms_valor': product.icms_valor,
+                    # - ICMS ST -
+                    'icms_st_aliquota': product.icms_st_aliquota,
+                    'icms_st_aliquota_mva': product.icms_st_aliquota_mva,
+                    'icms_st_aliquota_reducao_base': product.icms_st_aliquota_reducao_base,
+                    'icms_st_base_calculo': product.icms_st_base_calculo,
+                    'icms_st_valor': product.icms_st_valor,
+                    # - Simples Nacional -
+                    #'icms_aliquota_credito': product.icms_aliquota_credito, todo
+                    #'icms_valor_credito': product.icms_valor_credito, todo
+                    # - IPI -
+                    'ipi_cst': product.ipi_cst,
+                    'ipi_aliquota': product.ipi_aliquota,
+                    'ipi_base_calculo': product.ipi_base_calculo,
+                    'ipi_reducao_bc': product.ipi_reducao_bc,
+                    'ipi_valor': product.ipi_valor,
+                    # - PIS -
+                    'pis_cst': product.pis_cst,
+                    'pis_aliquota': abs(product.pis_aliquota),
+                    'pis_base_calculo': product.pis_base_calculo,
+                    'pis_valor': abs(product.pis_valor),
+                    'pis_valor_retencao':
+                        abs(product.pis_valor) if product.pis_valor < 0 else 0,
+                    # - COFINS -
+                    'cofins_cst': product.cofins_cst,
+                    'cofins_aliquota': abs(product.cofins_aliquota),
+                    'cofins_base_calculo': product.cofins_base_calculo,
+                    'cofins_valor': abs(product.cofins_valor),
+                    'cofins_valor_retencao':
+                        abs(product.cofins_valor) if product.cofins_valor < 0 else 0,
+                }
+
+        return edoc_item_values
+
 
 class ProductNotFound(models.Model):
 
@@ -1205,6 +1402,7 @@ class ProductNotFound(models.Model):
     currency_id = fields.Many2one("res.currency", string="Moeda", readonly=True)
     order_id = fields.Many2one('br.account.invoice.import.wizard', string='Invoice Reference', required=True,
                                ondelete='cascade', index=True, copy=False)
+
     # Dados do Produto na NF-e
     inv_prod_name = fields.Char(string='Produto na NF-e', readonly=True)
     inv_prod_code = fields.Char(string='Cód do Fornecedor', readonly=True)
@@ -1215,13 +1413,22 @@ class ProductNotFound(models.Model):
                                  readonly=True)
     inv_prod_price_unit = fields.Monetary(string='Vlr Unit na NF-e', digits=dp.get_precision('Product Price'),
                                        readonly=True)
-    inv_prod_desc = fields.Float(string=u'Desc', digits=(10, 4), readonly=True)
+    inv_prod_desc = fields.Float(string=u'Desconto ( - )', digits=(10, 4), readonly=True)
     inv_prod_desc_percent = fields.Float(string=u'Percentual Desc', readonly=True, compute='compute_discount',
                                          digits=dp.get_precision('Product Price'))
-    inv_prod_vlr = fields.Monetary(string=u'Valor do Produto', readonly=True)
+    inv_prod_vlr = fields.Monetary(string=u'Valor do Produto ( = )', readonly=True)
+    inv_prod_frete_vlr = fields.Monetary(string=u'Valor do Produto', readonly=True)
+    inv_prod_outro_vlr = fields.Monetary(string=u'Outros Custos', readonly=True)
     inv_cest = fields.Char(string=u'CEST', size=10, readonly=True,
                            help=u'Código Especificador da Substituição Tributária')
     inv_origem = fields.Selection(ORIGEM_PROD, string=u'Origem Mercadoria', readonly=True)
+
+    # Dados do Novo Produto a Criar
+    new_product_create = fields.Boolean(u'Cirar Produto', default=False)
+    new_product_name = fields.Char(u'Nome do Produto')
+    new_product_uom = fields.Many2one('product.uom', string=u'Unid. de Medida')
+    new_product_list_price = fields.Float('Preço de Venda', default=1.0, digits=dp.get_precision('Product Price'))
+    new_product_ean = fields.Char('Cód. EAN')
 
     # Dados do Produto no Sistema
     product_id = fields.Many2one('product.product', string='Produto no Sistema')
@@ -1230,23 +1437,26 @@ class ProductNotFound(models.Model):
     product_match = fields.Boolean(string=u'Produto Combinou')
     product_uom = fields.Many2one('product.uom', string=u'UoM no Sistema')
     product_uom_qty = fields.Float(string=u'Qtd no Sistema', digits=dp.get_precision('Product Unit of Measure'))
-    product_price_unit = fields.Float(u'Vlr Unit no Sistema', required=True, readonly=True,
-                                         digits=dp.get_precision('Product Price'))
+    product_price_unit = fields.Float(u'Vlr Unit no Sistema', required=True, digits=dp.get_precision('Product Price'),
+                                      compute='compute_price_unit')
     product_uom_fraction = fields.Float(string=u'Fração UoM', help=u'Conversão de Unidade de Medida',
                                         digits=dp.get_precision('Product Price'))
 
     # Dados dos Impostos dos Produtos - ICMS
     icms_cst = fields.Selection(CST_ICMS + CSOSN_SIMPLES, string=u'Situação Tributária', readonly=True)
     icms_aliquota = fields.Float(string=u'Alíquota ( % )', digits=dp.get_precision('Account'), readonly=True)
+    icms_tipo_base = fields.Selection([('0', u'0 - Margem Valor Agregado (%)'), ('1', u'1 - Pauta (Valor)'),
+         ('2', u'2 - Preço Tabelado Máx. (valor)'), ('3', u'3 - Valor da operação')],
+        string=u'Modalidade BC do ICMS', readonly=True)
     icms_base_calculo = fields.Monetary(string=u'Base de Cálculo', digits=dp.get_precision('Account'), readonly=True)
     icms_aliquota_reducao_base = fields.Float(string=u'Redução Base ( % )', digits=dp.get_precision('Account'),
                                               readonly=True)
     icms_valor_credito = fields.Monetary(string=u"Valor de Crédito", digits=dp.get_precision('Account'), readonly=True)
-    icms_valor = fields.Monetary(string=u'Valor ICMS', digits=dp.get_precision('Account'), readonly=True)
+    icms_valor = fields.Monetary(string=u'Valor ICMS ( + )', digits=dp.get_precision('Account'), readonly=True)
 
     # Dados dos Impostos dos Produtos - ICMS-ST
     icms_motivo_desoneracao = fields.Selection(desoneracao_motivos, string=u'Motivo Desoneração', readonly=True)
-    icms_valor_desonerado = fields.Monetary(string=u'Valor ICMS Desonerado', digits=dp.get_precision('Account'),
+    icms_valor_desonerado = fields.Monetary(string=u'Valor ICMS Desonerado ( - )', digits=dp.get_precision('Account'),
         readonly=True)
 
     # Dados dos Impostos dos Produtos - ICMS-ST
@@ -1256,27 +1466,27 @@ class ProductNotFound(models.Model):
     icms_st_aliquota_reducao_base = fields.Float(string=u'Redução Base ( % )', digits=dp.get_precision('Account'),
                                               readonly=True)
     icms_st_valor_credito = fields.Monetary(string=u"Valor de Crédito", digits=dp.get_precision('Account'), readonly=True)
-    icms_st_valor = fields.Monetary(string=u'Valor ICMS ST', digits=dp.get_precision('Account'), readonly=True)
+    icms_st_valor = fields.Monetary(string=u'Valor ICMS ST ( + )', digits=dp.get_precision('Account'), readonly=True)
 
     # Dados dos Impostos dos Produtos - IPI
     ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária', readonly=True)
     ipi_aliquota = fields.Float(string=u'Alíquota ( % )', digits=dp.get_precision('Account'), readonly=True)
     ipi_base_calculo = fields.Monetary(string=u'Base de cálculo', digits=dp.get_precision('Account'), readonly=True)
     ipi_reducao_bc = fields.Float(string=u'% Redução Base', digits=dp.get_precision('Account'), readonly=True)
-    ipi_valor = fields.Monetary(string=u'Valor IPI', digits=dp.get_precision('Account'), readonly=True)
+    ipi_valor = fields.Monetary(string=u'Valor IPI ( + )', digits=dp.get_precision('Account'), readonly=True)
 
     # Dados dos Impostos dos Produtos - PIS
     pis_cst = fields.Selection(CST_PIS_COFINS, string=u'Situação Tributária', readonly=True)
     pis_aliquota = fields.Float(string=u'Alíquota ( % )', digits=dp.get_precision('Account'), readonly=True)
     pis_base_calculo = fields.Monetary(string=u'Base de Cálculo', digits=dp.get_precision('Account'), readonly=True)
-    pis_valor = fields.Monetary(string=u'Valor PIS', digits=dp.get_precision('Account'), readonly=True)
+    pis_valor = fields.Monetary(string=u'Valor PIS ( + )', digits=dp.get_precision('Account'), readonly=True)
     pis_valor_retencao = fields.Monetary(string=u'Valor Retido', digits=dp.get_precision('Account'), readonly=True)
 
     # Dados dos Impostos dos Produtos - COFINS
     cofins_cst = fields.Selection(CST_PIS_COFINS, string=u'Situação Tributária', readonly=True)
     cofins_aliquota = fields.Float(string=u'Alíquota ( % )', digits=dp.get_precision('Account'), readonly=True)
     cofins_base_calculo = fields.Monetary(string=u'Base de Cálculo', digits=dp.get_precision('Account'), readonly=True)
-    cofins_valor = fields.Monetary(string=u'Valor COFINS', digits=dp.get_precision('Account'), readonly=True)
+    cofins_valor = fields.Monetary(string=u'Valor COFINS ( + )', digits=dp.get_precision('Account'), readonly=True)
     cofins_valor_retencao = fields.Monetary(string=u'Valor Retido', digits=dp.get_precision('Account'), readonly=True)
 
     # Dados Gerais
@@ -1315,6 +1525,15 @@ class ProductNotFound(models.Model):
 
             return result
 
+    @api.depends('product_uom_qty', 'inv_prod_vlr', 'inv_prod_price_unit')
+    def compute_price_unit(self):
+        for record in self:
+            if record.product_uom_qty == 0:
+                record.product_price_unit = record.inv_prod_price_unit
+            elif record.product_uom_qty > 0:
+                record.product_price_unit = record.inv_prod_vlr / record.product_uom_qty
+
+
     @api.multi
     @api.depends('product_id', 'product_uom', 'product_uom_qty', 'cfop_id')
     def validate_product(self):
@@ -1329,7 +1548,9 @@ class ProductNotFound(models.Model):
     @api.multi
     @api.onchange('product_force_all')
     def force_search_all_products(self):
-        '''Retira o domínio dos produtos e busca dentro de todos os cadastros de produtos'''
+        '''
+        Retira o domínio dos produtos e busca dentro de todos os cadastros de produtos
+        '''
         if self.product_force_all == True:
             vals = {}
             domain = {'product_hint': []}
@@ -1371,13 +1592,27 @@ class ProductNotFound(models.Model):
     @api.multi
     def create_product(self):
         for record in self:
+            record.new_product_create = True
+            record.new_product_name = record.inv_prod_name
+            record.new_product_ean = record.inv_prod_ean
+
+    @api.multi
+    def confirmed_create_product(self):
+        for record in self:
             if record.product_match == True:
                 raise UserError(_(u'O Produto foi localizado, não pode ser criado novamente.'))
-
+            if not record.new_product_uom or not record.new_product_list_price:
+                raise UserError(_(u'Defina uma Preço de Venda e Unid. de Medida para controlar o produto.'))
+            if not record.new_product_name:
+                raise UserError(_(u'Defina uma Nome para o produto a ser criado.'))
             new_product = {
-                'name': record.inv_prod_name,
-                'ncm': record.inv_prod_ncm,
+                'name': record.new_product_name,
+                'fiscal_classification_id':
+                    self.env['product.fiscal.classification'].search([('code', '=', record.inv_prod_ncm)]).id,
                 'barcode': record.inv_prod_ean,
+                'list_price': record.new_product_list_price,
+                'uom_id': record.new_product_uom.id,
+                'uom_po_id': record.new_product_uom.id,
                 'type': 'product',
             }
 
@@ -1389,8 +1624,6 @@ class ProductNotFound(models.Model):
                 'product_uom': product.uom_id.id,
                 'product_match': True,
             })
-
-
 
 class BrAccountInvoiceImportPayment(models.Model):
 

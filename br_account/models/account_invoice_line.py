@@ -87,14 +87,16 @@ class AccountInvoiceLine(models.Model):
                  'icms_base_calculo_manual', 'ipi_base_calculo_manual',
                  'pis_base_calculo_manual', 'cofins_base_calculo_manual',
                  'icms_st_aliquota_deducao', 'ii_base_calculo',
-                 'icms_aliquota_inter_part', 'desoneracao_icms')
+                 'icms_aliquota_inter_part', 'desoneracao_icms', 'valor_desconto')
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
 
         valor_bruto = self.price_unit * self.quantity
-        desconto = self.round_value(valor_bruto * self.discount / 100.0, 3)
-        import pudb;pu.db
+        if self.valor_desconto > 0:
+            desconto = self.valor_desconto
+        else:
+            desconto = self.round_value(valor_bruto * self.discount / 100.0, 3)
         subtotal = valor_bruto - desconto
 
         taxes = False
@@ -155,10 +157,10 @@ class AccountInvoiceLine(models.Model):
         else:
             vlr_icms_desonerado = 0
         total_included = taxes['total_included'] - vlr_icms_desonerado if taxes else 0
-        #import pudb;pu.db
+
         self.update({
             'price_total': total_included if taxes else subtotal - vlr_icms_desonerado,
-            'price_tax': total_included if taxes else 0,
+            'price_tax': total_included - taxes['total_excluded'] if taxes else 0,
             'price_subtotal': taxes[
                                   'total_excluded'] - vlr_icms_desonerado if taxes else subtotal - vlr_icms_desonerado,
             'price_subtotal_signed': price_subtotal_signed - vlr_icms_desonerado,
@@ -208,9 +210,7 @@ class AccountInvoiceLine(models.Model):
     price_total = fields.Float(
         u'Valor Líquido', digits=dp.get_precision('Account'), store=True,
         default=0.00, compute='_compute_price')
-    valor_desconto = fields.Float(
-        string='Vlr. desconto', store=True, compute='_compute_price',
-        digits=dp.get_precision('Account'))
+    valor_desconto = fields.Float(string='Vlr. desconto', store=True, digits=dp.get_precision('Account'))
     valor_bruto = fields.Float(
         string='Vlr. Bruto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'))
