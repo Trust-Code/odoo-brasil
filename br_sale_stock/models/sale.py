@@ -147,5 +147,6 @@ class SaleOrderLine(models.Model):
 
         res['valor_seguro'] = self.valor_seguro
         res['outras_despesas'] = self.outras_despesas
-        res['valor_frete'] = self.valor_frete
+        res['valor_frete'] = self.valor_frete * (round(
+            res['quantity'] / self.product_uom_qty, 2))
         return res
