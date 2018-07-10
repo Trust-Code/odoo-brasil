@@ -33,6 +33,7 @@
                         </group>
                         <group>
                             <field name="warning_code"/>
+                            <field name="finality_ted"/>
                             <field name="agency_name"/>
                             <field name="operation_code"/>
                             <field name="mov_type"/>

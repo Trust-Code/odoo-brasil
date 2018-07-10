@@ -11,8 +11,8 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.file import File
-    from pycnab240.bancos import santander
     from pycnab240.utils import get_forma_de_lancamento
+    from pycnab240.utils import get_bank
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
@@ -83,12 +83,12 @@ class Cnab_240(object):
             'cedente_agencia': self._string_to_num(bank.bra_number, 0),
             'cedente_agencia_dv': bank.acc_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
-            'cedente_conta_dv': bank.bra_number_dig,
+            'cedente_conta_dv': int(bank.bra_number_dig),
             'cedente_nome': self.order.company_id.name,
             'data_geracao_arquivo': self._date_today(),
             'hora_geracao_arquivo': self._hour_now(),
             # Número sequêncial onde cada novo arquivo adicionado 1.
-            'numero_sequencial_arquivo': self.order.file_number,
+            'numero_sequencial_arquivo': self.order.file_number
         }
         return headerArq
 
@@ -109,6 +109,8 @@ class Cnab_240(object):
                 line.bank_account_id.acc_number_dig, 0),
             "favorecido_agencia_conta_dv": ' ',
             "favorecido_nome": line.partner_id.name,
+            "favorecido_doc_numero":  self._string_to_num(
+                line.partner_id.cnpj_cpf),
             # TODO Esse campo é um identificador único da linha,
             #  utilizamos geralmente o campo nosso número
             "numero_documento_cliente":
@@ -122,7 +124,8 @@ class Cnab_240(object):
             "valor_real_pagamento": Decimal('33.00'),
             "mensagem2": '',
             "finalidade_doc_ted": str(information_id.mov_finality),
-            "favorecido_emissao_aviso": information_id.warning_code,
+            "finalidade_ted": str(information_id.finality_ted),
+            "favorecido_emissao_aviso": int(information_id.warning_code),
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
             "favorecido_inscricao_numero": self._string_to_num(
@@ -212,9 +215,10 @@ class Cnab_240(object):
         return operacoes
 
     def __init__(self, payment_order):
+        bank_code = payment_order.payment_mode_id.bank_account_id.bank_id.bic
         self.order = payment_order
-        self._bank = santander
-        self._cnab_file = File(santander)
+        self._bank = get_bank(bank_code)
+        self._cnab_file = File(self._bank)
 
     def create_cnab(self, listOfLines):
         self._cnab_file.add_header(self._get_header_arq())

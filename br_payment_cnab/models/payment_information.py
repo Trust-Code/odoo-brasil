@@ -30,6 +30,20 @@ class PaymentInformation(models.Model):
         ('99', u'Other')
         ], string=u'Movimentation Purpose')
 
+    finality_ted = fields.Selection([
+        ('01', u'Pagamento de impostos, tributos e taxas'),
+        ('02', u'Pagamento Concessionárias Serviço Público'),
+        ('03', u'Pagamento de Dividendos'),
+        ('04', u'Pagamento de Salários'),
+        ('05', u'Pagamento de Fornecedores'),
+        ('06', u'Pagamentos de Honorários'),
+        ('07', u'Pagamento de Aluguel/Condomínios'),
+        ('08', u'Pagamento de Duplicatas/Títulos'),
+        ('09', u'Pagamento de Mensalidades Escolares'),
+        ('11', u'Crédito em Conta'),
+        ('300', u'Restituição de Imposto de Renda')
+        ], string=u'Movimentation TED Purpose')
+
     operation_code = fields.Selection([     # G14
         ('018', u'TED CIP'),
         ('810', u'TED STR'),
@@ -54,6 +68,11 @@ class PaymentInformation(models.Model):
         ('5', u'Warning only for receiver'),
         ('6', u'Warning for both, addresser and receiver')
     ], string='Warning Code', default='0')
+
+    mode_payment_indication = fields.Selection([  # sicoob only
+        ('01', 'Current Account Debit'),
+        ('03', 'Credit Card Debit')
+    ], string='Payment Indication', default='03')
 
     lote_serv = fields.Integer('Order of Service')
 

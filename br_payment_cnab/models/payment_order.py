@@ -42,5 +42,6 @@ class PaymentOrderLine(models.Model):
     value_final = fields.Float(
         string="Final Value", compute="calc_final_value",
         digits=(18, 2), readonly=True)
+
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência")
