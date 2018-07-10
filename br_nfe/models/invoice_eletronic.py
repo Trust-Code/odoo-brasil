@@ -324,8 +324,8 @@ class InvoiceEletronic(models.Model):
                 'vBCST': "%.02f" % item.icms_st_base_calculo,
                 'pICMSST': "%.02f" % item.icms_st_aliquota,
                 'vICMSST': "%.02f" % item.icms_st_valor,
-                'pCredSN': "%.02f" % item.icms_valor_credito,
-                'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
+                'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                'vCredICMSSN': "%.02f" % item.icms_valor_credito
             },
             'IPI': {
                 'clEnq': item.classe_enquadramento_ipi or '',
@@ -773,7 +773,7 @@ class InvoiceEletronic(models.Model):
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = resposta['object'].Body.getchildren()[0]
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
@@ -791,7 +791,7 @@ class InvoiceEletronic(models.Model):
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
                 retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                    getchildren()[0].getchildren()[0]
                 if retorno.cStat != 105:
                     break
 
@@ -841,20 +841,20 @@ class InvoiceEletronic(models.Model):
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'rec-ret')])
+                ('datas_fname', 'like', 'rec-ret')], limit=1)
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
                     ('res_model', '=', 'invoice.eletronic'),
                     ('res_id', '=', self.id),
-                    ('datas_fname', 'like', 'nfe-ret')])
+                    ('datas_fname', 'like', 'nfe-ret')], limit=1)
             nfe_envio = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'nfe-envio')])
+                ('datas_fname', 'like', 'nfe-envio')], limit=1)
             if nfe_envio.datas and recibo.datas:
                 nfe_proc = gerar_nfeproc(
-                    base64.decodestring(nfe_envio.datas),
-                    base64.decodestring(recibo.datas)
+                    base64.decodestring(nfe_envio.datas).decode('utf-8'),
+                    base64.decodestring(recibo.datas).decode('utf-8'),
                 )
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
