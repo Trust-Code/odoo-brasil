@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="br_nfse_product_template_cnae_view" model="ir.ui.view">
+        <field name="name">br_account_product_template_form_view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="br_account.br_account_product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="service_type_id" position="after">
+                <field name="service_cnae"
+                attrs="{'required': [('fiscal_type', '=', 'service')], 'invisible': [('fiscal_type', '=', 'product')]}"
+                domain="[('child_ids', '=', False)]"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
