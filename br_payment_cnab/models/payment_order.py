@@ -4,19 +4,27 @@
 import base64
 from datetime import datetime
 from odoo import api, fields, models
-from odoo.addons.br_payment_cnab.serialize.cnab240 import Cnab_240
+from ..bancos.sicoob import Sicoob240
 
 
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
-    @api.multi
     def action_generate_payable_cnab(self):
         self.data_emissao_cnab = datetime.now()
-        cnab = Cnab_240(self)
+        cnab = self.select_bank_cnab()[str(
+            self.payment_mode_id.bank_account_id.bank_id.bic)]
         cnab.create_cnab(self.line_ids)
         self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = 'cnab_pagamento.rem'
+
+    def select_bank_cnab(self):
+        return {
+                    '756': Sicoob240(self),
+                    # '033': Santander240(self),
+                    # '641': Itau240(self),
+                    # '237': Bradesco240(self)
+                }
 
     company_id = fields.Many2one(
         'res.company', string='Company', required=True, ondelete='restrict',

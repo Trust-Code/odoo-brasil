@@ -11,8 +11,6 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.file import File
-    from pycnab240.utils import get_forma_de_lancamento
-    from pycnab240.utils import get_bank
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
@@ -43,12 +41,6 @@ class Cnab_240(object):
     def _hour_now(self):
         return (int(time.strftime("%H%M%S")[0:4]))
 
-    def _get_inscription(self, inscription):
-        if inscription:
-            return 2
-        else:
-            return 1
-
     def _format_alfa_size(self, value, size):
         value = str(value)
         return value + '0'*(size-(len(value)))
@@ -68,13 +60,13 @@ class Cnab_240(object):
                 raise
 
     def _get_header_arq(self):
-        payment = self.order.payment_mode_id
+        payment = self._order.payment_mode_id
         bank = payment.bank_account_id
         headerArq = {
             'cedente_inscricao_tipo': 2,  # 0 = Isento, 1 = CPF, 2 = CNPJ
             # número do registro da empresa
             'cedente_inscricao_numero': self._string_to_num(
-                self.order.company_id.cnpj_cpf),
+                self._order.company_id.cnpj_cpf),
             # Usado pelo Banco para identificar o contrato - númerodo banco(4),
             # códigode agência(4 "sem DV"), número do convênio(12).
             'codigo_convenio': bank.codigo_convenio,
@@ -83,83 +75,69 @@ class Cnab_240(object):
             'cedente_agencia': self._string_to_num(bank.bra_number, 0),
             'cedente_agencia_dv': bank.acc_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
-            'cedente_conta_dv': int(bank.bra_number_dig),
-            'cedente_nome': self.order.company_id.name,
+            'cedente_conta_dv': bank.bra_number_dig,
+            'cedente_nome': self._order.company_id.name,
             'data_geracao_arquivo': self._date_today(),
             'hora_geracao_arquivo': self._hour_now(),
-            # Número sequêncial onde cada novo arquivo adicionado 1.
-            'numero_sequencial_arquivo': self.order.file_number
+            'numero_sequencial_arquivo': self._order.file_number
         }
         return headerArq
 
     def _get_segmento(self, line):
         information_id = line.payment_information_id
         segmento = {
-            "tipo_movimento": int(information_id.mov_type),
-            "codigo_instrucao_movimento": int(information_id.mov_instruc),
-            "codigo_camara_compensacao": int(information_id.operation_code),
+            "tipo_movimento": information_id.mov_type,
+            "codigo_instrucao_movimento": information_id.mov_instruc,
+            "codigo_camara_compensacao": information_id.operation_code,
             # adicionar campo para o banco do clinte com um valor default
             "favorecido_codigo_banco": line.bank_account_id.bank_id.name,
-            "favorecido_agencia": self._string_to_num(
-                line.bank_account_id.bra_number, 0),
+            "favorecido_agencia": line.bank_account_id.bra_number,
             "favorecido_agencia_dv": line.bank_account_id.bra_number_dig,
-            "favorecido_conta":  self._string_to_num(
-                line.bank_account_id.acc_number, 0),
-            "favorecido_conta_dv": self._string_to_num(
-                line.bank_account_id.acc_number_dig, 0),
+            "favorecido_conta": line.bank_account_id.acc_number,
+            "favorecido_conta_dv": line.bank_account_id.acc_number_dig,
             "favorecido_agencia_conta_dv": ' ',
             "favorecido_nome": line.partner_id.name,
-            "favorecido_doc_numero":  self._string_to_num(
-                line.partner_id.cnpj_cpf),
+            "favorecido_doc_numero": line.partner_id.cnpj_cpf,
             # TODO Esse campo é um identificador único da linha,
             #  utilizamos geralmente o campo nosso número
-            "numero_documento_cliente":
-                self._format_alfa_size(line.nosso_numero, 20),
-            "data_pagamento": self._string_to_num(line.date_maturity),
-            "valor_pagamento": self._string_to_monetary(line.value),
+            "numero_documento_cliente": line.nosso_numero,
+            "data_pagamento": line.date_maturity,
+            "valor_pagamento": line.value,
             "numero_documento_banco": "000",
-            # verificar se essa é a data de emissao do cnab
-            "data_real_pagamento": self._string_to_num(
-                self.order.data_emissao_cnab[0:10]),
-            "valor_real_pagamento": Decimal('33.00'),
+            "data_real_pagamento": self._order.data_emissao_cnab,
+            "valor_real_pagamento": Decimal('33.00'),  # TODO
             "mensagem2": '',
-            "finalidade_doc_ted": str(information_id.mov_finality),
-            "finalidade_ted": str(information_id.finality_ted),
-            "favorecido_emissao_aviso": int(information_id.warning_code),
+            "finalidade_doc_ted": information_id.mov_finality,
+            "finalidade_ted": information_id.finality_ted,
+            "favorecido_emissao_aviso": information_id.warning_code,
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
-            "favorecido_inscricao_numero": self._string_to_num(
-                line.partner_id.cnpj_cpf),  # Rever este campo
-            "favorecido_endereco_rua": line.partner_id.street[:30],
-            "favorecido_endereco_numero": self._string_to_num(
-                line.partner_id.number, default=0),
-            "favorecido_endereco_complemento": str(
-                line.partner_id.street2)[0:15],
-            "favorecido_bairro": str(line.partner_id.district),
-            "favorecido_cidade": str(line.partner_id.city),
-            "favorecido_cep":
-                self._string_to_num(str(line.partner_id.zip), 0),
-            "favorecido_uf": str(line.partner_id.state_id.code),
-            "valor_documento": self._string_to_monetary(line.value_final),
-            "valor_abatimento": self._string_to_monetary(
-                information_id.rebate_value),
-            "valor_desconto": self._string_to_monetary(
-                information_id.discount_value),
-            "valor_mora": self._string_to_monetary(information_id.mora_value),
-            "valor_multa": self._string_to_monetary(information_id.duty_value),
+            "favorecido_inscricao_numero": line.partner_id.cnpj_cpf,
+            "favorecido_endereco_rua": line.partner_id.street,
+            "favorecido_endereco_numero": line.partner_id.number,
+            "favorecido_endereco_complemento": line.partner_id.street2,
+            "favorecido_bairro": line.partner_id.district,
+            "favorecido_cidade": line.partner_id.city,
+            "favorecido_cep": line.partner_id.zip,
+            "favorecido_uf": line.partner_id.state_id.code,
+            "valor_documento": line.value_final,
+            "valor_abatimento": information_id.rebate_value,
+            "valor_desconto": information_id.discount_value,
+            "valor_mora": information_id.mora_value,
+            "valor_multa": information_id.duty_value,
             "hora_envio_ted": self._hour_now(),
-            "codigo_historico_credito": int(information_id.credit_hist_code),
-            "cedente_nome": self.order.company_id.name,
-            "valor_nominal_titulo": self._string_to_monetary(line.value),
-            "valor_desconto_abatimento": self._string_to_monetary(
-                information_id.rebate_value + information_id.discount_value),
-            "valor_multa_juros": self._string_to_monetary(
-                information_id.mora_value + information_id.duty_value),
-            "codigo_moeda": int(information_id.currency_code),
+            "codigo_historico_credito": information_id.credit_hist_code,
+            "cedente_nome": self._order.company_id.name,
+            "valor_nominal_titulo": line.value,
+            "valor_desconto_abatimento": information_id.rebate_value +
+                information_id.discount_value,
+            "valor_multa_juros": information_id.mora_value +
+                information_id.duty_value,
+            "codigo_moeda": information_id.currency_code,
             "codigo_de_barras": int("0"*44),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name,
-            "data_vencimento": self._string_to_num(line.date_maturity)
+            "data_vencimento": line.date_maturity
         }
         return segmento
 
@@ -175,32 +153,30 @@ class Cnab_240(object):
 
     def _get_header_lot(self, line):
         information_id = line.payment_information_id
-        payment = self.order.payment_mode_id
+        payment = self._order.payment_mode_id
         bank = payment.bank_account_id
         header_lot = {
-            "tipo_servico": int(information_id.serv_type),
-            "forma_lancamento": get_forma_de_lancamento(
-                'santander', information_id.payment_type),
+            "tipo_servico": information_id.serv_type,
             "numero_versao_lote": 31,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 payment.company_id.cnpj_cpf),
             "codigo_convenio": bank.codigo_convenio,
-            "cedente_agencia": int(bank.bra_number),
+            "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.acc_number_dig,
-            "cedente_conta": int(bank.acc_number),
+            "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig,
             "cedente_nome": payment.company_id.name,
-            "mensagem1": str(information_id.message1),
-            "cedente_endereco_rua": str(self.order.company_id.street),
+            "mensagem1": information_id.message1,
+            "cedente_endereco_rua": self._order.company_id.street,
             "cedente_endereco_numero": self._string_to_num(
                 payment.company_id.number),
             "cedente_endereco_complemento": str(
-                self.order.company_id.street2)[0:15],
-            "cedente_cidade": str(self.order.company_id.city_id.name)[:20],
-            "cedente_cep": int(self.order.company_id.zip[0:5]),
-            "cedente_cep_complemento": int(self.order.company_id.zip[5:8]),
-            "cedente_uf": str(self.order.company_id.state_id.code),
+                self._order.company_id.street2)[0:15],
+            "cedente_cidade": str(self._order.company_id.city_id.name)[:20],
+            "cedente_cep": self._order.company_id.zip,
+            "cedente_cep_complemento": self._order.company_id.zip,
+            "cedente_uf": self._order.company_id.state_id.code,
         }
         return header_lot
 
@@ -214,10 +190,7 @@ class Cnab_240(object):
                 operacoes[line.payment_information_id.payment_type] = [line]
         return operacoes
 
-    def __init__(self, payment_order):
-        bank_code = payment_order.payment_mode_id.bank_account_id.bank_id.bic
-        self.order = payment_order
-        self._bank = get_bank(bank_code)
+    def __init__(self):
         self._cnab_file = File(self._bank)
 
     def create_cnab(self, listOfLines):
