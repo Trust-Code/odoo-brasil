@@ -15,6 +15,8 @@ class Sicoob240(Cnab_240):
         header.update({
             'cedente_conta_dv': self._string_to_num(
                 header.get('cedente_conta_dv')),
+            'codigo_convenio': self._string_to_num((str(
+                header.get('codigo_convenio'))[:20])),
             'cedente_conta': self._string_to_num(header.get('cedente_conta'))
         })
         return header
@@ -30,14 +32,16 @@ class Sicoob240(Cnab_240):
             'cedente_conta_dv': self._string_to_num(
                 header.get('cedente_conta_dv')),
             'cedente_conta': self._string_to_num(header.get('cedente_conta')),
+            'cedente_endereco_numero': self._string_to_num(
+                header.get('cedente_endereco_numero')),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
             'cedente_cep_complemento': self._string_to_num(
                 header.get('cedente_cep_complemento')[6:])
         })
         return header
 
-    def _get_segmento(self, line):
-        segmento = super(Sicoob240, self)._get_segmento(line)
+    def _get_segmento(self, line, lot_sequency):
+        segmento = super(Sicoob240, self)._get_segmento(line, lot_sequency)
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_cep': self._string_to_num(str(
@@ -84,4 +88,25 @@ class Sicoob240(Cnab_240):
                 segmento.get('favorecido_conta'), 0),
             'favorecido_agencia': self._string_to_num(
                 segmento.get('favorecido_agencia'), 0),
+            'valor_real_pagamento': self._string_to_monetary(
+                segmento.get('valor_real_pagamento')),
+            'favorecido_emissao_aviso': self._string_to_num(
+                segmento.get('favorecido_emissao_aviso')),
+            'codigo_instrucao_movimento': self._string_to_num(
+                segmento.get('codigo_instrucao_movimento')),
+            'codigo_camara_compensacao': self._string_to_num(
+                segmento.get('codigo_camara_compensacao')),
         })
+        return segmento
+
+    def _get_trailer_lot(self, total):
+        trailer = super(Sicoob240, self)._get_trailer_lot(total)
+        trailer.update({
+        })
+        return trailer
+
+    def _get_trailer_arq(self):
+        trailer = super(Sicoob240, self)._get_trailer_arq()
+        trailer.update({
+        })
+        return trailer

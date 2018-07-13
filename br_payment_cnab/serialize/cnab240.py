@@ -73,19 +73,22 @@ class Cnab_240(object):
             # Para ordem de pagamento, saque em uma agência -número da agência,
             # caso contrário preencher com zeros.
             'cedente_agencia': self._string_to_num(bank.bra_number, 0),
-            'cedente_agencia_dv': bank.acc_number_dig,
+            'cedente_agencia_dv': bank.bra_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
-            'cedente_conta_dv': bank.bra_number_dig,
+            'cedente_conta_dv': bank.acc_number_dig,
             'cedente_nome': self._order.company_id.name,
             'data_geracao_arquivo': self._date_today(),
             'hora_geracao_arquivo': self._hour_now(),
-            'numero_sequencial_arquivo': self._order.file_number
+            'numero_sequencial_arquivo': self._order.file_number,
+            'controle_lote': self._order.file_number
         }
         return headerArq
 
-    def _get_segmento(self, line):
+    def _get_segmento(self, line, lot_sequency):
         information_id = line.payment_information_id
         segmento = {
+            'controle_lote': self._order.file_number,
+            "sequencial_registro_lote": lot_sequency,
             "tipo_movimento": information_id.mov_type,
             "codigo_instrucao_movimento": information_id.mov_instruc,
             "codigo_camara_compensacao": information_id.operation_code,
@@ -105,7 +108,7 @@ class Cnab_240(object):
             "valor_pagamento": line.value,
             "numero_documento_banco": "000",
             "data_real_pagamento": self._order.data_emissao_cnab,
-            "valor_real_pagamento": Decimal('33.00'),  # TODO
+            "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": '',
             "finalidade_doc_ted": information_id.mov_finality,
             "finalidade_ted": information_id.finality_ted,
@@ -120,7 +123,7 @@ class Cnab_240(object):
             "favorecido_cidade": line.partner_id.city,
             "favorecido_cep": line.partner_id.zip,
             "favorecido_uf": line.partner_id.state_id.code,
-            "valor_documento": line.value_final,
+            "valor_documento": line.value,
             "valor_abatimento": information_id.rebate_value,
             "valor_desconto": information_id.discount_value,
             "valor_mora": information_id.mora_value,
@@ -142,7 +145,9 @@ class Cnab_240(object):
         return segmento
 
     def _get_trailer_arq(self):
-        trailerArq = {}
+        trailerArq = {
+            'controle_lote': self._order.file_number
+        }
         return trailerArq
 
     def _get_trailer_lot(self, total):
@@ -157,20 +162,18 @@ class Cnab_240(object):
         bank = payment.bank_account_id
         header_lot = {
             "tipo_servico": information_id.serv_type,
-            "numero_versao_lote": 31,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 payment.company_id.cnpj_cpf),
             "codigo_convenio": bank.codigo_convenio,
             "cedente_agencia": bank.bra_number,
-            "cedente_agencia_dv": bank.acc_number_dig,
+            "cedente_agencia_dv": bank.bra_number_dig,
             "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig,
             "cedente_nome": payment.company_id.name,
             "mensagem1": information_id.message1,
             "cedente_endereco_rua": self._order.company_id.street,
-            "cedente_endereco_numero": self._string_to_num(
-                payment.company_id.number),
+            "cedente_endereco_numero": payment.company_id.number,
             "cedente_endereco_complemento": str(
                 self._order.company_id.street2)[0:15],
             "cedente_cidade": str(self._order.company_id.city_id.name)[:20],
@@ -188,19 +191,24 @@ class Cnab_240(object):
                     line.payment_information_id.payment_type].append(line)
             else:
                 operacoes[line.payment_information_id.payment_type] = [line]
+        self._lot_qty = len(operacoes)
         return operacoes
 
     def __init__(self):
         self._cnab_file = File(self._bank)
+        self._total_lots = 2
 
     def create_cnab(self, listOfLines):
         self._cnab_file.add_header(self._get_header_arq())
         self.create_details(self._ordenate_lines(listOfLines))
 
-    def create_detail(self, operation, event):
+    def create_detail(self, operation, event, lot_sequency):
         for segment in self.segments_dict[operation]:
-            self._cnab_file.add_segment(segment, self._get_segmento(event))
+            self._cnab_file.add_segment(
+                segment, self._get_segmento(event, lot_sequency))
+            lot_sequency = lot_sequency + 1
         self._cnab_file.get_active_lot().get_active_event().close_event()
+        return lot_sequency
 
     def _create_trailer_lote(self, total):
         self._cnab_file.add_segment('TrailerLote',
@@ -213,8 +221,10 @@ class Cnab_240(object):
     def create_details(self, operacoes):
         for lote in operacoes:
             self._create_header_lote(operacoes[lote][0])
+            lot_sequency = 0
             for event in operacoes[lote]:
-                self.create_detail(lote, event)
+                lot_sequency = self.create_detail(lote, event, lot_sequency)
+            self._total_lots = self._total_lots + lot_sequency
             total_lote = self._sum_lot_values(operacoes[lote])
             self._create_trailer_lote(total_lote)
 

@@ -14,5 +14,6 @@ class Santander240(Cnab_240):
         info_id = line.payment_information_id
         segment = super()._get_header_lot(line)
         segment.update({
+            'numero_versao_lote': 31,
             'forma_lancamento':
             get_forma_de_lancamento('santander', info_id.payment_type),

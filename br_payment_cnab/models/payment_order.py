@@ -11,6 +11,7 @@ class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
     def action_generate_payable_cnab(self):
+        self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         self.data_emissao_cnab = datetime.now()
         cnab = self.select_bank_cnab()[str(
             self.payment_mode_id.bank_account_id.bank_id.bic)]
