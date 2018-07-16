@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-# © 2009  Renato Lima - Akretion
-# © 2012  Raphaël Valyi - Akretion
+# © 2009 Renato Lima - Akretion
+# © 2012 Raphaël Valyi - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
+# © 2018 Raphael Rodrigues, <raphael0608@gmail.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from datetime import timedelta
