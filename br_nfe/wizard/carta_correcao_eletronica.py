@@ -69,7 +69,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             cert_pfx, self.eletronic_doc_id.company_id.nfe_a1_password)
         resposta = recepcao_evento_carta_correcao(certificado, **carta)
 
-        retorno = resposta['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        retorno = resposta['object'].Body.nfeResultMsg.retEnvEvento
 
         if retorno.cStat == 128 and retorno.retEvento.infEvento.cStat in (135,
                                                                           136):

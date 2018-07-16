@@ -6,8 +6,9 @@ import re
 import io
 import base64
 import logging
+import pytz
 from lxml import etree
-from datetime import datetime
+from datetime import datetime, timezone
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
@@ -273,12 +274,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
             'CFOP': item.cfop,
-            'uCom': '{:.6}'.format(item.uom_id.name or ''),
+            'uCom': u'{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
             'cEANTrib': item.product_id.barcode or '',
-            'uTrib': '{:.6}'.format(item.uom_id.name or ''),
+            'uTrib': u'{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
             'vUnTrib': "%.02f" % item.preco_unitario,
             'vFrete': "%.02f" % item.frete if item.frete else '',
@@ -393,17 +394,20 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             return res
 
         dt_emissao = datetime.strptime(self.data_emissao, DTFT)
+        lc_tz = datetime.now(timezone.utc).astimezone().tzinfo
+        now = datetime.now()
+        datetime_now = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute,
+                                tzinfo=lc_tz)
 
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': self.payment_term_id.indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
-            'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhEmi': str(datetime_now.isoformat()),
+            'dhSaiEnt': str(datetime_now.isoformat()),
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -552,6 +556,12 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': "%.02f" % self.valor_icms_deson,
+            #incluir campos no modelo
+            'vFCP': '0.00',
+            'vFCPST': '0.00',
+            'vFCPSTRet': '0.00',
+            'vIPIDevol': '0.00',
+
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
             'vProd': "%.02f" % self.valor_bruto,
@@ -647,6 +657,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             },
             'dup': duplicatas
         }
+
+        pag = {
+            'indPag': self.payment_term_id.indPag or '0',
+            'tPag': self.metodo_pagamento,
+            'vPag': "{:.2f}".format(self.fatura_liquido),
+        }
+
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
         self.informacoes_legais = self.informacoes_legais.replace(
@@ -676,6 +693,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'total': total,
             'transp': transp,
             'infAdic': infAdic,
+            'pag': pag,
             'exporta': exporta,
             'compra': compras,
         }
@@ -684,7 +702,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         if self.model == '65':
             vals['codigo_seguranca'] = codigo_seguranca
-            vals['pagamento'] = self.metodo_pagamento
 
         return vals
 
@@ -802,7 +819,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = resposta['object'].Body.nfeResultMsg
         retorno = retorno.getchildren()[0]
         if retorno.cStat == 103:
             obj = {
@@ -819,8 +836,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                retorno = resposta_recibo['object'].Body. \
+                    nfeResultMsg.retConsReciNFe
                 if retorno.cStat != 105:
                     break
 
@@ -935,7 +952,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'modelo': self.model,
         }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        resposta = resp['object'].Body.nfeResultMsg.retEnvEvento
         if resposta.cStat == 128 and \
            resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'

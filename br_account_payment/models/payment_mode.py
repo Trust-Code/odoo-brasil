@@ -4,6 +4,7 @@
 
 from odoo import fields, models, api
 
+# Métodos de Pagamento conforme modelo para emissão de NF-e
 metodos = [
     ('01', u'01 - Dinheiro'),
     ('02', u'02 - Cheque'),
@@ -11,8 +12,11 @@ metodos = [
     ('04', u'04 - Cartão de Débito'),
     ('05', u'05 - Crédito Loja'),
     ('10', u'10 - Vale Alimentacão'),
-    ('11', u'11 - Vale Presente'),
+    ('11', u'11 - Vale Refeição'),
+    ('12', u'12 - Vale Presente'),
     ('13', u'13 - Vale Combustível'),
+    ('15', u'15 - Boleto Bancário'),
+    ('90', u'90 - Sem Pagamento'),
     ('99', u'99 - Outros'), ]
 
 class PaymentMode(models.Model):
