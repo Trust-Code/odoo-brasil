@@ -80,14 +80,13 @@ class Cnab_240(object):
             'data_geracao_arquivo': self._date_today(),
             'hora_geracao_arquivo': self._hour_now(),
             'numero_sequencial_arquivo': self._order.file_number,
-            'controle_lote': self._order.file_number
         }
         return headerArq
 
-    def _get_segmento(self, line, lot_sequency):
+    def _get_segmento(self, line, lot_sequency, num_lot):
         information_id = line.payment_information_id
         segmento = {
-            'controle_lote': self._order.file_number,
+            "controle_lote": num_lot,
             "sequencial_registro_lote": lot_sequency,
             "tipo_movimento": information_id.mov_type,
             "codigo_instrucao_movimento": information_id.mov_instruc,
@@ -146,21 +145,22 @@ class Cnab_240(object):
 
     def _get_trailer_arq(self):
         trailerArq = {
-            'controle_lote': self._order.file_number
         }
         return trailerArq
 
-    def _get_trailer_lot(self, total):
+    def _get_trailer_lot(self, total, num_lot):
         trailer_lot = {
+            "controle_lote": num_lot,
             "somatorio_valores": self._string_to_monetary(total)
         }
         return trailer_lot
 
-    def _get_header_lot(self, line):
+    def _get_header_lot(self, line, num_lot):
         information_id = line.payment_information_id
         payment = self._order.payment_mode_id
         bank = payment.bank_account_id
         header_lot = {
+            "controle_lote": num_lot,
             "tipo_servico": information_id.serv_type,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
@@ -196,37 +196,39 @@ class Cnab_240(object):
 
     def __init__(self):
         self._cnab_file = File(self._bank)
-        self._total_lots = 2
 
     def create_cnab(self, listOfLines):
         self._cnab_file.add_header(self._get_header_arq())
         self.create_details(self._ordenate_lines(listOfLines))
 
-    def create_detail(self, operation, event, lot_sequency):
+    def create_detail(self, operation, event, lot_sequency, num_lot):
         for segment in self.segments_dict[operation]:
             self._cnab_file.add_segment(
-                segment, self._get_segmento(event, lot_sequency))
+                segment, self._get_segmento(event, lot_sequency, num_lot))
             lot_sequency = lot_sequency + 1
         self._cnab_file.get_active_lot().get_active_event().close_event()
         return lot_sequency
 
-    def _create_trailer_lote(self, total):
-        self._cnab_file.add_segment('TrailerLote',
-                                    self._get_trailer_lot(total))
+    def _create_trailer_lote(self, total, num_lot):
+        self._cnab_file.add_segment(
+            'TrailerLote', self._get_trailer_lot(total, num_lot))
         self._cnab_file.get_active_lot().close_lot()
 
-    def _create_header_lote(self, line):
-        self._cnab_file.add_segment('HeaderLote', self._get_header_lot(line))
+    def _create_header_lote(self, line, num_lot):
+        self._cnab_file.add_segment(
+            'HeaderLote', self._get_header_lot(line, num_lot))
 
     def create_details(self, operacoes):
+        num_lot = 1
         for lote in operacoes:
-            self._create_header_lote(operacoes[lote][0])
-            lot_sequency = 0
+            self._create_header_lote(operacoes[lote][0], num_lot)
+            lot_sequency = 1
             for event in operacoes[lote]:
-                lot_sequency = self.create_detail(lote, event, lot_sequency)
-            self._total_lots = self._total_lots + lot_sequency
+                lot_sequency = self.create_detail(
+                    lote, event, lot_sequency, num_lot)
             total_lote = self._sum_lot_values(operacoes[lote])
-            self._create_trailer_lote(total_lote)
+            self._create_trailer_lote(total_lote, num_lot)
+            num_lot = num_lot + 1
 
     def _generate_file(self):
         arquivo = StringIO()

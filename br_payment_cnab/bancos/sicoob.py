@@ -21,9 +21,9 @@ class Sicoob240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line):
+    def _get_header_lot(self, line, num_lot):
         info_id = line.payment_information_id
-        header = super(Sicoob240, self)._get_header_lot(line)
+        header = super(Sicoob240, self)._get_header_lot(line, num_lot)
         header.update({
             'forma_lancamento':
             get_forma_de_lancamento('sicoob', info_id.payment_type),
@@ -40,8 +40,9 @@ class Sicoob240(Cnab_240):
         })
         return header
 
-    def _get_segmento(self, line, lot_sequency):
-        segmento = super(Sicoob240, self)._get_segmento(line, lot_sequency)
+    def _get_segmento(self, line, lot_sequency, num_lot):
+        segmento = super(Sicoob240, self)._get_segmento(
+            line, lot_sequency, num_lot)
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_cep': self._string_to_num(str(
@@ -99,8 +100,8 @@ class Sicoob240(Cnab_240):
         })
         return segmento
 
-    def _get_trailer_lot(self, total):
-        trailer = super(Sicoob240, self)._get_trailer_lot(total)
+    def _get_trailer_lot(self, total, num_lot):
+        trailer = super(Sicoob240, self)._get_trailer_lot(total, num_lot)
         trailer.update({
         })
         return trailer
