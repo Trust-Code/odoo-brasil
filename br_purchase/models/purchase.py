@@ -70,7 +70,7 @@ class PurchaseOrderLine(models.Model):
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
         }
 
-    @api.depends('taxes_id', 'product_qty',  'price_unit',
+    @api.depends('taxes_id', 'product_qty', 'price_unit', 'discount',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao',
                  'incluir_ipi_base', 'icms_st_aliquota_mva')
