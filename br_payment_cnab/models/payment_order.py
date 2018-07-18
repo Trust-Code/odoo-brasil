@@ -21,10 +21,10 @@ class PaymentOrder(models.Model):
 
     def select_bank_cnab(self):
         return {
-                    '756': Sicoob240(self),
-                    # '033': Santander240(self),
-                    # '641': Itau240(self),
-                    # '237': Bradesco240(self)
+                '756': Sicoob240(self),
+                # '033': Santander240(self),
+                # '641': Itau240(self),
+                # '237': Bradesco240(self)
                 }
 
     company_id = fields.Many2one(
