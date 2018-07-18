@@ -6,3 +6,4 @@ from . import account_invoice
 from . import invoice_eletronic
 from . import res_company
 from . import br_account
+from . import product
