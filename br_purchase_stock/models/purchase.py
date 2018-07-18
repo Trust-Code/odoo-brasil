@@ -17,7 +17,7 @@ class PurchaseOrder(models.Model):
             order.update({
                 'amount_total': order.total_bruto + order.total_tax +
                 order.total_frete + order.total_seguro +
-                order.total_despesas,
+                order.total_despesas - order.total_desconto,
             })
 
     def _calc_ratio(self, qty, total):
