@@ -6,7 +6,6 @@ import re
 import io
 import base64
 import logging
-import pytz
 from lxml import etree
 from datetime import datetime, timezone
 from odoo import api, fields, models
@@ -17,6 +16,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 _logger = logging.getLogger(__name__)
 
 try:
+    import pytz
     from pytrustnfe.nfe import autorizar_nfe
     from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
@@ -393,11 +393,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         if self.model not in ('55', '65'):
             return res
 
-        dt_emissao = datetime.strptime(self.data_emissao, DTFT)
-        lc_tz = datetime.now(timezone.utc).astimezone().tzinfo
-        now = datetime.now()
-        datetime_now = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute,
-                                tzinfo=lc_tz)
+        local_datetime = datetime.now(pytz.timezone(self.env.user.tz)).isoformat()
+        dt_format = local_datetime[0:19] + local_datetime[26:32]
 
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
@@ -406,8 +403,8 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': str(datetime_now.isoformat()),
-            'dhSaiEnt': str(datetime_now.isoformat()),
+            'dhEmi': dt_format,
+            'dhSaiEnt': dt_format,
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,

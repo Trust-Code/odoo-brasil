@@ -21,7 +21,8 @@
     'external_dependencies': {
         'python': [
             'pytrustnfe', 'pytrustnfe.nfe',
-            'pytrustnfe.certificado', 'pytrustnfe.utils'
+            'pytrustnfe.certificado', 'pytrustnfe.utils',
+            'pytz'
         ],
     },
     'data': [

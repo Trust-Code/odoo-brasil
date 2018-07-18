@@ -130,7 +130,7 @@ class SpedDFeQueryWizard(models.TransientModel):
             vals['data_evento'] = data_evento
         # Busca os Valores no XML de uma NF-e
         # XML de NF-e de um Fornecedor
-        elif schema == 'procNFe_v3.10.xsd':
+        elif schema == 'procNFe_v3.10.xsd' or 'procNFe_v4.00.xsd':
             vals['cnpj'] = xml.NFe.infNFe.emit.CNPJ.text
             vals['xnome'] = xml.NFe.infNFe.emit.xNome
             vals['ie'] = xml.NFe.infNFe.emit.IE.text
@@ -167,7 +167,7 @@ class SpedDFeQueryWizard(models.TransientModel):
         vals['company_id'] = self.company_id.id
         vals['nsu'] = nsu.attrib['NSU']
         vals['xml'] = decoded_data
-        if schema != 'procNFe_v3.10.xsd':
+        if schema != 'procNFe_v3.10.xsd' or 'procNFe_v4.00.xsd':
             vals['xml_name'] = 'NSU-%s.xml' % nsu.attrib['NSU']
         else:
             vals['xml_name'] = 'NFe-%s.xml' % xml.NFe.infNFe.ide.nNF
