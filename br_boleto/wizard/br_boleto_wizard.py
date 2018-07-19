@@ -14,7 +14,7 @@ class BrBoletoWizard(models.TransientModel):
 
     @api.multi
     def imprimir_boleto(self):
-        if self.move_line_id.payment_mode_id.payment_method != '99' and \
+        if self.move_line_id.payment_mode_id.payment_method != '90' and \
                 self.move_line_id.payment_mode_id.boleto == False:
             raise UserError(
                 u'O método de pagamento definido é diferente de boleto!')
