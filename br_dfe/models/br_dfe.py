@@ -107,7 +107,6 @@ class SpedDFeQueryWizard(models.TransientModel):
 
     @api.multi
     def process_nsu(self, nsu):
-        import pudb;pu.db
         data = nsu.text
         decoded_data = zlib.decompress(base64.b64decode(data), 16 + zlib.MAX_WBITS)
         xml = objectify.fromstring(decoded_data)
