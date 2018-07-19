@@ -107,6 +107,7 @@ class SpedDFeQueryWizard(models.TransientModel):
 
     @api.multi
     def process_nsu(self, nsu):
+        import pudb;pu.db
         data = nsu.text
         decoded_data = zlib.decompress(base64.b64decode(data), 16 + zlib.MAX_WBITS)
         xml = objectify.fromstring(decoded_data)
@@ -130,7 +131,7 @@ class SpedDFeQueryWizard(models.TransientModel):
             vals['data_evento'] = data_evento
         # Busca os Valores no XML de uma NF-e
         # XML de NF-e de um Fornecedor
-        elif schema == 'procNFe_v3.10.xsd' or 'procNFe_v4.00.xsd':
+        elif schema == 'procNFe_v3.10.xsd' or schema == 'procNFe_v4.00.xsd':
             vals['cnpj'] = xml.NFe.infNFe.emit.CNPJ.text
             vals['xnome'] = xml.NFe.infNFe.emit.xNome
             vals['ie'] = xml.NFe.infNFe.emit.IE.text
