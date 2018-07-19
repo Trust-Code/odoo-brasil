@@ -26,8 +26,7 @@ class PaymentOrderLine(models.Model):
     move_id = fields.Many2one('account.move', string=u"Lançamento de Diário",
                               related='move_line_id.move_id', readonly=True)
     nosso_numero = fields.Char(string=u"Nosso Número", size=20)
-    payment_mode_id = fields.Many2one(
-        'payment.mode', string="Modo de pagamento")
+    payment_mode_id = fields.Many2one('payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
     state = fields.Selection([("open", "Aberto"),

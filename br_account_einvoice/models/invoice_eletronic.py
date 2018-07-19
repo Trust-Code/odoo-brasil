@@ -20,6 +20,19 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
 STATE = {'edit': [('readonly', False)]}
 
+metodos = [
+    ('01', u'01 - Dinheiro'),
+    ('02', u'02 - Cheque'),
+    ('03', u'03 - Cartão de Crédito'),
+    ('04', u'04 - Cartão de Débito'),
+    ('05', u'05 - Crédito Loja'),
+    ('10', u'10 - Vale Alimentacão'),
+    ('11', u'11 - Vale Refeição'),
+    ('12', u'12 - Vale Presente'),
+    ('13', u'13 - Vale Combustível'),
+    ('15', u'15 - Boleto Bancário'),
+    ('90', u'90 - Sem Pagamento'),
+    ('99', u'99 - Outros'), ]
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
@@ -184,6 +197,8 @@ class InvoiceEletronic(models.Model):
 
     email_sent = fields.Boolean(string=u"Email enviado", default=False,
                                 readonly=True, states=STATE)
+
+    metodo_pagamento = fields.Selection(metodos, string=u'Método de Pagamento')
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (

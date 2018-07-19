@@ -31,15 +31,18 @@ except ImportError:
 STATE = {'edit': [('readonly', False)]}
 
 metodos = [
-    ('01', u'Dinheiro'),
-    ('02', u'Cheque'),
-    ('03', u'Cartão de Crédito'),
-    ('04', u'Cartão de Débito'),
-    ('05', u'Crédito Loja'),
-    ('10', u'Vale Alimentacão'),
-    ('11', u'Vale Presente'),
-    ('13', u'Vale Combustível'),
-    ('99', u'Outros'),]
+    ('01', u'01 - Dinheiro'),
+    ('02', u'02 - Cheque'),
+    ('03', u'03 - Cartão de Crédito'),
+    ('04', u'04 - Cartão de Débito'),
+    ('05', u'05 - Crédito Loja'),
+    ('10', u'10 - Vale Alimentacão'),
+    ('11', u'11 - Vale Refeição'),
+    ('12', u'12 - Vale Presente'),
+    ('13', u'13 - Vale Combustível'),
+    ('15', u'15 - Boleto Bancário'),
+    ('90', u'90 - Sem Pagamento'),
+    ('99', u'99 - Outros'), ]
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
