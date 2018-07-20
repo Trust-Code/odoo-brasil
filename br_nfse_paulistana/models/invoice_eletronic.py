@@ -311,7 +311,8 @@ class InvoiceEletronic(models.Model):
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
-        if self.ambiente == 'homologacao':
+        if self.ambiente == 'homologacao' or \
+           self.company_id.tipo_ambiente_nfse == 'homologacao':
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
