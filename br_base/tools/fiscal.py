@@ -458,7 +458,7 @@ def validate_cpf(cpf):
     :Parameters:
       - 'cpf': CPF to be validate.
     """
-    cpf = ''.join(re.findall('\d', str(cpf)))
+    cpf = ''.join(re.findall(r'\d', str(cpf)))
 
     list_invalid = ['00000000000', '11111111111',
                     '22222222222', '33333333333',
