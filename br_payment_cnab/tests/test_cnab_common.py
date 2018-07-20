@@ -25,20 +25,21 @@ class TestBrCnabPayment(TransactionCase):
             'phone': '(48) 9801-6226',
         })
         self.main_company.write({'inscr_est': '219.882.606'})
-        self.revenue_account = self.env['account.account'].create({
+        self.payable_account = self.env['account.account'].create({
             'code': '3.0.0',
-            'name': 'Receita de Vendas',
+            'name': 'Despesas com Fornecedores',
             'user_type_id': self.env.ref(
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
-        self.receivable_account = self.env['account.account'].create({
-            'code': '1.0.0',
-            'name': 'Conta de Recebiveis',
-            'reconcile': True,
-            'user_type_id': self.env.ref(
-                'account.data_account_type_receivable').id,
-            'company_id': self.main_company.id
+        sicoob = self.env['res.bank'].search([('bic', '=', '756')])
+        self.receivable_account = self.env['res.partner.bank'].create({
+            'acc_number': '12345',  # 5 digitos
+            'acc_number_dig': '0',  # 1 digito
+            'bra_number': '1234',  # 4 digitos
+            'bra_number_dig': '0',
+            'codigo_convenio': '123456-6',  # 7 digitos
+            'bank_id': sicoob.id,
         })
 
         self.default_ncm = self.env['product.fiscal.classification'].create({
@@ -69,35 +70,17 @@ class TestBrCnabPayment(TransactionCase):
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id,
         ))
+        self.user = self.env['res.users'].create({
+            'name': 'trustcode',
+            'login': 'trust'
+        })
+        self.journalrec = self.env['account.journal'].create({
+            'name': 'Faturas',
+            'code': 'NF',
+            'type': 'sale',
+            'default_debit_account_id': self.payable_account.id,
+            'default_credit_account_id': self.payable_account.id,
+        })
 
-        order_line_data = [
-            (0, 0,
-                {
-                    'product_id': self.default_product.id,
-                    'product_uom': self.default_product.uom_id.id,
-                    'product_uom_qty': 10.0,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
-             ),
-            (0, 0,
-                {
-                    'product_id': self.service.id,
-                    'product_uom': self.service.uom_id.id,
-                    'product_uom_qty': 10.0,
-                    'name': 'product test 5',
-                    'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
-                        'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                }
-             )
-        ]
+    def test_ordenate_lines(self):
+        pass  # TODO
