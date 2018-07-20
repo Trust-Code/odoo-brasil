@@ -307,35 +307,46 @@ class InvoiceEletronic(models.Model):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
-        cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        # Verifica se o ambiente de NFs-e da empresa e o ambiente que o E-Doc foi criado estão em produção
+        # para realizar o cancelamento da NFs-e
+        if self.env.user.company_id.tipo_ambiente_nfse == 'producao' and self.ambiente == 'producao':
 
-        company = self.company_id
-        canc = {
-            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
-            'numero_nfse': self.numero_nfse,
-            'codigo_verificacao': self.verify_code,
-            'assinatura': '%s%s' % (
-                re.sub('[^0-9]', '', company.inscr_mun),
-                self.numero_nfse.zfill(12)
-            )
-        }
-        resposta = cancelamento_nfe(certificado, cancelamento=canc)
-        retorno = resposta['object']
-        if retorno.Cabecalho.Sucesso:
+            cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+            cert_pfx = base64.decodestring(cert)
+            certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+
+            company = self.company_id
+            canc = {
+                'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
+                'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+                'numero_nfse': self.numero_nfse,
+                'codigo_verificacao': self.verify_code,
+                'assinatura': '%s%s' % (
+                    re.sub('[^0-9]', '', company.inscr_mun),
+                    self.numero_nfse.zfill(12)
+                )
+            }
+            resposta = cancelamento_nfe(certificado, cancelamento=canc)
+            retorno = resposta['object']
+            if retorno.Cabecalho.Sucesso:
+                self.state = 'cancel'
+                self.codigo_retorno = '100'
+                self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            else:
+                self.codigo_retorno = retorno.Erro.Codigo
+                self.mensagem_retorno = retorno.Erro.Descricao
+
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            self._create_attachment('canc', self, resposta['sent_xml'])
+            self._create_attachment('canc-ret', self, resposta['received_xml'])
+        else:
+            # Caso algum dos ambientes seja diferente de 'producao' será apenas alterado o status do E-docs,
+            # não realizando requisições de cancelamento para a prefeitura.
+
             self.state = 'cancel'
             self.codigo_retorno = '100'
-            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
-        else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
-
-        self.env['invoice.eletronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
-        })
-        self._create_attachment('canc', self, resposta['sent_xml'])
-        self._create_attachment('canc-ret', self, resposta['received_xml'])
+            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada - Homologação'
