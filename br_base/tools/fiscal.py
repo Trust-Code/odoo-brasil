@@ -458,20 +458,14 @@ def validate_cpf(cpf):
     :Parameters:
       - 'cpf': CPF to be validate.
     """
-    cpf = ''.join(re.findall(r'\d', str(cpf)))
+    cpf = re.sub('[^0-9]', '', cpf)
 
-    list_invalid = ['00000000000', '11111111111',
-                    '22222222222', '33333333333',
-                    '44444444444', '55555555555',
-                    '66666666666', '77777777777',
-                    '88888888888', '99999999999']
-
-    if not cpf or len(cpf) != 11 or cpf in list_invalid or not cpf.isdigit():
+    if not cpf or len(cpf) != 11 or cpf == cpf[0] * len(cpf) or not cpf.isdigit():
         return False
 
     # Pega apenas os 9 primeiros dígitos do CPF e gera os 2 dígitos que faltam
-    inteiros = list(map(int, cpf))
-    novo = inteiros[:9]
+    cpf = list(map(int, cpf))
+    novo = cpf[:9]
 
     while len(novo) < 11:
         r = sum([(len(novo) + 1 - i) * v for i, v in enumerate(novo)]) % 11
@@ -483,6 +477,6 @@ def validate_cpf(cpf):
         novo.append(f)
 
     # Se o número gerado coincidir com o número original, é válido
-    if novo == inteiros:
+    if novo == cpf:
         return True
     return False
