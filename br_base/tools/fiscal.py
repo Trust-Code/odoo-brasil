@@ -460,7 +460,8 @@ def validate_cpf(cpf):
     """
     cpf = re.sub('[^0-9]', '', cpf)
 
-    if not cpf or len(cpf) != 11 or cpf == cpf[0] * len(cpf) or not cpf.isdigit():
+    if not cpf or len(cpf) != 11 or cpf == cpf[0] * len(cpf) or \
+            not cpf.isdigit():
         return False
 
     # Pega apenas os 9 primeiros dígitos do CPF e gera os 2 dígitos que faltam
