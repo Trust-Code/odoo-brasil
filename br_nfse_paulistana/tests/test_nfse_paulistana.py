@@ -252,6 +252,7 @@ class TestNFeBrasil(TransactionCase):
                 [('invoice_id', '=', invoice.id)])
             invoice_eletronic.verify_code = '123'
             invoice_eletronic.numero_nfse = '123'
+            invoice_eletronic.ambiente = 'producao'
             invoice_eletronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
             self.assertEquals(invoice_eletronic.state, 'draft')
