@@ -58,7 +58,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'file_number': 1,
             'company_id': self.main_company.id,
             'type': 'payable',
-            'data_emissao_cnab': time.strftime("%d%m%Y") +
+            'data_emissao_cnab': time.strftime("%d/%m/%Y") + " " +
             time.strftime("%H:%M:%S")
         })
         return self.payment_order.id
@@ -68,8 +68,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
                 'name': "Nosso Numero"})
         info_id = self.get_payment_information()
         self.order_line = [
-            (0,
-                {
+            (0, {
                     'type': 'payable',
                     'payment_order_id': payment_order.id,
                     'payment_mode_id': payment_order.payment_mode_id,
@@ -116,6 +115,13 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             })
         return payment_information.id
 
+    def get_cnab(self):
+        ordem_cobranca = self.env[
+            'payment.order'].browse(self.get_payment_order(pay_mode))
+        self.set_order_lines(ordem_cobranca)
+        ordem_cobranca.action_generate_payable_cnab()
+        return ordem_cobranca.cnab_file
+
     def test_create_cnab(self):
         pay_mode = self.get_payment_mode()
         ordem_cobranca = self.env[
@@ -125,11 +131,24 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         self.cnab = ordem_cobranca.cnab_file
 
     def test_size_arq(self):
-        self.assertEquals(len(self.cnab), 7)
+        cnab = self.get_cnab()
+        self.assertEquals(len(cnab), 7)
         for line in self.cnab:
             self.assertEquals(len(line), 240)
 
-    def test_arq_content(self):
-        cnab_ok = open('static.cnab_pagamento_sicoob.txt', 'r')
-        for i in range(len(self.cnab)):
-            self.assertEquals(cnab_ok.readline(), self.cnab.readline())
+    def test_header_arq(self):
+        arq_teste = self.get_cnab()._get_header_arq()
+        arq_ok = {
+            'cedente_inscricao_tipo': 2,
+            'cedente_inscricao_numero': '92743275000133',
+            'codigo_convenio': 1234588,
+            'cedente_agencia': '4321',
+            'cedente_agencia_dv': '0',
+            'cedente_conta': 45425,
+            'cedente_conta_dv': 0,
+            'cedente_nome': 'Trustcode',
+            'data_geracao_arquivo': time.strftime("%d%m%Y"),
+            'hora_geracao_arquivo': time.strftime("%H%M%S"),
+            'numero_sequencial_arquivo': 1,
+        }
+        self.assertEquals(arq_ok, arq_teste)
