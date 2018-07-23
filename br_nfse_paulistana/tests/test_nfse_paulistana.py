@@ -234,6 +234,7 @@ class TestNFeBrasil(TransactionCase):
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.cancelamento_nfe')  # noqa
     def test_nfse_cancelamento_erro(self, cancelar):
         for invoice in self.invoices:
+            invoice.company_id.tipo_ambiente_nfse = 'producao'
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 
@@ -251,11 +252,10 @@ class TestNFeBrasil(TransactionCase):
                 [('invoice_id', '=', invoice.id)])
             invoice_eletronic.verify_code = '123'
             invoice_eletronic.numero_nfse = '123'
+            invoice_eletronic.ambiente = 'producao'
             invoice_eletronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
-
-            # Draft because I didn't send it
             self.assertEquals(invoice_eletronic.state, 'draft')
-            self.assertEquals(invoice_eletronic.codigo_retorno, u"1305")
+            self.assertEquals(invoice_eletronic.codigo_retorno, "1305")
             self.assertEquals(invoice_eletronic.mensagem_retorno,
                               "Assinatura de cancelamento da NFS-e incorreta.")
