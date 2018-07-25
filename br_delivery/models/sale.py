@@ -13,8 +13,8 @@ class SaleOrder(models.Model):
     def _prepare_invoice(self):
         result = super(SaleOrder, self)._prepare_invoice()
         domain = [('sale_id', '=', self.id)]
-        if all(item.invoice_policy == 'delivery' for item in
-                self.order_line.product_id):
+        if all(item.product_id.invoice_policy == 'delivery' for item in
+                self.order_line):
             domain.append(('state', '=', 'done'))
         pick = self.env['stock.picking'].search(
             domain)
