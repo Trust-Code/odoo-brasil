@@ -111,6 +111,12 @@ class AccountInvoice(models.Model):
             docs.ids, report)
         return action
 
+    def get_nfe_msg(self, invoice):
+        msg = ''
+        for line in invoice.fiscal_document_related_ids:
+            msg = msg + line.message
+        return msg
+
     def _prepare_edoc_item_vals(self, line):
         vals = {
             'name': line.name,
@@ -238,6 +244,7 @@ class AccountInvoice(models.Model):
             'valor_retencao_csll': invoice.csll_retention,
             'valor_bc_inss': invoice.inss_base,
             'valor_retencao_inss': invoice.inss_retention,
+            'informacoes_complementares': self.get_nfe_msg(invoice)
         }
 
         eletronic_items = []
