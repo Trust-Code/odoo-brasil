@@ -134,7 +134,8 @@ class InutilizedNfe(models.Model):
         certificado = Certificado(cert_pfx, company.nfe_a1_password)
 
         resposta = inutilizar_nfe(certificado, obj=obj, estado=estado,
-                                  ambiente=int(ambiente))
+                                  ambiente=int(ambiente),
+                                  modelo=obj['modelo'])
         self._handle_resposta(resposta=resposta)
 
     @api.multi
