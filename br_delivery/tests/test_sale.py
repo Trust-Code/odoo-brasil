@@ -1,5 +1,6 @@
 from odoo.tests.common import TransactionCase
 
+
 class TestSaleOrder(TransactionCase):
     def setUp(self):
         super(TestSaleOrder, self).setUp()
@@ -207,7 +208,8 @@ class TestSaleOrder(TransactionCase):
             name="SO 999",
             partner_id=self.partner_fisica.id
         ))
-    
+
+
     def test_sale_order_to_invoice(self):
         self.sale_order.action_confirm()
         self.sale_order.action_invoice_create(final=True)
