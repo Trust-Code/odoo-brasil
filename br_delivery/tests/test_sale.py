@@ -209,9 +209,7 @@ class TestSaleOrder(TransactionCase):
             partner_id=self.partner_fisica.id
         ))
 
-
     def test_sale_order_to_invoice(self):
         self.sale_order.action_confirm()
         self.sale_order.action_invoice_create(final=True)
         self.assertEqual(len(self.sale_order.invoice_ids), 1)
-        
