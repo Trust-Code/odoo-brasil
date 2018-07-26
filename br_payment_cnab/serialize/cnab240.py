@@ -165,7 +165,7 @@ class Cnab_240(object):
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 payment.company_id.cnpj_cpf),
-            "codigo_convenio": bank.codigo_convenio,
+            "codigo_convenio": str(bank.codigo_convenio),
             "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.bra_number_dig,
             "cedente_conta": bank.acc_number,
@@ -175,8 +175,10 @@ class Cnab_240(object):
             "cedente_endereco_rua": self._order.company_id.street,
             "cedente_endereco_numero": payment.company_id.number,
             "cedente_endereco_complemento": str(
-                self._order.company_id.street2)[0:15],
-            "cedente_cidade": str(self._order.company_id.city_id.name)[:20],
+                self._order.company_id.street2)[0:15] if
+            self._order.company_id.street2 else '',
+            "cedente_cidade": str(self._order.company_id.city_id.name)[:20] if
+            self._order.company_id.city_id.name else '',
             "cedente_cep": self._order.company_id.zip,
             "cedente_cep_complemento": self._order.company_id.zip,
             "cedente_uf": self._order.company_id.state_id.code,
@@ -220,13 +222,13 @@ class Cnab_240(object):
 
     def create_details(self, operacoes):
         num_lot = 1
-        for lote in operacoes:
-            self._create_header_lote(operacoes[lote][0], num_lot)
+        for lote, events in operacoes.items():
+            self._create_header_lote(events[0], num_lot)
             lot_sequency = 1
-            for event in operacoes[lote]:
+            for event in events:
                 lot_sequency = self.create_detail(
                     lote, event, lot_sequency, num_lot)
-            total_lote = self._sum_lot_values(operacoes[lote])
+            total_lote = self._sum_lot_values(events)
             self._create_trailer_lote(total_lote, num_lot)
             num_lot = num_lot + 1
 

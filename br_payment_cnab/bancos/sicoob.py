@@ -15,8 +15,8 @@ class Sicoob240(Cnab_240):
         header.update({
             'cedente_conta_dv': self._string_to_num(
                 header.get('cedente_conta_dv')),
-            'codigo_convenio': self._string_to_num((str(
-                header.get('codigo_convenio'))[:20])),
+            'codigo_convenio': str(
+                header.get('codigo_convenio'))[:20],
             'cedente_conta': self._string_to_num(header.get('cedente_conta'))
         })
         return header

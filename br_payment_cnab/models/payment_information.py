@@ -11,7 +11,8 @@ class PaymentInformation(models.Model):
     def name_get(self):
         result = []
         for rec in self:
-            result.append((rec.id, "%s" % (rec.mov_finality or '')))
+            result.append((rec.id, "%s" % (dict(rec._fields[
+                'mov_finality'].selection).get(rec.mov_finality) or '')))
         return result
 
     mov_finality = fields.Selection([
