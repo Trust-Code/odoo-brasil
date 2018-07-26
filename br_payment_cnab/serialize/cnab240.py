@@ -100,24 +100,22 @@ class Cnab_240(object):
             "favorecido_agencia_conta_dv": ' ',
             "favorecido_nome": line.partner_id.name,
             "favorecido_doc_numero": line.partner_id.cnpj_cpf,
-            # TODO Esse campo é um identificador único da linha,
-            #  utilizamos geralmente o campo nosso número
             "numero_documento_cliente": line.nosso_numero,
             "data_pagamento": line.date_maturity,
             "valor_pagamento": line.value,
             "numero_documento_banco": "000",
             "data_real_pagamento": self._order.data_emissao_cnab,
             "valor_real_pagamento": line.value_final,  # TODO
-            "mensagem2": '',
+            "mensagem2": information_id.message2 or '',
             "finalidade_doc_ted": information_id.mov_finality,
             "finalidade_ted": information_id.finality_ted,
             "favorecido_emissao_aviso": information_id.warning_code,
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
             "favorecido_inscricao_numero": line.partner_id.cnpj_cpf,
-            "favorecido_endereco_rua": line.partner_id.street,
-            "favorecido_endereco_numero": line.partner_id.number,
-            "favorecido_endereco_complemento": line.partner_id.street2,
+            "favorecido_endereco_rua": line.partner_id.street or '',
+            "favorecido_endereco_numero": line.partner_id.number or '',
+            "favorecido_endereco_complemento": line.partner_id.street2 or '',
             "favorecido_bairro": line.partner_id.district,
             "favorecido_cidade": line.partner_id.city_id.name,
             "favorecido_cep": line.partner_id.zip,
@@ -138,7 +136,7 @@ class Cnab_240(object):
             "codigo_moeda": information_id.currency_code,
             "codigo_de_barras": int("0"*44),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
-            "nome_concessionaria": information_id.agency_name,
+            "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": line.date_maturity
         }
         return segmento
@@ -167,11 +165,11 @@ class Cnab_240(object):
                 payment.company_id.cnpj_cpf),
             "codigo_convenio": str(bank.codigo_convenio),
             "cedente_agencia": bank.bra_number,
-            "cedente_agencia_dv": bank.bra_number_dig,
+            "cedente_agencia_dv": bank.bra_number_dig or '',
             "cedente_conta": bank.acc_number,
-            "cedente_conta_dv": bank.acc_number_dig,
+            "cedente_conta_dv": bank.acc_number_dig or '',
             "cedente_nome": payment.company_id.name,
-            "mensagem1": information_id.message1,
+            "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
             "cedente_endereco_numero": payment.company_id.number,
             "cedente_endereco_complemento": str(

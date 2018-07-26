@@ -118,9 +118,9 @@ class PaymentInformation(models.Model):
          ('98', 'Pagamentos Diversos')],
         string='Service Type')
 
-    message2 = fields.Char(string='Note Detail', size=40, default=' '*40)
+    message2 = fields.Char(string='Note Detail', size=40, default='')
 
-    agency_name = fields.Char(string='Agency Name', size=30, default=' '*30)
+    agency_name = fields.Char(string='Agency Name', size=30, default='')
 
     currency_code = fields.Selection(
         [('02', 'US Commercial Dolar'),
@@ -133,7 +133,7 @@ class PaymentInformation(models.Model):
          ('09', 'Real')],
         string="Currency code", default='09')
 
-    message1 = fields.Char(string='Note Header', size=40, default=' '*40)
+    message1 = fields.Char(string='Note Header', size=40, default='')
 
     credit_hist_code = fields.Selection(
         [('0013', 'Dividends Credit'),

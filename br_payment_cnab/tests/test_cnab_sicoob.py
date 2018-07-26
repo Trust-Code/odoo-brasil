@@ -22,10 +22,10 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         account_voucher = self.env['account.voucher'].create({
             'partner_id': self.partner_fisica.id,
             'pay_now': 'pay_now',
-            'account_date': time.strftime("%d/%m/%Y"),
+            'account_date': time.strftime(DATE_FORMAT),
             'journal_id': self.journalrec.id,
-            'date': time.strftime("%d/%m/%Y"),
-            'date_due': time.strftime("%d/%m/%Y"),
+            'date': time.strftime(DATE_FORMAT),
+            'date_due': time.strftime(DATE_FORMAT),
             'account_id': self.payable_account.id,
             'bank_account_id': self.receivable_account.id
         })
@@ -181,7 +181,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'cedente_cep_complemento': 240,
             'cedente_conta_dv': 0,
             'cedente_agencia_dv': '0',
-            'mensagem1': '                                        ',
+            'mensagem1': '',
             'cedente_nome': 'Trustcode',
             'cedente_cep': 88037,
             'cedente_cidade': 'Florianópolis',
@@ -195,7 +195,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
     def test_seg_A(self):
         ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
         cnab = self.get_cnab_obj(ordem_cobranca)
-        seg_teste = cnab._get_header_lot(ordem_cobranca.line_ids[1], 1)
+        seg_teste = cnab._get_segmento(ordem_cobranca.line_ids[1], 1, 1)
         seg_ok = {
             'cedente_agencia': 4321,
             'cedente_agencia_dv': '0',
@@ -211,7 +211,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'cedente_inscricao_tipo': 2,
             'cedente_nome': 'Trustcode',
             'cedente_uf': 'SC',
-            'codigo_convenio': '123458-8',
+            'codigo_convenio': 1234588,
             'controle_lote': 1,
             'forma_lancamento': '41',
             'mensagem1': '                                        ',
