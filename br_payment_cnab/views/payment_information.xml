@@ -30,6 +30,7 @@
                             <field name="message2"/>
                             <field name="rebate_value" widget="monetary"/>
                             <field name="discount_value" widget="monetary"/>
+                            <field name="credit_hist_code"/>
                         </group>
                         <group>
                             <field name="warning_code"/>

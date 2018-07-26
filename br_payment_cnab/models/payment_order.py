@@ -4,12 +4,26 @@
 import base64
 from datetime import datetime
 from odoo import api, fields, models
+from ..bancos.santander import Santander240
 from odoo.exceptions import UserError
 from ..bancos.sicoob import Sicoob240
 
 
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
+
+    def select_bank_cnab(self, code):
+        banks = {
+            '756': Sicoob240(self),
+            '033': Santander240(self),
+            # '641': Itau240(self),
+            # '237': Bradesco240(self)
+        }
+        bank = banks.get(code)
+        if not bank:
+            raise UserError("Ainda não foi implementado geração de CNAB para o"
+                            " banco {}".format(code))
+        return bank
 
     def action_generate_payable_cnab(self):
         self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
@@ -19,19 +33,6 @@ class PaymentOrder(models.Model):
         cnab.create_cnab(self.line_ids)
         self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = 'cnab_pagamento.rem'
-
-    def select_bank_cnab(self, code):
-        banks = {
-            '756': Sicoob240(self),
-            # '033': Santander240(self),
-            # '641': Itau240(self),
-            # '237': Bradesco240(self)
-        }
-        bank = banks.get(code)
-        if not bank:
-            raise UserError("Ainda não foi implementado geração de CNAB para o"
-                            " banco {}".format(code))
-        return bank
 
     company_id = fields.Many2one(
         'res.company', string='Company', required=True, ondelete='restrict',
