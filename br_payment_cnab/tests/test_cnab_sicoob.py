@@ -153,7 +153,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         arq_ok = {
             'cedente_inscricao_tipo': 2,
             'cedente_inscricao_numero': 92743275000133,
-            'codigo_convenio': '1234588',
+            'codigo_convenio': 1234588,
             'cedente_agencia': 4321,
             'cedente_agencia_dv': '0',
             'cedente_conta': 45425,
@@ -197,25 +197,24 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         cnab = self.get_cnab_obj(ordem_cobranca)
         seg_teste = cnab._get_segmento(ordem_cobranca.line_ids[1], 1, 1)
         seg_ok = {
-            'cedente_agencia': 4321,
-            'cedente_agencia_dv': '0',
-            'cedente_cep': 88037,
-            'cedente_cep_complemento': 240,
-            'cedente_cidade': 'Florianópolis',
-            'cedente_conta': 45425,
-            'cedente_conta_dv': 0,
-            'cedente_endereco_complemento': '',
-            'cedente_endereco_numero': 42,
-            'cedente_endereco_rua': 'Vinicius de Moraes',
-            'cedente_inscricao_numero': 92743275000133,
-            'cedente_inscricao_tipo': 2,
-            'cedente_nome': 'Trustcode',
-            'cedente_uf': 'SC',
-            'codigo_convenio': 1234588,
             'controle_lote': 1,
-            'forma_lancamento': '41',
-            'mensagem1': '                                        ',
-            'tipo_servico': 98
+            'sequencial_registro_lote': 1,
+            'favorecido_agencia': 1234,
+            'favorecido_conta': 12345,
+            'favorecido_agencia_dv': '0',
+            'favorecido_conta_dv': 0,
+            'favorecido_cep': 88032,
+            'favorecido_cep_complemento': 50,
+            'favorecido_cidade': 'Florianópolis',
+            'favorecido_endereco_complemento': '',
+            'favorecido_endereco_numero': 45,
+            'favorecido_endereco_rua': 'Donicia',
+            'favorecido_inscricao_numero': 6621204930,
+            'favorecido_inscricao_tipo': 2,
+            'favorecido_nome': 'Parceiro',
+            'favorecido_uf': 'SC',
+            'codigo_convenio': 1234566,
+            'mensagem1': ''
         }
 
         self.assertEquals(seg_ok, seg_teste)

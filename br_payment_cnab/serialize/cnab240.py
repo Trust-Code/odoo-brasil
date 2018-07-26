@@ -94,10 +94,10 @@ class Cnab_240(object):
             # adicionar campo para o banco do clinte com um valor default
             "favorecido_codigo_banco": line.bank_account_id.bank_id.name,
             "favorecido_agencia": line.bank_account_id.bra_number,
-            "favorecido_agencia_dv": line.bank_account_id.bra_number_dig,
+            "favorecido_agencia_dv": line.bank_account_id.bra_number_dig or '',
             "favorecido_conta": line.bank_account_id.acc_number,
-            "favorecido_conta_dv": line.bank_account_id.acc_number_dig,
-            "favorecido_agencia_conta_dv": ' ',
+            "favorecido_conta_dv": line.bank_account_id.acc_number_dig or '',
+            "favorecido_agencia_conta_dv": '',
             "favorecido_nome": line.partner_id.name,
             "favorecido_doc_numero": line.partner_id.cnpj_cpf,
             "numero_documento_cliente": line.nosso_numero,
