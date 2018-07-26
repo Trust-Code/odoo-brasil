@@ -105,7 +105,6 @@ class Cnab_240(object):
             "numero_documento_cliente": line.nosso_numero,
             "data_pagamento": line.date_maturity,
             "valor_pagamento": line.value,
-            "numero_documento_banco": "000",
             "data_real_pagamento": self._order.data_emissao_cnab,
             "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": '',
