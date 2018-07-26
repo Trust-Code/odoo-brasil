@@ -6,6 +6,7 @@ from ..tests.test_cnab_common import TestBrCnabPayment
 from ..bancos.sicoob import Sicoob240
 import time
 import base64
+from decimal import Decimal
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
@@ -175,7 +176,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'cedente_uf': 'SC',
             'tipo_servico': 98,
             'cedente_endereco_numero': 42,
-            'codigo_convenio': '123458-8',
+            'codigo_convenio': 1234588,
             'forma_lancamento': '41',
             'cedente_endereco_complemento': '',
             'cedente_cep_complemento': 240,
@@ -192,31 +193,59 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         }
         self.assertEquals(lot_ok, lot_teste)
 
-    def test_seg_A(self):
+    def test_seg(self):
         ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
         cnab = self.get_cnab_obj(ordem_cobranca)
         seg_teste = cnab._get_segmento(ordem_cobranca.line_ids[1], 1, 1)
         seg_ok = {
+            'valor_abatimento': Decimal('1.00'),
+            'favorecido_codigo_banco': 'BANCO COOPERATIVO\
+ DO BRASIL S.A. (SICOOB)',
+            'valor_mora': Decimal('1.00'),
+            'codigo_camara_compensacao': 18,
+            'favorecido_bairro': 'Centro',
+            'data_vencimento': int(time.strftime("%Y%m%d")),
+            'favorecido_emissao_aviso': 0,
+            'nome_concessionaria': '',
+            'valor_multa': Decimal('3.00'),
+            'valor_documento': Decimal('120.00'),
+            'valor_pagamento': Decimal('120.00'),
+            'codigo_moeda': '09',
+            'valor_desconto_abatimento': Decimal('3.00'),
+            'valor_real_pagamento': Decimal('121.00'),
+            'favorecido_agencia_conta_dv': '',
+            'numero_documento_cliente': '20000000000000000000',
+            'codigo_instrucao_movimento': 0,
+            'hora_envio_ted': (int(time.strftime("%H%M%S")[0:4])),
+            'favorecido_doc_numero': 6621204930,
+            'data_real_pagamento':  int(time.strftime("%Y%m%d")),
+            'valor_multa_juros': Decimal('4.00'),
+            'data_pagamento':  int(time.strftime("%Y%m%d")),
+            'finalidade_doc_ted': '01',
+            'codigo_historico_credito': '2644',
+            'tipo_movimento': 0,
+            'finalidade_ted': '11',
+            'valor_desconto': Decimal('2.00'),
+            'valor_nominal_titulo': Decimal('120.00'),
+            'codigo_de_barras': 0,
+            'cedente_nome': 'Trustcode',
             'controle_lote': 1,
             'sequencial_registro_lote': 1,
             'favorecido_agencia': 1234,
             'favorecido_conta': 12345,
             'favorecido_agencia_dv': '0',
             'favorecido_conta_dv': 0,
-            'favorecido_cep': 88032,
-            'favorecido_cep_complemento': 50,
+            'favorecido_cep': 88032050,
             'favorecido_cidade': 'Florianópolis',
             'favorecido_endereco_complemento': '',
             'favorecido_endereco_numero': 45,
             'favorecido_endereco_rua': 'Donicia',
             'favorecido_inscricao_numero': 6621204930,
-            'favorecido_inscricao_tipo': 2,
+            'favorecido_inscricao_tipo': 1,
             'favorecido_nome': 'Parceiro',
             'favorecido_uf': 'SC',
-            'codigo_convenio': 1234566,
-            'mensagem1': ''
+            'mensagem2': ''
         }
-
         self.assertEquals(seg_ok, seg_teste)
 
     def sequency_lot(self):
