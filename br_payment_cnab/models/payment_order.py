@@ -30,6 +30,7 @@ class PaymentOrder(models.Model):
         cnab = self.select_bank_cnab(str(
             self.payment_mode_id.bank_account_id.bank_id.bic))
         cnab.create_cnab(self.line_ids)
+        self.line_ids.write({'state': 'sent'})
         self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = self.env['ir.sequence'].next_by_code('payment.cnab.name')
 
@@ -37,6 +38,8 @@ class PaymentOrder(models.Model):
         'res.company', string='Company', required=True, ondelete='restrict',
         default=lambda self: self.env['res.company']._company_default_get(
             'account.payment.mode'))
+
+    state = fields.Selection(selection_add=[('error', 'Erro')])
 
 
 class PaymentOrderLine(models.Model):
@@ -60,3 +63,47 @@ class PaymentOrderLine(models.Model):
 
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência")
+
+    def get_opration_code(self, payment_mode):
+        if payment_mode.payment_type == '01':
+            return '018'
+        elif payment_mode.payment_type == '02':
+            return '700'
+
+    def get_payment_order(self, payment_mode):
+        order_name = self.env['ir.sequence'].next_by_code('payment.order')
+        payment_order = self.env['payment.order'].search([
+            ('state', '=', 'draft'),
+            ('payment_mode_id', '=', payment_mode.id),
+            ('type', '=', 'payable')], limit=1)
+        if not payment_order:
+            payment_order = payment_order.create({
+                'name': order_name or '',
+                'user_id': self.env.user.id,
+                'payment_mode_id': payment_mode.id,
+                'state': 'draft',
+                'type': 'payable',
+            })
+        return payment_order
+
+    def get_information(self, payment_mode_id):
+        return self.env['l10n_br.payment_information'].create({
+            'payment_type': payment_mode_id.payment_type,
+            'finality_ted': payment_mode_id.finality_ted,
+            'mov_finality': payment_mode_id.mov_finality,
+            'operation_code': self.get_opration_code(payment_mode_id),
+        })
+
+    def action_generate_payment_order_line(self, payment_mode, **vals):
+        payment_order = self.get_payment_order(payment_mode)
+
+        information_id = self.get_information(payment_mode)
+        line_vals = {
+            'payment_mode_id': payment_mode.id,
+            'payment_information_id': information_id.id,
+            'payment_order_id': payment_order.id,
+            'nosso_numero': payment_mode.nosso_numero_sequence
+            .next_by_id(),
+        }
+        line_vals.update(vals)
+        self.create(line_vals)

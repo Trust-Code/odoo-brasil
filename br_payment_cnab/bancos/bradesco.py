@@ -1,5 +1,12 @@
-from pycnab240.utils import get_forma_de_lancamento
+import logging
 from ..serialize.cnab240 import Cnab_240
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pycnab240.utils import get_forma_de_lancamento
+except ImportError:
+    _logger.debug('Cannot import pycnab240 dependencies.')
 
 
 class Bradesco240(Cnab_240):

@@ -1,6 +1,13 @@
-from pycnab240.utils import get_forma_de_lancamento
+import logging
 from ..serialize.cnab240 import Cnab_240
-from pycnab240.bancos import sicoob
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pycnab240.utils import get_forma_de_lancamento
+    from pycnab240.bancos import sicoob
+except ImportError:
+    _logger.debug('Cannot import pycnab240 dependencies.')
 
 
 class Sicoob240(Cnab_240):

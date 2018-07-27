@@ -18,6 +18,7 @@
     'contributors': [
         'Guilherme Lenon da Silva <guilhermelds@gmail.com>',
         'Marina Domingues <mgd.marinadomingues@gmail.com>'
+        'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': [
         'br_account_payment',
