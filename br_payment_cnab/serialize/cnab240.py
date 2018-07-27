@@ -51,6 +51,8 @@ class Cnab_240(object):
 
     def _string_to_num(self, toTransform, default=None):
         value = re.sub('[^0-9]', '', str(toTransform))
+        if not value:
+            return 0
         try:
             return int(value)
         except ValueError:
@@ -108,7 +110,8 @@ class Cnab_240(object):
             "mensagem2": information_id.message2 or '',
             "finalidade_doc_ted": information_id.mov_finality,
             "finalidade_ted": information_id.finality_ted,
-            "favorecido_emissao_aviso": information_id.warning_code,
+            "favorecido_emissao_aviso": int(information_id.warning_code) if
+            information_id.warning_code else 0,
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
             "favorecido_inscricao_numero": line.partner_id.cnpj_cpf,

@@ -24,8 +24,8 @@ class Santander240(Cnab_240):
         header = super()._get_header_lot(line, num_lot)
         header.update({
             'numero_versao_lote': 31,
-            'forma_lancamento': get_forma_de_lancamento(
-                'santander', info_id.payment_type),
+            'forma_lancamento': int(get_forma_de_lancamento(
+                'santander', info_id.payment_type)),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
             'cedente_cep_complemento': self._string_to_num(
                 header.get('cedente_cep_complemento')[6:]),

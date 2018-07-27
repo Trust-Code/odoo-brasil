@@ -93,8 +93,6 @@ class Sicoob240(Cnab_240):
                 segmento.get('favorecido_agencia'), 0),
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
-            'favorecido_emissao_aviso': self._string_to_num(
-                segmento.get('favorecido_emissao_aviso')),
             'codigo_instrucao_movimento': self._string_to_num(
                 segmento.get('codigo_instrucao_movimento')),
             'codigo_camara_compensacao': self._string_to_num(

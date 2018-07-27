@@ -12,7 +12,7 @@ class PaymentInformation(models.Model):
         result = []
         for rec in self:
             result.append((rec.id, "%s" % (dict(rec._fields[
-                'mov_finality'].selection).get(rec.mov_finality) or '')))
+                'payment_type'].selection).get(rec.payment_type) or '')))
         return result
 
     mov_finality = fields.Selection([

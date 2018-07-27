@@ -2,7 +2,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+from datetime import datetime
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 
 class AccountVoucher(models.Model):
@@ -34,26 +37,33 @@ class AccountVoucher(models.Model):
             limit=1)
         self.bank_account_id = bnk_account_id.id
 
+    def get_opration_code(self):
+        if self.payment_mode_id.payment_type == '01':
+            return '018'
+        elif self.payment_mode_id.payment_type == '02':
+            return '700'
+
     def action_generate_payment_order_line(self):
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
             ('payment_mode_id', '=', self.payment_mode_id.id),
             ('type', '=', 'payable')], limit=1)
-        order_dict = {
-            'name': u'%s' % order_name,
-            'user_id': self.write_uid.id,
-            'payment_mode_id': self.payment_mode_id.id,
-            'state': 'draft',
-            'type': 'payable',
-            'currency_id': self.currency_id.id,
-        }
         if not payment_order:
-            payment_order = payment_order.create(order_dict)
+            payment_order = payment_order.create({
+                'name': '%s' % order_name,
+                'user_id': self.write_uid.id,
+                'payment_mode_id': self.payment_mode_id.id,
+                'state': 'draft',
+                'type': 'payable',
+                'currency_id': self.currency_id.id,
+            })
 
         information_id = self.env['l10n_br.payment_information'].create({
             'payment_type': self.payment_mode_id.payment_type,
-            'mov_finality': '01',  # Crédito em Conta Corrente
+            'finality_ted': self.payment_mode_id.finality_ted,
+            'mov_finality': self.payment_mode_id.mov_finality,
+            'operation_code': self.get_opration_code(),
         })
         self.env['payment.order.line'].create({
             'partner_id': self.partner_id.id,
@@ -66,6 +76,8 @@ class AccountVoucher(models.Model):
             'move_id': self.move_id.id,
             'voucher_id': self.id,
             'payment_information_id': information_id.id,
+            'nosso_numero': self.payment_mode_id.nosso_numero_sequence
+            .next_by_id()
         })
 
     @api.multi
@@ -74,4 +86,17 @@ class AccountVoucher(models.Model):
         res = super(AccountVoucher, self).proforma_voucher()
         for item in self:
             item.action_generate_payment_order_line()
+        return res
+
+    def validade_doc_ted_fields(self):
+        if not self.date_due:
+            raise UserError(_("Please select a Due Date for the payment"))
+        if datetime.strptime(self.date_due, DATE_FORMAT) < datetime.now():
+            raise UserError(_("Due Date must be a future date"))
+
+    @api.multi
+    def write(self, vals):
+        res = super(AccountVoucher, self).write(vals)
+        if self.payment_mode_id.payment_type in ('01, 02'):
+            self.validade_doc_ted_fields()
         return res

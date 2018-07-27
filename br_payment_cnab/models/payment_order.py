@@ -4,9 +4,8 @@
 import base64
 from datetime import datetime
 from odoo import api, fields, models
-from ..bancos.santander import Santander240
+from ..bancos import santander, sicoob
 from odoo.exceptions import UserError
-from ..bancos.sicoob import Sicoob240
 
 
 class PaymentOrder(models.Model):
@@ -14,8 +13,8 @@ class PaymentOrder(models.Model):
 
     def select_bank_cnab(self, code):
         banks = {
-            '756': Sicoob240(self),
-            '033': Santander240(self),
+            '756': sicoob.Sicoob240(self),
+            '033': santander.Santander240(self),
             # '641': Itau240(self),
             # '237': Bradesco240(self)
         }
@@ -32,7 +31,7 @@ class PaymentOrder(models.Model):
             self.payment_mode_id.bank_account_id.bank_id.bic))
         cnab.create_cnab(self.line_ids)
         self.cnab_file = base64.b64encode(cnab.write_cnab())
-        self.name = 'cnab_pagamento.rem'
+        self.name = self.env['ir.sequence'].next_by_code('payment.cnab.name')
 
     company_id = fields.Many2one(
         'res.company', string='Company', required=True, ondelete='restrict',
