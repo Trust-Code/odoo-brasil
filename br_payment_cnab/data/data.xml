@@ -7,4 +7,5 @@
         <field name="padding">5</field>
         <field name="suffix">.REM</field>
     </record>
+
 </odoo>

@@ -1,11 +1,17 @@
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import logging
 import base64
 from datetime import datetime
-from odoo import api, fields, models
-from ..bancos import santander, sicoob
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+_logger = logging.getLogger(__name__)
+
+try:
+    from ..bancos import santander, sicoob
+except ImportError:
+    _logger.debug('Cannot import bancos.')
 
 
 class PaymentOrder(models.Model):
@@ -20,8 +26,8 @@ class PaymentOrder(models.Model):
         }
         bank = banks.get(code)
         if not bank:
-            raise UserError("Ainda não foi implementado geração de CNAB para o"
-                            " banco {}".format(code))
+            raise UserError(_("You can't generate cnab for the bank {} yet!"
+                              .format(code)))
         return bank
 
     def action_generate_payable_cnab(self):
@@ -50,7 +56,7 @@ class PaymentOrderLine(models.Model):
         'l10n_br.payment_information', string="Payment Information")
 
     @api.depends('payment_information_id')
-    def calc_final_value(self):
+    def _compute_final_value(self):
         for item in self:
             payment = item.payment_information_id
             desconto = payment.rebate_value + payment.discount_value
@@ -58,7 +64,7 @@ class PaymentOrderLine(models.Model):
             item.value_final = (item.value - desconto + acrescimo)
 
     value_final = fields.Float(
-        string="Final Value", compute="calc_final_value",
+        string="Final Value", compute="_compute_final_value",
         digits=(18, 2), readonly=True)
 
     bank_account_id = fields.Many2one(
