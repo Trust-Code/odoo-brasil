@@ -96,6 +96,7 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, inv):
         res = super(AccountInvoice, self)._prepare_edoc_vals(inv)
 
+        res['payment_mode_id'] = inv.payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
@@ -148,7 +149,7 @@ class AccountInvoice(models.Model):
         count = 1
         for parcela in inv.receivable_move_line_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
-                'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
+                'numero_duplicata': "%03d" % count,
                 'data_vencimento': parcela.date_maturity,
                 'valor': parcela.credit or parcela.debit,
             }))
