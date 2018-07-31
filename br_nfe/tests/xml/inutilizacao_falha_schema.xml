@@ -1,0 +1,12 @@
+<nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeInutilizacao4">
+  <retInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+    <infInut>
+      <tpAmb>2</tpAmb>
+      <verAplic>SVRS201806282144</verAplic>
+      <cStat>215</cStat>
+      <xMotivo>Rejeicao: Falha no schema XML</xMotivo>
+      <cUF>42</cUF>
+      <dhRecbto>2018-07-31T10:06:33-03:00</dhRecbto>
+    </infInut>
+  </retInutNFe>
+</nfeResultMsg>

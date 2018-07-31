@@ -19,6 +19,7 @@ class AccountFiscalPositionTemplate(models.Model):
         ('2', u'Operação não presencial, pela Internet'),
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('5', u'Operação presencial, fora do estabelecimento'),
         ('9', u'Operação não presencial, outros'),
     ], u'Tipo de operação',
         help=u'Indicador de presença do comprador no\n'
@@ -48,6 +49,7 @@ class AccountFiscalPosition(models.Model):
         ('2', u'Operação não presencial, pela Internet'),
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('5', u'Operação presencial, fora do estabelecimento'),
         ('9', u'Operação não presencial, outros'),
     ], u'Tipo de operação',
         help=u'Indicador de presença do comprador no\n'
