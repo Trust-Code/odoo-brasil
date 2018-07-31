@@ -676,6 +676,7 @@ class InvoiceEletronic(models.Model):
             'indSinc': 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
+            'modelo': self.model,
             'NFes': [{
                 'infNFe': nfe_values
             }]
@@ -771,6 +772,7 @@ class InvoiceEletronic(models.Model):
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
                 'ambiente': 1 if self.ambiente == 'producao' else 2,
+                'modelo': '55',
                 'obj': {
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
                     'numero_recibo': retorno.infRec.nRec
@@ -901,7 +903,8 @@ class InvoiceEletronic(models.Model):
                 'xJust': justificativa,
                 'tpEvento': '110111',
                 'descEvento': 'Cancelamento',
-            }]
+            }],
+            'modelo': self.model,
         }
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
         resposta = resp['object'].getchildren()[0]

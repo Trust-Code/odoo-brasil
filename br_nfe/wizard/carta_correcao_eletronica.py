@@ -68,6 +68,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             'idLote': self.id,
             'estado':  self.eletronic_doc_id.company_id.state_id.ibge_code,
             'ambiente': int(self.eletronic_doc_id.company_id.tipo_ambiente),
+            'modelo': self.eletronic_doc_id.model,
             'eventos': [{
                 'invoice_id': self.eletronic_doc_id.id,
                 'CNPJ': re.sub(
