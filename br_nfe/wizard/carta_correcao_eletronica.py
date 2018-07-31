@@ -75,11 +75,12 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                     "[^0-9]", "", self.eletronic_doc_id.company_id.cnpj_cpf),
                 'cOrgao':  self.eletronic_doc_id.company_id.state_id.ibge_code,
                 'tpAmb': self.eletronic_doc_id.company_id.tipo_ambiente,
-
                 'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'chNFe': self.eletronic_doc_id.chave_nfe,
                 'xCorrecao': self.correcao,
                 'tpEvento': '110110',
+                'descEvento': 'Carta de Correcao',
+                'xCondUso': COND_USO,
                 'nSeqEvento': self.sequential,
                 'Id': "ID110110%s%02d" % (
                     self.eletronic_doc_id.chave_nfe, self.sequential)
