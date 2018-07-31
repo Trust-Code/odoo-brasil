@@ -21,6 +21,23 @@ class HrPayslip(models.Model):
         return int(ceil(adjusted_dom/7.0))
 
     @api.model
+    def get_inputs(self, contracts, date_from, date_to):
+        if not contracts:
+            return []
+        self.env.cr.execute(
+            "select sum(worked_hours) from hr_attendance \
+            where check_in::date between %s and %s and employee_id = %s",
+            (date_from, date_to, contracts[0].employee_id.id)
+        )
+        attendance_hours = self.env.cr.fetchone()[0]
+        return [{
+            'name': "Presenças Registradas",
+            'code': 'FREQ',
+            'amount': attendance_hours,
+            'contract_id': contracts[0].id,
+        }]
+
+    @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):
         res = super(HrPayslip, self).get_worked_day_lines(
             contract_ids, date_from, date_to)
