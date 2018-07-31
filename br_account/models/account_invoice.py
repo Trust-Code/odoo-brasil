@@ -14,11 +14,12 @@ class AccountInvoice(models.Model):
     @api.multi
     def write(self, vals):
         for rec in self:
-            if rec.state == 'draft':
-                fis_obs_ids = ({'fiscal_observation_ids': [
-                    x.id for x in
-                    rec.fiscal_position_id.fiscal_observation_ids]})
-                vals.update({'fiscal_observation_ids': (6, None, fis_obs_ids)})
+            fisc_pos = self.env[
+                'account.fiscal.position'].browse(
+                    vals.get('fiscal_position_id'))
+            if rec.state == 'draft' and fisc_pos:
+                vals.update({'fiscal_observation_ids': [
+                    (6, None, fisc_pos.fiscal_observation_ids.ids)]})
         return super(AccountInvoice, self).write(vals)
 
     @api.model
