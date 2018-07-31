@@ -43,6 +43,10 @@
                 <group name="justificativa">
                     <field name="justificativa" />
                 </group>
+                <group>
+                    <field name="code"/>
+                    <field name="motive"/>
+                </group>
                 <group name="erro">
                     <field name="erro"  attrs="{'invisible': [('state', '!=', 'error')]}"/>
                 </group>

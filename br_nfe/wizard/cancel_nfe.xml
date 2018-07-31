@@ -6,8 +6,16 @@
         <field name="arch" type="xml">
             <form string="Cancelamento de NFe">
                 <group>
+                    <field name="state" invisible="1"/>
                     <field name="edoc_id"/>
                     <field name="justificativa"/>
+                </group>
+                <group states="error" string="Resultado Envio">
+                    <field name="message" />
+                    <field name="sent_xml_name" invisible="1"/>
+                    <field name="sent_xml" filename="sent_xml_name"/>
+                    <field name="received_xml_name" invisible="1"/>
+                    <field name="received_xml" filename="received_xml_name"/>
                 </group>
                 <div>
                     <strong>Regras para cancelamento !</strong>

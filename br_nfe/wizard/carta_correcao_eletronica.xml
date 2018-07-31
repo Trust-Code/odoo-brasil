@@ -10,6 +10,7 @@
                 </div>
                 <group>
                     <field name="state" invisible="1"/>
+                    <field name="sequential"/>
                     <field name="correcao"/>
                 </group>
                 <group states="error" string="Resultado Envio">
