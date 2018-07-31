@@ -258,7 +258,7 @@ class InvoiceEletronic(models.Model):
 
         prod = {
             'cProd': item.product_id.default_code,
-            'cEAN': item.product_id.barcode or '',
+            'cEAN': item.product_id.barcode or 'SEM GTIN',
             'xProd': xProd,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
@@ -267,7 +267,7 @@ class InvoiceEletronic(models.Model):
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
-            'cEANTrib': item.product_id.barcode or '',
+            'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
             'vUnTrib': "%.02f" % item.preco_unitario,
@@ -628,12 +628,10 @@ class InvoiceEletronic(models.Model):
         cobr = {
             'fat': {
                 'nFat': self.numero_fatura or '',
-                'vOrig': "%.02f" % self.fatura_bruto
-                if self.fatura_bruto else '',
-                'vDesc': "%.02f" % self.fatura_desconto
-                if self.fatura_desconto else '',
-                'vLiq': "%.02f" % self.fatura_liquido
-                if self.fatura_liquido else '',
+                'vOrig': "%.02f" % (
+                    self.fatura_liquido + self.fatura_desconto),
+                'vDesc': "%.02f" % self.fatura_desconto,
+                'vLiq': "%.02f" % self.fatura_liquido,
             },
             'dup': duplicatas
         }
@@ -980,7 +978,8 @@ class InvoiceEletronic(models.Model):
             self.state = 'cancel'
             self.codigo_retorno = retorno_consulta.cStat
             self.mensagem_retorno = retorno_consulta.xMotivo
-            resp['received_xml'] = etree.tostring(retorno_consulta, encoding=str)
+            resp['received_xml'] = etree.tostring(
+                retorno_consulta, encoding=str)
 
             self.env['invoice.eletronic.event'].create({
                 'code': self.codigo_retorno,

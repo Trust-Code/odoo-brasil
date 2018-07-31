@@ -1,36 +1,25 @@
-<Envelope>
-    <Header>
-        <nfeCabecMsg>
-            <cUF>35</cUF>
-            <versaoDados>1.00</versaoDados>
-        </nfeCabecMsg>
-    </Header>
-    <Body>
-        <nfeRecepcaoEventoResult>
-            <retEnvEvento versao="1.00">
-                <idLote>33</idLote>
-                <tpAmb>2</tpAmb>
-                <verAplic>SP_EVENTOS_PL_100</verAplic>
-                <cOrgao>35</cOrgao>
-                <cStat>128</cStat>
-                <xMotivo>Lote de Evento Processado</xMotivo>
-                <retEvento versao="1.00">
-                    <infEvento>
-                        <tpAmb>2</tpAmb>
-                        <verAplic>SP_EVENTOS_PL_100</verAplic>
-                        <cOrgao>35</cOrgao>
-                        <cStat>155</cStat>
-                        <xMotivo>Cancelamento homologado fora de prazo</xMotivo>
-                        <chNFe>35161021332917000163550010000000321243582205</chNFe>
-                        <tpEvento>110111</tpEvento>
-                        <xEvento>Cancelamento registrado</xEvento>
-                        <nSeqEvento>1</nSeqEvento>
-                        <CPFDest>06621204930</CPFDest>
-                        <dhRegEvento>2016-11-03T20:11:37-02:00</dhRegEvento>
-                        <nProt>135160008042297</nProt>
-                    </infEvento>
-                </retEvento>
-            </retEnvEvento>
-        </nfeRecepcaoEventoResult>
-    </Body>
-</Envelope>
+<nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4">
+  <retEnvEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+    <idLote>30</idLote>
+    <tpAmb>2</tpAmb>
+    <verAplic>SVRS201806290759</verAplic>
+    <cOrgao>42</cOrgao>
+    <cStat>128</cStat>
+    <xMotivo>Lote de Evento Processado</xMotivo>
+    <retEvento versao="1.00">
+    <infEvento>
+      <tpAmb>2</tpAmb>
+      <verAplic>SVRS201806290759</verAplic>
+      <cOrgao>42</cOrgao>
+      <cStat>135</cStat>
+      <xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
+      <chNFe>42180780164221000215550010000006071576626530</chNFe>
+      <tpEvento>110111</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <CNPJDest>00010349910944</CNPJDest>
+      <dhRegEvento>2018-07-31T11:12:28-03:00</dhRegEvento>
+      <nProt>342180004306498</nProt>
+    </infEvento>
+    </retEvento>
+  </retEnvEvento>
+</nfeResultMsg>

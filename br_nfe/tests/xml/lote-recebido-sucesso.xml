@@ -1,24 +1,14 @@
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <soap:Header>
-        <nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeAutorizacao">
-            <cUF>42</cUF>
-            <versaoDados>3.10</versaoDados>
-        </nfeCabecMsg>
-    </soap:Header>
-    <soap:Body>
-        <nfeAutorizacaoLoteResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeAutorizacao">
-            <retEnviNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
-                <tpAmb>2</tpAmb>
-                <verAplic>SP_NFE_PL_008i2</verAplic>
-                <cStat>103</cStat>
-                <xMotivo>Lote recebido com sucesso</xMotivo>
-                <cUF>42</cUF>
-                <dhRecbto>2016-10-12T11:46:08-03:00</dhRecbto>
-                <infRec>
-                    <nRec>351000104734849</nRec>
-                    <tMed>1</tMed>
-                </infRec>
-            </retEnviNFe>
-        </nfeAutorizacaoLoteResult>
-    </soap:Body>
-</soap:Envelope>
+<nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4">
+  <retEnviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+    <tpAmb>2</tpAmb>
+    <verAplic>SVRS201807191353</verAplic>
+    <cStat>103</cStat>
+    <xMotivo>Lote recebido com sucesso</xMotivo>
+    <cUF>42</cUF>
+    <dhRecbto>2018-07-31T10:53:25-03:00</dhRecbto>
+    <infRec>
+      <nRec>423002181689172</nRec>
+      <tMed>1</tMed>
+    </infRec>
+  </retEnviNFe>
+</nfeResultMsg>

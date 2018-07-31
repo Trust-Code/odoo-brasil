@@ -141,7 +141,7 @@ class AccountInvoice(models.Model):
         count = 1
         for parcela in inv.receivable_move_line_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
-                'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
+                'numero_duplicata': "%03d" % count,
                 'data_vencimento': parcela.date_maturity,
                 'valor': parcela.credit or parcela.debit,
             }))
