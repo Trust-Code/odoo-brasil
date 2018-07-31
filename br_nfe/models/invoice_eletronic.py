@@ -959,8 +959,7 @@ class InvoiceEletronic(models.Model):
             self.state = 'cancel'
             self.codigo_retorno = retorno_consulta.cStat
             self.mensagem_retorno = retorno_consulta.xMotivo
-            resp['received_xml'] = etree.tostring(
-                retorno_consulta, encoding=str)
+            resp['received_xml'] = etree.tostring(retorno_consulta)
             self.env['invoice.eletronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
