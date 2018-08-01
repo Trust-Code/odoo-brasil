@@ -20,5 +20,5 @@
     'data': [
         'views/br_stock.xml',
     ],
-    'auto_install': True,
+    'auto_install': False,
 }
