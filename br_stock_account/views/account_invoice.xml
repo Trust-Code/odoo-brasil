@@ -94,7 +94,6 @@
         </field>
     </record>
 
-
     <record model="ir.ui.view" id="view_br_account_invoice_line_form">
         <field name="name">br_account.invoice.line.form</field>
         <field name="model">account.invoice.line</field>

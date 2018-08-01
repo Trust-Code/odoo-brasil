@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.menu" id="stock.menu_stock_root">
+            <field name="name">Estoque</field>
+        </record>
+    </data>
+</odoo>
