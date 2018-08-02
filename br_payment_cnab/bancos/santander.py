@@ -17,12 +17,20 @@ class Santander240(Cnab_240):
         self._order = payment_order
         super(Santander240, self).__init__()
 
+    def _get_cod_convenio_santander(self):
+        bank_account = self._order.payment_mode_id.bank_account_id
+        return "{:4s}{:4s}{:12s}".format(
+            str(bank_account.bank_id.bic).zfill(4),
+            str(bank_account.bra_number).zfill(4),
+            str(bank_account.codigo_convenio).zfill(12))
+
     def _get_header_arq(self):
         header = super()._get_header_arq()
         header.update({
             'cedente_agencia_dv': "" if (
                 header.get('cedente_agencia_dv') is False)
-            else header.get('cedente_agencia_dv')
+            else header.get('cedente_agencia_dv'),
+            'codigo_convenio': self._get_cod_convenio_santander()
         })
         return header
 
@@ -43,7 +51,8 @@ class Santander240(Cnab_240):
             'tipo_servico': int(header.get('tipo_servico')),
             'cedente_agencia_dv': "" if (
                 header.get('cedente_agencia_dv') is False)
-            else header.get('cedente_agencia_dv')
+            else header.get('cedente_agencia_dv'),
+            'codigo_convenio': self._get_cod_convenio_santander()
             })
         return header
 
