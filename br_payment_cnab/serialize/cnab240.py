@@ -14,26 +14,22 @@ try:
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
+# TODO Check which one of the paymet modes
+# need different segments
+
+SEGMENTS_DICT = {
+    "01": ["SegmentoA", "SegmentoB"],
+    "02": ["SegmentoA", "SegmentoB"],
+    "03": ["SegmentoJ", "SegmentoB"],
+    "04": ["SegmentoO", "SegmentoW", "SegmentoB"],
+    "05": ["SegmentoA", "SegmentoB"],
+    "06": ["SegmentoA", "SegmentoB"],
+    "07": ["SegmentoA", "SegmentoB"],
+    "08": ["SegmentoA", "SegmentoB"],
+}
+
 
 class Cnab_240(object):
-
-    segments_dict = {
-        "01": ["SegmentoA", "SegmentoB"],
-        "03": ["SegmentoA", "SegmentoB"],
-        "05": ["SegmentoA", "SegmentoB"],
-        "10": ["SegmentoA", "SegmentoB"],
-        "20": ["SegmentoA", "SegmentoB"],
-        "16": ["SegmentoJ", "SegmentoB"],
-        "17": ["SegmentoJ", "SegmentoB"],
-        "18": ["SegmentoJ", "SegmentoB"],
-        "22": ["SegmentoO", "SegmentoB"],
-        "23": ["SegmentoO", "SegmentoB"],
-        "24": ["SegmentoO", "SegmentoB"],
-        "25": ["SegmentoO", "SegmentoB"],
-        "26": ["SegmentoO", "SegmentoB"],
-        "27": ["SegmentoO", "SegmentoB"],
-        "11": ["SegmentoO", "SegmentoB"]
-    }
 
     def _date_today(self):
         return (int(time.strftime("%d%m%Y")))
@@ -203,23 +199,6 @@ class Cnab_240(object):
         self._cnab_file.add_header(self._get_header_arq())
         self.create_details(self._ordenate_lines(listOfLines))
 
-    def create_detail(self, operation, event, lot_sequency, num_lot):
-        for segment in self.segments_dict[operation]:
-            self._cnab_file.add_segment(
-                segment, self._get_segmento(event, lot_sequency, num_lot))
-            lot_sequency = lot_sequency + 1
-        self._cnab_file.get_active_lot().get_active_event().close_event()
-        return lot_sequency
-
-    def _create_trailer_lote(self, total, num_lot):
-        self._cnab_file.add_segment(
-            'TrailerLote', self._get_trailer_lot(total, num_lot))
-        self._cnab_file.get_active_lot().close_lot()
-
-    def _create_header_lote(self, line, num_lot):
-        self._cnab_file.add_segment(
-            'HeaderLote', self._get_header_lot(line, num_lot))
-
     def create_details(self, operacoes):
         num_lot = 1
         for lote, events in operacoes.items():
@@ -231,6 +210,23 @@ class Cnab_240(object):
             total_lote = self._sum_lot_values(events)
             self._create_trailer_lote(total_lote, num_lot)
             num_lot = num_lot + 1
+
+    def _create_header_lote(self, line, num_lot):
+        self._cnab_file.add_segment(
+            'HeaderLote', self._get_header_lot(line, num_lot))
+
+    def create_detail(self, operation, event, lot_sequency, num_lot):
+        for segment in SEGMENTS_DICT[operation]:
+            self._cnab_file.add_segment(
+                segment, self._get_segmento(event, lot_sequency, num_lot))
+            lot_sequency += 1
+        self._cnab_file.get_active_lot().get_active_event().close_event()
+        return lot_sequency
+
+    def _create_trailer_lote(self, total, num_lot):
+        self._cnab_file.add_segment(
+            'TrailerLote', self._get_trailer_lot(total, num_lot))
+        self._cnab_file.get_active_lot().close_lot()
 
     def _generate_file(self):
         arquivo = StringIO()
