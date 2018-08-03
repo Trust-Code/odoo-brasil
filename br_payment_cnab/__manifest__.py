@@ -22,7 +22,6 @@
     ],
     'depends': [
         'account_invoicing',
-        'account_accountant',
         'br_account_payment',
         'br_account_voucher',
         'br_cnab'
