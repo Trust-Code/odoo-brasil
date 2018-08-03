@@ -118,3 +118,13 @@ class Sicoob240(Cnab_240):
         trailer.update({
         })
         return trailer
+
+    def segments_per_operation(self, operation):
+        segments = super(Sicoob240, self).get_operation_segments(operation)
+        segments.update({
+            '03': ["SegmentoJ"],
+            '04': ["SegmentoO", "SegmentoW", "SegmentoZ"],
+            '05': ["SegmentoN_GPS", "SegmentoW", "SegmentoZ"],
+            '06': ["SegmentoN_DarfNormal", "SegmentoW", "SegmentoZ"],
+            '07': ["SegmentoN_DarfSimples", "SegmentoW", "SegmentoZ"],
+        })

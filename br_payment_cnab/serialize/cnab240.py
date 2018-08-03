@@ -14,20 +14,6 @@ try:
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
-# TODO Check which one of the paymet modes
-# need different segments
-
-SEGMENTS_DICT = {
-    "01": ["SegmentoA", "SegmentoB"],
-    "02": ["SegmentoA", "SegmentoB"],
-    "03": ["SegmentoJ", "SegmentoB"],
-    "04": ["SegmentoO", "SegmentoW", "SegmentoB"],
-    "05": ["SegmentoA", "SegmentoB"],
-    "06": ["SegmentoA", "SegmentoB"],
-    "07": ["SegmentoA", "SegmentoB"],
-    "08": ["SegmentoA", "SegmentoB"],
-}
-
 
 class Cnab_240(object):
 
@@ -216,12 +202,18 @@ class Cnab_240(object):
             'HeaderLote', self._get_header_lot(line, num_lot))
 
     def create_detail(self, operation, event, lot_sequency, num_lot):
-        for segment in SEGMENTS_DICT[operation]:
+        for segment in self.segments_per_operation.get(operation, []):
             self._cnab_file.add_segment(
                 segment, self._get_segmento(event, lot_sequency, num_lot))
             lot_sequency += 1
         self._cnab_file.get_active_lot().get_active_event().close_event()
         return lot_sequency
+
+    def segments_per_operation(self, operation):
+        return {
+            "01": ["SegmentoA", "SegmentoB"],
+            "02": ["SegmentoA", "SegmentoB"],
+        }
 
     def _create_trailer_lote(self, total, num_lot):
         self._cnab_file.add_segment(
