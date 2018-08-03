@@ -79,13 +79,13 @@ class PaymentInformation(models.Model):
 
     reg_type = fields.Integer('Register Type')
 
-    mora_value = fields.Float('Interest Rate', default='00.00')
+    mora_value = fields.Float('Interest Rate')
 
-    duty_value = fields.Float('Duty Value', default='00.00')
+    duty_value = fields.Float('Duty Value')
 
-    rebate_value = fields.Float('Rebate Value', default='00.00')
+    rebate_value = fields.Float('Rebate Value')
 
-    discount_value = fields.Float('Discount Value', default='00.00')
+    discount_value = fields.Float('Discount Value')
 
     mov_type = fields.Selection(
         [('0', 'Inclusion'),
@@ -104,12 +104,12 @@ class PaymentInformation(models.Model):
 
     serv_type = fields.Selection(
         [('03', 'Bloqueto Eletronico'),
-         ('10', 'pagamento de dividendos'),
+         ('10', 'Pagamento de dividendos'),
          ('14', 'Consulta de tributos a pagar DETRAN com RENAVAM'),
          ('20', 'Provider/Fees Payment'),
-         ('22', 'bill and tax payment'),
-         ('29', 'alegacao do sacado'),
-         ('50', 'pagamento de sinistros segurados'),
+         ('22', 'Bill and tax payment'),
+         ('29', 'Alegacao do sacado'),
+         ('50', 'Pagamento de sinistros segurados'),
          ('60', 'Pagamento Despesas Viajante em Transito'),
          ('70', 'Pagamento Autorizado'),
          ('75', 'Pagamento Credenciados'),

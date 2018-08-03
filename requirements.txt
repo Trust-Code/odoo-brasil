@@ -5,5 +5,5 @@ pytrustnfe3>=0.10.0
 python3-cnab
 python3-boleto
 xmlsec
-lxml >= 3.5.0, < 4
+lxml==4.2.3
 pycnab240
