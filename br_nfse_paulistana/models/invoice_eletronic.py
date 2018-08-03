@@ -121,7 +121,7 @@ class InvoiceEletronic(models.Model):
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
                                    partner.cnpj_cpf or ''),
-                'razao_social': partner.legal_name or '',
+                'razao_social': partner.legal_name or partner.name,
                 'logradouro': partner.street or '',
                 'numero': partner.number or '',
                 'complemento': partner.street2 or '',
@@ -311,6 +311,12 @@ class InvoiceEletronic(models.Model):
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
+        if self.ambiente == 'homologacao' or \
+           self.company_id.tipo_ambiente_nfse == 'homologacao':
+            self.state = 'cancel'
+            self.codigo_retorno = '100'
+            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            return
         company = self.company_id
         canc = {
             'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),

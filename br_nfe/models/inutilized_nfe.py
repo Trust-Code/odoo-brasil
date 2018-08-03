@@ -44,6 +44,8 @@ class InutilizedNfe(models.Model):
         string=u'Modelo', required=True, readonly=True, states=STATE)
     serie = fields.Many2one('br_account.document.serie', string=u'Série',
                             required=True, readonly=True, states=STATE)
+    code = fields.Char(string="Código", size=10)
+    motive = fields.Char(string="Motivo", size=300)
 
     @api.model
     def create(self, vals):
@@ -105,21 +107,22 @@ class InutilizedNfe(models.Model):
             'justificativa': self.justificativa,
         }
 
-    def _handle_resposta(self, resposta):
-        self._create_attachment('inutilizacao-envio', self,
-                                resposta['sent_xml'])
-        self._create_attachment('inutilizacao-recibo', self,
-                                resposta['received_xml'])
-        if hasattr(resposta['object'].Body, 'Fault'):
-            raise UserError(u'Não foi possível concluir a operação.')
-        inf_inut = resposta['object'].Body.nfeInutilizacaoNF2Result.\
-            retInutNFe.infInut
+    def _handle_response(self, response):
+        self._create_attachment(
+            'inutilizacao-envio', self, response['sent_xml'])
+        self._create_attachment(
+            'inutilizacao-recibo', self, response['received_xml'])
+        inf_inut = response['object'].getchildren()[0].infInut
         status = inf_inut.cStat
         if status == 102:
-            self.state = 'done'
+            self.write({
+                'state': 'done',
+                'code': inf_inut.cStat,
+                'motive': inf_inut.xMotivo
+            })
         else:
-            self.state = 'error'
-            self.erro = inf_inut.xMotivo
+            msg = '%s - %s' % (inf_inut.cStat, inf_inut.xMotivo)
+            raise UserError(msg)
 
     def send_sefaz(self):
         company = self.env.user.company_id
@@ -134,13 +137,15 @@ class InutilizedNfe(models.Model):
         certificado = Certificado(cert_pfx, company.nfe_a1_password)
 
         resposta = inutilizar_nfe(certificado, obj=obj, estado=estado,
-                                  ambiente=int(ambiente))
-        self._handle_resposta(resposta=resposta)
+                                  ambiente=int(ambiente), modelo=obj['modelo'])
+        self._handle_response(response=resposta)
 
     @api.multi
     def action_send_inutilization(self):
         self.validate_hook()
         self.send_sefaz()
+        return self.env.ref(
+            'br_nfe.action_invoice_eletronic_inutilized').read()[0]
 
     def _create_attachment(self, prefix, event, data):
         file_name = '%s-%s.xml' % (
