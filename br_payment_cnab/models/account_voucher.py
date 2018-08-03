@@ -46,6 +46,7 @@ class AccountVoucher(models.Model):
             'move_id': self.move_id.id,
             'voucher': self.id,
             'date_maturity': self.date_due,
+            'invoice_date': self.date,
         }
 
     @api.multi

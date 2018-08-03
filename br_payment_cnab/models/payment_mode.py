@@ -47,3 +47,5 @@ class PaymentMode(models.Model):
         ('11', u'Crédito em Conta'),
         ('300', u'Restituição de Imposto de Renda')
         ], string=u'TED Purpose')
+
+    codigo_receita = fields.Char('Código da Receita')

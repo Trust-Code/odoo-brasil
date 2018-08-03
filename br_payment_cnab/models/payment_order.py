@@ -55,6 +55,8 @@ class PaymentOrderLine(models.Model):
     payment_information_id = fields.Many2one(
         'l10n_br.payment_information', string="Payment Information")
 
+    invoice_date = fields.Date('Data da Fatura')
+
     @api.depends('payment_information_id')
     def _compute_final_value(self):
         for item in self:
@@ -98,6 +100,7 @@ class PaymentOrderLine(models.Model):
             'finality_ted': payment_mode_id.finality_ted,
             'mov_finality': payment_mode_id.mov_finality,
             'operation_code': self.get_opration_code(payment_mode_id),
+            'codigo_receita': payment_mode_id.codigo_receita,
         })
 
     def action_generate_payment_order_line(self, payment_mode, **vals):

@@ -202,7 +202,7 @@ class Cnab_240(object):
             'HeaderLote', self._get_header_lot(line, num_lot))
 
     def create_detail(self, operation, event, lot_sequency, num_lot):
-        for segment in self.segments_per_operation.get(operation, []):
+        for segment in self.segments_per_operation().get(operation, []):
             self._cnab_file.add_segment(
                 segment, self._get_segmento(event, lot_sequency, num_lot))
             lot_sequency += 1

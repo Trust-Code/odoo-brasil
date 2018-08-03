@@ -155,3 +155,5 @@ class PaymentInformation(models.Model):
          ('2039', 'Several Payments - Provider'),
          ('2644', 'Benefit')],
         string='History Code')
+
+    codigo_receita = fields.Char('Código da Receita')
