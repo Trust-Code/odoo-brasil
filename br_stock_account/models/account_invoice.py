@@ -47,7 +47,6 @@ class AccountInvoice(models.Model):
          ('4', '4 - Transporte Próprio por conta do Destinatário'),
          ('9', '9 - Sem Ocorrência de Transporte')],
         u'Modalidade do frete', default="9")
-    carrier_id = fields.Many2one('delivery.carrier', 'Método de Entrega')
     shipping_supplier_id = fields.Many2one('res.partner', 'Transportadora')
     vehicle_plate = fields.Char(u'Placa do Veículo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')

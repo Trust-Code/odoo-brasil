@@ -22,10 +22,12 @@ class StockPicking(models.Model):
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
     vehicle_rntc = fields.Char('RNTC', size=20)
     freight_responsibility = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
         u'Modalidade do frete')
 
     @api.onchange('vehicle_id')
@@ -62,8 +64,10 @@ class Incoterms(models.Model):
     _inherit = "stock.incoterms"
 
     freight_responsibility = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
         'Modalidade do frete', default="9")
