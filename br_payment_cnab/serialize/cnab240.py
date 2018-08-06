@@ -121,8 +121,18 @@ class Cnab_240(object):
             "codigo_de_barras": int("0"*44),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
-            "data_vencimento": line.date_maturity
+            "data_vencimento": line.date_maturity,
+            "valor_total_pagamento": self._string_to_monetary(
+                line.value_final),
+            "codigo_receita_tributo": information_id.codigo_receita,
+            "tipo_identificacao_contribuinte": 1,
+            "identificacao_contribuinte": self._string_to_num(
+                self._order.company_id.cnpj_cpf),
+            "codigo_identificacao_tributo": information_id.tax_identification,
+            "mes_ano_competencia": self.get_mes_ano_competencia(line),
+            "valor_previsto_inss": self._string_to_monetary(line.value)
         }
+        print(segmento)
         return segmento
 
     def _get_trailer_arq(self):
@@ -209,7 +219,7 @@ class Cnab_240(object):
         self._cnab_file.get_active_lot().get_active_event().close_event()
         return lot_sequency
 
-    def segments_per_operation(self, operation):
+    def segments_per_operation(self):
         return {
             "01": ["SegmentoA", "SegmentoB"],
             "02": ["SegmentoA", "SegmentoB"],
@@ -235,3 +245,7 @@ class Cnab_240(object):
         for line in lot:
             total = total + line.value_final
         return total
+
+    def get_mes_ano_competencia(self, line):
+        date = time.strptime(line.invoice_date, "%Y-%m-%d")
+        return int('{}{}'.format(date.tm_mon, date.tm_year))

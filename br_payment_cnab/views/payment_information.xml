@@ -51,10 +51,11 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Pagamento de Tributos">
+                            <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('05', '06', '07'))]}">
                                 <group>
                                     <group>
                                         <field name="codigo_receita" />
+                                        <field name="tax_identification" />
                                     </group>
                                 </group>
                             </page>

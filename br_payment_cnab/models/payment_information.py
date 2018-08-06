@@ -157,3 +157,22 @@ class PaymentInformation(models.Model):
         string='History Code')
 
     codigo_receita = fields.Char('Código da Receita')
+
+    tax_identification = fields.Selection(
+        [('16', 'DARF Normal'),
+         ('18', 'DARF Simples'),
+         ('17', 'GPS (Guia da Previdência Social)')],
+        string="Tax Identification",
+        compute='_compute_tax_identification')
+
+    @api.onchange('payment_type')
+    def _compute_tax_identification(self):
+        for item in self:
+            if item.payment_type not in ('05', '06', '07'):
+                continue
+            elif item.payment_type == '05':
+                item.tax_identification = '17'
+            elif item.payment_type == '06':
+                item.tax_identification = '16'
+            else:
+                item.tax_identification = '18'
