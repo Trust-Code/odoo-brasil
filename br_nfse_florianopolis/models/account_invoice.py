@@ -13,5 +13,4 @@ class AccountInvoice(models.Model):
         if doc.model == '012':  # Floripa
             return 'br_nfse_florianopolis.report_br_nfse_danfpse'
         # TODO Implementar ou não?
-        # PS: ITS DONE MADAFAKA
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
