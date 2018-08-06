@@ -11,6 +11,26 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    @api.multi
+    def write(self, vals):
+        for rec in self:
+            fisc_pos = self.env[
+                'account.fiscal.position'].browse(
+                    vals.get('fiscal_position_id'))
+            if rec.state == 'draft' and fisc_pos:
+                vals.update({'fiscal_observation_ids': [
+                    (6, None, fisc_pos.fiscal_observation_ids.ids)]})
+        return super(AccountInvoice, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        if "fiscal_position_id" in vals:
+            fpos_id = self.env['account.fiscal.position'].browse(
+                vals["fiscal_position_id"])
+            vals.update({'fiscal_observation_ids': [
+                (4, x.id, None) for x in fpos_id.fiscal_observation_ids]})
+        return super(AccountInvoice, self).create(vals)
+
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'invoice_line_ids.price_total',
