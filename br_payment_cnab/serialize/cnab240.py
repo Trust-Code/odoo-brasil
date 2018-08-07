@@ -36,12 +36,12 @@ class Cnab_240(object):
             else:
                 raise
 
-    def format_date(self, date):
-        if not date:
+    def format_date(self, date_value):
+        if not date_value:
             return ''
-        if not isinstance(date, datetime):
-            date = datetime.strptime(date[0:10], "%Y-%m-%d")
-        return date.strftime("%d%m%Y")
+        if not isinstance(date_value, (date, datetime)):
+            date_value = datetime.strptime(date_value[0:10], "%Y-%m-%d")
+        return date_value.strftime("%d%m%Y")
 
     def _get_header_arq(self):
         payment = self._order.payment_mode_id
@@ -61,7 +61,7 @@ class Cnab_240(object):
             'cedente_conta': self._string_to_num(bank.acc_number),
             'cedente_conta_dv': bank.acc_number_dig,
             'cedente_nome': self._order.company_id.name,
-            'data_geracao_arquivo': self.format_date(date.today()),
+            'data_geracao_arquivo': int(self.format_date(date.today())),
             'hora_geracao_arquivo': self._hour_now(),
             'numero_sequencial_arquivo': self._order.file_number,
         }
@@ -85,7 +85,7 @@ class Cnab_240(object):
             "favorecido_nome": line.partner_id.name,
             "favorecido_doc_numero": line.partner_id.cnpj_cpf,
             "numero_documento_cliente": line.nosso_numero,
-            "data_pagamento": line.date_maturity,
+            "data_pagamento": self.format_date(line.date_maturity),
             "valor_pagamento": line.value,
             "data_real_pagamento": self.format_date(
                 self._order.data_emissao_cnab),
@@ -124,14 +124,15 @@ class Cnab_240(object):
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),
             # GPS
-            "contribuinte_nome": self._order.company_id.name, 
+            "contribuinte_nome": self._order.company_id.name,
             "valor_total_pagamento": self._string_to_monetary(
                 line.value_final),
-            "codigo_receita_tributo": information_id.codigo_receita,
+            "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(
                 self._order.company_id.cnpj_cpf),
-            "codigo_identificacao_tributo": information_id.tax_identification,
+            "codigo_identificacao_tributo": information_id.tax_identification\
+                or '',
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
             "valor_previsto_inss": self._string_to_monetary(line.value),
             # DARF
@@ -252,5 +253,7 @@ class Cnab_240(object):
         return total
 
     def get_mes_ano_competencia(self, line):
+        if not line.invoice_date:
+            return 0
         date = datetime.strptime(line.invoice_date, "%Y-%m-%d")
         return int('{}{}'.format(date.month, date.year))
