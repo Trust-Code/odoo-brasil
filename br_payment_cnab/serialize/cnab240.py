@@ -77,6 +77,7 @@ class Cnab_240(object):
             "codigo_camara_compensacao": information_id.operation_code,
             # adicionar campo para o banco do clinte com um valor default
             "favorecido_codigo_banco": line.bank_account_id.bank_id.name,
+            "favorecido_banco": int(line.bank_account_id.bank_id.bic),
             "favorecido_agencia": line.bank_account_id.bra_number,
             "favorecido_agencia_dv": line.bank_account_id.bra_number_dig or '',
             "favorecido_conta": line.bank_account_id.acc_number,

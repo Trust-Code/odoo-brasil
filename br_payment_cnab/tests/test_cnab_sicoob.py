@@ -205,6 +205,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'codigo_camara_compensacao': 18,
             'favorecido_codigo_banco':
                 'BANCO COOPERATIVO DO BRASIL S.A. (SICOOB)',
+            'favorecido_banco': 756,
             'favorecido_agencia': 1234,
             'favorecido_agencia_dv': '0',
             'favorecido_conta': 12345,
