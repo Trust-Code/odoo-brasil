@@ -88,8 +88,6 @@ class Sicoob240(Cnab_240):
                 segmento.get('valor_pagamento')),
             'data_pagamento': self._string_to_num(
                 segmento.get('data_pagamento')),
-            'numero_documento_cliente': self._format_alfa_size(
-                segmento.get('numero_documento_cliente'), 20),
             'favorecido_doc_numero': self._string_to_num(
                 segmento.get('favorecido_doc_numero')),
             'favorecido_conta_dv': self._string_to_num(
