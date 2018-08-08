@@ -160,7 +160,7 @@ class Cnab_240(object):
         bank = payment.bank_account_id
         header_lot = {
             "controle_lote": num_lot,
-            "tipo_servico": information_id.serv_type,
+            "tipo_servico": information_id.service_type,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 payment.company_id.cnpj_cpf),

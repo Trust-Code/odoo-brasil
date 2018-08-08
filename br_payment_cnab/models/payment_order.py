@@ -94,6 +94,10 @@ class PaymentOrderLine(models.Model):
             })
         return payment_order
 
+    def get_service_type(self, payment_mode):
+        if payment_mode.finality_ted == '05':
+            return '20'
+
     def get_information(self, payment_mode_id):
         return self.env['l10n_br.payment_information'].create({
             'payment_type': payment_mode_id.payment_type,
@@ -101,6 +105,7 @@ class PaymentOrderLine(models.Model):
             'mov_finality': payment_mode_id.mov_finality,
             'operation_code': self.get_opration_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
+            'service_type': self.get_service_type(payment_mode_id)
         })
 
     def action_generate_payment_order_line(self, payment_mode, **vals):

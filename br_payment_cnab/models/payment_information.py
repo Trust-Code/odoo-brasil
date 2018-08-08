@@ -102,7 +102,7 @@ class PaymentInformation(models.Model):
          ('33', 'Refund Chargeback')],
         string='Movimentation Instrution', default='00')
 
-    serv_type = fields.Selection(
+    service_type = fields.Selection(
         [('03', 'Bloqueto Eletronico'),
          ('10', 'Pagamento de dividendos'),
          ('14', 'Consulta de tributos a pagar DETRAN com RENAVAM'),

@@ -46,7 +46,7 @@
                                         <field name="mov_finality"/>
                                         <field name="finality_ted"/>
                                         <field name="mov_type"/>
-                                        <field name="serv_type"/>
+                                        <field name="service_type"/>
                                         <field name="mov_instruc"/>
                                     </group>
                                 </group>

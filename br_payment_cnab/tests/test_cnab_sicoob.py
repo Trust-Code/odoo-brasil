@@ -112,7 +112,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
     def get_payment_information(self):
         payment_information = self.env[
             'l10n_br.payment_information'].create({
-                'serv_type': '98',
+                'service_type': '98',
                 'mov_type': '0',
                 'payment_type': '01',
                 'mov_finality': '01',
