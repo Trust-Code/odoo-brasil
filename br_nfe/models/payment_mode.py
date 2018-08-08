@@ -17,7 +17,7 @@ class PaymentMode(models.Model):
          ('11', 'Vale Refeição'),
          ('12', 'Vale Presente'),
          ('13', 'Vale Combustível'),
-         ('14', 'Duplicata Mercantil'),
+         ('15', 'Boleto Bancário'),
          ('90', 'Sem pagamento'),
          ('99', 'Outros')],
         string="Forma de Pagamento", default="14")
