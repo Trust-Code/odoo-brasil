@@ -631,7 +631,7 @@ class InvoiceEletronic(models.Model):
         }
         pag = [{
             'indPag': self.payment_term_id.indPag or '0',
-            'tPag': self.payment_mode_id.tipo_pagamento or '15',
+            'tPag': self.payment_mode_id.tipo_pagamento or '90',
             'vPag': "%.02f" % self.valor_final
         }]
         if self.informacoes_complementares:
