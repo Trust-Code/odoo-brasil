@@ -8,7 +8,7 @@ from odoo import fields, models
 
 class ProductPricelist(models.Model):
     _name = 'product.pricelist'
-    _inherit = ['product.pricelist', 'br_localization_filtering']
+    _inherit = ['product.pricelist', 'br.localization.filtering']
 
     l10n_br_region_ids = fields.Many2many('res.region', string="Regiões",
                                           oldname='region_ids')
