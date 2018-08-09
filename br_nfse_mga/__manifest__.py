@@ -13,7 +13,8 @@
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': [
-        'Danimar Ribeiro <danimaribeiro@gmail.com>'
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Johny Chen Jy <johnychenjy@gmail.com>',
     ],
     'depends': [
         'br_nfse',
