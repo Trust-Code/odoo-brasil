@@ -16,7 +16,6 @@
     ],
     'depends': [
         'product',
-        'product_pricelist',
         'br_base',
         'br_localization_filtering',
 
