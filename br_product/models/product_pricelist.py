@@ -7,9 +7,11 @@ from odoo import fields, models
 
 
 class ProductPricelist(models.Model):
-    _inherit = 'product.pricelist'
+    _name = 'product.pricelist'
+    _inherit = ['product.pricelist', 'br_localization_filtering']
 
-    region_ids = fields.Many2many('res.region', string="Regiões")
+    l10n_br_region_ids = fields.Many2many('res.region', string="Regiões",
+                                          oldname='region_ids')
 
     def _get_partner_pricelist(self, partner_id, company_id=None):
         """ Retrieve the applicable pricelist for a given partner in a
@@ -38,13 +40,15 @@ class ProductPricelist(models.Model):
         if not pl:
             if p.state_id:
                 pls = self.env['product.pricelist'].search(
-                    [('region_ids.state_ids.id', '=', p.state_id.id)], limit=1)
+                    [('l10n_br_region_ids.state_ids.id', '=', p.state_id.id)],
+                    limit=1)
                 pl = pls and pls[0].id
 
         if not pl:
             if p.city_id:
                 pls = self.env['product.pricelist'].search(
-                    [('region_ids.city_ids.id', '=', p.city_id.id)], limit=1)
+                    [('l10n_br_region_ids.city_ids.id', '=', p.city_id.id)],
+                    limit=1)
                 pl = pls and pls[0].id
 
         if not pl:
