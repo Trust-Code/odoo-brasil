@@ -210,17 +210,17 @@ class InvoiceEletronic(models.Model):
         """
         errors = []
         # Emitente
-        if not self.company_id.nfe_a1_file:
+        if not self.company_id.l10n_br_nfe_a1_file:
             errors.append(u'Emitente - Certificado Digital')
-        if not self.company_id.nfe_a1_password:
+        if not self.company_id.l10n_br_nfe_a1_password:
             errors.append(u'Emitente - Senha do Certificado Digital')
-        if not self.company_id.partner_id.legal_name:
+        if not self.company_id.partner_id.l10n_br_legal_name:
             errors.append(u'Emitente - Razão Social')
-        if not self.company_id.partner_id.cnpj_cpf:
+        if not self.company_id.partner_id.l10n_br_cnpj_cpf:
             errors.append(u'Emitente - CNPJ/CPF')
         if not self.company_id.partner_id.street:
             errors.append(u'Emitente / Endereço - Logradouro')
-        if not self.company_id.partner_id.number:
+        if not self.company_id.partner_id.l10n_br_number:
             errors.append(u'Emitente / Endereço - Número')
         if not self.company_id.partner_id.zip or len(
                 re.sub(r"\D", "", self.company_id.partner_id.zip)) != 8:
@@ -228,7 +228,7 @@ class InvoiceEletronic(models.Model):
         if not self.company_id.partner_id.state_id:
             errors.append(u'Emitente / Endereço - Estado')
         else:
-            if not self.company_id.partner_id.state_id.ibge_code:
+            if not self.company_id.partner_id.state_id.l10n_br_ibge_code:
                 errors.append(u'Emitente / Endereço - Cód. do IBGE do estado')
             if not self.company_id.partner_id.state_id.name:
                 errors.append(u'Emitente / Endereço - Nome do estado')
@@ -238,7 +238,7 @@ class InvoiceEletronic(models.Model):
         else:
             if not self.company_id.partner_id.city_id.name:
                 errors.append(u'Emitente / Endereço - Nome do município')
-            if not self.company_id.partner_id.city_id.ibge_code:
+            if not self.company_id.partner_id.city_id.l10n_br_ibge_code:
                 errors.append(u'Emitente/Endereço - Cód. do IBGE do município')
 
         if not self.company_id.partner_id.country_id:
@@ -246,7 +246,7 @@ class InvoiceEletronic(models.Model):
         else:
             if not self.company_id.partner_id.country_id.name:
                 errors.append(u'Emitente / Endereço - Nome do país')
-            if not self.company_id.partner_id.country_id.bc_code:
+            if not self.company_id.partner_id.country_id.l10n_br_bc_code:
                 errors.append(u'Emitente / Endereço - Código do BC do país')
 
         # produtos
@@ -262,17 +262,17 @@ class InvoiceEletronic(models.Model):
             return errors
         company = self.company_id
         # Destinatário
-        if partner.is_company and not partner.legal_name:
+        if partner.is_company and not partner.l10n_br_legal_name:
             errors.append(u'Destinatário - Razão Social')
 
         if partner.country_id.id == company.partner_id.country_id.id:
-            if not partner.cnpj_cpf:
+            if not partner.l10n_br_cnpj_cpf:
                 errors.append(u'Destinatário - CNPJ/CPF')
 
         if not partner.street:
             errors.append(u'Destinatário / Endereço - Logradouro')
 
-        if not partner.number:
+        if not partner.l10n_br_number:
             errors.append(u'Destinatário / Endereço - Número')
 
         if partner.country_id.id == company.partner_id.country_id.id:
@@ -284,7 +284,7 @@ class InvoiceEletronic(models.Model):
             if not partner.state_id:
                 errors.append(u'Destinatário / Endereço - Estado')
             else:
-                if not partner.state_id.ibge_code:
+                if not partner.state_id.l10n_br_ibge_code:
                     errors.append(u'Destinatário / Endereço - Código do IBGE \
                                   do estado')
                 if not partner.state_id.name:
@@ -297,7 +297,7 @@ class InvoiceEletronic(models.Model):
                 if not partner.city_id.name:
                     errors.append(u'Destinatário / Endereço - Nome do \
                                   município')
-                if not partner.city_id.ibge_code:
+                if not partner.city_id.l10n_br_ibge_code:
                     errors.append(u'Destinatário / Endereço - Código do IBGE \
                                   do município')
 
@@ -306,7 +306,7 @@ class InvoiceEletronic(models.Model):
         else:
             if not partner.country_id.name:
                 errors.append(u'Destinatário / Endereço - Nome do país')
-            if not partner.country_id.bc_code:
+            if not partner.country_id.l10n_br_bc_code:
                 errors.append(u'Destinatário / Endereço - Cód. do BC do país')
         return errors
 

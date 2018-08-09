@@ -21,6 +21,6 @@ class InvoiceEletronic(models.Model):
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.nfse_eletronic:
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
         return errors

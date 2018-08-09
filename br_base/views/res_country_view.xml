@@ -6,10 +6,10 @@
         <field name="model">res.country</field>
         <field name="inherit_id" ref="base.view_country_form"/>
         <field name="arch" type="xml">
-            <field name="currency_id" position="after">
-                <field name="bc_code"/>
-                <field name="siscomex_code"/>
-                <field name="ibge_code"/>
+            <field name="code" position="after">
+                <field name="l10n_br_bc_code"/>
+                <field name="l10n_br_siscomex_code"/>
+                <field name="l10n_br_ibge_code"/>
             </field>
         </field>
     </record>
@@ -21,7 +21,7 @@
         <field name="inherit_id" ref="base.view_country_state_form"/>
         <field name="arch" type="xml">
             <field name="country_id" position="after">
-                <field name="ibge_code"/>
+                <field name="l10n_br_ibge_code"/>
             </field>
         </field>
     </record>

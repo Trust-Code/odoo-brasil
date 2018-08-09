@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="base.br" model="res.country">
-        <field name="address_format" eval="'%(street)s, %(number)s - %(street2)s\n%(district)s\n%(zip)s - %(city_name)s - %(state_code)s\n%(country_name)s'" />
+        <field name="address_format" eval="'%(street)s, %(l10n_br_number)s - %(street2)s\n%(l10n_br_district)s\n%(zip)s - %(city_name)s - %(state_code)s\n%(country_name)s'" />
     </record>
 
     <record id="view_br_base_city_tree" model="ir.ui.view">
@@ -12,7 +12,7 @@
             <tree string="Cities">
                 <field name="name" select="1"/>
                 <field name="state_id" select="1"/>
-                <field name="ibge_code"/>
+                <field name="l10n_br_ibge_code"/>
             </tree>
         </field>
     </record>

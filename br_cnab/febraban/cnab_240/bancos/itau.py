@@ -28,7 +28,7 @@ class Itau240(Cnab240):
     def _prepare_segmento(self, line):
         vals = super(Itau240, self)._prepare_segmento(line)
         dv = self.dv_nosso_numero(
-            line.payment_mode_id.bank_account_id.bra_number,
+            line.payment_mode_id.bank_account_id.l10n_br_number,
             line.payment_mode_id.bank_account_id.acc_number,
             line.payment_mode_id.boleto_carteira,
             line.nosso_numero

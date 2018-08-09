@@ -35,7 +35,7 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '009':
             issqn_codigo = ''
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -67,27 +67,29 @@ class InvoiceEletronic(models.Model):
             city_tomador = partner.city_id
             tomador = {
                 'cpf_cnpj': re.sub('[^0-9]', '',
-                                   partner.cnpj_cpf or ''),
-                'razao_social': partner.legal_name or '',
-                'logradouro': "%s, %s" % (partner.street, partner.number),
-                'bairro': partner.district or 'Sem Bairro',
-                'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
-                                    city_tomador.ibge_code),
+                                   partner.l10n_br_cnpj_cpf or ''),
+                'razao_social': partner.l10n_br_legal_name or '',
+                'logradouro': "%s, %s" % (partner.street,
+                                          partner.l10n_br_number),
+                'bairro': partner.l10n_br_district or 'Sem Bairro',
+                'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
+                                    city_tomador.l10n_br_ibge_code),
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
                 'telefone': re.sub('[^0-9]', '', partner.phone or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', partner.inscr_mun or ''),
+                    '[^0-9]', '', partner.l10n_br_inscr_mun or ''),
                 'inscricao_estadual': re.sub(
-                    '[^0-9]', '', partner.inscr_est or ''),
+                    '[^0-9]', '', partner.l10n_br_inscr_est or ''),
                 'email': self.partner_id.email or partner.email or '',
             }
             city_prestador = self.company_id.partner_id.city_id
             prestador = {
-                'cnpj': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
-                'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                    city_prestador.ibge_code),
+                'cnpj': re.sub('[^0-9]', '',
+                               (self.company_id.partner_id.l10n_br_cnpj_cpf
+                                   or '')),
+                'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                    city_prestador.l10n_br_ibge_code),
                 'cidade_descricao': city_prestador.name or '',
             }
 

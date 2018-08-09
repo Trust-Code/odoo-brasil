@@ -80,7 +80,7 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '001':
             issqn_codigo = ''
-            if not self.company_id.inscr_mun:
+            if not self.company_id.l10n_br_inscr_mun:
                 errors.append(u'Inscrição municipal obrigatória')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -120,31 +120,34 @@ class InvoiceEletronic(models.Model):
             tomador = {
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
-                                   partner.cnpj_cpf or ''),
-                'razao_social': partner.legal_name or partner.name,
+                                   partner.l10n_br_cnpj_cpf or ''),
+                'razao_social': partner.l10n_br_legal_name or '',
                 'logradouro': partner.street or '',
-                'numero': partner.number or '',
+                'numero': partner.l10n_br_number or '',
                 'complemento': partner.street2 or '',
-                'bairro': partner.district or 'Sem Bairro',
-                'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
-                                    city_tomador.ibge_code),
+                'bairro': partner.l10n_br_district or 'Sem Bairro',
+                'cidade': '%s%s' % (city_tomador.state_id.l10n_br_ibge_code,
+                                    city_tomador.l10n_br_ibge_code),
                 'cidade_descricao': city_tomador.name or '',
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
                 'telefone': re.sub('[^0-9]', '', partner.phone or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', partner.inscr_mun or ''),
+                    '[^0-9]', '', partner.l10n_br_inscr_mun or ''),
                 'email': self.partner_id.email or partner.email or '',
             }
             city_prestador = self.company_id.partner_id.city_id
             prestador = {
                 'cnpj': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
-                'razao_social': self.company_id.partner_id.legal_name or '',
+                    '[^0-9]', '',
+                    self.company_id.partner_id.l10n_br_cnpj_cpf or ''),
+                'razao_social':
+                    self.company_id.partner_id.l10n_br_legal_name or '',
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', self.company_id.partner_id.inscr_mun or ''),
-                'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                                    city_prestador.ibge_code),
+                    '[^0-9]', '',
+                    self.company_id.partner_id.l10n_br_inscr_mun or ''),
+                'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
+                                    city_prestador.l10n_br_ibge_code),
                 'telefone': re.sub('[^0-9]', '', self.company_id.phone or ''),
                 'email': self.company_id.partner_id.email or '',
             }
@@ -256,11 +259,11 @@ class InvoiceEletronic(models.Model):
 
             nfse_values = self._prepare_eletronic_invoice_values()
             cert = self.company_id.with_context(
-                {'bin_size': False}).nfe_a1_file
+                {'bin_size': False}).l10n_br_nfe_a1_file
             cert_pfx = base64.decodestring(cert)
 
             certificado = Certificado(
-                cert_pfx, self.company_id.nfe_a1_password)
+                cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
             if self.ambiente == 'producao':
                 resposta = envio_lote_rps(certificado, nfse=nfse_values)
@@ -307,9 +310,11 @@ class InvoiceEletronic(models.Model):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = self.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(cert_pfx,
+                                  self.company_id.l10n_br_nfe_a1_password)
 
         if self.ambiente == 'homologacao' or \
            self.company_id.tipo_ambiente_nfse == 'homologacao':
@@ -319,12 +324,13 @@ class InvoiceEletronic(models.Model):
             return
         company = self.company_id
         canc = {
-            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
-            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'cnpj_remetente': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '',
+                                          company.l10n_br_inscr_mun),
             'numero_nfse': self.numero_nfse,
             'codigo_verificacao': self.verify_code,
             'assinatura': '%s%s' % (
-                re.sub('[^0-9]', '', company.inscr_mun),
+                re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
                 self.numero_nfse.zfill(12)
             )
         }
