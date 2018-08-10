@@ -48,7 +48,7 @@ class AccountInvoice(models.Model):
         return super(AccountInvoice, self).action_invoice_draft()
 
     def invoice_print(self):
-        if self.product_document_id.code == '55':
+        if self.l10n_br_product_document_id.code == '55':
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', self.id)])
             return self.env.ref(
@@ -57,7 +57,7 @@ class AccountInvoice(models.Model):
             return super(AccountInvoice, self).invoice_print()
 
     def _return_pdf_invoice(self, doc):
-        if self.product_document_id.code == '55':
+        if self.l10n_br_product_document_id.code == '55':
             return 'br_nfe.report_br_nfe_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
@@ -85,19 +85,19 @@ class AccountInvoice(models.Model):
         numero_nfe = self.action_number(serie_id)
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
-        res['informacoes_legais'] = inv.fiscal_comment
+        res['informacoes_legais'] = inv.l10n_br_fiscal_comment
         res['informacoes_complementares'] = inv.comment
         res['numero_fatura'] = inv.number
-        res['fatura_bruto'] = inv.total_bruto
-        res['fatura_desconto'] = inv.total_desconto
+        res['fatura_bruto'] = inv.l10n_br_total_bruto
+        res['fatura_desconto'] = inv.l10n_br_total_desconto
         res['fatura_liquido'] = inv.amount_total
         res['pedido_compra'] = inv.name
-        res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
-        res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
-        res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
-        res['serie'] = inv.product_serie_id.id
-        res['serie_documento'] = inv.product_document_id.code
-        res['model'] = inv.product_document_id.code
+        res['valor_icms_uf_remet'] = inv.l10n_br_valor_icms_uf_remet
+        res['valor_icms_uf_dest'] = inv.l10n_br_valor_icms_uf_dest
+        res['valor_icms_fcp_uf_dest'] = inv.l10n_br_valor_icms_fcp_uf_dest
+        res['serie'] = inv.l10n_br_product_serie_id.id
+        res['serie_documento'] = inv.l10n_br_product_document_id.code
+        res['model'] = inv.l10n_br_product_document_id.code
         res['numero_nfe'] = numero_nfe
         res['numero'] = numero_nfe
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,
@@ -138,7 +138,7 @@ class AccountInvoice(models.Model):
         # Duplicatas
         duplicatas = []
         count = 1
-        for parcela in inv.receivable_move_line_ids.sorted(lambda x: x.name):
+        for parcela in inv.l10n_br_receivable_move_line_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
                 'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
                 'data_vencimento': parcela.date_maturity,
@@ -149,7 +149,7 @@ class AccountInvoice(models.Model):
 
         # Documentos Relacionados
         documentos = []
-        for doc in inv.fiscal_document_related_ids:
+        for doc in inv.l10n_br_fiscal_document_related_ids:
             documentos.append((0, None, {
                 'invoice_related_id': doc.invoice_related_id.id,
                 'document_type': doc.document_type,
@@ -171,28 +171,30 @@ class AccountInvoice(models.Model):
         vals = super(AccountInvoice, self).\
             _prepare_edoc_item_vals(invoice_line)
 
-        vals['cest'] = invoice_line.product_id.cest or \
-            invoice_line.fiscal_classification_id.cest or ''
+        vals['cest'] = invoice_line.product_id.l10n_br_cest or \
+            invoice_line.l10n_br_fiscal_classification_id.cest or ''
         vals['classe_enquadramento_ipi'] = \
-            invoice_line.fiscal_classification_id.classe_enquadramento or ''
+            invoice_line.l10n_br_fiscal_classification_id.classe_enquadramento \
+            or ''
         vals['codigo_enquadramento_ipi'] = \
-            invoice_line.fiscal_classification_id.codigo_enquadramento or '999'
-        vals['tem_difal'] = invoice_line.tem_difal
-        vals['icms_bc_uf_dest'] = invoice_line.icms_bc_uf_dest
+            invoice_line.l10n_br_fiscal_classification_id.codigo_enquadramento \
+            or '999'
+        vals['tem_difal'] = invoice_line.l10n_br_tem_difal
+        vals['icms_bc_uf_dest'] = invoice_line.l10n_br_icms_bc_uf_dest
         vals['icms_aliquota_interestadual'] = \
-            invoice_line.tax_icms_inter_id.amount or 0.0
+            invoice_line.l10n_br_tax_icms_inter_id.amount or 0.0
         vals['icms_aliquota_uf_dest'] = \
-            invoice_line.tax_icms_intra_id.amount or 0.0
+            invoice_line.l10n_br_tax_icms_intra_id.amount or 0.0
         vals['icms_aliquota_fcp_uf_dest'] = \
-            invoice_line.tax_icms_fcp_id.amount or 0.0
-        vals['icms_uf_remet'] = invoice_line.icms_uf_remet or 0.0
-        vals['icms_uf_dest'] = invoice_line.icms_uf_dest or 0.0
-        vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
+            invoice_line.l10n_br_tax_icms_fcp_id.amount or 0.0
+        vals['icms_uf_remet'] = invoice_line.l10n_br_icms_uf_remet or 0.0
+        vals['icms_uf_dest'] = invoice_line.l10n_br_icms_uf_dest or 0.0
+        vals['icms_fcp_uf_dest'] = invoice_line.l10n_br_icms_fcp_uf_dest or 0.0
         vals['icms_aliquota_inter_part'] = \
-            invoice_line.icms_aliquota_inter_part or 0.0
+            invoice_line.l10n_br_icms_aliquota_inter_part or 0.0
 
         di_importacao = []
-        for di in invoice_line.import_declaration_ids:
+        for di in invoice_line.l10n_br_import_declaration_ids:
             adicoes = []
             for di_line in di.line_ids:
                 adicoes.append((0, None, {
@@ -218,5 +220,5 @@ class AccountInvoice(models.Model):
                 'line_ids': adicoes,
             }))
         vals['import_declaration_ids'] = di_importacao
-        vals['informacao_adicional'] = invoice_line.informacao_adicional
+        vals['informacao_adicional'] = invoice_line.l10n_br_informacao_adicional
         return vals

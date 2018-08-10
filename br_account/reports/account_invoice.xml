@@ -9,21 +9,21 @@
                        <tr name="tr_subtotal">
                            <td><strong>Subtotal</strong></td>
                            <td class="text-right">
-                               <span t-field="o.total_bruto" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                               <span t-field="o.l10n_br_total_bruto" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                            </td>
                       </tr>
-                      <tr t-if="o.total_desconto" name="tr_discount" groups="sale.group_discount_per_so_line" style="border-bottom:1px solid #dddddd;">
+                      <tr t-if="o.l10n_br_total_desconto" name="tr_discount" groups="sale.group_discount_per_so_line" style="border-bottom:1px solid #dddddd;">
                           <td><strong>Discount ( - )</strong></td>
                           <td class="text-right">
-                              <span t-field="o.total_desconto" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                              <span t-field="o.l10n_br_total_desconto" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                           </td>
                      </tr>
-                      <tr t-if="o.total_tax" name="tr_taxes" style="border-bottom:1px solid #dddddd;">
+                      <tr t-if="o.l10n_br_total_tax" name="tr_taxes" style="border-bottom:1px solid #dddddd;">
                            <td>
                                <strong>Tax ( + )</strong>
                            </td>
                            <td class="text-right">
-                               <span t-field="o.total_tax" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                               <span t-field="o.l10n_br_total_tax" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                            </td>
                        </tr>
                        <tr class="border-black">

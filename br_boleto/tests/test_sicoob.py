@@ -71,10 +71,13 @@ class TestBoletoSicoob(TestBoleto):
         self._update_partner_fisica()
         self.invoices.action_invoice_open()
 
-        self.assertEquals(len(self.invoices.receivable_move_line_ids), 1)
+        self.assertEquals(len(
+            self.invoices.l10n_br_receivable_move_line_ids), 1)
 
-        move = self.invoices.receivable_move_line_ids[0]
+        move = self.invoices.l10n_br_receivable_move_line_ids[0]
         vals = move.action_print_boleto()
+        print('*'*100)
+        print(vals)
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
         self.assertEquals(vals['report_type'], 'qweb-pdf')

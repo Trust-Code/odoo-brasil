@@ -10,7 +10,7 @@
                 <field name="valor_seguro" invisible="1" />
                 <field name="outras_despesas" invisible="1" />
             </xpath>
-            <field name="total_tax" position="after">
+            <field name="l10n_br_total_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -62,7 +62,7 @@
                 <field name="valor_seguro" invisible="1" />
                 <field name="outras_despesas" invisible="1" />
             </xpath>
-            <field name="total_tax" position="after">
+            <field name="l10n_br_total_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -102,9 +102,9 @@
         <field name="priority">36</field>
         <field name="arch" type="xml">
             <field name="price_subtotal" position="after">
-                <field name="valor_frete" attrs="{'invisible': [('product_type', '=', 'service')]}" />
-                <field name="valor_seguro" attrs="{'invisible': [('product_type', '=', 'service')]}" />
-                <field name="outras_despesas" attrs="{'invisible': [('product_type', '=', 'service')]}" />
+                <field name="valor_frete" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
+                <field name="valor_seguro" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
+                <field name="outras_despesas" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
             </field>
         </field>
     </record>

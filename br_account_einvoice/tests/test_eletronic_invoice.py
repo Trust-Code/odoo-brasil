@@ -40,14 +40,14 @@ class TestEletronicInvoice(TransactionCase):
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.env.ref(
                 'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
@@ -85,14 +85,14 @@ class TestEletronicInvoice(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
+                    'l10n_br_product_type': self.service.l10n_br_fiscal_type,
                 }
              )
         ]
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
             reference_type="none",
-            product_document_id=self.env.ref(
+            l10n_br_product_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,

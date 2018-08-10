@@ -211,8 +211,8 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Emitente / Inscrição Estadual')
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
-            if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
+            if self.company_id.l10n_br_accountant_id and not \
+               self.company_id.l10n_br_accountant_id.cnpj_cpf:
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
             for eletr in self.eletronic_item_ids:
@@ -379,7 +379,7 @@ class InvoiceEletronic(models.Model):
             'cUF': self.company_id.state_id.l10n_br_ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': self.payment_term_id.indPag or '0',
+            'indPag': self.payment_term_id.l10n_br_indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
@@ -466,13 +466,14 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est),
-            'CRT': self.company_id.fiscal_type,
+            'CRT': self.company_id.l10n_br_fiscal_type,
         }
-        if self.company_id.cnae_main_id and self.company_id.l10n_br_inscr_mun:
+        if self.company_id.l10n_br_cnae_main_id and \
+                self.company_id.l10n_br_inscr_mun:
             emit['IM'] = re.sub('[^0-9]', '',
                                 self.company_id.l10n_br_inscr_mun or '')
             emit['CNAE'] = re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
+                '[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -520,10 +521,11 @@ class InvoiceEletronic(models.Model):
                 }
 
         autorizados = []
-        if self.company_id.accountant_id:
+        if self.company_id.l10n_br_accountant_id:
             autorizados.append({
                 'CNPJ': re.sub(
-                    '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
+                    '[^0-9]', '',
+                    self.company_id.l10n_br_accountant_id.cnpj_cpf)
             })
 
         eletronic_items = []

@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="purchase.purchase_order_form" />
         <field name="arch" type="xml">
             <field name="fiscal_position_id" position="attributes">
-                <attribute name="domain">['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'entrada')]</attribute>
+                <attribute name="domain">['|', ('l10n_br_fiscal_type', '=', None), ('l10n_br_fiscal_type', '=', 'entrada')]</attribute>
             </field>
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="before">
                 <field name="valor_bruto" widget="monetary" />
@@ -24,7 +24,7 @@
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
                 <field name="cofins_cst" invisible="1" />
-                <field name="l10n_br_issqn_deduction" invisible="1" />
+                <field name="issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/sheet/group/group/field[@name='price_unit']" position="after">
                 <field name="valor_bruto" />
@@ -42,7 +42,7 @@
                 <field name="ipi_reducao_bc" invisible="1" />
                 <field name="pis_cst" invisible="1" />
                 <field name="cofins_cst" invisible="1" />
-                <field name="l10n_br_issqn_deduction" invisible="1" />
+                <field name="issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
                 <attribute name="invisible">0</attribute>

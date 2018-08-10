@@ -61,8 +61,8 @@ class TestNFeBrasil(TransactionCase):
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.service_type.id,
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.service_type.id,
             'list_price': 50.0
         })
         default_partner = {
@@ -113,14 +113,14 @@ class TestNFeBrasil(TransactionCase):
             active=True,
             name='serie teste',
             fiscal_document_id=self.fiscal_doc.id,
-            fiscal_type='product',
+            l10n_br_fiscal_type='product',
             company_id=self.main_company.id,
         ))
 
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda',
-            'service_document_id': self.fiscal_doc.id,
-            'service_serie_id': self.serie.id
+            'l10n_br_service_document_id': self.fiscal_doc.id,
+            'l10n_br_service_serie_id': self.serie.id
         })
 
         invoice_line_data = [
@@ -131,21 +131,21 @@ class TestNFeBrasil(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_product_type': self.service.l10n_br_fiscal_type,
+                    'l10n_br_service_type_id': self.service.service_type_id.id,
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              )
         ]
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'service_document_id': self.env.ref(
+            'l10n_br_service_document_id': self.env.ref(
                 'br_data_account.fiscal_document_001').id,
-            'service_serie_id': self.fpos.service_serie_id.id,
+            'l10n_br_service_serie_id': self.fpos.l10n_br_service_serie_id.id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,

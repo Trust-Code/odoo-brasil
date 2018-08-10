@@ -27,10 +27,12 @@ class PurchaseOrder(models.Model):
     @api.multi
     def _prepare_invoice(self):
         res = super(PurchaseOrder, self)._prepare_invoice()
-        if self.fiscal_position_id and self.fiscal_position_id.account_id:
-            res['account_id'] = self.fiscal_position_id.account_id.id
-        if self.fiscal_position_id and self.fiscal_position_id.journal_id:
-            res['journal_id'] = self.fiscal_position_id.journal_id.id
+        if (self.fiscal_position_id and
+                self.fiscal_position_id.l10n_br_account_id):
+            res['account_id'] = self.fiscal_position_id.l10n_br_account_id.id
+        if (self.fiscal_position_id and
+                self.fiscal_position_id.l10n_br_journal_id):
+            res['journal_id'] = self.fiscal_position_id.l10n_br_journal_id.id
         return res
 
     total_bruto = fields.Float(
@@ -112,7 +114,7 @@ class PurchaseOrderLine(models.Model):
 
     pis_cst = fields.Char(string='CST PIS', size=5)
     cofins_cst = fields.Char(string='CST COFINS', size=5)
-    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
+    issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
 
     valor_bruto = fields.Float(
         compute='_compute_amount', string='Vlr. Bruto', store=True,
@@ -120,7 +122,7 @@ class PurchaseOrderLine(models.Model):
 
     def _update_tax_from_ncm(self):
         if self.product_id:
-            ncm = self.product_id.fiscal_classification_id
+            ncm = self.product_id.l10n_br_fiscal_classification_id
             taxes = ncm.tax_icms_st_id | ncm.tax_ipi_id
             self.update({
                 'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
@@ -151,8 +153,10 @@ class PurchaseOrderLine(models.Model):
                         line.update({key: value})
 
                 empty = line.env['account.tax'].browse()
-                ipi = line.taxes_id.filtered(lambda x: x.domain == 'ipi')
-                icmsst = line.taxes_id.filtered(lambda x: x.domain == 'icmsst')
+                ipi = line.taxes_id.filtered(
+                    lambda x: x.l10n_br_domain == 'ipi')
+                icmsst = line.taxes_id.filtered(
+                    lambda x: x.l10n_br_domain == 'icmsst')
                 tax_ids = vals.get('tax_icms_id', empty) | \
                     vals.get('tax_icms_st_id', icmsst) | \
                     vals.get('tax_icms_inter_id', empty) | \

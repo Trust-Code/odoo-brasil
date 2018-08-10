@@ -7,7 +7,7 @@
         <field name="fiscal_document_id" ref="br_data_account.fiscal_document_55" />
         <field name="company_id" ref="base.main_company" />
         <field name="active">True</field>
-        <field name="fiscal_type">product</field>
+        <field name="l10n_br_fiscal_type">product</field>
     </record>
 
     <record id="br_document_serie_1_avulsa" model="br_account.document.serie">
@@ -16,7 +16,7 @@
         <field name="fiscal_document_id" ref="br_data_account.fiscal_document_1B" />
         <field name="company_id" ref="base.main_company" />
         <field name="active">True</field>
-        <field name="fiscal_type">product</field>
+        <field name="l10n_br_fiscal_type">product</field>
     </record>
 
 

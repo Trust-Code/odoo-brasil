@@ -74,7 +74,7 @@
                         <field name="active"/>
                         <field name="name" select="1"/>
                         <field name="fiscal_document_id" select="1"/>
-                        <field name="fiscal_type"/>
+                        <field name="l10n_br_fiscal_type"/>
                         <field name="internal_sequence_id" select="1"/>
                         <field name="company_id"/>
                     </group>

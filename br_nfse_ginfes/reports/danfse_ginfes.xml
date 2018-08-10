@@ -271,7 +271,7 @@
             <div class="row" style="border: 1px solid black; padding: 0px;">
                 <div class="col-xs-12">
                     <span t-field="doc.eletronic_item_ids[0].codigo_tributacao_municipio" /> -
-                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                    <span t-field="doc.eletronic_item_ids[0].product_id.l10n_br_service_type_id.name" />
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 0px;">
@@ -425,10 +425,10 @@
                     <span t-field="doc.valor_retencao_issqn" />
                 </div>
                 <div class="col-xs-2 linha br centro">
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         1 - Sim
                     </t>
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         2 - Não
                     </t>
                 </div>
@@ -470,7 +470,7 @@
                 <div class="col-xs-11 linha bl">
                     1- Uma via desta Nota Fiscal será enviada através do e-mail fornecido pelo Tomador dos Serviços.<br />
                     2- A autenticidade desta Nota Fiscal poderá ser verificada no site, ribeiraopreto.ginfes.com.br com a utilização do Código de Verificação.<br />
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         3 - Documento emitido por ME ou EPP optante pelo Simples Nacional.Não gera direito a crédito fiscal de ISS e IPI.
                     </t>
                 </div>

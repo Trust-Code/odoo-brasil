@@ -172,7 +172,7 @@
                         <t t-foreach="doc.eletronic_item_ids" t-as="line">
                             <tr>
                                 <td>
-                                    <span t-field="doc.company_id.cnae_main_id.code" />
+                                    <span t-field="doc.company_id.l10n_br_cnae_main_id.code" />
                                 </td>
                                 <td>
                                     <span t-field="line.product_id" />

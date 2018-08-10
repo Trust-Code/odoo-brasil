@@ -48,7 +48,7 @@
                 </group>
                 <group name="issqn" attrs="{'invisible': [('domain', '!=', 'issqn')]}">
                     <group>
-                        <field name="l10n_br_issqn_deduction" />
+                        <field name="issqn_deduction" />
                     </group>
                     <group></group>
                 </group>
@@ -84,29 +84,29 @@
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
             <field name="auto_apply" position="after">
-                <field name="fiscal_type"></field>
+                <field name="l10n_br_fiscal_type"></field>
             </field>
             <xpath expr="//page[@name='account_mapping']/group" position="before">
                 <group>
-                    <field name="journal_id" placeholder="Este diário vai ser usado no faturamento" />
-                    <field name="account_id" placeholder="Esta conta vai ser usada para faturamento" />
+                    <field name="l10n_br_journal_id" placeholder="Este diário vai ser usado no faturamento" />
+                    <field name="l10n_br_account_id" placeholder="Esta conta vai ser usada para faturamento" />
                 </group>
             </xpath>
             <xpath expr="//page[@name='account_mapping']" position="after">
                 <page name="notes" string="Observações Fiscais">
                     <group string="Observações">
-                        <field name="fiscal_observation_ids" nolabel="1" />
+                        <field name="l10n_br_fiscal_observation_ids" nolabel="1" />
                     </group>
                 </page>
                 <page name="other_information" string="Outras Informações">
                     <group>
                         <group>
-                            <field name="product_document_id" />
-                            <field name="product_serie_id" />
+                            <field name="l10n_br_product_document_id" />
+                            <field name="l10n_br_product_serie_id" />
                         </group>
                         <group>
-                            <field name="service_document_id" />
-                            <field name="service_serie_id" />
+                            <field name="l10n_br_service_document_id" />
+                            <field name="l10n_br_service_serie_id" />
                         </group>
                     </group>
                 </page>
@@ -132,7 +132,7 @@
             <page name="tax_mapping" position="before">
                 <page string="Regras de Impostos">
                     <group name="icms_rules" string="Regras de ICMS">
-                        <field nolabel="1" name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
+                        <field nolabel="1" name="l10n_br_icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -147,7 +147,7 @@
                         </field>
                     </group>
                     <group name="ipi_rules" string="Regras de IPI">
-                        <field nolabel="1" name="ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
+                        <field nolabel="1" name="l10n_br_ipi_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ipi'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -158,7 +158,7 @@
                         </field>
                     </group>
                     <group name="pis_rules" string="Regras de PIS">
-                        <field nolabel="1" name="pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
+                        <field nolabel="1" name="l10n_br_pis_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'pis'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -168,7 +168,7 @@
                         </field>
                     </group>
                     <group name="cofins_rules" string="Regras de COFINS">
-                        <field nolabel="1" name="cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
+                        <field nolabel="1" name="l10n_br_cofins_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'cofins'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
@@ -178,19 +178,19 @@
                         </field>
                     </group>
                     <group name="issqn_rules" string="Regras ISSQN">
-                        <field nolabel="1" name="issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>
+                        <field nolabel="1" name="l10n_br_issqn_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'issqn'}"/>
                     </group>
                     <group name="irrf_rules" string="Regras de IRRF">
-                        <field nolabel="1" name="irrf_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'irrf'}" />
+                        <field nolabel="1" name="l10n_br_irrf_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'irrf'}" />
                     </group>
                     <group name="inss_rules" string="Regras de INSS">
-                        <field nolabel="1" name="inss_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'inss'}" />
+                        <field nolabel="1" name="l10n_br_inss_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'inss'}" />
                     </group>
                     <group name="csll_rules" string="Regras de CSLL">
-                        <field nolabel="1" name="csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll'}" />
+                        <field nolabel="1" name="l10n_br_csll_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'csll'}" />
                     </group>
                     <group name="ii_rules" string="Regras de II">
-                        <field nolabel="1" name="ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
+                        <field nolabel="1" name="l10n_br_ii_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'ii'}" />
                     </group>
                 </page>
             </page>

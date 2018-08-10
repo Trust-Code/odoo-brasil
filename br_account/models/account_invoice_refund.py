@@ -6,9 +6,10 @@ from odoo import models, fields, api
 
 
 class AccountInvoiceRefund(models.TransientModel):
-    _inherit = 'account.invoice.refund'
+    _name = 'account.invoice.refund'
+    _inherit = ['account.invoice.refund', 'br.localization.filtering']
 
-    fiscal_position_id = fields.Many2one(
+    l10n_br_fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string="Posição Fiscal")
 
     @api.multi
@@ -20,7 +21,9 @@ class AccountInvoiceRefund(models.TransientModel):
             ('id', '=', invoice_id)
         ])
 
-        invoice_id.write({'fiscal_position_id': self.fiscal_position_id.id})
+        invoice_id.write({
+            'fiscal_position_id': self.l10n_br_fiscal_position_id.id
+        })
 
         if self.fiscal_position_id:
             for item in invoice_id.invoice_line_ids:

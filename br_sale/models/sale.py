@@ -33,19 +33,26 @@ class SaleOrder(models.Model):
     @api.multi
     def _prepare_invoice(self):
         res = super(SaleOrder, self)._prepare_invoice()
-        if self.fiscal_position_id and self.fiscal_position_id.account_id:
-            res['account_id'] = self.fiscal_position_id.account_id.id
-        if self.fiscal_position_id and self.fiscal_position_id.journal_id:
-            res['journal_id'] = self.fiscal_position_id.journal_id.id
-        if self.fiscal_position_id.fiscal_observation_ids:
-            res['fiscal_observation_ids'] = [
-                (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
+        if (self.fiscal_position_id and
+                self.fiscal_position_id.l10n_br_account_id):
+            res['account_id'] = self.fiscal_position_id.l10n_br_account_id.id
+        if (self.fiscal_position_id and
+                self.fiscal_position_id.l10n_br_journal_id):
+            res['journal_id'] = self.fiscal_position_id.l10n_br_journal_id.id
+        if self.fiscal_position_id.l10n_br_fiscal_observation_ids:
+            res['l10n_br_fiscal_observation_ids'] = [
+                (6, None,
+                 self.fiscal_position_id.l10n_br_fiscal_observation_ids.ids)]
         if self.fiscal_position_id:
             fpos = self.fiscal_position_id
-            res['product_document_id'] = fpos.product_document_id.id
-            res['product_serie_id'] = fpos.product_serie_id.id
-            res['service_document_id'] = fpos.service_document_id.id
-            res['service_serie_id'] = fpos.service_serie_id.id
+            res['l10n_br_product_document_id'] = \
+                fpos.l10n_br_product_document_id.id
+            res['l10n_br_product_serie_id'] = \
+                fpos.l10n_br_product_serie_id.id
+            res['l10n_br_service_document_id'] = \
+                fpos.l10n_br_service_document_id.id
+            res['l10n_br_service_serie_id'] = \
+                fpos.l10n_br_service_serie_id.id
         return res
 
     total_bruto = fields.Float(
@@ -92,7 +99,8 @@ class SaleOrderLine(models.Model):
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
                  'icms_st_aliquota_mva', 'incluir_ipi_base',
-                 'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
+                 'icms_aliquota_reducao_base',
+                 'icms_st_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao')
     def _compute_amount(self):
         for line in self:
@@ -214,7 +222,7 @@ class SaleOrderLine(models.Model):
 
     def _update_tax_from_ncm(self):
         if self.product_id:
-            ncm = self.product_id.fiscal_classification_id
+            ncm = self.product_id.l10n_br_fiscal_classification_id
             taxes = ncm.tax_icms_st_id | ncm.tax_ipi_id
             self.update({
                 'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
@@ -241,8 +249,10 @@ class SaleOrderLine(models.Model):
                         line.update({key: value})
 
                 empty = line.env['account.tax'].browse()
-                ipi = line.tax_id.filtered(lambda x: x.domain == 'ipi')
-                icmsst = line.tax_id.filtered(lambda x: x.domain == 'icmsst')
+                ipi = line.tax_id.filtered(
+                    lambda x: x.l10n_br_domain == 'ipi')
+                icmsst = line.tax_id.filtered(
+                    lambda x: x.l10n_br_domain == 'icmsst')
                 tax_ids = vals.get('tax_icms_id', empty) | \
                     vals.get('tax_icms_st_id', icmsst) | \
                     vals.get('tax_icms_inter_id', empty) | \
@@ -267,100 +277,106 @@ class SaleOrderLine(models.Model):
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-        res['valor_desconto'] = self.valor_desconto
-        res['valor_bruto'] = self.valor_bruto
+        res['l10n_br_valor_desconto'] = self.valor_desconto
+        res['l10n_br_valor_bruto'] = self.valor_bruto
 
         # Improve this one later
-        icms = self.tax_id.filtered(lambda x: x.domain == 'icms')
-        icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')
-        icms_inter = self.tax_id.filtered(lambda x: x.domain == 'icms_inter')
-        icms_intra = self.tax_id.filtered(lambda x: x.domain == 'icms_intra')
-        icms_fcp = self.tax_id.filtered(lambda x: x.domain == 'icms_fcp')
-        ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
-        pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
-        cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')
-        ii = self.tax_id.filtered(lambda x: x.domain == 'ii')
-        issqn = self.tax_id.filtered(lambda x: x.domain == 'issqn')
-        csll = self.tax_id.filtered(lambda x: x.domain == 'csll')
-        inss = self.tax_id.filtered(lambda x: x.domain == 'inss')
-        irrf = self.tax_id.filtered(lambda x: x.domain == 'irrf')
+        icms = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'icms')
+        icmsst = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'icmsst')
+        icms_inter = self.tax_id.filtered(
+            lambda x: x.l10n_br_domain == 'icms_inter')
+        icms_intra = self.tax_id.filtered(
+            lambda x: x.l10n_br_domain == 'icms_intra')
+        icms_fcp = self.tax_id.filtered(
+            lambda x: x.l10n_br_domain == 'icms_fcp')
+        ipi = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'ipi')
+        pis = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'pis')
+        cofins = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'cofins')
+        ii = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'ii')
+        issqn = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'issqn')
+        csll = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'csll')
+        inss = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'inss')
+        irrf = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'irrf')
 
-        res['icms_cst_normal'] = self.icms_cst_normal
-        res['icms_csosn_simples'] = self.icms_csosn_simples
+        res['l10n_br_icms_cst_normal'] = self.icms_cst_normal
+        res['l10n_br_icms_csosn_simples'] = self.icms_csosn_simples
 
-        res['tax_icms_id'] = icms and icms.id or False
-        res['tax_icms_st_id'] = icmsst and icmsst.id or False
-        res['tax_icms_inter_id'] = icms_inter and icms_inter.id or False
-        res['tax_icms_intra_id'] = icms_intra and icms_intra.id or False
-        res['tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
-        res['tax_ipi_id'] = ipi and ipi.id or False
-        res['tax_pis_id'] = pis and pis.id or False
-        res['tax_cofins_id'] = cofins and cofins.id or False
-        res['tax_ii_id'] = ii and ii.id or False
-        res['tax_issqn_id'] = issqn and issqn.id or False
-        res['tax_csll_id'] = csll and csll.id or False
-        res['tax_irrf_id'] = inss and inss.id or False
-        res['tax_inss_id'] = irrf and irrf.id or False
+        res['l10n_br_tax_icms_id'] = icms and icms.id or False
+        res['l10n_br_tax_icms_st_id'] = icmsst and icmsst.id or False
+        res['l10n_br_tax_icms_inter_id'] = icms_inter and icms_inter.id or False
+        res['l10n_br_tax_icms_intra_id'] = icms_intra and icms_intra.id or False
+        res['l10n_br_tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
+        res['l10n_br_tax_ipi_id'] = ipi and ipi.id or False
+        res['l10n_br_tax_pis_id'] = pis and pis.id or False
+        res['l10n_br_tax_cofins_id'] = cofins and cofins.id or False
+        res['l10n_br_tax_ii_id'] = ii and ii.id or False
+        res['l10n_br_tax_issqn_id'] = issqn and issqn.id or False
+        res['l10n_br_tax_csll_id'] = csll and csll.id or False
+        res['l10n_br_tax_irrf_id'] = inss and inss.id or False
+        res['l10n_br_tax_inss_id'] = irrf and irrf.id or False
 
-        res['product_type'] = self.product_id.fiscal_type
-        res['company_fiscal_type'] = self.company_id.fiscal_type
-        res['cfop_id'] = self.cfop_id.id
-        ncm = self.product_id.fiscal_classification_id
-        service = self.product_id.service_type_id
-        res['fiscal_classification_id'] = ncm.id
-        res['service_type_id'] = service.id
-        res['icms_origem'] = self.product_id.origin
+        res['l10n_br_product_type'] = self.product_id.l10n_br_fiscal_type
+        res['l10n_br_company_fiscal_type'] = self.company_id.l10n_br_fiscal_type
+        res['l10n_br_cfop_id'] = self.cfop_id.id
+        ncm = self.product_id.l10n_br_fiscal_classification_id
+        service = self.product_id.l10n_br_service_type_id
+        res['l10n_br_fiscal_classification_id'] = ncm.id
+        res['l10n_br_service_type_id'] = service.id
+        res['l10n_br_icms_origem'] = self.product_id.l10n_br_origin
 
-        if self.product_id.fiscal_type == 'service':
-            res['tributos_estimados_federais'] = \
+        if self.product_id.l10n_br_fiscal_type == 'service':
+            res['l10n_br_tributos_estimados_federais'] = \
                 self.price_subtotal * (service.federal_nacional / 100)
-            res['tributos_estimados_estaduais'] = \
+            res['l10n_br_tributos_estimados_estaduais'] = \
                 self.price_subtotal * (service.estadual_imposto / 100)
-            res['tributos_estimados_municipais'] = \
+            res['l10n_br_tributos_estimados_municipais'] = \
                 self.price_subtotal * (service.municipal_imposto / 100)
         else:
-            federal = ncm.federal_nacional if self.product_id.origin in \
-                ('1', '2', '3', '8') else ncm.federal_importado
+            federal = ncm.federal_nacional \
+                if self.product_id.l10n_br_origin in ('1', '2', '3', '8') \
+                else ncm.federal_importado
 
-            res['tributos_estimados_federais'] = \
+            res['l10n_br_tributos_estimados_federais'] = \
                 self.price_subtotal * (federal / 100)
-            res['tributos_estimados_estaduais'] = \
+            res['l10n_br_tributos_estimados_estaduais'] = \
                 self.price_subtotal * (ncm.estadual_imposto / 100)
-            res['tributos_estimados_municipais'] = \
+            res['l10n_br_tributos_estimados_municipais'] = \
                 self.price_subtotal * (ncm.municipal_imposto / 100)
 
-        res['tributos_estimados'] = res['tributos_estimados_federais'] + \
-            res['tributos_estimados_estaduais'] + \
-            res['tributos_estimados_municipais']
+        res['l10n_br_tributos_estimados'] = (
+            res['l10n_br_tributos_estimados_federais'] +
+            res['l10n_br_tributos_estimados_estaduais'] +
+            res['l10n_br_tributos_estimados_municipais']
+        )
 
-        res['incluir_ipi_base'] = self.incluir_ipi_base
-        res['icms_aliquota'] = icms.amount or 0.0
-        res['icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
-        res['icms_st_aliquota'] = icmsst.amount or 0.0
-        res['icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
-        res['icms_st_aliquota_reducao_base'] = \
+        res['l10n_br_incluir_ipi_base'] = self.incluir_ipi_base
+        res['l10n_br_icms_aliquota'] = icms.amount or 0.0
+        res['l10n_br_icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
+        res['l10n_br_icms_st_aliquota'] = icmsst.amount or 0.0
+        res['l10n_br_icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
+        res['l10n_br_icms_st_aliquota_reducao_base'] = \
             self.icms_st_aliquota_reducao_base
-        res['icms_st_aliquota_deducao'] = self.icms_st_aliquota_deducao
-        res['tem_difal'] = self.tem_difal
-        res['icms_uf_remet'] = icms_inter.amount or 0.0
-        res['icms_uf_dest'] = icms_intra.amount or 0.0
-        res['icms_fcp_uf_dest'] = icms_fcp.amount or 0.0
+        res['l10n_br_icms_st_aliquota_deducao'] = self.icms_st_aliquota_deducao
+        res['l10n_br_tem_difal'] = self.tem_difal
+        res['l10n_br_icms_uf_remet'] = icms_inter.amount or 0.0
+        res['l10n_br_icms_uf_dest'] = icms_intra.amount or 0.0
+        res['l10n_br_icms_fcp_uf_dest'] = icms_fcp.amount or 0.0
 
-        res['ipi_cst'] = self.ipi_cst
-        res['ipi_aliquota'] = ipi.amount or 0.0
-        res['ipi_reducao_bc'] = self.ipi_reducao_bc
+        res['l10n_br_ipi_cst'] = self.ipi_cst
+        res['l10n_br_ipi_aliquota'] = ipi.amount or 0.0
+        res['l10n_br_ipi_reducao_bc'] = self.ipi_reducao_bc
 
-        res['pis_cst'] = self.pis_cst
-        res['pis_aliquota'] = pis.amount or 0.0
+        res['l10n_br_pis_cst'] = self.pis_cst
+        res['l10n_br_pis_aliquota'] = pis.amount or 0.0
 
-        res['cofins_cst'] = self.cofins_cst
-        res['cofins_aliquota'] = cofins.amount or 0.0
+        res['l10n_br_cofins_cst'] = self.cofins_cst
+        res['l10n_br_cofins_aliquota'] = cofins.amount or 0.0
 
-        res['issqn_aliquota'] = issqn.amount or 0.0
+        res['l10n_br_issqn_aliquota'] = issqn.amount or 0.0
         res['l10n_br_issqn_deduction'] = self.l10n_br_issqn_deduction
 
-        res['ii_aliquota'] = ii.amount or 0.0
-        res['csll_aliquota'] = csll.amount or 0.0
-        res['inss_aliquota'] = inss.amount or 0.0
-        res['irrf_aliquota'] = irrf.amount or 0.0
+        res['l10n_br_ii_aliquota'] = ii.amount or 0.0
+        res['l10n_br_csll_aliquota'] = csll.amount or 0.0
+        res['l10n_br_inss_aliquota'] = inss.amount or 0.0
+        res['l10n_br_irrf_aliquota'] = irrf.amount or 0.0
         return res

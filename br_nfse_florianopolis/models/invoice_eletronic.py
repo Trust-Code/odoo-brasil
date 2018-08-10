@@ -50,7 +50,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                 errors.append('Client Secret na empresa é obrigatório')
             if not self.company_id.user_password:
                 errors.append('Inscrição municipal obrigatória')
-            if not self.company_id.cnae_main_id.id_cnae:
+            if not self.company_id.l10n_br_cnae_main_id.id_cnae:
                 errors.append('Código de CNAE da empresa obrigatório')
             if not self.company_id.aedf:
                 errors.append('Código AEDF da empresa obrigatório')
@@ -86,13 +86,14 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         for line in self.eletronic_item_ids:
             aliquota = line.issqn_aliquota / 100
             base = line.issqn_base_calculo
-            if self.company_id.fiscal_type != '3':
+            if self.company_id.l10n_br_fiscal_type != '3':
                 aliquota, base = 0.0, 0.0
             unitario = round(line.valor_liquido / line.quantidade, 2)
             items.append({
                 'name': line.product_id.name,
                 'cnae': re.sub(
-                    '[^0-9]', '', self.company_id.cnae_main_id.id_cnae or ''),
+                    '[^0-9]', '',
+                    self.company_id.l10n_br_cnae_main_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
                 'base_calculo': base,
@@ -107,7 +108,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         if self.company_id.state_id.id != partner.state_id.id:
             cfps = '9203'
         base, issqn = self.valor_bc_issqn, self.valor_issqn
-        if self.company_id.fiscal_type != '3':
+        if self.company_id.l10n_br_fiscal_type != '3':
             base, issqn = 0.0, 0.0
         return {
             'numero': "%06d" % self.numero,

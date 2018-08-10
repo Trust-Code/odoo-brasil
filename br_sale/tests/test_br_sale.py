@@ -46,15 +46,15 @@ class TestSaleOrder(TransactionCase):
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.env.ref(
                 'br_data_account.service_type_101').id,
             'list_price': 50.0,
             'property_account_income_id': self.revenue_account.id,
         })
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0,
             'property_account_income_id': self.revenue_account.id,
         })
@@ -91,7 +91,7 @@ class TestSaleOrder(TransactionCase):
         self.pis = self.tax_model.create({
             'name': "PIS",
             'amount_type': 'division',
-            'domain': 'pis',
+            'l10n_br_domain': 'pis',
             'amount': 5,
             'sequence': 1,
             'price_include': True,
@@ -99,7 +99,7 @@ class TestSaleOrder(TransactionCase):
         self.cofins = self.tax_model.create({
             'name': "Cofins",
             'amount_type': 'division',
-            'domain': 'cofins',
+            'l10n_br_domain': 'cofins',
             'amount': 15,
             'sequence': 2,
             'price_include': True,
@@ -107,14 +107,14 @@ class TestSaleOrder(TransactionCase):
         self.ipi = self.tax_model.create({
             'name': "IPI",
             'amount_type': 'percent',
-            'domain': 'ipi',
+            'l10n_br_domain': 'ipi',
             'amount': 7,
             'sequence': 3,
         })
         self.icms = self.tax_model.create({
             'name': "ICMS",
             'amount_type': 'division',
-            'domain': 'icms',
+            'l10n_br_domain': 'icms',
             'amount': 17,
             'sequence': 4,
             'price_include': True,
@@ -122,7 +122,7 @@ class TestSaleOrder(TransactionCase):
         self.icms_inter = self.tax_model.create({
             'name': "ICMS Inter",
             'amount_type': 'division',
-            'domain': 'icms',
+            'l10n_br_domain': 'icms',
             'amount': 12,
             'sequence': 4,
             'price_include': True,
@@ -130,42 +130,42 @@ class TestSaleOrder(TransactionCase):
         self.icms_st = self.tax_model.create({
             'name': "ICMS ST",
             'amount_type': 'icmsst',
-            'domain': 'icmsst',
+            'l10n_br_domain': 'icmsst',
             'amount': 18,
             'price_include': False,
         })
         self.icms_difal_inter = self.tax_model.create({
             'name': "ICMS Difal Inter",
             'amount_type': 'division',
-            'domain': 'icms_inter',
+            'l10n_br_domain': 'icms_inter',
             'amount': 7,
             'price_include': True,
         })
         self.icms_difal_intra = self.tax_model.create({
             'name': "ICMS Difal Intra",
             'amount_type': 'division',
-            'domain': 'icms_intra',
+            'l10n_br_domain': 'icms_intra',
             'amount': 17,
             'price_include': True,
         })
         self.icms_fcp = self.tax_model.create({
             'name': "FCP",
             'amount_type': 'division',
-            'domain': 'fcp',
+            'l10n_br_domain': 'fcp',
             'amount': 2,
             'price_include': True,
         })
         self.issqn = self.tax_model.create({
             'name': "ISSQN",
             'amount_type': 'division',
-            'domain': 'issqn',
+            'l10n_br_domain': 'issqn',
             'amount': 5,
             'price_include': True,
         })
         self.ii = self.tax_model.create({
             'name': "II",
             'amount_type': 'division',
-            'domain': 'ii',
+            'l10n_br_domain': 'ii',
             'amount': 60,
             'price_include': True,
         })
@@ -232,26 +232,33 @@ class TestSaleOrder(TransactionCase):
                 inv_line = line.invoice_lines[0]
 
                 self.assertEqual(
-                    line.icms_cst_normal, inv_line.icms_cst_normal)
+                    line.icms_cst_normal,
+                    inv_line.l10n_br_icms_cst_normal)
                 self.assertEqual(line.icms_csosn_simples,
-                                 inv_line.icms_csosn_simples)
-                self.assertEqual(line.cfop_id, inv_line.cfop_id)
-                self.assertEqual(line.product_id.fiscal_classification_id,
-                                 inv_line.fiscal_classification_id)
-                self.assertEqual(line.product_id.service_type_id,
-                                 inv_line.service_type_id)
-                self.assertEqual(line.product_id.origin, inv_line.icms_origem)
+                                 inv_line.l10n_br_icms_csosn_simples)
+                self.assertEqual(line.cfop_id, inv_line.l10n_br_cfop_id)
+                self.assertEqual(
+                    line.product_id.l10n_br_fiscal_classification_id,
+                    inv_line.l10n_br_fiscal_classification_id)
+                self.assertEqual(line.product_id.l10n_br_service_type_id,
+                                 inv_line.l10n_br_service_type_id)
+                self.assertEqual(line.product_id.l10n_br_origin,
+                                 inv_line.l10n_br_icms_origem)
 
                 self.assertEqual(line.incluir_ipi_base,
-                                 inv_line.incluir_ipi_base)
+                                 inv_line.l10n_br_incluir_ipi_base)
                 self.assertEqual(line.icms_st_aliquota_mva,
-                                 inv_line.icms_st_aliquota_mva)
+                                 inv_line.l10n_br_icms_st_aliquota_mva)
                 self.assertEqual(line.icms_aliquota_reducao_base,
-                                 inv_line.icms_aliquota_reducao_base)
+                                 inv_line.l10n_br_icms_aliquota_reducao_base)
                 self.assertEqual(line.icms_st_aliquota_reducao_base,
-                                 inv_line.icms_st_aliquota_reducao_base)
-                self.assertEqual(line.tem_difal, inv_line.tem_difal)
-                self.assertEqual(line.ipi_cst, inv_line.ipi_cst)
-                self.assertEqual(line.ipi_reducao_bc, inv_line.ipi_reducao_bc)
-                self.assertEqual(line.pis_cst, inv_line.pis_cst)
-                self.assertEqual(line.cofins_cst, inv_line.cofins_cst)
+                                 inv_line.l10n_br_icms_st_aliquota_reducao_base)
+                self.assertEqual(line.tem_difal,
+                                 inv_line.l10n_br_tem_difal)
+                self.assertEqual(line.ipi_cst, inv_line.l10n_br_ipi_cst)
+                self.assertEqual(line.ipi_reducao_bc,
+                                 inv_line.l10n_br_ipi_reducao_bc)
+                self.assertEqual(line.pis_cst,
+                                 inv_line.l10n_br_pis_cst)
+                self.assertEqual(line.cofins_cst,
+                                 inv_line.l10n_br_cofins_cst)

@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <field name="fiscal_position_id" position="attributes">
-                <attribute name="domain">['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]</attribute>
+                <attribute name="domain">['|', ('l10n_br_fiscal_type', '=', None), ('l10n_br_fiscal_type', '=', 'saida')]</attribute>
             </field>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
                 <field name="icms_rule_id" invisible="1" />

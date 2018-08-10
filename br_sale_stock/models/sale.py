@@ -34,7 +34,7 @@ class SaleOrder(models.Model):
     def _onchange_despesas_frete_seguro(self):
         amount = 0
         for line in self.order_line:
-            if line.product_id.fiscal_type == 'product':
+            if line.product_id.l10n_br_fiscal_type == 'product':
                 amount += line.valor_bruto - line.valor_desconto
 
         index = 0
@@ -46,7 +46,7 @@ class SaleOrder(models.Model):
 
         for l in self.order_line:
             index += 1
-            if l.product_id.fiscal_type == 'service':
+            if l.product_id.l10n_br_fiscal_type == 'service':
                 continue
             item_liquido = l.valor_bruto - l.valor_desconto
             percentual = self._calc_ratio(item_liquido, amount)

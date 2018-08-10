@@ -21,9 +21,11 @@ class AccountInvoice(models.Model):
         self.total_seguro = sum(l.valor_seguro for l in lines)
         self.total_frete = sum(l.valor_frete for l in lines)
         self.total_despesas = sum(l.outras_despesas for l in lines)
-        self.amount_total = self.total_bruto - self.total_desconto + \
-            self.total_tax + self.total_frete + self.total_seguro + \
-            self.total_despesas
+        self.amount_total = (
+                self.l10n_br_total_bruto - self.l10n_br_total_desconto +
+                self.l10n_br_total_tax + self.total_frete + self.total_seguro +
+                self.total_despesas
+        )
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
@@ -129,8 +131,8 @@ class AccountInvoiceLine(models.Model):
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
 
-        total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
-            self.valor_seguro + self.outras_despesas
+        total = (self.l10n_br_valor_bruto - self.l10n_br_valor_desconto +
+                 self.valor_frete + self.valor_seguro + self.outras_despesas)
         self.update({'price_total': total})
 
     valor_frete = fields.Float(

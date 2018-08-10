@@ -19,7 +19,7 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
     nfse_eletronic = fields.Boolean(
-        related="service_document_id.nfse_eletronic", readonly=True)
+        related="l10n_br_service_document_id.nfse_eletronic", readonly=True)
     numero_nfse = fields.Char(
         'NFS-e', size=30, compute='_compute_nfse_number', store=True)
 
@@ -28,9 +28,9 @@ class AccountInvoice(models.Model):
             inv, inv_lines, serie_id)
         res['nfse_eletronic'] = inv.nfse_eletronic
         res['ambiente'] = inv.ambiente_nfse
-        res['serie'] = inv.service_serie_id.id
-        res['serie_documento'] = inv.service_serie_id.code
-        res['model'] = inv.service_document_id.code
+        res['serie'] = inv.l10n_br_service_serie_id.id
+        res['serie_documento'] = inv.l10n_br_service_serie_id.code
+        res['model'] = inv.l10n_br_service_document_id.code
         res['numero'] = serie_id.internal_sequence_id.next_by_id()
         return res
 
