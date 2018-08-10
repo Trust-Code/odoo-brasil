@@ -9,6 +9,9 @@
             <tree name="vencimentos" position="inside">
                 <button name="action_register_payment" type="object" string="Register Payment" groups="account.group_account_invoice" icon="fa-usd"/>
             </tree>
+            <field name="payment_term_id" position="after">
+                <field name="payment_mode_id" />
+            </field>
         </field>
     </record>
 
