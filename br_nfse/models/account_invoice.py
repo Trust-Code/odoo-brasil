@@ -22,7 +22,7 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
     nfse_eletronic = fields.Boolean(
-        related="service_document_id.nfse_eletronic", readonly=True)
+        related="l10n_br_service_document_id.nfse_eletronic", readonly=True)
     numero_nfse = fields.Char(
         'NFS-e', size=30, compute='_compute_nfse_number', store=True)
 

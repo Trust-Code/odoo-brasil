@@ -44,7 +44,7 @@ class TestCnabSicoob(TestCnab):
         self.invoices.action_invoice_open()
 
         self.env['payment.order.line'].action_register_boleto(
-            self.invoices.receivable_move_line_ids)
+            self.invoices.l10n_br_receivable_move_line_ids)
 
         ordem_cobranca = self.env['payment.order'].search([
             ('state', '=', 'draft')

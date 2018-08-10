@@ -43,7 +43,7 @@ class PurchaseOrder(models.Model):
     def calc_total_amount(self):
         amount = 0
         for line in self.order_line:
-            if line.product_id.fiscal_type == 'product':
+            if line.product_id.l10n_br_fiscal_type == 'product':
                 amount += line.valor_bruto
         return amount
 
@@ -56,7 +56,7 @@ class PurchaseOrder(models.Model):
         sub_aduana = self.total_despesas_aduana
         sub_desp = self.total_despesas
         for l in self.order_line:
-            if l.product_id.fiscal_type == 'service':
+            if l.product_id.l10n_br_fiscal_type == 'service':
                 continue
             else:
                 frete, seguro, despesas, aduana = self.calc_rateio(

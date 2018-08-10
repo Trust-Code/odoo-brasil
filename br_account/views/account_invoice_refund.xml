@@ -9,7 +9,7 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="description" position="after">
-                <field name="fiscal_position_id" />
+                <field name="l10n_br_fiscal_position_id" />
             </field>
         </field>
     </record>

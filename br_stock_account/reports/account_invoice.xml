@@ -11,12 +11,12 @@
                      <span t-field="o.ipi_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                  </td>
              </tr>
-             <tr t-if="o.icms_st_value" name="tr_icms_st">
+             <tr t-if="o.l10n_br_icms_st_value" name="tr_icms_st">
                   <td>
                       <strong>ICMS ST</strong>
                   </td>
                   <td class="text-right">
-                      <span t-field="o.icms_st_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                      <span t-field="o.l10n_br_icms_st_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                   </td>
               </tr>
         </tr>

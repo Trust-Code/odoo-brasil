@@ -10,13 +10,13 @@
                 <attribute name="attrs">{'invisible':[('amount_type','not in', ('fixed', 'percent', 'division', 'icmsst'))]}</attribute>
             </xpath>
             <field name="refund_account_id" position="after">
-                <field name="deduced_account_id" />
-                <field name="refund_deduced_account_id" />
+                <field name="l10n_br_deduced_account_id" />
+                <field name="l10n_br_refund_deduced_account_id" />
             </field>
             <field name="name" position="after">
-                <field name="domain" />
-                <field name="difal_por_dentro" />
-                <field name="icms_st_incluso" />
+                <field name="l10n_br_domain" />
+                <field name="l10n_br_difal_por_dentro" />
+                <field name="l10n_br_icms_st_incluso" />
             </field>
         </field>
     </record>

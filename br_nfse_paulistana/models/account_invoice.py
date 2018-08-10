@@ -15,6 +15,6 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_item_vals(self, line):
         res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)
         res['codigo_servico_paulistana'] = \
-            line.service_type_id.codigo_servico_paulistana
-        res['codigo_servico_paulistana_nome'] = line.service_type_id.name
+            line.l10n_br_service_type_id.codigo_servico_paulistana
+        res['codigo_servico_paulistana_nome'] = line.l10n_br_service_type_id.name
         return res

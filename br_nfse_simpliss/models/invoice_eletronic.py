@@ -105,7 +105,7 @@ class InvoiceEletronic(models.Model):
                 'cidade': '%s%s' % (city_prestador.state_id.l10n_br_ibge_code,
                                     city_prestador.l10n_br_ibge_code),
                 'cnae': re.sub('[^0-9]', '',
-                               self.company_id.cnae_main_id.code or '')
+                               self.company_id.l10n_br_cnae_main_id.code or '')
             }
 
             itens_servico = []
@@ -128,7 +128,7 @@ class InvoiceEletronic(models.Model):
                 'natureza_operacao': '1',  # Tributada no municipio
                 'regime_tributacao': '7',  # Estimativa
                 'optante_simples':  # 1 - Sim, 2 - Não
-                '2' if self.company_id.fiscal_type == '3' else '1',
+                '2' if self.company_id.l10n_br_fiscal_type == '3' else '1',
                 'incentivador_cultural': '2',  # 2 - Não
                 'status': '1',  # 1 - Normal
                 'valor_servico': str("%.2f" % self.valor_final),

@@ -26,7 +26,7 @@ class IrActionsReport(models.Model):
         if self.model == 'account.invoice':
             ai_obj = self.env['account.invoice']
             for account_invoice in ai_obj.browse(res_ids):
-                for move_line in account_invoice.receivable_move_line_ids:
+                for move_line in account_invoice.l10n_br_receivable_move_line_ids:
                     move_line_ids |= move_line
         elif self.model == 'account.move.line':
             move_line_ids = self.env['account.move.line'].browse(res_ids)

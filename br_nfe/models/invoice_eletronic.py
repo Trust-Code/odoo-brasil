@@ -263,8 +263,8 @@ class InvoiceEletronic(models.Model):
         if self.model == '55':
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
-            if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
+            if self.company_id.l10n_br_accountant_id and not \
+               self.company_id.l10n_br_accountant_id.cnpj_cpf:
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
         # NFC-e
         if self.model == '65':
@@ -551,13 +551,14 @@ class InvoiceEletronic(models.Model):
             },
             'IE': re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est),
             'IEST': re.sub('[^0-9]', '', self.iest or ''),
-            'CRT': self.company_id.fiscal_type,
+            'CRT': self.company_id.l10n_br_fiscal_type,
         }
-        if self.company_id.cnae_main_id and self.company_id.l10n_br_inscr_mun:
+        if self.company_id.l10n_br_cnae_main_id and \
+                self.company_id.l10n_br_inscr_mun:
             emit['IM'] = re.sub('[^0-9]', '',
                                 self.company_id.l10n_br_inscr_mun or '')
             emit['CNAE'] = re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
+                '[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -613,13 +614,13 @@ class InvoiceEletronic(models.Model):
             shipping_id = self.partner_shipping_id
 
             entrega = {
-                'xNome': shipping_id.legal_name or shipping_id.name,
+                'xNome': shipping_id.l10n_br_legal_name or shipping_id.name,
                 'xLgr': shipping_id.street,
-                'nro': shipping_id.number,
+                'nro': shipping_id.l10n_br_number,
                 'xCpl': shipping_id.street2 or '',
-                'xBairro': shipping_id.district,
-                'cMun': '%s%s' % (shipping_id.state_id.ibge_code,
-                                  shipping_id.city_id.ibge_code),
+                'xBairro': shipping_id.l10n_br_district,
+                'cMun': '%s%s' % (shipping_id.state_id.l10n_br_ibge_code,
+                                  shipping_id.city_id.l10n_br_ibge_code),
                 'xMun': shipping_id.city_id.name,
                 'UF': shipping_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', shipping_id.zip or ''),
@@ -628,7 +629,7 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', shipping_id.phone or '')
             }
             cnpj_cpf = re.sub(
-                "[^0-9]", "", shipping_id.cnpj_cpf or partner.cnpj_cpf or ""
+                "[^0-9]", "", shipping_id.cnpj_cpf or partner.l10n_br_cnpj_cpf or ""
             )
 
             if len(cnpj_cpf) == 14:
@@ -637,10 +638,11 @@ class InvoiceEletronic(models.Model):
                 entrega.update({'CPF': cnpj_cpf})
 
         autorizados = []
-        if self.company_id.accountant_id:
+        if self.company_id.l10n_br_accountant_id:
             autorizados.append({
                 'CNPJ': re.sub(
-                    '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
+                    '[^0-9]', '',
+                    self.company_id.l10n_br_accountant_id.cnpj_cpf)
             })
 
         eletronic_items = []

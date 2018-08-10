@@ -5,9 +5,10 @@ from odoo import models, fields, api
 
 
 class AccountInvoiceRefund(models.TransientModel):
-    _inherit = 'account.invoice.refund'
+    _name = 'account.invoice.refund'
+    _inherit = ['account.invoice.refund', 'br.localization.filtering']
 
-    fiscal_position_id = fields.Many2one(
+    l10n_br_fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string="Posição Fiscal")
 
     @api.multi
@@ -22,15 +23,15 @@ class AccountInvoiceRefund(models.TransientModel):
         invoice_id = self.env['account.invoice'].search([
             ('id', '=', invoice_id)
         ])
-        fiscal_pos = self.fiscal_position_id
+        fiscal_pos = self.l10n_br_fiscal_position_id
         invoice_id.write({
             'fiscal_position_id': fiscal_pos.id,
-            'product_serie_id': fiscal_pos.product_serie_id.id,
-            'product_document_id': fiscal_pos.product_document_id.id,
-            'service_serie_id': fiscal_pos.service_serie_id.id,
-            'service_document_id': fiscal_pos.service_document_id.id,
+            'product_serie_id': fiscal_pos.l10n_br_product_serie_id.id,
+            'product_document_id': fiscal_pos.l10n_br_product_document_id.id,
+            'service_serie_id': fiscal_pos.l10n_br_service_serie_id.id,
+            'service_document_id': fiscal_pos.l10n_br_service_document_id.id,
             'fiscal_observation_ids': [(
-                6, False, [x.id for x in fiscal_pos.fiscal_observation_ids]
+                6, False, [x.id for x in fiscal_pos.l10n_br_fiscal_observation_ids]
             )]
         })
 

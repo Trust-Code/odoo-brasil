@@ -30,7 +30,7 @@ class ProductFiscalClassification(models.Model):
     tax_ipi_id = fields.Many2one(
         comodel_name='account.tax',
         string=u"Alíquota IPI",
-        domain=[('domain', '=', 'ipi')])
+        domain=[('l10n_br_domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
         [('percent', 'Percentual')],
         string='Tipo do IPI',
@@ -47,7 +47,7 @@ class ProductFiscalClassification(models.Model):
     tax_icms_st_id = fields.Many2one(
         comodel_name='account.tax',
         string=u"Alíquota ICMS ST",
-        domain=[('domain', '=', 'icmsst')])
+        domain=[('l10n_br_domain', '=', 'icmsst')])
     icms_st_aliquota_reducao_base = fields.Float(
         string='% Red. Base ST',
         digits=dp.get_precision('Discount'))

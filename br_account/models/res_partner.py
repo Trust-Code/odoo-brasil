@@ -7,7 +7,7 @@ from odoo import api, models
 
 class ResPartner(models.Model):
     _name = 'res.partner'
-    _inherit = 'res.partner'
+    _inherit = ['res.partner', 'br.localization.filtering']
     _description = 'Partner'
 
     @api.multi

@@ -13,7 +13,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'account', 'br_base', 'account_cancel'
+        'account', 'br_base', 'account_cancel', 'br_localization_filtering',
     ],
     'data': [
         'views/account_fiscal_position_view.xml',
