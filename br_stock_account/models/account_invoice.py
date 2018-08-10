@@ -126,6 +126,17 @@ class AccountInvoiceLine(models.Model):
         })
         return res
 
+   def atualizar_bases_manuais(self):
+        cif = self.price_subtotal + \
+            self.valor_frete + self.valor_seguro + self.outras_despesas
+        self.ii_base_calculo = cif
+        self.pis_base_calculo = cif
+        self.cofins_base_calculo = cif
+        self.ipi_base_calculo = cif + self.ii_valor
+        self.icms_base_calculo = cif + self.ii_valor + \
+            self.pis_valor + self.cofins_valor + self.ii_valor_despesas
+        # TODO: adicionar onchange dos outros impostos para att base do icms
+
     @api.one
     @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
@@ -134,6 +145,7 @@ class AccountInvoiceLine(models.Model):
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
+        self.atualizar_bases_manuais()
 
     valor_frete = fields.Float(
         '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
@@ -141,3 +153,12 @@ class AccountInvoiceLine(models.Model):
         '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
     outras_despesas = fields.Float(
         '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+
+    @api.onchange('ii_base_calculo')
+    def _onchange_ii_base(self):
+        super(AccountInvoiceLine, self)._onchange_tax_icms_id()
+        self.atualizar_bases_manuais()
+    @api.onchange('product_id')
+    def _br_account_onchange_product_id(self):
+        super(AccountInvoiceLine, self)._br_account_onchange_product_id()
+        self.atualizar_bases_manuais()
