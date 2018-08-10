@@ -632,7 +632,7 @@ class InvoiceEletronic(models.Model):
         pag = [{
             'indPag': self.payment_term_id.indPag or '0',
             'tPag': self.payment_mode_id.tipo_pagamento or '90',
-            'vPag': "%.02f" % self.valor_final
+            'vPag': '0.00',
         }]
         if self.informacoes_complementares:
             self.informacoes_complementares = self.informacoes_complementares.\
@@ -667,6 +667,7 @@ class InvoiceEletronic(models.Model):
         }
         if len(duplicatas) > 0:
             vals['cobr'] = cobr
+            pag['vPag'] = "%.02f" % self.valor_final
         return vals
 
     @api.multi
