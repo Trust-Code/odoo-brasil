@@ -117,6 +117,13 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
+    valor_frete = fields.Float(
+        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
+    valor_seguro = fields.Float(
+        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
+    outras_despesas = fields.Float(
+        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
         res.update({
@@ -126,7 +133,7 @@ class AccountInvoiceLine(models.Model):
         })
         return res
 
-   def atualizar_bases_manuais(self):
+    def atualiza_bases_manuais(self):
         cif = self.price_subtotal + \
             self.valor_frete + self.valor_seguro + self.outras_despesas
         self.ii_base_calculo = cif
@@ -135,7 +142,17 @@ class AccountInvoiceLine(models.Model):
         self.ipi_base_calculo = cif + self.ii_valor
         self.icms_base_calculo = cif + self.ii_valor + \
             self.pis_valor + self.cofins_valor + self.ii_valor_despesas
-        # TODO: adicionar onchange dos outros impostos para att base do icms
+
+    def atualiza_base_ipi(self):
+        cif = self.price_subtotal + \
+            self.valor_frete + self.valor_seguro + self.outras_despesas
+        self.ipi_base_calculo = cif + self.ii_valor
+
+    def atualiza_base_icms(self):
+        cif = self.price_subtotal + \
+            self.valor_frete + self.valor_seguro + self.outras_despesas
+        self.icms_base_calculo = cif + self.ii_valor + \
+            self.pis_valor + self.cofins_valor + self.ii_valor_despesas
 
     @api.one
     @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
@@ -145,20 +162,17 @@ class AccountInvoiceLine(models.Model):
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
-        self.atualizar_bases_manuais()
-
-    valor_frete = fields.Float(
-        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
-    valor_seguro = fields.Float(
-        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
-    outras_despesas = fields.Float(
-        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+        self.atualiza_bases_manuais()
 
     @api.onchange('ii_base_calculo')
     def _onchange_ii_base(self):
-        super(AccountInvoiceLine, self)._onchange_tax_icms_id()
-        self.atualizar_bases_manuais()
+        self.atualiza_base_ipi()
+
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
         super(AccountInvoiceLine, self)._br_account_onchange_product_id()
-        self.atualizar_bases_manuais()
+        self.atualiza_bases_manuais()
+
+    @api.onchange('ii_valor', 'ii_valor_despesas', 'pis_valor', 'cofins_valor')
+    def _onchange_bases_icms(self):
+        self.atualiza_base_icms()
