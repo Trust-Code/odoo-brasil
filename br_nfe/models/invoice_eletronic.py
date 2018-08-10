@@ -629,11 +629,11 @@ class InvoiceEletronic(models.Model):
             },
             'dup': duplicatas
         }
-        pag = [{
+        pag = {
             'indPag': self.payment_term_id.indPag or '0',
             'tPag': self.payment_mode_id.tipo_pagamento or '90',
             'vPag': '0.00',
-        }]
+        }
         if self.informacoes_complementares:
             self.informacoes_complementares = self.informacoes_complementares.\
                 replace('\n', '<br />')
@@ -659,7 +659,7 @@ class InvoiceEletronic(models.Model):
             'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
-            'pag': pag,
+            'pag': [pag],
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
@@ -667,6 +667,7 @@ class InvoiceEletronic(models.Model):
         }
         if len(duplicatas) > 0:
             vals['cobr'] = cobr
+            pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final
         return vals
 
