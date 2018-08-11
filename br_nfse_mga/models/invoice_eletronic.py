@@ -137,8 +137,8 @@ class InvoiceEletronic(models.Model):
             'valor_iss':  str("%.2f" % self.valor_issqn),
             'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
             'base_calculo': str("%.2f" % self.valor_final),
-            'aliquota_issqn': str("%.4f" % (
-                self.eletronic_item_ids[0].issqn_aliquota / 100)),
+            'aliquota_issqn': str("%.2f" % (
+                self.eletronic_item_ids[0].issqn_aliquota)),
             'valor_liquido_nfse': str("%.2f" % self.valor_final),
             'codigo_servico': re.sub('[^0-9]', '', codigo_servico),
             'codigo_tributacao_municipio':
@@ -235,12 +235,14 @@ class InvoiceEletronic(models.Model):
             certificado, xml=xml_to_send, ambiente=self.ambiente)
 
         retorno = enviar_nfse['object']
-        if "CompNfse" in dir(retorno):
+        if "ListaNfse" in dir(retorno) \
+                and "CompNfse" in dir(retorno.ListaNfse):
+            infNfse = retorno.ListaNfse.CompNfse.Nfse.InfNfse
             self.state = 'done'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'NFSe emitida com sucesso'
-            self.verify_code = retorno.CompNfse.Nfse.InfNfse.CodigoVerificacao
-            self.numero_nfse = retorno.CompNfse.Nfse.InfNfse.Numero
+            self.verify_code = infNfse.CodigoVerificacao
+            self.numero_nfse = infNfse.Numero
         else:
             mensagem_retorno = retorno.ListaMensagemRetorno \
                 .MensagemRetorno
@@ -293,7 +295,7 @@ class InvoiceEletronic(models.Model):
             certificado, cancelamento=canc, ambiente=self.ambiente)
 
         retorno = cancel['object']
-        if "Cancelamento" in dir(retorno):
+        if "RetCancelamento" in dir(retorno):
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal de Serviço Cancelada'

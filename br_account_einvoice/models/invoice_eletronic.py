@@ -23,8 +23,8 @@ STATE = {'edit': [('readonly', False)]}
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
-
     _inherit = ['mail.thread']
+    _order = 'id desc'
 
     code = fields.Char(
         u'Código', size=100, required=True, readonly=True, states=STATE)

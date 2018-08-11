@@ -13,6 +13,7 @@ class AccountInvoice(models.Model):
         "Commercial terms' implies its a series "
         "of sales terms which are used in the "
         "commercial transaction.")
+    carrier_id = fields.Many2one('delivery.carrier', 'Método de Entrega')
 
     @api.onchange('carrier_id')
     def _onchange_br_delivery_carrier_id(self):
