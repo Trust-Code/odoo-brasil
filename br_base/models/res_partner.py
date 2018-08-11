@@ -182,11 +182,10 @@ class ResPartner(models.Model):
     @api.one
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
-            if self.state_id.code == 'AL':
-                raise UserError(u'Alagoas não possui consulta de cadastro')
-            if self.state_id.code == 'RJ':
-                raise UserError(
-                    u'Rio de Janeiro não possui consulta de cadastro')
+            NAO_CONSULTA_CADASTRO = ['AL', 'RJ', 'PA', 'MA']
+            if self.state_id.code in NAO_CONSULTA_CADASTRO:
+                raise UserError(u'{} não possui consulta de cadastro'.format(
+                    self.state_id.name))
             company = self.env.user.company_id
             if not company.nfe_a1_file and not company.nfe_a1_password:
                 raise UserError(u'Configurar o certificado e senha na empresa')
