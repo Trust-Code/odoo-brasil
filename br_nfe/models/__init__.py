@@ -11,3 +11,4 @@ from . import res_company
 from . import res_partner
 from . import invoice_eletronic_item
 from . import inutilized_nfe
+from . import payment_mode

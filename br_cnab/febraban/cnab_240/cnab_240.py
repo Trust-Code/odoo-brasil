@@ -189,7 +189,7 @@ class Cnab240(Cnab):
             'codigo_multa': '2',
             'data_multa': self.format_date(
                 line.date_maturity),
-            'juros_multa':  Decimal(
+            'juros_multa': Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
                     Decimal('1.00')),
             # TODO Remover taxa dia - deixar apenas taxa normal

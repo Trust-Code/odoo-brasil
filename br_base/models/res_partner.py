@@ -196,47 +196,41 @@ class ResPartner(models.Model):
             resposta = consulta_cadastro(certificado, obj=obj, ambiente=1,
                                          estado=self.state_id.ibge_code)
 
-            obj = resposta['object']
-            if "Body" in dir(obj) and \
-               "consultaCadastro2Result" in dir(obj.Body):
-                info = obj.Body.consultaCadastro2Result.retConsCad.infCons
-                if info.cStat == 111 or info.cStat == 112:
-                    if not self.inscr_est:
-                        self.inscr_est = info.infCad.IE
-                    if not self.cnpj_cpf:
-                        self.cnpj_cpf = info.infCad.IE
+            info = resposta['object'].getchildren()[0].infCons
+            if info.cStat == 111 or info.cStat == 112:
+                if not self.inscr_est:
+                    self.inscr_est = info.infCad.IE.text
+                if not self.cnpj_cpf:
+                    self.cnpj_cpf = info.infCad.IE.text
 
-                    def get_value(obj, prop):
-                        if prop not in dir(obj):
-                            return None
-                        return getattr(obj, prop)
-                    self.legal_name = get_value(info.infCad, 'xNome')
-                    if "ender" not in dir(info.infCad):
-                        return
-                    cep = get_value(info.infCad.ender, 'CEP') or ''
-                    self.zip = str(cep).zfill(8) if cep else ''
-                    self.street = get_value(info.infCad.ender, 'xLgr')
-                    self.number = get_value(info.infCad.ender, 'nro')
-                    self.street2 = get_value(info.infCad.ender, 'xCpl')
-                    self.district = get_value(info.infCad.ender, 'xBairro')
-                    cMun = get_value(info.infCad.ender, 'cMun')
-                    xMun = get_value(info.infCad.ender, 'xMun')
-                    city = None
-                    if cMun:
-                        city = self.env['res.state.city'].search(
-                            [('ibge_code', '=', str(cMun)[2:]),
-                             ('state_id', '=', self.state_id.id)])
-                    if not city and xMun:
-                        city = self.env['res.state.city'].search(
-                            [('name', 'ilike', xMun),
-                             ('state_id', '=', self.state_id.id)])
-                    if city:
-                        self.city_id = city.id
-                else:
-                    msg = "%s - %s" % (info.cStat, info.xMotivo)
-                    raise UserError(msg)
+                def get_value(obj, prop):
+                    if prop not in dir(obj):
+                        return None
+                    return getattr(obj, prop)
+                self.legal_name = get_value(info.infCad, 'xNome')
+                if "ender" not in dir(info.infCad):
+                    return
+                cep = get_value(info.infCad.ender, 'CEP') or ''
+                self.zip = str(cep).zfill(8) if cep else ''
+                self.street = get_value(info.infCad.ender, 'xLgr')
+                self.number = get_value(info.infCad.ender, 'nro')
+                self.street2 = get_value(info.infCad.ender, 'xCpl')
+                self.district = get_value(info.infCad.ender, 'xBairro')
+                cMun = get_value(info.infCad.ender, 'cMun')
+                xMun = get_value(info.infCad.ender, 'xMun')
+                city = None
+                if cMun:
+                    city = self.env['res.state.city'].search(
+                        [('ibge_code', '=', str(cMun)[2:]),
+                         ('state_id', '=', self.state_id.id)])
+                if not city and xMun:
+                    city = self.env['res.state.city'].search(
+                        [('name', 'ilike', xMun),
+                         ('state_id', '=', self.state_id.id)])
+                if city:
+                    self.city_id = city.id
             else:
-                raise UserError(u"Nenhuma resposta - verificou se seu \
-                                certificado é válido?")
+                msg = "%s - %s" % (info.cStat, info.xMotivo)
+                raise UserError(msg)
         else:
             raise UserError(u'Preencha o estado e o CNPJ para pesquisar')
