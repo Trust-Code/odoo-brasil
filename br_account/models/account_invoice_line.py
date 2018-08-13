@@ -379,7 +379,8 @@ class AccountInvoiceLine(models.Model):
          ('R', 'Retida'),
          ('S', 'Substituta'),
          ('I', 'Isenta')],
-        string='Tipo do ISSQN', required=True, default='N', oldname='issqn_tipo')
+        string='Tipo do ISSQN', required=True, default='N',
+        oldname='issqn_tipo')
     l10n_br_service_type_id = fields.Many2one(
         'br_account.service.type', u'Tipo de Serviço',
         oldname='service_type_id')
@@ -605,14 +606,14 @@ class AccountInvoiceLine(models.Model):
                 if value and key in self._fields:
                     self.update({key: value})
 
-        self.invoice_line_tax_ids = (
-                self.l10n_br_tax_icms_id | self.l10n_br_tax_icms_st_id |
-                self.l10n_br_tax_icms_inter_id |
-                self.l10n_br_tax_icms_intra_id | self.l10n_br_tax_icms_fcp_id |
-                self.l10n_br_tax_ipi_id | self.l10n_br_tax_pis_id |
-                self.l10n_br_tax_cofins_id | self.l10n_br_tax_issqn_id |
-                self.l10n_br_tax_ii_id | self.l10n_br_tax_csll_id |
-                self.l10n_br_tax_irrf_id | self.l10n_br_tax_inss_id)
+        self.invoice_line_tax_ids = \
+            self.l10n_br_tax_icms_id | self.l10n_br_tax_icms_st_id | \
+            self.l10n_br_tax_icms_inter_id | self.l10n_br_tax_icms_intra_id | \
+            self.l10n_br_tax_icms_fcp_id | self.l10n_br_tax_ipi_id | \
+            self.l10n_br_tax_pis_id | self.l10n_br_tax_cofins_id | \
+            self.l10n_br_tax_issqn_id | self.l10n_br_tax_ii_id | \
+            self.l10n_br_tax_csll_id | self.l10n_br_tax_irrf_id | \
+            self.l10n_br_tax_inss_id
 
     def _set_extimated_taxes(self, price):
         service = self.product_id.l10n_br_service_type_id

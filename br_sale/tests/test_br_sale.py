@@ -251,8 +251,9 @@ class TestSaleOrder(TransactionCase):
                                  inv_line.l10n_br_icms_st_aliquota_mva)
                 self.assertEqual(line.icms_aliquota_reducao_base,
                                  inv_line.l10n_br_icms_aliquota_reducao_base)
-                self.assertEqual(line.icms_st_aliquota_reducao_base,
-                                 inv_line.l10n_br_icms_st_aliquota_reducao_base)
+                self.assertEqual(
+                    line.icms_st_aliquota_reducao_base,
+                    inv_line.l10n_br_icms_st_aliquota_reducao_base)
                 self.assertEqual(line.tem_difal,
                                  inv_line.l10n_br_tem_difal)
                 self.assertEqual(line.ipi_cst, inv_line.l10n_br_ipi_cst)

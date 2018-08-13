@@ -22,9 +22,9 @@ class AccountInvoice(models.Model):
         self.total_frete = sum(l.valor_frete for l in lines)
         self.total_despesas = sum(l.outras_despesas for l in lines)
         self.amount_total = (
-                self.l10n_br_total_bruto - self.l10n_br_total_desconto +
-                self.l10n_br_total_tax + self.total_frete +
-                self.total_seguro + self.total_despesas)
+            self.l10n_br_total_bruto - self.l10n_br_total_desconto +
+            self.l10n_br_total_tax + self.total_frete +
+            self.total_seguro + self.total_despesas)
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
@@ -105,7 +105,7 @@ class AccountInvoice(models.Model):
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):
-        vals = super(AccountInvoice, self).\
+        vals = super(AccountInvoice, self). \
             _prepare_edoc_item_vals(invoice_line)
         vals['frete'] = invoice_line.valor_frete
         vals['seguro'] = invoice_line.valor_seguro

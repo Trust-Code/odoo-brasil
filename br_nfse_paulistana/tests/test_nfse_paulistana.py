@@ -132,7 +132,8 @@ class TestNFeBrasil(TransactionCase):
                     'name': 'product test 5',
                     'price_unit': 100.00,
                     'l10n_br_product_type': self.service.l10n_br_fiscal_type,
-                    'l10n_br_service_type_id': self.service.service_type_id.id,
+                    'l10n_br_service_type_id':
+                        self.service.l10n_br_service_type_id.id,
                     'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
                     'l10n_br_pis_cst': '01',
