@@ -303,8 +303,10 @@ class SaleOrderLine(models.Model):
 
         res['l10n_br_tax_icms_id'] = icms and icms.id or False
         res['l10n_br_tax_icms_st_id'] = icmsst and icmsst.id or False
-        res['l10n_br_tax_icms_inter_id'] = icms_inter and icms_inter.id or False
-        res['l10n_br_tax_icms_intra_id'] = icms_intra and icms_intra.id or False
+        res['l10n_br_tax_icms_inter_id'] = \
+            icms_inter and icms_inter.id or False
+        res['l10n_br_tax_icms_intra_id'] = \
+            icms_intra and icms_intra.id or False
         res['l10n_br_tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
         res['l10n_br_tax_ipi_id'] = ipi and ipi.id or False
         res['l10n_br_tax_pis_id'] = pis and pis.id or False
@@ -316,7 +318,8 @@ class SaleOrderLine(models.Model):
         res['l10n_br_tax_inss_id'] = irrf and irrf.id or False
 
         res['l10n_br_product_type'] = self.product_id.l10n_br_fiscal_type
-        res['l10n_br_company_fiscal_type'] = self.company_id.l10n_br_fiscal_type
+        res['l10n_br_company_fiscal_type'] = self.\
+            company_id.l10n_br_fiscal_type
         res['l10n_br_cfop_id'] = self.cfop_id.id
         ncm = self.product_id.l10n_br_fiscal_classification_id
         service = self.product_id.l10n_br_service_type_id
@@ -353,9 +356,10 @@ class SaleOrderLine(models.Model):
         res['l10n_br_icms_aliquota'] = icms.amount or 0.0
         res['l10n_br_icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
         res['l10n_br_icms_st_aliquota'] = icmsst.amount or 0.0
-        res['l10n_br_icms_aliquota_reducao_base'] = self.icms_aliquota_reducao_base
-        res['l10n_br_icms_st_aliquota_reducao_base'] = \
-            self.icms_st_aliquota_reducao_base
+        res['l10n_br_icms_aliquota_reducao_base'] = self.\
+            icms_aliquota_reducao_base
+        res['l10n_br_icms_st_aliquota_reducao_base'] = self.\
+            icms_st_aliquota_reducao_base
         res['l10n_br_icms_st_aliquota_deducao'] = self.icms_st_aliquota_deducao
         res['l10n_br_tem_difal'] = self.tem_difal
         res['l10n_br_icms_uf_remet'] = icms_inter.amount or 0.0

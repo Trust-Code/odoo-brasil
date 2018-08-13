@@ -199,7 +199,8 @@ class AccountInvoice(models.Model):
             'valor_servicos': invoice.l10n_br_issqn_base,
             'valor_bc_issqn': invoice.l10n_br_issqn_base,
             'valor_issqn': invoice.l10n_br_issqn_value,
-            'valor_estimado_tributos': invoice.l10n_br_total_tributos_estimados,
+            'valor_estimado_tributos':
+                invoice.l10n_br_total_tributos_estimados,
             'valor_retencao_issqn': invoice.l10n_br_issqn_retention,
             'valor_retencao_pis': invoice.l10n_br_pis_retention,
             'valor_retencao_cofins': invoice.l10n_br_cofins_retention,

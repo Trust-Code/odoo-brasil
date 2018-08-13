@@ -36,8 +36,10 @@ class AccountInvoice(models.Model):
 
         res['l10n_br_tax_icms_id'] = icms and icms.id or False
         res['l10n_br_tax_icms_st_id'] = icmsst and icmsst.id or False
-        res['l10n_br_tax_icms_inter_id'] = icms_inter and icms_inter.id or False
-        res['l10n_br_tax_icms_intra_id'] = icms_intra and icms_intra.id or False
+        res['l10n_br_tax_icms_inter_id'] = \
+            icms_inter and icms_inter.id or False
+        res['l10n_br_tax_icms_intra_id'] = \
+            icms_intra and icms_intra.id or False
         res['l10n_br_tax_icms_fcp_id'] = icms_fcp and icms_fcp.id or False
         res['l10n_br_tax_ipi_id'] = ipi and ipi.id or False
         res['l10n_br_tax_pis_id'] = pis and pis.id or False
@@ -49,7 +51,8 @@ class AccountInvoice(models.Model):
         res['l10n_br_tax_inss_id'] = irrf and irrf.id or False
 
         res['l10n_br_product_type'] = line.product_id.l10n_br_fiscal_type
-        res['l10n_br_company_fiscal_type'] = line.company_id.l10n_br_fiscal_type
+        res['l10n_br_company_fiscal_type'] = line.company_id.\
+            l10n_br_fiscal_type
         res['l10n_br_cfop_id'] = line.l10n_br_cfop_id.id
         ncm = line.product_id.l10n_br_fiscal_classification_id
         service = line.product_id.l10n_br_service_type_id

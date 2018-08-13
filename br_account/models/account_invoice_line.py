@@ -187,10 +187,9 @@ class AccountInvoiceLine(models.Model):
         compute='_compute_price', string='Impostos', store=True,
         digits=dp.get_precision('Account'),
         oldname='price_tax')
-    # price_total = fields.Float(
-    #     u'Valor Líquido', digits=dp.get_precision('Account'), store=True,
-    #     default=0.00, compute='_compute_price',
-    #     oldname='price_total')
+    price_total = fields.Float(
+        u'Valor Líquido', digits=dp.get_precision('Account'), store=True,
+        default=0.00, compute='_compute_price')
     l10n_br_valor_desconto = fields.Float(
         string='Vlr. desconto', store=True, compute='_compute_price',
         digits=dp.get_precision('Account'),
@@ -218,7 +217,8 @@ class AccountInvoiceLine(models.Model):
 
     l10n_br_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                       'Regra', oldname='rule_id')
-    l10n_br_cfop_id = fields.Many2one('br_account.cfop', 'CFOP', oldname='cfop_id')
+    l10n_br_cfop_id = fields.Many2one('br_account.cfop', 'CFOP',
+                                      oldname='cfop_id')
     l10n_br_fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', u'Classificação Fiscal',
         oldname='fiscal_classification_id')
@@ -231,7 +231,9 @@ class AccountInvoiceLine(models.Model):
         default=_default_l10n_br_company_fiscal_type,
         string=u"Regime Tributário",
         oldname='company_fiscal_type')
-    l10n_br_calculate_tax = fields.Boolean(string="Calcular Imposto?", default=True)
+    l10n_br_calculate_tax = fields.Boolean(string="Calcular Imposto?",
+                                           default=True,
+                                           oldname='calculate_tax')
     l10n_br_fiscal_comment = fields.Text(u'Observação Fiscal',
                                          oldname='fiscal_comment')
 
@@ -240,16 +242,16 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_icms_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                            'Regra', oldname='icms_rule_id')
-    l10n_br_tax_icms_id = fields.Many2one('account.tax', string=u"Alíquota ICMS",
-                                  domain=[('l10n_br_domain', '=', 'icms')],
-                                  oldname='tax_icms_id')
-    l10n_br_icms_cst = fields.Char('CST ICMS', size=10,
-                           store=True, compute='_compute_cst_icms',
-                           oldname='icms_cst')
+    l10n_br_tax_icms_id = fields.Many2one(
+        'account.tax', string=u"Alíquota ICMS",
+        domain=[('l10n_br_domain', '=', 'icms')], oldname='tax_icms_id')
+    l10n_br_icms_cst = fields.Char('CST ICMS', size=10, store=True,
+                                   compute='_compute_cst_icms',
+                                   oldname='icms_cst')
     l10n_br_icms_cst_normal = fields.Selection(CST_ICMS, string="CST ICMS",
-                                       oldname='icms_cst_normal')
-    l10n_br_icms_origem = fields.Selection(ORIGEM_PROD, 'Origem', default='0',
-                                   oldname='icms_origem')
+                                               oldname='icms_cst_normal')
+    l10n_br_icms_origem = fields.Selection(
+        ORIGEM_PROD, 'Origem', default='0', oldname='icms_origem')
     l10n_br_icms_tipo_base = fields.Selection(
         [('0', u'0 - Margem Valor Agregado (%)'),
          ('1', u'1 - Pauta (valor)'),
@@ -280,9 +282,9 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # ICMS Substituição
     # =========================================================================
-    l10n_br_tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
-                                     domain=[('l10n_br_domain', '=', 'icmsst')],
-                                     oldname='tax_icms_st_id')
+    l10n_br_tax_icms_st_id = fields.Many2one(
+        'account.tax', string=u"Alíquota ICMS ST",
+        domain=[('l10n_br_domain', '=', 'icmsst')], oldname='tax_icms_st_id')
     l10n_br_icms_st_tipo_base = fields.Selection(
         [('0', u'0 - Preço tabelado ou máximo  sugerido'),
          ('1', u'1 - Lista Negativa (valor)'),
@@ -350,10 +352,10 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     # ICMS Simples Nacional
     # =========================================================================
-    l10n_br_icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS",
-                                          oldname='icms_csosn_simples')
-    l10n_br_icms_aliquota_credito = fields.Float(u"% Cŕedito ICMS",
-                                         oldname='icms_aliquota_credito')
+    l10n_br_icms_csosn_simples = fields.Selection(
+        CSOSN_SIMPLES, string="CSOSN ICMS", oldname='icms_csosn_simples')
+    l10n_br_icms_aliquota_credito = fields.Float(
+        u"% Cŕedito ICMS", oldname='icms_aliquota_credito')
     l10n_br_icms_valor_credito = fields.Float(
         u"Valor de Crédito", compute='_compute_price', store=True,
         oldname='icms_valor_credito')
@@ -369,16 +371,15 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_issqn_rule_id = fields.Many2one(
         'account.fiscal.position.tax.rule', 'Regra', oldname='issqn_rule_id')
-    l10n_br_tax_issqn_id = fields.Many2one('account.tax', string=u"Alíquota ISSQN",
-                                   domain=[('l10n_br_domain', '=', 'issqn')],
-                                   oldname='tax_issqn_id')
-    l10n_br_issqn_tipo = fields.Selection([('N', 'Normal'),
-                                   ('R', 'Retida'),
-                                   ('S', 'Substituta'),
-                                   ('I', 'Isenta')],
-                                  string='Tipo do ISSQN',
-                                  required=True, default='N',
-                                  oldname='issqn_tipo')
+    l10n_br_tax_issqn_id = fields.Many2one(
+        'account.tax', string=u"Alíquota ISSQN",
+        domain=[('l10n_br_domain', '=', 'issqn')], oldname='tax_issqn_id')
+    l10n_br_issqn_tipo = fields.Selection(
+        [('N', 'Normal'),
+         ('R', 'Retida'),
+         ('S', 'Substituta'),
+         ('I', 'Isenta')],
+        string='Tipo do ISSQN', required=True, default='N', oldname='issqn_tipo')
     l10n_br_service_type_id = fields.Many2one(
         'br_account.service.type', u'Tipo de Serviço',
         oldname='service_type_id')
@@ -401,9 +402,9 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_ipi_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                           'Regra', oldname='ipi_rule_id')
-    l10n_br_tax_ipi_id = fields.Many2one('account.tax', string=u"Alíquota IPI",
-                                 domain=[('l10n_br_domain', '=', 'ipi')],
-                                 oldname='tax_ipi_id')
+    l10n_br_tax_ipi_id = fields.Many2one(
+        'account.tax', string=u"Alíquota IPI",
+        domain=[('l10n_br_domain', '=', 'ipi')], oldname='tax_ipi_id')
     l10n_br_ipi_tipo = fields.Selection(
         [('percent', 'Percentual')],
         'Tipo do IPI', required=True, default='percent', oldname='ipi_tipo')
@@ -416,7 +417,8 @@ class AccountInvoiceLine(models.Model):
         default=0.00, oldname='ipi_reducao_bc')
     l10n_br_ipi_valor = fields.Float(
         'Valor IPI', required=True, digits=dp.get_precision('Account'),
-        default=0.00, compute='_compute_price', store=True, oldname='ipi_valor')
+        default=0.00, compute='_compute_price', store=True,
+        oldname='ipi_valor')
     l10n_br_ipi_aliquota = fields.Float(
         'Perc IPI', required=True, digits=dp.get_precision('Discount'),
         default=0.00, oldname='ipi_aliquota')
@@ -431,13 +433,15 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_pis_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                           'Regra', oldname='pis_rule_id')
-    l10n_br_tax_pis_id = fields.Many2one('account.tax', string=u"Alíquota PIS",
-                                 domain=[('l10n_br_domain', '=', 'pis')],
-                                 oldname='tax_pis_id')
-    l10n_br_pis_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS', oldname='pis_cst')
-    l10n_br_pis_tipo = fields.Selection([('percent', 'Percentual')],
-                                string='Tipo do PIS', required=True,
-                                default='percent', oldname='pis_tipo')
+    l10n_br_tax_pis_id = fields.Many2one(
+        'account.tax', string=u"Alíquota PIS",
+        domain=[('l10n_br_domain', '=', 'pis')], oldname='tax_pis_id')
+    l10n_br_pis_cst = fields.Selection(CST_PIS_COFINS, 'CST PIS',
+                                       oldname='pis_cst')
+    l10n_br_pis_tipo = fields.Selection(
+        [('percent', 'Percentual')],
+        string='Tipo do PIS', required=True, default='percent',
+        oldname='pis_tipo')
     l10n_br_pis_base_calculo = fields.Float(
         'Base PIS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00,
@@ -459,14 +463,16 @@ class AccountInvoiceLine(models.Model):
     l10n_br_cofins_rule_id = fields.Many2one(
         'account.fiscal.position.tax.rule', 'Regra',
         oldname='cofins_rule_id')
-    l10n_br_tax_cofins_id = fields.Many2one('account.tax', string=u"Alíquota COFINS",
-                                    domain=[('l10n_br_domain', '=', 'cofins')],
-                                    oldname='tax_cofins_id')
-    l10n_br_cofins_cst = fields.Selection(CST_PIS_COFINS, 'CST COFINS',
-                                  oldname='cofins_cst')
-    l10n_br_cofins_tipo = fields.Selection([('percent', 'Percentual')],
-                                   string='Tipo do COFINS', required=True,
-                                   default='percent', oldname='cofins_tipo')
+    l10n_br_tax_cofins_id = fields.Many2one(
+        'account.tax', string=u"Alíquota COFINS",
+        domain=[('l10n_br_domain', '=', 'cofins')],
+        oldname='tax_cofins_id')
+    l10n_br_cofins_cst = fields.Selection(
+        CST_PIS_COFINS, 'CST COFINS', oldname='cofins_cst')
+    l10n_br_cofins_tipo = fields.Selection(
+        [('percent', 'Percentual')],
+        string='Tipo do COFINS', required=True, default='percent',
+        oldname='cofins_tipo')
     l10n_br_cofins_base_calculo = fields.Float(
         'Base COFINS', compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), oldname='cofins_base_calculo')
@@ -486,9 +492,9 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_ii_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                          'Regra', oldname='ii_rule_id')
-    l10n_br_tax_ii_id = fields.Many2one('account.tax', string=u"Alíquota II",
-                                domain=[('l10n_br_domain', '=', 'ii')],
-                                oldname='tax_ii_id')
+    l10n_br_tax_ii_id = fields.Many2one(
+        'account.tax', string=u"Alíquota II",
+        domain=[('l10n_br_domain', '=', 'ii')], oldname='tax_ii_id')
     l10n_br_ii_base_calculo = fields.Float(
         'Base II', required=True, digits=dp.get_precision('Account'),
         default=0.00, store=True, oldname='ii_base_calculo')
@@ -516,9 +522,9 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_csll_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                            'Regra', oldname='csll_rule_id')
-    l10n_br_tax_csll_id = fields.Many2one('account.tax', string=u"Alíquota CSLL",
-                                  domain=[('l10n_br_domain', '=', 'csll')],
-                                  oldname='tax_csll_id')
+    l10n_br_tax_csll_id = fields.Many2one(
+        'account.tax', string=u"Alíquota CSLL",
+        domain=[('l10n_br_domain', '=', 'csll')], oldname='tax_csll_id')
     l10n_br_csll_base_calculo = fields.Float(
         'Base CSLL', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True,
@@ -536,9 +542,9 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_irrf_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                            'Regra', oldname='irrf_rule_id')
-    l10n_br_tax_irrf_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
-                                  domain=[('l10n_br_domain', '=', 'irrf')],
-                                  oldname='tax_irrf_id')
+    l10n_br_tax_irrf_id = fields.Many2one(
+        'account.tax', string=u"Alíquota IRRF",
+        domain=[('l10n_br_domain', '=', 'irrf')], oldname='tax_irrf_id')
     l10n_br_irrf_base_calculo = fields.Float(
         'Base IRRF', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True,
@@ -556,9 +562,9 @@ class AccountInvoiceLine(models.Model):
     # =========================================================================
     l10n_br_inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                            'Regra', oldname='inss_rule_id')
-    l10n_br_tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
-                                  domain=[('l10n_br_domain', '=', 'inss')],
-                                  oldname='tax_inss_id')
+    l10n_br_tax_inss_id = fields.Many2one(
+        'account.tax', string=u"Alíquota IRRF",
+        domain=[('l10n_br_domain', '=', 'inss')], oldname='tax_inss_id')
     l10n_br_inss_base_calculo = fields.Float(
         u'Base INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True,
@@ -571,8 +577,8 @@ class AccountInvoiceLine(models.Model):
         u'Perc INSS', required=True, digits=dp.get_precision('Account'),
         default=0.00, oldname='inss_aliquota')
 
-    l10n_br_informacao_adicional = fields.Text(string=u"Informações Adicionais",
-                                       oldname='informacao_adicional')
+    l10n_br_informacao_adicional = fields.Text(
+        string=u"Informações Adicionais", oldname='informacao_adicional')
 
     def _update_tax_from_ncm(self):
         if self.product_id:
@@ -613,26 +619,28 @@ class AccountInvoiceLine(models.Model):
         ncm = self.product_id.l10n_br_fiscal_classification_id
 
         if self.l10n_br_product_type == 'service':
-            self.l10n_br_tributos_estimados_federais = \
-                price * (service.federal_nacional / 100)
-            self.l10n_br_tributos_estimados_estaduais = \
-                price * (service.estadual_imposto / 100)
-            self.l10n_br_tributos_estimados_municipais = \
-                price * (service.municipal_imposto / 100)
+            self.l10n_br_tributos_estimados_federais = (
+                price * (service.federal_nacional / 100))
+            self.l10n_br_tributos_estimados_estaduais = (
+                price * (service.estadual_imposto / 100))
+            self.l10n_br_tributos_estimados_municipais = (
+                price * (service.municipal_imposto / 100))
         else:
             federal = ncm.federal_nacional \
                 if self.l10n_br_icms_origem in ('1', '2', '3', '8') \
                 else ncm.federal_importado
 
             self.l10n_br_tributos_estimados_federais = price * (federal / 100)
-            self.l10n_br_tributos_estimados_estaduais = \
-                price * (ncm.estadual_imposto / 100)
-            self.l10n_br_tributos_estimados_municipais = \
-                price * (ncm.municipal_imposto / 100)
+            self.l10n_br_tributos_estimados_estaduais = (
+                price * (ncm.estadual_imposto / 100))
+            self.l10n_br_tributos_estimados_municipais = (
+                price * (ncm.municipal_imposto / 100))
 
-        self.l10n_br_tributos_estimados = self.l10n_br_tributos_estimados_federais + \
-                                  self.l10n_br_tributos_estimados_estaduais + \
-                                  self.l10n_br_tributos_estimados_municipais
+        self.l10n_br_tributos_estimados = (
+                self.l10n_br_tributos_estimados_federais +
+                self.l10n_br_tributos_estimados_estaduais +
+                self.l10n_br_tributos_estimados_municipais
+        )
 
     @api.onchange('price_subtotal')
     def _br_account_onchange_quantity(self):

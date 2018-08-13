@@ -39,8 +39,9 @@ class ProductFiscalClassification(models.Model):
     ipi_cst = fields.Selection(CST_IPI, string='CST IPI')
 
     # ICMS ST
-    tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
-                                     domain=[('l10n_br_domain', '=', 'icmsst')])
+    tax_icms_st_id = fields.Many2one(
+        'account.tax', string=u"Alíquota ICMS ST",
+        domain=[('l10n_br_domain', '=', 'icmsst')])
     icms_st_aliquota_reducao_base = fields.Float(
         '% Red. Base ST',
         digits=dp.get_precision('Discount'))

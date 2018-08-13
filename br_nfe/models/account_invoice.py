@@ -138,7 +138,8 @@ class AccountInvoice(models.Model):
         # Duplicatas
         duplicatas = []
         count = 1
-        for parcela in inv.l10n_br_receivable_move_line_ids.sorted(lambda x: x.name):
+        for parcela in \
+                inv.l10n_br_receivable_move_line_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
                 'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
                 'data_vencimento': parcela.date_maturity,
@@ -174,11 +175,11 @@ class AccountInvoice(models.Model):
         vals['cest'] = invoice_line.product_id.l10n_br_cest or \
             invoice_line.l10n_br_fiscal_classification_id.cest or ''
         vals['classe_enquadramento_ipi'] = \
-            invoice_line.l10n_br_fiscal_classification_id.classe_enquadramento \
-            or ''
+            invoice_line.l10n_br_fiscal_classification_id.\
+                classe_enquadramento  or ''
         vals['codigo_enquadramento_ipi'] = \
-            invoice_line.l10n_br_fiscal_classification_id.codigo_enquadramento \
-            or '999'
+            invoice_line.l10n_br_fiscal_classification_id.\
+                codigo_enquadramento or '999'
         vals['tem_difal'] = invoice_line.l10n_br_tem_difal
         vals['icms_bc_uf_dest'] = invoice_line.l10n_br_icms_bc_uf_dest
         vals['icms_aliquota_interestadual'] = \
@@ -220,5 +221,6 @@ class AccountInvoice(models.Model):
                 'line_ids': adicoes,
             }))
         vals['import_declaration_ids'] = di_importacao
-        vals['informacao_adicional'] = invoice_line.l10n_br_informacao_adicional
+        vals['informacao_adicional'] = invoice_line.\
+            l10n_br_informacao_adicional
         return vals

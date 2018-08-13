@@ -15,18 +15,18 @@ class ProductTemplate(models.Model):
     l10n_br_fiscal_type = fields.Selection(
         [('service', u'Serviço'), ('product', 'Produto')], 'Tipo Fiscal',
         required=True, default='product', oldname='fiscal_type')
-
-    l10n_br_origin = fields.Selection(ORIGEM_PROD, 'Origem', default='0',
-                              oldname='origin')
+    l10n_br_origin = fields.Selection(
+        ORIGEM_PROD, 'Origem', default='0', oldname='origin')
     l10n_br_fiscal_classification_id = fields.Many2one(
         'product.fiscal.classification', string=u"Classificação Fiscal (NCM)",
         oldname='fiscal_classification_id')
     l10n_br_service_type_id = fields.Many2one(
         'br_account.service.type', u'Tipo de Serviço',
         oldname='service_type_id')
-    l10n_br_cest = fields.Char(string="CEST", size=10,
-                       help=u"Código Especificador da Substituição Tributária",
-                       oldname='cest')
+    l10n_br_cest = fields.Char(
+        string="CEST", size=10,
+        help=u"Código Especificador da Substituição Tributária",
+        oldname='cest')
     l10n_br_fiscal_observation_ids = fields.Many2many(
         'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico",
         oldname='fiscal_observation_ids')

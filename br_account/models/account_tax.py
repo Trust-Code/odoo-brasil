@@ -53,8 +53,7 @@ class AccountTaxTemplate(models.Model):
         ('csll', 'CSLL'),
         ('irrf', 'IRRF'),
         ('inss', 'INSS'),
-        ('outros', 'Outros')], string="Tipo",
-      oldname='domain')
+        ('outros', 'Outros')], string="Tipo", oldname='domain')
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
     def _get_tax_vals(self, company, tax_template_to_tax):
@@ -94,12 +93,13 @@ class AccountTax(models.Model):
     l10n_br_difal_por_dentro = fields.Boolean(
         string="Calcular Difal por Dentro?", oldname='difal_por_dentro')
     l10n_br_icms_st_incluso = fields.Boolean(
-        string="Incluir ICMS ST na Base de Calculo?", oldname='icms_st_incluso')
+        string="Incluir ICMS ST na Base de Calculo?",
+        oldname='icms_st_incluso')
 
     @api.onchange('l10n_br_domain')
     def _onchange_domain_tax(self):
         if self.l10n_br_domain in ('icms', 'pis', 'cofins', 'issqn', 'ii',
-                           'icms_inter', 'icms_intra', 'fcp'):
+                                   'icms_inter', 'icms_intra', 'fcp'):
             self.price_include = True
             self.amount_type = 'division'
         if self.l10n_br_domain in ('icmsst', 'ipi'):
@@ -111,7 +111,8 @@ class AccountTax(models.Model):
 
     @api.onchange('l10n_br_deduced_account_id')
     def _onchange_deduced_account_id(self):
-        self.l10n_br_refund_deduced_account_id = self.l10n_br_deduced_account_id
+        self.l10n_br_refund_deduced_account_id = self.\
+            l10n_br_deduced_account_id
 
     def _tax_vals(self, tax):
         return {

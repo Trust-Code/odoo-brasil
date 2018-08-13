@@ -48,11 +48,14 @@ class AccountInvoice(models.Model):
             sum(abs(l.l10n_br_cofins_valor) for l in lines)
         self.l10n_br_ii_base = sum(l.l10n_br_ii_base_calculo for l in lines)
         self.l10n_br_ii_value = sum(l.l10n_br_ii_valor for l in lines)
-        self.l10n_br_csll_base = sum(l.l10n_br_csll_base_calculo for l in lines)
+        self.l10n_br_csll_base = \
+            sum(l.l10n_br_csll_base_calculo for l in lines)
         self.l10n_br_csll_value = sum(abs(l.l10n_br_csll_valor) for l in lines)
-        self.l10n_br_irrf_base = sum(l.l10n_br_irrf_base_calculo for l in lines)
+        self.l10n_br_irrf_base = \
+            sum(l.l10n_br_irrf_base_calculo for l in lines)
         self.l10n_br_irrf_value = sum(abs(l.l10n_br_irrf_valor) for l in lines)
-        self.l10n_br_inss_base = sum(l.l10n_br_inss_base_calculo for l in lines)
+        self.l10n_br_inss_base = \
+            sum(l.l10n_br_inss_base_calculo for l in lines)
         self.l10n_br_inss_value = sum(abs(l.l10n_br_inss_valor) for l in lines)
 
         # Retenções
@@ -100,8 +103,8 @@ class AccountInvoice(models.Model):
         for line in self.move_id.line_ids:
             if line.account_id.user_type_id.type == "receivable":
                 receivable_lines.append(line.id)
-        self.l10n_br_receivable_move_line_ids = self.env['account.move.line'].browse(
-            list(set(receivable_lines)))
+        self.l10n_br_receivable_move_line_ids = \
+            self.env['account.move.line'].browse(list(set(receivable_lines)))
 
     @api.one
     @api.depends('move_id.line_ids')
@@ -436,7 +439,8 @@ class AccountInvoice(models.Model):
                     'price_unit': tax_line.amount * -1,
                     'quantity': 1,
                     'price': tax_line.amount * -1,
-                    'account_id': tax_line.tax_id.l10n_br_deduced_account_id.id,
+                    'account_id': (tax_line.tax_id.
+                                   l10n_br_deduced_account_id.id),
                     'account_analytic_id': tax_line.account_analytic_id.id,
                     'invoice_id': self.id,
                     'tax_ids': [(6, 0, done_taxes)]

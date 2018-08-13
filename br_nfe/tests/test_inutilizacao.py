@@ -102,7 +102,7 @@ class TestInutilizacao(TransactionCase):
             active=True,
             name='serie teste',
             fiscal_document_id=self.fiscal_doc.id,
-            l10n_br_fiscal_type='product',
+            fiscal_type='product',
             company_id=self.main_company.id,
         ))
 

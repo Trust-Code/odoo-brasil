@@ -109,9 +109,10 @@ class BrAccountDocumentSerie(models.Model):
     code = fields.Char(u'Código', size=3, required=True)
     name = fields.Char(u'Descrição', required=True)
     active = fields.Boolean('Ativo')
-    l10n_br_fiscal_type = fields.Selection([('service', u'Serviço'),
-                                    ('product', 'Produto')], 'Tipo Fiscal',
-                                   default='service', oldname='fiscal_type')
+    fiscal_type = fields.Selection(
+        [('service', u'Serviço'),
+         ('product', 'Produto')],
+        'Tipo Fiscal', default='service', oldname='fiscal_type')
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          'Documento Fiscal', required=True)
     company_id = fields.Many2one('res.company', 'Empresa',

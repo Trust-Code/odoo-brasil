@@ -48,8 +48,9 @@ class AccountFiscalPositionTaxRule(models.Model):
     cst_ipi = fields.Selection(CST_IPI, string=u"CST IPI")
     cfop_id = fields.Many2one('br_account.cfop', string=u"CFOP")
     tax_id = fields.Many2one('account.tax', string=u"Imposto")
-    tax_icms_st_id = fields.Many2one('account.tax', string=u"ICMS ST",
-                                     domain=[('l10n_br_domain', '=', 'icmsst')])
+    tax_icms_st_id = fields.Many2one(
+        'account.tax', string=u"ICMS ST",
+        domain=[('l10n_br_domain', '=', 'icmsst')])
     icms_aliquota_credito = fields.Float(string=u"% Crédito de ICMS")
     incluir_ipi_base = fields.Boolean(string=u"Incl. IPI na base ICMS")
     reducao_icms = fields.Float(string=u"Redução de base")
@@ -70,7 +71,8 @@ class AccountFiscalPositionTaxRule(models.Model):
         'account.tax', help=u"Alíquota interna do produto no estado destino",
         string=u"ICMS Intra", domain=[('l10n_br_domain', '=', 'icms_intra')])
     tax_icms_fcp_id = fields.Many2one(
-        'account.tax', string=u"% FCP", domain=[('l10n_br_domain', '=', 'fcp')])
+        'account.tax', string=u"% FCP",
+        domain=[('l10n_br_domain', '=', 'fcp')])
 
 
 class AccountFiscalPosition(models.Model):
@@ -141,9 +143,9 @@ class AccountFiscalPosition(models.Model):
         string=u"Regras INSS", domain=[('domain', '=', 'inss')],
         oldname='inss_tax_rule_ids')
     l10n_br_fiscal_type = fields.Selection([('saida', 'Saída'),
-                                    ('entrada', 'Entrada')],
-                                   string=u"Tipo da posição",
-                                   oldname='fiscal_type')
+                                            ('entrada', 'Entrada')],
+                                           string=u"Tipo da posição",
+                                           oldname='fiscal_type')
 
     @api.model
     def _get_fpos_by_region(self, country_id=False, state_id=False,

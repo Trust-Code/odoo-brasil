@@ -38,5 +38,5 @@ class ResCompany(models.Model):
         'company_id', 'cnae_id', u'CNAE Secundários',
         oldname='cnae_secondary_ids')
 
-    l10n_br_accountant_id = fields.Many2one('res.partner', string="Contador",
-                                    oldname='accountant_id')
+    l10n_br_accountant_id = fields.Many2one(
+        'res.partner', string="Contador", oldname='accountant_id')
