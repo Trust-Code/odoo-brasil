@@ -333,7 +333,8 @@
             <field name="view_id" ref="sped_base_eletronic_doc_tree"/>
         </record>
 
-        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="br_account.menu_br_account"
+        <menuitem id="menu_eletronic_doc_base" name="Automação de NFe" parent="account.menu_finance_entries" sequence="20"/>
+        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="menu_eletronic_doc_base"
                   action="action_sped_base_eletronic_doc" sequence="5"/>
 
     </data>

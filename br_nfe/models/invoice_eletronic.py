@@ -21,6 +21,7 @@ try:
     from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
+    from pytrustnfe.nfe import consultar_protocolo_nfe
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
         gerar_nfeproc_cancel
@@ -53,6 +54,9 @@ class InvoiceEletronic(models.Model):
             "context": {'default_eletronic_doc_id': self.id},
         }
 
+    payment_mode_id = fields.Many2one(
+        'payment.mode', string='Modo de Pagamento',
+        readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.tipo_ambiente",
@@ -68,6 +72,7 @@ class InvoiceEletronic(models.Model):
         ('2', u'Operação não presencial, pela Internet'),
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('5', u'Operação presencial, fora do estabelecimento'),
         ('9', u'Operação não presencial, outros'),
     ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
@@ -99,10 +104,12 @@ class InvoiceEletronic(models.Model):
 
     # Transporte
     modalidade_frete = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
         string=u'Modalidade do frete', default="9",
         readonly=True, states=STATE)
     transportadora_id = fields.Many2one(
@@ -251,7 +258,7 @@ class InvoiceEletronic(models.Model):
 
         prod = {
             'cProd': item.product_id.default_code,
-            'cEAN': item.product_id.barcode or '',
+            'cEAN': item.product_id.barcode or 'SEM GTIN',
             'xProd': xProd,
             'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
             'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
@@ -260,7 +267,7 @@ class InvoiceEletronic(models.Model):
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
             'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
-            'cEANTrib': item.product_id.barcode or '',
+            'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
             'vUnTrib': "%.02f" % item.preco_unitario,
@@ -379,7 +386,6 @@ class InvoiceEletronic(models.Model):
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': self.payment_term_id.indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
@@ -532,14 +538,18 @@ class InvoiceEletronic(models.Model):
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': '0.00',
+            'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
+            'vFCPST': '0.00',
+            'vFCPSTRet': '0.00',
             'vProd': "%.02f" % self.valor_bruto,
             'vFrete': "%.02f" % self.valor_frete,
             'vSeg': "%.02f" % self.valor_seguro,
             'vDesc': "%.02f" % self.valor_desconto,
             'vII': "%.02f" % self.valor_ii,
             'vIPI': "%.02f" % self.valor_ipi,
+            'vIPIDevol': '0.00',
             'vPIS': "%.02f" % self.valor_pis,
             'vCOFINS': "%.02f" % self.valor_cofins,
             'vOutro': "%.02f" % self.valor_despesas,
@@ -618,14 +628,17 @@ class InvoiceEletronic(models.Model):
         cobr = {
             'fat': {
                 'nFat': self.numero_fatura or '',
-                'vOrig': "%.02f" % self.fatura_bruto
-                if self.fatura_bruto else '',
-                'vDesc': "%.02f" % self.fatura_desconto
-                if self.fatura_desconto else '',
-                'vLiq': "%.02f" % self.fatura_liquido
-                if self.fatura_liquido else '',
+                'vOrig': "%.02f" % (
+                    self.fatura_liquido + self.fatura_desconto),
+                'vDesc': "%.02f" % self.fatura_desconto,
+                'vLiq': "%.02f" % self.fatura_liquido,
             },
             'dup': duplicatas
+        }
+        pag = {
+            'indPag': self.payment_term_id.indPag or '0',
+            'tPag': self.payment_mode_id.tipo_pagamento or '90',
+            'vPag': '0.00',
         }
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
@@ -648,6 +661,7 @@ class InvoiceEletronic(models.Model):
             'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
+            'pag': [pag],
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
@@ -655,6 +669,8 @@ class InvoiceEletronic(models.Model):
         }
         if len(duplicatas) > 0:
             vals['cobr'] = cobr
+            pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
+            pag['vPag'] = "%.02f" % self.valor_final
         return vals
 
     @api.multi
@@ -773,8 +789,7 @@ class InvoiceEletronic(models.Model):
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.getchildren()[0]
-        retorno = retorno.getchildren()[0]
+        retorno = resposta['object'].getchildren()[0]
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
@@ -790,8 +805,7 @@ class InvoiceEletronic(models.Model):
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
-                    getchildren()[0].getchildren()[0]
+                retorno = resposta_recibo['object'].getchildren()[0]
                 if retorno.cStat != 105:
                     break
 
@@ -904,13 +918,15 @@ class InvoiceEletronic(models.Model):
                 'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
-                'xJust': justificativa
+                'xJust': justificativa,
+                'tpEvento': '110111',
+                'descEvento': 'Cancelamento',
             }],
             'modelo': self.model,
         }
 
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        resposta = resp['object'].getchildren()[0]
         if resposta.cStat == 128 and \
                 resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'
@@ -918,13 +934,18 @@ class InvoiceEletronic(models.Model):
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
             self.sequencial_evento += 1
         else:
+            code, motive = None, None
             if resposta.cStat == 128:
-                self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = \
-                    resposta.retEvento.infEvento.xMotivo
+                code = resposta.retEvento.infEvento.cStat
+                motive = resposta.retEvento.infEvento.xMotivo
             else:
-                self.codigo_retorno = resposta.cStat
-                self.mensagem_retorno = resposta.xMotivo
+                code = resposta.cStat
+                motive = resposta.xMotivo
+            if code == 573:  # Duplicidade, já cancelado
+                return self.action_get_status()
+
+            return self._create_response_cancel(
+                code, motive, resp, justificativa)
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -939,4 +960,67 @@ class InvoiceEletronic(models.Model):
             nfe_processada, resp['received_xml'].encode())
         if nfe_proc_cancel:
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+
+    def action_get_status(self):
+        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        consulta = {
+            'estado': self.company_id.state_id.ibge_code,
+            'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+            'modelo': self.model,
+            'obj': {
+                'chave_nfe': self.chave_nfe,
+                'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+            }
+        }
+        resp = consultar_protocolo_nfe(certificado, **consulta)
+        retorno_consulta = resp['object'].getchildren()[0]
+        if retorno_consulta.cStat == 101:
+            self.state = 'cancel'
+            self.codigo_retorno = retorno_consulta.cStat
+            self.mensagem_retorno = retorno_consulta.xMotivo
+            resp['received_xml'] = etree.tostring(
+                retorno_consulta, encoding=str)
+
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            self._create_attachment('canc', self, resp['sent_xml'])
+            self._create_attachment('canc-ret', self, resp['received_xml'])
+            nfe_processada = base64.decodestring(self.nfe_processada)
+
+            nfe_proc_cancel = gerar_nfeproc_cancel(
+                nfe_processada, resp['received_xml'].encode())
+            if nfe_proc_cancel:
+                self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+        else:
+            message = "%s - %s" % (retorno_consulta.cStat,
+                                   retorno_consulta.xMotivo)
+            raise UserError(message)
+
+    def _create_response_cancel(self, code, motive, response, justificativa):
+        message = "%s - %s" % (code, motive)
+        wiz = self.env['wizard.cancel.nfe'].create({
+            'edoc_id': self.id,
+            'justificativa': justificativa,
+            'state': 'error',
+            'message': message,
+            'sent_xml': base64.b64encode(
+                response['sent_xml'].encode('utf-8')),
+            'sent_xml_name': 'cancelamento-envio.xml',
+            'received_xml': base64.b64encode(
+                response['received_xml'].encode('utf-8')),
+            'received_xml_name': 'cancelamento-retorno.xml',
+        })
+        return {
+            'name': 'Cancelamento NFe',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.cancel.nfe',
+            'res_id': wiz.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+        }

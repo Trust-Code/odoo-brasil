@@ -378,6 +378,7 @@ class TestNFeBrasil(TransactionCase):
             name = '%s.xml' % invoice.number.replace('/', '-')
             with open(os.path.join(self.caminho, 'xml/%s' % name), 'r') as f:
                 xml_test = f.read()
+                # f.write(xml_generated.decode('utf-8'))
 
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
             self.assertEquals(xml_test, xml_generated.decode('utf-8'))
@@ -395,39 +396,6 @@ class TestNFeBrasil(TransactionCase):
                 [('invoice_id', '=', invoice.id)])
             with self.assertRaises(Exception):
                 invoice_eletronic.action_send_eletronic_invoice()
-
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
-    def test_wrong_xml_schema(self, autorizar, ret_autorizar):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-
-            # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
-            resp = sanitize_response(xml_recebido)
-            autorizar.return_value = {
-                'object': resp[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            # Consultar recibo com erro 225
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/recibo-erro-schema-225.xml'), 'r').read()
-            resp_ret = sanitize_response(xml_recebido)
-            ret_autorizar.return_value = {
-                'object': resp_ret[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.action_send_eletronic_invoice()
-            self.assertEquals(invoice_eletronic.state, 'error')
-            self.assertEquals(invoice_eletronic.codigo_retorno, '225')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
@@ -491,6 +459,6 @@ class TestNFeBrasil(TransactionCase):
                 justificativa="Cancelamento de teste")
 
             self.assertEquals(invoice_eletronic.state, 'cancel')
-            self.assertEquals(invoice_eletronic.codigo_retorno, "155")
+            self.assertEquals(invoice_eletronic.codigo_retorno, "135")
             self.assertEquals(invoice_eletronic.mensagem_retorno,
-                              "Cancelamento homologado fora de prazo")
+                              "Evento registrado e vinculado a NF-e")

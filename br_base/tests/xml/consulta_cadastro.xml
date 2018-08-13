@@ -1,45 +1,35 @@
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <soap:Header>
-        <nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/CadConsultaCadastro2">
-            <cUF>42</cUF>
-            <versaoDados>2.00</versaoDados>
-        </nfeCabecMsg>
-    </soap:Header>
-    <soap:Body>
-        <consultaCadastro2Result xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/CadConsultaCadastro2">
-            <retConsCad versao="2.00" xmlns="http://www.portalfiscal.inf.br/nfe">
-                <infCons>
-                    <verAplic>SC_NFE_PL_008i2</verAplic>
-                    <cStat>111</cStat>
-                    <xMotivo>Consulta cadastro com uma ocorrencia</xMotivo>
-                    <UF>SC</UF>
-                    <CNPJ>22814429000155</CNPJ>
-                    <dhCons>2016-11-03T08:33:34-02:00</dhCons>
-                    <cUF>35</cUF>
-                    <infCad>
-                        <IE>112632165</IE>
-                        <CNPJ>22814429000155</CNPJ>
-                        <UF>SC</UF>
-                        <cSit>1</cSit>
-                        <indCredNFe>1</indCredNFe>
-                        <indCredCTe>4</indCredCTe>
-                        <xNome>Empresa de Teste SC</xNome>
-                        <xRegApur>SIMPLES NACIONAL</xRegApur>
-                        <CNAE>4789099</CNAE>
-                        <dIniAtiv>2014-11-03</dIniAtiv>
-                        <dUltSit>2014-11-03</dUltSit>
-                        <ender>
-                            <xLgr>RUA PADRE JOAO</xLgr>
-                            <nro>000</nro>
-                            <xCpl>SL</xCpl>
-                            <xBairro>Centro</xBairro>
-                            <cMun>4205407</cMun>
-                            <xMun>FLORIANOPOLIS</xMun>
-                            <CEP>88032050</CEP>
-                        </ender>
-                    </infCad>
-                </infCons>
-            </retConsCad>
-        </consultaCadastro2Result>
-    </soap:Body>
-</soap:Envelope>
+<consultaCadastro2Result xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/CadConsultaCadastro2">
+    <retConsCad versao="2.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infCons>
+            <verAplic>SC_NFE_PL_008i2</verAplic>
+            <cStat>111</cStat>
+            <xMotivo>Consulta cadastro com uma ocorrencia</xMotivo>
+            <UF>SC</UF>
+            <CNPJ>22814429000155</CNPJ>
+            <dhCons>2016-11-03T08:33:34-02:00</dhCons>
+            <cUF>35</cUF>
+            <infCad>
+                <IE>112632165</IE>
+                <CNPJ>22814429000155</CNPJ>
+                <UF>SC</UF>
+                <cSit>1</cSit>
+                <indCredNFe>1</indCredNFe>
+                <indCredCTe>4</indCredCTe>
+                <xNome>Empresa de Teste SC</xNome>
+                <xRegApur>SIMPLES NACIONAL</xRegApur>
+                <CNAE>4789099</CNAE>
+                <dIniAtiv>2014-11-03</dIniAtiv>
+                <dUltSit>2014-11-03</dUltSit>
+                <ender>
+                    <xLgr>RUA PADRE JOAO</xLgr>
+                    <nro>000</nro>
+                    <xCpl>SL</xCpl>
+                    <xBairro>Centro</xBairro>
+                    <cMun>4205407</cMun>
+                    <xMun>FLORIANOPOLIS</xMun>
+                    <CEP>88032050</CEP>
+                </ender>
+            </infCad>
+        </infCons>
+    </retConsCad>
+</consultaCadastro2Result>
