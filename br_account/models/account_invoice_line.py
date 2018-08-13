@@ -408,7 +408,8 @@ class AccountInvoiceLine(models.Model):
          ('R', 'Retida'),
          ('S', 'Substituta'),
          ('I', 'Isenta')],
-        string='Tipo do ISSQN', required=True, default='N', oldname='issqn_tipo')
+        string='Tipo do ISSQN', required=True, default='N',
+        oldname='issqn_tipo')
     l10n_br_service_type_id = fields.Many2one(
         'br_account.service.type', u'Tipo de Serviço',
         oldname='service_type_id')
@@ -636,7 +637,7 @@ class AccountInvoiceLine(models.Model):
         self._update_tax_from_ncm()
         self._set_taxes_from_fiscal_pos()
         other_taxes = self.invoice_line_tax_ids.filtered(
-            lambda x: not x.domain)
+            lambda x: not x.l10n_br_domain)
         self.invoice_line_tax_ids = (
                 self.l10n_br_tax_icms_id | self.l10n_br_tax_icms_st_id |
                 self.l10n_br_tax_icms_inter_id |

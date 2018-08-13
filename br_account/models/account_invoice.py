@@ -390,12 +390,14 @@ class AccountInvoice(models.Model):
         for line in self.invoice_line_ids:
             other_taxes = line.invoice_line_tax_ids.filtered(
                 lambda x: not x.l10n_br_domain)
-            line.invoice_line_tax_ids = line.tax_icms_id | line.tax_icms_st_id | \
-                line.tax_icms_inter_id | line.tax_icms_intra_id | \
-                line.tax_icms_fcp_id | line.tax_ipi_id | \
-                line.tax_pis_id | line.tax_cofins_id | line.tax_issqn_id | \
-                line.tax_ii_id | line.tax_csll_id | line.tax_irrf_id | \
-                line.tax_inss_id | other_taxes
+            line.invoice_line_tax_ids = \
+                line.l10n_br_tax_icms_id | line.l10n_br_tax_icms_st_id | \
+                line.l10n_br_tax_icms_inter_id | line.l10n_br_tax_icms_intra_id | \
+                line.l10n_br_tax_icms_fcp_id | line.l10n_br_tax_ipi_id | \
+                line.l10n_br_tax_pis_id | line.l10n_br_tax_cofins_id | \
+                line.l10n_br_tax_issqn_id | line.l10n_br_tax_ii_id | \
+                line.l10n_br_tax_csll_id | line.l10n_br_tax_irrf_id | \
+                line.l10n_br_tax_inss_id | other_taxes
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
