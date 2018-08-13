@@ -136,8 +136,7 @@ class AccountInvoiceLine(models.Model):
 
     def atualiza_bases_manuais(self):
         if self.invoice_id.pos_fiscal == 'import':
-            cif = self.price_subtotal + \
-                self.valor_frete + self.valor_seguro + self.outras_despesas
+            cif = self.price_subtotal + self.valor_frete + self.valor_seguro
             self.ii_base_calculo = cif
             self.pis_base_calculo = cif
             self.cofins_base_calculo = cif
@@ -147,20 +146,18 @@ class AccountInvoiceLine(models.Model):
 
     def atualiza_base_ipi(self):
         if self.invoice_id.pos_fiscal == 'import':
-            cif = self.price_subtotal + \
-                self.valor_frete + self.valor_seguro + self.outras_despesas
+            cif = self.price_subtotal + self.valor_frete + self.valor_seguro
             self.ipi_base_calculo = cif + self.ii_valor
 
     def atualiza_base_icms(self):
         if self.invoice_id.pos_fiscal == 'import':
-            cif = self.price_subtotal + \
-                self.valor_frete + self.valor_seguro + self.outras_despesas
+            cif = self.price_subtotal + self.valor_frete + self.valor_seguro
             self.icms_base_calculo = cif + self.ii_valor + \
                 self.pis_valor + self.cofins_valor + self.ii_valor_despesas
 
     @api.one
     @api.depends('valor_frete', 'valor_seguro',
-                 'outras_despesas')
+                 'outras_despesas', 'price_subtotal')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
 
