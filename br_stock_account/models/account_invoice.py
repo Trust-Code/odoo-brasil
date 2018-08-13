@@ -9,7 +9,7 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    pos_fiscal = fields.Char(related='fiscal_position_id.fiscal_type')
+    pos_fiscal = fields.Selection(related='fiscal_position_id.fiscal_type')
 
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
@@ -23,9 +23,10 @@ class AccountInvoice(models.Model):
         self.total_seguro = sum(l.valor_seguro for l in lines)
         self.total_frete = sum(l.valor_frete for l in lines)
         self.total_despesas = sum(l.outras_despesas for l in lines)
+        self.total_nao_taxados = sum(l.despesas_nao_taxados for l in lines)
         self.amount_total = self.total_bruto - self.total_desconto + \
             self.total_tax + self.total_frete + self.total_seguro + \
-            self.total_despesas
+            self.total_despesas + self.total_nao_taxados
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
@@ -38,6 +39,9 @@ class AccountInvoice(models.Model):
         compute="_compute_amount")
     total_frete = fields.Float(
         string='Frete ( + )', digits=dp.get_precision('Account'),
+        compute="_compute_amount")
+    total_nao_taxados = fields.Float(
+        string='Despesas Extras ( + )', digits=dp.get_precision('Account'),
         compute="_compute_amount")
 
     # Transporte
@@ -79,7 +83,7 @@ class AccountInvoice(models.Model):
         res['valor_frete'] = inv.total_frete
         res['valor_despesas'] = inv.total_despesas
         res['valor_seguro'] = inv.total_seguro
-
+        res['total_nao_taxados'] = inv.total_nao_taxados
         res['modalidade_frete'] = inv.freight_responsibility
         res['transportadora_id'] = inv.shipping_supplier_id.id
         res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
@@ -113,6 +117,7 @@ class AccountInvoice(models.Model):
         vals['frete'] = invoice_line.valor_frete
         vals['seguro'] = invoice_line.valor_seguro
         vals['outras_despesas'] = invoice_line.outras_despesas
+        vals['despesas_nao_taxados'] = invoice_line.despesas_nao_taxados
         return vals
 
 
@@ -125,6 +130,9 @@ class AccountInvoiceLine(models.Model):
         '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
     outras_despesas = fields.Float(
         '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+    despesas_nao_taxados = fields.Float(
+        '(+) Despesas Extras', digits=dp.get_precision(
+            'Account'), default=0.00)
 
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
@@ -147,23 +155,27 @@ class AccountInvoiceLine(models.Model):
                 self.pis_valor + self.cofins_valor + self.ii_valor_despesas
 
     def atualiza_base_ipi(self):
-        cif = self.price_subtotal + \
-            self.valor_frete + self.valor_seguro + self.outras_despesas
-        self.ipi_base_calculo = cif + self.ii_valor
+        if self.invoice_id.pos_fiscal == 'import':
+            cif = self.price_subtotal + \
+                self.valor_frete + self.valor_seguro + self.outras_despesas
+            self.ipi_base_calculo = cif + self.ii_valor
 
     def atualiza_base_icms(self):
-        cif = self.price_subtotal + \
-            self.valor_frete + self.valor_seguro + self.outras_despesas
-        self.icms_base_calculo = cif + self.ii_valor + \
-            self.pis_valor + self.cofins_valor + self.ii_valor_despesas
+        if self.invoice_id.pos_fiscal == 'import':
+            cif = self.price_subtotal + \
+                self.valor_frete + self.valor_seguro + self.outras_despesas
+            self.icms_base_calculo = cif + self.ii_valor + \
+                self.pis_valor + self.cofins_valor + self.ii_valor_despesas
 
     @api.one
-    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
+    @api.depends('valor_frete', 'valor_seguro',
+                 'outras_despesas', 'despesas_nao_taxados')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
 
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
-            self.valor_seguro + self.outras_despesas
+            self.valor_seguro + self.outras_despesas + \
+            self.despesas_nao_taxados
         self.update({'price_total': total})
         self.atualiza_bases_manuais()
 
