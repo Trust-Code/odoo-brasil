@@ -11,11 +11,13 @@ class BrLocalizationFiltering(models.AbstractModel):
 
     # TODO add br_coa_simple
     def _get_br_localization_template(self):
-        return self.env['ir.model.data'].xmlid_to_object(
+        localization_template = self.env['ir.model.data'].xmlid_to_object(
             'br_coa.br_account_chart_template', False)
+        return localization_template and localization_template.id or False
 
     def _get_user_localization(self):
-        return self.env.user.company_id.chart_template_id
+        user_localization = self.env.user.company_id.chart_template_id
+        return user_localization and user_localization.id or False
 
     def _is_user_localization(self):
         return (self._get_br_localization_template() ==
@@ -82,9 +84,10 @@ class BrLocalizationFiltering(models.AbstractModel):
         for record in self:
             if hasattr(record, 'company_id'):
                 user_template = (record.company_id.chart_template_id
+                                 and record.company_id.chart_template_id.id
                                  or user_template)
             br_template = self._get_br_localization_template()
-            record.l10n_br_localization = br_template.id == user_template.id
+            record.l10n_br_localization = br_template == user_template
 
     l10n_br_localization = fields.Boolean(
         compute=_compute_is_br_localization,
