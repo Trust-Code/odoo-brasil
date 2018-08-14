@@ -11,22 +11,24 @@ from odoo.addons import decimal_precision as dp
 
 
 class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+    _name = 'sale.order'
+    _inherit = ['sale.order', 'br.localization.filtering']
 
-    @api.depends('order_line.price_total', 'order_line.valor_desconto')
+    @api.depends('order_line.price_total', 'order_line.l10n_br_valor_desconto')
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()
         for order in self:
             price_total = sum(l.price_total for l in order.order_line)
             price_subtotal = sum(l.price_subtotal for l in order.order_line)
             order.update({
-                'total_tax': price_total - price_subtotal,
-                'total_ipi': sum(l.ipi_valor for l in order.order_line),
-                'total_icms_st': sum(l.icms_st_valor
+                'l10n_br_total_tax': price_total - price_subtotal,
+                'l10n_br_total_ipi':
+                    sum(l.l10n_br_ipi_valor for l in order.order_line),
+                'l10n_br_total_icms_st': sum(l.l10n_br_icms_st_valor
                                      for l in order.order_line),
-                'total_desconto': sum(l.valor_desconto
+                'l10n_br_total_desconto': sum(l.l10n_br_valor_desconto
                                       for l in order.order_line),
-                'total_bruto': sum(l.valor_bruto
+                'l10n_br_total_bruto': sum(l.l10n_br_valor_bruto
                                    for l in order.order_line),
             })
 
@@ -55,22 +57,23 @@ class SaleOrder(models.Model):
                 fpos.l10n_br_service_serie_id.id
         return res
 
-    total_bruto = fields.Float(
+    l10n_br_total_bruto = fields.Float(
         string='Total Bruto ( = )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_tax = fields.Float(
+        digits=dp.get_precision('Account'), store=True, oldname='total_bruto')
+    l10n_br_total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_ipi = fields.Float(
+        digits=dp.get_precision('Account'), store=True, oldname='total_tax')
+    l10n_br_total_ipi = fields.Float(
         string='IPI', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_icms_st = fields.Float(
+        digits=dp.get_precision('Account'), store=True, oldname='total_ipi')
+    l10n_br_total_icms_st = fields.Float(
         string='ICMS ST', readonly=True, compute='_amount_all',
-        digits=dp.get_precision('Account'), store=True)
-    total_desconto = fields.Float(
+        digits=dp.get_precision('Account'), store=True,
+        oldname='total_icms_st')
+    l10n_br_total_desconto = fields.Float(
         string='Desconto Total ( - )', readonly=True, compute='_amount_all',
         digits=dp.get_precision('Account'), store=True,
-        help="The discount amount.")
+        help="The discount amount.", oldname='total_desconto')
 
 
 class SaleOrderLine(models.Model):
@@ -78,14 +81,15 @@ class SaleOrderLine(models.Model):
 
     def _prepare_tax_context(self):
         return {
-            'incluir_ipi_base': self.incluir_ipi_base,
-            'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
-            'aliquota_icms_proprio': self.aliquota_icms_proprio,
-            'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
+            'incluir_ipi_base': self.l10n_br_incluir_ipi_base,
+            'icms_st_aliquota_mva': self.l10n_br_icms_st_aliquota_mva,
+            'aliquota_icms_proprio': self.l10n_br_aliquota_icms_proprio,
+            'icms_aliquota_reducao_base':
+                self.l10n_br_icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
-            self.icms_st_aliquota_reducao_base,
-            'ipi_reducao_bc': self.ipi_reducao_bc,
-            'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
+                self.l10n_br_icms_st_aliquota_reducao_base,
+            'ipi_reducao_bc': self.l10n_br_ipi_reducao_bc,
+            'icms_st_aliquota_deducao': self.l10n_br_icms_st_aliquota_deducao,
         }
 
     @api.multi
@@ -98,10 +102,10 @@ class SaleOrderLine(models.Model):
         return vals
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id',
-                 'icms_st_aliquota_mva', 'incluir_ipi_base',
-                 'icms_aliquota_reducao_base',
-                 'icms_st_aliquota_reducao_base',
-                 'ipi_reducao_bc', 'icms_st_aliquota_deducao')
+                 'l10n_br_icms_st_aliquota_mva', 'l10n_br_incluir_ipi_base',
+                 'l10n_br_icms_aliquota_reducao_base',
+                 'l10n_br_icms_st_aliquota_reducao_base',
+                 'l10n_br_ipi_reducao_bc', 'l10n_br_icms_st_aliquota_deducao')
     def _compute_amount(self):
         for line in self:
             ipi = 0.0
@@ -128,108 +132,134 @@ class SaleOrderLine(models.Model):
                 'price_tax': taxes['total_included'] - taxes['total_excluded'],
                 'price_total': taxes['total_included'],
                 'price_subtotal': taxes['total_excluded'],
-                'valor_bruto': valor_bruto,
-                'valor_desconto': desconto,
-                'icms_st_valor': icms_st,
-                'ipi_valor': ipi,
+                'l10n_br_valor_bruto': valor_bruto,
+                'l10n_br_valor_desconto': desconto,
+                'l10n_br_icms_st_valor': icms_st,
+                'l10n_br_ipi_valor': ipi,
             })
 
-    @api.depends('cfop_id', 'icms_st_aliquota_mva', 'aliquota_icms_proprio',
-                 'incluir_ipi_base', 'icms_aliquota_reducao_base', 'tem_difal',
-                 'icms_st_aliquota_reducao_base', 'ipi_reducao_bc',
-                 'icms_st_aliquota_deducao')
+    @api.depends('l10n_br_cfop_id', 'l10n_br_icms_st_aliquota_mva',
+                 'l10n_br_aliquota_icms_proprio', 'l10n_br_incluir_ipi_base',
+                 'l10n_br_icms_aliquota_reducao_base', 'l10n_br_tem_difal',
+                 'l10n_br_icms_st_aliquota_reducao_base',
+                 'l10n_br_ipi_reducao_bc', 'l10n_br_icms_st_aliquota_deducao')
     def _compute_detalhes(self):
         for line in self:
             msg = []
-            if line.cfop_id:
-                msg += [u'CFOP: %s' % line.cfop_id.code]
+            if line.l10n_br_cfop_id:
+                msg += [u'CFOP: %s' % line.l10n_br_cfop_id.code]
             msg += [u'IPI na base ICMS: %s' % (
-                u'Sim' if line.incluir_ipi_base else u'Não')]
-            if line.icms_st_aliquota_mva:
-                msg += [u'MVA (%%): %.2f' % line.icms_st_aliquota_mva]
-            if line.aliquota_icms_proprio:
-                msg += [u'ICMS Intra (%%): %.2f' % line.aliquota_icms_proprio]
-            if line.icms_aliquota_reducao_base:
+                u'Sim' if line.l10n_br_incluir_ipi_base else u'Não')]
+            if line.l10n_br_icms_st_aliquota_mva:
+                msg += [u'MVA (%%): %.2f' % line.l10n_br_icms_st_aliquota_mva]
+            if line.l10n_br_aliquota_icms_proprio:
+                msg += [u'ICMS Intra (%%): %.2f' %
+                        line.l10n_br_aliquota_icms_proprio]
+            if line.l10n_br_icms_aliquota_reducao_base:
                 msg += [u'Red. Base ICMS (%%): %.2f' %
-                        line.icms_aliquota_reducao_base]
-            if line.icms_st_aliquota_reducao_base:
+                        line.l10n_br_icms_aliquota_reducao_base]
+            if line.l10n_br_icms_st_aliquota_reducao_base:
                 msg += [u'Red. Base ICMS ST (%%): %.2f' %
                         line.icms_st_aliquota_reducao_base]
-            if line.ipi_reducao_bc:
-                msg += [u'Red. Base IPI (%%): %.2f' % line.ipi_reducao_bc]
+            if line.l10n_br_ipi_reducao_bc:
+                msg += [u'Red. Base IPI (%%): %.2f' % line.l10n_br_ipi_reducao_bc]
 
-            line.detalhes_calculo = u'\n'.join(msg)
+            line.l10n_br_detalhes_calculo = u'\n'.join(msg)
 
-    icms_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', u'Regra ICMS')
-    ipi_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', u'Regra IPI')
-    pis_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', u'Regra PIS')
-    cofins_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', u'Regra COFINS')
-    issqn_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', u'Regra ISSQN')
-    ii_rule_id = fields.Many2one(
-        'account.fiscal.position.tax.rule', u'Regra II')
+    l10n_br_icms_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', u'Regra ICMS',
+        oldname='icms_rule_id')
+    l10n_br_ipi_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', u'Regra IPI',
+        oldname='ipi_rule_id')
+    l10n_br_pis_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', u'Regra PIS',
+        oldname='pis_rule_id')
+    l10n_br_cofins_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', u'Regra COFINS',
+        oldname='cofins_rule_id')
+    l10n_br_issqn_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', u'Regra ISSQN',
+        oldname='issqn_rule_id')
+    l10n_br_ii_rule_id = fields.Many2one(
+        'account.fiscal.position.tax.rule', u'Regra II',
+        oldname='ii_rule_id')
 
-    cfop_id = fields.Many2one('br_account.cfop', string=u"CFOP")
+    l10n_br_cfop_id = fields.Many2one('br_account.cfop', string=u"CFOP",
+                                      oldname='cfop_id')
 
-    icms_cst_normal = fields.Char(string=u"CST ICMS", size=5)
-    icms_csosn_simples = fields.Char(string=u"CSOSN ICMS", size=5)
-    icms_st_aliquota_mva = fields.Float(string=u'Alíquota MVA (%)',
-                                        digits=dp.get_precision('Account'))
-    aliquota_icms_proprio = fields.Float(
+    l10n_br_icms_cst_normal = fields.Char(string=u"CST ICMS", size=5,
+                                          oldname='icms_cst_normal')
+    l10n_br_icms_csosn_simples = fields.Char(string=u"CSOSN ICMS", size=5,
+                                             oldname='icms_csosn_simples')
+    l10n_br_icms_st_aliquota_mva = fields.Float(
+        string=u'Alíquota MVA (%)',
+        digits=dp.get_precision('Account'),
+        oldname='icms_st_aliquota_mva')
+    l10n_br_aliquota_icms_proprio = fields.Float(
         string=u'Alíquota ICMS Próprio (%)',
-        digits=dp.get_precision('Account'))
-    incluir_ipi_base = fields.Boolean(string="Incluir IPI na Base ICMS")
-    icms_aliquota_reducao_base = fields.Float(
-        string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
-    icms_st_aliquota_reducao_base = fields.Float(
-        string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'))
-    icms_st_aliquota_deducao = fields.Float(
-        string=u"% Dedução", help=u"Alíquota interna ou interestadual aplicada \
+        digits=dp.get_precision('Account'), oldname='aliquota_icms_proprio')
+    l10n_br_incluir_ipi_base = fields.Boolean(
+        string="Incluir IPI na Base ICMS",
+        oldname='incluir_ipi_base')
+    l10n_br_icms_aliquota_reducao_base = fields.Float(
+        string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'),
+        oldname='icms_aliquota_reducao_base')
+    l10n_br_icms_st_aliquota_reducao_base = fields.Float(
+        string=u'Redução Base ICMS ST(%)', digits=dp.get_precision('Account'),
+        oldname='icms_st_aliquota_reducao_base')
+    l10n_br_icms_st_aliquota_deducao = fields.Float(
+        string=u"% Dedução",
+        help=u"Alíquota interna ou interestadual aplicada \
          sobre o valor da operação para deduzir do ICMS ST - Para empresas \
-         do Simples Nacional", digits=dp.get_precision('Account'))
-    icms_st_valor = fields.Monetary(
+         do Simples Nacional", digits=dp.get_precision('Account'),
+        oldname='icms_st_aliquota_deducao')
+    l10n_br_icms_st_valor = fields.Monetary(
         string="Valor ICMS ST", store=True, compute='_compute_amount',
-        digits=dp.get_precision('Sale Price'))
-    tem_difal = fields.Boolean(string=u"Possui Difal")
+        digits=dp.get_precision('Sale Price'), oldname='icms_st_valor')
+    l10n_br_tem_difal = fields.Boolean(string=u"Possui Difal",
+                                       oldname='tem_difal')
 
-    ipi_cst = fields.Char(string=u'CST IPI', size=5)
-    ipi_reducao_bc = fields.Float(
-        string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'))
-    ipi_valor = fields.Monetary(
+    l10n_br_ipi_cst = fields.Char(string=u'CST IPI', size=5, oldname='ipi_cst')
+    l10n_br_ipi_reducao_bc = fields.Float(
+        string=u'Redução Base IPI (%)', digits=dp.get_precision('Account'),
+        oldname='ipi_reducao_bc')
+    l10n_br_ipi_valor = fields.Monetary(
         string="Valor IPI", store=True, compute='_compute_amount',
-        digits=dp.get_precision('Sale Price'))
+        digits=dp.get_precision('Sale Price'), oldname='ipi_valor')
 
-    pis_cst = fields.Char(string=u'CST PIS', size=5)
-    cofins_cst = fields.Char(string=u'CST COFINS', size=5)
-    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
+    l10n_br_pis_cst = fields.Char(string=u'CST PIS', size=5, oldname='pis_cst')
+    cofins_cst = fields.Char(
+        string=u'CST COFINS', size=5,
+        oldname='cofins_cst')
+    l10n_br_issqn_deduction = fields.Float(
+        string="% Dedução de base ISSQN",
+        oldname='l10n_br_issqn_deduction')
 
-    valor_desconto = fields.Float(
+    l10n_br_valor_desconto = fields.Float(
         compute='_compute_amount', string=u'Vlr. Desc. (-)', store=True,
-        digits=dp.get_precision('Sale Price'))
-    valor_bruto = fields.Float(
+        digits=dp.get_precision('Sale Price'), oldname='valor_desconto')
+    l10n_br_valor_bruto = fields.Float(
         compute='_compute_amount', string=u'Vlr. Bruto', store=True,
-        digits=dp.get_precision('Sale Price'))
-    price_without_tax = fields.Float(
+        digits=dp.get_precision('Sale Price'), oldname='valor_bruto')
+    l10n_br_price_without_tax = fields.Float(
         compute='_compute_amount', string=u'Preço Base', store=True,
-        digits=dp.get_precision('Sale Price'))
+        digits=dp.get_precision('Sale Price'), oldname='price_without_tax')
 
-    detalhes_calculo = fields.Text(
-        string=u"Detalhes Cálculo", compute='_compute_detalhes', store=True)
+    l10n_br_detalhes_calculo = fields.Text(
+        string=u"Detalhes Cálculo", compute='_compute_detalhes', store=True,
+        oldname='detalhes_calculo')
 
     def _update_tax_from_ncm(self):
         if self.product_id:
             ncm = self.product_id.l10n_br_fiscal_classification_id
             taxes = ncm.tax_icms_st_id | ncm.tax_ipi_id
             self.update({
-                'icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
-                'icms_st_aliquota_reducao_base':
+                'l10n_br_icms_st_aliquota_mva': ncm.icms_st_aliquota_mva,
+                'l10n_br_icms_st_aliquota_reducao_base':
                 ncm.icms_st_aliquota_reducao_base,
-                'ipi_cst': ncm.ipi_cst,
-                'ipi_reducao_bc': ncm.ipi_reducao_bc,
+                'l10n_br_ipi_cst': ncm.ipi_cst,
+                'l10n_br_ipi_reducao_bc': ncm.ipi_reducao_bc,
                 'tax_id': [(6, None, [x.id for x in taxes if x])]
             })
 
@@ -277,8 +307,8 @@ class SaleOrderLine(models.Model):
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-        res['l10n_br_valor_desconto'] = self.valor_desconto
-        res['l10n_br_valor_bruto'] = self.valor_bruto
+        res['l10n_br_valor_desconto'] = self.l10n_br_valor_desconto
+        res['l10n_br_valor_bruto'] = self.l10n_br_valor_bruto
 
         # Improve this one later
         icms = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'icms')
@@ -298,8 +328,8 @@ class SaleOrderLine(models.Model):
         inss = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'inss')
         irrf = self.tax_id.filtered(lambda x: x.l10n_br_domain == 'irrf')
 
-        res['l10n_br_icms_cst_normal'] = self.icms_cst_normal
-        res['l10n_br_icms_csosn_simples'] = self.icms_csosn_simples
+        res['l10n_br_icms_cst_normal'] = self.l10n_br_icms_cst_normal
+        res['l10n_br_icms_csosn_simples'] = self.l10n_br_icms_csosn_simples
 
         res['l10n_br_tax_icms_id'] = icms and icms.id or False
         res['l10n_br_tax_icms_st_id'] = icmsst and icmsst.id or False
@@ -356,24 +386,25 @@ class SaleOrderLine(models.Model):
         res['l10n_br_icms_aliquota'] = icms.amount or 0.0
         res['l10n_br_icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
         res['l10n_br_icms_st_aliquota'] = icmsst.amount or 0.0
-        res['l10n_br_icms_aliquota_reducao_base'] = self.\
-            icms_aliquota_reducao_base
-        res['l10n_br_icms_st_aliquota_reducao_base'] = self.\
-            icms_st_aliquota_reducao_base
-        res['l10n_br_icms_st_aliquota_deducao'] = self.icms_st_aliquota_deducao
-        res['l10n_br_tem_difal'] = self.tem_difal
+        res['l10n_br_icms_aliquota_reducao_base'] = self. \
+            l10n_br_icms_aliquota_reducao_base
+        res['l10n_br_icms_st_aliquota_reducao_base'] = self. \
+            l10n_br_icms_st_aliquota_reducao_base
+        res['l10n_br_icms_st_aliquota_deducao'] = self.\
+            l10n_br_icms_st_aliquota_deducao
+        res['l10n_br_tem_difal'] = self.l10n_br_tem_difal
         res['l10n_br_icms_uf_remet'] = icms_inter.amount or 0.0
         res['l10n_br_icms_uf_dest'] = icms_intra.amount or 0.0
         res['l10n_br_icms_fcp_uf_dest'] = icms_fcp.amount or 0.0
 
-        res['l10n_br_ipi_cst'] = self.ipi_cst
+        res['l10n_br_ipi_cst'] = self.l10n_br_ipi_cst
         res['l10n_br_ipi_aliquota'] = ipi.amount or 0.0
-        res['l10n_br_ipi_reducao_bc'] = self.ipi_reducao_bc
+        res['l10n_br_ipi_reducao_bc'] = self.l10n_br_ipi_reducao_bc
 
-        res['l10n_br_pis_cst'] = self.pis_cst
+        res['l10n_br_pis_cst'] = self.l10n_br_pis_cst
         res['l10n_br_pis_aliquota'] = pis.amount or 0.0
 
-        res['l10n_br_cofins_cst'] = self.cofins_cst
+        res['l10n_br_cofins_cst'] = self.l10n_br_cofins_cst
         res['l10n_br_cofins_aliquota'] = cofins.amount or 0.0
 
         res['l10n_br_issqn_aliquota'] = issqn.amount or 0.0

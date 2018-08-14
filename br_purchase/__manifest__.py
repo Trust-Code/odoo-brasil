@@ -11,7 +11,7 @@
     'website': 'http://www.trustcode.com.br',
     'version': '11.0.1.0.0',
     'depends': [
-        'purchase', 'br_account',
+        'purchase', 'br_account', 'br_localization_filtering',
     ],
     'data': [
         'views/purchase_view.xml',

@@ -180,13 +180,13 @@ class TestSaleOrder(TransactionCase):
                     'product_uom_qty': 10.0,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_icms_cst_normal': '40',
+                    'l10n_br_icms_csosn_simples': '102',
+                    'l10n_br_ipi_cst': '50',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              ),
             (0, 0,
@@ -196,10 +196,10 @@ class TestSaleOrder(TransactionCase):
                     'product_uom_qty': 10.0,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              )
         ]
@@ -232,11 +232,13 @@ class TestSaleOrder(TransactionCase):
                 inv_line = line.invoice_lines[0]
 
                 self.assertEqual(
-                    line.icms_cst_normal,
+                    line.l10n_br_icms_cst_normal,
                     inv_line.l10n_br_icms_cst_normal)
-                self.assertEqual(line.icms_csosn_simples,
+                self.assertEqual(line.
+                                 l10n_br_icms_csosn_simples,
                                  inv_line.l10n_br_icms_csosn_simples)
-                self.assertEqual(line.cfop_id, inv_line.l10n_br_cfop_id)
+                self.assertEqual(line.l10n_br_cfop_id,
+                                 inv_line.l10n_br_cfop_id)
                 self.assertEqual(
                     line.product_id.l10n_br_fiscal_classification_id,
                     inv_line.l10n_br_fiscal_classification_id)
@@ -245,21 +247,21 @@ class TestSaleOrder(TransactionCase):
                 self.assertEqual(line.product_id.l10n_br_origin,
                                  inv_line.l10n_br_icms_origem)
 
-                self.assertEqual(line.incluir_ipi_base,
+                self.assertEqual(line.l10n_br_incluir_ipi_base,
                                  inv_line.l10n_br_incluir_ipi_base)
-                self.assertEqual(line.icms_st_aliquota_mva,
+                self.assertEqual(line.l10n_br_icms_st_aliquota_mva,
                                  inv_line.l10n_br_icms_st_aliquota_mva)
-                self.assertEqual(line.icms_aliquota_reducao_base,
+                self.assertEqual(line.l10n_br_icms_aliquota_reducao_base,
                                  inv_line.l10n_br_icms_aliquota_reducao_base)
-                self.assertEqual(
-                    line.icms_st_aliquota_reducao_base,
-                    inv_line.l10n_br_icms_st_aliquota_reducao_base)
-                self.assertEqual(line.tem_difal,
+                self.assertEqual(line.l10n_br_icms_st_aliquota_reducao_base,
+                                 inv_line.l10n_br_icms_st_aliquota_reducao_base)
+                self.assertEqual(line.l10n_br_tem_difal,
                                  inv_line.l10n_br_tem_difal)
-                self.assertEqual(line.ipi_cst, inv_line.l10n_br_ipi_cst)
-                self.assertEqual(line.ipi_reducao_bc,
+                self.assertEqual(line.l10n_br_ipi_cst,
+                                 inv_line.l10n_br_ipi_cst)
+                self.assertEqual(line.l10n_br_ipi_reducao_bc,
                                  inv_line.l10n_br_ipi_reducao_bc)
-                self.assertEqual(line.pis_cst,
+                self.assertEqual(line.l10n_br_pis_cst,
                                  inv_line.l10n_br_pis_cst)
-                self.assertEqual(line.cofins_cst,
+                self.assertEqual(line.l10n_br_cofins_cst,
                                  inv_line.l10n_br_cofins_cst)

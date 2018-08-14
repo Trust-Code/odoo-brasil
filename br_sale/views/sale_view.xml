@@ -10,62 +10,62 @@
                 <attribute name="domain">['|', ('l10n_br_fiscal_type', '=', None), ('l10n_br_fiscal_type', '=', 'saida')]</attribute>
             </field>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="before">
-                <field name="icms_rule_id" invisible="1" />
-                <field name="ipi_rule_id" invisible="1" />
-                <field name="pis_rule_id" invisible="1" />
-                <field name="cofins_rule_id" invisible="1" />
-                <field name="issqn_rule_id" invisible="1" />
-                <field name="ii_rule_id" invisible="1" />
-                <field name="cfop_id" invisible="1" />
-                <field name="incluir_ipi_base" invisible="1" />
-                <field name="icms_cst_normal" invisible="1" />
-                <field name="icms_csosn_simples" invisible="1" />
-                <field name="icms_st_aliquota_mva" invisible="1" />
-                <field name="aliquota_icms_proprio" invisible="1" />
-                <field name="icms_aliquota_reducao_base" invisible="1" />
-                <field name="icms_st_aliquota_reducao_base" invisible="1" />
-                <field name="icms_st_aliquota_deducao" invisible="1" />
-                <field name="tem_difal" invisible="1" />
-                <field name="ipi_cst" invisible="1" />
-                <field name="ipi_reducao_bc" invisible="1" />
-                <field name="pis_cst" invisible="1" />
-                <field name="cofins_cst" invisible="1" />
+                <field name="l10n_br_icms_rule_id" invisible="1" />
+                <field name="l10n_br_ipi_rule_id" invisible="1" />
+                <field name="l10n_br_pis_rule_id" invisible="1" />
+                <field name="l10n_br_cofins_rule_id" invisible="1" />
+                <field name="l10n_br_issqn_rule_id" invisible="1" />
+                <field name="l10n_br_ii_rule_id" invisible="1" />
+                <field name="l10n_br_cfop_id" invisible="1" />
+                <field name="l10n_br_incluir_ipi_base" invisible="1" />
+                <field name="l10n_br_icms_cst_normal" invisible="1" />
+                <field name="l10n_br_icms_csosn_simples" invisible="1" />
+                <field name="l10n_br_icms_st_aliquota_mva" invisible="1" />
+                <field name="l10n_br_aliquota_icms_proprio" invisible="1" />
+                <field name="l10n_br_icms_aliquota_reducao_base" invisible="1" />
+                <field name="l10n_br_icms_st_aliquota_reducao_base" invisible="1" />
+                <field name="l10n_br_icms_st_aliquota_deducao" invisible="1" />
+                <field name="l10n_br_tem_difal" invisible="1" />
+                <field name="l10n_br_ipi_cst" invisible="1" />
+                <field name="l10n_br_ipi_reducao_bc" invisible="1" />
+                <field name="l10n_br_pis_cst" invisible="1" />
+                <field name="l10n_br_cofins_cst" invisible="1" />
                 <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
-                <field name="icms_rule_id" invisible="1" />
-                <field name="ipi_rule_id" invisible="1" />
-                <field name="pis_rule_id" invisible="1" />
-                <field name="cofins_rule_id" invisible="1" />
-                <field name="issqn_rule_id" invisible="1" />
-                <field name="ii_rule_id" invisible="1" />
-                <field name="detalhes_calculo" />
-                <field name="cfop_id" invisible="1" />
-                <field name="incluir_ipi_base" invisible="1" />
-                <field name="icms_cst_normal" invisible="1" />
-                <field name="icms_csosn_simples" invisible="1" />
-                <field name="icms_st_aliquota_mva" invisible="1" />
-                <field name="aliquota_icms_proprio" invisible="1" />
-                <field name="icms_aliquota_reducao_base" invisible="1" />
-                <field name="icms_st_aliquota_reducao_base" invisible="1" />
-                <field name="icms_st_aliquota_deducao" invisible="1" />
-                <field name="tem_difal" invisible="1" />
-                <field name="ipi_cst" invisible="1" />
-                <field name="ipi_reducao_bc" invisible="1" />
-                <field name="pis_cst" invisible="1" />
-                <field name="cofins_cst" invisible="1" />
+                <field name="l10n_br_icms_rule_id" invisible="1" />
+                <field name="l10n_br_ipi_rule_id" invisible="1" />
+                <field name="l10n_br_pis_rule_id" invisible="1" />
+                <field name="l10n_br_cofins_rule_id" invisible="1" />
+                <field name="l10n_br_issqn_rule_id" invisible="1" />
+                <field name="l10n_br_ii_rule_id" invisible="1" />
+                <field name="l10n_br_detalhes_calculo" />
+                <field name="l10n_br_cfop_id" invisible="1" />
+                <field name="l10n_br_incluir_ipi_base" invisible="1" />
+                <field name="l10n_br_icms_cst_normal" invisible="1" />
+                <field name="l10n_br_icms_csosn_simples" invisible="1" />
+                <field name="l10n_br_icms_st_aliquota_mva" invisible="1" />
+                <field name="l10n_br_aliquota_icms_proprio" invisible="1" />
+                <field name="l10n_br_icms_aliquota_reducao_base" invisible="1" />
+                <field name="l10n_br_icms_st_aliquota_reducao_base" invisible="1" />
+                <field name="l10n_br_icms_st_aliquota_deducao" invisible="1" />
+                <field name="l10n_br_tem_difal" invisible="1" />
+                <field name="l10n_br_ipi_cst" invisible="1" />
+                <field name="l10n_br_ipi_reducao_bc" invisible="1" />
+                <field name="l10n_br_pis_cst" invisible="1" />
+                <field name="l10n_br_cofins_cst" invisible="1" />
                 <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
-                <field name="valor_bruto" widget="monetary" />
-                <field name="valor_desconto" invisible="1" />
+                <field name="l10n_br_valor_bruto" widget="monetary" />
+                <field name="l10n_br_valor_desconto" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/div[@name='discount']" position="after">
-                <field name="valor_bruto" />
-                <field name="valor_desconto" invisible="1" />
+                <field name="l10n_br_valor_bruto" />
+                <field name="l10n_br_valor_desconto" invisible="1" />
                 <field name="price_subtotal" />
             </xpath>
             <field name="amount_untaxed" position="attributes">
@@ -75,13 +75,13 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="amount_tax" position="before">
-                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
-                <field name="total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
+                <field name="l10n_br_total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="l10n_br_total_desconto" widget='monetary' options="{'currency_field': 'currency_id'}" groups="sale.group_discount_per_so_line" />
 
                 <div class="oe_subtotal_footer_separator oe_inline o_td_label">
-                    <label for="total_tax"/>
+                    <label for="l10n_br_total_tax"/>
                 </div>
-                <field name="total_tax" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_tax" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
             </field>
         </field>
     </record>
