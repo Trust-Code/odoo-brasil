@@ -229,7 +229,7 @@ class SaleOrderLine(models.Model):
         digits=dp.get_precision('Sale Price'), oldname='ipi_valor')
 
     l10n_br_pis_cst = fields.Char(string=u'CST PIS', size=5, oldname='pis_cst')
-    cofins_cst = fields.Char(
+    l10n_br_cofins_cst = fields.Char(
         string=u'CST COFINS', size=5,
         oldname='cofins_cst')
     l10n_br_issqn_deduction = fields.Float(
@@ -350,7 +350,7 @@ class SaleOrderLine(models.Model):
         res['l10n_br_product_type'] = self.product_id.l10n_br_fiscal_type
         res['l10n_br_company_fiscal_type'] = self.\
             company_id.l10n_br_fiscal_type
-        res['l10n_br_cfop_id'] = self.cfop_id.id
+        res['l10n_br_cfop_id'] = self.l10n_br_cfop_id.id
         ncm = self.product_id.l10n_br_fiscal_classification_id
         service = self.product_id.l10n_br_service_type_id
         res['l10n_br_fiscal_classification_id'] = ncm.id
@@ -382,9 +382,9 @@ class SaleOrderLine(models.Model):
             res['l10n_br_tributos_estimados_municipais']
         )
 
-        res['l10n_br_incluir_ipi_base'] = self.incluir_ipi_base
+        res['l10n_br_incluir_ipi_base'] = self.l10n_br_incluir_ipi_base
         res['l10n_br_icms_aliquota'] = icms.amount or 0.0
-        res['l10n_br_icms_st_aliquota_mva'] = self.icms_st_aliquota_mva
+        res['l10n_br_icms_st_aliquota_mva'] = self.l10n_br_icms_st_aliquota_mva
         res['l10n_br_icms_st_aliquota'] = icmsst.amount or 0.0
         res['l10n_br_icms_aliquota_reducao_base'] = self. \
             l10n_br_icms_aliquota_reducao_base
