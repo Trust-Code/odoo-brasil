@@ -14,9 +14,13 @@ class PurchaseOrder(models.Model):
         super(PurchaseOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.total_bruto + order.total_tax +
-                order.total_frete + order.total_seguro +
-                order.total_despesas - order.total_desconto,
+                'amount_total': (
+                        order.l10n_br_total_bruto +
+                        order.l10n_br_total_tax +
+                        order.total_frete +
+                        order.total_seguro +
+                        order.total_despesas -
+                        order.total_desconto),
             })
         self._onchange_despesas_frete_seguro()
 
@@ -44,7 +48,7 @@ class PurchaseOrder(models.Model):
         amount = 0
         for line in self.order_line:
             if line.product_id.l10n_br_fiscal_type == 'product':
-                amount += line.valor_bruto
+                amount += line.l10n_br_valor_bruto
         return amount
 
     @api.onchange('total_despesas', 'total_seguro',

@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_st_aliquota_deducao
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_st_aliquota_deducao
 msgid "% Dedução"
 msgstr "% Dedução"
 
@@ -41,17 +41,17 @@ msgid "<strong>Total</strong>"
 msgstr "Total"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_aliquota_icms_proprio
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_aliquota_icms_proprio
 msgid "Alíquota ICMS Próprio (%)"
 msgstr "Alíquota ICMS Próprio (%)"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_st_aliquota_mva
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_st_aliquota_mva
 msgid "Alíquota MVA (%)"
 msgstr "Alíquota MVA (%)"
 
 #. module: br_sale
-#: model:ir.model.fields,help:br_sale.field_sale_order_line_icms_st_aliquota_deducao
+#: model:ir.model.fields,help:br_sale.field_sale_order_line_l10n_br_icms_st_aliquota_deducao
 msgid "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional"
 msgstr "Alíquota interna ou interestadual aplicada          sobre o valor da operação para deduzir do ICMS ST - Para empresas          do Simples Nacional"
 
@@ -61,37 +61,37 @@ msgid "CEPs"
 msgstr "CEPs"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_cfop_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_cfop_id
 msgid "CFOP"
 msgstr "CFOP"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_csosn_simples
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_csosn_simples
 msgid "CSOSN ICMS"
 msgstr "CSOSN ICMS"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_cofins_cst
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_cofins_cst
 msgid "CST COFINS"
 msgstr "CST COFINS"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_cst_normal
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_cst_normal
 msgid "CST ICMS"
 msgstr "CST ICMS"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_ipi_cst
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_ipi_cst
 msgid "CST IPI"
 msgstr "CST IPI"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_pis_cst
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_pis_cst
 msgid "CST PIS"
 msgstr "CST PIS"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_total_desconto
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_l10n_br_total_desconto
 msgid "Desconto Total ( - )"
 msgstr "Desconto Total ( - )"
 
@@ -106,27 +106,27 @@ msgid "Desconto por valor"
 msgstr "Desconto por valor"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_detalhes_calculo
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_detalhes_calculo
 msgid "Detalhes Cálculo"
 msgstr "Detalhes Cálculo"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_total_icms_st
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_l10n_br_total_icms_st
 msgid "ICMS ST"
 msgstr "ICMS ST"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_total_ipi
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_l10n_br_total_ipi
 msgid "IPI"
 msgstr "IPI"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_total_tax
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_l10n_br_total_tax
 msgid "Impostos ( + )"
 msgstr "Impostos ( + )"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_incluir_ipi_base
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_incluir_ipi_base
 msgid "Incluir IPI na Base ICMS"
 msgstr "Incluir IPI na Base ICMS"
 
@@ -136,12 +136,12 @@ msgid "Municípios"
 msgstr "Municípios"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_tem_difal
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_tem_difal
 msgid "Possui Difal"
 msgstr "Possui Difal"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_price_without_tax
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_price_without_tax
 msgid "Preço Base"
 msgstr "Preço Base"
 
@@ -151,17 +151,17 @@ msgid "Quotation"
 msgstr "Cotação"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_aliquota_reducao_base
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_aliquota_reducao_base
 msgid "Redução Base ICMS (%)"
 msgstr "Redução Base ICMS (%)"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_st_aliquota_reducao_base
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_st_aliquota_reducao_base
 msgid "Redução Base ICMS ST(%)"
 msgstr "Redução Base ICMS ST(%)"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_ipi_reducao_bc
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_ipi_reducao_bc
 msgid "Redução Base IPI (%)"
 msgstr "Redução Base IPI (%)"
 
@@ -171,32 +171,32 @@ msgid "Regiões"
 msgstr "Regiões"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_cofins_rule_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_cofins_rule_id
 msgid "Regra COFINS"
 msgstr "Regra COFINS"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_rule_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_rule_id
 msgid "Regra ICMS"
 msgstr "Regra ICMS"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_ii_rule_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_ii_rule_id
 msgid "Regra II"
 msgstr "Regra II"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_ipi_rule_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_ipi_rule_id
 msgid "Regra IPI"
 msgstr "Regra IPI"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_issqn_rule_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_issqn_rule_id
 msgid "Regra ISSQN"
 msgstr "Regra ISSQN"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_pis_rule_id
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_pis_rule_id
 msgid "Regra PIS"
 msgstr "Regra PIS"
 
@@ -206,31 +206,31 @@ msgid "Sales Order Line"
 msgstr "Linha do Pedido de Vendas"
 
 #. module: br_sale
-#: model:ir.model.fields,help:br_sale.field_sale_order_total_desconto
+#: model:ir.model.fields,help:br_sale.field_sale_order_l10n_br_total_desconto
 msgid "The discount amount."
 msgstr "The discount amount."
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_total_bruto
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_l10n_br_total_bruto
 msgid "Total Bruto ( = )"
 msgstr "Total Bruto ( = )"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_icms_st_valor
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_icms_st_valor
 msgid "Valor ICMS ST"
 msgstr "Valor ICMS ST"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_ipi_valor
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_ipi_valor
 msgid "Valor IPI"
 msgstr "Valor IPI"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_valor_bruto
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_valor_bruto
 msgid "Vlr. Bruto"
 msgstr "Vlr. Bruto"
 
 #. module: br_sale
-#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_valor_desconto
+#: model:ir.model.fields,field_description:br_sale.field_sale_order_line_l10n_br_valor_desconto
 msgid "Vlr. Desc. (-)"
 msgstr "Vlr. Desc. (-)"

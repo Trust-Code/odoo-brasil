@@ -1,4 +1,4 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "br_account_fiscal_document","br_account.fiscal.document","br_account.model_br_account_fiscal_document","sales_team.group_sale_salesman",1,0,0,0
 "br_account_document_serie","br_account.document.serie","br_account.model_br_account_document_serie","sales_team.group_sale_salesman",1,0,0,0
-"br_account_cnae","l10n_br_account.cnae","br_account.model_br_account_cnae","sales_team.group_sale_salesman",1,0,0,0
+"br_account_cnae","br_account.cnae","br_account.model_br_account_cnae","sales_team.group_sale_salesman",1,0,0,0
