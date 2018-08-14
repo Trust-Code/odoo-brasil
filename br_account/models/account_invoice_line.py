@@ -638,9 +638,9 @@ class AccountInvoiceLine(models.Model):
                 price * (ncm.municipal_imposto / 100))
 
         self.l10n_br_tributos_estimados = (
-                self.l10n_br_tributos_estimados_federais +
-                self.l10n_br_tributos_estimados_estaduais +
-                self.l10n_br_tributos_estimados_municipais
+            self.l10n_br_tributos_estimados_federais +
+            self.l10n_br_tributos_estimados_estaduais +
+            self.l10n_br_tributos_estimados_municipais
         )
 
     @api.onchange('price_subtotal')
@@ -662,13 +662,13 @@ class AccountInvoiceLine(models.Model):
         other_taxes = self.invoice_line_tax_ids.filtered(
             lambda x: not x.l10n_br_domain)
         self.invoice_line_tax_ids = (
-                other_taxes | self.l10n_br_tax_icms_id |
-                self.l10n_br_tax_icms_st_id | self.l10n_br_tax_icms_inter_id |
-                self.l10n_br_tax_icms_intra_id | self.l10n_br_tax_icms_fcp_id |
-                self.l10n_br_tax_ipi_id | self.l10n_br_tax_pis_id |
-                self.l10n_br_tax_cofins_id | self.l10n_br_tax_issqn_id |
-                self.l10n_br_tax_ii_id | self.l10n_br_tax_csll_id |
-                self.l10n_br_tax_irrf_id | self.l10n_br_tax_inss_id
+            other_taxes | self.l10n_br_tax_icms_id |
+            self.l10n_br_tax_icms_st_id | self.l10n_br_tax_icms_inter_id |
+            self.l10n_br_tax_icms_intra_id | self.l10n_br_tax_icms_fcp_id |
+            self.l10n_br_tax_ipi_id | self.l10n_br_tax_pis_id |
+            self.l10n_br_tax_cofins_id | self.l10n_br_tax_issqn_id |
+            self.l10n_br_tax_ii_id | self.l10n_br_tax_csll_id |
+            self.l10n_br_tax_irrf_id | self.l10n_br_tax_inss_id
         )
 
     @api.onchange('l10n_br_tax_icms_id')
