@@ -60,8 +60,10 @@ class AccountInvoiceLine(models.Model):
                  'ipi_reducao_bc', 'icms_st_aliquota_mva',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
                  'icms_st_aliquota_deducao', 'icms_st_base_calculo_manual',
-                 'icms_base_calculo_manual', 'ipi_base_calculo_manual',
-                 'pis_base_calculo_manual', 'cofins_base_calculo_manual',
+                 'icms_base_calculo_manual', 'icms_base_calculo',
+                 'ipi_base_calculo_manual', 'ipi_base_calculo',
+                 'pis_base_calculo_manual', 'pis_base_calculo',
+                 'cofins_base_calculo_manual', 'cofins_base_calculo',
                  'icms_st_aliquota_deducao', 'ii_base_calculo',
                  'icms_aliquota_inter_part', 'l10n_br_issqn_deduction')
     def _compute_price(self):
