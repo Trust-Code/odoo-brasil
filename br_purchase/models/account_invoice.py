@@ -11,7 +11,7 @@ class AccountInvoice(models.Model):
     def _prepare_invoice_line_from_po_line(self, line):
         res = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(
             line)
-        res['l10n_br_valor_bruto'] = line.l10n_br_valor_bruto
+        res['valor_bruto'] = line.l10n_br_valor_bruto
 
         # Improve this one later
         icms = line.taxes_id.filtered(lambda x: x.l10n_br_domain == 'icms')
