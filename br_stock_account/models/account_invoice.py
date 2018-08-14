@@ -141,8 +141,7 @@ class AccountInvoiceLine(models.Model):
             self.pis_base_calculo = cif
             self.cofins_base_calculo = cif
             self.ipi_base_calculo = cif + self.ii_valor
-            self.icms_base_calculo = cif + self.ii_valor + \
-                self.pis_valor + self.cofins_valor + self.ii_valor_despesas
+            self.atualiza_base_icms()
 
     def atualiza_base_ipi(self):
         if self.invoice_id.pos_fiscal == 'import':
@@ -152,29 +151,31 @@ class AccountInvoiceLine(models.Model):
     def atualiza_base_icms(self):
         if self.invoice_id.pos_fiscal == 'import':
             cif = self.price_subtotal + self.valor_frete + self.valor_seguro
-            self.icms_base_calculo = cif + self.ii_valor + \
+            icms_base1 = cif + self.ii_valor + \
                 self.pis_valor + self.cofins_valor + self.ii_valor_despesas
+            self.icms_base_calculo = icms_base1 / (1 - self.tax_icms_id.amount)
 
     @api.one
     @api.depends('valor_frete', 'valor_seguro',
                  'outras_despesas', 'price_subtotal')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
-
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
         self.atualiza_bases_manuais()
 
-    @api.onchange('ii_base_calculo')
+    @api.onchange('ii_valor')
     def _onchange_ii_base(self):
         self.atualiza_base_ipi()
+        self.atualiza_base_icms()
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
         super(AccountInvoiceLine, self)._br_account_onchange_product_id()
         self.atualiza_bases_manuais()
 
-    @api.onchange('ii_valor', 'ii_valor_despesas', 'pis_valor', 'cofins_valor')
-    def _onchange_bases_icms(self):
+    @api.onchange('ii_valor_despesas', 'pis_valor',
+                  'cofins_valor', 'tax_icms_id')
+    def _onchange_dependencies_icms(self):
         self.atualiza_base_icms()
