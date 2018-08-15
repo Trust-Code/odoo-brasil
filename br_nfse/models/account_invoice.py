@@ -31,7 +31,10 @@ class AccountInvoice(models.Model):
         res['serie'] = serie_id.id
         res['serie_documento'] = serie_id.code
         res['model'] = serie_id.fiscal_document_id.code
-        res['numero'] = serie_id.internal_sequence_id.next_by_id()
+
+        # Feito para evitar que o número seja incrementado duas vezes
+        if 'numero' not in res:
+            res['numero'] = serie_id.internal_sequence_id.next_by_id()
         return res
 
 
