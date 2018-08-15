@@ -134,48 +134,57 @@ class AccountInvoiceLine(models.Model):
         })
         return res
 
-    def atualiza_bases_manuais(self):
+    def atualiza_bases_manuais(self, total_com_desconto):
         if self.invoice_id.pos_fiscal == 'import':
-            cif = self.price_subtotal + self.valor_frete + self.valor_seguro
-            self.ii_base_calculo = cif
-            self.pis_base_calculo = cif
-            self.cofins_base_calculo = cif
-            self.ipi_base_calculo = cif + self.ii_valor
-            self.atualiza_base_icms()
+            cif = total_com_desconto + self.valor_frete + self.valor_seguro
+            self.update({
+                'ii_base_calculo': cif,
+                'pis_base_calculo': cif,
+                'cofins_base_calculo': cif,
+                'ipi_base_calculo': cif + self.ii_valor})
+            self.atualiza_base_icms(total_com_desconto)
 
-    def atualiza_base_ipi(self):
+    def atualiza_base_ipi(self, total_com_desconto):
         if self.invoice_id.pos_fiscal == 'import':
-            cif = self.price_subtotal + self.valor_frete + self.valor_seguro
-            self.ipi_base_calculo = cif + self.ii_valor
+            cif = total_com_desconto + self.valor_frete + self.valor_seguro
+            self.update({'ipi_base_calculo': cif + self.ii_valor})
 
-    def atualiza_base_icms(self):
+    def atualiza_base_icms(self, total_com_desconto):
         if self.invoice_id.pos_fiscal == 'import':
-            cif = self.price_subtotal + self.valor_frete + self.valor_seguro
+            cif = total_com_desconto + self.valor_frete + self.valor_seguro
             icms_base1 = cif + self.ii_valor + \
                 self.pis_valor + self.cofins_valor + self.ii_valor_despesas
-            self.icms_base_calculo = icms_base1 / (1 - self.tax_icms_id.amount)
+            self.update({'icms_base_calculo': icms_base1 / (
+                            1 - self.tax_icms_id.amount)})
 
     @api.one
-    @api.depends('valor_frete', 'valor_seguro',
-                 'outras_despesas', 'price_subtotal')
+    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
-        super(AccountInvoiceLine, self)._compute_price()
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
-        self.atualiza_bases_manuais()
+        total_produto = self.price_unit * self.quantity
+        total = (total_produto) - (total_produto * self.discount / 100.0)
+        self.atualiza_bases_manuais(total)
+        super(AccountInvoiceLine, self)._compute_price()
 
     @api.onchange('ii_valor')
     def _onchange_ii_base(self):
-        self.atualiza_base_ipi()
-        self.atualiza_base_icms()
+        total_produto = self.price_unit * self.quantity
+        total_com_desconto = total_produto * self.discount / 100.0
+        self.atualiza_base_ipi(total_com_desconto)
+        self.atualiza_base_icms(total_com_desconto)
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
+        total_produto = self.price_unit * self.quantity
+        total_com_desconto = total_produto * self.discount / 100.0
+        self.atualiza_bases_manuais(total_com_desconto)
         super(AccountInvoiceLine, self)._br_account_onchange_product_id()
-        self.atualiza_bases_manuais()
 
     @api.onchange('ii_valor_despesas', 'pis_valor',
                   'cofins_valor', 'tax_icms_id')
     def _onchange_dependencies_icms(self):
-        self.atualiza_base_icms()
+        total_produto = self.price_unit * self.quantity
+        total_com_desconto = total_produto * self.discount / 100.0
+        self.atualiza_base_icms(total_com_desconto)
