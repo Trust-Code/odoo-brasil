@@ -208,7 +208,7 @@ class AccountInvoice(models.Model):
     l10n_br_ipi_base = fields.Float(
         string='Base IPI', store=True, digits=dp.get_precision('Account'),
         compute='_compute_amount', oldname='ipi_base')
-    l10n_br_l10n_br_ipi_base_other = fields.Float(
+    l10n_br_ipi_base_other = fields.Float(
         string="Base IPI Outras", store=True,
         digits=dp.get_precision('Account'), compute='_compute_amount',
         oldname='ipi_base_other')
@@ -456,7 +456,7 @@ class AccountInvoice(models.Model):
 
         res['l10n_br_product_document_id'] = \
             invoice.l10n_br_product_document_id.id
-        res['product_serie_id'] = invoice.l10n_br_product_serie_id.id
+        res['l10n_br_product_serie_id'] = invoice.l10n_br_product_serie_id.id
         res['l10n_br_service_document_id'] = \
             invoice.l10n_br_service_document_id.id
         res['l10n_br_service_serie_id'] = invoice.l10n_br_service_serie_id.id
