@@ -131,6 +131,8 @@ class AccountInvoiceLine(models.Model):
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
+            'fiscal_type': self.invoice_id.fiscal_position_id.fiscal_type,
+            'ii_despesas': self.ii_valor_despesas,
         })
         return res
 
