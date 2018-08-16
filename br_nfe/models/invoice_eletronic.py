@@ -759,15 +759,9 @@ class InvoiceEletronic(models.Model):
             cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
-        print('?'*100)
-        print(nfe_values)
         lote = self._prepare_lote(self.id, nfe_values)
-        print('.'*100)
-        print(lote)
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
-        print('*'*100)
-        print(xml_enviar)
         mensagens_erro = valida_nfe(xml_enviar)
         if mensagens_erro:
             raise UserError(mensagens_erro)
