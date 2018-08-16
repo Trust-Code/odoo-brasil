@@ -458,13 +458,12 @@ def validate_cpf(cpf):
     :Parameters:
       - 'cpf': CPF to be validate.
     """
-    if not cpf.isdigit():
-        cpf = re.sub('[^0-9]', '', cpf)
+    cpf = re.sub('[^0-9]', '', cpf)
 
-    if len(cpf) != 11:
+    if len(cpf) != 11 or cpf == cpf[0] * len(cpf):
         return False
 
-    # Pega apenas os 9 primeiros dígitos do CPF e gera os 2 dígitos
+    # Pega apenas os 9 primeiros dígitos do CPF e gera os 2 dígitos que faltam
     cpf = list(map(int, cpf))
     novo = cpf[:9]
 
@@ -480,5 +479,4 @@ def validate_cpf(cpf):
     # Se o número gerado coincidir com o número original, é válido
     if novo == cpf:
         return True
-
     return False

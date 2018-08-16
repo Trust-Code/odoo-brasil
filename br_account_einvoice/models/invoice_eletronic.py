@@ -23,8 +23,8 @@ STATE = {'edit': [('readonly', False)]}
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
-
     _inherit = ['mail.thread']
+    _order = 'id desc'
 
     code = fields.Char(
         u'Código', size=100, required=True, readonly=True, states=STATE)
@@ -51,7 +51,8 @@ class InvoiceEletronic(models.Model):
          ('008', u'NFS-e - Provedor SIMPLISS'),
          ('009', u'NFS-e - Provedor SUSESU'),
          ('010', u'NFS-e Imperial - Petrópolis'),
-         ('012', u'NFS-e - Florianópolis')],
+         ('012', u'NFS-e - Florianópolis'),
+         ('015', u'NFS-e - Maringá')],
         string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
@@ -88,7 +89,7 @@ class InvoiceEletronic(models.Model):
     partner_shipping_id = fields.Many2one(
         'res.partner', string=u'Entrega', readonly=True, states=STATE)
     payment_term_id = fields.Many2one(
-        'account.payment.term', string=u'Forma pagamento',
+        'account.payment.term', string='Condição pagamento',
         readonly=True, states=STATE)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
@@ -432,7 +433,20 @@ class InvoiceEletronic(models.Model):
 
     def log_exception(self, exc):
         self.codigo_retorno = -1
-        self.mensagem_retorno = exc.message
+        self.mensagem_retorno = str(exc)
+
+    def notify_user(self):
+        redirect = {
+            'name': 'Invoices',
+            'model': 'account.invoice',
+            'view': 'form',
+            'domain': [['id', '=', self.invoice_id.id]],
+            'context': {}
+        }
+        msg = 'Verifique a %s, ocorreu um problema com o envio de \
+        documento eletrônico!' % self.name
+        self.create_uid.notify(msg, sticky=True, title="Ação necessária!",
+                               warning=True, redirect=redirect)
 
     def _get_state_to_send(self):
         return ('draft',)
@@ -448,6 +462,7 @@ class InvoiceEletronic(models.Model):
                 item.action_send_eletronic_invoice()
             except Exception as e:
                 item.log_exception(e)
+                item.notify_user()
 
     def _find_attachment_ids_email(self):
         return []

@@ -28,10 +28,12 @@ class AccountInvoice(models.Model):
             inv, inv_lines, serie_id)
         res['nfse_eletronic'] = inv.nfse_eletronic
         res['ambiente'] = inv.ambiente_nfse
-        res['serie'] = inv.l10n_br_service_serie_id.id
-        res['serie_documento'] = inv.l10n_br_service_serie_id.code
-        res['model'] = inv.l10n_br_service_document_id.code
-        res['numero'] = serie_id.internal_sequence_id.next_by_id()
+        res['serie'] = serie_id.id
+        res['serie_documento'] = serie_id.code
+        res['model'] = serie_id.fiscal_document_id.code
+        # Feito para evitar que o número seja incrementado duas vezes
+        if 'numero' not in res:
+            res['numero'] = serie_id.internal_sequence_id.next_by_id()
         return res
 
 

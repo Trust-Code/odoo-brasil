@@ -48,16 +48,16 @@ class AccountInvoice(models.Model):
         return super(AccountInvoice, self).action_invoice_draft()
 
     def invoice_print(self):
-        if self.l10n_br_product_document_id.code == '55':
-            docs = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', self.id)])
+        doc = self.env['invoice.eletronic'].search(
+            [('invoice_id', '=', self.id)], limit=1)
+        if doc.model == '55':
             return self.env.ref(
-                'br_nfe.report_br_nfe_danfe').report_action(docs)
+                'br_nfe.report_br_nfe_danfe').report_action(doc)
         else:
             return super(AccountInvoice, self).invoice_print()
 
     def _return_pdf_invoice(self, doc):
-        if self.l10n_br_product_document_id.code == '55':
+        if doc.model == '55':
             return 'br_nfe.report_br_nfe_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
@@ -82,7 +82,13 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_edoc_vals(
             inv, inv_lines, serie_id)
 
-        numero_nfe = self.action_number(serie_id)
+        # Feito para evitar que o número seja incrementado duas vezes
+        if 'numero' not in res:
+            numero_nfe = self.action_number(serie_id)
+        else:
+            numero_nfe = res['numero']
+
+        res['payment_mode_id'] = inv.payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.l10n_br_fiscal_comment
@@ -95,12 +101,12 @@ class AccountInvoice(models.Model):
         res['valor_icms_uf_remet'] = inv.l10n_br_valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.l10n_br_valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.l10n_br_valor_icms_fcp_uf_dest
-        res['serie'] = inv.l10n_br_product_serie_id.id
-        res['serie_documento'] = inv.l10n_br_product_document_id.code
-        res['model'] = inv.l10n_br_product_document_id.code
+        res['serie'] = serie_id.id
+        res['serie_documento'] = serie_id.code
+        res['model'] = serie_id.fiscal_document_id.code
         res['numero_nfe'] = numero_nfe
         res['numero'] = numero_nfe
-        res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe,
+        res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
 
@@ -141,7 +147,7 @@ class AccountInvoice(models.Model):
         for parcela in \
                 inv.l10n_br_receivable_move_line_ids.sorted(lambda x: x.name):
             duplicatas.append((0, None, {
-                'numero_duplicata': "%s/%02d" % (inv.internal_number, count),
+                'numero_duplicata': "%03d" % count,
                 'data_vencimento': parcela.date_maturity,
                 'valor': parcela.credit or parcela.debit,
             }))
