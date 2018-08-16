@@ -253,8 +253,7 @@ class ResPartner(models.Model):
                     msg = "%s - %s" % (info.cStat, info.xMotivo)
                     raise UserError(msg)
             else:
-                raise UserError(_(
-                    u"No answer - did you verify if your "
-                    u"certificate is valid?"))
+                msg = "%s - %s" % (info.cStat, info.xMotivo)
+                raise UserError(msg)
         else:
             raise UserError(_(u'Fill the State and CNPJ fields to search'))

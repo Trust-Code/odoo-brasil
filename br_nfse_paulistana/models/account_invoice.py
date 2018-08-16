@@ -9,7 +9,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     def _return_pdf_invoice(self, doc):
-        if self.service_document_id.code == '001':  # Paulistana
+        if doc.model == '001':  # Paulistana
             return 'br_nfse_paulistana.report_br_nfse_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 

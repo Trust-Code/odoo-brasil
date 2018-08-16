@@ -13,14 +13,17 @@
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': [
-        'Danimar Ribeiro <danimaribeiro@gmail.com>'
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Johny Chen Jy <johnychenjy@gmail.com>',
     ],
     'depends': [
         'br_nfse',
     ],
     'data': [
         'views/br_account_service.xml',
+        'views/invoice_eletronic_view.xml',
         'views/res_company.xml',
+        'views/view_maringa_fiscal_position.xml',
         'reports/danfpse.xml',
     ],
     'application': True,

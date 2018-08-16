@@ -58,7 +58,8 @@ class ExportNfe(models.TransientModel):
                 invoice.generate_nfe_proc()
             if invoice.nfe_processada:
                 xmls.append({
-                    'content': base64.decodestring(invoice.nfe_processada),
+                    'content': base64.decodestring(
+                        invoice.nfe_processada).decode(),
                     'name': invoice.nfe_processada_name
                 })
 

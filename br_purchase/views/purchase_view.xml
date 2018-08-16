@@ -47,6 +47,11 @@
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
                 <attribute name="invisible">0</attribute>
             </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="before">
+                <field name="discount"
+                groups="sale.group_discount_per_so_line"/>
+                <field name="valor_desconto" invisible="1" />
+            </xpath>
             <field name="amount_untaxed" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
@@ -54,7 +59,13 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="amount_tax" position="before">
-                <field name="total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="total_bruto" widget='monetary'
+                options="{'currency_field': 'currency_id'}" />
+
+                <field name="total_desconto" widget='monetary'
+                options="{'currency_field': 'currency_id'}"
+                groups="sale.group_discount_per_so_line" />
+
                 <field name="total_tax" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
         </field>
