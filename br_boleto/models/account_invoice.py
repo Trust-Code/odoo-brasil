@@ -10,9 +10,12 @@ from odoo.exceptions import UserError
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    def _get_email_template_invoice(self):
+        return self.env.user.company_id.boleto_email_tmpl
+
     @api.multi
     def send_email_boleto_queue(self):
-        mail = self.env.user.company_id.boleto_email_tmpl
+        mail = self._get_email_template_invoice()
         if not mail:
             raise UserError('Modelo de email padrão não configurado')
 
@@ -24,8 +27,14 @@ class AccountInvoice(models.Model):
                 'origin_model': 'account.invoice',
                 'active_ids': [item.id],
             })
-            boleto, fmt = self.env['ir.actions.report'].render_report(
-                [item.id], 'br_boleto.report.print', {'report_type': u'pdf'})
+
+            attachment_obj = self.env['ir.attachment']
+            boleto_report = self.env['ir.actions.report'].search(
+                [('report_name', '=',
+                  'br_boleto.report.print')])
+            report_service = boleto_report.xml_id
+            boleto, dummy = self.env.ref(report_service).render_qweb_pdf(
+                [item.id])
 
             if boleto:
                 name = "boleto-%s-%s.pdf" % (
