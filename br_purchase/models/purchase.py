@@ -21,7 +21,7 @@ class PurchaseOrder(models.Model):
                 'amount_total': price_total,
                 'l10n_br_total_tax': price_total - price_subtotal,
                 'l10n_br_total_bruto': sum(l.l10n_br_valor_bruto
-                                   for l in order.order_line),
+                                           for l in order.order_line),
             })
 
     @api.multi

@@ -25,11 +25,11 @@ class SaleOrder(models.Model):
                 'l10n_br_total_ipi':
                     sum(l.l10n_br_ipi_valor for l in order.order_line),
                 'l10n_br_total_icms_st': sum(l.l10n_br_icms_st_valor
-                                     for l in order.order_line),
+                                             for l in order.order_line),
                 'l10n_br_total_desconto': sum(l.l10n_br_valor_desconto
-                                      for l in order.order_line),
+                                              for l in order.order_line),
                 'l10n_br_total_bruto': sum(l.l10n_br_valor_bruto
-                                   for l in order.order_line),
+                                           for l in order.order_line),
             })
 
     @api.multi
@@ -162,7 +162,8 @@ class SaleOrderLine(models.Model):
                 msg += [u'Red. Base ICMS ST (%%): %.2f' %
                         line.icms_st_aliquota_reducao_base]
             if line.l10n_br_ipi_reducao_bc:
-                msg += [u'Red. Base IPI (%%): %.2f' % line.l10n_br_ipi_reducao_bc]
+                msg += [u'Red. Base IPI (%%): %.2f' %
+                        line.l10n_br_ipi_reducao_bc]
 
             line.l10n_br_detalhes_calculo = u'\n'.join(msg)
 
