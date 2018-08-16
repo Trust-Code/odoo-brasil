@@ -26,6 +26,7 @@ class AccountInvoiceLine(models.Model):
 
     def _prepare_tax_context(self):
         return {
+            'fiscal_type': self.invoice_id.fiscal_position_id.fiscal_type,
             'incluir_ipi_base': self.incluir_ipi_base,
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
