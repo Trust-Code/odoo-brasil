@@ -217,7 +217,7 @@ class ResPartner(models.Model):
             if info.cStat == 111 or info.cStat == 112:
                 if not self.l10n_br_inscr_est:
                     self.l10n_br_inscr_est = info.infCad.IE.text
-                if not self.cnpj_cpf:
+                if not self.l10n_br_cnpj_cpf:
                     self.l10n_br_cnpj_cpf = info.infCad.CNPJ.text
 
                 def get_value(obj, prop):
