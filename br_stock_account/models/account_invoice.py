@@ -127,7 +127,15 @@ class AccountInvoiceLine(models.Model):
 
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        self.atualiza_bases_manuais(
+            (self.price_unit * self.quantity) -
+            (self.price_unit * self.quantity * (self.discount / 100.0)))
         res.update({
+            'ii_base_calculo': self.ii_base_calculo,
+            'pis_base_calculo': self.pis_base_calculo,
+            'cofins_base_calculo': self.cofins_base_calculo,
+            'ipi_base_calculo': self.ipi_base_calculo,
+            'icms_base_calculo': self.icms_base_calculo,
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
@@ -160,15 +168,16 @@ class AccountInvoiceLine(models.Model):
     @api.one
     @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
+        super(AccountInvoiceLine, self)._compute_price()
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
         total_produto = self.price_unit * self.quantity
-        total = (total_produto) - (total_produto * self.discount / 100.0)
-        self.atualiza_bases_manuais(total)
-        super(AccountInvoiceLine, self)._compute_price()
+        total_com_desconto = (total_produto) - (
+            total_produto * self.discount / 100.0)
+        self.atualiza_bases_manuais(total_com_desconto)
 
-    @api.onchange('ii_valor')
+    @api.onchange('ii_valor', 'ii_base_calculo')
     def _onchange_ii_base(self):
         total_produto = self.price_unit * self.quantity
         total_com_desconto = total_produto * self.discount / 100.0
@@ -177,10 +186,10 @@ class AccountInvoiceLine(models.Model):
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
+        super(AccountInvoiceLine, self)._br_account_onchange_product_id()
         total_produto = self.price_unit * self.quantity
         total_com_desconto = total_produto * self.discount / 100.0
         self.atualiza_bases_manuais(total_com_desconto)
-        super(AccountInvoiceLine, self)._br_account_onchange_product_id()
 
     @api.onchange('ii_valor_despesas', 'pis_valor',
                   'cofins_valor', 'tax_icms_id')
