@@ -23,7 +23,7 @@ class PurchaseOrder(models.Model):
                 'l10n_br_total_bruto': sum(l.l10n_br_valor_bruto
                                            for l in order.order_line),
                 'l10n_br_total_desconto': sum(l.l10n_br_valor_desconto
-                                      for l in order.order_line),
+                                              for l in order.order_line),
             })
 
     @api.multi
