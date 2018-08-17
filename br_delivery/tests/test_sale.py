@@ -65,7 +65,7 @@ class TestSaleOrder(TransactionCase):
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='545.770.154-98',
+            l10n_br_cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
             country_id=self.env.ref('base.br').id,
@@ -74,7 +74,7 @@ class TestSaleOrder(TransactionCase):
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='05.075.837/0001-13',
+            l10n_br_cnpj_cpf='05.075.837/0001-13',
             company_type='company',
             is_company=True,
             inscr_est='433.992.727',
