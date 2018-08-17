@@ -18,6 +18,9 @@
                     string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('55', '65'))]}">
                 </button>
             </button>
+            <field name="payment_term_id" position="after">
+                <field name="payment_mode_id" />
+            </field>
             <page name="totais" position="after">
                 <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
                     <group>

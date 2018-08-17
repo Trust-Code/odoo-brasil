@@ -20,7 +20,7 @@
                     <group>
                         <group name="delivery_info">
                             <field name="freight_responsibility"/>
-                            <field name="carrier_id"/>
+                            <field name="shipping_supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="vehicle_rntc"/>
@@ -72,7 +72,7 @@
                     <group>
                         <group name="delivery_info">
                             <field name="freight_responsibility"/>
-                            <field name="carrier_id"/>
+                            <field name="shipping_supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="vehicle_plate"/>
                             <field name="vehicle_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="vehicle_rntc"/>

@@ -2,7 +2,8 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class AccountPayment(models.Model):
@@ -24,6 +25,13 @@ class AccountPayment(models.Model):
     def _create_payment_entry(self, amount):
         self = self.with_context(move_line_to_reconcile=self.move_line_id)
         return super(AccountPayment, self)._create_payment_entry(amount)
+
+    def action_validate_invoice_payment(self):
+        if any(len(record.invoice_ids) > 1 for record in self):
+            # For multiple invoices, there is account.register.payments wizard
+            raise UserError(_("This method should only be called\
+to process a single invoice's payment."))
+        return self.post()
 
     @api.depends('partner_id', 'partner_type')
     def _compute_open_moves(self):

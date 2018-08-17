@@ -174,8 +174,8 @@ class TestBase(TransactionCase):
             partner.action_check_sefaz()
         self.env.ref('base.main_company').l10n_br_nfe_a1_password = '123456'
         self.env.ref('base.main_company').l10n_br_nfe_a1_file = \
-            base64.b64encode(open(os.path.join(
-                self.caminho, 'teste.pfx'), 'rb').read())
+            base64.b64encode(
+                open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read())
 
         # Consulta cadastro com sucesso
         xml_recebido = open(os.path.join(

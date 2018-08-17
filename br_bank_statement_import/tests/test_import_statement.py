@@ -48,9 +48,9 @@ class TestImportStatement(TransactionCase):
         self.assertEquals(lines[0].amount, -150.0)
         self.assertEquals(lines[0].name, u': SAQUE 24H 13563697')
         self.assertEquals(lines[0].ref, '20160926001')
-        self.assertEquals(stmt.balance_start, 10.0)
-        self.assertEquals(round(stmt.balance_end_real, 2), 914.45)
-        self.assertEquals(stmt.balance_end, 914.45)
+        self.assertEquals(stmt.balance_start, -894.45)
+        self.assertEquals(round(stmt.balance_end_real, 2), 10.0)
+        self.assertEquals(stmt.balance_end, 10.0)
 
     def test_import_ofx_bb(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato-bb.ofx')
@@ -67,9 +67,9 @@ class TestImportStatement(TransactionCase):
         self.assertEquals(lines[0].name,
                           u': Telefone Pre-Pago - TIM - Sao Paulo')
         self.assertEquals(lines[0].ref, '20160908120000')
-        self.assertEquals(stmt.balance_start, 172.61)
-        self.assertEquals(round(stmt.balance_end_real, 2), 338.13)
-        self.assertEquals(stmt.balance_end, 338.13)
+        self.assertEquals(stmt.balance_start, 7.09)
+        self.assertEquals(round(stmt.balance_end_real, 2), 172.61)
+        self.assertEquals(stmt.balance_end, 172.61)
 
     def test_import_ofx_itau(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato-itau.ofx')
@@ -85,9 +85,9 @@ class TestImportStatement(TransactionCase):
         self.assertEquals(lines[0].amount, -240.33)
         self.assertEquals(lines[0].name, u': SISPAG FORNECEDORES')
         self.assertEquals(lines[0].ref, '20160810002')
-        self.assertEquals(stmt.balance_start, -2690.0)
-        self.assertEquals(round(stmt.balance_end_real, 2), -10081.58)
-        self.assertEquals(stmt.balance_end, -10081.58)
+        self.assertEquals(stmt.balance_start, 4701.58)
+        self.assertEquals(round(stmt.balance_end_real, 2), -2690.0)
+        self.assertEquals(stmt.balance_end, -2690.0)
 
     def test_import_ofx_without_force(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato.ofx')

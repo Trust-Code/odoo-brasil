@@ -53,6 +53,9 @@
                 <field name="l10n_br_number" select="1" />
                 <field name="l10n_br_number_dig" select="1" />
             </field>
+            <field name="company_id" position="after">
+                <field name="partner_id" />
+            </field>
         </field>
     </record>
 

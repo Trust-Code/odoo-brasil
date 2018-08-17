@@ -27,7 +27,7 @@
         <field name="print_report_name">'%s - NF - %s.pdf' % (object.numero, object.partner_id.name)</field>
     </record>
 
-    <template id="danfse_report_template_bh">
+    <template id="danfse_report_template_mga">
         <style type="text/css">
             .col-xs-1, .col-xs-2,
             .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
@@ -40,7 +40,7 @@
         <div class="page">
             <div class="row" style="border: 1px solid black;">
                 <div class="col-xs-2">
-                    <img src="/br_nfse_maringa/static/img/nota-maringa.png" alt="Logo Nota Maringa"
+                    <img src="/br_nfse_mga/static/img/nota_maringa.png" alt="Logo Nota Maringa"
                         style="max-height:120px; margin-top:4px; margin-left:10px;" />
                 </div>
                 <div class="col-xs-7" style="padding:0px;text-align:center;font-size:18px;">
@@ -54,7 +54,7 @@
                     </t>
                     <t t-if="doc.state == 'done'">
                         <strong style="font-size:20px;">NOTA FISCAL ELETRÔNICA DE SERVIÇOS - NFS-e</strong><br />
-                        <strong style="font-size:20px;">- NOTA MGA -</strong><br />
+                        <strong style="font-size:20px;">- NOTA MARINGÁ -</strong><br />
                     </t>
                 </div>
                 <div class="col-xs-3" style="padding:0px;">
@@ -85,10 +85,10 @@
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
-                <div class="col-xs-1">
-                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                <div class="col-xs-2">
+                    <img style="height:65px;margin-top:15px;margin-left:10px" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
                 </div>
-                <div class="col-xs-11">
+                <div class="col-xs-10">
                     <div class="col-xs-12" style="text-align:center;">
                         <strong>PRESTADOR DE SERVIÇOS</strong>
                     </div>
@@ -176,7 +176,7 @@
             </div>
             <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
                 <div class="col-xs-12" style="text-align:center; font-size: 16px;">
-                    <strong>VALOR TOTAL DA NOTA = </strong>
+                    <strong>VALOR TOTAL DA NOTA </strong>
                     <strong t-field="doc.valor_final"
                         t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     <br />
