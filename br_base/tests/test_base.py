@@ -95,14 +95,16 @@ class TestBase(TransactionCase):
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sc').id,
         }
+        vals2 = {**vals}
+        vals3 = {**vals}
         partner = self.env['res.partner'].create(vals)
         self.assertTrue(partner)
         with self.assertRaises(ValidationError):
-            vals['l10n_br_cnpj_cpf'] = '63.116.726/0001-04'
-            self.env['res.partner'].create(vals)
-        vals['l10n_br_inscr_est'] = False
-        vals['l10n_br_cnpj_cpf'] = '07.343.961/0001-48'
-        partner = self.env['res.partner'].create(vals)
+            vals2['l10n_br_cnpj_cpf'] = '63.116.726/0001-04'
+            self.env['res.partner'].create(vals2)
+        vals3['l10n_br_inscr_est'] = False
+        vals3['l10n_br_cnpj_cpf'] = '07.343.961/0001-48'
+        partner = self.env['res.partner'].create(vals3)
         self.assertTrue(partner)
 
     def test_onchange_cnpj(self):
