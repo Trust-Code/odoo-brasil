@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.sequence" id="payment_cnab_name" >
+        <field name="name">Payment Cnab Name</field>
+        <field name="code">payment.cnab.name</field>
+        <field name="padding">5</field>
+        <field name="suffix">.REM</field>
+    </record>
+
+</odoo>

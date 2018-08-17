@@ -4,10 +4,10 @@
     <record id="br_cnab_payment_order_form_view" model="ir.ui.view">
         <field name="name">br_cnab.payment_order.form.view</field>
         <field name="model">payment.order</field>
-        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_form_view" />
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_form_view" />
         <field name="arch" type="xml">
             <group name="payment_order" position="before">
-                <div class="oe_button_box" name="button_box">
+                <div class="oe_button_box" name="button_box" attrs="{'invisible': [('type', '!=', 'receivable')]}">
                     <button name="gerar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB"/>
                 </div>
             </group>
@@ -22,7 +22,7 @@
     <record id="br_cnab_payment_order_tree_view" model="ir.ui.view">
         <field name="name">trustcode.payment_order.tree.view</field>
         <field name="model">payment.order</field>
-        <field name="inherit_id" ref="br_boleto.trustcode_payment_order_tree_view" />
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_tree_view" />
         <field name="type">tree</field>
         <field name="arch" type="xml" >
             <field name="state" position="after" >

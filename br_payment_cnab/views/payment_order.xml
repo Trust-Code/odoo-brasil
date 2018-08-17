@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="trustcode_payment_order_tree_other_info" model="ir.ui.view">
+        <field name="name"> payment_order_form_plus_other_information</field>
+        <field name="model">payment.order.line</field>
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_tree_view"/>
+        <field name="type">tree</field>
+        <field name="arch" type="xml" >
+            <field name= "partner_id" position="after">
+                <field name="invoice_date" />
+                <field name="bank_account_id" domain="[('partner_id', '=', partner_id)]" />
+            </field>
+        </field>
+    </record>
+
+    <record id="trustcode_payment_order_form" model="ir.ui.view">
+        <field name="name"> payment_order_form_plus_company</field>
+        <field name="model">payment.order</field>
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <group name="payment_order" position="before">
+                <div class="oe_button_box" name="button_payment_cnab" attrs="{'invisible': [('type', '!=', 'payable')]}">
+                    <button name="action_generate_payable_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB de Pagamentos"/>
+                </div>
+            </group>
+          <field name="amount_total" position="after">
+              <field name="company_id" invisible="0"/>
+          </field>
+        </field>
+    </record>
+
+</odoo>

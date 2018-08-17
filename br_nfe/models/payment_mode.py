@@ -20,4 +20,4 @@ class PaymentMode(models.Model):
          ('15', 'Boleto Bancário'),
          ('90', 'Sem pagamento'),
          ('99', 'Outros')],
-        string="Forma de Pagamento", default="14")
+        string="Forma de Pagamento", default="01")
