@@ -74,7 +74,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 'invoice_id': self.eletronic_doc_id.id,
                 'CNPJ': re.sub(
                     "[^0-9]", "",
-                    self.eletronic_doc_id.company_id.l10n_br_cnpj_cpf or ''),
+                    self.eletronic_doc_id.company_id.l10n_br_cnpj_cpf),
                 'cOrgao': self.
                 eletronic_doc_id.company_id.state_id.l10n_br_ibge_code,
                 'tpAmb': self.eletronic_doc_id.company_id.tipo_ambiente,

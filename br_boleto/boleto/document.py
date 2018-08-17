@@ -244,7 +244,7 @@ class BoletoItau(Boleto):
         self.account_number = move_line.payment_mode_id.\
             bank_account_id.acc_number
         self.branch_number = move_line.payment_mode_id.\
-            bank_account_id.bra_number
+            bank_account_id.l10n_br_number
         self.account_digit = move_line.payment_mode_id.\
             bank_account_id.acc_number_dig
         Boleto.__init__(self, move_line, nosso_numero)

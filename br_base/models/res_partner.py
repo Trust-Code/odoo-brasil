@@ -232,8 +232,7 @@ class ResPartner(models.Model):
                 self.street = get_value(info.infCad.ender, 'xLgr')
                 self.l10n_br_number = get_value(info.infCad.ender, 'nro')
                 self.street2 = get_value(info.infCad.ender, 'xCpl')
-                self.l10n_br_district = get_value(info.infCad.ender,
-                                                  'xBairro')
+                self.l10n_br_district = get_value(info.infCad.ender, 'xBairro')
                 cMun = get_value(info.infCad.ender, 'cMun')
                 xMun = get_value(info.infCad.ender, 'xMun')
                 city = None

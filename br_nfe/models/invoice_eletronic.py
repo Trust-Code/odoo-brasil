@@ -972,11 +972,13 @@ class InvoiceEletronic(models.Model):
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
 
     def action_get_status(self):
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = self.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(cert_pfx,
+                                  self.company_id.l10n_br_nfe_a1_password)
         consulta = {
-            'estado': self.company_id.state_id.ibge_code,
+            'estado': self.company_id.state_id.l10n_br_ibge_code,
             'ambiente': 2 if self.ambiente == 'homologacao' else 1,
             'modelo': self.model,
             'obj': {
