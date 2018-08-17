@@ -308,7 +308,8 @@ class AccountTax(models.Model):
         if not ii_tax:
             return []
         vals = self._tax_vals(ii_tax)
-        if "ii_base_calculo" in self.env.context:
+        if "ii_base_calculo" in self.env.context and \
+                self.env.context['ii_base_calculo'] > 0:
             price_base = self.env.context["ii_base_calculo"]
         vals['amount'] = ii_tax._compute_amount(price_base, 1.0)
         vals['base'] = price_base

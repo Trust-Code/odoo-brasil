@@ -60,10 +60,8 @@ class AccountInvoiceLine(models.Model):
                  'ipi_reducao_bc', 'icms_st_aliquota_mva',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
                  'icms_st_aliquota_deducao', 'icms_st_base_calculo_manual',
-                 'icms_base_calculo_manual', 'icms_base_calculo',
-                 'ipi_base_calculo_manual', 'ipi_base_calculo',
-                 'pis_base_calculo_manual', 'pis_base_calculo',
-                 'cofins_base_calculo_manual', 'cofins_base_calculo',
+                 'icms_base_calculo_manual', 'ipi_base_calculo_manual',
+                 'pis_base_calculo_manual', 'cofins_base_calculo_manual',
                  'icms_st_aliquota_deducao', 'ii_base_calculo',
                  'icms_aliquota_inter_part', 'l10n_br_issqn_deduction')
     def _compute_price(self):
@@ -160,6 +158,7 @@ class AccountInvoiceLine(models.Model):
             'cofins_valor': sum([x['amount'] for x in cofins]),
             'issqn_base_calculo': sum([x['base'] for x in issqn]),
             'issqn_valor': sum([x['amount'] for x in issqn]),
+            'ii_base_calculo': sum([x['base'] for x in ii]),
             'ii_valor': sum([x['amount'] for x in ii]),
             'csll_base_calculo': sum([x['base'] for x in csll]),
             'csll_valor': sum([x['amount'] for x in csll]),
