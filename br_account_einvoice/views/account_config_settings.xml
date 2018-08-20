@@ -16,8 +16,8 @@
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
-                                <label for="nfe_email_template" string="Modelo" class="col-md-3 o_light_label"/>
-                                <field name="nfe_email_template" />
+                                <label for="l10n_br_nfe_email_template" string="Modelo" class="col-md-3 o_light_label"/>
+                                <field name="l10n_br_nfe_email_template" />
                             </div>
                         </div>
                     </div>

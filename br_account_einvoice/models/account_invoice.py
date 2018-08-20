@@ -20,31 +20,36 @@ TYPE2EDOC = {
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'br.localization.filtering']
 
     @api.multi
     def _compute_total_edocs(self):
         for item in self:
-            item.total_edocs = self.env['invoice.eletronic'].search_count(
-                [('invoice_id', '=', item.id)])
+            item.l10n_br_total_edocs = \
+                self.env['invoice.eletronic'].search_count(
+                    [('invoice_id', '=', item.id)])
 
-    invoice_eletronic_ids = fields.One2many(
+    l10n_br_invoice_eletronic_ids = fields.One2many(
         'invoice.eletronic', 'invoice_id',
-        u'Documentos Eletrônicos', readonly=True)
-    invoice_model = fields.Char(
+        u'Documentos Eletrônicos', readonly=True,
+        oldname='invoice_eletronic_ids')
+    l10n_br_invoice_model = fields.Char(
         string="Modelo de Fatura", related="l10n_br_product_document_id.code",
-        readonly=True, store=True)
-    total_edocs = fields.Integer(string="Total NFe",
-                                 compute=_compute_total_edocs)
-    internal_number = fields.Integer(
+        readonly=True, store=True, oldname='invoice_model')
+    l10n_br_total_edocs = fields.Integer(string="Total NFe",
+                                 compute=_compute_total_edocs,
+                                 oldname='total_edocs')
+    l10n_br_internal_number = fields.Integer(
         'Invoice Number', readonly=True,
         states={'draft': [('readonly', False)]},
         help=u"""Unique number of the invoice, computed
-            automatically when the invoice is created.""")
+            automatically when the invoice is created.""",
+        oldname='internal_number')
 
     @api.multi
     def action_view_edocs(self):
-        if self.total_edocs == 1:
+        if self.l10n_br_total_edocs == 1:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
                 'br_account_einvoice', 'action_sped_base_eletronic_doc')
             dummy, view_id = self.env['ir.model.data'].get_object_reference(
@@ -112,8 +117,8 @@ class AccountInvoice(models.Model):
             'origem': line.l10n_br_icms_origem,
             'tributos_estimados': line.l10n_br_tributos_estimados,
             'ncm': line.l10n_br_fiscal_classification_id.code,
-            'pedido_compra': line.pedido_compra,
-            'item_pedido_compra': line.item_pedido_compra,
+            'pedido_compra': line.l10n_br_pedido_compra,
+            'item_pedido_compra': line.l10n_br_item_pedido_compra,
             # - ICMS -
             'icms_cst': line.l10n_br_icms_cst,
             'icms_aliquota': line.l10n_br_icms_aliquota,
@@ -291,9 +296,10 @@ class AccountInvoice(models.Model):
 
 
 class AccountInvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
+    _name = 'account.invoice.line'
+    _inherit = ['account.invoice.line', 'br.localization.filtering']
 
-    state = fields.Selection(
+    l10n_br_state = fields.Selection(
         string="Status",
         selection=[
             ('pendente', 'Pendente'),
@@ -302,12 +308,15 @@ class AccountInvoiceLine(models.Model):
         default='pendente',
         help="""Define a situação eletrônica do item da fatura.
                 Pendente: Ainda não foi transmitido eletronicamente.
-                Transmitido: Já foi transmitido eletronicamente."""
+                Transmitido: Já foi transmitido eletronicamente.""",
+        oldname='state'
     )
 
-    pedido_compra = fields.Char(
+    l10n_br_pedido_compra = fields.Char(
         string="Pedido Compra", size=60,
-        help="Se setado aqui sobrescreve o pedido de compra da fatura")
-    item_pedido_compra = fields.Char(
+        help="Se setado aqui sobrescreve o pedido de compra da fatura",
+        oldname='pedido_compra')
+    l10n_br_item_pedido_compra = fields.Char(
         string="Item de compra", size=20,
-        help=u'Item do pedido de compra do cliente')
+        help=u'Item do pedido de compra do cliente',
+        oldname='item_pedido_compra')
