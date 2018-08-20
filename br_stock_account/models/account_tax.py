@@ -8,13 +8,6 @@ from odoo import models
 class AccountTax(models.Model):
     _inherit = 'account.tax'
 
-    def prepare_tax(self, tax):
-        tax_exists = self.filtered(lambda x: x.domain == tax)
-        if not tax_exists:
-            return False
-        else:
-            return self._tax_vals(tax_exists)
-
     def calc_ipi_base(self, price_base):
         if ('fiscal_type' in self.env.context) and (
                 self.env.context['fiscal_type'] == 'import'):
@@ -31,7 +24,7 @@ class AccountTax(models.Model):
                 reducao_ipi = self.env.context['ipi_reducao_bc']
             return base_ipi * (1 - (reducao_ipi / 100.0))
         else:
-            super(AccountTax, self).calc_ipi_base(price_base)
+            return super(AccountTax, self).calc_ipi_base(price_base)
 
     def calc_icms_base(self, price_base, ipi_value):
         if ('fiscal_type' in self.env.context) and (
@@ -54,7 +47,7 @@ class AccountTax(models.Model):
             base_icms = base_icms / (1 - icms_tax.amount/100)
             return base_icms * (1 - (reducao_icms / 100.0))
         else:
-            super(AccountTax, self).calc_icms_base(price_base, ipi_value)
+            return super(AccountTax, self).calc_icms_base(price_base, ipi_value)
 
     def _compute_pis_cofins(self, price_base):
         if ('fiscal_type' in self.env.context) and (
