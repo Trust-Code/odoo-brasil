@@ -52,7 +52,7 @@ class AccountTax(models.Model):
             base_icms += sum([tax['amount'] for tax in pis_cofins])
             base_icms += self.env.context["ii_despesas"]
             base_icms = base_icms / (1 - icms_tax.amount/100)
-            return base_icms * 1 - (reducao_icms / 100.0)
+            return base_icms * (1 - (reducao_icms / 100.0))
         else:
             super(AccountTax, self).calc_icms_base(price_base, ipi_value)
 

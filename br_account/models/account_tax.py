@@ -177,7 +177,7 @@ class AccountTax(models.Model):
         if "outras_despesas" in self.env.context:
             base_icms += self.env.context["outras_despesas"]
 
-        return base_icms * 1 - (reducao_icms / 100.0)
+        return base_icms * (1 - (reducao_icms / 100.0))
 
     def _compute_icms_st(self, price_base, ipi_value, icms_value):
         icmsst_tax = self.filtered(lambda x: x.domain == 'icmsst')
