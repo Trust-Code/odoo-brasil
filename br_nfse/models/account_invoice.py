@@ -8,15 +8,15 @@ from odoo import api, fields, models
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.depends('invoice_eletronic_ids.numero_nfse')
+    @api.depends('l10n_br_invoice_eletronic_ids.numero_nfse')
     def _compute_nfse_number(self):
         for inv in self:
-            numeros = inv.invoice_eletronic_ids.mapped('numero_nfse')
+            numeros = inv.l10n_br_invoice_eletronic_ids.mapped('numero_nfse')
             numeros = [n for n in numeros if n]
             inv.numero_nfse = ','.join(numeros)
 
     ambiente_nfse = fields.Selection(
-        string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
+        string="Ambiente NFe", related="company_id.l10n_br_tipo_ambiente_nfse",
         readonly=True)
     nfse_eletronic = fields.Boolean(
         related="l10n_br_service_document_id.nfse_eletronic", readonly=True)

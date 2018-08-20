@@ -50,10 +50,10 @@
         <field name="inherit_id" ref="br_account_einvoice.view_br_nfse_invoice_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
-                <attribute name="decoration-info">state == 'pendente'</attribute>
-                <attribute name="decoration-muted">state == 'transmitido'</attribute>
+                <attribute name="decoration-info">l10n_br_state == 'pendente'</attribute>
+                <attribute name="decoration-muted">l10n_br_state == 'transmitido'</attribute>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='state']" position="after">
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='l10n_br_state']" position="after">
                 <field name="numero_nfse"/>
             </xpath>
         </field>
@@ -63,8 +63,8 @@
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="br_account_einvoice.view_br_account_einvoice_invoice_line_form"/>
         <field name="arch" type="xml">
-            <field name="item_pedido_compra" position="after">
-                <field name="numero_nfse" attrs="{'required': [('state', '=', 'transmitido')]}"/>
+            <field name="l10n_br_item_pedido_compra" position="after">
+                <field name="numero_nfse" attrs="{'required': [('l10n_br_state', '=', 'transmitido')]}"/>
             </field>
         </field>
     </record>

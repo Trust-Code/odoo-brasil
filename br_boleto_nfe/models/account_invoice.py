@@ -8,4 +8,4 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     def _get_email_template_invoice(self):
-        return self.env.user.company_id.nfe_email_template
+        return self.env.user.company_id.l10n_br_nfe_email_template

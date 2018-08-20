@@ -164,11 +164,11 @@ class TestNFeBrasil(TransactionCase):
 
     def test_computed_fields(self):
         for invoice in self.invoices:
-            self.assertEquals(invoice.total_edocs, 0)
+            self.assertEquals(invoice.l10n_br_total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
             # Verifica algumas propriedades computadas que dependem do edoc
-            self.assertEquals(invoice.total_edocs, 1)
+            self.assertEquals(invoice.l10n_br_total_edocs, 1)
 
     def test_check_invoice_eletronic_values(self):
         for invoice in self.invoices:
@@ -235,7 +235,7 @@ class TestNFeBrasil(TransactionCase):
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.cancelamento_nfe')  # noqa
     def test_nfse_cancelamento_erro(self, cancelar):
         for invoice in self.invoices:
-            invoice.company_id.tipo_ambiente_nfse = 'producao'
+            invoice.company_id.l10n_br_tipo_ambiente_nfse = 'producao'
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 

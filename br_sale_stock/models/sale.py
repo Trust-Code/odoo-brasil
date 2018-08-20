@@ -41,9 +41,9 @@ class SaleOrder(models.Model):
 
         index = 0
         prec = self.currency_id.decimal_places
-        balance_seguro = self.l10n_br_total_seguro
-        balance_frete = self.l10n_br_total_frete
-        balance_despesas = self.l10n_br_total_despesas
+        balance_seguro = self.total_seguro
+        balance_frete = self.total_frete
+        balance_despesas = self.total_despesas
         total_items = len(self.order_line)
 
         for l in self.order_line:

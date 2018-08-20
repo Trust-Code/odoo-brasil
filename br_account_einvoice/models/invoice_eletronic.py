@@ -469,7 +469,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def send_email_nfe(self):
-        mail = self.env.user.company_id.nfe_email_template
+        mail = self.env.user.company_id.l10n_br_nfe_email_template
         if not mail:
             raise UserError('Modelo de email padrão não configurado')
         atts = self._find_attachment_ids_email()
