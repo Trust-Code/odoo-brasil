@@ -47,7 +47,8 @@ class AccountTax(models.Model):
             base_icms = base_icms / (1 - icms_tax.amount/100)
             return base_icms * (1 - (reducao_icms / 100.0))
         else:
-            return super(AccountTax, self).calc_icms_base(price_base, ipi_value)
+            return super(
+                AccountTax, self).calc_icms_base(price_base, ipi_value)
 
     def _compute_pis_cofins(self, price_base):
         if ('fiscal_type' in self.env.context) and (
