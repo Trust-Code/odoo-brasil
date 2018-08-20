@@ -6,12 +6,19 @@
         <field name="model">payment.mode</field>
         <field name="arch" type="xml">
             <form string="Payment Mode">
-                <group name="main">
-                    <field name="name"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                    <field name="bank_account_id" />
-                    <field name="active"/>
-                </group>
+                <sheet>
+                    <group name="main">
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="type" />
+                        </group>
+                        <group>
+                            <field name="bank_account_id" />
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
             </form>
         </field>
     </record>

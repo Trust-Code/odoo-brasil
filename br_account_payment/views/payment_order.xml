@@ -16,6 +16,24 @@
         </field>
     </record>
 
+
+    <record id="trustcode_payment_order_line_tree_view" model="ir.ui.view">
+        <field name="name">trustcode.payment_order_line.tree.view</field>
+        <field name="model">payment.order.line</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml" >
+            <tree string='Ordens de Pagamento'>
+              <field name="move_id" />
+              <field name="state" />
+              <field name="name" />
+              <field name="date_maturity" />
+              <field name="value" />
+              <field name='partner_id' />
+              <field name="nosso_numero" />
+            </tree>
+        </field>
+    </record>
+
     <record id="trustcode_payment_order_form_view" model="ir.ui.view">
         <field name="name">trustcode.payment_order.form.view</field>
         <field name="model">payment.order</field>
@@ -31,6 +49,7 @@
                             <field name="name"/>
                             <field name="user_id" />
                             <field name="amount_total" />
+                            <field name="type" />
                         </group>
 
                         <group name='data'>
@@ -38,18 +57,8 @@
                         </group>
                     </group>
 
-                    <group naem='line_ids' string='Linhas de Cobrança' >
-                        <field name="line_ids" nolabel='1'>
-                            <tree name='account_move_line'>
-                                <field name="move_id" />
-                                <field name="state" />
-                                <field name="name" />
-                                <field name="date_maturity" />
-                                <field name="value" />
-                                <field name='partner_id' />
-                                <field name="nosso_numero" />
-                            </tree>
-                        </field>
+                    <group name='line_ids' string='Linhas de Cobrança' >
+                        <field name="line_ids" nolabel='1' />
                     </group>
                 </sheet>
 
