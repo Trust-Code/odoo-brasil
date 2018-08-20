@@ -35,7 +35,7 @@ class TestCnabSicoob(TestCnab):
 
     def test_gen_account_move_line(self):
         self.invoices.action_invoice_open()
-        move = self.invoices.receivable_move_line_ids[0]
+        move = self.invoices.l10n_br_receivable_move_line_ids[0]
         move.action_register_boleto()
 
         ordem_cobranca = self.env['payment.order'].search([

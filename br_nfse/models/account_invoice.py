@@ -19,7 +19,7 @@ class AccountInvoice(models.Model):
         string="Ambiente NFe", related="company_id.tipo_ambiente_nfse",
         readonly=True)
     nfse_eletronic = fields.Boolean(
-        related="service_document_id.nfse_eletronic", readonly=True)
+        related="l10n_br_service_document_id.nfse_eletronic", readonly=True)
     numero_nfse = fields.Char(
         'NFS-e', size=30, compute='_compute_nfse_number', store=True)
 
@@ -31,7 +31,6 @@ class AccountInvoice(models.Model):
         res['serie'] = serie_id.id
         res['serie_documento'] = serie_id.code
         res['model'] = serie_id.fiscal_document_id.code
-
         # Feito para evitar que o número seja incrementado duas vezes
         if 'numero' not in res:
             res['numero'] = serie_id.internal_sequence_id.next_by_id()

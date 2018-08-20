@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="account.view_account_invoice_refund"/>
         <field name="arch" type="xml">
             <field name="description" position="after">
-                <field name="fiscal_position_id" />
+                <field name="l10n_br_fiscal_position_id" />
             </field>
         </field>
     </record>

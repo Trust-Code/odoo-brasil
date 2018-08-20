@@ -15,9 +15,12 @@ class PurchaseOrder(models.Model):
         super(PurchaseOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.total_bruto + order.total_tax +
-                order.total_frete + order.total_seguro +
-                order.total_despesas - order.total_desconto,
+                'amount_total': (
+                    order.l10n_br_total_bruto +
+                    order.l10n_br_total_tax +
+                    order.total_frete +
+                    order.total_seguro +
+                    order.total_despesas),
             })
 
     def _calc_ratio(self, qty, total):
@@ -30,13 +33,13 @@ class PurchaseOrder(models.Model):
     def _onchange_despesas_frete_seguro(self):
         amount = 0
         for line in self.order_line:
-            if line.product_id.fiscal_type == 'product':
-                amount += line.valor_bruto
+            if line.product_id.l10n_br_fiscal_type == 'product':
+                amount += line.l10n_br_valor_bruto
 
         for l in self.order_line:
-            if l.product_id.fiscal_type == 'service':
+            if l.product_id.l10n_br_fiscal_type == 'service':
                 continue
-            percentual = self._calc_ratio(l.valor_bruto, amount)
+            percentual = self._calc_ratio(l.l10n_br_valor_bruto, amount)
             l.update({
                 'valor_seguro': self.total_seguro * percentual,
                 'valor_frete': self.total_frete * percentual,

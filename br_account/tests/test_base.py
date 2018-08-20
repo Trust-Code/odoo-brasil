@@ -18,19 +18,19 @@ class TestBaseBr(TransactionCase):
         })
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
         self.st_product = self.env['product.product'].create({
             'name': 'Product for ICMS ST',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 25.0
         })
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
-            'fiscal_type': 'service',
+            'l10n_br_fiscal_type': 'service',
             'list_price': 50.0
         })
         self.revenue_account = self.env['account.account'].create({
@@ -53,7 +53,7 @@ class TestBaseBr(TransactionCase):
         self.pis_500 = self.tax_model.create({
             'name': "PIS",
             'amount_type': 'division',
-            'domain': 'pis',
+            'l10n_br_domain': 'pis',
             'amount': 5,
             'sequence': 1,
             'price_include': True,
@@ -61,7 +61,7 @@ class TestBaseBr(TransactionCase):
         self.cofins_1500 = self.tax_model.create({
             'name': "Cofins",
             'amount_type': 'division',
-            'domain': 'cofins',
+            'l10n_br_domain': 'cofins',
             'amount': 15,
             'sequence': 2,
             'price_include': True,
@@ -69,14 +69,14 @@ class TestBaseBr(TransactionCase):
         self.ipi_700 = self.tax_model.create({
             'name': "IPI",
             'amount_type': 'percent',
-            'domain': 'ipi',
+            'l10n_br_domain': 'ipi',
             'amount': 7,
             'sequence': 3,
         })
         self.icms_1700 = self.tax_model.create({
             'name': "ICMS",
             'amount_type': 'division',
-            'domain': 'icms',
+            'l10n_br_domain': 'icms',
             'amount': 17,
             'sequence': 4,
             'price_include': True,
@@ -84,7 +84,7 @@ class TestBaseBr(TransactionCase):
         self.icms_inter_1200 = self.tax_model.create({
             'name': "ICMS Inter",
             'amount_type': 'division',
-            'domain': 'icms',
+            'l10n_br_domain': 'icms',
             'amount': 12,
             'sequence': 4,
             'price_include': True,
@@ -92,66 +92,66 @@ class TestBaseBr(TransactionCase):
         self.icms_st_1800 = self.tax_model.create({
             'name': "ICMS ST",
             'amount_type': 'icmsst',
-            'domain': 'icmsst',
+            'l10n_br_domain': 'icmsst',
             'amount': 18,
             'price_include': False,
         })
         self.icms_st_1800_incluso = self.tax_model.create({
             'name': "ICMS ST Incluso",
             'amount_type': 'icmsst',
-            'domain': 'icmsst',
+            'l10n_br_domain': 'icmsst',
             'amount': 18,
             'price_include': False,
-            'icms_st_incluso': True,
+            'l10n_br_icms_st_incluso': True,
         })
         self.icms_difal_inter_700 = self.tax_model.create({
             'name': "ICMS Difal Inter",
             'amount_type': 'division',
-            'domain': 'icms_inter',
+            'l10n_br_domain': 'icms_inter',
             'amount': 7,
             'price_include': True,
         })
         self.icms_difal_intra_1700 = self.tax_model.create({
             'name': "ICMS Difal Intra",
             'amount_type': 'division',
-            'domain': 'icms_intra',
+            'l10n_br_domain': 'icms_intra',
             'amount': 17,
             'price_include': True,
         })
         self.icms_difal_inter_1200 = self.tax_model.create({
             'name': "ICMS Difal Inter 12",
             'amount_type': 'division',
-            'domain': 'icms_inter',
+            'l10n_br_domain': 'icms_inter',
             'amount': 12,
             'price_include': True,
-            'difal_por_dentro': True,
+            'l10n_br_difal_por_dentro': True,
         })
         self.icms_difal_intra_1800 = self.tax_model.create({
             'name': "ICMS Difal Intra 18",
             'amount_type': 'division',
-            'domain': 'icms_intra',
+            'l10n_br_domain': 'icms_intra',
             'amount': 18,
             'price_include': True,
-            'difal_por_dentro': True,
+            'l10n_br_difal_por_dentro': True,
         })
         self.icms_fcp_200 = self.tax_model.create({
             'name': "FCP",
             'amount_type': 'division',
-            'domain': 'fcp',
+            'l10n_br_domain': 'fcp',
             'amount': 2,
             'price_include': True,
         })
         self.issqn_500 = self.tax_model.create({
             'name': "ISSQN",
             'amount_type': 'division',
-            'domain': 'issqn',
+            'l10n_br_domain': 'issqn',
             'amount': 5,
             'price_include': True,
         })
         self.ii_6000 = self.tax_model.create({
             'name': "II",
             'amount_type': 'division',
-            'domain': 'ii',
+            'l10n_br_domain': 'ii',
             'amount': 60,
             'price_include': True,
         })

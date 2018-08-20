@@ -193,7 +193,7 @@
                 </div>
                 <div class="col-xs-12">
                     <span t-field="doc.eletronic_item_ids[0].codigo_tributacao_municipio" /> -
-                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                    <span t-field="doc.eletronic_item_ids[0].product_id.l10n_br_service_type_id.name" />
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 10px;">
@@ -202,7 +202,7 @@
                 </div>
                 <div class="col-xs-12">
                     <span t-field="doc.eletronic_item_ids[0].issqn_codigo" /> -
-                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                    <span t-field="doc.eletronic_item_ids[0].product_id.l10n_br_service_type_id.name" />
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 10px;">

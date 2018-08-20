@@ -21,87 +21,98 @@ class AccountChartTemplate(models.Model):
         for key, value in tax_ref.items():
             tax_tmpl_id = tax_tmpl_obj.browse(key)
             tax_obj.browse(value).write({
-                'deduced_account_id': acc_ref.get(
-                    tax_tmpl_id.deduced_account_id.id, False),
-                'refund_deduced_account_id': acc_ref.get(
-                    tax_tmpl_id.refund_deduced_account_id.id, False)
+                'l10n_br_deduced_account_id': acc_ref.get(
+                    tax_tmpl_id.l10n_br_deduced_account_id.id, False),
+                'l10n_br_refund_deduced_account_id': acc_ref.get(
+                    tax_tmpl_id.l10n_br_refund_deduced_account_id.id, False)
             })
         return acc_ref, tax_ref
 
 
 class AccountTaxTemplate(models.Model):
-    _inherit = 'account.tax.template'
+    _name = 'account.tax.template'
+    _inherit = ['account.tax.template', 'br.localization.filtering']
 
-    deduced_account_id = fields.Many2one(
-        'account.account.template', string=u"Conta de Dedução da Venda")
-    refund_deduced_account_id = fields.Many2one(
-        'account.account.template', string=u"Conta de Dedução do Reembolso")
-    domain = fields.Selection([('icms', 'ICMS'),
-                               ('icmsst', 'ICMS ST'),
-                               ('pis', 'PIS'),
-                               ('cofins', 'COFINS'),
-                               ('ipi', 'IPI'),
-                               ('issqn', 'ISSQN'),
-                               ('ii', 'II'),
-                               ('icms_inter', u'Difal - Alíquota Inter'),
-                               ('icms_intra', u'Difal - Alíquota Intra'),
-                               ('fcp', 'FCP'),
-                               ('csll', 'CSLL'),
-                               ('irrf', 'IRRF'),
-                               ('inss', 'INSS'),
-                               ('outros', 'Outros')], string="Tipo")
+    l10n_br_deduced_account_id = fields.Many2one(
+        'account.account.template', string=u"Conta de Dedução da Venda",
+        oldname='deduced_account_id')
+    l10n_br_refund_deduced_account_id = fields.Many2one(
+        'account.account.template', string=u"Conta de Dedução do Reembolso",
+        oldname='refund_deduced_account_id')
+    l10n_br_domain = fields.Selection([
+        ('icms', 'ICMS'),
+        ('icmsst', 'ICMS ST'),
+        ('pis', 'PIS'),
+        ('cofins', 'COFINS'),
+        ('ipi', 'IPI'),
+        ('issqn', 'ISSQN'),
+        ('ii', 'II'),
+        ('icms_inter', u'Difal - Alíquota Inter'),
+        ('icms_intra', u'Difal - Alíquota Intra'),
+        ('fcp', 'FCP'),
+        ('csll', 'CSLL'),
+        ('irrf', 'IRRF'),
+        ('inss', 'INSS'),
+        ('outros', 'Outros')], string="Tipo", oldname='domain')
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
 
     def _get_tax_vals(self, company, tax_template_to_tax):
         res = super(AccountTaxTemplate, self)._get_tax_vals(
             company, tax_template_to_tax)
-        res['domain'] = self.domain
+        res['l10n_br_domain'] = self.l10n_br_domain
         res['amount_type'] = self.amount_type
         return res
 
 
 class AccountTax(models.Model):
-    _inherit = 'account.tax'
+    _name = 'account.tax'
+    _inherit = ['account.tax', 'br.localization.filtering']
 
-    deduced_account_id = fields.Many2one(
-        'account.account', string=u"Conta de Dedução da Venda")
-    refund_deduced_account_id = fields.Many2one(
-        'account.account', string=u"Conta de Dedução do Reembolso")
-    domain = fields.Selection([('icms', 'ICMS'),
-                               ('icmsst', 'ICMS ST'),
-                               ('pis', 'PIS'),
-                               ('cofins', 'COFINS'),
-                               ('ipi', 'IPI'),
-                               ('issqn', 'ISSQN'),
-                               ('ii', 'II'),
-                               ('icms_inter', u'Difal - Alíquota Inter'),
-                               ('icms_intra', u'Difal - Alíquota Intra'),
-                               ('fcp', 'FCP'),
-                               ('csll', 'CSLL'),
-                               ('irrf', 'IRRF'),
-                               ('inss', 'INSS'),
-                               ('outros', 'Outros')], string="Tipo")
+    l10n_br_deduced_account_id = fields.Many2one(
+        'account.account', string=u"Conta de Dedução da Venda",
+        oldname='deduced_account_id')
+    l10n_br_refund_deduced_account_id = fields.Many2one(
+        'account.account', string=u"Conta de Dedução do Reembolso",
+        oldname='refund_deduced_account_id')
+    l10n_br_domain = fields.Selection([
+        ('icms', 'ICMS'),
+        ('icmsst', 'ICMS ST'),
+        ('pis', 'PIS'),
+        ('cofins', 'COFINS'),
+        ('ipi', 'IPI'),
+        ('issqn', 'ISSQN'),
+        ('ii', 'II'),
+        ('icms_inter', u'Difal - Alíquota Inter'),
+        ('icms_intra', u'Difal - Alíquota Intra'),
+        ('fcp', 'FCP'),
+        ('csll', 'CSLL'),
+        ('irrf', 'IRRF'),
+        ('inss', 'INSS'),
+        ('outros', 'Outros')], string="Tipo", oldname='domain')
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
-    difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
-    icms_st_incluso = fields.Boolean(
-        string="Incluir ICMS ST na Base de Calculo?")
+    l10n_br_difal_por_dentro = fields.Boolean(
+        string="Calcular Difal por Dentro?", oldname='difal_por_dentro')
+    l10n_br_icms_st_incluso = fields.Boolean(
+        string="Incluir ICMS ST na Base de Calculo?",
+        oldname='icms_st_incluso')
 
-    @api.onchange('domain')
+    @api.onchange('l10n_br_domain')
     def _onchange_domain_tax(self):
-        if self.domain in ('icms', 'pis', 'cofins', 'issqn', 'ii',
-                           'icms_inter', 'icms_intra', 'fcp'):
+        if self.l10n_br_domain in ('icms', 'pis', 'cofins', 'issqn', 'ii',
+                                   'icms_inter', 'icms_intra', 'fcp'):
             self.price_include = True
             self.amount_type = 'division'
-        if self.domain in ('icmsst', 'ipi'):
+        if self.l10n_br_domain in ('icmsst', 'ipi'):
             self.price_include = False
             self.include_base_amount = False
             self.amount_type = 'division'
-        if self.domain == 'icmsst':
+        if self.l10n_br_domain == 'icmsst':
             self.amount_type = 'icmsst'
 
-    @api.onchange('deduced_account_id')
+    @api.onchange('l10n_br_deduced_account_id')
     def _onchange_deduced_account_id(self):
-        self.refund_deduced_account_id = self.deduced_account_id
+        self.l10n_br_refund_deduced_account_id = self.\
+            l10n_br_deduced_account_id
 
     def _tax_vals(self, tax):
         return {
@@ -114,7 +125,7 @@ class AccountTax(models.Model):
         }
 
     def _compute_ipi(self, price_base):
-        ipi_tax = self.filtered(lambda x: x.domain == 'ipi')
+        ipi_tax = self.filtered(lambda x: x.l10n_br_domain == 'ipi')
         if not ipi_tax:
             return []
         vals = self._tax_vals(ipi_tax)
@@ -140,7 +151,7 @@ class AccountTax(models.Model):
         return [vals]
 
     def _compute_icms(self, price_base, ipi_value):
-        icms_tax = self.filtered(lambda x: x.domain == 'icms')
+        icms_tax = self.filtered(lambda x: x.l10n_br_domain == 'icms')
         if not icms_tax:
             return []
         vals = self._tax_vals(icms_tax)
@@ -174,7 +185,7 @@ class AccountTax(models.Model):
         return [vals]
 
     def _compute_icms_st(self, price_base, ipi_value, icms_value):
-        icmsst_tax = self.filtered(lambda x: x.domain == 'icmsst')
+        icmsst_tax = self.filtered(lambda x: x.l10n_br_domain == 'icmsst')
         if not icmsst_tax:
             return []
         vals = self._tax_vals(icmsst_tax)
@@ -205,8 +216,9 @@ class AccountTax(models.Model):
         base_icmsst *= 1 + aliquota_mva / 100.0  # Aplica MVA
         if 'icms_st_base_calculo_manual' in self.env.context and\
                 self.env.context['icms_st_base_calculo_manual'] > 0:
-            base_icmsst = self.env.context['icms_st_base_calculo_manual']
-        if icmsst_tax.icms_st_incluso:
+            base_icmsst = self.env.context[
+                'icms_st_base_calculo_manual']
+        if icmsst_tax.l10n_br_icms_st_incluso:
             icmsst = round(
                 ((base_icmsst - icms_value)*(icmsst_tax.amount / 100.0) / (
                     1 - icmsst_tax.amount / 100.0)) - icms_value, 2)
@@ -218,9 +230,9 @@ class AccountTax(models.Model):
         return [vals]
 
     def _compute_difal(self, price_base, ipi_value):
-        icms_inter = self.filtered(lambda x: x.domain == 'icms_inter')
-        icms_intra = self.filtered(lambda x: x.domain == 'icms_intra')
-        icms_fcp = self.filtered(lambda x: x.domain == 'fcp')
+        icms_inter = self.filtered(lambda x: x.l10n_br_domain == 'icms_inter')
+        icms_intra = self.filtered(lambda x: x.l10n_br_domain == 'icms_intra')
+        icms_fcp = self.filtered(lambda x: x.l10n_br_domain == 'fcp')
         if not icms_inter or not icms_intra:
             return []
         vals_fcp = None
@@ -245,7 +257,8 @@ class AccountTax(models.Model):
         vals_inter['base'] = base_icms
         vals_intra['base'] = base_icms
 
-        if icms_inter.difal_por_dentro or icms_intra.difal_por_dentro:
+        if icms_inter.l10n_br_difal_por_dentro or \
+                icms_intra.l10n_br_difal_por_dentro:
             base_icms = base_icms - interestadual
             base_icms = base_icms / (1 - (icms_intra.amount) / 100)
 
@@ -269,13 +282,14 @@ class AccountTax(models.Model):
         return taxes
 
     def _compute_pis_cofins(self, price_base):
-        pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
+        pis_cofins_tax = self.filtered(
+            lambda x: x.l10n_br_domain in ('pis', 'cofins'))
         if not pis_cofins_tax:
             return []
         taxes = []
         for tax in pis_cofins_tax:
             vals = self._tax_vals(tax)
-            if tax.domain == 'pis':
+            if tax.l10n_br_domain == 'pis':
                 if 'pis_base_calculo_manual' in self.env.context and\
                         self.env.context['pis_base_calculo_manual'] > 0:
                     vals['amount'] = tax._compute_amount(
@@ -284,7 +298,7 @@ class AccountTax(models.Model):
                 else:
                     vals['amount'] = tax._compute_amount(price_base, 1.0)
                     vals['base'] = price_base
-            if tax.domain == 'cofins':
+            if tax.l10n_br_domain == 'cofins':
                 if 'cofins_base_calculo_manual' in self.env.context and\
                         self.env.context['cofins_base_calculo_manual'] > 0:
                     vals['amount'] = tax._compute_amount(
@@ -298,7 +312,7 @@ class AccountTax(models.Model):
         return taxes
 
     def _compute_ii(self, price_base):
-        ii_tax = self.filtered(lambda x: x.domain == 'ii')
+        ii_tax = self.filtered(lambda x: x.l10n_br_domain == 'ii')
         if not ii_tax:
             return []
         vals = self._tax_vals(ii_tax)
@@ -309,10 +323,10 @@ class AccountTax(models.Model):
         return [vals]
 
     def _compute_issqn(self, price_base):
-        issqn_tax = self.filtered(lambda x: x.domain == 'issqn')
+        issqn_tax = self.filtered(lambda x: x.l10n_br_domain == 'issqn')
         if not issqn_tax:
             return []
-        issqn_deduction = self.env.context.get('l10n_br_issqn_deduction', 0.0)
+        issqn_deduction = self.env.context.get('issqn_deduction', 0.0)
         price_base *= (1 - (issqn_deduction / 100.0))
         vals = self._tax_vals(issqn_tax)
         vals['amount'] = issqn_tax._compute_amount(price_base, 1.0)
@@ -321,7 +335,7 @@ class AccountTax(models.Model):
 
     def _compute_retention(self, price_base):
         retention_tax = self.filtered(
-            lambda x: x.domain in ('csll', 'irrf', 'inss'))
+            lambda x: x.l10n_br_domain in ('csll', 'irrf', 'inss'))
         if not retention_tax:
             return []
         taxes = []
@@ -336,7 +350,7 @@ class AccountTax(models.Model):
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None):
 
-        exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
+        exists_br_tax = len(self.filtered(lambda x: x.l10n_br_domain)) > 0
         if not exists_br_tax:
             res = super(AccountTax, self).compute_all(
                 price_unit, currency, quantity, product, partner)

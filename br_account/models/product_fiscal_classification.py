@@ -29,7 +29,7 @@ class ProductFiscalClassification(models.Model):
     codigo_enquadramento = fields.Char(
         string=u"Cód. Enquadramento", size=3, default='999')
     tax_ipi_id = fields.Many2one('account.tax', string=u"Alíquota IPI",
-                                 domain=[('domain', '=', 'ipi')])
+                                 domain=[('l10n_br_domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
         [('percent', 'Percentual')],
         'Tipo do IPI', required=True, default='percent')
@@ -39,8 +39,9 @@ class ProductFiscalClassification(models.Model):
     ipi_cst = fields.Selection(CST_IPI, string='CST IPI')
 
     # ICMS ST
-    tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
-                                     domain=[('domain', '=', 'icmsst')])
+    tax_icms_st_id = fields.Many2one(
+        'account.tax', string=u"Alíquota ICMS ST",
+        domain=[('l10n_br_domain', '=', 'icmsst')])
     icms_st_aliquota_reducao_base = fields.Float(
         '% Red. Base ST',
         digits=dp.get_precision('Discount'))

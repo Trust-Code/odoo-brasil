@@ -61,22 +61,22 @@ class TestNFeBrasil(TransactionCase):
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.env.ref(
                 'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
         self.st_product = self.env['product.product'].create({
             'name': 'Product for ICMS ST',
             'default_code': '15',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 25.0
         })
         default_partner = {
@@ -167,29 +167,29 @@ class TestNFeBrasil(TransactionCase):
         self.icms_difal_inter_700 = self.env['account.tax'].create({
             'name': "ICMS Difal Inter",
             'amount_type': 'division',
-            'domain': 'icms_inter',
+            'l10n_br_domain': 'icms_inter',
             'amount': 7,
             'price_include': True,
         })
         self.icms_difal_intra_1700 = self.env['account.tax'].create({
             'name': "ICMS Difal Intra",
             'amount_type': 'division',
-            'domain': 'icms_intra',
+            'l10n_br_domain': 'icms_intra',
             'amount': 17,
             'price_include': True,
         })
 
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda',
-            'product_document_id': self.fiscal_doc.id,
-            'product_serie_id': self.serie.id
+            'l10n_br_product_document_id': self.fiscal_doc.id,
+            'l10n_br_product_serie_id': self.serie.id
         })
 
         self.fpos_consumo = self.env['account.fiscal.position'].create({
             'name': 'Venda Consumo',
             'ind_final': '1',
-            'product_document_id': self.fiscal_doc.id,
-            'product_serie_id': self.serie.id
+            'l10n_br_product_document_id': self.fiscal_doc.id,
+            'l10n_br_product_serie_id': self.serie.id
         })
         invoice_line_incomplete = [
             (0, 0,
@@ -208,7 +208,7 @@ class TestNFeBrasil(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
+                    'l10n_br_product_type': self.service.l10n_br_fiscal_type,
                 }
              )
         ]
@@ -221,17 +221,17 @@ class TestNFeBrasil(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                    'fiscal_classification_id': self.default_ncm.id,
-                    'tem_difal': True,
-                    'tax_icms_inter_id': self.icms_difal_inter_700.id,
-                    'tax_icms_intra_id': self.icms_difal_intra_1700.id,
+                    'l10n_br_icms_cst_normal': '40',
+                    'l10n_br_icms_csosn_simples': '102',
+                    'l10n_br_ipi_cst': '50',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
+                    'l10n_br_fiscal_classification_id': self.default_ncm.id,
+                    'l10n_br_tem_difal': True,
+                    'l10n_br_tax_icms_inter_id': self.icms_difal_inter_700.id,
+                    'l10n_br_tax_icms_intra_id': self.icms_difal_intra_1700.id,
                 }
              ),
             (0, 0,
@@ -242,39 +242,40 @@ class TestNFeBrasil(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_product_type': self.service.l10n_br_fiscal_type,
+                    'l10n_br_service_type_id':
+                        self.service.l10n_br_service_type_id.id,
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
-                    'fiscal_classification_id': self.default_ncm.id,
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
+                    'l10n_br_fiscal_classification_id': self.default_ncm.id,
                 }
              )
         ]
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'product_document_id': self.env.ref(
+            'l10n_br_product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
-            'product_serie_id': self.serie.id,
+            'l10n_br_product_serie_id': self.serie.id,
             'freight_responsibility': '0',
             'shipping_supplier_id': self.partner_juridica.id,
         }
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
             reference_type="none",
-            product_document_id=self.env.ref(
+            l10n_br_product_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,
             account_id=self.receivable_account.id,
             invoice_line_ids=invoice_line_incomplete,
-            product_serie_id=self.serie.id,
+            l10n_br_product_serie_id=self.serie.id,
             fiscal_position_id=self.fpos.id,
         ))
 
@@ -333,11 +334,11 @@ class TestNFeBrasil(TransactionCase):
                 invoice.action_preview_danfe()
 
             # Testa a impressão normal quando não é documento eletrônico
-            invoice.product_document_id.code = '00'
+            invoice.l10n_br_product_document_id.code = '00'
             vals_print = invoice.invoice_print()
             self.assertEquals(vals_print['report_name'],
                               'account.report_invoice_with_payments')
-            invoice.product_document_id.code = '55'
+            invoice.l10n_br_product_document_id.code = '55'
 
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()

@@ -61,7 +61,7 @@ class TestInutilizacao(TransactionCase):
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
         default_partner = {
@@ -108,8 +108,8 @@ class TestInutilizacao(TransactionCase):
 
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda',
-            'product_document_id': self.fiscal_doc.id,
-            'product_serie_id': self.serie.id
+            'l10n_br_product_document_id': self.fiscal_doc.id,
+            'l10n_br_product_serie_id': self.serie.id
         })
 
         invoice_line_data = [
@@ -120,13 +120,13 @@ class TestInutilizacao(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_icms_cst_normal': '40',
+                    'l10n_br_icms_csosn_simples': '102',
+                    'l10n_br_ipi_cst': '50',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              ),
         ]
@@ -137,8 +137,8 @@ class TestInutilizacao(TransactionCase):
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
-            'product_document_id': self.fiscal_doc.id,
-            'product_serie_id': self.serie.id,
+            'l10n_br_product_document_id': self.fiscal_doc.id,
+            'l10n_br_product_serie_id': self.serie.id,
         }
 
     def tearDown(self):

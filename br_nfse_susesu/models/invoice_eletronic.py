@@ -94,7 +94,7 @@ class InvoiceEletronic(models.Model):
             }
 
             tipo_nota = '1'  # Normal
-            if self.company_id.fiscal_type == '1':
+            if self.company_id.l10n_br_fiscal_type == '1':
                 tipo_nota = '4'  # Simples Nacional
 
             descricao = ''

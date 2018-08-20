@@ -49,7 +49,7 @@ class NfseExportInvoice(models.TransientModel):
             items.append({
                 'name': line.product_id.name,
                 'CNAE': re.sub('[^0-9]', '',
-                               inv.company_id.cnae_main_id.code or ''),
+                               inv.company_id.l10n_br_cnae_main_id.code or ''),
                 'CST': '1',
                 'aliquota': line.issqn_aliquota / 100,
                 'valor_unitario': line.price_subtotal / line.quantity,
@@ -67,8 +67,8 @@ class NfseExportInvoice(models.TransientModel):
             'items': items,
             'data_emissao': emissao.strftime('%Y-%m-%dZ'),
             'cfps': cfps,
-            'base_calculo': inv.issqn_base,
-            'valor_issqn': inv.issqn_value,
+            'base_calculo': inv.l10n_br_issqn_base,
+            'valor_issqn': inv.l10n_br_issqn_value,
             'valor_total': inv.amount_total
         }
 

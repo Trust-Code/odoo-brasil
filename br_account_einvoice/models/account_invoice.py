@@ -30,7 +30,7 @@ class AccountInvoice(models.Model):
         'invoice.eletronic', 'invoice_id',
         u'Documentos Eletrônicos', readonly=True)
     invoice_model = fields.Char(
-        string="Modelo de Fatura", related="product_document_id.code",
+        string="Modelo de Fatura", related="l10n_br_product_document_id.code",
         readonly=True)
     total_edocs = fields.Integer(string="Total NFe",
                                  compute=_compute_total_edocs)
@@ -104,80 +104,81 @@ class AccountInvoice(models.Model):
             'name': line.name,
             'product_id': line.product_id.id,
             'account_invoice_line_id': line.id,
-            'tipo_produto': line.product_type,
-            'cfop': line.cfop_id.code,
+            'tipo_produto': line.l10n_br_product_type,
+            'cfop': line.l10n_br_cfop_id.code,
             'uom_id': line.uom_id.id,
             'quantidade': line.quantity,
             'preco_unitario': line.price_unit,
-            'valor_bruto': line.valor_bruto,
-            'desconto': line.valor_desconto,
+            'valor_bruto': line.l10n_br_valor_bruto,
+            'desconto': line.l10n_br_valor_desconto,
             'valor_liquido': line.price_subtotal,
-            'origem': line.icms_origem,
-            'tributos_estimados': line.tributos_estimados,
-            'ncm': line.fiscal_classification_id.code,
+            'origem': line.l10n_br_icms_origem,
+            'tributos_estimados': line.l10n_br_tributos_estimados,
+            'ncm': line.l10n_br_fiscal_classification_id.code,
             'item_pedido_compra': line.item_pedido_compra,
             # - ICMS -
-            'icms_cst': line.icms_cst,
-            'icms_aliquota': line.icms_aliquota,
-            'icms_tipo_base': line.icms_tipo_base,
-            'icms_aliquota_reducao_base': line.icms_aliquota_reducao_base,
-            'icms_base_calculo': line.icms_base_calculo,
-            'icms_valor': line.icms_valor,
+            'icms_cst': line.l10n_br_icms_cst,
+            'icms_aliquota': line.l10n_br_icms_aliquota,
+            'icms_tipo_base': line.l10n_br_icms_tipo_base,
+            'icms_aliquota_reducao_base':
+                line.l10n_br_icms_aliquota_reducao_base,
+            'icms_base_calculo': line.l10n_br_icms_base_calculo,
+            'icms_valor': line.l10n_br_icms_valor,
             # - ICMS ST -
-            'icms_st_aliquota': line.icms_st_aliquota,
-            'icms_st_aliquota_mva': line.icms_st_aliquota_mva,
-            'icms_st_aliquota_reducao_base': line.\
-            icms_st_aliquota_reducao_base,
-            'icms_st_base_calculo': line.icms_st_base_calculo,
-            'icms_st_valor': line.icms_st_valor,
+            'icms_st_aliquota': line.l10n_br_icms_st_aliquota,
+            'icms_st_aliquota_mva': line.l10n_br_icms_st_aliquota_mva,
+            'icms_st_aliquota_reducao_base':
+                line.l10n_br_icms_st_aliquota_reducao_base,
+            'icms_st_base_calculo': line.l10n_br_icms_st_base_calculo,
+            'icms_st_valor': line.l10n_br_icms_st_valor,
             # - Simples Nacional -
-            'icms_aliquota_credito': line.icms_aliquota_credito,
-            'icms_valor_credito': line.icms_valor_credito,
+            'icms_aliquota_credito': line.l10n_br_icms_aliquota_credito,
+            'icms_valor_credito': line.l10n_br_icms_valor_credito,
             # - IPI -
-            'ipi_cst': line.ipi_cst,
-            'ipi_aliquota': line.ipi_aliquota,
-            'ipi_base_calculo': line.ipi_base_calculo,
-            'ipi_reducao_bc': line.ipi_reducao_bc,
-            'ipi_valor': line.ipi_valor,
+            'ipi_cst': line.l10n_br_ipi_cst,
+            'ipi_aliquota': line.l10n_br_ipi_aliquota,
+            'ipi_base_calculo': line.l10n_br_ipi_base_calculo,
+            'ipi_reducao_bc': line.l10n_br_ipi_reducao_bc,
+            'ipi_valor': line.l10n_br_ipi_valor,
             # - II -
-            'ii_base_calculo': line.ii_base_calculo,
-            'ii_valor_despesas': line.ii_valor_despesas,
-            'ii_valor': line.ii_valor,
-            'ii_valor_iof': line.ii_valor_iof,
+            'ii_base_calculo': line.l10n_br_ii_base_calculo,
+            'ii_valor_despesas': line.l10n_br_ii_valor_despesas,
+            'ii_valor': line.l10n_br_ii_valor,
+            'ii_valor_iof': line.l10n_br_ii_valor_iof,
             # - PIS -
-            'pis_cst': line.pis_cst,
-            'pis_aliquota': abs(line.pis_aliquota),
-            'pis_base_calculo': line.pis_base_calculo,
-            'pis_valor': abs(line.pis_valor),
+            'pis_cst': line.l10n_br_pis_cst,
+            'pis_aliquota': abs(line.l10n_br_pis_aliquota),
+            'pis_base_calculo': line.l10n_br_pis_base_calculo,
+            'pis_valor': abs(line.l10n_br_pis_valor),
             'pis_valor_retencao':
-            abs(line.pis_valor) if line.pis_valor < 0 else 0,
+            abs(line.l10n_br_pis_valor) if line.l10n_br_pis_valor < 0 else 0,
             # - COFINS -
-            'cofins_cst': line.cofins_cst,
-            'cofins_aliquota': abs(line.cofins_aliquota),
-            'cofins_base_calculo': line.cofins_base_calculo,
-            'cofins_valor': abs(line.cofins_valor),
-            'cofins_valor_retencao':
-            abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
+            'cofins_cst': line.l10n_br_cofins_cst,
+            'cofins_aliquota': abs(line.l10n_br_cofins_aliquota),
+            'cofins_base_calculo': line.l10n_br_cofins_base_calculo,
+            'cofins_valor': abs(line.l10n_br_cofins_valor),
+            'cofins_valor_retencao': abs(line.l10n_br_cofins_valor)
+            if line.l10n_br_cofins_valor < 0 else 0,
             # - ISSQN -
-            'issqn_codigo': line.service_type_id.code,
-            'issqn_aliquota': abs(line.issqn_aliquota),
-            'issqn_base_calculo': line.issqn_base_calculo,
-            'issqn_valor': abs(line.issqn_valor),
-            'issqn_valor_retencao':
-            abs(line.issqn_valor) if line.issqn_valor < 0 else 0,
+            'issqn_codigo': line.l10n_br_service_type_id.code,
+            'issqn_aliquota': abs(line.l10n_br_issqn_aliquota),
+            'issqn_base_calculo': line.l10n_br_issqn_base_calculo,
+            'issqn_valor': abs(line.l10n_br_issqn_valor),
+            'issqn_valor_retencao': abs(line.l10n_br_issqn_valor)
+            if line.l10n_br_issqn_valor < 0 else 0,
             # - RETENÇÔES -
-            'csll_base_calculo': line.csll_base_calculo,
-            'csll_aliquota': abs(line.csll_aliquota),
-            'csll_valor_retencao':
-            abs(line.csll_valor) if line.csll_valor < 0 else 0,
-            'irrf_base_calculo': line.irrf_base_calculo,
-            'irrf_aliquota': abs(line.irrf_aliquota),
-            'irrf_valor_retencao':
-            abs(line.irrf_valor) if line.irrf_valor < 0 else 0,
-            'inss_base_calculo': line.inss_base_calculo,
-            'inss_aliquota': abs(line.inss_aliquota),
-            'inss_valor_retencao':
-            abs(line.inss_valor) if line.inss_valor < 0 else 0,
+            'csll_base_calculo': line.l10n_br_csll_base_calculo,
+            'csll_aliquota': abs(line.l10n_br_csll_aliquota),
+            'csll_valor_retencao': abs(line.l10n_br_csll_valor)
+            if line.l10n_br_csll_valor < 0 else 0,
+            'irrf_base_calculo': line.l10n_br_irrf_base_calculo,
+            'irrf_aliquota': abs(line.l10n_br_irrf_aliquota),
+            'irrf_valor_retencao': abs(line.l10n_br_irrf_valor)
+            if line.l10n_br_irrf_valor < 0 else 0,
+            'inss_base_calculo': line.l10n_br_inss_base_calculo,
+            'inss_aliquota': abs(line.l10n_br_inss_aliquota),
+            'inss_valor_retencao': abs(line.l10n_br_inss_valor)
+            if line.l10n_br_inss_valor < 0 else 0,
         }
         return vals
 
@@ -198,30 +199,31 @@ class AccountInvoice(models.Model):
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
-            'valor_icms': invoice.icms_value,
-            'valor_icmsst': invoice.icms_st_value,
-            'valor_ipi': invoice.ipi_value,
-            'valor_pis': invoice.pis_value,
-            'valor_cofins': invoice.cofins_value,
-            'valor_ii': invoice.ii_value,
-            'valor_bruto': invoice.total_bruto,
-            'valor_desconto': invoice.total_desconto,
+            'valor_icms': invoice.l10n_br_icms_value,
+            'valor_icmsst': invoice.l10n_br_icms_st_value,
+            'valor_ipi': invoice.l10n_br_ipi_value,
+            'valor_pis': invoice.l10n_br_pis_value,
+            'valor_cofins': invoice.l10n_br_cofins_value,
+            'valor_ii': invoice.l10n_br_ii_value,
+            'valor_bruto': invoice.l10n_br_total_bruto,
+            'valor_desconto': invoice.l10n_br_total_desconto,
             'valor_final': invoice.amount_total,
-            'valor_bc_icms': invoice.icms_base,
-            'valor_bc_icmsst': invoice.icms_st_base,
-            'valor_servicos': invoice.issqn_base,
-            'valor_bc_issqn': invoice.issqn_base,
-            'valor_issqn': invoice.issqn_value,
-            'valor_estimado_tributos': invoice.total_tributos_estimados,
-            'valor_retencao_issqn': invoice.issqn_retention,
-            'valor_retencao_pis': invoice.pis_retention,
-            'valor_retencao_cofins': invoice.cofins_retention,
-            'valor_bc_irrf': invoice.irrf_base,
-            'valor_retencao_irrf': invoice.irrf_retention,
-            'valor_bc_csll': invoice.csll_base,
-            'valor_retencao_csll': invoice.csll_retention,
-            'valor_bc_inss': invoice.inss_base,
-            'valor_retencao_inss': invoice.inss_retention,
+            'valor_bc_icms': invoice.l10n_br_icms_base,
+            'valor_bc_icmsst': invoice.l10n_br_icms_st_base,
+            'valor_servicos': invoice.l10n_br_issqn_base,
+            'valor_bc_issqn': invoice.l10n_br_issqn_base,
+            'valor_issqn': invoice.l10n_br_issqn_value,
+            'valor_estimado_tributos':
+                invoice.l10n_br_total_tributos_estimados,
+            'valor_retencao_issqn': invoice.l10n_br_issqn_retention,
+            'valor_retencao_pis': invoice.l10n_br_pis_retention,
+            'valor_retencao_cofins': invoice.l10n_br_cofins_retention,
+            'valor_bc_irrf': invoice.l10n_br_irrf_base,
+            'valor_retencao_irrf': invoice.l10n_br_irrf_retention,
+            'valor_bc_csll': invoice.l10n_br_csll_base,
+            'valor_retencao_csll': invoice.l10n_br_csll_retention,
+            'valor_bc_inss': invoice.l10n_br_inss_base,
+            'valor_retencao_inss': invoice.l10n_br_inss_retention,
         }
 
         eletronic_items = []
@@ -236,21 +238,21 @@ class AccountInvoice(models.Model):
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
         for item in self:
-            if item.product_document_id.electronic:
+            if item.l10n_br_product_document_id.electronic:
                 inv_lines = item.invoice_line_ids.filtered(
-                    lambda x: x.product_id.fiscal_type == 'product')
+                    lambda x: x.product_id.l10n_br_fiscal_type == 'product')
                 if inv_lines:
                     edoc_vals = self._prepare_edoc_vals(
-                        item, inv_lines, item.product_serie_id)
+                        item, inv_lines, item.l10n_br_product_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
-            if item.service_document_id.nfse_eletronic:
+            if item.l10n_br_service_document_id.nfse_eletronic:
                 inv_lines = item.invoice_line_ids.filtered(
-                    lambda x: x.product_id.fiscal_type == 'service')
+                    lambda x: x.product_id.l10n_br_fiscal_type == 'service')
                 if inv_lines:
                     edoc_vals = self._prepare_edoc_vals(
-                        item, inv_lines, item.service_serie_id)
+                        item, inv_lines, item.l10n_br_service_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()

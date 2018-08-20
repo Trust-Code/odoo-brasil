@@ -312,20 +312,20 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def _compute_legal_information(self):
-        fiscal_ids = self.invoice_id.fiscal_observation_ids.filtered(
+        fiscal_ids = self.invoice_id.l10n_br_fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'fiscal')
-        obs_ids = self.invoice_id.fiscal_observation_ids.filtered(
+        obs_ids = self.invoice_id.l10n_br_fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'observacao')
 
         prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
         for item in self.invoice_id.invoice_line_ids:
-            prod_obs_ids |= item.product_id.fiscal_observation_ids
+            prod_obs_ids |= item.product_id.l10n_br_fiscal_observation_ids
 
         fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
         obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
 
         fiscal = self._compute_msg(fiscal_ids) + (
-            self.invoice_id.fiscal_comment or '')
+            self.invoice_id.l10n_br_fiscal_comment or '')
         observacao = self._compute_msg(obs_ids) + (
             self.invoice_id.comment or '')
 

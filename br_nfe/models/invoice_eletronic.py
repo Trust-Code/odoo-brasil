@@ -218,8 +218,8 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Emitente / Inscrição Estadual')
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
-            if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
+            if self.company_id.l10n_br_accountant_id and not \
+               self.company_id.l10n_br_accountant_id.cnpj_cpf:
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
             for eletr in self.eletronic_item_ids:
@@ -472,13 +472,14 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
             'IE':  re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est),
-            'CRT': self.company_id.fiscal_type,
+            'CRT': self.company_id.l10n_br_fiscal_type,
         }
-        if self.company_id.cnae_main_id and self.company_id.l10n_br_inscr_mun:
+        if self.company_id.l10n_br_cnae_main_id and \
+                self.company_id.l10n_br_inscr_mun:
             emit['IM'] = re.sub('[^0-9]', '',
                                 self.company_id.l10n_br_inscr_mun or '')
             emit['CNAE'] = re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
+                '[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
@@ -526,10 +527,11 @@ class InvoiceEletronic(models.Model):
                 }
 
         autorizados = []
-        if self.company_id.accountant_id:
+        if self.company_id.l10n_br_accountant_id:
             autorizados.append({
                 'CNPJ': re.sub(
-                    '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
+                    '[^0-9]', '',
+                    self.company_id.l10n_br_accountant_id.cnpj_cpf)
             })
 
         eletronic_items = []
@@ -641,7 +643,7 @@ class InvoiceEletronic(models.Model):
             'dup': duplicatas
         }
         pag = {
-            'indPag': self.payment_term_id.indPag or '0',
+            'indPag': self.payment_term_id.l10n_br_indPag or '0',
             'tPag': self.payment_mode_id.tipo_pagamento or '90',
             'vPag': '0.00',
         }
@@ -757,11 +759,9 @@ class InvoiceEletronic(models.Model):
             cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
-
         lote = self._prepare_lote(self.id, nfe_values)
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
-
         mensagens_erro = valida_nfe(xml_enviar)
         if mensagens_erro:
             raise UserError(mensagens_erro)

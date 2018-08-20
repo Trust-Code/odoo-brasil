@@ -40,9 +40,9 @@ class AcquirerCielo(models.Model):
         total_desconto = 0
         items = []
         for line in order.order_line:
-            if line.product_id.fiscal_type == 'service':
+            if line.product_id.l10n_br_fiscal_type == 'service':
                 tipo = 'Service'
-            elif line.product_id.fiscal_type == 'product':
+            elif line.product_id.l10n_br_fiscal_type == 'product':
                 tipo = 'Asset'
             else:
                 tipo = 'Payment'

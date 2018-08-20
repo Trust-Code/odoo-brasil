@@ -89,7 +89,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         for line in self.eletronic_item_ids:
             aliquota = line.issqn_aliquota / 100
             base = line.issqn_base_calculo
-            if self.company_id.fiscal_type != '3':
+            if self.company_id.l10n_br_fiscal_type != '3':
                 aliquota, base = 0.0, 0.0
             unitario = round(line.valor_liquido / line.quantidade, 2)
             items.append({
@@ -111,7 +111,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         if self.company_id.state_id.id != partner.state_id.id:
             cfps = '9203'
         base, issqn = self.valor_bc_issqn, self.valor_issqn
-        if self.company_id.fiscal_type != '3':
+        if self.company_id.l10n_br_fiscal_type != '3':
             base, issqn = 0.0, 0.0
         return {
             'numero': "%06d" % self.numero,

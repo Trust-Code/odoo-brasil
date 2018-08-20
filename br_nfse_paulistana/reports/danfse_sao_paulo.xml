@@ -196,55 +196,55 @@
                 <div class="col-xs-2" style="width:20%;text-align:center;">
                     INSS(<span />%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_inss"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>-</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
                     IR(<span />%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_irrf"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>-</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
                     CSLL(<span />%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_csll"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>-</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
                     COFINS(<span t-field="doc.eletronic_item_ids[0].cofins_aliquota" />%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_cofins"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>-</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;border">
                     PIS(<span t-field="doc.eletronic_item_ids[0].pis_aliquota" />%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_pis"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>-</strong>
                     </t>
                 </div>
@@ -254,7 +254,7 @@
                     Código do serviço:
                     <br />
                     <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana"></strong> -
-                    <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
+                    <strong t-field="doc.eletronic_item_ids[0].product_id.l10n_br_service_type_id.name"></strong>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;">
@@ -266,32 +266,32 @@
                 <div class="col-xs-3" style="text-align:center;">
                     Base de Cálculo (R$):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_bruto"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>*</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="text-align:center;">
                     Alíquota (%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong><span t-field="doc.eletronic_item_ids[0].issqn_aliquota" />%</strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>*</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="text-align:center;">
                     Valor do ISS (R$):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_issqn"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>*</strong>
                     </t>
                 </div>
