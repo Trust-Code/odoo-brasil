@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_account_voucher_purchase_form" model="ir.ui.view">
+        <field name="name">view.br_account_voucher.purchase.form</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_purchase_receipt_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
+                <field name="payment_type" invisible="1" />
+                <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_br_account_voucher_receipt_form" model="ir.ui.view">
+        <field name="name">view.br_account_voucher.receipt.form</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_sale_receipt_form"/>
+        <field name="arch" type="xml">
+            <field name="account_id" position="after">
+                <field name="payment_mode_id" domain="[('type', '=', 'receivable')]"/>
+            </field>
+        </field>
+    </record>
+</odoo>

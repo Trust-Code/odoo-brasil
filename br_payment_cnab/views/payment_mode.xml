@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="br_payment_cnab_payment_mode_form" model="ir.ui.view">
+        <field name="name">br_payment_cnab_payment_mode_form</field>
+        <field name="model">payment.mode</field>
+        <field name="inherit_id" ref="br_account_payment.account_payment_mode_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="type" position="after">
+                <field name="payment_type" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
+                <field name="nosso_numero_sequence" required="1" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
+            </field>
+            <group name="main" position="after">
+                <notebook attrs="{'invisible': [('type', '!=', 'payable')]}">
+                    <page string="Informações DOC/TED" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}">
+                        <group>
+                            <field name="mov_finality" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
+                            <field name="finality_ted" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
+                        </group>
+                    </page>
+                    <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08'))]}">
+                        <group>
+                            <field name="codigo_receita" />
+                        </group>
+                    </page>
+                </notebook>
+            </group>
+        </field>
+    </record>
+
+</odoo>

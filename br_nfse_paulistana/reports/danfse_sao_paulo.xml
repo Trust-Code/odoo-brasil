@@ -230,7 +230,7 @@
                     COFINS(<span t-field="doc.eletronic_item_ids[0].cofins_aliquota" />%):
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_cofins_servicos"
+                        <strong t-field="doc.valor_retencao_cofins"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
@@ -241,7 +241,7 @@
                     PIS(<span t-field="doc.eletronic_item_ids[0].pis_aliquota" />%):
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_pis_servicos"
+                        <strong t-field="doc.valor_retencao_pis"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">

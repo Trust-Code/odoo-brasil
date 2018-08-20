@@ -42,6 +42,7 @@ class Itau240(Cnab240):
         vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
         vals['codigo_multa'] = int(vals['codigo_multa'])
         vals['data_multa'] = str(vals['data_multa']).zfill(8)
+        vals['juros_multa'] = str(vals['juros_multa'])
         return vals
 
     def dv_nosso_numero(self, agencia, conta, carteira, nosso_numero):

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+br_payment_cnab_l10n_br_payment_information,br_payment_cnab_l10n_br_payment_information,model_l10n_br_payment_information,,1,1,1,1

@@ -6,25 +6,27 @@
         <field name="model">payment.mode</field>
         <field name="inherit_id" ref="br_account_payment.account_payment_mode_form" />
         <field name="arch" type="xml">
-            <field name="active">
-                <field name="boleto" />
-            </field>
             <group name="main" position="after">
-                <group name="boletos" string="Boletos">
-                    <field name="boleto_type"/>
-                    <field name="nosso_numero_sequence"/>
-                    <field name="boleto_carteira"/>
-                    <field name="boleto_modalidade"/>
-                    <field name="boleto_variacao"/>
-                    <field name="boleto_cnab_code"/>
-                    <field name="boleto_aceite"/>
-                    <field name="boleto_especie"/>
-                    <field name="boleto_protesto"/>
-                    <field name="boleto_protesto_prazo"/>
-                    <field name="late_payment_fee"/>
-                    <field name="late_payment_interest"/>
-                    <field name="instrucoes" />
-                </group>
+                <notebook attrs="{'invisible': [('type', '!=', 'receivable')]}">
+                    <page string="Informações de Boleto">
+                        <group>
+                            <field name="boleto" />
+                            <field name="boleto_type"/>
+                            <field name="nosso_numero_sequence"/>
+                            <field name="boleto_carteira"/>
+                            <field name="boleto_modalidade"/>
+                            <field name="boleto_variacao"/>
+                            <field name="boleto_cnab_code"/>
+                            <field name="boleto_aceite"/>
+                            <field name="boleto_especie"/>
+                            <field name="boleto_protesto"/>
+                            <field name="boleto_protesto_prazo"/>
+                            <field name="late_payment_fee"/>
+                            <field name="late_payment_interest"/>
+                            <field name="instrucoes" />
+                        </group>
+                    </page>
+                </notebook>
             </group>
         </field>
     </record>
