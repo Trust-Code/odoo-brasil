@@ -315,7 +315,7 @@ class InvoiceEletronic(models.Model):
                                   self.company_id.l10n_br_nfe_a1_password)
 
         if self.ambiente == 'homologacao' or \
-           self.company_id.tipo_ambiente_nfse == 'homologacao':
+           self.company_id.l10n_br_tipo_ambiente_nfse == 'homologacao':
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'

@@ -311,7 +311,7 @@ class TestNFeBrasil(TransactionCase):
 
     def test_computed_fields(self):
         for invoice in self.invoices:
-            self.assertEquals(invoice.total_edocs, 0)
+            self.assertEquals(invoice.l10n_br_total_edocs, 0)
             self.assertEquals(invoice.nfe_number, 0)
             self.assertEquals(invoice.nfe_exception_number, 0)
             self.assertEquals(invoice.nfe_exception, False)
@@ -321,7 +321,7 @@ class TestNFeBrasil(TransactionCase):
             invoice.action_invoice_open()
 
             # Verifica algumas propriedades computadas que dependem do edoc
-            self.assertEquals(invoice.total_edocs, 1)
+            self.assertEquals(invoice.l10n_br_total_edocs, 1)
             self.assertTrue(invoice.nfe_number != 0)
             self.assertTrue(invoice.nfe_exception_number != 0)
             self.assertEquals(invoice.nfe_exception, False)

@@ -8,7 +8,7 @@
             <notebook position="inside">
                 <page name="integracao_nfse" string="Integração NFS-e">
                     <group>
-                        <field name="tipo_ambiente_nfse" />
+                        <field name="l10n_br_tipo_ambiente_nfse" />
                     </group>
                 </page>
             </notebook>

@@ -53,7 +53,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             if not self.company_id.aedf:
                 errors.append('Código AEDF da empresa obrigatório')
             for item in self.eletronic_item_ids:
-                if not item.product_id.service_type_id.id_cnae:
+                if not item.product_id.l10n_br_service_type_id.id_cnae:
                     errors.append('%s - %s: ID CNAE obrigatório' % (
                         item.product_id.default_code or '',
                         item.product_id.name))
@@ -96,7 +96,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                 'name': line.product_id.name,
                 'cnae': re.sub(
                     '[^0-9]', '',
-                    line.product_id.service_type_id.id_cnae or ''),
+                    line.product_id.l10n_br_service_type_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
                 'base_calculo': base,
@@ -122,7 +122,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             'valor_issqn': issqn,
             'valor_total': self.valor_final,
             'aedf': self.company_id.aedf
-            if self.company_id.tipo_ambiente_nfse == 'producao'
+            if self.company_id.l10n_br_tipo_ambiente_nfse == 'producao'
             else re.sub('[^0-9]', '', self.company_id.inscr_mun[:-1]),
             'cfps': cfps,
             'observacoes': '',
