@@ -21,9 +21,13 @@ class Bradesco240(Cnab240):
 
     def _prepare_header(self):
         vals = super(Bradesco240, self)._prepare_header()
-        vals['servico_servico'] = 1
-        vals['cedente_convenio'] = self.order.payment_mode_id.bank_account_id.\
+
+        cod_convenio = self.order.payment_mode_id.bank_account_id.\
             codigo_convenio
+
+        vals['servico_servico'] = 1
+        vals['cedente_convenio'] = cod_convenio + '0' * (
+            20 - len(cod_convenio))
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         vals['nome_do_banco'] = 'BANCO BRADESCO S.A'
