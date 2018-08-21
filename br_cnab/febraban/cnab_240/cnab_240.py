@@ -220,6 +220,9 @@ class Cnab240(Cnab):
     def remessa(self, order):
         cobrancasimples_valor_titulos = 0
         self.order = order
+
+        self._hook_validation()
+
         header = self._prepare_header()
         self.arquivo = Arquivo(self.bank, **header)
         for line in order.line_ids:
@@ -238,3 +241,6 @@ class Cnab240(Cnab):
 
     def hora_agora(self):
         return (int(time.strftime("%H%M%S")))
+
+    def _hook_validation(self):
+        pass
