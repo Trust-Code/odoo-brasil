@@ -59,6 +59,6 @@ class AccountInvoiceLine(models.Model):
 
     l10n_br_numero_nfse = fields.Char(
         string="Número NFS-e",
-        help="""Número da NFS-e na qual o item foi 
+        help="""Número da NFS-e na qual o item foi \
         transmitido eletrônicamente.""",
         oldname='numero_nfse')
