@@ -332,18 +332,7 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
-    @api.multi
-    def compute_all(self, price_unit, currency=None, quantity=1.0,
-                    product=None, partner=None):
-
-        exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
-        if not exists_br_tax:
-            res = super(AccountTax, self).compute_all(
-                price_unit, currency, quantity, product, partner)
-            res['price_without_tax'] = round(price_unit * quantity, 2)
-            return res
-
-        price_base = price_unit * quantity
+    def sum_taxes(self, price_base):
         ipi = self._compute_ipi(price_base)
         icms = self._compute_icms(
             price_base,
@@ -360,8 +349,23 @@ class AccountTax(models.Model):
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)
+        return taxes
 
+    @api.multi
+    def compute_all(self, price_unit, currency=None, quantity=1.0,
+                    product=None, partner=None, fisc_pos=None):
+
+        exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
+        if not exists_br_tax:
+            res = super(AccountTax, self).compute_all(
+                price_unit, currency, quantity, product, partner)
+            res['price_without_tax'] = round(price_unit * quantity, 2)
+            return res
+
+        price_base = price_unit * quantity
+        taxes = self.sum_taxes(price_base)
         total_included = total_excluded = price_base
+
         for tax in taxes:
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
