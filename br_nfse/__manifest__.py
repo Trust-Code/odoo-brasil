@@ -16,6 +16,8 @@
     ],
     'depends': [
         'br_account_einvoice',
+        'br_localization_filtering',
+
     ],
     'external_dependencies': {
         'python': [
