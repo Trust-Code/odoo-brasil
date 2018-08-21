@@ -36,8 +36,8 @@ class AccountInvoice(models.Model):
         string="Modelo de Fatura", related="l10n_br_product_document_id.code",
         readonly=True, oldname='invoice_model')
     l10n_br_total_edocs = fields.Integer(string="Total NFe",
-                                 compute=_compute_total_edocs,
-                                 oldname='total_edocs')
+                                         compute=_compute_total_edocs,
+                                         oldname='total_edocs')
     l10n_br_internal_number = fields.Integer(
         'Invoice Number', readonly=True,
         states={'draft': [('readonly', False)]},
