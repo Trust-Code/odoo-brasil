@@ -110,7 +110,7 @@ class TestCnab(TransactionCase):
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
-            'payment_mode_id': self._return_payment_mode(),
+            'l10n_br_payment_mode_id': self._return_payment_mode(),
         }
         self.invoices = self.env['account.invoice'].create(dict(
             default_invoice.items(),

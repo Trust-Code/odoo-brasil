@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
         <field name="arch" type="xml">
             <field name="state" position="after">
-                <field name="move_line_id" invisible="1" />
+                <field name="l10n_br_move_line_id" invisible="1" />
             </field>
         </field>
     </record>
@@ -20,7 +20,7 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button type="object" class="oe_stat_button" icon="fa-money"
                     name="action_view_receivable_payable">
-                    <field name="total_moves" widget="statinfo"/>
+                    <field name="l10n_br_total_moves" widget="statinfo"/>
                 </button>
             </xpath>
 

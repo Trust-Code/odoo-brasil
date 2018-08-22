@@ -6,13 +6,22 @@ from odoo import api, fields, models
 
 
 class AccountJournal(models.Model):
-    _inherit = 'account.journal'
+    _name = 'account.journal'
+    _inherit = ['account.journal', 'br.localization.filtering']
 
-    acc_number_dig = fields.Char(related='bank_account_id.acc_number_dig')
-    bank_agency_number = fields.Char(related='bank_account_id.l10n_br_number')
-    bank_agency_dig = fields.Char(related='bank_account_id.l10n_br_number_dig')
-    acc_partner_id = fields.Many2one('res.partner',
-                                     related='bank_account_id.partner_id')
+    l10n_br_acc_number_dig = fields.Char(
+        related='bank_account_id.acc_number_dig',
+        oldname='acc_number_dig')
+    l10n_br_bank_agency_number = fields.Char(
+        related='bank_account_id.l10n_br_number',
+        oldname='bank_agency_number')
+    l10n_br_bank_agency_dig = fields.Char(
+        related='bank_account_id.l10n_br_number_dig',
+        oldname='bank_agency_dig')
+    l10n_br_acc_partner_id = fields.Many2one(
+        'res.partner',
+        related='bank_account_id.partner_id',
+        oldname='acc_partner_id')
 
     @api.multi
     def write(self, vals):
@@ -21,11 +30,11 @@ class AccountJournal(models.Model):
             lambda r: r.type == 'bank' and r.bank_account_id)
         for journal in journal_ids:
             acc_vals = {
-                'acc_number_dig': vals.get('acc_number_dig'),
-                'l10n_br_number': vals.get('bank_agency_number'),
-                'l10n_br_number_dig': vals.get('bank_agency_dig'),
+                'acc_number_dig': vals.get('l10n_br_acc_number_dig'),
+                'l10n_br_number': vals.get('l10n_br_bank_agency_number'),
+                'l10n_br_number_dig': vals.get('l10n_br_bank_agency_dig'),
                 'currency_id': vals.get('currency_id'),
-                'partner_id': vals.get('acc_partner_id'),
+                'partner_id': vals.get('l10n_br_acc_partner_id'),
             }
             acc_vals = {k: v for k, v in acc_vals.items() if v}
             journal.bank_account_id.write(acc_vals)
@@ -36,11 +45,11 @@ class AccountJournal(models.Model):
         journal = super(AccountJournal, self).create(vals)
         if journal.bank_account_id:
             bank_account_vals = {
-                'acc_number_dig': vals.get('acc_number_dig'),
-                'l10n_br_number': vals.get('bank_agency_number'),
-                'l10n_br_number_dig': vals.get('bank_agency_dig'),
+                'acc_number_dig': vals.get('l10n_br_acc_number_dig'),
+                'l10n_br_number': vals.get('l10n_br_bank_agency_number'),
+                'l10n_br_number_dig': vals.get('l10n_br_bank_agency_dig'),
                 'currency_id': vals.get('currency_id'),
-                'partner_id': vals.get('acc_partner_id'),
+                'partner_id': vals.get('l10n_br_acc_partner_id'),
             }
             journal.bank_account_id.write(bank_account_vals)
         return journal

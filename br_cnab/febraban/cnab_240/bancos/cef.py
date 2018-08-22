@@ -42,7 +42,7 @@ class Cef240(Cnab240):
         # Informar o Número do Documento - Seu Número (mesmo das posições
         # 63-73 do Segmento P)
         vals['nosso_numero'] = "%s%s" % (
-            line.payment_mode_id.boleto_modalidade.zfill(2),
+            line.l10n_br_payment_mode_id.boleto_modalidade.zfill(2),
             line.nosso_numero.zfill(10))
 
         vals['identificacao_titulo'] = str(vals['numero_documento'])

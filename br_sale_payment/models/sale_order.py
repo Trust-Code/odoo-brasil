@@ -15,5 +15,5 @@ class SaleOrder(models.Model):
     @api.multi
     def _prepare_invoice(self):
         vals = super(SaleOrder, self)._prepare_invoice()
-        vals['payment_mode_id'] = self.payment_mode_id.id
+        vals['l10n_br_payment_mode_id'] = self.payment_mode_id.id
         return vals

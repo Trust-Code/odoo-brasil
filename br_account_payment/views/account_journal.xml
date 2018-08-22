@@ -8,12 +8,12 @@
         <field name="inherit_id" ref="account.view_account_journal_form"/>
         <field name="arch" type="xml">
             <field name="bank_id" position="before">
-                <field name="bank_agency_number" />
-                <field name="acc_partner_id" />
+                <field name="l10n_br_bank_agency_number" />
+                <field name="l10n_br_acc_partner_id" />
             </field>
             <field name="bank_statements_source" position="before">
-                <field name="acc_number_dig" />
-                <field name="bank_agency_dig" />
+                <field name="l10n_br_acc_number_dig" />
+                <field name="l10n_br_bank_agency_dig" />
             </field>
         </field>
     </record>
@@ -25,12 +25,12 @@
         <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
         <field name="arch" type="xml">
             <field name="bank_acc_number" position="after">
-                <field name="bank_agency_number" />
-                <field name="acc_partner_id" />
+                <field name="l10n_br_bank_agency_number" />
+                <field name="l10n_br_acc_partner_id" />
             </field>
             <field name="company_id" position="before">
-                <field name="acc_number_dig" />
-                <field name="bank_agency_dig" />
+                <field name="l10n_br_acc_number_dig" />
+                <field name="l10n_br_bank_agency_dig" />
             </field>
         </field>
     </record>
