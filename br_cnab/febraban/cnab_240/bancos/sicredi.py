@@ -42,31 +42,31 @@ class Sicredi240(Cnab240):
         vals['cedente_conta_dv'] = str(vals['cedente_conta_dv'])
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
-        if line.payment_mode_id.boleto_especie == '01':
+        if line.l10n_br_payment_mode_id.boleto_especie == '01':
             especie = '03'
-        elif line.payment_mode_id.boleto_especie == '02':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '02':
             especie = '12'
-        elif line.payment_mode_id.boleto_especie == '03':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '03':
             especie = '16'
-        elif line.payment_mode_id.boleto_especie == '04':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '04':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '05':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '05':
             especie = '17'
-        elif line.payment_mode_id.boleto_especie == '06':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '06':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '07':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '07':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '08':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '08':
             especie = '05'
-        elif line.payment_mode_id.boleto_especie == '09':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '09':
             especie = '07'
-        elif line.payment_mode_id.boleto_especie == '13':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '13':
             especie = '19'
-        elif line.payment_mode_id.boleto_especie == '15':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '15':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '16':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '16':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '17':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '17':
             especie = '99'
         else:
             especie = '99'

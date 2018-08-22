@@ -23,10 +23,11 @@ class BancoBrasil240(Cnab240):
     def _prepare_segmento(self, line):
         vals = super(BancoBrasil240, self)._prepare_segmento(line)
         vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(
-            line.payment_mode_id)
-        vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira[:2])
+            line.l10n_br_payment_mode_id)
+        vals['carteira_numero'] = int(
+            line.l10n_br_payment_mode_id.boleto_carteira[:2])
         vals['nosso_numero'] = self.format_nosso_numero(
-            line.payment_mode_id.boleto_cnab_code, line.nosso_numero)
+            line.l10n_br_payment_mode_id.boleto_cnab_code, line.nosso_numero)
         vals['codigo_baixa'] = 0
         vals['prazo_baixa'] = ''
         vals['controlecob_numero'] = self.order.id

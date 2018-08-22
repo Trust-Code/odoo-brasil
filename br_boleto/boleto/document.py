@@ -40,7 +40,7 @@ class Boleto:
 
     @staticmethod
     def getBoleto(order_line, nosso_numero):
-        boleto_type = order_line.payment_mode_id.boleto_type
+        boleto_type = order_line.l10n_br_payment_mode_id.boleto_type
         if boleto_type:
             return dict_boleto[boleto_type][0](order_line, nosso_numero)
         raise BoletoException(u'Configure o tipo de boleto no modo de '
@@ -70,7 +70,7 @@ class Boleto:
         return self.branch_number
 
     def _order_line(self, order_line):
-        self._payment_mode(order_line.payment_mode_id)
+        self._payment_mode(order_line.l10n_br_payment_mode_id)
         self.boleto.data_vencimento = datetime.date(datetime.strptime(
             order_line.date_maturity, '%Y-%m-%d'))
         self.boleto.data_documento = datetime.date(datetime.strptime(
@@ -258,7 +258,7 @@ class BoletoSantander(Boleto):
         self.boleto.nosso_numero = self.nosso_numero
 
         self.boleto.conta_cedente = \
-            order_line.payment_mode_id.boleto_cnab_code
+            order_line.l10n_br_payment_mode_id.boleto_cnab_code
 
 
 class BoletoSicredi(Boleto):

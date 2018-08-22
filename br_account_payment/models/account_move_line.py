@@ -4,22 +4,26 @@ from odoo import api, fields, models
 
 
 class AccountMoveLine(models.Model):
-    _inherit = 'account.move.line'
+    _name = 'account.move.line'
+    _inherit = ['account.move.line', 'br.localization.filtering']
 
-    payment_mode_id = fields.Many2one(
-        'l10n_br.payment.mode', string=u"Modo de pagamento")
+    l10n_br_payment_mode_id = fields.Many2one(
+        'l10n_br.payment.mode', string=u"Modo de pagamento",
+        oldname='payment_mode_id')
     l10n_br_order_line_id = fields.Many2one(
-        'payment.order.line', string='Linha de Pagamento')
+        'payment.order.line', string='Linha de Pagamento',
+        oldname='order_line_id')
 
     @api.multi
     @api.depends('debit', 'credit', 'user_type_id', 'amount_residual')
     def _compute_payment_value(self):
         for item in self:
-            item.payment_value = item.debit \
+            item.l10n_br_payment_value = item.debit \
                 if item.user_type_id.type == 'receivable' else item.credit * -1
-    payment_value = fields.Monetary(
+    l10n_br_payment_value = fields.Monetary(
         string="Valor", compute=_compute_payment_value, store=True,
-        currency_field='company_currency_id')
+        currency_field='company_currency_id',
+        oldname='payment_value')
 
     @api.multi
     def action_register_payment(self):

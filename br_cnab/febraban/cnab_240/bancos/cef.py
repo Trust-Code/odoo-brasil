@@ -48,7 +48,7 @@ class Cef240(Cnab240):
 
         # Segue a mesma regra de geração do dv do boleto
         # Carteira 1 + fixo 4 + 15 posições nosso número - aplica modulo 11
-        numero = "%1s4%15s" % (int(line.payment_mode_id.boleto_carteira),
+        numero = "%1s4%15s" % (int(line.l10n_br_payment_mode_id.boleto_carteira),
                                line.nosso_numero.zfill(15))
         nosso_numero = "%s%s" % (line.nosso_numero,
                                  BoletoData.modulo11(numero))
