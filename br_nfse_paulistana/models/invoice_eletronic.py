@@ -285,8 +285,8 @@ class InvoiceEletronic(models.Model):
                 for inv_line in self.invoice_id.invoice_line_ids:
                     if inv_line.product_id.l10n_br_fiscal_type == 'service':
                         inv_line.write(
-                            {'state': 'transmitido',
-                             'numero_nfse': self.numero_nfse})
+                            {'l10n_br_state': 'transmitido',
+                             'l10n_br_numero_nfse': self.numero_nfse})
 
             else:
                 self.codigo_retorno = retorno.Erro.Codigo
