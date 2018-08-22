@@ -60,7 +60,7 @@ class Bradesco240(Cnab240):
         return carteira, nosso_numero, digito
 
     def get_identificacao_titulo(self, line):
-        carteira = line.payment_mode_id.boleto_carteira
+        carteira = line.l10n_br_payment_mode_id.boleto_carteira
         return "%s%s%s%s" % (
             str(carteira).zfill(3),
             '0'.zfill(5),

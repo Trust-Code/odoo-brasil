@@ -15,7 +15,7 @@
             <tree default_order="date_maturity" string="Payments" colors="grey:reconciled==True;red:date_maturity&lt;current_date" create="false">
                 <field name="partner_id" readonly="1"/>
                 <field name="account_id" readonly="1"/>
-                <field name="payment_value" sum="Total das parcelas" />
+                <field name="l10n_br_payment_value" sum="Total das parcelas" />
                 <field name="amount_residual" readonly="1" sum="Total"/>
                 <field name="date_maturity"/>
                 <field name="move_id" readonly="1"/>
@@ -34,7 +34,7 @@
             <tree default_order="date_maturity" string="Payments" colors="grey:reconciled==True;red:date_maturity&lt;current_date" create="false">
                 <field name="partner_id" readonly="1"/>
                 <field name="account_id" readonly="1"/>
-                <field name="payment_value" sum="Total das parcelas" />
+                <field name="l10n_br_payment_value" sum="Total das parcelas" />
                 <field name="amount_residual" readonly="1" sum="Total"/>
                 <field name="date_maturity"/>
                 <field name="move_id" readonly="1"/>

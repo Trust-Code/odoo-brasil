@@ -25,10 +25,11 @@ class BancoBrasil240(Cnab240):
         vals['numero_documento'] = (u"%s/%s" % (
             line.move_id.name, line.name))[-15:]
         vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(
-            line.payment_mode_id)
-        vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira[:2])
+            line.l10n_br_payment_mode_id)
+        vals['carteira_numero'] = int(
+            line.l10n_br_payment_mode_id.boleto_carteira[:2])
         vals['nosso_numero'] = self.format_nosso_numero(
-            line.payment_mode_id.boleto_cnab_code, line.nosso_numero)
+            line.l10n_br_payment_mode_id.boleto_cnab_code, line.nosso_numero)
         vals['prazo_baixa'] = '0'
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()

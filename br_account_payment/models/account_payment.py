@@ -7,12 +7,14 @@ from odoo.exceptions import UserError
 
 
 class AccountPayment(models.Model):
-    _inherit = 'account.payment'
+    _name = 'account.payment'
+    _inherit = ['account.payment', 'br.localization.filtering']
 
-    move_line_id = fields.Many2one('account.move.line',
-                                   string="Linha de fatura")
-    total_moves = fields.Integer(
-        'Linha(s)', compute='_compute_open_moves')
+    l10n_br_move_line_id = fields.Many2one('account.move.line',
+                                           string="Linha de fatura",
+                                           oldname='move_line_id')
+    l10n_br_total_moves = fields.Integer(
+        'Linha(s)', compute='_compute_open_moves', oldname='total_moves')
 
     @api.model
     def default_get(self, fields):
@@ -23,7 +25,8 @@ class AccountPayment(models.Model):
         return rec
 
     def _create_payment_entry(self, amount):
-        self = self.with_context(move_line_to_reconcile=self.move_line_id)
+        self = self.with_context(
+            move_line_to_reconcile=self.l10n_br_move_line_id)
         return super(AccountPayment, self)._create_payment_entry(amount)
 
     def action_validate_invoice_payment(self):
@@ -43,11 +46,12 @@ to process a single invoice's payment."))
                 account_type = 'receivable'
                 column = 'credit'
 
-            item.total_moves = self.env['account.move.line'].search_count(
-                [('partner_id', '=', item.partner_id.id),
-                 ('user_type_id.type', '=', account_type),
-                 (column, '=', 0),
-                 ('reconciled', '=', False)])
+            item.l10n_br_total_moves = \
+                self.env['account.move.line'].search_count(
+                    [('partner_id', '=', item.partner_id.id),
+                     ('user_type_id.type', '=', account_type),
+                     (column, '=', 0),
+                     ('reconciled', '=', False)])
 
     @api.multi
     def action_view_receivable_payable(self):
