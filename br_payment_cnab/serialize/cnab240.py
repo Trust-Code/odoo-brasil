@@ -63,7 +63,7 @@ class Cnab240(object):
             'cedente_inscricao_tipo': 2,  # 0 = Isento, 1 = CPF, 2 = CNPJ
             # número do registro da empresa
             'cedente_inscricao_numero': self._string_to_num(
-                self._order.company_id.cnpj_cpf),
+                self._order.company_id.l10n_br_cnpj_cpf),
             # Usado pelo Banco para identificar o contrato - númerodo banco(4),
             # códigode agência(4 "sem DV"), número do convênio(12).
             'codigo_convenio': bank.l10n_br_convenio_pagamento,
@@ -156,9 +156,9 @@ class Cnab240(object):
             "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(
-                self._order.company_id.cnpj_cpf),
+                self._order.company_id.l10n_br_cnpj_cpf),
             "identificacao_contribuinte_alfa": self._just_numbers(
-                self._order.company_id.cnpj_cpf),
+                self._order.company_id.l10n_br_cnpj_cpf),
             "codigo_identificacao_tributo": information_id.tax_identification\
                 or '',
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
@@ -201,7 +201,7 @@ class Cnab240(object):
             "tipo_servico": int(information_id.service_type),
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
-                self._order.company_id.cnpj_cpf),
+                self._order.company_id.l10n_br_cnpj_cpf),
             "codigo_convenio": str(bank.l10n_br_convenio_pagamento),
             "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.bra_number_dig or '',
