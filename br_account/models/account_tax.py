@@ -346,7 +346,6 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
-
     def sum_taxes(self, price_base):
         ipi = self._compute_ipi(price_base)
         icms = self._compute_icms(
