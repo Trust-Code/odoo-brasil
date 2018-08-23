@@ -52,7 +52,7 @@ class Cnab_240(object):
             'cedente_inscricao_numero': self._string_to_num(
                 self._order.company_id.cnpj_cpf),
             # Usado pelo Banco para identificar o contrato - númerodo banco(4),
-            # código de agência(4 "sem DV"), número do convênio(12).
+            # códigode agência(4 "sem DV"), número do convênio(12).
             'codigo_convenio': bank.codigo_convenio,
             # Para ordem de pagamento, saque em uma agência -número da agência,
             # caso contrário preencher com zeros.

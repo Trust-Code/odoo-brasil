@@ -102,10 +102,6 @@ class Sicoob240(Cnab_240):
                 segmento.get('codigo_instrucao_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),
-            'periodo_apuracao': self._string_to_num(
-                segmento.get('periodo_apuracao')),
-            'info_complementar_tributo': segmento.get(
-                'info_complementar_tributo', '')
         })
         return segmento
 
@@ -125,9 +121,9 @@ class Sicoob240(Cnab_240):
         segments = super(Sicoob240, self).segments_per_operation()
         segments.update({
             '03': ["SegmentoJ"],
-            '04': ["SegmentoO", "SegmentoW"],
+            '04': ["SegmentoO", "SegmentoW", "SegmentoZ"],
             '05': ["SegmentoN_GPS"],
-            '06': ["SegmentoN_DarfNormal", "SegmentoW"],
-            '07': ["SegmentoN_DarfSimples", "SegmentoW"],
+            '06': ["SegmentoN_DarfNormal", "SegmentoW", "SegmentoZ"],
+            '07': ["SegmentoN_DarfSimples", "SegmentoW", "SegmentoZ"],
         })
         return segments
