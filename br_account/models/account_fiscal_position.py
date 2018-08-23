@@ -127,7 +127,7 @@ class AccountFiscalPosition(models.Model):
         string=u"Regras INSS", domain=[('domain', '=', 'inss')])
     fiscal_type = fields.Selection([('saida', 'Saída'),
                                     ('entrada', 'Entrada'),
-                                    ('import', 'Saída Importação')],
+                                    ('import', 'Entrada Importação')],
                                    string=u"Tipo da posição")
 
     @api.model
