@@ -42,14 +42,6 @@ class InvoiceEletronic(models.Model):
     model = fields.Selection(
         selection_add=[('015', 'NFS-e Maringá,PR')])
 
-    exigibilidade_iss = fields.Selection(
-        [('1', 'Exigível'), ('2', 'Não incidência'),
-         ('3', 'Isenção'), ('4', 'Exportação'),
-         ('5', 'Imunidade'),
-         ('6', 'Exigibilidade Suspensa por Decisão Judicial'),
-         ('7', 'Exigibilidade Suspensa por Processo Administrativo')],
-        string="Exigibilidade ISS")
-
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
@@ -58,8 +50,6 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Inscrição municipal obrigatória')
             if not self.company_id.l10n_br_cnae_main_id.code:
                 errors.append(u'CNAE Principal da empresa obrigatório')
-            if not self.exigibilidade_iss:
-                errors.append(u'Exigibilidade ISS obrigatório!')
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
                                               eletr.product_id.name)
@@ -79,8 +69,7 @@ class InvoiceEletronic(models.Model):
         tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
         dt_emissao = datetime.strptime(self.data_emissao, DTFT)
         dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
-        data_emissao = dt_emissao.strftime('%Y-%m-%d')
-        # datetime_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')s
+        dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')
 
         partner = self.commercial_partner_id
         city_tomador = partner.city_id
@@ -101,9 +90,8 @@ class InvoiceEletronic(models.Model):
             'inscricao_municipal': re.sub(
                 '[^0-9]', '', partner.l10n_br_inscr_mun or ''),
             'email': self.partner_id.email or partner.email or '',
-            'codigo_pais': self.partner_id.country_id.ibge_code
         }
-        city_prestador = self.company_id.city_id
+        city_prestador = self.company_id.partner_id.city_id
         prestador = {
             'cnpj': re.sub(
                 '[^0-9]', '',
@@ -134,7 +122,7 @@ class InvoiceEletronic(models.Model):
             'numero': self.numero,
             'serie': self.serie.code or '',
             'tipo_rps': '1',
-            'data_emissao': data_emissao,
+            'data_emissao': dt_emissao,
             'natureza_operacao': '1',  # Tributada no municipio
             'regime_tributacao': self.company_id.regime_tributacao or '',
             'optante_simples':  # 1 - Sim, 2 - Não
@@ -164,8 +152,6 @@ class InvoiceEletronic(models.Model):
             'itens_servico': itens_servico,
             'tomador': tomador,
             'prestador': prestador,
-            'exigibilidade_iss': self.exigibilidade_iss,
-            'codigo_pais': self.company_id.country_id.ibge_code,
         }
 
         res.update(rps)

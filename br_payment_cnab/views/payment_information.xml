@@ -1,0 +1,68 @@
+<odoo>
+    <data>
+        <record id="br_payment_cnab_view" model="ir.ui.view">
+            <field name="name">trustcode.payment_other_information.tree.view</field>
+            <field name="model">l10n_br.payment_information</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="mov_finality"/>
+                    <field name="lote_serv"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="br_payment_cnab_form_view" model="ir.ui.view">
+            <field name="name">trustcode.payment_other_form_information.view</field>
+            <field name="model">l10n_br.payment_information</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form name= "Payment Information">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="payment_type"/>
+                                <field name="currency_code"/>
+                                <field name="lote_serv"/>
+                                <field name="reg_type"/>
+                                <field name="message2"/>
+                                <field name="rebate_value" widget="monetary"/>
+                                <field name="discount_value" widget="monetary"/>
+                                <field name="credit_hist_code"/>
+                            </group>
+                            <group>
+                                <field name="warning_code"/>
+                                <field name="agency_name"/>
+                                <field name="operation_code"/>
+                                <field name="message1"/>
+                                <field name="duty_value" widget="monetary"/>
+                                <field name="mora_value" widget="monetary"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Informações DOC/TED" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}">
+                                <group>
+                                    <group>
+                                        <field name="mov_finality"/>
+                                        <field name="finality_ted"/>
+                                        <field name="mov_type"/>
+                                        <field name="service_type"/>
+                                        <field name="mov_instruc"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('05', '06', '07'))]}">
+                                <group>
+                                    <group>
+                                        <field name="codigo_receita" />
+                                        <field name="tax_identification" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
