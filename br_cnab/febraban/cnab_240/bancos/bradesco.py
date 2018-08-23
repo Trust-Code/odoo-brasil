@@ -10,6 +10,7 @@ from ..cnab_240 import Cnab240
 import re
 import string
 from decimal import Decimal
+from odoo.exceptions import UserError
 
 
 class Bradesco240(Cnab240):
@@ -21,9 +22,12 @@ class Bradesco240(Cnab240):
 
     def _prepare_header(self):
         vals = super(Bradesco240, self)._prepare_header()
-        vals['servico_servico'] = 1
-        vals['cedente_convenio'] = self.order.payment_mode_id.bank_account_id.\
+
+        cod_convenio = self.order.payment_mode_id.bank_account_id.\
             codigo_convenio
+
+        vals['servico_servico'] = 1
+        vals['cedente_convenio'] = '{:<020s}'.format(cod_convenio)
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         vals['nome_do_banco'] = 'BANCO BRADESCO S.A'
@@ -98,3 +102,9 @@ class Bradesco240(Cnab240):
         if r == 1:
             resto = soma % 11
             return resto
+
+    def _hook_validation(self):
+        if not self.order.payment_mode_id.bank_account_id.\
+                codigo_convenio:
+            raise UserError(
+                'Código de convênio não pode estar vazio!')
