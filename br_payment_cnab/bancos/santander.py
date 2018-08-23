@@ -109,3 +109,13 @@ class Santander240(Cnab_240):
     def _get_trailer_lot(self, total, num_lot):
         trailer = super(Santander240, self)._get_trailer_lot(total, num_lot)
         return trailer
+
+    def segments_per_operation(self):
+        segments = super(Santander240, self).segments_per_operation()
+        segments.update({
+            "04": ["SegmentoO"],
+            "06": ["SegmentoO"],
+            "07": ["SegmentoO"],
+            "08": ["SegmentoO", "SegmentoW"],
+        })
+        return segments
