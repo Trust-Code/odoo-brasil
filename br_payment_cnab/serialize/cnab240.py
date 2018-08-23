@@ -6,6 +6,7 @@ import logging
 from io import StringIO
 from decimal import Decimal
 from datetime import datetime, date
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class Cnab_240(object):
             "valor_multa_juros": information_id.mora_value +
                 information_id.duty_value,
             "codigo_moeda": information_id.currency_code,
-            "codigo_de_barras": int("0"*44),
+            "codigo_de_barras": self.get_barcode(line),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),
@@ -258,3 +259,23 @@ class Cnab_240(object):
             return 0
         date = datetime.strptime(line.invoice_date, "%Y-%m-%d")
         return int('{}{}'.format(date.month, date.year))
+
+    def get_barcode(self, line):
+        barcode = line.payment_information_id.barcode
+        barcode_len = len(barcode or '')
+        if barcode_len > 44:
+            return self.convert_line_to_barcode(
+                barcode)
+        elif barcode_len > 0 and barcode_len < 44:
+            raise UserError("Barcode must have at least 44 characters")
+        return barcode
+
+    def convert_line_to_barcode(self, barcode):
+        barcode = str(self._string_to_num(barcode))
+        return int("{}{}{}{}{}{}".format(
+            barcode[0:4],
+            barcode[32],
+            barcode[-14:],
+            barcode[4:9],
+            barcode[10:20],
+            barcode[21:31]))

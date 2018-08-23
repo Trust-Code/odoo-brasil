@@ -165,6 +165,8 @@ class PaymentInformation(models.Model):
         string="Tax Identification",
         compute='_compute_tax_identification')
 
+    barcode = fields.Char('Barcode')
+
     @api.onchange('payment_type')
     def _compute_tax_identification(self):
         for item in self:

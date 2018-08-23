@@ -26,6 +26,8 @@ class AccountVoucher(models.Model):
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]")
 
+    barcode = fields.Char('Barcode')
+
     @api.onchange('payment_mode_id')
     def _onchange_payment_mode_id(self):
         self.payment_type = self.payment_mode_id.payment_type
@@ -47,6 +49,7 @@ class AccountVoucher(models.Model):
             'voucher': self.id,
             'date_maturity': self.date_due,
             'invoice_date': self.date,
+            'barcode': self.barcode
         }
 
     @api.multi
@@ -58,7 +61,7 @@ class AccountVoucher(models.Model):
                 self.payment_mode_id, **self._prepare_payment_order_vals())
         return res
 
-    def validade_doc_ted_fields(self):
+    def validade_cnab_fields(self):
         if not self.date_due:
             raise UserError(_("Please select a Due Date for the payment"))
         if datetime.strptime(self.date_due, DATE_FORMAT) < datetime.now():
@@ -68,6 +71,6 @@ class AccountVoucher(models.Model):
     def write(self, vals):
         res = super(AccountVoucher, self).write(vals)
         if self.payment_mode_id and\
-                self.payment_mode_id.payment_type in ('01, 02'):
-            self.validade_doc_ted_fields()
+                self.payment_mode_id.payment_type in ('01, 02', '06', '07'):
+            self.validade_cnab_fields()
         return res
