@@ -121,8 +121,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
                 'mov_instruc': '00',
                 'rebate_value': 1.00,
                 'discount_value': 2.00,
-                'duty_value': 3.00,
-                'mora_value': 1.00,
+                'fine_value': 3.00,
+                'interest_value': 1.00,
                 'credit_hist_code': '2644',
                 'operation_code': '018'
             })

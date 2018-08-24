@@ -62,7 +62,7 @@ class PaymentOrderLine(models.Model):
         for item in self:
             payment = item.payment_information_id
             desconto = payment.rebate_value + payment.discount_value
-            acrescimo = payment.duty_value + payment.mora_value
+            acrescimo = payment.fine_value + payment.interest_value
             item.value_final = (item.value - desconto + acrescimo)
 
     value_final = fields.Float(
@@ -106,7 +106,9 @@ class PaymentOrderLine(models.Model):
             'operation_code': self.get_opration_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
-            'barcode': vals.get('barcode')
+            'barcode': vals.pop('barcode'),
+            'fine_value': vals.pop('fine_value'),
+            'interest_value': vals.pop('interest_value')
         })
 
     def action_generate_payment_order_line(self, payment_mode, **vals):

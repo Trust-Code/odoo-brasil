@@ -110,21 +110,23 @@ class Cnab_240(object):
             "valor_documento": line.value,
             "valor_abatimento": information_id.rebate_value,
             "valor_desconto": information_id.discount_value,
-            "valor_mora": information_id.mora_value,
-            "valor_multa": information_id.duty_value,
+            "valor_mora": information_id.interest_value,
+            "valor_multa": information_id.fine_value,
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
             "cedente_nome": self._order.company_id.name,
             "valor_nominal_titulo": line.value,
             "valor_desconto_abatimento": information_id.rebate_value +
                 information_id.discount_value,
-            "valor_multa_juros": information_id.mora_value +
-                information_id.duty_value,
+            "valor_multa_juros": information_id.interest_value +
+                information_id.fine_value,
             "codigo_moeda": information_id.currency_code,
             "codigo_de_barras": self.get_barcode(line),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),
+            "valor_juros_encargos": self._string_to_monetary(
+                information_id.fine_value),
             # GPS
             "contribuinte_nome": self._order.company_id.name,
             "valor_total_pagamento": self._string_to_monetary(
@@ -138,8 +140,14 @@ class Cnab_240(object):
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
             "valor_previsto_inss": self._string_to_monetary(line.value),
             # DARF
-            "periodo_apuracao": self.format_date(line.invoice_date),
+            "periodo_apuracao": int(self.format_date(line.invoice_date)),
             "valor_principal": self._string_to_monetary(line.value),
+            "valor_receita_bruta_acumulada":
+            self._order.company_id.annual_revenue,
+            # 'percentual_receita_bruta_acumulada': TODO,
+            # GARE SP
+            'inscricao_estadual': self._order.company_id.inscr_est,
+            'valor_receita': line.value,
         }
         return segmento
 

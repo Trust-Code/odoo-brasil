@@ -1,0 +1,835 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_payment_cnab
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-24 17:07+0000\n"
+"PO-Revision-Date: 2018-08-24 17:07+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_payment_cnab
+#: model:ir.model,name:br_payment_cnab.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Comprovante Contábil"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Accredited Payment"
+msgstr "Accredited Payment"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_agency_name
+msgid "Agency Name"
+msgstr "Agency Name"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Agent/Salesman Payment"
+msgstr "Agent/Salesman Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Alegacao do sacado"
+msgstr "Alegacao do sacado"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Alimony Payment"
+msgstr "Alimony Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Balance Transference"
+msgstr "Balance Transference"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_barcode
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_barcode
+msgid "Barcode"
+msgstr "Código de barras"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Benefit"
+msgstr "Benefit"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Bill and tax payment"
+msgstr "Bill and tax payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Bloqueto Eletronico"
+msgstr "Bloqueto Eletronico"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,operation_code:0
+msgid "CC"
+msgstr "CC"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Casualty Payment - insurance"
+msgstr "Casualty Payment - insurance"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Child Support/Alimony"
+msgstr "Child Support/Alimony"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Consulta de tributos a pagar DETRAN com RENAVAM"
+msgstr "Consulta de tributos a pagar DETRAN com RENAVAM"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_bank_account_id
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_line_bank_account_id
+msgid "Conta p/ Transferência"
+msgstr "Conta p/ Transferência"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mode_payment_indication:0
+msgid "Credit Card Debit"
+msgstr "Credit Card Debit"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Crédito em Conta"
+msgstr "Crédito em Conta"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Currency Exchange/Fund/Stock Exchange Payment"
+msgstr "Currency Exchange/Fund/Stock Exchange Payment"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_currency_code
+msgid "Currency code"
+msgstr "Currency code"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Current Account Credit"
+msgstr "Current Account Credit"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mode_payment_indication:0
+msgid "Current Account Debit"
+msgstr "Current Account Debit"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_codigo_receita
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_mode_codigo_receita
+msgid "Código da Receita"
+msgstr "Código da Receita"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:l10n_br.payment_information,tax_identification:0
+#: selection:payment.mode,payment_type:0
+msgid "DARF Normal"
+msgstr "DARF Normal"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:l10n_br.payment_information,tax_identification:0
+#: selection:payment.mode,payment_type:0
+msgid "DARF Simples"
+msgstr "DARF Simples"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,operation_code:0
+msgid "DOC"
+msgstr "DOC"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:payment.mode,payment_type:0
+msgid "DOC - Transferência Bancária"
+msgstr "DOC - Transferência Bancária"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "DOC/TED to Judicial Deposit"
+msgstr "DOC/TED to Judicial Deposit"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "DOC/TED to Saving Account"
+msgstr "DOC/TED to Saving Account"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "Daily UFIR"
+msgstr "Daily UFIR"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_line_invoice_date
+msgid "Data da Fatura"
+msgstr "Data da Fatura"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.res_config_settings_payment_cnab
+msgid "Define accounts to use for fine and interest."
+msgstr "Defina contas para multa e juros."
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Dept Security Payment"
+msgstr "Dept Security Payment"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_discount_value
+msgid "Discount Value"
+msgstr "Discount Value"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Dividend Payment"
+msgstr "Dividend Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Dividends Credit"
+msgstr "Dividends Credit"
+
+#. module: br_payment_cnab
+#: code:addons/br_payment_cnab/models/account_voucher.py:72
+#, python-format
+msgid "Due Date must be a future date"
+msgstr "Due Date must be a future date"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_duty_value
+msgid "Duty Value"
+msgstr "Duty Value"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Entry Return"
+msgstr "Entry Return"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_type:0
+msgid "Exclusion"
+msgstr "Exclusion"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Expenses Payment - Travaler in transit"
+msgstr "Expenses Payment - Travaler in transit"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "FAJ-TR"
+msgstr "FAJ-TR"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:payment.mode,payment_type:0
+msgid "FGTS"
+msgstr "FGTS"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_line_value_final
+msgid "Final Value"
+msgstr "Final Value"
+
+#. module: br_payment_cnab
+#: code:addons/br_payment_cnab/models/account_voucher.py:81
+#, python-format
+msgid "Fine Line"
+msgstr "Linha de Multa"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_fine_value
+msgid "Fine Value"
+msgstr "Valor de Multa"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_res_config_settings_fine_account_id
+#: model:ir.ui.view,arch_db:br_payment_cnab.res_config_settings_payment_cnab
+msgid "Fines Account"
+msgstr "Conta de Multas"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.res_config_settings_payment_cnab
+msgid "Fines and Interests Accounts"
+msgstr "Contas de Multa e Juros"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Foresight Chargeback"
+msgstr "Foresight Chargeback"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Foresight Payment"
+msgstr "Foresight Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Foresight Rescue"
+msgstr "Foresight Rescue"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,tax_identification:0
+msgid "GPS (Guia da Previdência Social)"
+msgstr "GPS (Guia da Previdência Social)"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:payment.mode,payment_type:0
+msgid "GPS - Guia de previdencia Social"
+msgstr "GPS - Guia de previdencia Social"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.trustcode_payment_order_form
+msgid "Gerar CNAB de Pagamentos"
+msgstr "Gerar CNAB de Pagamentos"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_credit_hist_code
+msgid "History Code"
+msgstr "History Code"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_id
+msgid "ID"
+msgstr "ID"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "IDTR"
+msgstr "IDTR"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "INSS Payment"
+msgstr "INSS Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "ITRD"
+msgstr "ITRD"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_type:0
+msgid "Inclusion"
+msgstr "Inclusion"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_instruc:0
+msgid "Inclusion of Blocked Detail Register(Pending Authorization)"
+msgstr "Inclusion of Blocked Detail Register(Pending Authorization)"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_instruc:0
+msgid "Inclusion of Released Detail Register"
+msgstr "Inclusion of Released Detail Register"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Income Tax Rebate"
+msgstr "Income Tax Rebate"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.br_payment_cnab_form_view
+#: model:ir.ui.view,arch_db:br_payment_cnab.br_payment_cnab_payment_mode_form
+msgid "Informações DOC/TED"
+msgstr "Informações DOC/TED"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.res_config_settings_payment_cnab
+msgid "Interest Account"
+msgstr "Conta de Juros"
+
+#. module: br_payment_cnab
+#: code:addons/br_payment_cnab/models/account_voucher.py:81
+#, python-format
+msgid "Interest Line"
+msgstr "Linha de Juros"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_mora_value
+msgid "Interest Rate"
+msgstr "Interest Rate"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_interest_value
+msgid "Interest Value"
+msgstr "Valor de Juros"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_res_config_settings_interest_account_id
+msgid "Interests Account"
+msgstr "Conta de Juros"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information___last_update
+msgid "Last Modified on"
+msgstr "Última modificação em"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_type:0
+msgid "Modification"
+msgstr "Modification"
+
+#. module: br_payment_cnab
+#: model:ir.model,name:br_payment_cnab.model_payment_mode
+#: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_payment_mode_id
+msgid "Modo de Pagamento"
+msgstr "Modo de Pagamento"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "Monthly UFIR"
+msgstr "Monthly UFIR"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_mode_mov_finality
+msgid "Move Finality"
+msgstr "Move Finality"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_mov_instruc
+msgid "Movimentation Instrution"
+msgstr "Movimentation Instrution"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_mov_finality
+msgid "Movimentation Purpose"
+msgstr "Movimentation Purpose"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_finality_ted
+msgid "Movimentation TED Purpose"
+msgstr "Movimentation TED Purpose"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_mov_type
+msgid "Movimentation Type"
+msgstr "Movimentation Type"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,warning_code:0
+msgid "No Warning"
+msgstr "No Warning"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_message2
+msgid "Note Detail"
+msgstr "Note Detail"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_message1
+msgid "Note Header"
+msgstr "Note Header"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_numero_referencia
+msgid "Número de Referência"
+msgstr "Número de Referência"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_operation_code
+msgid "Operation Code"
+msgstr "Operation Code"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_lote_serv
+msgid "Order of Service"
+msgstr "Order of Service"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Other"
+msgstr "Other"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento Autorizado"
+msgstr "Pagamento Autorizado"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento Beneficios"
+msgstr "Pagamento Beneficios"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento Concessionárias Serviço Público"
+msgstr "Pagamento Concessionárias Serviço Público"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento Credenciados"
+msgstr "Pagamento Credenciados"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento Despesas Viajante em Transito"
+msgstr "Pagamento Despesas Viajante em Transito"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento Representantes / Vendedores Autorizados"
+msgstr "Pagamento Representantes / Vendedores Autorizados"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de Aluguel/Condomínios"
+msgstr "Pagamento de Aluguel/Condomínios"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de Dividendos"
+msgstr "Pagamento de Dividendos"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de Duplicatas/Títulos"
+msgstr "Pagamento de Duplicatas/Títulos"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de Fornecedores"
+msgstr "Pagamento de Fornecedores"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de Mensalidades Escolares"
+msgstr "Pagamento de Mensalidades Escolares"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de Salários"
+msgstr "Pagamento de Salários"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.br_payment_cnab_form_view
+#: model:ir.ui.view,arch_db:br_payment_cnab.br_payment_cnab_payment_mode_form
+msgid "Pagamento de Tributos"
+msgstr "Pagamento de Tributos"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:payment.mode,payment_type:0
+msgid "Pagamento de Títulos"
+msgstr "Pagamento de Títulos"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento de dividendos"
+msgstr "Pagamento de dividendos"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamento de impostos, tributos e taxas"
+msgstr "Pagamento de impostos, tributos e taxas"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamento de sinistros segurados"
+msgstr "Pagamento de sinistros segurados"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,service_type:0
+msgid "Pagamentos Diversos"
+msgstr "Pagamentos Diversos"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Pagamentos de Honorários"
+msgstr "Pagamentos de Honorários"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_instruc:0
+msgid "Payment Authorization"
+msgstr "Payment Authorization"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_mode_payment_indication
+msgid "Payment Indication"
+msgstr "Payment Indication"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_line_payment_information_id
+msgid "Payment Information"
+msgstr "Payment Information"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_instruc:0
+msgid "Payment Modification - Blocked to Released"
+msgstr "Payment Modification - Blocked to Released"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_instruc:0
+msgid "Payment Modification - Released to Blocked"
+msgstr "Payment Modification - Released to Blocked"
+
+#. module: br_payment_cnab
+#: code:addons/br_payment_cnab/models/account_voucher.py:78
+#, python-format
+msgid "Please configure the interest and fine accounts"
+msgstr "Favor configurar as contas de multas e juros"
+
+#. module: br_payment_cnab
+#: code:addons/br_payment_cnab/models/account_voucher.py:70
+#, python-format
+msgid "Please select a Due Date for the payment"
+msgstr "Please select a Due Date for the payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Provider Payment"
+msgstr "Provider Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Provider Payment - Receipt"
+msgstr "Provider Payment - Receipt"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:l10n_br.payment_information,service_type:0
+#: selection:payment.mode,mov_finality:0
+msgid "Provider/Fees Payment"
+msgstr "Provider/Fees Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "Real"
+msgstr "Real"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_rebate_value
+msgid "Rebate Value"
+msgstr "Rebate Value"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_line_voucher_id
+msgid "Recibo Origem"
+msgstr "Recibo Origem"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_instruc:0
+msgid "Refund Chargeback"
+msgstr "Refund Chargeback"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_reg_type
+msgid "Register Type"
+msgstr "Register Type"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Rent Payment/Condominium"
+msgstr "Rent Payment/Condominium"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,finality_ted:0
+#: selection:payment.mode,finality_ted:0
+msgid "Restituição de Imposto de Renda"
+msgstr "Restituição de Imposto de Renda"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Same Ownership Transference"
+msgstr "Same Ownership Transference"
+
+#. module: br_payment_cnab
+#: model:ir.ui.view,arch_db:br_payment_cnab.res_config_settings_payment_cnab
+msgid "Select account to insert interests and fines values"
+msgstr "Selecione a conta onde inserir os valores de juros e multas"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_service_type
+msgid "Service Type"
+msgstr "Service Type"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Several Credits"
+msgstr "Several Credits"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,credit_hist_code:0
+msgid "Several Payments - Provider"
+msgstr "Several Payments - Provider"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:payment.mode,payment_type:0
+msgid "TED - Transferência Bancária"
+msgstr "TED - Transferência Bancária"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,operation_code:0
+msgid "TED CIP"
+msgstr "TED CIP"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_mode_finality_ted
+msgid "TED Purpose"
+msgstr "TED Purpose"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,operation_code:0
+msgid "TED STR"
+msgstr "TED STR"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_tax_identification
+msgid "Tax Identification"
+msgstr "Tax Identification"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_payment_type
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_payment_type
+#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_mode_payment_type
+msgid "Tipo de Operação"
+msgstr "Tipo de Operação"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Transfer of Collection / Payment of Taxes"
+msgstr "Transfer of Collection / Payment of Taxes"
+
+#. module: br_payment_cnab
+#: selection:account.voucher,payment_type:0
+#: selection:l10n_br.payment_information,payment_type:0
+#: selection:payment.mode,payment_type:0
+msgid "Tributos com código de barras"
+msgstr "Tributos com código de barras"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,mov_finality:0
+#: selection:payment.mode,mov_finality:0
+msgid "Tuition Payment"
+msgstr "Tuition Payment"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "US Commercial Dolar"
+msgstr "US Commercial Dolar"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,currency_code:0
+msgid "US tourism Dolar"
+msgstr "US tourism Dolar"
+
+#. module: br_payment_cnab
+#: model:ir.model.fields,field_description:br_payment_cnab.field_l10n_br_payment_information_warning_code
+msgid "Warning Code"
+msgstr "Warning Code"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,warning_code:0
+msgid "Warning for both, addresser and receiver"
+msgstr "Warning for both, addresser and receiver"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,warning_code:0
+msgid "Warning only for addresser"
+msgstr "Warning only for addresser"
+
+#. module: br_payment_cnab
+#: selection:l10n_br.payment_information,warning_code:0
+msgid "Warning only for receiver"
+msgstr "Warning only for receiver"
+
+#. module: br_payment_cnab
+#: code:addons/br_payment_cnab/models/payment_order.py:30
+#, python-format
+msgid "You can't generate cnab for the bank {} yet!"
+msgstr "You can't generate cnab for the bank {} yet!"
+
+#. module: br_payment_cnab
+#: model:ir.model,name:br_payment_cnab.model_l10n_br_payment_information
+msgid "l10n_br.payment_information"
+msgstr "l10n_br.payment_information"
+
+#. module: br_payment_cnab
+#: model:ir.model,name:br_payment_cnab.model_payment_order
+msgid "payment.order"
+msgstr "payment.order"
+
+#. module: br_payment_cnab
+#: model:ir.model,name:br_payment_cnab.model_payment_order_line
+msgid "payment.order.line"
+msgstr "payment.order.line"
+
+#. module: br_payment_cnab
+#: model:ir.model,name:br_payment_cnab.model_res_config_settings
+msgid "res.config.settings"
+msgstr "res.config.settings"
+

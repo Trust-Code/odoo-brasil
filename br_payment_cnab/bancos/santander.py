@@ -114,8 +114,9 @@ class Santander240(Cnab_240):
         segments = super(Santander240, self).segments_per_operation()
         segments.update({
             "04": ["SegmentoO"],
-            "06": ["SegmentoO"],
-            "07": ["SegmentoO"],
+            "05": ["SegmentoN_GPS"],
+            "06": ["SegmentoN_DarfNormal"],
+            "07": ["SegmentoN_DarfSimples"],
             "08": ["SegmentoO", "SegmentoW"],
         })
         return segments
