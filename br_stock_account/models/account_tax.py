@@ -18,8 +18,8 @@ class AccountTax(models.Model):
             if "valor_seguro" in self.env.context:
                 base_ipi += self.env.context["valor_seguro"]
             ii = self._compute_ii(price_base)
-            base_ipi += ii[0]['amount']
-
+            if (ii):
+                base_ipi += ii[0]['amount']
             if "ipi_reducao_bc" in self.env.context:
                 reducao_ipi = self.env.context['ipi_reducao_bc']
             return base_ipi * (1 - (reducao_ipi / 100.0))
