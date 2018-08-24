@@ -67,8 +67,8 @@ class Cnab240(object):
             # Usado pelo Banco para identificar o contrato - númerodo banco(4),
             # códigode agência(4 "sem DV"), número do convênio(12).
             'codigo_convenio': bank.l10n_br_convenio_pagamento,
-            'cedente_agencia': self._string_to_num(bank.bra_number, 0),
-            'cedente_agencia_dv': bank.bra_number_dig,
+            'cedente_agencia': self._string_to_num(bank.l10n_br_number, 0),
+            'cedente_agencia_dv': bank.l10n_br_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
             'cedente_conta_dv': bank.acc_number_dig,
             'cedente_nome': self._order.company_id.legal_name[:30],
@@ -97,14 +97,15 @@ class Cnab240(object):
             # adicionar campo para o banco do clinte com um valor default
             "favorecido_codigo_banco": line.bank_account_id.bank_id.name,
             "favorecido_banco": int(line.bank_account_id.bank_id.bic),
-            "favorecido_agencia": line.bank_account_id.bra_number,
-            "favorecido_agencia_dv": line.bank_account_id.bra_number_dig or '',
+            "favorecido_agencia": line.bank_account_id.l10n_br_number,
+            "favorecido_agencia_dv":
+                line.bank_account_id.l10n_br_number_dig or '',
             "favorecido_conta": line.bank_account_id.acc_number,
             "favorecido_conta_dv": line.bank_account_id.acc_number_dig or '',
             "favorecido_agencia_conta_dv": '',
             "favorecido_nome":
-            line.partner_id.legal_name or line.partner_id.name,
-            "favorecido_doc_numero": line.partner_id.cnpj_cpf,
+            line.partner_id.l10n_br_legal_name or line.partner_id.name,
+            "favorecido_doc_numero": line.partner_id.l10n_br_cnpj_cpf,
             "numero_documento_cliente": line.nosso_numero,
             "data_pagamento": int(self.format_date(line.date_maturity)),
             "valor_pagamento": self._float_to_monetary(line.amount_total),
@@ -118,12 +119,12 @@ class Cnab240(object):
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
             "favorecido_inscricao_numero": self._string_to_num(
-                line.partner_id.cnpj_cpf),
+                line.partner_id.l10n_br_cnpj_cpf),
             "favorecido_endereco_rua": line.partner_id.street or '',
             "favorecido_endereco_numero": self._string_to_num(
-                line.partner_id.number, default=0),
+                line.partner_id.l10n_br_number, default=0),
             "favorecido_endereco_complemento": line.partner_id.street2 or '',
-            "favorecido_bairro": line.partner_id.district or '',
+            "favorecido_bairro": line.partner_id.l10n_br_district or '',
             "favorecido_cidade": line.partner_id.city_id.name or '',
             "favorecido_cep": self._string_to_num(line.partner_id.zip),
             "cep_complemento": self._just_numbers(line.partner_id.zip[5:]),
@@ -203,15 +204,15 @@ class Cnab240(object):
             "cedente_inscricao_numero": self._string_to_num(
                 self._order.company_id.l10n_br_cnpj_cpf),
             "codigo_convenio": str(bank.l10n_br_convenio_pagamento),
-            "cedente_agencia": bank.bra_number,
-            "cedente_agencia_dv": bank.bra_number_dig or '',
+            "cedente_agencia": bank.l10n_br_number,
+            "cedente_agencia_dv": bank.l10n_br_number_dig or '',
             "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig or '',
             "cedente_nome": self._order.company_id.legal_name[:30],
             "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
             "cedente_endereco_numero": self._string_to_num(
-                self._order.company_id.number),
+                self._order.company_id.l10n_br_number),
             "cedente_endereco_complemento": str(
                 self._order.company_id.street2)[0:15] if
             self._order.company_id.street2 else '',
