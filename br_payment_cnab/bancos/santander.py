@@ -21,7 +21,7 @@ class Santander240(Cnab_240):
         bank_account = self._order.payment_mode_id.bank_account_id
         return "{:4s}{:4s}{:12s}".format(
             str(bank_account.bank_id.bic).zfill(4),
-            str(bank_account.bra_number).zfill(4),
+            str(bank_account.l10n_br_number).zfill(4),
             str(bank_account.codigo_convenio).zfill(12))
 
     def _get_header_arq(self):

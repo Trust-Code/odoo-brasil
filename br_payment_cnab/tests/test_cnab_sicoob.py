@@ -48,8 +48,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         conta = self.env['res.partner.bank'].create({
             'acc_number': '45425',  # 5 digitos
             'acc_number_dig': '0',  # 1 digito
-            'bra_number': '4321',  # 4 digitos
-            'bra_number_dig': '0',
+            'l10n_br_number': '4321',  # 4 digitos
+            'l10n_br_number_dig': '0',
             'codigo_convenio': '123458-8',  # 7 digitos
             'bank_id': sicoob.id,
         })
