@@ -515,8 +515,8 @@ class AccountInvoiceLine(models.Model):
             for key, value in vals.items():
                 if value and key in self._fields:
                     self.update({key: value})
-
-        self.invoice_line_tax_ids = self.tax_icms_id | self.tax_icms_st_id | \
+        self.invoice_line_tax_ids |= self.invoice_line_tax_ids
+        self.invoice_line_tax_ids |= self.tax_icms_id | self.tax_icms_st_id | \
             self.tax_icms_inter_id | self.tax_icms_intra_id | \
             self.tax_icms_fcp_id | self.tax_ipi_id | \
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
@@ -564,7 +564,11 @@ class AccountInvoiceLine(models.Model):
         self._set_extimated_taxes(self.product_id.lst_price)
 
     def _update_invoice_line_ids(self):
-        other_taxes = self.invoice_line_tax_ids.filtered(
+        if self.invoice_id.type in ('out_invoice', 'out_refund'):
+            tx = self.product_id.taxes_id or self.account_id.tax_ids
+        else:
+            tx = self.product_id.supplier_taxes_id or self.account_id.tax_ids
+        other_taxes = tx | self.invoice_line_tax_ids.filtered(
             lambda x: not x.domain)
         self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \
             self.tax_icms_st_id | self.tax_icms_inter_id | \

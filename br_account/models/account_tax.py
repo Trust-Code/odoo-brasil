@@ -332,10 +332,18 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
+    def _compute_others(self, price_base):
+        others = self.filtered(lambda x: x.domain == 'outros')
+        if not others:
+            return []
+        vals = self._tax_vals(others)
+        vals['amount'] = others._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None):
-
         exists_br_tax = len(self.filtered(lambda x: x.domain)) > 0
         if not exists_br_tax:
             res = super(AccountTax, self).compute_all(
@@ -360,13 +368,13 @@ class AccountTax(models.Model):
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)
+        taxes += self._compute_others(price_base)
 
         total_included = total_excluded = price_base
         for tax in taxes:
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
                 total_included += tax['amount']
-
         return {
             'taxes': sorted(taxes, key=lambda k: k['sequence']),
             'total_excluded': total_excluded,

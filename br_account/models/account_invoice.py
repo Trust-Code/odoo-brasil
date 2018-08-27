@@ -333,7 +333,12 @@ class AccountInvoice(models.Model):
     def get_taxes_values(self):
         tax_grouped = {}
         for line in self.invoice_line_ids:
-            other_taxes = line.invoice_line_tax_ids.filtered(
+            if line.invoice_id.type in ('out_invoice', 'out_refund'):
+                tx = line.product_id.taxes_id or line.account_id.tax_ids
+            else:
+                tx = line.product_id.supplier_taxes_id \
+                    or line.account_id.tax_ids
+            other_taxes = tx | line.invoice_line_tax_ids.filtered(
                 lambda x: not x.domain)
             line.invoice_line_tax_ids = other_taxes | line.tax_icms_id | \
                 line.tax_ipi_id | line.tax_pis_id | line.tax_cofins_id | \
@@ -343,7 +348,6 @@ class AccountInvoice(models.Model):
 
             ctx = line._prepare_tax_context()
             tax_ids = line.invoice_line_tax_ids.with_context(**ctx)
-
             price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = tax_ids.compute_all(
                 price_unit, self.currency_id, line.quantity,
