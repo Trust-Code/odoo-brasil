@@ -254,8 +254,12 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'codigo_identificacao_tributo': '',
             'mes_ano_competencia': 0,
             'valor_previsto_inss': Decimal('120.00'),
-            'periodo_apuracao': '',
-            'valor_principal': Decimal('120.00')}
+            'periodo_apuracao': 0,
+            'valor_principal': Decimal('120.00'),
+            'valor_juros_encargos': Decimal('3.00'),
+            'valor_receita_bruta_acumulada': Decimal('0.0'),
+            'inscricao_estadual': '219.882.606',
+            'valor_receita': Decimal('120.0')}
         self.assertEquals(seg_ok, seg_teste)
 
     def sequency_lot(self):

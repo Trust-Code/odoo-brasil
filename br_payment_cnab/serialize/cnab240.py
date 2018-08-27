@@ -121,7 +121,7 @@ class Cnab_240(object):
             "valor_multa_juros": information_id.interest_value +
                 information_id.fine_value,
             "codigo_moeda": information_id.currency_code,
-            "codigo_de_barras": self.get_barcode(line),
+            "codigo_de_barras": self.get_barcode(line) or 0,
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),
@@ -140,7 +140,7 @@ class Cnab_240(object):
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
             "valor_previsto_inss": self._string_to_monetary(line.value),
             # DARF
-            "periodo_apuracao": int(self.format_date(line.invoice_date)),
+            "periodo_apuracao": int(self.format_date(line.invoice_date) or 0),
             "valor_principal": self._string_to_monetary(line.value),
             "valor_receita_bruta_acumulada":
             self._order.company_id.annual_revenue,

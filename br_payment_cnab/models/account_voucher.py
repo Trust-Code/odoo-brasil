@@ -106,8 +106,8 @@ class AccountVoucher(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('interest_value') > 0:
+        if vals.get('interest_value', 0) > 0:
             vals = self.create_interest_fine_line('interest', vals)
-        if vals.get('fine_value') > 0:
+        if vals.get('fine_value', 0) > 0:
             vals = self.create_interest_fine_line('fine', vals)
         return super(AccountVoucher, self).create(vals)
