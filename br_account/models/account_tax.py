@@ -319,6 +319,15 @@ class AccountTax(models.Model):
         vals['base'] = price_base
         return [vals]
 
+    def _compute_others(self, price_base):
+        others = self.filtered(lambda x: x.domain == 'outros')
+        if not others:
+            return []
+        vals = self._tax_vals(others)
+        vals['amount'] = others._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
     def _compute_retention(self, price_base):
         retention_tax = self.filtered(
             lambda x: x.domain in ('csll', 'irrf', 'inss'))
@@ -349,6 +358,7 @@ class AccountTax(models.Model):
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)
+        taxes += self._compute_others(price_base)
         return taxes
 
     @api.multi
