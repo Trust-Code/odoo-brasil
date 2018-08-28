@@ -568,9 +568,9 @@ class AccountInvoiceLine(models.Model):
             tx = self.product_id.taxes_id or self.account_id.tax_ids
         else:
             tx = self.product_id.supplier_taxes_id or self.account_id.tax_ids
-        other_taxes = tx | self.invoice_line_tax_ids.filtered(
-            lambda x: not x.domain)
-        self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \
+        other_tx = tx
+        other_tx |= self.invoice_line_tax_ids.filtered(lambda x: not x.domain)
+        self.invoice_line_tax_ids = other_tx | self.tax_icms_id | \
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
             self.tax_ipi_id | self.tax_pis_id | \
