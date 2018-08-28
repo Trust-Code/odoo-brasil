@@ -22,6 +22,7 @@
                     <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08'))]}">
                         <group>
                             <field name="codigo_receita" />
+                            <field name="numero_referencia" />
                         </group>
                     </page>
                 </notebook>
