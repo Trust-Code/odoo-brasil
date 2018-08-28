@@ -38,6 +38,7 @@
                                 <field name="fine_value" widget="monetary"/>
                                 <field name="interest_value" widget="monetary"/>
                                 <field name="mov_type"/>
+                                <field name="mov_instruc"/>
                             </group>
                         </group>
                         <notebook>
@@ -47,7 +48,6 @@
                                         <field name="mov_finality"/>
                                         <field name="finality_ted"/>
                                         <field name="service_type"/>
-                                        <field name="mov_instruc"/>
                                     </group>
                                 </group>
                             </page>

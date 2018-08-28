@@ -49,3 +49,5 @@ class PaymentMode(models.Model):
         ], string=u'TED Purpose')
 
     codigo_receita = fields.Char('Código da Receita')
+
+    numero_referencia = fields.Char('Número de Referência')

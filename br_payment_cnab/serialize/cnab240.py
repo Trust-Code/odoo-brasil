@@ -26,9 +26,11 @@ class Cnab_240(object):
         return Decimal(frmt.format(numero))
 
     def _string_to_num(self, toTransform, default=None):
+        if not toTransform:
+            return default or 0
         value = re.sub('[^0-9]', '', str(toTransform))
         if not value:
-            return 0
+            return default or 0
         try:
             return int(value)
         except ValueError:
@@ -126,7 +128,7 @@ class Cnab_240(object):
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),
             "valor_juros_encargos": self._string_to_monetary(
-                information_id.fine_value),
+                information_id.interest_value),
             # GPS
             "contribuinte_nome": self._order.company_id.name,
             "valor_total_pagamento": self._string_to_monetary(
@@ -146,8 +148,10 @@ class Cnab_240(object):
             self._order.company_id.annual_revenue,
             # 'percentual_receita_bruta_acumulada': TODO,
             # GARE SP
-            'inscricao_estadual': self._order.company_id.inscr_est,
+            'inscricao_estadual': self._string_to_num(
+                self._order.company_id.inscr_est),
             'valor_receita': line.value,
+            'numero_referencia': int(information_id.numero_referencia) or 0,
         }
         return segmento
 

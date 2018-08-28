@@ -108,7 +108,8 @@ class PaymentOrderLine(models.Model):
             'service_type': self.get_service_type(payment_mode_id),
             'barcode': vals.pop('barcode'),
             'fine_value': vals.pop('fine_value'),
-            'interest_value': vals.pop('interest_value')
+            'interest_value': vals.pop('interest_value'),
+            'numero_referencia': payment_mode_id.numero_referencia,
         })
 
     def action_generate_payment_order_line(self, payment_mode, **vals):
