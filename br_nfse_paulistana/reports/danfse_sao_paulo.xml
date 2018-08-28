@@ -112,6 +112,8 @@
                         </strong>
                         <strong t-field="doc.company_id.partner_id.l10n_br_district">
                         </strong>
+                        <strong>CEP: </strong>
+                        <strong t-field="doc.company_id.partner_id.zip" />
                     </div>
                     <div class="col-xs-6">
                         Município:
@@ -147,6 +149,8 @@
                     </strong>
                     <strong t-field="doc.commercial_partner_id.l10n_br_district">
                     </strong>
+                    <strong>CEP: </strong>
+                    <strong t-field="doc.commercial_partner_id.zip" />
                 </div>
                 <div class="col-xs-4">
                     Município:

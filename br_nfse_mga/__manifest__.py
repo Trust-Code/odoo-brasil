@@ -21,9 +21,7 @@
     ],
     'data': [
         'views/br_account_service.xml',
-        'views/invoice_eletronic_view.xml',
         'views/res_company.xml',
-        'views/view_maringa_fiscal_position.xml',
         'reports/danfpse.xml',
     ],
     'application': True,

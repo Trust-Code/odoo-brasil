@@ -26,7 +26,7 @@ class NfseExportInvoice(models.TransientModel):
 
     def _invoice_vals(self, inv):
         tomador = {
-            'cnpj_cpf': re.sub(
+            'l10n_br_cnpj_cpf': re.sub(
                 '[^0-9]', '',
                 inv.commercial_partner_id.l10n_br_cnpj_cpf or ''),
             'inscricao_municipal': re.sub(

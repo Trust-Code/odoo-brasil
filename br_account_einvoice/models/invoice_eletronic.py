@@ -51,8 +51,7 @@ class InvoiceEletronic(models.Model):
          ('008', u'NFS-e - Provedor SIMPLISS'),
          ('009', u'NFS-e - Provedor SUSESU'),
          ('010', u'NFS-e Imperial - Petrópolis'),
-         ('012', u'NFS-e - Florianópolis'),
-         ('015', u'NFS-e - Maringá')],
+         ('012', u'NFS-e - Florianópolis')],
         string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
