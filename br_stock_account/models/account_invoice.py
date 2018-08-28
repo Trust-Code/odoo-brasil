@@ -9,6 +9,8 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    pos_fiscal = fields.Selection(related='fiscal_position_id.fiscal_type')
+
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'invoice_line_ids.price_total',
@@ -77,7 +79,6 @@ class AccountInvoice(models.Model):
         res['valor_frete'] = inv.total_frete
         res['valor_despesas'] = inv.total_despesas
         res['valor_seguro'] = inv.total_seguro
-
         res['modalidade_frete'] = inv.freight_responsibility
         res['transportadora_id'] = inv.shipping_supplier_id.id
         res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
@@ -117,12 +118,21 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
+    valor_frete = fields.Float(
+        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
+    valor_seguro = fields.Float(
+        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
+    outras_despesas = fields.Float(
+        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
         res.update({
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
+            'fiscal_type': self.invoice_id.fiscal_position_id.fiscal_type,
+            'ii_despesas': self.ii_valor_despesas,
         })
         return res
 
@@ -130,14 +140,6 @@ class AccountInvoiceLine(models.Model):
     @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
-
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
-
-    valor_frete = fields.Float(
-        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
-    valor_seguro = fields.Float(
-        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
-    outras_despesas = fields.Float(
-        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
