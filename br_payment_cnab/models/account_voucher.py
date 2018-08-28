@@ -46,7 +46,7 @@ class AccountVoucher(models.Model):
     def _prepare_payment_order_vals(self):
         return {
             'partner_id': self.partner_id.id,
-            'value': self.amount,
+            'value': self.amount - self.fine_value - self.interest_value,
             'name': self.number,
             'bank_account_id': self.bank_account_id.id,
             'move_id': self.move_id.id,

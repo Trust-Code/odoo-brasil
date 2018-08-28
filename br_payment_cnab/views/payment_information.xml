@@ -58,6 +58,7 @@
                                         <field name="tax_identification" />
                                         <field name="numero_referencia" attrs="{'invisible': [('payment_type', '!=', '06')]}"/>
                                         <field name="barcode" attrs="{'invisible': [('payment_type', '!=', '04')]}" />
+                                        <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
                                     </group>
                                 </group>
                             </page>

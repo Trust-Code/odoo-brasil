@@ -95,8 +95,8 @@ class Cnab_240(object):
                 self._order.data_emissao_cnab),
             "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": information_id.message2 or '',
-            "finalidade_doc_ted": information_id.mov_finality,
-            "finalidade_ted": information_id.finality_ted,
+            "finalidade_doc_ted": information_id.mov_finality or '',
+            "finalidade_ted": information_id.finality_ted or '',
             "favorecido_emissao_aviso": int(information_id.warning_code) if
             information_id.warning_code else 0,
             "favorecido_inscricao_tipo":
@@ -144,9 +144,10 @@ class Cnab_240(object):
             # DARF
             "periodo_apuracao": int(self.format_date(line.invoice_date) or 0),
             "valor_principal": self._string_to_monetary(line.value),
-            "valor_receita_bruta_acumulada":
-            self._order.company_id.annual_revenue,
-            # 'percentual_receita_bruta_acumulada': TODO,
+            "valor_receita_bruta_acumulada": self._string_to_monetary(
+                self._order.company_id.annual_revenue),
+            "percentual_receita_bruta_acumulada": self._string_to_monetary(
+                information_id.percentual_receita_bruta_acumulada),
             # GARE SP
             'inscricao_estadual': self._string_to_num(
                 self._order.company_id.inscr_est),

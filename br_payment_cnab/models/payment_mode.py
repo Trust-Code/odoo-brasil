@@ -51,3 +51,8 @@ class PaymentMode(models.Model):
     codigo_receita = fields.Char('Código da Receita')
 
     numero_referencia = fields.Char('Número de Referência')
+
+    percentual_receita_bruta_acumulada = fields.Char(
+        string='Percentual de Receita Bruta Acumulada',
+        help='Percentual decorrente da receita bruta acumulada a ser aplicado\
+        sobre a receita mensal.')
