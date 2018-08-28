@@ -124,7 +124,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
                 'fine_value': 3.00,
                 'interest_value': 1.00,
                 'credit_hist_code': '2644',
-                'operation_code': '018'
+                'operation_code': '018',
+                'percentual_receita_bruta_acumulada': Decimal('12.00')
             })
         return payment_information.id
 
@@ -260,7 +261,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_receita_bruta_acumulada': Decimal('0.0'),
             'inscricao_estadual': 219882606,
             'valor_receita': Decimal('120.0'),
-            'numero_referencia': 0}
+            'numero_referencia': 0,
+            'percentual_receita_bruta_acumulada': Decimal('12.00')}
         self.assertEquals(seg_ok, seg_teste)
 
     def sequency_lot(self):

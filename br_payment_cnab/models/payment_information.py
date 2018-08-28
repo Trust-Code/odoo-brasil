@@ -169,6 +169,11 @@ class PaymentInformation(models.Model):
 
     numero_referencia = fields.Char('Número de Referência')
 
+    percentual_receita_bruta_acumulada = fields.Float(
+        string='Percentual de Receita Bruta Acumulada',
+        help='Percentual decorrente da receita bruta acumulada a ser aplicado\
+        sobre a receita mensal.')
+
     @api.onchange('payment_type')
     def _compute_tax_identification(self):
         for item in self:
