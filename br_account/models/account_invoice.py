@@ -356,7 +356,7 @@ class AccountInvoice(models.Model):
                 if key not in tax_grouped:
                     tax_grouped[key] = val
                 else:
-                    tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['amount'] += round(val['amount'], 2)
                     tax_grouped[key]['base'] += val['base']
         return tax_grouped
 
