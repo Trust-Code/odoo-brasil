@@ -17,8 +17,10 @@ class PurchaseOrder(models.Model):
             order.update({
                 'amount_total': order.total_bruto + order.total_tax +
                 order.total_frete + order.total_seguro +
+                order.total_despesas_aduana +
                 order.total_despesas - order.total_desconto,
             })
+        self._onchange_despesas_frete_seguro()
 
     def _calc_ratio(self, qty, total):
         if total > 0:
@@ -26,7 +28,8 @@ class PurchaseOrder(models.Model):
         else:
             return 0
 
-    @api.onchange('total_despesas', 'total_seguro', 'total_frete')
+    @api.onchange('total_despesas', 'total_seguro',
+                  'total_frete', 'total_despesas_aduana')
     def _onchange_despesas_frete_seguro(self):
         amount = 0
         for line in self.order_line:
@@ -40,11 +43,17 @@ class PurchaseOrder(models.Model):
             l.update({
                 'valor_seguro': self.total_seguro * percentual,
                 'valor_frete': self.total_frete * percentual,
-                'outras_despesas': self.total_despesas * percentual
+                'outras_despesas': self.total_despesas * percentual,
+                'valor_aduana': self.total_despesas_aduana * percentual
             })
 
     total_despesas = fields.Float(
         string='Despesas ( + )', default=0.00,
+        digits=dp.get_precision('Account'),
+        readonly=True, states={'draft': [('readonly', False)],
+                               'sent': [('readonly', False)]})
+    total_despesas_aduana = fields.Float(
+        string='Despesas Aduaneiras ( + )', default=0.00,
         digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
                                'sent': [('readonly', False)]})
@@ -68,6 +77,7 @@ class PuchaseOrderLine(models.Model):
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
+            'ii_despesas': self.valor_aduana,
         })
         return res
 
@@ -77,3 +87,5 @@ class PuchaseOrderLine(models.Model):
         'Despesas', default=0.0, digits=dp.get_precision('Account'))
     valor_frete = fields.Float(
         'Frete', default=0.0, digits=dp.get_precision('Account'))
+    valor_aduana = fields.Float(
+        default=0.0, digits=dp.get_precision('Account'))
