@@ -32,6 +32,7 @@
         'views/payment_information.xml',
         'views/payment_order.xml',
         'views/account_voucher.xml',
+        'views/res_config_settings.xml',
         'data/data.xml',
     ],
     'application': True,

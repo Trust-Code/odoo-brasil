@@ -10,6 +10,11 @@
                 <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
                 <field name="payment_type" invisible="1" />
                 <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
+                <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('04'))]}" />
+            </field>
+            <field name="tax_amount" position="before">
+                <field name="interest_value" widget="monetary"/>
+                <field name="fine_value" widget="monetary"/>
             </field>
         </field>
     </record>

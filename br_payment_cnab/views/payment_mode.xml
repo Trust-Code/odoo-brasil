@@ -22,11 +22,12 @@
                     <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08'))]}">
                         <group>
                             <field name="codigo_receita" />
+                            <field name="numero_referencia" />
+                            <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
                         </group>
                     </page>
                 </notebook>
             </group>
         </field>
     </record>
-
 </odoo>
