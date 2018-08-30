@@ -40,7 +40,8 @@ class AccountTax(models.Model):
                 base_icms += self.env.context["valor_seguro"]
             if "icms_aliquota_reducao_base" in self.env.context:
                 reducao_icms = self.env.context['icms_aliquota_reducao_base']
-            base_icms += ii[0]['amount']
+            if ii:
+                base_icms += ii[0]['amount']
             base_icms += ipi_value
             base_icms += sum([tax['amount'] for tax in pis_cofins])
             base_icms += self.env.context["ii_despesas"]
