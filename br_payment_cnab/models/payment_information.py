@@ -79,9 +79,9 @@ class PaymentInformation(models.Model):
 
     reg_type = fields.Integer('Register Type')
 
-    mora_value = fields.Float('Interest Rate')
+    interest_value = fields.Float('Interest Value')
 
-    duty_value = fields.Float('Duty Value')
+    fine_value = fields.Float('Duty Value')
 
     rebate_value = fields.Float('Rebate Value')
 
@@ -164,6 +164,15 @@ class PaymentInformation(models.Model):
          ('17', 'GPS (Guia da Previdência Social)')],
         string="Tax Identification",
         compute='_compute_tax_identification')
+
+    barcode = fields.Char('Barcode')
+
+    numero_referencia = fields.Char('Número de Referência')
+
+    percentual_receita_bruta_acumulada = fields.Float(
+        string='Percentual de Receita Bruta Acumulada',
+        help='Percentual decorrente da receita bruta acumulada a ser aplicado\
+        sobre a receita mensal.')
 
     @api.onchange('payment_type')
     def _compute_tax_identification(self):

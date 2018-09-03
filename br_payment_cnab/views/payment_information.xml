@@ -35,8 +35,10 @@
                                 <field name="agency_name"/>
                                 <field name="operation_code"/>
                                 <field name="message1"/>
-                                <field name="duty_value" widget="monetary"/>
-                                <field name="mora_value" widget="monetary"/>
+                                <field name="fine_value" widget="monetary"/>
+                                <field name="interest_value" widget="monetary"/>
+                                <field name="mov_type"/>
+                                <field name="mov_instruc"/>
                             </group>
                         </group>
                         <notebook>
@@ -45,17 +47,18 @@
                                     <group>
                                         <field name="mov_finality"/>
                                         <field name="finality_ted"/>
-                                        <field name="mov_type"/>
                                         <field name="service_type"/>
-                                        <field name="mov_instruc"/>
                                     </group>
                                 </group>
                             </page>
-                            <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('05', '06', '07'))]}">
+                            <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07'))]}">
                                 <group>
                                     <group>
                                         <field name="codigo_receita" />
                                         <field name="tax_identification" />
+                                        <field name="numero_referencia" attrs="{'invisible': [('payment_type', '!=', '06')]}"/>
+                                        <field name="barcode" attrs="{'invisible': [('payment_type', '!=', '04')]}" />
+                                        <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
                                     </group>
                                 </group>
                             </page>

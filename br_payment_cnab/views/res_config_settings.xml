@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_payment_cnab" model="ir.ui.view">
+        <field name="name">res_config_settings.payment.cnab</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <div id="eu_service" position="after">
+                <div class="col-xs-12 col-md-6 o_setting_box" title="Define accounts to use for fine and interest.">
+                    <div class="o_setting_right_pane">
+                        <label string="Fines and Interests Accounts"/>
+                        <div class="text-muted">
+                            Select account to insert interests and fines values
+                        </div>
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label string="Interest Account" for="interest_account_id" class="col-md-3 o_light_label"/>
+                                <field name="interest_account_id" domain="[('company_id', '=', company_id)]"/>
+                            </div>
+                            <div class="row">
+                                <label string="Fines Account" for="fine_account_id" class="col-md-3 o_light_label"/>
+                                <field name="fine_account_id" domain="[('company_id', '=', company_id)]"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
