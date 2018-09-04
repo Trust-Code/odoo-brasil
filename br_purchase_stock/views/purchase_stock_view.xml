@@ -9,9 +9,11 @@
                 <field name="outras_despesas" invisible="1" />
                 <field name="valor_seguro" invisible="1" />
                 <field name="valor_frete" invisible="1" />
+                <field name="valor_aduana" invisible="1" />
             </xpath>
             <field name="amount_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
