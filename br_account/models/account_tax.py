@@ -376,7 +376,7 @@ class AccountTax(models.Model):
         for tax in taxes:
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
-                total_included += tax['amount']
+                total_included += round(tax['amount'], 2)
 
         return {
             'taxes': sorted(taxes, key=lambda k: k['sequence']),
