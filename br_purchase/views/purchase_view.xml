@@ -10,6 +10,7 @@
                 <attribute name="domain">['|', ('fiscal_type', '=', 'import'), '|', ('fiscal_type', '=', 'entrada'), ('fiscal_type', '=', None)]</attribute>
             </field>
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="before">
+                <field name="fiscal_position_type" invisible="1" />
                 <field name="valor_bruto" widget="monetary" />
                 <field name="cfop_id" invisible="1" />
                 <field name="incluir_ipi_base" invisible="1" />
@@ -27,6 +28,7 @@
                 <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/sheet/group/group/field[@name='price_unit']" position="after">
+                <field name="fiscal_position_type" invisible="1" />
                 <field name="valor_bruto" />
                 <field name="price_subtotal" />
                 <field name="cfop_id" invisible="1" />
