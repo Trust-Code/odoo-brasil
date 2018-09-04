@@ -15,7 +15,7 @@ class AccountInvoice(models.Model):
     @api.depends('invoice_line_ids.price_subtotal',
                  'invoice_line_ids.price_total',
                  'tax_line_ids.amount',
-                 'currency_id', 'company_id')
+                 'currency_id', 'company_id', 'fiscal_position_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
@@ -137,9 +137,15 @@ class AccountInvoiceLine(models.Model):
         return res
 
     @api.one
-    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
+    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas',
+                 'invoice_id.fiscal_position_id')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
-        self.update({'price_total': total})
+        if self.invoice_id.fiscal_position_id.fiscal_type == 'import':
+            self.update({'ii_base_calculo': total - self.outras_despesas,
+                         'price_total': total})
+        else:
+            self.update({'ii_base_calculo': total,
+                         'price_total': total})
