@@ -97,6 +97,8 @@ class PaymentOrderLine(models.Model):
     def get_service_type(self, payment_mode):
         if payment_mode.finality_ted == '05':
             return '20'
+        if payment_mode.payment_type in ('04', '05', '06', '07', '08'):
+            return '22'
 
     def get_information(self, payment_mode_id, vals):
         return self.env['l10n_br.payment_information'].create({
