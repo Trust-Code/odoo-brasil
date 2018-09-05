@@ -67,7 +67,7 @@ class PurchaseOrder(models.Model):
                 sub_seguro -= round(seguro, 2)
                 sub_aduana -= round(aduana, 2)
                 sub_desp -= round(despesas, 2)
-        if self.order_line[0]:
+        if self.order_line:
             self.order_line[0].update({
                 'valor_seguro':
                     self.order_line[0].valor_seguro + sub_seguro,
