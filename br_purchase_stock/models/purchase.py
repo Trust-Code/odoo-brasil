@@ -28,23 +28,54 @@ class PurchaseOrder(models.Model):
         else:
             return 0
 
-    @api.onchange('total_despesas', 'total_seguro',
-                  'total_frete', 'total_despesas_aduana')
-    def _onchange_despesas_frete_seguro(self):
+    def calc_rateio(self, line, total):
+        porcentagem = self._calc_ratio(line.valor_bruto, total)
+        frete = self.total_frete * porcentagem
+        seguro = self.total_seguro * porcentagem
+        despesas = self.total_despesas * porcentagem
+        aduana = self.total_despesas_aduana * porcentagem
+        line.update({
+            'valor_seguro': seguro,
+            'valor_frete': frete,
+            'outras_despesas': despesas,
+            'valor_aduana': aduana
+        })
+        return frete, seguro, despesas, aduana
+
+    def calc_total_amount(self):
         amount = 0
         for line in self.order_line:
             if line.product_id.fiscal_type == 'product':
                 amount += line.valor_bruto
+        return amount
 
+    @api.onchange('total_despesas', 'total_seguro',
+                  'total_frete', 'total_despesas_aduana')
+    def _onchange_despesas_frete_seguro(self):
+        amount = self.calc_total_amount()
+        sub_frete = self.total_frete
+        sub_seguro = self.total_seguro
+        sub_aduana = self.total_despesas_aduana
+        sub_desp = self.total_despesas
         for l in self.order_line:
             if l.product_id.fiscal_type == 'service':
                 continue
-            percentual = self._calc_ratio(l.valor_bruto, amount)
-            l.update({
-                'valor_seguro': self.total_seguro * percentual,
-                'valor_frete': self.total_frete * percentual,
-                'outras_despesas': self.total_despesas * percentual,
-                'valor_aduana': self.total_despesas_aduana * percentual
+            else:
+                frete, seguro, despesas, aduana = self.calc_rateio(
+                    l, amount)
+                sub_frete -= round(frete, 2)
+                sub_seguro -= round(seguro, 2)
+                sub_aduana -= round(aduana, 2)
+                sub_desp -= round(despesas, 2)
+        self.order_line[0].update({
+            'valor_seguro':
+                self.order_line[0].valor_seguro + sub_seguro,
+            'valor_frete':
+                self.order_line[0].valor_frete + sub_frete,
+            'outras_despesas':
+                self.order_line[0].outras_despesas + sub_desp,
+            'valor_aduana':
+                self.order_line[0].valor_aduana + sub_aduana
             })
 
     total_despesas = fields.Float(
