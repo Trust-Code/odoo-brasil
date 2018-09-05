@@ -4,7 +4,7 @@
     <record id="view_br_boleto_invoice_form" model="ir.ui.view">
         <field name="name">br_boleto.invoice.form</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
+        <field name="inherit_id" ref="br_account_payment.view_br_account_payment_invoice_form"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
                 <button name="action_register_boleto" type="object" class="oe_stat_button" icon="fa-file-pdf-o" string="Gerar Boleto" attrs="{'invisible': ['|', ('state', '==', 'draft'), ('payment_mode_id', '==', False)]}" />
@@ -12,10 +12,7 @@
             <tree name="vencimentos" position="inside">
                 <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"/>
             </tree>
-            <field name="date_maturity" position="before">
-                <field name="payment_mode_id" />
-            </field>
-            <field name="payment_term_id" position="after">
+            <field name="payment_mode_id" position="replace">
                 <label for="payment_mode_id" />
                 <div>
                     <field name="update_boleto" invisible="1" />
