@@ -67,16 +67,17 @@ class PurchaseOrder(models.Model):
                 sub_seguro -= round(seguro, 2)
                 sub_aduana -= round(aduana, 2)
                 sub_desp -= round(despesas, 2)
-        self.order_line[0].update({
-            'valor_seguro':
-                self.order_line[0].valor_seguro + sub_seguro,
-            'valor_frete':
-                self.order_line[0].valor_frete + sub_frete,
-            'outras_despesas':
-                self.order_line[0].outras_despesas + sub_desp,
-            'valor_aduana':
-                self.order_line[0].valor_aduana + sub_aduana
-            })
+        if self.order_line[0]:
+            self.order_line[0].update({
+                'valor_seguro':
+                    self.order_line[0].valor_seguro + sub_seguro,
+                'valor_frete':
+                    self.order_line[0].valor_frete + sub_frete,
+                'outras_despesas':
+                    self.order_line[0].outras_despesas + sub_desp,
+                'valor_aduana':
+                    self.order_line[0].valor_aduana + sub_aduana
+                })
 
     total_despesas = fields.Float(
         string='Despesas ( + )', default=0.00,
