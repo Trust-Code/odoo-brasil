@@ -142,9 +142,4 @@ class AccountInvoiceLine(models.Model):
         super(AccountInvoiceLine, self)._compute_price()
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas + self.ii_valor_despesas
-        if self.fiscal_position_type == 'import':
-            self.update({'ii_base_calculo': total - self.outras_despesas,
-                         'price_total': total})
-        else:
-            self.update({'ii_base_calculo': total,
-                         'price_total': total})
+        self.update({'price_total': total})
