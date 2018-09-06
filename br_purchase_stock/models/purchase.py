@@ -17,7 +17,6 @@ class PurchaseOrder(models.Model):
             order.update({
                 'amount_total': order.total_bruto + order.total_tax +
                 order.total_frete + order.total_seguro +
-                order.total_despesas_aduana +
                 order.total_despesas - order.total_desconto,
             })
         self._onchange_despesas_frete_seguro()
@@ -85,7 +84,7 @@ class PurchaseOrder(models.Model):
         readonly=True, states={'draft': [('readonly', False)],
                                'sent': [('readonly', False)]})
     total_despesas_aduana = fields.Float(
-        string='Despesas Aduaneiras ( + )', default=0.00,
+        string='Despesas Aduaneiras', default=0.00,
         digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
                                'sent': [('readonly', False)]})
@@ -110,6 +109,7 @@ class PuchaseOrderLine(models.Model):
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
             'ii_despesas': self.valor_aduana,
+            'fiscal_type': self.fiscal_position_type,
         })
         return res
 
