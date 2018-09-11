@@ -150,5 +150,5 @@ class AccountInvoiceLine(models.Model):
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
-            self.valor_seguro + self.outras_despesas + self.ii_valor_despesas
+            self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
