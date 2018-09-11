@@ -12,6 +12,15 @@ class AccountInvoice(models.Model):
     fiscal_position_type = fields.Selection(
         related='fiscal_position_id.fiscal_type', readonly=True)
 
+    @api.multi
+    def copy(self, default=None):
+        new_acc_inv = super(AccountInvoice, self).copy(default)
+        if self.fiscal_position_type == 'import':
+            for i in range(len(new_acc_inv.invoice_line_ids)):
+                new_acc_inv.invoice_line_ids[i].import_declaration_ids = \
+                    self.invoice_line_ids[i].import_declaration_ids
+        return new_acc_inv
+
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'invoice_line_ids.price_total',
