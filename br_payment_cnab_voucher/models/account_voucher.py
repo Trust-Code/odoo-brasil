@@ -27,9 +27,7 @@ class AccountVoucher(models.Model):
         domain="[('partner_id', '=', partner_id)]")
 
     barcode = fields.Char('Barcode')
-
     interest_value = fields.Float('Interest Value')
-
     fine_value = fields.Float('Fine Value')
 
     @api.onchange('payment_mode_id')
@@ -44,13 +42,15 @@ class AccountVoucher(models.Model):
         self.bank_account_id = bnk_account_id.id
 
     def _prepare_payment_order_vals(self):
+        move_line_id = self.move_id.line_ids.filtered(
+            lambda x: x.account_id == self.account_id)
         return {
             'partner_id': self.partner_id.id,
             'value': self.amount - self.fine_value - self.interest_value,
             'name': self.number,
             'bank_account_id': self.bank_account_id.id,
-            'move_id': self.move_id.id,
-            'voucher': self.id,
+            'move_line_id': move_line_id.id,
+            'voucher_id': self.id,
             'date_maturity': self.date_due,
             'invoice_date': self.date,
             'barcode': self.barcode,

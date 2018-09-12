@@ -3,7 +3,7 @@
 
 
 {   # pylint: disable=C8101,C8103
-    'name': "Integração de pagamentos via CNAB 240",
+    'name': "Integração de pagamentos via CNAB 240 - Voucher",
     'summary': """
         Permite enviar pagamentos a fornecedores via integração bancária
         (CNAB 240) - Mantido por Trustcode""",
@@ -16,23 +16,16 @@
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [
-        'Guilherme Lenon da Silva <guilhermelds@gmail.com>',
         'Marina Domingues <mgd.marinadomingues@gmail.com>'
         'Felipe Paloschi <paloschi.eca@gmail.com>',
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account_invoicing',
-        'br_account_payment',
-        'br_account_voucher',
-        'br_cnab'
+        'account_voucher',
+        'br_payment_cnab',
     ],
     'data': [
-        'security/ir.model.access.csv',
-        'views/payment_mode.xml',
-        'views/payment_information.xml',
-        'views/payment_order.xml',
-        'views/res_config_settings.xml',
-        'data/data.xml',
+        'views/account_voucher.xml',
     ],
-    'application': True,
+    'auto_install': True
 }

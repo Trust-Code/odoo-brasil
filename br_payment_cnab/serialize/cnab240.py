@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 try:
     from pycnab240.file import File
 except ImportError:
-    _logger.info('Cannot import pytrustnfe', exc_info=True)
+    _logger.info('Cannot import pycnab240', exc_info=True)
 
 
 class Cnab_240(object):
@@ -72,6 +72,7 @@ class Cnab_240(object):
 
     def _get_segmento(self, line, lot_sequency, num_lot):
         information_id = line.payment_information_id
+        codigo_barras = self.get_barcode(line) or 0
         segmento = {
             "controle_lote": num_lot,
             "sequencial_registro_lote": lot_sequency,
@@ -123,7 +124,8 @@ class Cnab_240(object):
             "valor_multa_juros": information_id.interest_value +
                 information_id.fine_value,
             "codigo_moeda": information_id.currency_code,
-            "codigo_de_barras": self.get_barcode(line) or 0,
+            "codigo_de_barras": str(codigo_barras),
+            "codigo_de_barras_alfa": str(codigo_barras),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),

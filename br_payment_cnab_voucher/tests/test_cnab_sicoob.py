@@ -2,11 +2,13 @@
 # © 2018 Marina Domingues, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from ..tests.test_cnab_common import TestBrCnabPayment
-from ..bancos.sicoob import Sicoob240
 import time
 import base64
 from decimal import Decimal
+
+from odoo.addons.br_payment_cnab.tests.test_common import TestBrCnabPayment
+from odoo.addons.br_payment_cnab.bancos.sicoob import Sicoob240
+
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
@@ -244,7 +246,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_desconto_abatimento': Decimal('3.00'),
             'valor_multa_juros': Decimal('4.00'),
             'codigo_moeda': '09',
-            'codigo_de_barras': 0,
+            'codigo_de_barras': '0',
+            'codigo_de_barras_alfa': '0',
             'nome_concessionaria': '',
             'data_vencimento': int(time.strftime("%d%m%Y")),
             'contribuinte_nome': 'Trustcode',

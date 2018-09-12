@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class PaymentOrderLine(models.Model):
@@ -28,9 +29,18 @@ class PaymentOrderLine(models.Model):
                               ("sent", "Enviado"),
                               ("approved", "Aprovado"),
                               ("rejected", "Rejeitado"),
-                              ("paid", "Pago")],
-                             string=u"Situação",
+                              ("paid", "Pago"),
+                              ("cancelled", "Cancelado")],
+                             string="Situação",
                              default="draft")
+
+    @api.multi
+    def unlink(self):
+        lines = self.filtered(lambda x: x.state != 'draft')
+        if lines:
+            raise UserError(
+                'Apenas pagamentos no estado provisório podem ser excluídos')
+        return super(PaymentOrderLine, self).unlink()
 
 
 class PaymentOrder(models.Model):
@@ -54,6 +64,8 @@ class PaymentOrder(models.Model):
     payment_mode_id = fields.Many2one('payment.mode',
                                       string='Modo de Pagamento',
                                       required=True)
+    src_bank_account_id = fields.Many2one(
+        'res.partner.bank', string="Conta de Origem")
     state = fields.Selection(
         [('draft', 'Rascunho'),
          ('sent', 'Enviado'),

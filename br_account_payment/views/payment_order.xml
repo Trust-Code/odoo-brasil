@@ -24,6 +24,7 @@
         <field name="arch" type="xml" >
             <tree string='Ordens de Pagamento'>
               <field name="move_id" />
+              <field name="payment_mode_id" />
               <field name="state" />
               <field name="name" />
               <field name="date_maturity" />
@@ -54,6 +55,7 @@
 
                         <group name='data'>
                             <field name="payment_mode_id" />
+                            <field name="src_bank_account_id" />
                         </group>
                     </group>
 

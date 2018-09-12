@@ -51,7 +51,6 @@ class PaymentOrder(models.Model):
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
-    voucher_id = fields.Many2one('account.voucher', "Recibo Origem")
     payment_information_id = fields.Many2one(
         'l10n_br.payment_information', string="Payment Information")
 
@@ -82,13 +81,14 @@ class PaymentOrderLine(models.Model):
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
-            ('payment_mode_id', '=', payment_mode.id),
+            ('src_bank_account_id', '=', payment_mode.bank_account_id.id),
             ('type', '=', 'payable')], limit=1)
         if not payment_order:
             payment_order = payment_order.create({
                 'name': order_name or '',
                 'user_id': self.env.user.id,
                 'payment_mode_id': payment_mode.id,
+                'src_bank_account_id': payment_mode.bank_account_id.id,
                 'state': 'draft',
                 'type': 'payable',
             })
@@ -98,8 +98,8 @@ class PaymentOrderLine(models.Model):
         if payment_mode.finality_ted == '05':
             return '20'
 
-    def get_information(self, payment_mode_id, vals):
-        return self.env['l10n_br.payment_information'].create({
+    def get_information_vals(self, payment_mode_id, vals):
+        return {
             'payment_type': payment_mode_id.payment_type,
             'finality_ted': payment_mode_id.finality_ted,
             'mov_finality': payment_mode_id.mov_finality,
@@ -110,12 +110,13 @@ class PaymentOrderLine(models.Model):
             'fine_value': vals.pop('fine_value'),
             'interest_value': vals.pop('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
-        })
+        }
 
     def action_generate_payment_order_line(self, payment_mode, **vals):
         payment_order = self.get_payment_order(payment_mode)
-
-        information_id = self.get_information(payment_mode, vals)
+        info_vals = self.get_information_vals(payment_mode, vals)
+        information_id = self.env['l10n_br.payment_information'].create(
+            info_vals)
         line_vals = {
             'payment_mode_id': payment_mode.id,
             'payment_information_id': information_id.id,

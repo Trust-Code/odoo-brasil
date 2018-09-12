@@ -4,5 +4,5 @@
 from . import payment_mode
 from . import payment_information
 from . import payment_order
-from . import account_voucher
+from . import account_move
 from . import res_config_settings
