@@ -50,7 +50,7 @@ class AccountPayment(models.Model):
                     self.payment_difference, self.currency_id,
                     self.company_id.currency_id)[2:]
 
-            if  counterpart_debit > 0:
+            if counterpart_debit > 0:
                 debit_wo = abs(self.payment_difference)
                 credit_wo = 0.0
                 amount_currency_wo = abs(amount_currency_wo)
@@ -83,9 +83,10 @@ class AccountPayment(models.Model):
         liquidity_aml_dict.update(self._get_liquidity_move_line_vals(-amount))
         aml_obj.create(liquidity_aml_dict)
 
+        (self.move_line_id + counterpart_aml).reconcile()
+
         move.post()
         return move
-
 
     @api.depends('partner_id', 'partner_type')
     def _compute_open_moves(self):
