@@ -4,6 +4,14 @@
 from odoo import models, fields, api
 
 
+TAX_IDENTIFICATION = {
+    '05': '17',
+    '06': '16',
+    '07': '18',
+    '09': '22'
+}
+
+
 class PaymentInformation(models.Model):
     _name = 'l10n_br.payment_information'
 
@@ -60,7 +68,8 @@ class PaymentInformation(models.Model):
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
          ('07', 'DARF Simples'),
-         ('08', 'FGTS')],
+         ('08', 'FGTS'),
+         ('09', 'ICMS')],
         string="Tipo de Operação")
 
     warning_code = fields.Selection([
@@ -161,7 +170,10 @@ class PaymentInformation(models.Model):
     tax_identification = fields.Selection(
         [('16', 'DARF Normal'),
          ('18', 'DARF Simples'),
-         ('17', 'GPS (Guia da Previdência Social)')],
+         ('17', 'GPS (Guia da Previdência Social)'),
+         ('22', 'GARE-SP ICMS'),
+         ('23', 'GARE-SP DR'),
+         ('24', 'GARE-SP ITCMD')],
         string="Tax Identification",
         compute='_compute_tax_identification')
 
@@ -177,11 +189,6 @@ class PaymentInformation(models.Model):
     @api.onchange('payment_type')
     def _compute_tax_identification(self):
         for item in self:
-            if item.payment_type not in ('05', '06', '07'):
+            if item.payment_type not in ('05', '06', '07', '09'):
                 continue
-            elif item.payment_type == '05':
-                item.tax_identification = '17'
-            elif item.payment_type == '06':
-                item.tax_identification = '16'
-            else:
-                item.tax_identification = '18'
+            return TAX_IDENTIFICATION.get(item.payment_type)

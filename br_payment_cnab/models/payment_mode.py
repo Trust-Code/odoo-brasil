@@ -15,7 +15,8 @@ class PaymentMode(models.Model):
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
          ('07', 'DARF Simples'),
-         ('08', 'FGTS')],
+         ('08', 'FGTS'),
+         ('09', 'ICMS')],
         string="Tipo de Operação")
 
     mov_finality = fields.Selection([

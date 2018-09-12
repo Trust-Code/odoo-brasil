@@ -45,4 +45,4 @@ class ResConfigSettings(models.TransientModel):
             self.l10n_br_fine_account_id.id)
         self.env['ir.config_parameter'].sudo().set_param(
             'br_payment_cnab.l10n_br_multi_company_payment',
-            self.l10n_br_multi_company_payment.id)
+            self.l10n_br_multi_company_payment)

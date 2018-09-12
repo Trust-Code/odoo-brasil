@@ -21,7 +21,8 @@ class AccountVoucher(models.Model):
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
          ('07', 'DARF Simples'),
-         ('08', 'FGTS')],
+         ('08', 'FGTS'),
+         ('09', 'ICMS')],
         string="Tipo de Operação")
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",

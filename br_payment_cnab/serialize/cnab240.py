@@ -151,8 +151,8 @@ class Cnab_240(object):
             "percentual_receita_bruta_acumulada": self._string_to_monetary(
                 information_id.percentual_receita_bruta_acumulada),
             # GARE SP
-            'inscricao_estadual': self._string_to_num(
-                self._order.company_id.inscr_est),
+            'inscricao_estadual': int(self._string_to_num(
+                self._order.company_id.inscr_est)),
             'valor_receita': line.value,
             'numero_referencia': int(information_id.numero_referencia) or 0,
         }
