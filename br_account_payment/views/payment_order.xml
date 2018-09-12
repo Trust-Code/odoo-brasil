@@ -76,8 +76,10 @@
         <field name="view_id" ref="trustcode_payment_order_tree_view"/>
     </record>
 
+    <menuitem id="menu_bank_payments" name="Automação de Pagamentos" parent="account.menu_finance_entries" sequence="2"/>
+
     <menuitem sequence="30" action="action_payment_order_form"
               id="menu_action_payment_order"
-              parent="br_account_payment.menu_br_payments"/>
+              parent="menu_bank_payments"/>
 
 </odoo>

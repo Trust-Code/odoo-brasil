@@ -27,12 +27,14 @@
         'br_cnab'
     ],
     'data': [
+        'data/data.xml',
         'security/ir.model.access.csv',
         'views/payment_mode.xml',
         'views/payment_information.xml',
         'views/payment_order.xml',
+        'views/payment_statement.xml',
         'views/res_config_settings.xml',
-        'data/data.xml',
+        'wizard/payment_cnab_import.xml',
     ],
     'application': True,
 }
