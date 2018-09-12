@@ -55,7 +55,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'codigo_convenio': '123458-8',  # 7 digitos
             'bank_id': sicoob.id,
         })
-        mode = self.env['payment.mode'].create({
+        mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob TED',
             'type': 'payable',
             'payment_type': '01',

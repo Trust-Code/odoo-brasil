@@ -5,7 +5,7 @@ from odoo import fields, models
 
 
 class PaymentMode(models.Model):
-    _inherit = 'payment.mode'
+    _inherit = 'l10n_br.payment.mode'
 
     payment_type = fields.Selection(
         [('01', 'TED - Transferência Bancária'),

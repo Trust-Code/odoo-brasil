@@ -430,7 +430,7 @@ msgid "Modification"
 msgstr "Modification"
 
 #. module: br_payment_cnab
-#: model:ir.model,name:br_payment_cnab.model_payment_mode
+#: model:ir.model,name:br_payment_cnab.model_l10n_br_payment_mode
 #: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_payment_mode_id
 msgid "Modo de Pagamento"
 msgstr "Modo de Pagamento"
@@ -832,4 +832,3 @@ msgstr "payment.order.line"
 #: model:ir.model,name:br_payment_cnab.model_res_config_settings
 msgid "res.config.settings"
 msgstr "res.config.settings"
-

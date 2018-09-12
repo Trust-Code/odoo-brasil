@@ -11,7 +11,8 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 class AccountVoucher(models.Model):
     _inherit = 'account.voucher'
 
-    payment_mode_id = fields.Many2one('payment.mode', "Modo de Pagamento")
+    payment_mode_id = fields.Many2one(
+        'l10n_br.payment.mode', "Modo de Pagamento")
     payment_type = fields.Selection(
         [('01', 'TED - Transferência Bancária'),
          ('02', 'DOC - Transferência Bancária'),

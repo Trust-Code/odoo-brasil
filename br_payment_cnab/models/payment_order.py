@@ -126,3 +126,21 @@ class PaymentOrderLine(models.Model):
         }
         line_vals.update(vals)
         self.create(line_vals)
+
+    def action_aprove_payment_line(self):
+        # TODO Check if user has access
+        self.state = 'approved'
+
+    def action_open_edit_wizard(self):
+        pass
+
+    def action_view_more_info(self):
+        return {
+            'name': 'Detailed Payment Information',
+            'type': 'ir.actions.act_window',
+            'res_model': 'l10n_br.payment_information',
+            'res_id': self.payment_information_id.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+        }

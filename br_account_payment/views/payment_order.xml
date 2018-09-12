@@ -54,8 +54,8 @@
                         </group>
 
                         <group name='data'>
-                            <field name="payment_mode_id" />
                             <field name="src_bank_account_id" />
+                            <field name="payment_mode_id" />
                         </group>
                     </group>
 

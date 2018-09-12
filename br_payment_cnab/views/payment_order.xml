@@ -10,6 +10,11 @@
                 <field name="invoice_date" />
                 <field name="bank_account_id" domain="[('partner_id', '=', partner_id)]" />
             </field>
+            <field name="nosso_numero" position="after">
+                <button name="action_aprove_payment_line" type="object" string="Aprove this payment" icon="fa-check-circle"/>
+                <button name="action_open_edit_wizard" type="object" string="Edit this payment" icon="fa-edit"/>
+                <button name="action_view_more_info" type="object" string="View more Info" icon="fa-info"/>
+            </field>
         </field>
     </record>
 

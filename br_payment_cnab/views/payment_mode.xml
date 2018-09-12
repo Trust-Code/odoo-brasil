@@ -3,7 +3,7 @@
 
     <record id="br_payment_cnab_payment_mode_form" model="ir.ui.view">
         <field name="name">br_payment_cnab_payment_mode_form</field>
-        <field name="model">payment.mode</field>
+        <field name="model">l10n_br.payment.mode</field>
         <field name="inherit_id" ref="br_account_payment.account_payment_mode_form"/>
         <field name="type">form</field>
         <field name="arch" type="xml">

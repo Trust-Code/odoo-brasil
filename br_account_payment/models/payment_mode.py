@@ -6,7 +6,7 @@ from odoo import fields, models
 
 
 class PaymentMode(models.Model):
-    _name = "payment.mode"
+    _name = "l10n_br.payment.mode"
     _description = 'Modo de Pagamento'
     _order = 'name'
 

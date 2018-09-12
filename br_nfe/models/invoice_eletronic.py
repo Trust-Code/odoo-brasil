@@ -55,7 +55,7 @@ class InvoiceEletronic(models.Model):
         }
 
     payment_mode_id = fields.Many2one(
-        'payment.mode', string='Modo de Pagamento',
+        'l10n_br.payment.mode', string='Modo de Pagamento',
         readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(

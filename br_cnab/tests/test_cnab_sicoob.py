@@ -23,7 +23,7 @@ class TestCnabSicoob(TestCnab):
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
         })
-        mode = self.env['payment.mode'].create({
+        mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob',
             'boleto_type': '9',
             'boleto_carteira': '1',

@@ -11,7 +11,7 @@ class PaymentOrderLine(models.Model):
 
     name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
-        'payment.order', string="Ordem de Pagamento", ondelete="cascade")
+        'payment.order', string="Ordem de Pagamento", ondelete="restrict")
     type = fields.Selection(
         related='payment_order_id.type', readonly=True, store=True)
     move_line_id = fields.Many2one(
@@ -22,7 +22,7 @@ class PaymentOrderLine(models.Model):
                               related='move_line_id.move_id', readonly=True)
     nosso_numero = fields.Char(string=u"Nosso Número", size=20)
     payment_mode_id = fields.Many2one(
-        'payment.mode', string="Modo de pagamento")
+        'l10n_br.payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
     state = fields.Selection([("draft", "Rascunho"),
@@ -61,7 +61,7 @@ class PaymentOrder(models.Model):
         string="Tipo de Ordem", default='receivable')
     user_id = fields.Many2one('res.users', string=u'Responsável',
                               required=True)
-    payment_mode_id = fields.Many2one('payment.mode',
+    payment_mode_id = fields.Many2one('l10n_br.payment.mode',
                                       string='Modo de Pagamento',
                                       required=True)
     src_bank_account_id = fields.Many2one(
@@ -97,3 +97,9 @@ class PaymentOrder(models.Model):
                 item.state = 'approved'
             else:
                 item.state = 'draft'
+
+    @api.multi
+    def unlink(self):
+        for item in self:
+            item.line_ids.unlink()
+        return super(PaymentOrder, self).unlink()
