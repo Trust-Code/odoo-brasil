@@ -30,8 +30,17 @@ class PaymentOrder(models.Model):
                               .format(code)))
         return bank
 
+    def get_file_number(self):
+        if all(item.payment_information_id.l10n_br_environment == 'production'
+               for item in self.line_ids) or\
+               self.src_bank_account_id.bank_id != self.env.ref(
+                   'br_data_base.res_bank_12'):
+            return self.env['ir.sequence'].next_by_code('cnab.nsa')
+        else:
+            return '1'
+
     def action_generate_payable_cnab(self):
-        self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
+        self.file_number = self.get_file_number()
         self.data_emissao_cnab = datetime.now()
         cnab = self.select_bank_cnab(str(
             self.payment_mode_id.bank_account_id.bank_id.bic))
@@ -112,6 +121,7 @@ class PaymentOrderLine(models.Model):
             'fine_value': vals.pop('fine_value'),
             'interest_value': vals.pop('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
+            'l10n_br_environment': payment_mode_id.l10n_br_environment
         }
 
     def action_generate_payment_order_line(self, payment_mode, **vals):

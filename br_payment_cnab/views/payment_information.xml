@@ -29,6 +29,7 @@
                                 <field name="rebate_value" widget="monetary"/>
                                 <field name="discount_value" widget="monetary"/>
                                 <field name="credit_hist_code"/>
+                                <field name="l10n_br_environment" />
                             </group>
                             <group>
                                 <field name="warning_code"/>

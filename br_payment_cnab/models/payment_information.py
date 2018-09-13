@@ -186,6 +186,13 @@ class PaymentInformation(models.Model):
         help='Percentual decorrente da receita bruta acumulada a ser aplicado\
         sobre a receita mensal.')
 
+    l10n_br_environment = fields.Selection(
+        [('test', 'Test'),
+         ('production', 'Production')],
+        string='Environment',
+        default='production'
+    )
+
     @api.onchange('payment_type')
     def _compute_tax_identification(self):
         for item in self:

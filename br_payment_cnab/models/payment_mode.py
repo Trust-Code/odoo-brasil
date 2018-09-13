@@ -57,3 +57,10 @@ class PaymentMode(models.Model):
         string='Percentual de Receita Bruta Acumulada',
         help='Percentual decorrente da receita bruta acumulada a ser aplicado\
         sobre a receita mensal.')
+
+    l10n_br_environment = fields.Selection(
+        [('test', 'Test'),
+         ('production', 'Production')],
+        string='Environment',
+        default='production'
+    )
