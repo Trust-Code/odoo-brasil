@@ -20,6 +20,7 @@
         'account_voucher', 'br_account'
     ],
     'data': [
+        'views/simples.xml',
         'wizard/account_close.xml',
     ],
     'application': True,
