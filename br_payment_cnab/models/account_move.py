@@ -15,7 +15,7 @@ class AccountMoveLine(models.Model):
             line_ids = self.env['payment.order.line'].search(
                 [('move_line_id', '=', item.id),
                  ('state', '=', 'draft')])
-            line_ids.unlink()
+            line_ids.sudo().unlink()
         return super(AccountMoveLine, self).unlink()
 
     @api.multi

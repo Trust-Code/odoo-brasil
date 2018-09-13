@@ -84,7 +84,7 @@ class PaymentOrderLine(models.Model):
             ('src_bank_account_id', '=', payment_mode.bank_account_id.id),
             ('type', '=', 'payable')], limit=1)
         if not payment_order:
-            payment_order = payment_order.create({
+            payment_order = payment_order.sudo().create({
                 'name': order_name or '',
                 'user_id': self.env.user.id,
                 'payment_mode_id': payment_mode.id,
@@ -117,7 +117,7 @@ class PaymentOrderLine(models.Model):
     def action_generate_payment_order_line(self, payment_mode, **vals):
         payment_order = self.get_payment_order(payment_mode)
         info_vals = self.get_information_vals(payment_mode, vals)
-        information_id = self.env['l10n_br.payment_information'].create(
+        information_id = self.env['l10n_br.payment_information'].sudo().create(
             info_vals)
         line_vals = {
             'payment_mode_id': payment_mode.id,
@@ -127,7 +127,7 @@ class PaymentOrderLine(models.Model):
             .next_by_id(),
         }
         line_vals.update(vals)
-        self.create(line_vals)
+        self.sudo().create(line_vals)
 
     def action_aprove_payment_line(self):
         # TODO Check if user has access
