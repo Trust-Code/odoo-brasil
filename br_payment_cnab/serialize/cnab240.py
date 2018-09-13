@@ -153,7 +153,7 @@ class Cnab_240(object):
             # GARE SP
             'inscricao_estadual': int(self._string_to_num(
                 self._order.company_id.inscr_est)),
-            'valor_receita': line.value,
+            'valor_receita': self._string_to_monetary(line.value),
             'numero_referencia': int(information_id.numero_referencia) or 0,
         }
         return segmento

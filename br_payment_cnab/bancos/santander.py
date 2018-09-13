@@ -118,5 +118,6 @@ class Santander240(Cnab_240):
             "06": ["SegmentoN_DarfNormal"],
             "07": ["SegmentoN_DarfSimples"],
             "08": ["SegmentoO", "SegmentoW"],
+            "09": ["SegmentoN_GareSP"],
         })
         return segments
