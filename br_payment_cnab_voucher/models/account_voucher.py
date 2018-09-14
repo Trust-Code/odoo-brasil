@@ -69,7 +69,7 @@ class AccountVoucher(models.Model):
                 self.payment_mode_id, **self._prepare_payment_order_vals())
         return res
 
-    def validade_cnab_fields(self):
+    def validate_cnab_fields(self):
         if not self.date_due:
             raise UserError(_("Please select a Due Date for the payment"))
         if datetime.strptime(self.date_due, DATE_FORMAT) < datetime.now():
@@ -101,9 +101,7 @@ class AccountVoucher(models.Model):
         if vals.get('fine_value'):
             vals = self.create_interest_fine_line('fine', vals)
         res = super(AccountVoucher, self).write(vals)
-        if self.payment_mode_id and\
-                self.payment_mode_id.payment_type in ('01, 02', '06', '07'):
-            self.validade_cnab_fields()
+        self.validate_cnab_fields()
         return res
 
     @api.model
@@ -112,4 +110,6 @@ class AccountVoucher(models.Model):
             vals = self.create_interest_fine_line('interest', vals)
         if vals.get('fine_value', 0) > 0:
             vals = self.create_interest_fine_line('fine', vals)
-        return super(AccountVoucher, self).create(vals)
+        res = super(AccountVoucher, self).create(vals)
+        res.validate_cnab_fields()
+        return res
