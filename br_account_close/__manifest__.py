@@ -5,7 +5,7 @@
 
 {  # pylint: disable=C8101,C8103
     'name': 'Tax Accounting',
-    'summary': """Executes a monthly tax accouting
+    'summary': """Executes a period tax computation
     - Maintained by Trustcode""",
     'description': """Executes a monthly tax accouting""",
     'version': '11.0.1.0.0',
@@ -17,11 +17,13 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account_voucher', 'br_account'
+        'br_account_voucher', 'br_account'
     ],
     'data': [
-        'views/simples.xml',
-        'wizard/account_close.xml',
+        'security/ir.model.access.csv',
+        'views/account_tax.xml',
+        'views/account_voucher.xml',
+        'views/account_account.xml',
     ],
     'application': True,
 }

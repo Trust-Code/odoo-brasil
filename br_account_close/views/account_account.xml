@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_close_account_form" model="ir.ui.view">
+        <field name="name">view.account.close.account.form</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="br_account.br_account_account_form"/>
+        <field name="arch" type="xml">
+            <field name="account_type" position="after">
+                <field name="l10n_br_credit_account_id" attrs="{'invisible': [('account_type', '!=', 'tax')]}" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
