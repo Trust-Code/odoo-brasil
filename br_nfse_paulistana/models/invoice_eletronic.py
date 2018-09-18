@@ -177,6 +177,9 @@ class InvoiceEletronic(models.Model):
                 'valor_deducao': '0',
                 'descricao': descricao,
                 'deducoes': [],
+                'valor_carga_tributaria':
+                "%.2f" % self.valor_estimado_tributos,
+                'fonte_carga_tributaria': 'IBPT',
                 'iss_retido':
                     'true' if self.valor_retencao_issqn > 0.0 else 'false'
             }
