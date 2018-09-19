@@ -516,6 +516,7 @@ class InvoiceEletronic(models.Model):
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'
+                dest['enderDest']['CEP'] = ''
                 exporta = {
                     'UFSaidaPais': self.uf_saida_pais_id.code or '',
                     'xLocExporta': self.local_embarque or '',
