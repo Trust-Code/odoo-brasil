@@ -668,7 +668,7 @@ class InvoiceEletronic(models.Model):
             'compra': compras,
         }
         if len(duplicatas) > 0 and\
-                self.fiscal_position_id.finalidade_emissao != '4':
+                self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
             vals['cobr'] = cobr
             pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final

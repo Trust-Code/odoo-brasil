@@ -5,7 +5,6 @@
 import io
 import logging
 
-from decimal import Decimal
 from odoo import fields, models
 from odoo.exceptions import UserError
 
@@ -78,11 +77,12 @@ class AccountBankStatementImport(models.TransientModel):
             ofx.account.statement.start_date.strftime('%d/%m/%Y'),
             ofx.account.statement.end_date.strftime('%d/%m/%Y')
         )
-        total = round(Decimal(total), 2)
+        total = round(total, 2)
         vals_bank_statement = {
             'name': name,
             'transactions': transacoes,
-            'balance_start': ofx.account.statement.balance - total,
+            'balance_start': round(
+                float(ofx.account.statement.balance) - total, 2),
             'balance_end_real': round(ofx.account.statement.balance, 2),
         }
 

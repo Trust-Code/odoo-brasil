@@ -19,6 +19,7 @@
         'account_voucher'
     ],
     'data': [
+        'data/cron.xml',
         'views/account_voucher.xml',
         'views/account_voucher_line.xml',
     ],
