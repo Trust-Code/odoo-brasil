@@ -102,6 +102,15 @@ class PurchaseOrder(models.Model):
 class PuchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
+    valor_seguro = fields.Float(
+        'Seguro', default=0.0, digits=dp.get_precision('Account'))
+    outras_despesas = fields.Float(
+        'Despesas', default=0.0, digits=dp.get_precision('Account'))
+    valor_frete = fields.Float(
+        'Frete', default=0.0, digits=dp.get_precision('Account'))
+    valor_aduana = fields.Float(
+        default=0.0, digits=dp.get_precision('Account'))
+
     def _prepare_tax_context(self):
         res = super(PuchaseOrderLine, self)._prepare_tax_context()
         res.update({
@@ -113,11 +122,11 @@ class PuchaseOrderLine(models.Model):
         })
         return res
 
-    valor_seguro = fields.Float(
-        'Seguro', default=0.0, digits=dp.get_precision('Account'))
-    outras_despesas = fields.Float(
-        'Despesas', default=0.0, digits=dp.get_precision('Account'))
-    valor_frete = fields.Float(
-        'Frete', default=0.0, digits=dp.get_precision('Account'))
-    valor_aduana = fields.Float(
-        default=0.0, digits=dp.get_precision('Account'))
+    @api.multi
+    def _get_stock_move_price_unit(self):
+        price = super(PuchaseOrderLine, self)._get_stock_move_price_unit()
+        price = price + \
+            (self.valor_frete/self.product_qty) + \
+            (self.valor_seguro/self.product_qty) + \
+            (self.outras_despesas/self.product_qty)
+        return price
