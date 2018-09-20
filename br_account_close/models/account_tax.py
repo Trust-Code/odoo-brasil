@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class AccountTaxTemplate(models.Model):
@@ -20,17 +20,21 @@ class AccountTax(models.Model):
     l10n_br_revenue_account_ids = fields.Many2many(
         'account.account', string="Revenue Accounts")
 
+    @api.multi
     def aggregate_tax_to_pay(self, period):
-        if self.domain == 'simples':
-            return self._calculate_simples_nacional_tax()
+        if self.filtered(lambda x: x.domain == 'simples'):
+            total = 0.0
+            for tax in self:
+                total += tax._calculate_simples_nacional_tax()
+            return total
         return self._calulate_amount_tax_period(period)
 
+    @api.multi
     def _calulate_amount_tax_period(self, period):
-        if not self.account_id:
+        acc_ids = self.mapped('account_id').ids
+        acc_ids += self.mapped('account_id.l10n_br_credit_account_id').ids
+        if len(acc_ids) == 0:
             return 0
-        acc_ids = [self.account_id.id]
-        if self.account_id.l10n_br_credit_account_id:
-            acc_ids += [self.account_id.l10n_br_credit_account_id.id]
         self.env.cr.execute(
             "select sum(credit-debit) from account_move_line \
             where account_id in %s \
@@ -43,6 +47,8 @@ class AccountTax(models.Model):
     # Necessary because is not a matter of sum the taxes over the month
     def _calculate_simples_nacional_tax(self):
         acc_ids = self.l10n_br_revenue_account_ids.ids
+        if not acc_ids:
+            return 0.0
         self.env.cr.execute(
             "select sum(debit+credit), account_id from account_move_line \
             where account_id in %s \
