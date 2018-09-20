@@ -4,8 +4,7 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from datetime import datetime
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from datetime import date
 
 
 class AccountVoucher(models.Model):
@@ -72,7 +71,7 @@ class AccountVoucher(models.Model):
     def validate_cnab_fields(self):
         if not self.date_due:
             raise UserError(_("Please select a Due Date for the payment"))
-        if datetime.strptime(self.date_due, DATE_FORMAT) < datetime.now():
+        if fields.Date.from_string(self.date_due) < date.today():
             raise UserError(_("Due Date must be a future date"))
 
     def create_interest_fine_line(self, line_type, vals):
