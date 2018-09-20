@@ -192,7 +192,7 @@
             </div>
             <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
                 <div class="col-xs-2" style="width:20%;text-align:center;">
-                    INSS(<span />%):
+                    INSS(<span t-field="doc.eletronic_item_ids[0].inss_aliquota" />%):
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_inss"
@@ -203,7 +203,7 @@
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
-                    IR(<span />%):
+                    IR(<span t-field="doc.eletronic_item_ids[0].irrf_aliquota" />%):
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_irrf"
@@ -214,7 +214,7 @@
                     </t>
                 </div>
                 <div class="col-xs-2" style="width:20%;text-align:center;">
-                    CSLL(<span />%):
+                    CSLL(<span t-field="doc.eletronic_item_ids[0].csll_aliquota" />%):
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
                         <strong t-field="doc.valor_retencao_csll"
@@ -313,7 +313,8 @@
                 <div class="col-xs-4" style="text-align:center;">
                     Valor Aproximado dos Tributos / Fonte
                     <br />
-                    <strong>-</strong>
+                    <strong><span t-field="doc.valor_estimado_tributos"
+                      t-options='{"widget": "monetary",  "display_currency": doc.currency_id }' /> / IBPT</strong>
                 </div>
             </div>
             <div class="row"
