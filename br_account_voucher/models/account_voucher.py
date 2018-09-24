@@ -34,7 +34,7 @@ class AccountVoucher(models.Model):
             due_date = fields.Date.from_string(item.date_due)
             if not due_date or not current_date:
                 continue
-            if current_date.day != date.today().day:
+            if current_date > date.today():
                 continue
             if not item.line_ids:
                 continue
