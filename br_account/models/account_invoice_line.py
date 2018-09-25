@@ -478,7 +478,7 @@ class AccountInvoiceLine(models.Model):
     # Impostos de serviço - INSS
     # =========================================================================
     inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota INSS",
                                   domain=[('domain', '=', 'inss')])
     inss_base_calculo = fields.Float(
         u'Base INSS', required=True, digits=dp.get_precision('Account'),
