@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.file import File
-    from pycnab240.bancos import sicoob
+    from pycnab240.utils import get_bank
 except ImportError:
     _logger.debug('Cannot import pycnab240')
 
@@ -24,6 +24,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
 
     journal_id = fields.Many2one(
         'account.journal', string="Diário Contábil",
+        domain=[('type', '=', 'bank')],
         help="Diário Contábil a ser utilizado na importação do CNAB.")
 
     cnab_preview = fields.Html(string='Resumo da importação', readonly=True)
@@ -32,7 +33,8 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         cnab = base64.decodestring(self.cnab_file)
         stream = StringIO(cnab.decode('ascii'))
 
-        loaded_cnab = File(sicoob)
+        bank = get_bank(self.journal_id.bank_id.bic)
+        loaded_cnab = File(bank)
         loaded_cnab.load_return_file(stream)
 
         action = self.env.ref('br_payment_cnab.action_payment_statement_tree')

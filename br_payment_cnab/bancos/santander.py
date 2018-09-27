@@ -60,6 +60,8 @@ class Santander240(Cnab_240):
         segmento = super(Santander240, self)._get_segmento(
             line, lot_sequency, num_lot)
         segmento.update({
+            'tipo_identificacao_contribuinte': 2,  # CNPJ
+            'tipo_identificacao_contribuinte_alfa': '2',  # CNPJ
             'favorecido_conta': self._string_to_num(
                 segmento.get('favorecido_conta'), 0),
             'tipo_movimento': int(segmento.get('tipo_movimento')),

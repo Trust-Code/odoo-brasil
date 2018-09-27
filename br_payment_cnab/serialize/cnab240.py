@@ -25,6 +25,9 @@ class Cnab_240(object):
         frmt = '{:.%df}' % precision
         return Decimal(frmt.format(numero))
 
+    def _just_numbers(self, value):
+        return re.sub('[^0-9]', '', str(value or ''))
+
     def _string_to_num(self, toTransform, default=None):
         if not toTransform:
             return default or 0
@@ -124,7 +127,7 @@ class Cnab_240(object):
             "valor_multa_juros": information_id.interest_value +
                 information_id.fine_value,
             "codigo_moeda": information_id.currency_code,
-            "codigo_de_barras": str(codigo_barras),
+            "codigo_de_barras": self._string_to_num(codigo_barras),
             "codigo_de_barras_alfa": str(codigo_barras),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
@@ -138,6 +141,8 @@ class Cnab_240(object):
             "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(
+                self._order.company_id.cnpj_cpf),
+            "identificacao_contribuinte_alfa": self._just_numbers(
                 self._order.company_id.cnpj_cpf),
             "codigo_identificacao_tributo": information_id.tax_identification\
                 or '',
@@ -154,7 +159,8 @@ class Cnab_240(object):
             'inscricao_estadual': int(self._string_to_num(
                 self._order.company_id.inscr_est)),
             'valor_receita': self._string_to_monetary(line.value),
-            'numero_referencia': int(information_id.numero_referencia) or 0,
+            'numero_referencia': self._string_to_num(
+                information_id.numero_referencia),
         }
         return segmento
 

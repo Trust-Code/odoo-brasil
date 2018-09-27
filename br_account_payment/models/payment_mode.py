@@ -19,5 +19,8 @@ class PaymentMode(models.Model):
         default=lambda self: self.env['res.company']._company_default_get(
             'account.payment.mode'))
     active = fields.Boolean(string='Active', default=True)
+    journal_id = fields.Many2one(
+        'account.journal', string="Journal", required=True,
+        domain=[('type', 'in', ('cash', 'bank'))])
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Bank Account", ondelete='restrict')
