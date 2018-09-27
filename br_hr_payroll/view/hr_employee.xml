@@ -10,6 +10,9 @@
                     <field name="accumulated_fgts" />
                 </group>
             </field>
+            <xpath expr="//field[@name='ctps_date']" position="after">
+                <field name="sindicate" placeholder="Sigla do Sindicato"/>
+            </xpath>
         </field>
     </record>
 </odoo>
