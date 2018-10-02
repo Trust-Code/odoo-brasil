@@ -8,6 +8,9 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    l10n_br_nfse_conjugada = fields.Boolean(
+        string="Emite NFSe Conjugada?", default=False)
+
     tipo_ambiente_nfse = fields.Selection(
         [('producao', u'Produção'), ('homologacao', u'Homologação')],
         string="Ambiente NFSe", default='homologacao')
