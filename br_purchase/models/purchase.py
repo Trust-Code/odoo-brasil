@@ -110,7 +110,7 @@ class PurchaseOrderLine(models.Model):
         ('saida', 'Saída'),
         ('entrada', 'Entrada'),
         ('import', 'Entrada Importação')
-    ],string="Tipo da posição fiscal")
+    ], string="Tipo da posição fiscal")
     l10n_br_cfop_id = fields.Many2one('br_account.cfop', string="CFOP",
                                       oldname='cfop_id')
 
