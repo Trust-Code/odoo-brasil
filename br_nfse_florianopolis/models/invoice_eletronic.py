@@ -50,8 +50,6 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                 errors.append('Client Secret na empresa é obrigatório')
             if not self.company_id.user_password:
                 errors.append('Inscrição municipal obrigatória')
-            if not self.company_id.cnae_main_id.id_cnae:
-                errors.append('Código de CNAE da empresa obrigatório')
             if not self.company_id.aedf:
                 errors.append('Código AEDF da empresa obrigatório')
             for item in self.eletronic_item_ids:

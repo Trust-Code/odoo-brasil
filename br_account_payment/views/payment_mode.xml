@@ -14,7 +14,7 @@
                             <field name="type" />
                         </group>
                         <group>
-                            <field name="bank_account_id" />
+                            <field name="bank_account_id" attrs="{'required': [('type', '=', 'payable')]}"/>
                             <field name="active"/>
                         </group>
                     </group>

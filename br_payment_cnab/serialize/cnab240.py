@@ -6,6 +6,7 @@ import logging
 from io import StringIO
 from decimal import Decimal
 from datetime import datetime, date
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -25,9 +26,11 @@ class Cnab_240(object):
         return Decimal(frmt.format(numero))
 
     def _string_to_num(self, toTransform, default=None):
+        if not toTransform:
+            return default or 0
         value = re.sub('[^0-9]', '', str(toTransform))
         if not value:
-            return 0
+            return default or 0
         try:
             return int(value)
         except ValueError:
@@ -92,8 +95,8 @@ class Cnab_240(object):
                 self._order.data_emissao_cnab),
             "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": information_id.message2 or '',
-            "finalidade_doc_ted": information_id.mov_finality,
-            "finalidade_ted": information_id.finality_ted,
+            "finalidade_doc_ted": information_id.mov_finality or '',
+            "finalidade_ted": information_id.finality_ted or '',
             "favorecido_emissao_aviso": int(information_id.warning_code) if
             information_id.warning_code else 0,
             "favorecido_inscricao_tipo":
@@ -109,21 +112,23 @@ class Cnab_240(object):
             "valor_documento": line.value,
             "valor_abatimento": information_id.rebate_value,
             "valor_desconto": information_id.discount_value,
-            "valor_mora": information_id.mora_value,
-            "valor_multa": information_id.duty_value,
+            "valor_mora": information_id.interest_value,
+            "valor_multa": information_id.fine_value,
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
             "cedente_nome": self._order.company_id.name,
             "valor_nominal_titulo": line.value,
             "valor_desconto_abatimento": information_id.rebate_value +
                 information_id.discount_value,
-            "valor_multa_juros": information_id.mora_value +
-                information_id.duty_value,
+            "valor_multa_juros": information_id.interest_value +
+                information_id.fine_value,
             "codigo_moeda": information_id.currency_code,
-            "codigo_de_barras": int("0"*44),
+            "codigo_de_barras": self.get_barcode(line) or 0,
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria": information_id.agency_name or '',
             "data_vencimento": self.format_date(line.date_maturity),
+            "valor_juros_encargos": self._string_to_monetary(
+                information_id.interest_value),
             # GPS
             "contribuinte_nome": self._order.company_id.name,
             "valor_total_pagamento": self._string_to_monetary(
@@ -137,8 +142,17 @@ class Cnab_240(object):
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
             "valor_previsto_inss": self._string_to_monetary(line.value),
             # DARF
-            "periodo_apuracao": self.format_date(line.invoice_date),
+            "periodo_apuracao": int(self.format_date(line.invoice_date) or 0),
             "valor_principal": self._string_to_monetary(line.value),
+            "valor_receita_bruta_acumulada": self._string_to_monetary(
+                self._order.company_id.annual_revenue),
+            "percentual_receita_bruta_acumulada": self._string_to_monetary(
+                information_id.percentual_receita_bruta_acumulada),
+            # GARE SP
+            'inscricao_estadual': self._string_to_num(
+                self._order.company_id.inscr_est),
+            'valor_receita': line.value,
+            'numero_referencia': int(information_id.numero_referencia) or 0,
         }
         return segmento
 
@@ -258,3 +272,23 @@ class Cnab_240(object):
             return 0
         date = datetime.strptime(line.invoice_date, "%Y-%m-%d")
         return int('{}{}'.format(date.month, date.year))
+
+    def get_barcode(self, line):
+        barcode = line.payment_information_id.barcode
+        barcode_len = len(barcode or '')
+        if barcode_len > 44:
+            return self.convert_line_to_barcode(
+                barcode)
+        elif barcode_len > 0 and barcode_len < 44:
+            raise UserError("Barcode must have at least 44 characters")
+        return barcode
+
+    def convert_line_to_barcode(self, barcode):
+        barcode = str(self._string_to_num(barcode))
+        return int("{}{}{}{}{}{}".format(
+            barcode[0:4],
+            barcode[32],
+            barcode[-14:],
+            barcode[4:9],
+            barcode[10:20],
+            barcode[21:31]))

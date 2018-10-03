@@ -68,6 +68,7 @@ class PurchaseOrderLine(models.Model):
             self.icms_st_aliquota_reducao_base,
             'ipi_reducao_bc': self.ipi_reducao_bc,
             'icms_st_aliquota_deducao': self.icms_st_aliquota_deducao,
+            'fiscal_type': self.fiscal_position_type,
         }
 
     @api.depends('taxes_id', 'product_qty', 'price_unit', 'discount',
@@ -96,6 +97,10 @@ class PurchaseOrderLine(models.Model):
                 'valor_desconto': desconto,
             })
 
+    fiscal_position_type = fields.Selection(
+        [('saida', 'Saída'), ('entrada', 'Entrada'),
+         ('import', 'Entrada Importação')],
+        string="Tipo da posição fiscal")
     cfop_id = fields.Many2one('br_account.cfop', string="CFOP")
 
     icms_cst_normal = fields.Char(string="CST ICMS", size=5)
@@ -186,7 +191,8 @@ class PurchaseOrderLine(models.Model):
                     vals.get('tax_inss_id', empty)
 
                 line.update({
-                    'taxes_id': [(6, None, [x.id for x in tax_ids if x])]
+                    'taxes_id': [(6, None, [x.id for x in tax_ids if x])],
+                    'fiscal_position_type': fpos.fiscal_type,
                 })
 
     # Calcula o custo da mercadoria comprada

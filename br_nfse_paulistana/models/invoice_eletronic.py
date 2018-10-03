@@ -39,10 +39,10 @@ class InvoiceEletronic(models.Model):
     def _compute_discriminacao(self):
         for item in self:
             descricao = ''
-            for eletronic_item in item.eletronic_item_ids:
-                descricao += eletronic_item.name + '<br/>'
+            for line in item.eletronic_item_ids:
+                descricao += line.name.replace('\n', '<br/>') + '<br/>'
             if item.informacoes_legais:
-                descricao += item.informacoes_legais + '<br/>'
+                descricao += item.informacoes_legais.replace('\n', '<br/>')
             item.discriminacao_servicos = descricao
 
     operation = fields.Selection(
@@ -152,11 +152,11 @@ class InvoiceEletronic(models.Model):
             descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
-                descricao += item.name + '\n'
+                descricao += item.name.replace('\n', '|') + '|'
                 codigo_servico = item.codigo_servico_paulistana
 
             if self.informacoes_legais:
-                descricao += self.informacoes_legais + '\n'
+                descricao += self.informacoes_legais.replace('\n', '|')
 
             rps = {
                 'tomador': tomador,
@@ -177,6 +177,9 @@ class InvoiceEletronic(models.Model):
                 'valor_deducao': '0',
                 'descricao': descricao,
                 'deducoes': [],
+                'valor_carga_tributaria':
+                "%.2f" % self.valor_estimado_tributos,
+                'fonte_carga_tributaria': 'IBPT',
                 'iss_retido':
                     'true' if self.valor_retencao_issqn > 0.0 else 'false'
             }
