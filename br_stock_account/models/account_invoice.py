@@ -9,7 +9,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     fiscal_position_type = fields.Selection(
-        related='fiscal_position_id.fiscal_type', readonly=True)
+        related='fiscal_position_id.l10n_br_fiscal_type', readonly=True)
     picking_origin_id = fields.Many2one(
         'stock.picking', string="Picking Origin")
 

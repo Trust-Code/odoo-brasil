@@ -10,6 +10,7 @@
                 <attribute name="domain">['|', ('l10n_br_fiscal_type', '=', 'import'), '|', ('l10n_br_fiscal_type', '=', 'entrada'), ('l10n_br_fiscal_type', '=', None)]</attribute>
             </field>
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="before">
+                <field name="l10n_br_fiscal_position_type" invisible="1" />
                 <field name="l10n_br_valor_bruto" widget="monetary" />
                 <field name="l10n_br_cfop_id" invisible="1" />
                 <field name="l10n_br_incluir_ipi_base" invisible="1" />

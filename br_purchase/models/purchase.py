@@ -70,14 +70,17 @@ class PurchaseOrderLine(models.Model):
 
     def _prepare_tax_context(self):
         return {
-            'incluir_ipi_base': self.l10n_br_incluir_ipi_base,
-            'icms_st_aliquota_mva': self.l10n_br_icms_st_aliquota_mva,
-            'aliquota_icms_proprio': self.l10n_br_aliquota_icms_proprio,
-            'icms_aliquota_reducao_base': self.l10n_br_icms_aliquota_reducao_base,
-            'icms_st_aliquota_reducao_base':
-            self.l10n_br_icms_st_aliquota_reducao_base,
-            'ipi_reducao_bc': self.l10n_br_ipi_reducao_bc,
-            'icms_st_aliquota_deducao': self.l10n_br_icms_st_aliquota_deducao,
+            'l10n_br_incluir_ipi_base': self.l10n_br_incluir_ipi_base,
+            'l10n_br_icms_st_aliquota_mva': self.l10n_br_icms_st_aliquota_mva,
+            'l10n_br_aliquota_icms_proprio':
+                self.l10n_br_aliquota_icms_proprio,
+            'l10n_br_icms_aliquota_reducao_base':
+                self.l10n_br_icms_aliquota_reducao_base,
+            'l10n_br_icms_st_aliquota_reducao_base':
+                self.l10n_br_icms_st_aliquota_reducao_base,
+            'l10n_br_ipi_reducao_bc': self.l10n_br_ipi_reducao_bc,
+            'l10n_br_icms_st_aliquota_deducao':
+                self.l10n_br_icms_st_aliquota_deducao,
             'fiscal_type': self.l10n_br_fiscal_position_type,
         }
 

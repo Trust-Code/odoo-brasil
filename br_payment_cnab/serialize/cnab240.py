@@ -136,7 +136,7 @@ class Cnab240(object):
             "valor_multa": self._float_to_monetary(line.fine_value),
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
-            "cedente_nome": self._order.company_id.legal_name[:30],
+            "cedente_nome": self._order.company_id.l10n_br_legal_name[:30],
             "valor_nominal_titulo":  self._float_to_monetary(
                 line.amount_total),
             "valor_desconto_abatimento": self._float_to_monetary(
@@ -148,7 +148,7 @@ class Cnab240(object):
             "codigo_de_barras_alfa": line.barcode or '',
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
-            (line.partner_id.legal_name or line.partner_id.name)[:30],
+            (line.partner_id.l10n_br_legal_name or line.partner_id.name)[:30],
             "data_vencimento": int(self.format_date(line.date_maturity)),
             "valor_juros_encargos": self._string_to_monetary(
                 line.interest_value),

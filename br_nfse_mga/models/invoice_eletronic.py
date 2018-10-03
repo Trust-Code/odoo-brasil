@@ -122,6 +122,7 @@ class InvoiceEletronic(models.Model):
         itens_servico = []
         descricao = ''
         codigo_servico = ''
+        exigibilidade_iss = 0
         for item in self.eletronic_item_ids:
             descricao += item.name + '\n'
             itens_servico.append({
@@ -130,6 +131,7 @@ class InvoiceEletronic(models.Model):
                 'valor_unitario': str("%.2f" % item.preco_unitario)
             })
             codigo_servico = item.issqn_codigo
+            exigibilidade_iss = item.exigibilidade_iss
 
         rps = {
             'numero_lote': self.id,

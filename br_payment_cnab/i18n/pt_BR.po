@@ -827,3 +827,7 @@ msgstr "payment.order.line"
 #: model:ir.model,name:br_payment_cnab.model_res_config_settings
 msgid "res.config.settings"
 msgstr "res.config.settings"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 20b634af... Updated last changes from 11.0
