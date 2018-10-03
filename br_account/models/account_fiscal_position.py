@@ -143,7 +143,8 @@ class AccountFiscalPosition(models.Model):
         string=u"Regras INSS", domain=[('domain', '=', 'inss')],
         oldname='inss_tax_rule_ids')
     l10n_br_fiscal_type = fields.Selection([('saida', 'Saída'),
-                                            ('entrada', 'Entrada')],
+                                            ('entrada', 'Entrada'),
+                                            ('import', 'Entrada Importação')],
                                            string=u"Tipo da posição",
                                            oldname='fiscal_type')
 

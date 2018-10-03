@@ -7,9 +7,10 @@
         <field name="inherit_id" ref="purchase.purchase_order_form" />
         <field name="arch" type="xml">
             <field name="fiscal_position_id" position="attributes">
-                <attribute name="domain">['|', ('l10n_br_fiscal_type', '=', None), ('l10n_br_fiscal_type', '=', 'entrada')]</attribute>
+                <attribute name="domain">['|', ('l10n_br_fiscal_type', '=', 'import'), '|', ('l10n_br_fiscal_type', '=', 'entrada'), ('l10n_br_fiscal_type', '=', None)]</attribute>
             </field>
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="before">
+                <field name="fiscal_position_type" invisible="1" />
                 <field name="l10n_br_valor_bruto" widget="monetary" />
                 <field name="l10n_br_cfop_id" invisible="1" />
                 <field name="l10n_br_incluir_ipi_base" invisible="1" />
@@ -27,6 +28,7 @@
                 <field name="l10n_br_issqn_deduction" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/sheet/group/group/field[@name='price_unit']" position="after">
+                <field name="fiscal_position_type" invisible="1" />
                 <field name="l10n_br_valor_bruto" />
                 <field name="price_subtotal" />
                 <field name="l10n_br_cfop_id" invisible="1" />

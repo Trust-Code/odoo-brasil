@@ -178,6 +178,7 @@ class AccountInvoiceLine(models.Model):
             'l10n_br_cofins_valor': sum([x['amount'] for x in cofins]),
             'l10n_br_issqn_base_calculo': sum([x['base'] for x in issqn]),
             'l10n_br_issqn_valor': sum([x['amount'] for x in issqn]),
+            'l10n_br_ii_base_calculo': sum([x['base'] for x in ii]),
             'l10n_br_ii_valor': sum([x['amount'] for x in ii]),
             'l10n_br_csll_base_calculo': sum([x['base'] for x in csll]),
             'l10n_br_csll_valor': sum([x['amount'] for x in csll]),

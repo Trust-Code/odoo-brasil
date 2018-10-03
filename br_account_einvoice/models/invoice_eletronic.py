@@ -488,6 +488,10 @@ class InvoiceEletronic(models.Model):
             nfe.send_email_nfe()
             nfe.email_sent = True
 
+    @api.multi
+    def copy(self, default=None):
+        raise UserError('Não é possível duplicar uma Nota Fiscal.')
+
 
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
