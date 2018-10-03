@@ -7,14 +7,14 @@
         <field name="inherit_id" ref="br_account.view_tax_form"/>
         <field name="arch" type="xml">
             <notebook position="attributes">
-                <attribute name="attrs">{'invisible': [('domain', '=', 'simples')]}</attribute>
+                <attribute name="attrs">{'invisible': [('l10n_br_domain', '=', 'simples')]}</attribute>
             </notebook>
             <notebook position="after">
                 <notebook>
                     <page string="Revenue Accounts">
                         <field name="l10n_br_revenue_account_ids" />
                     </page>
-                    <page name="simples" string="Simples Table" attrs="{'invisible': [('domain', '!=', 'simples')]}">
+                    <page name="simples" string="Simples Table" attrs="{'invisible': [('l10n_br_domain', '!=', 'simples')]}">
                         <field name="l10n_br_tax_interval_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name="start_revenue" />

@@ -29,7 +29,7 @@ class AccountTax(models.Model):
     def calc_icms_base(self, price_base, ipi_value):
         if ('fiscal_type' in self.env.context) and (
                 self.env.context['fiscal_type'] == 'import'):
-            icms_tax = self.filtered(lambda x: x.domain == 'icms')
+            icms_tax = self.filtered(lambda x: x.l10n_br_domain == 'icms')
             ii = self._compute_ii(price_base)
             pis_cofins = self._compute_pis_cofins(price_base)
             base_icms = price_base
