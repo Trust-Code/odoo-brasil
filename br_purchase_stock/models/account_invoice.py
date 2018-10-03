@@ -32,6 +32,7 @@ class AccountInvoice(models.Model):
         self.total_despesas_aduana = sum(
             l.l10n_br_ii_valor_despesas for l in lines)
         self.amount_total = (
-                self.l10n_br_total_bruto - self.l10n_br_total_desconto +
-                self.l10n_br_total_tax + self.total_frete + self.total_seguro +
-                self.total_despesas)
+            self.l10n_br_total_bruto - self.l10n_br_total_desconto +
+            self.l10n_br_total_tax + self.total_frete +
+            self.total_seguro + self.total_despesas
+        )
