@@ -1,0 +1,110 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_account_voucher
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-09-15 18:58+0000\n"
+"PO-Revision-Date: 2018-09-15 18:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_account_voucher
+#: model:ir.model,name:br_account_voucher.model_account_voucher
+msgid "Accounting Voucher"
+msgstr ""
+
+#. module: br_account_voucher
+#: model:ir.model.fields,field_description:br_account_voucher.field_account_voucher_line_analytic_tag_ids
+msgid "Analytic Tags"
+msgstr "Tags Analíticas"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Are you sure you want to cancel this receipt?"
+msgstr "Tem certeza que deseja cancelar este recibo recorrente?"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Bill Information"
+msgstr ""
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_tree
+msgid "Customer"
+msgstr "Parceiro"
+
+#. module: br_account_voucher
+#: model:ir.actions.server,name:br_account_voucher.ir_cron_generate_recurring_ir_actions_server
+#: model:ir.cron,cron_name:br_account_voucher.ir_cron_generate_recurring
+#: model:ir.cron,name:br_account_voucher.ir_cron_generate_recurring
+msgid "Generate Recurring Vouchers"
+msgstr "Gerar Recibos Recorrentes"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Internal Notes"
+msgstr "Notas Internas"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Purchase Receipt"
+msgstr "Recibos de Compra"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Purchase Voucher"
+msgstr "Recibo de Compra"
+
+#. module: br_account_voucher
+#: model:ir.model.fields,field_description:br_account_voucher.field_account_voucher_l10n_br_recurring
+msgid "Recurring ?"
+msgstr "Recorrente ?"
+
+#. module: br_account_voucher
+#: model:ir.actions.act_window,name:br_account_voucher.action_account_voucher_recurring
+#: model:ir.ui.menu,name:br_account_voucher.menu_account_voucher_recurring
+msgid "Recurring Vouchers"
+msgstr "Recibos Recorrentes"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Set to Draft"
+msgstr "Voltar a Provisório"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_tree
+msgid "Total Amount"
+msgstr "Total"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Validate"
+msgstr "Validar"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Vendor Voucher"
+msgstr "Recibo de Fornecedor"
+
+#. module: br_account_voucher
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_tree
+msgid "Voucher Entries"
+msgstr "Recibos"
+
+#. module: br_account_voucher
+#: model:ir.model,name:br_account_voucher.model_account_voucher_line
+#: model:ir.ui.view,arch_db:br_account_voucher.view_br_account_voucher_recurring_form
+msgid "Voucher Lines"
+msgstr "Linhas do Recibo"

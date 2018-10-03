@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models
+from odoo import fields, models
 
 
 class AccountInvoice(models.Model):
@@ -51,6 +51,7 @@ class AccountInvoice(models.Model):
         res['l10n_br_tax_irrf_id'] = inss and inss.id or False
         res['l10n_br_tax_inss_id'] = irrf and irrf.id or False
 
+        res['fiscal_position_type'] = line.fiscal_position_type
         res['l10n_br_product_type'] = line.product_id.l10n_br_fiscal_type
         res['l10n_br_company_fiscal_type'] = line.company_id.\
             l10n_br_fiscal_type
@@ -115,4 +116,20 @@ class AccountInvoice(models.Model):
         res['l10n_br_csll_aliquota'] = csll.amount or 0.0
         res['l10n_br_inss_aliquota'] = inss.amount or 0.0
         res['l10n_br_irrf_aliquota'] = irrf.amount or 0.0
+        return res
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    fiscal_position_type = fields.Selection(
+        [('saida', 'Saída'), ('entrada', 'Entrada'),
+         ('import', 'Entrada Importação')],
+        string="Tipo da posição fiscal")
+
+    def _prepare_tax_context(self):
+        res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        res.update({
+            'fiscal_type': self.fiscal_position_type,
+        })
         return res

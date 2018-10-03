@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_tax_form" model="ir.ui.view">
+        <field name="name">view.tax.form</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="br_account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <notebook position="attributes">
+                <attribute name="attrs">{'invisible': [('domain', '=', 'simples')]}</attribute>
+            </notebook>
+            <notebook position="after">
+                <notebook>
+                    <page string="Revenue Accounts">
+                        <field name="l10n_br_revenue_account_ids" />
+                    </page>
+                    <page name="simples" string="Simples Table" attrs="{'invisible': [('domain', '!=', 'simples')]}">
+                        <field name="l10n_br_tax_interval_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="start_revenue" />
+                                <field name="end_revenue" />
+                                <field name="amount_tax" />
+                                <field name="amount_deduction" />
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

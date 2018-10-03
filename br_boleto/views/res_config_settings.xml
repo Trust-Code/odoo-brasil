@@ -9,14 +9,14 @@
                 <div id="mail_template_boleto" class="col-xs-12 col-md-6 o_setting_box">
                     <div class="o_setting_left_pane"/>
                     <div class="o_setting_right_pane">
-                        <label string="Modelo de e-mail envio boleto"/>
+                        <label for="boleto_email_tmpl" string="Modelo de e-mail envio boleto"/>
                         <span class="fa fa-lg fa-building-o" title="Values set here are company-specific."/>
                         <div class="text-muted">
                             Modelo a ser utilizado no envio de boleto automatizado
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
-                                <label string="Modelo" class="col-md-3 o_light_label"/>
+                                <label for="boleto_email_tmpl" string="Modelo" class="col-md-3 o_light_label"/>
                                 <field name="boleto_email_tmpl" />
                             </div>
                         </div>

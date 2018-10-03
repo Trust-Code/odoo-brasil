@@ -266,7 +266,7 @@ class InvoiceEletronic(models.Model):
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
-            'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
+            'vProd':  "%.02f" % item.valor_liquido,
             'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
@@ -520,6 +520,7 @@ class InvoiceEletronic(models.Model):
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'
+                dest['enderDest']['CEP'] = ''
                 exporta = {
                     'UFSaidaPais': self.uf_saida_pais_id.code or '',
                     'xLocExporta': self.local_embarque or '',
@@ -674,7 +675,8 @@ class InvoiceEletronic(models.Model):
             'exporta': exporta,
             'compra': compras,
         }
-        if len(duplicatas) > 0:
+        if len(duplicatas) > 0 and\
+                self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
             vals['cobr'] = cobr
             pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final

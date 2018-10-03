@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-17 18:13+0000\n"
-"PO-Revision-Date: 2018-04-17 18:13+0000\n"
+"POT-Creation-Date: 2018-09-15 19:04+0000\n"
+"PO-Revision-Date: 2018-09-15 19:04+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,69 +16,147 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: br_account_close
-#: model:ir.ui.view,arch_db:br_account_close.view_account_close_wizard
-msgid "Cancel"
-msgstr "Cancelar"
+#: code:addons/br_account_close/models/account_voucher.py:31
+#, python-format
+msgid "%s - Period from %s to %s"
+msgstr "%s - Período de %s até %s"
 
 #. module: br_account_close
-#: model:ir.ui.view,arch_db:br_account_close.view_account_close_wizard
-msgid "Compute"
-msgstr "Calcular"
+#: model:ir.model,name:br_account_close.model_account_account
+msgid "Account"
+msgstr "Conta Contábil"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_create_uid
+#: model:ir.model,name:br_account_close.model_account_voucher
+msgid "Accounting Voucher"
+msgstr ""
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_amount_deduction
+msgid "Amount to deduct"
+msgstr "Montante a deduzir"
+
+#. module: br_account_close
+#: model:ir.model,name:br_account_close.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_create_uid
 msgid "Created by"
 msgstr "Criado por"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_create_date
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_create_date
 msgid "Created on"
 msgstr "Criado em"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_display_name
+#: model:ir.model.fields,field_description:br_account_close.field_account_account_l10n_br_credit_account_id
+msgid "Credit Account"
+msgstr "Conta de Crédito"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_display_name
 msgid "Display Name"
-msgstr "Nome exibido"
+msgstr "Nome a exibir"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_end_date
-msgid "End Date"
-msgstr "Data Final"
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_end_revenue
+msgid "End Revenue"
+msgstr "Receita Final"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_id
+#: model:ir.actions.server,name:br_account_close.ir_cron_generate_recurring_ir_actions_server
+#: model:ir.cron,cron_name:br_account_close.ir_cron_generate_recurring
+#: model:ir.cron,name:br_account_close.ir_cron_generate_recurring
+msgid "Generate Recurring Vouchers"
+msgstr "Gerar Recibos recorrentes"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_id
 msgid "ID"
 msgstr "ID"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard___last_update
+#: model:ir.model.fields,help:br_account_close.field_account_voucher_l10n_br_tax_id
+msgid "If selected compute the voucher value         according to the tax to pay"
+msgstr "Se selectionado calcula o valor do recibo de acordo com o imposto"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples___last_update
 msgid "Last Modified on"
 msgstr "Última modificação em"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_write_uid
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_write_uid
 msgid "Last Updated by"
-msgstr "Última atualização por"
+msgstr "Última modificação por"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_write_date
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_write_date
 msgid "Last Updated on"
 msgstr "Última atualização em"
 
 #. module: br_account_close
-#: model:ir.model.fields,field_description:br_account_close.field_account_close_wizard_start_date
-msgid "Start Date"
-msgstr "Data de Início"
+#: model:ir.model.fields,field_description:br_account_close.field_account_voucher_l10n_br_months_compute
+msgid "Period (months)"
+msgstr "Período (meses)"
 
 #. module: br_account_close
-#: model:ir.actions.act_window,name:br_account_close.action_account_close_wizard
-#: model:ir.ui.menu,name:br_account_close.menu_account_close
-#: model:ir.ui.view,arch_db:br_account_close.view_account_close_wizard
-msgid "Tax Closure"
-msgstr "Fechamento de Impostos"
+#: model:ir.model.fields,help:br_account_close.field_account_voucher_l10n_br_months_compute
+msgid "Period in months to compute"
+msgstr "Período em meses para calcular"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_account_tax_l10n_br_revenue_account_ids
+#: model:ir.ui.view,arch_db:br_account_close.view_tax_form
+msgid "Revenue Accounts"
+msgstr "Contas de Receita"
+
+#. module: br_account_close
+#: model:ir.ui.view,arch_db:br_account_close.view_tax_form
+msgid "Simples Table"
+msgstr "Tabela do Simples Nacional"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_start_revenue
+msgid "Start Revenue"
+msgstr "Inicio da Receita"
+
+#. module: br_account_close
+#: model:ir.model,name:br_account_close.model_account_tax
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_amount_tax
+#: model:ir.model.fields,field_description:br_account_close.field_l10n_br_taxation_simples_tax_id
+msgid "Tax"
+msgstr "Imposto"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_account_tax_l10n_br_tax_interval_ids
+msgid "Tax Rules"
+msgstr "Regras de Imposto"
+
+#. module: br_account_close
+#: model:ir.model.fields,field_description:br_account_close.field_account_voucher_l10n_br_tax_id
+msgid "Tax to compute"
+msgstr "Imposto a calcular"
+
+#. module: br_account_close
+#: model:ir.model,name:br_account_close.model_account_tax_template
+msgid "Templates for Taxes"
+msgstr "Modelos de Impostos"
 
 #. module: br_account_close
 #: model:ir.model,name:br_account_close.model_account_close_wizard
 msgid "account.close.wizard"
-msgstr "account.close.wizard"
+msgstr ""
 
+#. module: br_account_close
+#: model:ir.model,name:br_account_close.model_l10n_br_taxation_simples
+msgid "l10n_br.taxation.simples"
+msgstr ""
