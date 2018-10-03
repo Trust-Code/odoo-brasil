@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                 <field name="ii_valor_despesas" invisible="1" />
+                 <field name="l10n_br_ii_valor_despesas" invisible="1" />
             </xpath>
             <field name="total_frete" position="after">
                 <field name="fiscal_position_type" invisible="1"/>
@@ -22,7 +22,7 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                 <field name="ii_valor_despesas" invisible="1" />
+                 <field name="l10n_br_ii_valor_despesas" invisible="1" />
             </xpath>
             <field name="total_frete" position="after">
                 <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
@@ -37,7 +37,7 @@
         <field name="priority">36</field>
         <field name="arch" type="xml">
             <field name="price_subtotal" position="after">
-                <field name="ii_valor_despesas" invisible="1" />
+                <field name="l10n_br_ii_valor_despesas" invisible="1" />
             </field>
         </field>
     </record>

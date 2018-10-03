@@ -10,7 +10,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     fiscal_position_type = fields.Selection(
-        related='fiscal_position_id.fiscal_type', readonly=True)
+        related='fiscal_position_id.l10n_br_fiscal_type', readonly=True)
 
     @api.multi
     def copy(self, default=None):
@@ -141,7 +141,7 @@ class AccountInvoiceLine(models.Model):
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
-            'ii_despesas': self.ii_valor_despesas,
+            'ii_despesas': self.l10n_br_ii_valor_despesas,
         })
         return res
 

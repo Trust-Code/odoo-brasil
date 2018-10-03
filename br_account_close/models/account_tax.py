@@ -8,13 +8,15 @@ from odoo import api, fields, models
 class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
-    l10n_br_domain = fields.Selection(selection_add=[('simples', 'Simples Nacional')])
+    l10n_br_domain = fields.Selection(
+        selection_add=[('simples', 'Simples Nacional')])
 
 
 class AccountTax(models.Model):
     _inherit = 'account.tax'
 
-    l10n_br_domain = fields.Selection(selection_add=[('simples', 'Simples Nacional')])
+    l10n_br_domain = fields.Selection(
+        selection_add=[('simples', 'Simples Nacional')])
     l10n_br_tax_interval_ids = fields.One2many(
         'l10n_br.taxation.simples', 'tax_id', string="Tax Rules")
     l10n_br_revenue_account_ids = fields.Many2many(
