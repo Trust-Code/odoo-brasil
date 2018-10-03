@@ -29,7 +29,9 @@ class AccountInvoice(models.Model):
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
         lines = self.invoice_line_ids
-        self.total_despesas_aduana = sum(l.ii_valor_despesas for l in lines)
-        self.amount_total = self.total_bruto - self.total_desconto + \
-            self.total_tax + self.total_frete + self.total_seguro + \
-            self.total_despesas
+        self.total_despesas_aduana = sum(
+            l.l10n_br_ii_valor_despesas for l in lines)
+        self.amount_total = (
+                self.l10n_br_total_bruto - self.l10n_br_total_desconto +
+                self.l10n_br_total_tax + self.total_frete + self.total_seguro +
+                self.total_despesas)

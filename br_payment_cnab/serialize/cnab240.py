@@ -146,12 +146,12 @@ class Cnab_240(object):
             "periodo_apuracao": int(self.format_date(line.invoice_date) or 0),
             "valor_principal": self._string_to_monetary(line.value),
             "valor_receita_bruta_acumulada": self._string_to_monetary(
-                self._order.company_id.annual_revenue),
+                self._order.company_id.l10n_br_annual_revenue),
             "percentual_receita_bruta_acumulada": self._string_to_monetary(
                 information_id.percentual_receita_bruta_acumulada),
             # GARE SP
             'inscricao_estadual': self._string_to_num(
-                self._order.company_id.inscr_est),
+                self._order.company_id.l10n_br_inscr_est),
             'valor_receita': line.value,
             'numero_referencia': int(information_id.numero_referencia) or 0,
         }
