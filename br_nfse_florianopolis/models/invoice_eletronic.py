@@ -121,9 +121,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             'base_calculo': base,
             'valor_issqn': issqn,
             'valor_total': self.valor_final,
-            'aedf': self.company_id.aedf
-            if self.company_id.tipo_ambiente_nfse == 'producao'
-            else re.sub('[^0-9]', '', self.company_id.inscr_mun[:-1]),
+            'aedf': self.company_id.aedf,
             'cfps': cfps,
             'observacoes': '',
         }

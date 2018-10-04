@@ -215,15 +215,15 @@
         <field name="model">br_account.cfop</field>
         <field name="arch" type="xml">
             <search string="CFOP">
-                <filter string="Entrada" icon="terp-accessories-archiver+" domain="[('type', '=', 'input')]" />
-                <filter string="Saída" icon="terp-accessories-archiver-minus" domain="[('type','=','output')]"/>
+                <filter name="in" string="Entrada" domain="[('type', '=', 'input')]" />
+                <filter name="out" string="Saída" domain="[('type','=','output')]"/>
                 <separator orientation="vertical"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="small_name"/>
                 <newline/>
                 <group  expand='0' string='Agrupar Por...' groups="base.group_extended">
-                    <filter string='Tipo' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
+                    <filter name="type" string='Tipo' domain="[]" context="{'group_by' : 'type'}" />
                 </group>
             </search>
         </field>

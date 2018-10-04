@@ -72,10 +72,6 @@ class AccountInvoice(models.Model):
         if not docs:
             raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
 
-        for doc in docs:
-            if doc.state not in ('done', 'cancel'):
-                raise UserError('Nota Fiscal na fila de envio. Aguarde!')
-
         if len(docs) > 1:
             return {
                 'type': 'ir.actions.act_window',
@@ -224,12 +220,21 @@ class AccountInvoice(models.Model):
             'valor_retencao_inss': invoice.inss_retention,
         }
 
+        total_produtos = total_servicos = 0.0
         eletronic_items = []
         for inv_line in inv_lines:
+            if inv_line.product_type == 'service':
+                total_servicos += inv_line.price_subtotal
+            else:
+                total_produtos += inv_line.price_subtotal
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 
-        vals['eletronic_item_ids'] = eletronic_items
+        vals.update({
+            'eletronic_item_ids': eletronic_items,
+            'valor_servicos': total_servicos,
+            'valor_bruto': total_produtos,
+        })
         return vals
 
     @api.multi
@@ -237,15 +242,20 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         for item in self:
             if item.product_document_id.electronic:
-                inv_lines = item.invoice_line_ids.filtered(
-                    lambda x: x.product_id.fiscal_type == 'product')
+                if item.company_id.l10n_br_nfse_conjugada:
+                    inv_lines = item.invoice_line_ids
+                else:
+                    inv_lines = item.invoice_line_ids.filtered(
+                        lambda x: x.product_id.fiscal_type == 'product')
                 if inv_lines:
                     edoc_vals = self._prepare_edoc_vals(
                         item, inv_lines, item.product_serie_id)
                     eletronic = self.env['invoice.eletronic'].create(edoc_vals)
                     eletronic.validate_invoice()
                     eletronic.action_post_validate()
-            if item.service_document_id.nfse_eletronic:
+
+            if item.service_document_id.nfse_eletronic and \
+               not item.company_id.l10n_br_nfse_conjugada:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.fiscal_type == 'service')
                 if inv_lines:
@@ -267,7 +277,7 @@ class AccountInvoice(models.Model):
                     raise UserError(u'Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
                 if edoc.can_unlink():
-                    edoc.unlink()
+                    edoc.sudo().unlink()
         return res
 
 

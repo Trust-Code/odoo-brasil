@@ -39,10 +39,10 @@ class InvoiceEletronic(models.Model):
     def _compute_discriminacao(self):
         for item in self:
             descricao = ''
-            for eletronic_item in item.eletronic_item_ids:
-                descricao += eletronic_item.name + '<br/>'
+            for line in item.eletronic_item_ids:
+                descricao += line.name.replace('\n', '<br/>') + '<br/>'
             if item.informacoes_legais:
-                descricao += item.informacoes_legais + '<br/>'
+                descricao += item.informacoes_legais.replace('\n', '<br/>')
             item.discriminacao_servicos = descricao
 
     operation = fields.Selection(
@@ -152,11 +152,11 @@ class InvoiceEletronic(models.Model):
             descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
-                descricao += item.name + '\n'
+                descricao += item.name.replace('\n', '|') + '|'
                 codigo_servico = item.codigo_servico_paulistana
 
             if self.informacoes_legais:
-                descricao += self.informacoes_legais + '\n'
+                descricao += self.informacoes_legais.replace('\n', '|')
 
             rps = {
                 'tomador': tomador,
@@ -164,23 +164,24 @@ class InvoiceEletronic(models.Model):
                 'numero': self.numero,
                 'data_emissao': dt_emissao,
                 'serie': self.serie.code or '',
-                'aliquota_atividade': '0.000',
+                'aliquota_atividade':
+                    "%.3f" % self.eletronic_item_ids[0].issqn_aliquota,
                 'codigo_atividade': re.sub('[^0-9]', '', codigo_servico or ''),
                 'municipio_prestacao': city_prestador.name or '',
-                'valor_pis': str("%.2f" % self.valor_pis),
-                'valor_cofins': str("%.2f" % self.valor_cofins),
-                'valor_csll': str("%.2f" % 0.0),
-                'valor_inss': str("%.2f" % 0.0),
-                'valor_ir': str("%.2f" % 0.0),
-                'aliquota_pis': str("%.2f" % 0.0),
-                'aliquota_cofins': str("%.2f" % 0.0),
-                'aliquota_csll': str("%.2f" % 0.0),
-                'aliquota_inss': str("%.2f" % 0.0),
-                'aliquota_ir': str("%.2f" % 0.0),
-                'valor_servico': str("%.2f" % self.valor_final),
+                'valor_pis': "%.2f" % self.valor_retencao_pis,
+                'valor_cofins': "%.2f" % self.valor_retencao_cofins,
+                'valor_csll': "%.2f" % self.valor_retencao_csll,
+                'valor_inss': "%.2f" % self.valor_retencao_inss,
+                'valor_ir': "%.2f" % self.valor_retencao_irrf,
+                'valor_servico': "%.2f" % self.valor_final,
                 'valor_deducao': '0',
                 'descricao': descricao,
                 'deducoes': [],
+                'valor_carga_tributaria':
+                "%.2f" % self.valor_estimado_tributos,
+                'fonte_carga_tributaria': 'IBPT',
+                'iss_retido':
+                    'true' if self.valor_retencao_issqn > 0.0 else 'false'
             }
 
             valor_servico = self.valor_final
@@ -189,7 +190,7 @@ class InvoiceEletronic(models.Model):
             cnpj_cpf = tomador['cpf_cnpj']
             data_envio = rps['data_emissao']
             inscr = prestador['inscricao_municipal']
-            iss_retido = 'N'
+            iss_retido = 'S' if self.valor_retencao_issqn > 0.0 else 'N'
             tipo_cpfcnpj = tomador['tipo_cpfcnpj']
             codigo_atividade = rps['codigo_atividade']
             tipo_recolhimento = self.operation  # T – Tributado em São Paulo

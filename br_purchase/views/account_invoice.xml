@@ -7,6 +7,7 @@
         <field name="inherit_id" ref="account.invoice_supplier_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="fiscal_position_type" invisible="1"/>
                 <field name="icms_cst_normal" invisible="1" />
                 <field name="icms_csosn_simples" invisible="1" />
                 <field name="tax_icms_id" invisible="1"/>

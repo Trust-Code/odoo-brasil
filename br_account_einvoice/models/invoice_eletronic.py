@@ -51,8 +51,7 @@ class InvoiceEletronic(models.Model):
          ('008', u'NFS-e - Provedor SIMPLISS'),
          ('009', u'NFS-e - Provedor SUSESU'),
          ('010', u'NFS-e Imperial - Petrópolis'),
-         ('012', u'NFS-e - Florianópolis'),
-         ('015', u'NFS-e - Maringá')],
+         ('012', u'NFS-e - Florianópolis')],
         string=u'Modelo', readonly=True, states=STATE)
     serie = fields.Many2one(
         'br_account.document.serie', string=u'Série',
@@ -385,9 +384,9 @@ class InvoiceEletronic(models.Model):
         self.ensure_one()
         errors = self._hook_validation()
         if len(errors) > 0:
-            msg = u"\n".join(
-                [u"Por favor corrija os erros antes de prosseguir"] + errors)
-            self.unlink()
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            self.sudo().unlink()
             raise UserError(msg)
 
     @api.multi
@@ -488,6 +487,10 @@ class InvoiceEletronic(models.Model):
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
+
+    @api.multi
+    def copy(self, default=None):
+        raise UserError('Não é possível duplicar uma Nota Fiscal.')
 
 
 class InvoiceEletronicEvent(models.Model):
