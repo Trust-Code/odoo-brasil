@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <t t-name="UsersNotification" t-extend="Notification">
+        <t t-jquery=".o_notification_title > t" t-operation="replace">
+            <span t-attf-class="go_to_activity">
+                <t t-esc="widget.title"/>
+            </span>
+        </t>
+    </t>
+</template>

@@ -1,31 +1,24 @@
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <soap:Header>
-        <nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao">
-            <cUF>42</cUF>
-            <versaoDados>3.10</versaoDados>
-        </nfeCabecMsg>
-    </soap:Header>
-    <soap:Body>
-        <nfeRetAutorizacaoLoteResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao">
-            <retConsReciNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
-                <tpAmb>2</tpAmb>
-                <verAplic>SP_NFE_PL_008i2</verAplic>
-                <nRec>351000104734849</nRec>
-                <cStat>104</cStat>
-                <xMotivo>Lote processado</xMotivo>
-                <cUF>42</cUF>
-                <dhRecbto>2016-10-12T11:46:08-03:00</dhRecbto>
-                <protNFe versao="3.10">
-                    <infProt>
-                        <tpAmb>2</tpAmb>
-                        <verAplic>SP_NFE_PL_008i2</verAplic>
-                        <chNFe>35161021332917000163550010000000011178586888</chNFe>
-                        <dhRecbto>2016-10-12T11:46:08-03:00</dhRecbto>
-                        <cStat>694</cStat>
-                        <xMotivo>Rejeicao: Nao informado o grupo de ICMS para a UF de destino [nItem:1]</xMotivo>
-                    </infProt>
-                </protNFe>
-            </retConsReciNFe>
-        </nfeRetAutorizacaoLoteResult>
-    </soap:Body>
-</soap:Envelope>
+<nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeRetAutorizacao4">
+  <retConsReciNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+    <tpAmb>2</tpAmb>
+    <verAplic>SVRS201807240822</verAplic>
+    <nRec>423002181690719</nRec>
+    <cStat>104</cStat>
+    <xMotivo>Lote processado</xMotivo>
+    <cUF>42</cUF>
+    <dhRecbto>2018-07-31T11:28:59-03:00</dhRecbto>
+    <protNFe versao="4.00">
+      <infProt>
+        <tpAmb>2</tpAmb>
+        <verAplic>SVRS201807240822</verAplic>
+        <chNFe>42180780164221000215550010000006081271576374</chNFe>
+        <dhRecbto>2018-07-31T11:28:59-03:00</dhRecbto>
+        <digVal>oIIfUW/HcKFT2tZAaqI17rSBzmU=</digVal>
+        <cStat>694</cStat>
+        <xMotivo>
+          Rejeicao: CFOP de operacao interestadual e idDest diferente de 2
+        </xMotivo>
+      </infProt>
+    </protNFe>
+  </retConsReciNFe>
+</nfeResultMsg>

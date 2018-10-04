@@ -23,4 +23,5 @@
         'wizard/nfse_florianopolis_export_view.xml',
         'reports/danfpse.xml',
     ],
+    'application': True,
 }

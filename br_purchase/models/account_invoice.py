@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models
+from odoo import fields, models
 
 
 class AccountInvoice(models.Model):
@@ -11,7 +11,9 @@ class AccountInvoice(models.Model):
     def _prepare_invoice_line_from_po_line(self, line):
         res = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(
             line)
+
         res['valor_bruto'] = line.valor_bruto
+        res['discount'] = line.discount
 
         # Improve this one later
         icms = line.taxes_id.filtered(lambda x: x.domain == 'icms')
@@ -24,6 +26,9 @@ class AccountInvoice(models.Model):
         cofins = line.taxes_id.filtered(lambda x: x.domain == 'cofins')
         ii = line.taxes_id.filtered(lambda x: x.domain == 'ii')
         issqn = line.taxes_id.filtered(lambda x: x.domain == 'issqn')
+        csll = line.taxes_id.filtered(lambda x: x.domain == 'csll')
+        inss = line.taxes_id.filtered(lambda x: x.domain == 'inss')
+        irrf = line.taxes_id.filtered(lambda x: x.domain == 'irrf')
 
         res['icms_cst_normal'] = line.icms_cst_normal
         res['icms_csosn_simples'] = line.icms_csosn_simples
@@ -38,7 +43,11 @@ class AccountInvoice(models.Model):
         res['tax_cofins_id'] = cofins and cofins.id or False
         res['tax_ii_id'] = ii and ii.id or False
         res['tax_issqn_id'] = issqn and issqn.id or False
+        res['tax_csll_id'] = csll and csll.id or False
+        res['tax_irrf_id'] = inss and inss.id or False
+        res['tax_inss_id'] = irrf and irrf.id or False
 
+        res['fiscal_position_type'] = line.fiscal_position_type
         res['product_type'] = line.product_id.fiscal_type
         res['company_fiscal_type'] = line.company_id.fiscal_type
         res['cfop_id'] = line.cfop_id.id
@@ -92,6 +101,27 @@ class AccountInvoice(models.Model):
 
         res['issqn_aliquota'] = issqn.amount or 0.0
         res['issqn_tipo'] = 'N'
+        res['l10n_br_issqn_deduction'] = line.l10n_br_issqn_deduction
 
         res['ii_aliquota'] = ii.amount or 0.0
+
+        res['csll_aliquota'] = csll.amount or 0.0
+        res['inss_aliquota'] = inss.amount or 0.0
+        res['irrf_aliquota'] = irrf.amount or 0.0
+        return res
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    fiscal_position_type = fields.Selection(
+        [('saida', 'Saída'), ('entrada', 'Entrada'),
+         ('import', 'Entrada Importação')],
+        string="Tipo da posição fiscal")
+
+    def _prepare_tax_context(self):
+        res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        res.update({
+            'fiscal_type': self.fiscal_position_type,
+        })
         return res

@@ -96,6 +96,13 @@ class TestTaxBrasil(TestBaseBr):
         self.assertEquals(len(res['taxes']), 1)
         self.assertEquals(res['taxes'][0]['amount'], 18.0)
 
+    def test_icms_st_incluso(self):
+        res = self.icms_st_1800_incluso.compute_all(100.0)
+        self.assertEquals(res['total_excluded'], 100.0)
+        self.assertEquals(res['total_included'], 121.95)
+        self.assertEquals(len(res['taxes']), 1)
+        self.assertEquals(res['taxes'][0]['amount'], 21.95)
+
     def test_icms_st_and_icms(self):
         taxes = self.icms_1700 | self.icms_st_1800
         res = taxes.compute_all(100.0)

@@ -25,12 +25,10 @@
         ],
     },
     'data': [
-        'security/ir.model.access.csv',
         'views/res_config_settings.xml',
         'views/account_invoice.xml',
         'views/account_move_line.xml',
         'views/res_partner_bank.xml',
-        'views/payment_order.xml',
         'views/payment_mode.xml',
         'views/account_journal.xml',
         'reports/report_print_button_view.xml',

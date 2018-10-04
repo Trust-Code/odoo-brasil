@@ -5,6 +5,7 @@
 from odoo.addons.br_boleto.boleto.document import getBoletoSelection
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError
 
 selection = getBoletoSelection()
 IMPLEMENTADOS = (u'1', u'3', u'4', u'7', u'9', u'10')
@@ -50,6 +51,8 @@ class PaymentMode(models.Model):
         ('1', u'Protestar (Dias Corridos)'),
         ('2', u'Protestar (Dias Úteis)'),
         ('3', u'Não protestar'),
+        ('4', u'Protestar Fim Falimentar - Dias Úteis'),
+        ('5', u'Protestar Fim Falimentar - Dias Corridos'),
         ('7', u'Negativar (Dias Corridos)'),
         ('8', u'Não Negativar')
     ], string=u'Códigos de Protesto', default='0')
@@ -59,10 +62,10 @@ class PaymentMode(models.Model):
     def br_boleto_onchange_boleto_type(self):
         vals = {}
 
-        if self.boleto_type not in IMPLEMENTADOS:
+        if (self.boleto_type) and (self.boleto_type not in IMPLEMENTADOS):
             vals['warning'] = {
                 'title': u'Ação Bloqueada!',
-                'message': u'Este boleto ainda não foi implentado!'
+                'message': u'Este boleto ainda não foi implementado!'
             }
 
         if self.boleto_type == u'1':
@@ -131,3 +134,14 @@ class PaymentMode(models.Model):
                 }
 
         return vals
+
+    @api.onchange('boleto_protesto', 'boleto_type')
+    def _check_boleto_protesto(self):
+        if self.boleto_protesto == '0' and self.boleto_type == '3':
+            raise UserError('Código de protesto inválido para banco Bradesco!')
+
+    @api.multi
+    def write(self, vals):
+        res = super(PaymentMode, self).write(vals)
+        self._check_boleto_protesto()
+        return res

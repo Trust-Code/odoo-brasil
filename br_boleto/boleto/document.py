@@ -242,8 +242,13 @@ class BoletoItau(Boleto):
             bank_account_id.acc_number
         self.branch_number = move_line.payment_mode_id.\
             bank_account_id.bra_number
+        self.account_digit = move_line.payment_mode_id.\
+            bank_account_id.acc_number_dig
         Boleto.__init__(self, move_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
+        if '-' in self.boleto.conta_cedente:
+            self.boleto.conta_cedente = self.boleto.conta_cedente.split('-')[0]
+        self.boleto.conta_cedente_dv = self.account_digit
 
 
 class BoletoSantander(Boleto):

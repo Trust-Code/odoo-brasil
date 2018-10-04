@@ -24,6 +24,7 @@
                         </group>
                         <group colspan="4">
                             <field name="country_id"/>
+                            <field name="state_id"/>
                             <field name="city_id"/>
                             <field name="manufacture_year"/>
                             <field name="model_year"/>

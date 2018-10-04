@@ -23,8 +23,8 @@ STATE = {'edit': [('readonly', False)]}
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
-
     _inherit = ['mail.thread']
+    _order = 'id desc'
 
     code = fields.Char(
         u'Código', size=100, required=True, readonly=True, states=STATE)
@@ -88,7 +88,7 @@ class InvoiceEletronic(models.Model):
     partner_shipping_id = fields.Many2one(
         'res.partner', string=u'Entrega', readonly=True, states=STATE)
     payment_term_id = fields.Many2one(
-        'account.payment.term', string=u'Forma pagamento',
+        'account.payment.term', string='Condição pagamento',
         readonly=True, states=STATE)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
@@ -248,7 +248,17 @@ class InvoiceEletronic(models.Model):
             if not self.company_id.partner_id.country_id.bc_code:
                 errors.append(u'Emitente / Endereço - Código do BC do país')
 
+        # produtos
+        for eletr in self.eletronic_item_ids:
+            if eletr.product_id:
+                if not eletr.product_id.default_code:
+                    errors.append(
+                        u'Prod: %s - Código do produto' % (
+                            eletr.product_id.name))
+
         partner = self.partner_id.commercial_partner_id
+        if not partner:  # NFC-e pode não ter partner, mas se tiver valida
+            return errors
         company = self.company_id
         # Destinatário
         if partner.is_company and not partner.legal_name:
@@ -297,14 +307,6 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Destinatário / Endereço - Nome do país')
             if not partner.country_id.bc_code:
                 errors.append(u'Destinatário / Endereço - Cód. do BC do país')
-
-        # produtos
-        for eletr in self.eletronic_item_ids:
-            if eletr.product_id:
-                if not eletr.product_id.default_code:
-                    errors.append(
-                        u'Prod: %s - Código do produto' % (
-                            eletr.product_id.name))
         return errors
 
     @api.multi
@@ -382,9 +384,9 @@ class InvoiceEletronic(models.Model):
         self.ensure_one()
         errors = self._hook_validation()
         if len(errors) > 0:
-            msg = u"\n".join(
-                [u"Por favor corrija os erros antes de prosseguir"] + errors)
-            self.unlink()
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            self.sudo().unlink()
             raise UserError(msg)
 
     @api.multi
@@ -430,7 +432,20 @@ class InvoiceEletronic(models.Model):
 
     def log_exception(self, exc):
         self.codigo_retorno = -1
-        self.mensagem_retorno = exc.message
+        self.mensagem_retorno = str(exc)
+
+    def notify_user(self):
+        redirect = {
+            'name': 'Invoices',
+            'model': 'account.invoice',
+            'view': 'form',
+            'domain': [['id', '=', self.invoice_id.id]],
+            'context': {}
+        }
+        msg = 'Verifique a %s, ocorreu um problema com o envio de \
+        documento eletrônico!' % self.name
+        self.create_uid.notify(msg, sticky=True, title="Ação necessária!",
+                               warning=True, redirect=redirect)
 
     def _get_state_to_send(self):
         return ('draft',)
@@ -446,6 +461,7 @@ class InvoiceEletronic(models.Model):
                 item.action_send_eletronic_invoice()
             except Exception as e:
                 item.log_exception(e)
+                item.notify_user()
 
     def _find_attachment_ids_email(self):
         return []
@@ -472,6 +488,10 @@ class InvoiceEletronic(models.Model):
             nfe.send_email_nfe()
             nfe.email_sent = True
 
+    @api.multi
+    def copy(self, default=None):
+        raise UserError('Não é possível duplicar uma Nota Fiscal.')
+
 
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
@@ -489,7 +509,7 @@ class InvoiceEletronicEvent(models.Model):
 class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
 
-    name = fields.Char(u'Nome', size=100, readonly=True, states=STATE)
+    name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(
         'res.company', u'Empresa', index=True, readonly=True, states=STATE)
     invoice_eletronic_id = fields.Many2one(

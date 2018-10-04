@@ -35,6 +35,16 @@ class InvoiceEletronicItem(models.Model):
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
+    @api.multi
+    def _compute_discriminacao(self):
+        for item in self:
+            descricao = ''
+            for line in item.eletronic_item_ids:
+                descricao += line.name.replace('\n', '<br/>') + '<br/>'
+            if item.informacoes_legais:
+                descricao += item.informacoes_legais.replace('\n', '<br/>')
+            item.discriminacao_servicos = descricao
+
     operation = fields.Selection(
         [('T', u"Tributado em São Paulo"),
          ('F', u"Tributado Fora de São Paulo"),
@@ -51,6 +61,8 @@ class InvoiceEletronic(models.Model):
         string=u'Código Autorização', size=20, readonly=True, states=STATE)
     numero_nfse = fields.Char(
         string=u"Número NFSe", size=50, readonly=True, states=STATE)
+
+    discriminacao_servicos = fields.Char(compute='_compute_discriminacao')
 
     def issqn_due_date(self):
         date_emition = datetime.strptime(self.data_emissao, DTFT)
@@ -109,7 +121,7 @@ class InvoiceEletronic(models.Model):
                 'tipo_cpfcnpj': 2 if partner.is_company else 1,
                 'cpf_cnpj': re.sub('[^0-9]', '',
                                    partner.cnpj_cpf or ''),
-                'razao_social': partner.legal_name or '',
+                'razao_social': partner.legal_name or partner.name,
                 'logradouro': partner.street or '',
                 'numero': partner.number or '',
                 'complemento': partner.street2 or '',
@@ -140,13 +152,11 @@ class InvoiceEletronic(models.Model):
             descricao = ''
             codigo_servico = ''
             for item in self.eletronic_item_ids:
-                descricao += item.name + '\n'
+                descricao += item.name.replace('\n', '|') + '|'
                 codigo_servico = item.codigo_servico_paulistana
 
             if self.informacoes_legais:
-                descricao += self.informacoes_legais + '\n'
-            if self.informacoes_complementares:
-                descricao += self.informacoes_complementares
+                descricao += self.informacoes_legais.replace('\n', '|')
 
             rps = {
                 'tomador': tomador,
@@ -154,23 +164,24 @@ class InvoiceEletronic(models.Model):
                 'numero': self.numero,
                 'data_emissao': dt_emissao,
                 'serie': self.serie.code or '',
-                'aliquota_atividade': '0.000',
+                'aliquota_atividade':
+                    "%.3f" % self.eletronic_item_ids[0].issqn_aliquota,
                 'codigo_atividade': re.sub('[^0-9]', '', codigo_servico or ''),
                 'municipio_prestacao': city_prestador.name or '',
-                'valor_pis': str("%.2f" % self.valor_pis),
-                'valor_cofins': str("%.2f" % self.valor_cofins),
-                'valor_csll': str("%.2f" % 0.0),
-                'valor_inss': str("%.2f" % 0.0),
-                'valor_ir': str("%.2f" % 0.0),
-                'aliquota_pis': str("%.2f" % 0.0),
-                'aliquota_cofins': str("%.2f" % 0.0),
-                'aliquota_csll': str("%.2f" % 0.0),
-                'aliquota_inss': str("%.2f" % 0.0),
-                'aliquota_ir': str("%.2f" % 0.0),
-                'valor_servico': str("%.2f" % self.valor_final),
+                'valor_pis': "%.2f" % self.valor_retencao_pis,
+                'valor_cofins': "%.2f" % self.valor_retencao_cofins,
+                'valor_csll': "%.2f" % self.valor_retencao_csll,
+                'valor_inss': "%.2f" % self.valor_retencao_inss,
+                'valor_ir': "%.2f" % self.valor_retencao_irrf,
+                'valor_servico': "%.2f" % self.valor_final,
                 'valor_deducao': '0',
                 'descricao': descricao,
                 'deducoes': [],
+                'valor_carga_tributaria':
+                "%.2f" % self.valor_estimado_tributos,
+                'fonte_carga_tributaria': 'IBPT',
+                'iss_retido':
+                    'true' if self.valor_retencao_issqn > 0.0 else 'false'
             }
 
             valor_servico = self.valor_final
@@ -179,7 +190,7 @@ class InvoiceEletronic(models.Model):
             cnpj_cpf = tomador['cpf_cnpj']
             data_envio = rps['data_emissao']
             inscr = prestador['inscricao_municipal']
-            iss_retido = 'N'
+            iss_retido = 'S' if self.valor_retencao_issqn > 0.0 else 'N'
             tipo_cpfcnpj = tomador['tipo_cpfcnpj']
             codigo_atividade = rps['codigo_atividade']
             tipo_recolhimento = self.operation  # T – Tributado em São Paulo
@@ -301,6 +312,12 @@ class InvoiceEletronic(models.Model):
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
+        if self.ambiente == 'homologacao' or \
+           self.company_id.tipo_ambiente_nfse == 'homologacao':
+            self.state = 'cancel'
+            self.codigo_retorno = '100'
+            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            return
         company = self.company_id
         canc = {
             'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),

@@ -6,6 +6,7 @@ import re
 import io
 import base64
 import logging
+import pytz
 from lxml import etree
 from datetime import datetime
 from odoo import api, fields, models
@@ -20,8 +21,10 @@ try:
     from pytrustnfe.nfe import xml_autorizar_nfe
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
+    from pytrustnfe.nfe import consultar_protocolo_nfe
     from pytrustnfe.certificado import Certificado
-    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc
+    from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
+        gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
 except ImportError:
@@ -51,6 +54,9 @@ class InvoiceEletronic(models.Model):
             "context": {'default_eletronic_doc_id': self.id},
         }
 
+    payment_mode_id = fields.Many2one(
+        'payment.mode', string='Modo de Pagamento',
+        readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.tipo_ambiente",
@@ -66,6 +72,7 @@ class InvoiceEletronic(models.Model):
         ('2', u'Operação não presencial, pela Internet'),
         ('3', u'Operação não presencial, Teleatendimento'),
         ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('5', u'Operação presencial, fora do estabelecimento'),
         ('9', u'Operação não presencial, outros'),
     ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
         help=u'Indicador de presença do comprador no\n'
@@ -97,10 +104,12 @@ class InvoiceEletronic(models.Model):
 
     # Transporte
     modalidade_frete = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
         string=u'Modalidade do frete', default="9",
         readonly=True, states=STATE)
     transportadora_id = fields.Many2one(
@@ -187,11 +196,6 @@ class InvoiceEletronic(models.Model):
         'carta.correcao.eletronica.evento', 'eletronic_doc_id',
         string=u"Cartas de Correção", readonly=True, states=STATE)
 
-    def barcode_url(self):
-        url = '<img style="width:380px;height:50px;margin:2px 1px;"\
-src="/report/barcode/Code128/' + self.chave_nfe + '" />'
-        return url
-
     def can_unlink(self):
         res = super(InvoiceEletronic, self).can_unlink()
         if self.state == 'denied':
@@ -254,16 +258,15 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         prod = {
             'cProd': item.product_id.default_code,
-            'cEAN': item.product_id.barcode or '',
+            'cEAN': item.product_id.barcode or 'SEM GTIN',
             'xProd': xProd,
-            'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
-            'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
+            'NCM': re.sub('[^0-9]', '', item.ncm or '00')[:8],
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
             'vUnCom': "%.02f" % item.preco_unitario,
-            'vProd':  "%.02f" % (item.preco_unitario * item.quantidade),
-            'cEANTrib': item.product_id.barcode or '',
+            'vProd':  "%.02f" % item.valor_liquido,
+            'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
             'vUnTrib': "%.02f" % item.preco_unitario,
@@ -313,31 +316,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
 
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
-            'ICMS': {
-                'orig':  item.origem,
-                'CST': item.icms_cst,
-                'modBC': item.icms_tipo_base,
-                'vBC': "%.02f" % item.icms_base_calculo,
-                'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
-                'pICMS': "%.02f" % item.icms_aliquota,
-                'vICMS': "%.02f" % item.icms_valor,
-                'modBCST': item.icms_st_tipo_base,
-                'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
-                'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
-                'vBCST': "%.02f" % item.icms_st_base_calculo,
-                'pICMSST': "%.02f" % item.icms_st_aliquota,
-                'vICMSST': "%.02f" % item.icms_st_valor,
-                'pCredSN': "%.02f" % item.icms_valor_credito,
-                'vCredICMSSN': "%.02f" % item.icms_aliquota_credito
-            },
-            'IPI': {
-                'clEnq': item.classe_enquadramento_ipi or '',
-                'cEnq': item.codigo_enquadramento_ipi,
-                'CST': item.ipi_cst,
-                'vBC': "%.02f" % item.ipi_base_calculo,
-                'pIPI': "%.02f" % item.ipi_aliquota,
-                'vIPI': "%.02f" % item.ipi_valor
-            },
             'PIS': {
                 'CST': item.pis_cst,
                 'vBC': "%.02f" % item.pis_base_calculo,
@@ -357,6 +335,57 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'vIOF': "%.02f" % item.ii_valor_iof
             },
         }
+        if item.tipo_produto == 'service':
+            retencoes = item.pis_valor_retencao + \
+                item.cofins_valor_retencao + item.inss_valor_retencao + \
+                item.irrf_valor_retencao + item.csll_valor_retencao
+            imposto.update({
+                'ISSQN': {
+                    'vBC': "%.02f" % item.issqn_base_calculo,
+                    'vAliq': "%.02f" % item.issqn_base_calculo,
+                    'vISSQN': "%.02f" % item.issqn_valor,
+                    'cMunFG': "%s%s" % (invoice.company_id.state_id.ibge_code,
+                                        invoice.company_id.city_id.ibge_code),
+                    'cListServ': item.issqn_codigo,
+                    'vDeducao': '',
+                    'vOutro': "%.02f" % retencoes if retencoes else '',
+                    'vISSRet': "%.02f" % item.issqn_valor_retencao
+                    if item.issqn_valor_retencao else '',
+                    'indISS': 1,  # Exigivel
+                    'cServico': item.issqn_codigo,
+                    'cMun': "%s%s" % (invoice.company_id.state_id.ibge_code,
+                                      invoice.company_id.city_id.ibge_code),
+                    'indIncentivo': 2,  # Não
+                }
+            })
+        else:
+            imposto.update({
+                'ICMS': {
+                    'orig':  item.origem,
+                    'CST': item.icms_cst,
+                    'modBC': item.icms_tipo_base,
+                    'vBC': "%.02f" % item.icms_base_calculo,
+                    'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
+                    'pICMS': "%.02f" % item.icms_aliquota,
+                    'vICMS': "%.02f" % item.icms_valor,
+                    'modBCST': item.icms_st_tipo_base,
+                    'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
+                    'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
+                    'vBCST': "%.02f" % item.icms_st_base_calculo,
+                    'pICMSST': "%.02f" % item.icms_st_aliquota,
+                    'vICMSST': "%.02f" % item.icms_st_valor,
+                    'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                    'vCredICMSSN': "%.02f" % item.icms_valor_credito
+                },
+                'IPI': {
+                    'clEnq': item.classe_enquadramento_ipi or '',
+                    'cEnq': item.codigo_enquadramento_ipi,
+                    'CST': item.ipi_cst,
+                    'vBC': "%.02f" % item.ipi_base_calculo,
+                    'pIPI': "%.02f" % item.ipi_aliquota,
+                    'vIPI': "%.02f" % item.ipi_valor
+                },
+            })
         if item.tem_difal:
             imposto['ICMSUFDest'] = {
                 'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
@@ -382,7 +411,6 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
             'natOp': self.fiscal_position_id.name,
-            'indPag': self.payment_term_id.indPag or '0',
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
@@ -468,7 +496,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
-            'IE':  re.sub('[^0-9]', '', self.company_id.inscr_est),
+            'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
             'CRT': self.company_id.fiscal_type,
         }
         if self.company_id.cnae_main_id and self.company_id.inscr_mun:
@@ -513,6 +541,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'
+                dest['enderDest']['CEP'] = ''
                 exporta = {
                     'UFSaidaPais': self.uf_saida_pais_id.code or '',
                     'xLocExporta': self.local_embarque or '',
@@ -535,14 +564,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
             'vICMSDeson': '0.00',
+            'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
+            'vFCPST': '0.00',
+            'vFCPSTRet': '0.00',
             'vProd': "%.02f" % self.valor_bruto,
             'vFrete': "%.02f" % self.valor_frete,
             'vSeg': "%.02f" % self.valor_seguro,
             'vDesc': "%.02f" % self.valor_desconto,
             'vII': "%.02f" % self.valor_ii,
             'vIPI': "%.02f" % self.valor_ipi,
+            'vIPIDevol': '0.00',
             'vPIS': "%.02f" % self.valor_pis,
             'vCOFINS': "%.02f" % self.valor_cofins,
             'vOutro': "%.02f" % self.valor_despesas,
@@ -551,11 +584,40 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'vICMSUFDest': "%.02f" % self.valor_icms_uf_dest,
             'vICMSUFRemet': "%.02f" % self.valor_icms_uf_remet,
             'vTotTrib': "%.02f" % self.valor_estimado_tributos,
-            # ISSQn
-            'vServ': '0.00',
-            # Retenções
-
         }
+        if self.valor_servicos > 0.0:
+            issqn_total = {
+                'vServ': "%.02f" % self.valor_servicos
+                if self.valor_servicos else "",
+                'vBC': "%.02f" % self.valor_bc_issqn
+                if self.valor_bc_issqn else "",
+                'vISS': "%.02f" % self.valor_issqn if self.valor_issqn else "",
+                'vPIS': "%.02f" % self.valor_pis_servicos
+                if self.valor_pis_servicos else "",
+                'vCOFINS': "%.02f" % self.valor_cofins_servicos
+                if self.valor_cofins_servicos else "",
+                'dCompet': dt_emissao.strftime('%Y-%m-%d'),
+                'vDeducao': "",
+                'vOutro': "",
+                'vISSRet': "%.02f" % self.valor_retencao_issqn
+                if self.valor_retencao_issqn else '',
+            }
+            tributos_retidos = {
+                'vRetPIS': "%.02f" % self.valor_retencao_pis
+                if self.valor_retencao_pis else '',
+                'vRetCOFINS': "%.02f" % self.valor_retencao_cofins
+                if self.valor_retencao_cofins else '',
+                'vRetCSLL': "%.02f" % self.valor_retencao_csll
+                if self.valor_retencao_csll else '',
+                'vBCIRRF': "%.02f" % self.valor_bc_irrf
+                if self.valor_retencao_irrf else '',
+                'vIRRF': "%.02f" % self.valor_retencao_irrf
+                if self.valor_retencao_irrf else '',
+                'vBCRetPrev': "%.02f" % self.valor_bc_inss
+                if self.valor_retencao_inss else '',
+                'vRetPrev': "%.02f" % self.valor_retencao_inss
+                if self.valor_retencao_inss else '',
+            }
         if self.transportadora_id.street:
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
                                           self.transportadora_id.number or '',
@@ -621,14 +683,17 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         cobr = {
             'fat': {
                 'nFat': self.numero_fatura or '',
-                'vOrig': "%.02f" % self.fatura_bruto
-                if self.fatura_bruto else '',
-                'vDesc': "%.02f" % self.fatura_desconto
-                if self.fatura_desconto else '',
-                'vLiq': "%.02f" % self.fatura_liquido
-                if self.fatura_liquido else '',
+                'vOrig': "%.02f" % (
+                    self.fatura_liquido + self.fatura_desconto),
+                'vDesc': "%.02f" % self.fatura_desconto,
+                'vLiq': "%.02f" % self.fatura_liquido,
             },
             'dup': duplicatas
+        }
+        pag = {
+            'indPag': self.payment_term_id.indPag or '0',
+            'tPag': self.payment_mode_id.tipo_pagamento or '90',
+            'vPag': '0.00',
         }
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
@@ -651,13 +716,22 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
+            'pag': [pag],
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
         }
-        if len(duplicatas) > 0:
+        if self.valor_servicos > 0.0:
+            vals.update({
+                'ISSQNtot': issqn_total,
+                'retTrib': tributos_retidos,
+            })
+        if len(duplicatas) > 0 and\
+                self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
             vals['cobr'] = cobr
+            pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
+            pag['vPag'] = "%.02f" % self.valor_final
         return vals
 
     @api.multi
@@ -739,6 +813,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             cert_pfx, self.company_id.nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
+
         lote = self._prepare_lote(self.id, nfe_values)
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
@@ -775,8 +850,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
-        retorno = retorno.getchildren()[0]
+        retorno = resposta['object'].getchildren()[0]
         if retorno.cStat == 103:
             obj = {
                 'estado': self.company_id.partner_id.state_id.ibge_code,
@@ -792,8 +866,7 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             while True:
                 time.sleep(2)
                 resposta_recibo = retorno_autorizar_nfe(certificado, **obj)
-                retorno = resposta_recibo['object'].Body.\
-                    nfeRetAutorizacaoLoteResult.retConsReciNFe
+                retorno = resposta_recibo['object'].getchildren()[0]
                 if retorno.cStat != 105:
                     break
 
@@ -805,20 +878,18 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
                 self.write({
-                    'state': 'done', 'nfe_exception': False,
+                    'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
                     'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
                 self.write({'state': 'done', 'codigo_retorno': '100',
-                            'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
             # Denegada e nota já está denegada
             if self.codigo_retorno in ('302', '205'):
-                self.write({'state': 'denied',
-                            'nfe_exception': True})
+                self.write({'state': 'denied'})
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -845,20 +916,20 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
             recibo = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'rec-ret')])
+                ('datas_fname', 'like', 'rec-ret')], limit=1)
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
                     ('res_model', '=', 'invoice.eletronic'),
                     ('res_id', '=', self.id),
-                    ('datas_fname', 'like', 'nfe-ret')])
+                    ('datas_fname', 'like', 'nfe-ret')], limit=1)
             nfe_envio = self.env['ir.attachment'].search([
                 ('res_model', '=', 'invoice.eletronic'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'nfe-envio')])
+                ('datas_fname', 'like', 'nfe-envio')], limit=1)
             if nfe_envio.datas and recibo.datas:
                 nfe_proc = gerar_nfeproc(
-                    base64.decodestring(nfe_envio.datas),
-                    base64.decodestring(recibo.datas)
+                    base64.decodestring(nfe_envio.datas).decode('utf-8'),
+                    base64.decodestring(recibo.datas).decode('utf-8'),
                 )
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
@@ -888,7 +959,13 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
-        id_canc = "ID110111%s%02d" % (self.chave_nfe, self.sequencial_evento)
+        id_canc = "ID110111%s%02d" % (
+            self.chave_nfe, self.sequencial_evento)
+
+        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
+        dt_evento = datetime.utcnow()
+        dt_evento = pytz.utc.localize(dt_evento).astimezone(tz)
+
         cancelamento = {
             'idLote': self.id,
             'estado': self.company_id.state_id.ibge_code,
@@ -899,29 +976,37 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
                 'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
                 'chNFe': self.chave_nfe,
-                'dhEvento': datetime.utcnow().strftime(
-                    '%Y-%m-%dT%H:%M:%S-00:00'),
+                'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
-                'xJust': justificativa
+                'xJust': justificativa,
+                'tpEvento': '110111',
+                'descEvento': 'Cancelamento',
             }],
             'modelo': self.model,
         }
+
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
-        resposta = resp['object'].Body.nfeRecepcaoEventoResult.retEnvEvento
+        resposta = resp['object'].getchildren()[0]
         if resposta.cStat == 128 and \
-           resposta.retEvento.infEvento.cStat in (135, 136, 155):
+                resposta.retEvento.infEvento.cStat in (135, 136, 155):
             self.state = 'cancel'
             self.codigo_retorno = resposta.retEvento.infEvento.cStat
             self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
             self.sequencial_evento += 1
         else:
+            code, motive = None, None
             if resposta.cStat == 128:
-                self.codigo_retorno = resposta.retEvento.infEvento.cStat
-                self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
+                code = resposta.retEvento.infEvento.cStat
+                motive = resposta.retEvento.infEvento.xMotivo
             else:
-                self.codigo_retorno = resposta.cStat
-                self.mensagem_retorno = resposta.xMotivo
+                code = resposta.cStat
+                motive = resposta.xMotivo
+            if code == 573:  # Duplicidade, já cancelado
+                return self.action_get_status()
+
+            return self._create_response_cancel(
+                code, motive, resp, justificativa)
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -930,3 +1015,73 @@ src="/report/barcode/Code128/' + self.chave_nfe + '" />'
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
+        nfe_processada = base64.decodestring(self.nfe_processada)
+
+        nfe_proc_cancel = gerar_nfeproc_cancel(
+            nfe_processada, resp['received_xml'].encode())
+        if nfe_proc_cancel:
+            self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+
+    def action_get_status(self):
+        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        consulta = {
+            'estado': self.company_id.state_id.ibge_code,
+            'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+            'modelo': self.model,
+            'obj': {
+                'chave_nfe': self.chave_nfe,
+                'ambiente': 2 if self.ambiente == 'homologacao' else 1,
+            }
+        }
+        resp = consultar_protocolo_nfe(certificado, **consulta)
+        retorno_consulta = resp['object'].getchildren()[0]
+        if retorno_consulta.cStat == 101:
+            self.state = 'cancel'
+            self.codigo_retorno = retorno_consulta.cStat
+            self.mensagem_retorno = retorno_consulta.xMotivo
+            resp['received_xml'] = etree.tostring(
+                retorno_consulta, encoding=str)
+
+            self.env['invoice.eletronic.event'].create({
+                'code': self.codigo_retorno,
+                'name': self.mensagem_retorno,
+                'invoice_eletronic_id': self.id,
+            })
+            self._create_attachment('canc', self, resp['sent_xml'])
+            self._create_attachment('canc-ret', self, resp['received_xml'])
+            nfe_processada = base64.decodestring(self.nfe_processada)
+
+            nfe_proc_cancel = gerar_nfeproc_cancel(
+                nfe_processada, resp['received_xml'].encode())
+            if nfe_proc_cancel:
+                self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+        else:
+            message = "%s - %s" % (retorno_consulta.cStat,
+                                   retorno_consulta.xMotivo)
+            raise UserError(message)
+
+    def _create_response_cancel(self, code, motive, response, justificativa):
+        message = "%s - %s" % (code, motive)
+        wiz = self.env['wizard.cancel.nfe'].create({
+            'edoc_id': self.id,
+            'justificativa': justificativa,
+            'state': 'error',
+            'message': message,
+            'sent_xml': base64.b64encode(
+                response['sent_xml'].encode('utf-8')),
+            'sent_xml_name': 'cancelamento-envio.xml',
+            'received_xml': base64.b64encode(
+                response['received_xml'].encode('utf-8')),
+            'received_xml_name': 'cancelamento-retorno.xml',
+        })
+        return {
+            'name': 'Cancelamento NFe',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.cancel.nfe',
+            'res_id': wiz.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+        }

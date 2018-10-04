@@ -96,6 +96,14 @@ class TestBaseBr(TransactionCase):
             'amount': 18,
             'price_include': False,
         })
+        self.icms_st_1800_incluso = self.tax_model.create({
+            'name': "ICMS ST Incluso",
+            'amount_type': 'icmsst',
+            'domain': 'icmsst',
+            'amount': 18,
+            'price_include': False,
+            'icms_st_incluso': True,
+        })
         self.icms_difal_inter_700 = self.tax_model.create({
             'name': "ICMS Difal Inter",
             'amount_type': 'division',

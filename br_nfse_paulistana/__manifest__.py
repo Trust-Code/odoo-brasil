@@ -16,7 +16,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'br_account_einvoice',
+        'br_nfse',
     ],
     'external_dependencies': {
         'python': [
