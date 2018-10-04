@@ -17,7 +17,6 @@ class TestNFeBrasil(TransactionCase):
     def setUp(self):
         super(TestNFeBrasil, self).setUp()
         self.main_company = self.env.ref('base.main_company')
-        self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
@@ -31,7 +30,6 @@ class TestNFeBrasil(TransactionCase):
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
             'phone': '(48) 9801-6226',
-            'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
                 open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
@@ -332,39 +330,6 @@ class TestNFeBrasil(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
-    def test_wrong_xml_schema(self, autorizar, ret_autorizar):
-        for invoice in self.invoices:
-            # Confirmando a fatura deve gerar um documento eletrônico
-            invoice.action_invoice_open()
-
-            # Lote recebido com sucesso
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/lote-recebido-sucesso.xml'), 'r').read()
-            resp = sanitize_response(xml_recebido)
-            autorizar.return_value = {
-                'object': resp[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            # Consultar recibo com erro 225
-            xml_recebido = open(os.path.join(
-                self.caminho, 'xml/recibo-erro-schema-225.xml'), 'r').read()
-            resp_ret = sanitize_response(xml_recebido)
-            ret_autorizar.return_value = {
-                'object': resp_ret[1],
-                'sent_xml': '<xml />',
-                'received_xml': xml_recebido
-            }
-
-            invoice_eletronic = self.env['invoice.eletronic'].search(
-                [('invoice_id', '=', invoice.id)])
-            invoice_eletronic.action_send_eletronic_invoice()
-            self.assertEquals(invoice_eletronic.state, 'error')
-            self.assertEquals(invoice_eletronic.codigo_retorno, '225')
-
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
-    @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
     def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
@@ -397,8 +362,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.state, 'error')
             self.assertEquals(invoice_eletronic.codigo_retorno, '694')
 
+    @patch('odoo.addons.br_nfe.models.invoice_eletronic.consultar_protocolo_nfe') # noqa
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento') # noqa
-    def test_nfe_cancelamento_ok(self, cancelar):
+    def test_nfe_cancelamento_ok(self, cancelar, consulta):
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -413,12 +379,26 @@ class TestNFeBrasil(TransactionCase):
                 'received_xml': xml_recebido
             }
 
+            # Consulta realizada
+            xml_recebido = open(os.path.join(
+                self.caminho, 'xml/consulta.xml'), 'r').read()
+            resp_consulta = sanitize_response(xml_recebido)
+
+            consulta.return_value = {
+                'object': resp_consulta[1],
+                'sent_xml': '<xml />',
+                'received_xml': xml_recebido
+            }
+
             invoice_eletronic = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', invoice.id)])
+
+            invoice_eletronic.nfe_processada = base64.encodestring('<xml/>')
+
             invoice_eletronic.action_cancel_document(
                 justificativa="Cancelamento de teste")
 
             self.assertEquals(invoice_eletronic.state, 'cancel')
-            self.assertEquals(invoice_eletronic.codigo_retorno, "155")
+            self.assertEquals(invoice_eletronic.codigo_retorno, "135")
             self.assertEquals(invoice_eletronic.mensagem_retorno,
-                              "Cancelamento homologado fora de prazo")
+                              "Evento registrado e vinculado a NF-e")

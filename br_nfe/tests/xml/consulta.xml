@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope 
+    xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <soap:Header>
+        <nfeCabecMsg 
+            xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsulta2">
+            <cUF>35</cUF>
+            <versaoDados>3.10</versaoDados>
+        </nfeCabecMsg>
+    </soap:Header>
+    <soap:Body>
+        <nfeConsultaNF2Result 
+            xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsulta2">
+            <retConsSitNFe versao="3.10" 
+                xmlns="http://www.portalfiscal.inf.br/nfe">
+                <tpAmb>1</tpAmb>
+                <verAplic>SP_NFE_PL_008i2</verAplic>
+                <cStat>100</cStat>
+                <xMotivo>Autorizado</xMotivo>
+                <cUF>35</cUF>
+                <dhRecbto>2018-03-16T16:46:37-03:00</dhRecbto>
+                <chNFe>35161021332917000163550010000000321243582205</chNFe>
+                <protNFe versao="3.10">
+                    <infProt>
+                        <tpAmb>1</tpAmb>
+                        <verAplic>SP_NFE_PL_008i2</verAplic>
+                        <chNFe>35161021332917000163550010000000321243582205</chNFe>
+                        <dhRecbto>2018-03-08T11:07:52-03:00</dhRecbto>
+                        <nProt>135180158934655</nProt>
+                        <digVal>Z5fUQGXAco3YCU4remqjTqY+swg=</digVal>
+                        <cStat>100</cStat>
+                        <xMotivo>Autorizado o uso da NF-e</xMotivo>
+                    </infProt>
+                </protNFe>
+                <retCancNFe versao="3.10">
+                    <infCanc>
+                        <tpAmb>1</tpAmb>
+                        <verAplic>SP_NFE_PL_008i2</verAplic>
+                        <cStat>101</cStat>
+                        <xMotivo>Cancelamento de NF-e homologado</xMotivo>
+                        <cUF>35</cUF>
+                        <chNFe>35161021332917000163550010000000321243582205</chNFe>
+                        <dhRecbto>2018-03-08T11:07:52-03:00</dhRecbto>
+                        <nProt>135180158934655</nProt>
+                    </infCanc>
+                </retCancNFe>
+                <procEventoNFe versao="1.00">
+                    <evento 
+                        xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+                        <infEvento Id="ID1101113516102133291700016355001000000032124358220501">
+                            <cOrgao>35</cOrgao>
+                            <tpAmb>1</tpAmb>
+                            <CNPJ>02663553000150</CNPJ>
+                            <chNFe>35161021332917000163550010000000321243582205</chNFe>
+                            <dhEvento>2018-03-09T13:06:43-00:00</dhEvento>
+                            <tpEvento>110111</tpEvento>
+                            <nSeqEvento>1</nSeqEvento>
+                            <verEvento>1.00</verEvento>
+                            <detEvento versao="1.00">
+                                <descEvento>Cancelamento</descEvento>
+                                <nProt>135180158934655</nProt>
+                                <xJust>produtos descritos incorretamente</xJust>
+                            </detEvento>
+                        </infEvento>
+                        <Signature 
+                            xmlns="http://www.w3.org/2000/09/xmldsig#">
+                            <SignedInfo>
+                                <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+                                <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+                                <Reference URI="#ID1101113516102133291700016355001000000032124358220501">
+                                    <Transforms>
+                                        <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                                        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+                                    </Transforms>
+                                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+                                    <DigestValue>yDkS+c2uAqdS1m4ICNjt5F67+Qk=</DigestValue>
+                                </Reference>
+                            </SignedInfo>
+                            <SignatureValue>IpHsI2zap/ET9nlzz1Vx1h/QD5CGilb50++rJb0e18Aj/Yx+RG4rT3qkbroS4KE3u2HDMQOR0EuICiS6PBT5aTW9hI60Wf5tEkRRSj8qufq8dzxle/V9PusnDTYqunP9he5ja/oD8hYJ11B+gx3NbOdLbXoc+EtX4x77DAfn8Ucuw2WH9Ve2wFQkUKjQoxUZTgnSsr2vZvX4CVBLcpYIk7qWNGrT9omP7WgxQw9lOZBk+JS/zDDKWAHPFQEPJshmJJb8qs1oh1HPO6qocGgrpgRpdscffm0UoikB31mJ81NQZdgIp7BoCRCZzH8z2OC5x3vePfnLBJtTYWEKqjxaSg==</SignatureValue>
+                            <KeyInfo>
+                                <X509Data>
+                                    <X509Certificate>MIIICDCCBfCgAwIBAgIQBgLc+XnsybPH5bX/PEuC/jANBgkqhkiG9w0BAQsFADB4\nMQswCQYDVQQGEwJCUjETMBEGA1UEChMKSUNQLUJyYXNpbDE2MDQGA1UECxMtU2Vj\ncmV0YXJpYSBkYSBSZWNlaXRhIEZlZGVyYWwgZG8gQnJhc2lsIC0gUkZCMRwwGgYD\nVQQDExNBQyBDZXJ0aXNpZ24gUkZCIEc1MB4XDTE3MDkyNzE3NTU0M1oXDTE4MDky\nNzE3NTU0M1owgfQxCzAJBgNVBAYTAkJSMRMwEQYDVQQKDApJQ1AtQnJhc2lsMQsw\nCQYDVQQIDAJTUDESMBAGA1UEBwwJU2FvIFBhdWxvMTYwNAYDVQQLDC1TZWNyZXRh\ncmlhIGRhIFJlY2VpdGEgRmVkZXJhbCBkbyBCcmFzaWwgLSBSRkIxFjAUBgNVBAsM\nDVJGQiBlLUNOUEogQTExIDAeBgNVBAsMF0F1dGVudGljYWRvIHBvciBBUiBBQ1NQ\nMT0wOwYDVQQDDDRORVdURUMgVEVDTk9MT0dJQSBBUExJQ0FEQSBFSVJFTEkgRVBQ\nOjAyNjYzNTUzMDAwMTUwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA\npLv+zMqp1+wD2nFfS1PozoePU1QG/kPKYOPeY8cbf/mOCrzgLIuU2ywBBd5K/phy\nxTA9J4X25MLh/3OBxsqkWyqZYQzC3+talXtEmbzv+1IHJU1JYtGpD6qcsm1skeiP\n/ZoAMLi55Df98z9GC2EK7JffEJJxlUSYRpMUlUVFbb9iFuc7bmUZ7WldaijxuS0U\ncwoOhkk3ZC4tJysE06ZsHS7KfhDijFGETNRMatFaDSgc+NjItN/XAWcgiDiTlfp6\nVL5VxllRymqBym9tRqIO3WrJaqw4HkGnOzSfOOrlEXb6vdXi+/w81aURPtxmF5Bx\n0A1Mv72tAJussoFXZlGFxwIDAQABo4IDDzCCAwswgb4GA1UdEQSBtjCBs6A9BgVg\nTAEDBKA0BDIzMTEwMTk2MzA3NzUxNjI0ODUwMDAwMDAwMDAwMDAwMDAwMDAxNTU5\nODM1MzJTU1BTUKAnBgVgTAEDAqAeBBxMVUNJTUFSIENVU1RPRElPIERFIE9MSVZF\nSVJBoBkGBWBMAQMDoBAEDjAyNjYzNTUzMDAwMTUwoBcGBWBMAQMHoA4EDDAwMDAw\nMDAwMDAwMIEVbHVjaW1hckBuZXd0ZWMubmV0LmJyMAkGA1UdEwQCMAAwHwYDVR0j\nBBgwFoAUU31/nb7RYdAgutqf44mnE3NYzUIwfwYDVR0gBHgwdjB0BgZgTAECAQww\najBoBggrBgEFBQcCARZcaHR0cDovL2ljcC1icmFzaWwuY2VydGlzaWduLmNvbS5i\nci9yZXBvc2l0b3Jpby9kcGMvQUNfQ2VydGlzaWduX1JGQi9EUENfQUNfQ2VydGlz\naWduX1JGQi5wZGYwgbwGA1UdHwSBtDCBsTBXoFWgU4ZRaHR0cDovL2ljcC1icmFz\naWwuY2VydGlzaWduLmNvbS5ici9yZXBvc2l0b3Jpby9sY3IvQUNDZXJ0aXNpZ25S\nRkJHNS9MYXRlc3RDUkwuY3JsMFagVKBShlBodHRwOi8vaWNwLWJyYXNpbC5vdXRy\nYWxjci5jb20uYnIvcmVwb3NpdG9yaW8vbGNyL0FDQ2VydGlzaWduUkZCRzUvTGF0\nZXN0Q1JMLmNybDAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYBBQUHAwIG\nCCsGAQUFBwMEMIGsBggrBgEFBQcBAQSBnzCBnDBfBggrBgEFBQcwAoZTaHR0cDov\nL2ljcC1icmFzaWwuY2VydGlzaWduLmNvbS5ici9yZXBvc2l0b3Jpby9jZXJ0aWZp\nY2Fkb3MvQUNfQ2VydGlzaWduX1JGQl9HNS5wN2MwOQYIKwYBBQUHMAGGLWh0dHA6\nLy9vY3NwLWFjLWNlcnRpc2lnbi1yZmIuY2VydGlzaWduLmNvbS5icjANBgkqhkiG\n9w0BAQsFAAOCAgEAIdvndC77sicvgJ15+xaDkCfyA4rXvZVl74FMOfzHZULY/70I\njWdH0jl2TrCJeWmI3SYVY1BjM1O3uSdcESdM5Z6ie7JPlu8mEPcfaTzJdLryFFBP\npdVh0ZDfG3ahMCWIk8Ed1s5XQGQsJoy53pC9HFP5pYgdNPz60sP9HIe3rsMI2NmT\npUV+BF6BRKryfQLo2DIW6ldJTivsCiiRkZDHF2tK8gL2VSj2UKfTD/vqcNajQ2Ls\ntLcANi/LMN5Dd8PRdd+p18urQbdlQpIq/b+tvrFMAITxVYHH0Q0G3BDPUcWoN5i6\nfpE5R8A/MG+aiH4Qj47NORN11BPSxbiZpLxFkJ+HTi1dTbi4a3cFfqb17Jwbl66+\nfcvJTH2eqwsRh0AITKJJtFsBKkTJr7VtugHmTWZaXvmvpk1puIBtllyMoDbrp5+G\n8TUbYGLSFbRIBgU7/4rUoayLYTOJwGiwl7ellcvufewJhjgLB7I/Ec5PP3gYiE60\nP9G1s78TWsKRFMsU2/giFG1jd3cIjQrnpX7GDjD+L5bExUx10LnLQHAt8AH21fPy\nEutIT/vr+yQG3IPSjtEthdRlft7kdOrnFRDxP/2EgtDgjel0q17QUGaUQOu78vBw\nebYgJv025c5enJ2Wj2VF9HefcMZj13iy56yc6jvkCfYf9Mth5aLqfgnTE5Q=\n</X509Certificate>
+                                </X509Data>
+                            </KeyInfo>
+                        </Signature>
+                    </evento>
+                    <retEvento versao="1.00">
+                        <infEvento>
+                            <tpAmb>1</tpAmb>
+                            <verAplic>SP_EVENTOS_PL_100</verAplic>
+                            <cOrgao>35</cOrgao>
+                            <cStat>135</cStat>
+                            <xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
+                            <chNFe>35161021332917000163550010000000321243582205</chNFe>
+                            <tpEvento>110111</tpEvento>
+                            <xEvento>Cancelamento registrado</xEvento>
+                            <nSeqEvento>1</nSeqEvento>
+                            <CNPJDest>12543498000118</CNPJDest>
+                            <dhRegEvento>2018-03-09T10:06:45-03:00</dhRegEvento>
+                            <nProt>135180161970092</nProt>
+                        </infEvento>
+                    </retEvento>
+                </procEventoNFe>
+            </retConsSitNFe>
+        </nfeConsultaNF2Result>
+    </soap:Body>
+</soap:Envelope>

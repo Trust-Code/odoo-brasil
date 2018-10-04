@@ -85,7 +85,7 @@ class Cnab240(Cnab):
             codigo_convenio,
             'cedente_agencia_dv': self.order.payment_mode_id.
             bank_account_id.bra_number_dig,
-            'cedente_nome': self.order.user_id.company_id.legal_name,
+            'cedente_nome': self.order.payment_mode_id.company_id.legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': (self.order.payment_mode_id.
                                  bank_account_id.bra_number_dig),
@@ -189,7 +189,7 @@ class Cnab240(Cnab):
             'codigo_multa': '2',
             'data_multa': self.format_date(
                 line.date_maturity),
-            'juros_multa':  Decimal(
+            'juros_multa': Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
                     Decimal('1.00')),
             # TODO Remover taxa dia - deixar apenas taxa normal

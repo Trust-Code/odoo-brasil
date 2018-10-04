@@ -87,7 +87,7 @@ class InvoiceEletronic(models.Model):
     partner_shipping_id = fields.Many2one(
         'res.partner', string=u'Entrega', readonly=True, states=STATE)
     payment_term_id = fields.Many2one(
-        'account.payment.term', string=u'Forma pagamento',
+        'account.payment.term', string=u'Condição pagamento',
         readonly=True, states=STATE)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
@@ -436,7 +436,7 @@ class InvoiceEletronic(models.Model):
 
     def log_exception(self, exc):
         self.codigo_retorno = -1
-        self.mensagem_retorno = exc.message
+        self.mensagem_retorno = str(exc)
 
     def _get_state_to_send(self):
         return ('draft',)
@@ -477,6 +477,10 @@ class InvoiceEletronic(models.Model):
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
+
+    @api.multi
+    def copy(self, default=None):
+        raise UserError('Não é possível duplicar uma Nota Fiscal.')
 
 
 class InvoiceEletronicEvent(models.Model):

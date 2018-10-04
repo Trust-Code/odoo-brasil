@@ -17,7 +17,6 @@ class TestInutilizacao(TransactionCase):
     def setUp(self):
         super(TestInutilizacao, self).setUp()
         self.main_company = self.env.ref('base.main_company')
-        self.currency_real = self.env.ref('base.BRL')
         self.main_company.write({
             'name': 'Trustcode',
             'legal_name': 'Trustcode Tecnologia da Informação',
@@ -31,7 +30,6 @@ class TestInutilizacao(TransactionCase):
             'state_id': self.env.ref('base.state_br_sc').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
             'phone': '(48) 9801-6226',
-            'currency_id': self.currency_real.id,
             'nfe_a1_password': '123456',
             'nfe_a1_file': base64.b64encode(
                 open(os.path.join(self.caminho, 'teste.pfx'), 'r').read()),
@@ -146,12 +144,12 @@ class TestInutilizacao(TransactionCase):
             ])
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
-    def test_inutilizacao_ok(self, inutilizar):
+    def test_inutilizacao_falha_schema(self, inutilizar):
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml')) as f:
+                               'xml/inutilizacao_falha_schema.xml')) as f:
             received_xml = f.read()
         _, obj = sanitize_response(received_xml)
         inutilizar.return_value = {'received_xml': received_xml,
@@ -165,24 +163,8 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa=justif
         ))
-        wizard.action_inutilize_nfe()
-        inut_inv = self.env['invoice.eletronic.inutilized'].search([])
-        self.assertEqual(len(inut_inv), 1)
-        self.assertEqual(inut_inv.numeration_start, 0)
-        self.assertEqual(inut_inv.numeration_end, 5)
-        self.assertEqual(inut_inv.serie, self.serie)
-        self.assertEqual(inut_inv.name, u'Série Inutilizada 0 - 5')
-        self.assertEqual(inut_inv.justificativa, justif)
-        self.assertEqual(inut_inv.state, 'error')
-        invoice = self.env['account.invoice'].create(dict(
-            self.default_invoice.items(),
-            partner_id=self.partner_fisica.id,
-            document_serie_id=self.serie.id
-        ))
-        invoice.action_invoice_open()
-        inv_eletr = self.env['invoice.eletronic'].search(
-            [('invoice_id', '=', invoice.id)])
-        self.assertEqual(inv_eletr.numero, 6)
+        with self.assertRaises(UserError):
+            wizard.action_inutilize_nfe()
 
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
     def test_inutilizacao_2_sequences(self, inutilizar):
@@ -190,7 +172,7 @@ class TestInutilizacao(TransactionCase):
                                'xml/inutilizacao_sent_xml.xml')) as f:
             sent_xml = f.read()
         with open(os.path.join(self.caminho,
-                               'xml/inutilizacao_received_xml.xml')) as f:
+                               'xml/inutilizacao_received_ok_xml.xml')) as f:
             received_xml = f.read()
         _, obj = sanitize_response(received_xml)
         inutilizar.return_value = {'received_xml': received_xml,

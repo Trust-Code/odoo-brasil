@@ -3,17 +3,33 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
 
     @api.multi
+    @api.depends('move_line_id.reconciled')
     def _compute_state(self):
         for item in self:
-            item.state = 'open'
             if item.move_line_id.reconciled:
                 item.state = 'paid'
+            if not item.state:
+                item.state = 'draft'
+
+    @api.multi
+    def unlink(self):
+        for item in self:
+            if item.state in ('paid', 'open'):
+                state = 'Confirmado'
+                if item.state == 'paid':
+                    state = 'Pago'
+                raise UserError(
+                    "Você não pode deletar a linha de cobrança {}\
+                    pois ela está com status {}".format(
+                        item.move_id.name, state))
+        return super(PaymentOrderLine, self).unlink()
 
     name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
@@ -30,10 +46,15 @@ class PaymentOrderLine(models.Model):
         'payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
-    state = fields.Selection([("open", "Aberto"),
-                              ("paid", "Pago")],
+    state = fields.Selection([("draft", "Provisório"),
+                              ("open", "Confirmado"),
+                              ("paid", "Pago"),
+                              ("rejected", "Rejeitado"),
+                              ("baixa", "Baixa")],
                              string=u"Situação",
-                             compute="_compute_state")
+                             compute="_compute_state",
+                             readonly=False,
+                             store=True)
 
 
 class PaymentOrder(models.Model):
@@ -48,6 +69,12 @@ class PaymentOrder(models.Model):
                 amount_total += line.value
             item.amount_total = amount_total
 
+    @api.multi
+    def unlink(self):
+        for item in self:
+            item.line_ids.unlink()
+        return super(PaymentOrder, self).unlink()
+
     name = fields.Char(max_length=30, string="Nome", required=True)
     user_id = fields.Many2one('res.users', string=u'Responsável',
                               required=True)
@@ -57,6 +84,7 @@ class PaymentOrder(models.Model):
     state = fields.Selection([('draft', 'Rascunho'), ('cancel', 'Cancelado'),
                               ('open', 'Confirmado'), ('done', 'Fechado')],
                              string=u"Situação")
+
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
                                required=True, string=u'Linhas de Cobrança')
     currency_id = fields.Many2one('res.currency', string='Moeda')

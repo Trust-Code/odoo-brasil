@@ -16,6 +16,31 @@ class PaymentOrder(models.Model):
     cnab_file = fields.Binary('CNAB File', readonly=True)
     file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
+    state = fields.Selection(
+        [('draft', 'Rascunho'),
+         ('cancel', 'Cancelado'),
+         ('pending', 'Pendente'),
+         ('open', 'Confirmado'),
+         ('done', 'Fechado')],
+        string=u"Situação",
+        compute='_compute_state',
+        store=True)
+
+    @api.multi
+    @api.depends('line_ids', 'cnab_file')
+    def _compute_state(self):
+        for item in self:
+            if any(line.state == 'rejected' for line in item.line_ids):
+                item.state = 'pending'
+            elif all(line.state == 'baixa' for line in item.line_ids):
+                item.state = 'cancel'
+            elif all(line.state not in ('baixa', 'draft', 'rejected') for line
+                     in item.line_ids):
+                item.state = 'open'
+            elif item.cnab_file:
+                item.state = 'done'
+            else:
+                item.state = 'draft'
 
     @api.multi
     def gerar_cnab(self):
@@ -31,8 +56,7 @@ class PaymentOrder(models.Model):
             remessa = cnab.remessa(order)
 
             self.name = 'CNAB%s%s.REM' % (
-                time.strftime('%d%m'), str(order.file_number))
-            self.state = 'done'
+                time.strftime('%m%d'), str(order.file_number))
             self.cnab_file = base64.b64encode(remessa)
 
             self.env['ir.attachment'].create({
