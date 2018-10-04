@@ -537,7 +537,7 @@ class AccountInvoiceLine(models.Model):
                 price * (service.municipal_imposto / 100)
         else:
             federal = ncm.federal_nacional if self.icms_origem in \
-                ('1', '2', '3', '8') else ncm.federal_importado
+                ('0', '3', '4', '5', '8') else ncm.federal_importado
 
             self.tributos_estimados_federais = price * (federal / 100)
             self.tributos_estimados_estaduais = \
