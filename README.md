@@ -34,7 +34,7 @@ This is a repository from Trustcode.
 
 ## Introdução
 
-Este repositório adapta o Odoo 11 para ser usado no Brasil
+Este repositório adapta o Odoo 12 para ser usado no Brasil
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
