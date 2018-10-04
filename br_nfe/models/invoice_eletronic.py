@@ -260,8 +260,7 @@ class InvoiceEletronic(models.Model):
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or 'SEM GTIN',
             'xProd': xProd,
-            'NCM': re.sub('[^0-9]', '', item.ncm or '')[:8],
-            'EXTIPI': re.sub('[^0-9]', '', item.ncm or '')[8:],
+            'NCM': re.sub('[^0-9]', '', item.ncm or '00')[:8],
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
@@ -317,31 +316,6 @@ class InvoiceEletronic(models.Model):
 
         imposto = {
             'vTotTrib': "%.02f" % item.tributos_estimados,
-            'ICMS': {
-                'orig':  item.origem,
-                'CST': item.icms_cst,
-                'modBC': item.icms_tipo_base,
-                'vBC': "%.02f" % item.icms_base_calculo,
-                'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
-                'pICMS': "%.02f" % item.icms_aliquota,
-                'vICMS': "%.02f" % item.icms_valor,
-                'modBCST': item.icms_st_tipo_base,
-                'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
-                'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
-                'vBCST': "%.02f" % item.icms_st_base_calculo,
-                'pICMSST': "%.02f" % item.icms_st_aliquota,
-                'vICMSST': "%.02f" % item.icms_st_valor,
-                'pCredSN': "%.02f" % item.icms_aliquota_credito,
-                'vCredICMSSN': "%.02f" % item.icms_valor_credito
-            },
-            'IPI': {
-                'clEnq': item.classe_enquadramento_ipi or '',
-                'cEnq': item.codigo_enquadramento_ipi,
-                'CST': item.ipi_cst,
-                'vBC': "%.02f" % item.ipi_base_calculo,
-                'pIPI': "%.02f" % item.ipi_aliquota,
-                'vIPI': "%.02f" % item.ipi_valor
-            },
             'PIS': {
                 'CST': item.pis_cst,
                 'vBC': "%.02f" % item.pis_base_calculo,
@@ -361,6 +335,57 @@ class InvoiceEletronic(models.Model):
                 'vIOF': "%.02f" % item.ii_valor_iof
             },
         }
+        if item.tipo_produto == 'service':
+            retencoes = item.pis_valor_retencao + \
+                item.cofins_valor_retencao + item.inss_valor_retencao + \
+                item.irrf_valor_retencao + item.csll_valor_retencao
+            imposto.update({
+                'ISSQN': {
+                    'vBC': "%.02f" % item.issqn_base_calculo,
+                    'vAliq': "%.02f" % item.issqn_base_calculo,
+                    'vISSQN': "%.02f" % item.issqn_valor,
+                    'cMunFG': "%s%s" % (invoice.company_id.state_id.ibge_code,
+                                        invoice.company_id.city_id.ibge_code),
+                    'cListServ': item.issqn_codigo,
+                    'vDeducao': '',
+                    'vOutro': "%.02f" % retencoes if retencoes else '',
+                    'vISSRet': "%.02f" % item.issqn_valor_retencao
+                    if item.issqn_valor_retencao else '',
+                    'indISS': 1,  # Exigivel
+                    'cServico': item.issqn_codigo,
+                    'cMun': "%s%s" % (invoice.company_id.state_id.ibge_code,
+                                      invoice.company_id.city_id.ibge_code),
+                    'indIncentivo': 2,  # Não
+                }
+            })
+        else:
+            imposto.update({
+                'ICMS': {
+                    'orig':  item.origem,
+                    'CST': item.icms_cst,
+                    'modBC': item.icms_tipo_base,
+                    'vBC': "%.02f" % item.icms_base_calculo,
+                    'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
+                    'pICMS': "%.02f" % item.icms_aliquota,
+                    'vICMS': "%.02f" % item.icms_valor,
+                    'modBCST': item.icms_st_tipo_base,
+                    'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
+                    'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
+                    'vBCST': "%.02f" % item.icms_st_base_calculo,
+                    'pICMSST': "%.02f" % item.icms_st_aliquota,
+                    'vICMSST': "%.02f" % item.icms_st_valor,
+                    'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                    'vCredICMSSN': "%.02f" % item.icms_valor_credito
+                },
+                'IPI': {
+                    'clEnq': item.classe_enquadramento_ipi or '',
+                    'cEnq': item.codigo_enquadramento_ipi,
+                    'CST': item.ipi_cst,
+                    'vBC': "%.02f" % item.ipi_base_calculo,
+                    'pIPI': "%.02f" % item.ipi_aliquota,
+                    'vIPI': "%.02f" % item.ipi_valor
+                },
+            })
         if item.tem_difal:
             imposto['ICMSUFDest'] = {
                 'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
@@ -564,11 +589,40 @@ class InvoiceEletronic(models.Model):
             'vICMSUFDest': "%.02f" % self.valor_icms_uf_dest,
             'vICMSUFRemet': "%.02f" % self.valor_icms_uf_remet,
             'vTotTrib': "%.02f" % self.valor_estimado_tributos,
-            # ISSQn
-            'vServ': '0.00',
-            # Retenções
-
         }
+        if self.valor_servicos > 0.0:
+            issqn_total = {
+                'vServ': "%.02f" % self.valor_servicos
+                if self.valor_servicos else "",
+                'vBC': "%.02f" % self.valor_bc_issqn
+                if self.valor_bc_issqn else "",
+                'vISS': "%.02f" % self.valor_issqn if self.valor_issqn else "",
+                'vPIS': "%.02f" % self.valor_pis_servicos
+                if self.valor_pis_servicos else "",
+                'vCOFINS': "%.02f" % self.valor_cofins_servicos
+                if self.valor_cofins_servicos else "",
+                'dCompet': dt_emissao.strftime('%Y-%m-%d'),
+                'vDeducao': "",
+                'vOutro': "",
+                'vISSRet': "%.02f" % self.valor_retencao_issqn
+                if self.valor_retencao_issqn else '',
+            }
+            tributos_retidos = {
+                'vRetPIS': "%.02f" % self.valor_retencao_pis
+                if self.valor_retencao_pis else '',
+                'vRetCOFINS': "%.02f" % self.valor_retencao_cofins
+                if self.valor_retencao_cofins else '',
+                'vRetCSLL': "%.02f" % self.valor_retencao_csll
+                if self.valor_retencao_csll else '',
+                'vBCIRRF': "%.02f" % self.valor_bc_irrf
+                if self.valor_retencao_irrf else '',
+                'vIRRF': "%.02f" % self.valor_retencao_irrf
+                if self.valor_retencao_irrf else '',
+                'vBCRetPrev': "%.02f" % self.valor_bc_inss
+                if self.valor_retencao_inss else '',
+                'vRetPrev': "%.02f" % self.valor_retencao_inss
+                if self.valor_retencao_inss else '',
+            }
         if self.transportadora_id.street:
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
                                           self.transportadora_id.
@@ -675,6 +729,11 @@ class InvoiceEletronic(models.Model):
             'exporta': exporta,
             'compra': compras,
         }
+        if self.valor_servicos > 0.0:
+            vals.update({
+                'ISSQNtot': issqn_total,
+                'retTrib': tributos_retidos,
+            })
         if len(duplicatas) > 0 and\
                 self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
             vals['cobr'] = cobr

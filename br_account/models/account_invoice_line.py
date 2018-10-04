@@ -168,8 +168,8 @@ class AccountInvoiceLine(models.Model):
             'l10n_br_icms_uf_dest': sum([x['amount'] for x in icms_intra]),
             'l10n_br_icms_fcp_uf_dest': sum([x['amount'] for x in icms_fcp]),
             'l10n_br_icms_valor_credito': (
-                    base_icms_credito *
-                    (self.l10n_br_icms_aliquota_credito / 100)),
+                base_icms_credito *
+                (self.l10n_br_icms_aliquota_credito / 100)),
             'l10n_br_ipi_base_calculo': sum([x['base'] for x in ipi]),
             'l10n_br_ipi_valor': sum([x['amount'] for x in ipi]),
             'l10n_br_pis_base_calculo': sum([x['base'] for x in pis]),
@@ -578,7 +578,7 @@ class AccountInvoiceLine(models.Model):
     l10n_br_inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule',
                                            'Regra', oldname='inss_rule_id')
     l10n_br_tax_inss_id = fields.Many2one(
-        'account.tax', string=u"Alíquota IRRF",
+        'account.tax', string=u"Alíquota INSS",
         domain=[('l10n_br_domain', '=', 'inss')], oldname='tax_inss_id')
     l10n_br_inss_base_calculo = fields.Float(
         u'Base INSS', required=True, digits=dp.get_precision('Account'),
