@@ -284,7 +284,7 @@ class AccountInvoice(models.Model):
                     raise UserError(u'Documento eletrônico emitido - Cancele o \
                                     documento para poder cancelar a fatura')
                 if edoc.can_unlink():
-                    edoc.unlink()
+                    edoc.sudo().unlink()
         return res
 
 

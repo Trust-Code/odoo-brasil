@@ -384,9 +384,9 @@ class InvoiceEletronic(models.Model):
         self.ensure_one()
         errors = self._hook_validation()
         if len(errors) > 0:
-            msg = u"\n".join(
-                [u"Por favor corrija os erros antes de prosseguir"] + errors)
-            self.unlink()
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            self.sudo().unlink()
             raise UserError(msg)
 
     @api.multi
