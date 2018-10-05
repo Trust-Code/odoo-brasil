@@ -53,7 +53,7 @@
                     </t>
                     <t t-if="doc.state == 'done'">
                         <strong style="font-size:20px;">NOTA FISCAL ELETRÔNICA DE SERVIÇOS - NFSe</strong><br />
-                        RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" />
+                        RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'/>
                     </t>
                 </div>
                 <div class="col-xs-2" style="padding:0px;">
@@ -72,7 +72,7 @@
                     <div style="border: 1px solid black; padding: 2px;">
                         <span style="font-size:9px;">Data de Emissão</span>
                         <br />
-                        <strong t-field="doc.data_emissao"></strong>
+                        <strong t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'></strong>
                     </div>
                     <t t-if="doc.state == 'done'">
                         <div style="border: 1px solid black; padding: 2px;">
