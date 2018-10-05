@@ -6,6 +6,7 @@ python:
 cache: pip
 
 addons:
+  postgresql: "9.5"
   apt:
     packages:
       - expect-dev  # provides unbuffer utility
