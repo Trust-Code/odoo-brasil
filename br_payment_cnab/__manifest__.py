@@ -21,7 +21,7 @@
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': [
-        'account_invoicing',
+        'account',
         'br_account_payment',
         'br_account_voucher',
         'br_cnab'
