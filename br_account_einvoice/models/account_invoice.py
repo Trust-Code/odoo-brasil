@@ -224,9 +224,9 @@ class AccountInvoice(models.Model):
         eletronic_items = []
         for inv_line in inv_lines:
             if inv_line.product_type == 'service':
-                total_servicos += inv_line.price_subtotal
+                total_servicos += inv_line.valor_bruto
             else:
-                total_produtos += inv_line.price_subtotal
+                total_produtos += inv_line.valor_bruto
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 
