@@ -13,7 +13,7 @@
         'br_account',
     ],
     'post_init_hook': 'post_init',
-    'category': 'Localisation',
+    'category': 'Localization',
     'installable': True,
     'auto_install': True,
 }
