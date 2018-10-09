@@ -5,7 +5,7 @@
 
 {  # pylint: disable=C8101,C8103
     'name': 'Brazilian Localisation ZIP Codes',
-    'description': 'Brazilian Localisation ZIP Codes',
+    'description': 'Brazilian Localization ZIP Codes',
     'license': 'AGPL-3',
     'author': 'Akretion, Odoo Brasil',
     'version': '10.0.1.0.0',
