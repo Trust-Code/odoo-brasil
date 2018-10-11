@@ -12,7 +12,7 @@
     'sequence': 45,
     'maintainer': 'Trustcode',
     'website': 'http://www.trustcode.com.br/',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'depends': ['hr', 'br_base'],
     'data': [
         'data/br_hr.cbo.csv',

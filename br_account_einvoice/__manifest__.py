@@ -6,7 +6,7 @@
     'name': 'Account E-Invoice',
     'summary': """Base Module for the Brazilian Invoice Eletronic""",
     'description': """Base Module for the Brazilian Invoice Eletronic""",
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',

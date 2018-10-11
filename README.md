@@ -2,7 +2,7 @@ Odoo Brasil
 ============================================
 
 <p align="center">
-<a name="top" href="http://trustcode.com.br/page/open-source-1"><img src="https://github.com/Trust-Code/odoo-brasil/raw/10.0/icon.png"></a>
+<a name="top" href="http://trustcode.com.br/page/open-source-1"><img src="https://github.com/Trust-Code/odoo-brasil/raw/12.0/icon.png"></a>
 </p>
 
 <p align="center">

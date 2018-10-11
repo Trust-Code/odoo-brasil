@@ -7,7 +7,7 @@
     'description': 'Brazilian Localisation Data Extension for Base',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'depends': [
         'br_base',
     ],
