@@ -61,6 +61,8 @@ class InvoiceEletronic(models.Model):
         string=u'Número', readonly=True, states=STATE)
     numero_controle = fields.Integer(
         string=u'Número de Controle', readonly=True, states=STATE)
+    data_agendada = fields.Date(
+        string=u'Data agendada', readonly=True, states=STATE)
     data_emissao = fields.Datetime(
         string=u'Data emissão', readonly=True, states=STATE)
     data_fatura = fields.Datetime(
@@ -384,9 +386,9 @@ class InvoiceEletronic(models.Model):
         self.ensure_one()
         errors = self._hook_validation()
         if len(errors) > 0:
-            msg = "\n".join(
-                ["Por favor corrija os erros antes de prosseguir"] + errors)
-            self.sudo().unlink()
+            msg = u"\n".join(
+                [u"Por favor corrija os erros antes de prosseguir"] + errors)
+            self.unlink()
             raise UserError(msg)
 
     @api.multi
@@ -451,11 +453,13 @@ class InvoiceEletronic(models.Model):
         return ('draft',)
 
     @api.multi
-    def cron_send_nfe(self):
+    def cron_send_nfe(self, limit=50):
         inv_obj = self.env['invoice.eletronic'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
-        nfes = inv_obj.search([('state', 'in', states)])
+        nfes = inv_obj.search([('state', 'in', states),
+                               ('data_agendada', '=', fields.Date.today())],
+                              limit=limit)
         for item in nfes:
             try:
                 item.action_send_eletronic_invoice()
