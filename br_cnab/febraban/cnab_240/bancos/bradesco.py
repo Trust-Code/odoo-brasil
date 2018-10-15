@@ -27,7 +27,7 @@ class Bradesco240(Cnab240):
             codigo_convenio
 
         vals['servico_servico'] = 1
-        vals['cedente_convenio'] = '{:<020s}'.format(cod_convenio)
+        vals['cedente_convenio'] = '{:>020s}'.format(cod_convenio)
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         vals['nome_do_banco'] = 'BANCO BRADESCO S.A'
