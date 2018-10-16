@@ -38,13 +38,13 @@ class AccountMoveLine(models.Model):
             'currency_id': self.company_currency_id.id,
         }
         if not payment_order:
-            payment_order = payment_order.create(order_dict)
+            payment_order = payment_order.sudo().create(order_dict)
 
         move = self.env['payment.order.line'].search(
             [('payment_mode_id', '=', self.payment_mode_id.id),
              ('nosso_numero', '=', self.nosso_numero)])
         if not move:
-            self.env['payment.order.line'].create({
+            self.env['payment.order.line'].sudo().create({
                 'move_line_id': self.id,
                 'payment_order_id': payment_order.id,
                 'nosso_numero': self.nosso_numero,
