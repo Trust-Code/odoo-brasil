@@ -127,7 +127,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             partner_id = result.qcontext['partner_id']
         if partner_id > 0:
             partner_id = request.env['res.partner'].sudo().browse(partner_id)
-            result.qcontext['city'] = partner_id.city_id.id
+            result.qcontext['city'] = partner_id.l10n_br_city_id.id
             result.qcontext['state'] = partner_id.state_id.id
         if 'city_id' in kw and kw['city_id']:
             result.qcontext['city'] = kw['city_id']

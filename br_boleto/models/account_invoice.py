@@ -88,7 +88,7 @@ class AccountInvoice(models.Model):
                     error += u'Cliente - Bairro\n'
                 if not item.commercial_partner_id.zip:
                     error += u'Cliente - CEP\n'
-                if not item.commercial_partner_id.city_id.name:
+                if not item.commercial_partner_id.l10n_br_city_id.name:
                     error += u'Cliente - Cidade\n'
                 if not item.commercial_partner_id.street:
                     error += u'Cliente - Logradouro\n'

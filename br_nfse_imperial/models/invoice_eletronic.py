@@ -74,7 +74,7 @@ class InvoiceEletronic(models.Model):
                 'numero': partner.number or '',
                 'complemento': partner.street2 or '',
                 'bairro': partner.district or 'Sem Bairro',
-                'municipio': partner.city_id.name,
+                'municipio': partner.l10n_br_city_id.name,
                 'uf': partner.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
                 'telefone': re.sub('[^0-9]', '', partner.phone or ''),
@@ -92,7 +92,7 @@ class InvoiceEletronic(models.Model):
                 'numero': company.number or '',
                 'complemento': company.street2 or '',
                 'bairro': company.district or 'Sem Bairro',
-                'municipio': company.city_id.name,
+                'municipio': company.l10n_br_city_id.name,
                 'uf': company.state_id.code,
                 'cep': re.sub('[^0-9]', '', partner.zip),
             }

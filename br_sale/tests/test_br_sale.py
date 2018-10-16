@@ -75,7 +75,7 @@ class TestSaleOrder(TransactionCase):
             is_company=False,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id
+            l10n_br_city_id=self.env.ref('br_base.city_4205407').id
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
@@ -85,7 +85,7 @@ class TestSaleOrder(TransactionCase):
             inscr_est='433.992.727',
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
+            l10n_br_city_id=self.env.ref('br_base.city_4205407').id,
         ))
         self.tax_model = self.env['account.tax']
         self.pis = self.tax_model.create({

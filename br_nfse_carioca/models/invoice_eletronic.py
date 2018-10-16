@@ -72,7 +72,7 @@ class InvoiceEletronic(models.Model):
         dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')
 
         partner = self.commercial_partner_id
-        city_tomador = partner.city_id
+        city_tomador = partner.l10n_br_city_id
         tomador = {
             'tipo_cpfcnpj': 2 if partner.is_company else 1,
             'cnpj_cpf': re.sub('[^0-9]', '',
@@ -91,7 +91,7 @@ class InvoiceEletronic(models.Model):
                 '[^0-9]', '', partner.inscr_mun or ''),
             'email': self.partner_id.email or partner.email or '',
         }
-        city_prestador = self.company_id.partner_id.city_id
+        city_prestador = self.company_id.partner_id.l10n_br_city_id
         prestador = {
             'cnpj': re.sub(
                 '[^0-9]', '', self.company_id.partner_id.cnpj_cpf or ''),
@@ -279,7 +279,7 @@ class InvoiceEletronic(models.Model):
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
 
         company = self.company_id
-        city_prestador = self.company_id.partner_id.city_id
+        city_prestador = self.company_id.partner_id.l10n_br_city_id
         canc = {
             'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
             'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),

@@ -96,7 +96,7 @@ class TestNFeBrasil(TransactionCase):
             is_company=False,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id
+            l10n_br_city_id=self.env.ref('br_base.city_4205407').id
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
@@ -105,7 +105,7 @@ class TestNFeBrasil(TransactionCase):
             is_company=True,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
+            l10n_br_city_id=self.env.ref('br_base.city_4205407').id,
             inscr_est='433.992.727',
         ))
         self.partner_fisica_inter = self.env['res.partner'].create(dict(
@@ -115,7 +115,7 @@ class TestNFeBrasil(TransactionCase):
             is_company=False,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4304606').id,
+            l10n_br_city_id=self.env.ref('br_base.city_4304606').id,
         ))
         self.partner_juridica_inter = self.env['res.partner'].create(dict(
             default_partner.items(),
@@ -124,7 +124,7 @@ class TestNFeBrasil(TransactionCase):
             is_company=True,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_rs').id,
-            city_id=self.env.ref('br_base.city_4300406').id,
+            l10n_br_city_id=self.env.ref('br_base.city_4300406').id,
         ))
         self.partner_juridica_sp = self.env['res.partner'].create(dict(
             default_partner.items(),
@@ -133,7 +133,7 @@ class TestNFeBrasil(TransactionCase):
             is_company=True,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sp').id,
-            city_id=self.env.ref('br_base.city_3501608').id,
+            l10n_br_city_id=self.env.ref('br_base.city_3501608').id,
         ))
         self.partner_exterior = self.env['res.partner'].create(dict(
             default_partner.items(),

@@ -34,9 +34,9 @@ class ResPartner(models.Model):
     suframa = fields.Char('Suframa', size=18)
     legal_name = fields.Char(
         u'Legal Name', size=60, help="Name used in fiscal documents")
-    city_id = fields.Many2one(
+    l10n_br_city_id = fields.Many2one(
         'res.state.city', u'City',
-        domain="[('state_id','=',state_id)]")
+        domain="[('state_id','=',state_id)]", oldname="city_id")
     district = fields.Char('District', size=32)
     number = fields.Char(u'Number', size=10)
 
@@ -67,8 +67,8 @@ class ResPartner(models.Model):
                 address.country_id.name or '',
                 'company_name': address.parent_id and
                 address.parent_id.name or '',
-                'city_name': address.city_id and
-                address.city_id.name or '',
+                'city_name': address.l10n_br_city_id and
+                address.l10n_br_city_id.name or '',
             }
             address_field = ['title', 'street', 'street2', 'zip', 'city',
                              'number', 'district']
@@ -154,15 +154,15 @@ class ResPartner(models.Model):
             else:
                 raise UserError(_(u'Verify CNPJ/CPF number'))
 
-    @api.onchange('city_id')
-    def _onchange_city_id(self):
-        """ Ao alterar o campo city_id copia o nome
+    @api.onchange('l10n_br_city_id')
+    def _onchange_l10n_br_city_id(self):
+        """ Ao alterar o campo l10n_br_city_id copia o nome
         do município para o campo city que é o campo nativo do módulo base
         para manter a compatibilidade entre os demais módulos que usam o
         campo city.
         """
-        if self.city_id:
-            self.city = self.city_id.name
+        if self.l10n_br_city_id:
+            self.city = self.l10n_br_city_id.name
 
     @api.onchange('zip')
     def onchange_mask_zip(self):
@@ -178,7 +178,7 @@ class ResPartner(models.Model):
         when the `use_parent_address` flag is set.
         Extenção para os novos campos do endereço """
         address_fields = super(ResPartner, self)._address_fields()
-        return list(address_fields + ['city_id', 'number', 'district'])
+        return list(address_fields + ['l10n_br_city_id', 'number', 'district'])
 
     @api.one
     def action_check_sefaz(self):
@@ -233,7 +233,7 @@ class ResPartner(models.Model):
                         [('name', 'ilike', xMun),
                          ('state_id', '=', self.state_id.id)])
                 if city:
-                    self.city_id = city.id
+                    self.l10n_br_city_id = city.id
             else:
                 msg = "%s - %s" % (info.cStat, info.xMotivo)
                 raise UserError(msg)

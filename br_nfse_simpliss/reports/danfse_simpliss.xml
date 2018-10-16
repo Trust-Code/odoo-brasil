@@ -105,7 +105,7 @@
                     </div>
                     <div class="col-xs-6">
                         Município:
-                        <strong t-field="doc.company_id.partner_id.city_id"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_city_id"></strong>
                     </div>
                     <div class="col-xs-6">
                         UF:
@@ -148,7 +148,7 @@
                 </div>
                 <div class="col-xs-6">
                     Município:
-                    <strong t-field="doc.commercial_partner_id.city_id"></strong>
+                    <strong t-field="doc.commercial_partner_id.l10n_br_city_id"></strong>
                 </div>
                 <div class="col-xs-6">
                     UF:
@@ -367,7 +367,7 @@
                         Mês de competência: <strong t-field="doc.data_emissao" t-options='{"format": "MM/yyyy"}' />
                     </div>
                     <div class="col-xs-4">
-                        Local de Recolhimento: <strong t-field="doc.company_id.partner_id.city_id" />
+                        Local de Recolhimento: <strong t-field="doc.company_id.partner_id.l10n_br_city_id" />
                     </div>
                     <div class="col-xs-4">
                         Data Geração: <strong t-field="doc.data_emissao" />

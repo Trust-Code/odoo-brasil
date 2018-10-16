@@ -99,7 +99,7 @@
                 <div class="col-xs-3">
                     <span class="mini-rotulo">CFPS</span><br />
                     <t t-set="cfps" t-value="9201" />
-                    <t t-if="doc.company_id.city_id.id != doc.partner_id.city_id.id">
+                    <t t-if="doc.company_id.city_id.id != doc.partner_id.l10n_br_city_id.id">
                         <t t-set="cfps" t-value="9202" />
                     </t>
                     <t t-if="doc.company_id.state_id.id != doc.partner_id.state_id.id">
@@ -127,7 +127,7 @@
             <div class="row completa">
                 <div class="col-xs-3">
                     <span class="mini-rotulo">Município</span><br />
-                    <span style="padding:5px" t-field="doc.commercial_partner_id.city_id" />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.l10n_br_city_id" />
                 </div>
                 <div class="col-xs-1 bl">
                     <span class="mini-rotulo">UF</span><br />

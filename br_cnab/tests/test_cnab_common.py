@@ -70,7 +70,7 @@ class TestCnab(TransactionCase):
             property_account_receivable_id=self.receivable_account.id,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
+            l10n_br_city_id=self.env.ref('br_base.city_4205407').id,
         ))
         self.journalrec = self.env['account.journal'].create({
             'name': 'Faturas',

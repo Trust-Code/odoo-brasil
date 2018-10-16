@@ -68,7 +68,7 @@ class AcquirerCielo(models.Model):
             "Number": order.partner_id.number,
             "Complement": order.partner_id.street2,
             "District": order.partner_id.district,
-            "City": order.partner_id.city_id.name,
+            "City": order.partner_id.l10n_br_city_id.name,
             "State": order.partner_id.state_id.code,
         }
         if len(order.partner_id.street2) > 0:

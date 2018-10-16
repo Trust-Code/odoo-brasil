@@ -488,7 +488,7 @@ class InvoiceEletronic(models.Model):
                 'xBairro': self.company_id.district,
                 'cMun': '%s%s' % (
                     self.company_id.partner_id.state_id.ibge_code,
-                    self.company_id.partner_id.city_id.ibge_code),
+                    self.company_id.partner_id.l10n_br_city_id.ibge_code),
                 'xMun': self.company_id.city_id.name,
                 'UF': self.company_id.state_id.code,
                 'CEP': re.sub('[^0-9]', '', self.company_id.zip),
@@ -516,8 +516,8 @@ class InvoiceEletronic(models.Model):
                     'nro': partner.number,
                     'xBairro': partner.district,
                     'cMun': '%s%s' % (partner.state_id.ibge_code,
-                                      partner.city_id.ibge_code),
-                    'xMun': partner.city_id.name,
+                                      partner.l10n_br_city_id.ibge_code),
+                    'xMun': partner.l10n_br_city_id.name,
                     'UF': partner.state_id.code,
                     'CEP': re.sub('[^0-9]', '', partner.zip or ''),
                     'cPais': (partner.country_id.bc_code or '')[-4:],
@@ -634,7 +634,7 @@ class InvoiceEletronic(models.Model):
                              self.transportadora_id.inscr_est or ''),
                 'xEnder': end_transp
                 if self.transportadora_id else '',
-                'xMun': self.transportadora_id.city_id.name or '',
+                'xMun': self.transportadora_id.l10n_br_city_id.name or '',
                 'UF': self.transportadora_id.state_id.code or ''
             },
             'veicTransp': {

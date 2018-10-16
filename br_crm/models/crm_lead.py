@@ -115,7 +115,7 @@ class CrmLead(models.Model):
                 'suframa': partner.suframa,
                 'number': partner.number,
                 'district': partner.district,
-                'city_id': partner.city_id.id,
+                'city_id': partner.l10n_br_city_id.id,
             })
         return res
 
@@ -126,7 +126,7 @@ class CrmLead(models.Model):
         partner.update({
             'number': self.number,
             'district': self.district,
-            'city_id': self.city_id.id
+            'l10n_br_city_id': self.city_id.id
         })
         if is_company:
             partner.update({

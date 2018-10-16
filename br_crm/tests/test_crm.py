@@ -71,7 +71,7 @@ class TestCrm(TransactionCase):
             'legal_name': 'Razão social',
             'suframa': '123456',
             'district': 'Centro',
-            'city_id': self.env.ref('br_base.city_3205002').id,
+            'l10n_br_city_id': self.env.ref('br_base.city_3205002').id,
         })
         lead.partner_id = partner.id
         lead._onchange_partner_id()
@@ -81,8 +81,8 @@ class TestCrm(TransactionCase):
         self.assertEquals(lead.inscr_est, partner.inscr_est)
         self.assertEquals(lead.suframa, partner.suframa)
         self.assertEquals(lead.district, partner.district)
-        self.assertEquals(lead.city_id, partner.city_id)
-        self.assertEquals(lead.city, partner.city_id.name)
+        self.assertEquals(lead.city_id, partner.l10n_br_city_id)
+        self.assertEquals(lead.city, partner.l10n_br_city_id.name)
 
     def test_convert_lead_company(self):
         wiz = self.env['crm.lead2opportunity.partner'].create({

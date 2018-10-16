@@ -215,7 +215,7 @@
                     Município
                 </div>
                 <div class="col-xs-4 linha">
-                    <span t-field="doc.commercial_partner_id.city_id" /> - <span t-field="doc.commercial_partner_id.state_id.code" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_city_id" /> - <span t-field="doc.commercial_partner_id.state_id.code" />
                 </div>
             </div>
             <div class="row bb bl br">

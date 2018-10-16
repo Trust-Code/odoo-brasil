@@ -106,7 +106,7 @@ class Cnab_240(object):
             "favorecido_endereco_numero": line.partner_id.number or '',
             "favorecido_endereco_complemento": line.partner_id.street2 or '',
             "favorecido_bairro": line.partner_id.district,
-            "favorecido_cidade": line.partner_id.city_id.name,
+            "favorecido_cidade": line.partner_id.l10n_br_city_id.name,
             "favorecido_cep": line.partner_id.zip,
             "favorecido_uf": line.partner_id.state_id.code,
             "valor_documento": line.value,

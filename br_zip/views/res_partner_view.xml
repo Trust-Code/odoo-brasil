@@ -15,7 +15,7 @@
                 <field name="street2" placeholder="Complemento" />
                 <field name="country_id" placeholder="País" />
                 <field name="state_id" placeholder="Estado" />
-                <field name="city_id" placeholder="Cidade" />
+                <field name="l10n_br_city_id" placeholder="Cidade" />
             </div>
 
         </field>

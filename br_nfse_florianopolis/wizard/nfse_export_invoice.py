@@ -38,7 +38,7 @@ class NfseExportInvoice(models.TransientModel):
             'zip': re.sub('[^0-9]', '', inv.commercial_partner_id.zip or ''),
             'city_code': '%s%s' % (
                 inv.commercial_partner_id.state_id.ibge_code,
-                inv.commercial_partner_id.city_id.ibge_code),
+                inv.commercial_partner_id.l10n_br_city_id.ibge_code),
             'uf_code': inv.commercial_partner_id.state_id.code,
             'email': inv.partner_id.email,
             'phone': re.sub('[^0-9]', '', inv.partner_id.phone or ''),
@@ -57,9 +57,10 @@ class NfseExportInvoice(models.TransientModel):
             })
         emissao = fields.Date.from_string(inv.date_invoice)
         cfps = '9201'
-        if inv.company_id.city_id.id != inv.commercial_partner_id.city_id.id:
+        partner = inv.commercial_partner_id
+        if inv.company_id.city_id.id != partner.l10n_br_city_id.id:
             cfps = '9202'
-        if inv.company_id.state_id.id != inv.commercial_partner_id.state_id.id:
+        if inv.company_id.state_id.id != partner.state_id.id:
             cfps = '9203'
         return {
             'tomador': tomador,
@@ -119,7 +120,7 @@ class NfseExportInvoice(models.TransientModel):
             if not invoice.partner_id.phone and not invoice.\
                     partner_id.mobile:
                 errors += ['Telefone incompleto.']
-            if not invoice.commercial_partner_id.city_id:
+            if not invoice.commercial_partner_id.l10n_br_city_id:
                 errors += ['Munícipio incompleto.']
             if not invoice.commercial_partner_id.zip:
                 errors += ['CEP incompleto.']

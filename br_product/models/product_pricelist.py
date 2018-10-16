@@ -42,9 +42,10 @@ class ProductPricelist(models.Model):
                 pl = pls and pls[0].id
 
         if not pl:
-            if p.city_id:
+            if p.l10n_br_city_id:
                 pls = self.env['product.pricelist'].search(
-                    [('region_ids.city_ids.id', '=', p.city_id.id)], limit=1)
+                    [('region_ids.city_ids.id', '=', p.l10n_br_city_id.id)],
+                    limit=1)
                 pl = pls and pls[0].id
 
         if not pl:

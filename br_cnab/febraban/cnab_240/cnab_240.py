@@ -205,7 +205,7 @@ class Cnab240(Cnab):
             'sacado_bairro': line.partner_id.district,
             'sacado_cep': int(prefixo),
             'sacado_cep_sufixo': int(sulfixo),
-            'sacado_cidade': line.partner_id.city_id.name,
+            'sacado_cidade': line.partner_id.l10n_br_city_id.name,
             'sacado_uf': line.partner_id.state_id.code,
             'codigo_protesto': int(self.order.payment_mode_id.boleto_protesto),
             'prazo_protesto': int(

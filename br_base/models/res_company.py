@@ -27,7 +27,7 @@ class ResCompany(models.Model):
 
     @api.one
     def _get_address_data(self):
-        self.city_id = self.partner_id.city_id
+        self.city_id = self.partner_id.l10n_br_city_id
         self.district = self.partner_id.district
         self.number = self.partner_id.number
 
@@ -78,7 +78,7 @@ class ResCompany(models.Model):
     @api.one
     def _set_city_id(self):
         """ Write the l10n_br specific functional fields. """
-        self.partner_id.city_id = self.city_id
+        self.partner_id.l10n_br_city_id = self.city_id
 
     @api.one
     def _compute_expiry_date(self):

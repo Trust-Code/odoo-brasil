@@ -139,10 +139,10 @@ class TestBase(TransactionCase):
         city = self.env.ref('br_base.city_3205002')
         partner = self.env['res.partner'].create({
             'name': 'Parceiro',
-            'city_id': city.id,
+            'l10n_br_city_id': city.id,
         })
-        self.assertEquals(partner.city_id, city)
-        partner._onchange_city_id()
+        self.assertEquals(partner.l10n_br_city_id, city)
+        partner._onchange_l10n_br_city_id()
         self.assertEquals(partner.city, city.name)
 
     def test_display_address(self):
@@ -152,7 +152,7 @@ class TestBase(TransactionCase):
             'inscr_est': '112.632.165',
             'is_company': True,
             'state_id': self.env.ref('base.state_br_sc').id,
-            'city_id': self.env.ref('br_base.city_3205002').id,
+            'l10n_br_city_id': self.env.ref('br_base.city_3205002').id,
             'country_id':  self.env.ref('base.us').id
         })
         partner._display_address()
@@ -189,7 +189,7 @@ class TestBase(TransactionCase):
         self.assertEquals(partner.inscr_est, '112632165')
         self.assertEquals(partner.street, 'RUA PADRE JOAO')
         self.assertEquals(partner.district, 'Centro')
-        self.assertEquals(partner.city_id.id, 3776)
+        self.assertEquals(partner.l10n_br_city_id.id, 3776)
         self.assertEquals(partner.zip, '88032050')
 
     def test_company_compute_fields(self):
@@ -209,7 +209,7 @@ class TestBase(TransactionCase):
         self.assertEquals(company.partner_id.inscr_est, company.inscr_est)
         self.assertEquals(company.partner_id.inscr_mun, company.inscr_mun)
         self.assertEquals(company.partner_id.number, company.number)
-        self.assertEquals(company.partner_id.city_id, company.city_id)
+        self.assertEquals(company.partner_id.l10n_br_city_id, company.city_id)
 
     def test_company_inverse_fields(self):
         company = self.env.ref('base.main_company')
@@ -221,14 +221,15 @@ class TestBase(TransactionCase):
         company.partner_id.inscr_mun = '987654'
         company.partner_id.number = 12
         company.partner_id.district = 'Centro'
-        company.partner_id.city_id = self.env.ref('br_base.city_3205002').id
+        company.partner_id.l10n_br_city_id = self.env.ref(
+            'br_base.city_3205002').id
         self.assertEquals(company.partner_id.cnpj_cpf, company.cnpj_cpf)
         self.assertEquals(company.partner_id.suframa, company.suframa)
         self.assertEquals(company.partner_id.legal_name, company.legal_name)
         self.assertEquals(company.partner_id.inscr_est, company.inscr_est)
         self.assertEquals(company.partner_id.inscr_mun, company.inscr_mun)
         self.assertEquals(company.partner_id.number, company.number)
-        self.assertEquals(company.partner_id.city_id, company.city_id)
+        self.assertEquals(company.partner_id.l10n_br_city_id, company.city_id)
 
     def test_onchanges_company(self):
         company = self.env.ref('base.main_company')

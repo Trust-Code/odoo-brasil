@@ -59,7 +59,7 @@
                 <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
             </field>
             <field name="state_id" position="after">
-                <field name="city_id" class="o_address_city" placeholder="City"
+                <field name="l10n_br_city_id" class="o_address_city" placeholder="City"
                     options="{'no_create': True, 'no_create_edit': True}" />
             </field>
             <field name="city" position="replace">
@@ -98,7 +98,7 @@
                 <field name="country_id" placeholder="Country" />
             </xpath>
             <xpath expr="//div[@name='div_address']/field[@name='state_id']" potition="after">
-                <field name="city_id" placeholder="City" />
+                <field name="l10n_br_city_id" placeholder="City" />
             </xpath>
         </field>
     </record>
