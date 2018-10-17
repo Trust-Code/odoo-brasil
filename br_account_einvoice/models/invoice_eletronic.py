@@ -370,14 +370,17 @@ class InvoiceEletronic(models.Model):
             if item.document_id and item.document_id.code != self.model:
                 continue
             template = mako_safe_env.from_string(tools.ustr(item.message))
-            variables = {
-                'user': self.env.user,
-                'ctx': self._context,
-                'invoice': self.invoice_id,
-            }
+            variables = self._get_variables_msg()
             render_result = template.render(variables)
             result += render_result + '\n'
         return result
+
+    def _get_variables_msg(self):
+        return {
+            'user': self.env.user,
+            'ctx': self._context,
+            'invoice': self.invoice_id
+            }
 
     @api.multi
     def validate_invoice(self):
