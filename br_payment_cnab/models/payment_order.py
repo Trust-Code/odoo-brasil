@@ -49,13 +49,6 @@ class PaymentOrder(models.Model):
         self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = self.env['ir.sequence'].next_by_code('payment.cnab.name')
 
-    company_id = fields.Many2one(
-        'res.company', string='Company', required=True, ondelete='restrict',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'account.payment.mode'))
-
-    state = fields.Selection(selection_add=[('error', 'Erro')])
-
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
@@ -71,7 +64,7 @@ class PaymentOrderLine(models.Model):
             payment = item.payment_information_id
             desconto = payment.rebate_value + payment.discount_value
             acrescimo = payment.fine_value + payment.interest_value
-            item.value_final = (item.value - desconto + acrescimo)
+            item.value_final = (item.amount_total - desconto + acrescimo)
 
     value_final = fields.Float(
         string="Final Value", compute="_compute_final_value",

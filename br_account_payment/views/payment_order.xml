@@ -27,8 +27,9 @@
               <field name="payment_mode_id" />
               <field name="state" />
               <field name="name" />
+              <field name="emission_date" />
               <field name="date_maturity" />
-              <field name="value" />
+              <field name="amount_total" />
               <field name='partner_id' />
               <field name="nosso_numero" />
             </tree>
@@ -42,7 +43,7 @@
         <field name="arch" type="xml" >
             <form string='Ordem de Pagamento'>
                 <header>
-                     <field name="state" widget="statusbar" nolabel="1" />
+                     <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,open,done" />
                 </header>
                 <sheet>
                     <group name='payment_order'>
@@ -51,6 +52,7 @@
                             <field name="user_id" />
                             <field name="amount_total" />
                             <field name="type" />
+                            <field name="company_id" groups="base.group_multi_company" />
                         </group>
 
                         <group name='data'>

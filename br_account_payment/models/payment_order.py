@@ -12,6 +12,9 @@ class PaymentOrderLine(models.Model):
     name = fields.Char(string="Ref.", size=20)
     payment_order_id = fields.Many2one(
         'payment.order', string="Ordem de Pagamento", ondelete="restrict")
+    src_bank_account_id = fields.Many2one(
+        'res.partner.bank', string="Conta Bancária",
+        related="payment_order_id.src_bank_account_id", store=True)
     type = fields.Selection(
         related='payment_order_id.type', readonly=True, store=True)
     move_line_id = fields.Many2one(
@@ -24,10 +27,14 @@ class PaymentOrderLine(models.Model):
     payment_mode_id = fields.Many2one(
         'l10n_br.payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
-    value = fields.Float(string="Valor", digits=(18, 2))
+    emission_date = fields.Date(string="Data de Emissão")
+    currency_id = fields.Many2one('res.currency', string="Currency")
+    amount_total = fields.Monetary(
+        string="Valor", digits=(18, 2), oldname='value')
     state = fields.Selection([("draft", "Rascunho"),
-                              ("sent", "Enviado"),
                               ("approved", "Aprovado"),
+                              ("sent", "Enviado"),
+                              ("processed", "Processado"),
                               ("rejected", "Rejeitado"),
                               ("paid", "Pago"),
                               ("cancelled", "Cancelado")],
@@ -52,10 +59,14 @@ class PaymentOrder(models.Model):
         for item in self:
             amount_total = 0
             for line in item.line_ids:
-                amount_total += line.value
+                amount_total += line.amount_total
             item.amount_total = amount_total
 
     name = fields.Char(max_length=30, string="Nome", required=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company', required=True, ondelete='restrict',
+        default=lambda self: self.env['res.company']._company_default_get(
+            'account.payment.mode'))
     type = fields.Selection(
         [('receivable', 'Recebível'), ('payable', 'Pagável')],
         string="Tipo de Ordem", default='receivable')
@@ -65,14 +76,13 @@ class PaymentOrder(models.Model):
                                       string='Modo de Pagamento',
                                       required=True)
     src_bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Conta de Origem")
+        'res.partner.bank', string="Conta Bancária")
     state = fields.Selection(
         [('draft', 'Rascunho'),
-         ('sent', 'Enviado'),
-         ('approved', 'Aprovado'),
+         ('open', 'Aberto'),
          ('attention', 'Necessita Atenção'),
-         ('done', 'Fechado')],
-        string=u"Situação",
+         ('done', 'Finalizado')],
+        string="Situação",
         compute="_compute_state",
         store=True)
     line_ids = fields.One2many('payment.order.line', 'payment_order_id',
@@ -85,18 +95,15 @@ class PaymentOrder(models.Model):
     @api.depends('line_ids.state')
     def _compute_state(self):
         for item in self:
-            if all(line.state == 'paid' for line in item.line_ids):
+            if all(line.state == 'draft' for line in item.line_ids):
+                item.state = 'draft'
+            elif all(line.state == 'paid' for line in item.line_ids.filtered(
+                 lambda x: x.state != 'cancelled')):
                 item.state = 'done'
             elif any(line.state == 'rejected' for line in item.line_ids):
                 item.state = 'attention'
-            elif any(line.state == 'draft' for line in item.line_ids):
-                item.state = 'draft'
-            elif any(line.state == 'sent' for line in item.line_ids):
-                item.state = 'sent'
-            elif any(line.state == 'approved' for line in item.line_ids):
-                item.state = 'approved'
             else:
-                item.state = 'draft'
+                item.state = 'open'
 
     @api.multi
     def unlink(self):

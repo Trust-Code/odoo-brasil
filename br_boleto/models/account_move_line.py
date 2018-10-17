@@ -27,15 +27,18 @@ class AccountMoveLine(models.Model):
     def gerar_payment_order(self):
         """Gera um objeto de payment.order ao imprimir um boleto"""
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
+        payment_mode = self.payment_mode_id
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
-            ('payment_mode_id', '=', self.payment_mode_id.id)], limit=1)
+            ('payment_mode_id', '=', payment_mode.id)], limit=1)
         order_dict = {
             'name': u'%s' % order_name,
             'user_id': self.write_uid.id,
             'payment_mode_id': self.payment_mode_id.id,
             'state': 'draft',
             'currency_id': self.company_currency_id.id,
+            'company_id': payment_mode.journal_id.company_id.id,
+            'src_bank_account_id': payment_mode.journal_id.bank_account_id.id,
         }
         if not payment_order:
             payment_order = payment_order.create(order_dict)
@@ -50,8 +53,10 @@ class AccountMoveLine(models.Model):
                 'nosso_numero': self.nosso_numero,
                 'payment_mode_id': self.payment_mode_id.id,
                 'date_maturity': self.date_maturity,
-                'value': self.amount_residual,
-                'name': self.name,
+                'partner_id': self.partner_id.id,
+                'emission_date': self.date,
+                'amount_total': self.amount_residual,
+                'name': "%s/%s" % (self.move_id.name, self.name),
             })
 
     @api.multi

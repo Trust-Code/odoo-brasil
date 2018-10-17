@@ -15,9 +15,7 @@ class PaymentMode(models.Model):
         [('receivable', 'Recebível'), ('payable', 'Pagável')],
         string="Tipo de Transação", default='receivable')
     company_id = fields.Many2one(
-        'res.company', string='Company', required=True, ondelete='restrict',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'account.payment.mode'))
+        'res.company', string='Company', ondelete='restrict')
     active = fields.Boolean(string='Active', default=True)
     journal_id = fields.Many2one(
         'account.journal', string="Journal", required=True,

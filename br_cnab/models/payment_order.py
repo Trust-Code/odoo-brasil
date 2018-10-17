@@ -24,13 +24,12 @@ class PaymentOrder(models.Model):
         self.data_emissao_cnab = datetime.now()
         self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         for order_id in self:
-            order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
-                order.payment_mode_id.bank_account_id.bank_bic, '240')()
-            remessa = cnab.remessa(order)
+                order_id.payment_mode_id.bank_account_id.bank_bic, '240')()
+            remessa = cnab.remessa(order_id)
+            order_id.line_ids.write({'state': 'sent'})
 
             self.name = self.env['ir.sequence'].next_by_code('seq.boleto.name')
-            self.state = 'done'
             self.cnab_file = base64.b64encode(remessa.encode('UTF-8'))
 
             self.env['ir.attachment'].create({

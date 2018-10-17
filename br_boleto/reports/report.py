@@ -12,8 +12,6 @@ from ..boleto.document import Boleto
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
 
-    # report_type = fields.Selection(selection_add=[('raw-pdf', 'PDF')])
-
     def render_qweb_pdf(self, res_ids, data=None):
 
         if not self.name == 'Boleto':
