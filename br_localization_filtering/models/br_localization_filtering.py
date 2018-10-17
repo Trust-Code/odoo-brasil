@@ -26,12 +26,12 @@ class BrLocalizationFiltering(models.AbstractModel):
         user_localization = self.env.user.company_id.chart_template_id
         return user_localization and user_localization.id or False
 
-    def _is_user_localization(self, user_tmpl_id):
+    def _is_user_br_localization(self, user_tmpl_id):
         tmpl_ids = self._get_br_localization_template()
         return (user_tmpl_id in tmpl_ids)
 
     @staticmethod
-    def _add_localization_field(doc):
+    def _add_br_localization_field(doc):
         elem = etree.Element(
             'field', {
                 'name': 'l10n_br_localization',
@@ -41,7 +41,7 @@ class BrLocalizationFiltering(models.AbstractModel):
         if len(nodes):
             nodes[0].addnext(elem)
 
-    def _add_field_to_domain(self, doc, field, view_type):
+    def _add_br_field_to_domain(self, doc, field, view_type):
         xpaths = ["//field[@name='%s']", "//label[@for='%s']"]
         for xpath in xpaths:
             for node in doc.xpath(xpath % field):
@@ -49,7 +49,7 @@ class BrLocalizationFiltering(models.AbstractModel):
                              or 'invisible')
                 modifiers = json.loads(node.get("modifiers", '{}'))
                 if view_type == 'tree':
-                    modifiers[mod_field] = not self._is_user_localization()
+                    modifiers[mod_field] = not self._is_user_br_localization()
                 if view_type == 'form':
                     domain = modifiers.get(mod_field, [])
                     if isinstance(domain, bool) and domain:
@@ -72,13 +72,13 @@ class BrLocalizationFiltering(models.AbstractModel):
             return ret_val
 
         doc = etree.XML(ret_val['arch'])
-        self._add_localization_field(doc)
+        self._add_br_localization_field(doc)
         for field in ret_val['fields']:
             if not field.startswith("l10n_br_"):
                 continue
             if field == 'l10n_br_localization':
                 continue
-            self._add_field_to_domain(doc, field, view_type)
+            self._add_br_field_to_domain(doc, field, view_type)
         ret_val['arch'] = etree.tostring(doc, encoding='unicode')
         return ret_val
 
@@ -87,7 +87,7 @@ class BrLocalizationFiltering(models.AbstractModel):
             return True
 
         user_tmpl_id = self._get_user_localization()
-        return self._is_user_localization(user_tmpl_id)
+        return self._is_user_br_localization(user_tmpl_id)
 
     @api.multi
     @api.depends()
@@ -99,7 +99,7 @@ class BrLocalizationFiltering(models.AbstractModel):
                                  and record.company_id.chart_template_id.id
                                  or user_template)
 
-            record.l10n_br_localization = self._is_user_localization(
+            record.l10n_br_localization = self._is_user_br_localization(
                 user_template)
 
     l10n_br_localization = fields.Boolean(
