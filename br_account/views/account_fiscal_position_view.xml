@@ -84,7 +84,8 @@
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
             <field name="auto_apply" position="after">
-                <field name="l10n_br_fiscal_type"></field>
+                <field name="l10n_br_localization" invisible="1"/>
+                <field name="l10n_br_fiscal_type" />
             </field>
             <xpath expr="//page[@name='account_mapping']/group" position="before">
                 <group>
@@ -93,12 +94,12 @@
                 </group>
             </xpath>
             <xpath expr="//page[@name='account_mapping']" position="after">
-                <page name="notes" string="Observações Fiscais">
+                <page name="notes" string="Observações Fiscais" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <group string="Observações">
                         <field name="l10n_br_fiscal_observation_ids" nolabel="1" />
                     </group>
                 </page>
-                <page name="other_information" string="Outras Informações">
+                <page name="other_information" string="Outras Informações" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <group>
                         <group>
                             <field name="l10n_br_product_document_id" />
@@ -112,25 +113,25 @@
                 </page>
             </xpath>
             <field name="vat_required" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attribute">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="zip_from" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attribute">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="zip_to" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attribute">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <xpath expr="//group/group/div" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attribute">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//group/group/label" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attribute">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </xpath>
             <page name="tax_mapping" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attribute">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </page>
             <page name="tax_mapping" position="before">
-                <page string="Regras de Impostos">
+                <page string="Regras de Impostos" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <group name="icms_rules" string="Regras de ICMS">
                         <field nolabel="1" name="l10n_br_icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
                             <tree>
