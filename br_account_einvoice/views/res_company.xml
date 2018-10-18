@@ -6,10 +6,11 @@
         <field name="inherit_id" ref="br_base.view_company_form_inherited"/>
         <field name="arch" type="xml">
             <notebook position="inside">
-                <page name="integracao_nfse" string="Integração NFS-e">
+                <page name="integracao_nfse" string="Integração NFS-e" attrs="{'invisible':[('l10n_br_localization', '=', False)]}">
                     <group>
                         <field name="l10n_br_nfse_conjugada" />
                         <field name="l10n_br_tipo_ambiente_nfse" />
+                        <field name="l10n_br_localization" invisible="1"/>
                     </group>
                 </page>
             </notebook>
