@@ -89,10 +89,10 @@ class AccountTax(models.Model):
     @api.onchange('domain')
     def _onchange_domain_tax(self):
         if self.domain in ('icms', 'pis', 'cofins', 'issqn', 'ii',
-                           'icms_inter', 'icms_intra', 'fcp'):
+                           'icms_inter', 'icms_intra', 'fcp', 'ipi'):
             self.price_include = True
             self.amount_type = 'division'
-        if self.domain in ('icmsst', 'ipi'):
+        if self.domain in ('icmsst'):
             self.price_include = False
             self.include_base_amount = False
             self.amount_type = 'division'
