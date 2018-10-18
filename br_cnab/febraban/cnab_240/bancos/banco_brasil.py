@@ -41,6 +41,7 @@ class BancoBrasil240(Cnab240):
         # 3 (dias corridos, dias úteis ou não protestar, respectivamente)
         if vals['codigo_protesto'] not in [1, 2, 3]:
             vals['codigo_protesto'] = 3
+        vals['cobranca_emissaoBloqueto'] = 2
         return vals
 
     def nosso_numero(self, format):
