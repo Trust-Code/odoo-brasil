@@ -49,7 +49,10 @@ class BrLocalizationFiltering(models.AbstractModel):
                              or 'invisible')
                 modifiers = json.loads(node.get("modifiers", '{}'))
                 if view_type == 'tree':
-                    modifiers[mod_field] = not self._is_user_br_localization()
+                    user_tmpl_id = self._get_user_localization()
+                    modifiers[mod_field] = not self._is_user_br_localization(
+                        user_tmpl_id
+                    )
                 if view_type == 'form':
                     domain = modifiers.get(mod_field, [])
                     if isinstance(domain, bool) and domain:
