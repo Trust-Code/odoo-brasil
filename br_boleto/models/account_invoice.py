@@ -107,7 +107,7 @@ Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
         return res
 
     @api.multi
-    def action_register_boleto(self):
+    def action_print_boleto(self):
         if self.state in ('draft', 'cancel'):
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')

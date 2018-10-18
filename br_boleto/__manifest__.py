@@ -33,6 +33,7 @@
         'views/payment_order.xml',
         'views/account_journal.xml',
         'reports/report_print_button_view.xml',
+        'reports/boleto.xml',
         'sequence/payment_order_sequence.xml',
         'sequence/numero_documento_sequence.xml',
         'wizard/br_boleto_wizard.xml',

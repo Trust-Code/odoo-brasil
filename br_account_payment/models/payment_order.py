@@ -15,6 +15,9 @@ class PaymentOrderLine(models.Model):
     src_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta Bancária",
         related="payment_order_id.src_bank_account_id", store=True)
+    company_id = fields.Many2one(
+        'res.company', string="Company",
+        related="payment_order_id.company_id", store=True)
     type = fields.Selection(
         related='payment_order_id.type', readonly=True, store=True)
     move_line_id = fields.Many2one(

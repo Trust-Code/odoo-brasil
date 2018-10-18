@@ -2,11 +2,63 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models
+from ..boleto.document import Boleto
 
 
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
+    def generate_payment_order_line(self, move_line):
+        """Gera um objeto de payment.order ao imprimir um boleto"""
+        order_name = self.env['ir.sequence'].next_by_code('payment.order')
+        payment_mode = move_line.payment_mode_id
+        payment_order = self.env['payment.order'].search([
+            ('state', '=', 'draft'),
+            ('payment_mode_id', '=', payment_mode.id)], limit=1)
+        order_dict = {
+            'name': u'%s' % order_name,
+            'user_id': self.env.user.id,
+            'payment_mode_id': move_line.payment_mode_id.id,
+            'state': 'draft',
+            'currency_id': move_line.company_currency_id.id,
+            'company_id': payment_mode.journal_id.company_id.id,
+            'src_bank_account_id': payment_mode.journal_id.bank_account_id.id,
+        }
+        if not payment_order:
+            payment_order = payment_order.create(order_dict)
+
+        move = self.env['payment.order.line'].search(
+            [('src_bank_account_id', '=',
+              payment_mode.journal_id.bank_account_id.id),
+             ('move_line_id', '=', move_line.id)])
+        if not move:
+            return self.env['payment.order.line'].create({
+                'move_line_id': move_line.id,
+                'payment_order_id': payment_order.id,
+                'payment_mode_id': move_line.payment_mode_id.id,
+                'date_maturity': move_line.date_maturity,
+                'partner_id': move_line.partner_id.id,
+                'emission_date': move_line.date,
+                'amount_total': move_line.amount_residual,
+                'name': "%s/%s" % (move_line.move_id.name, move_line.name),
+                'nosso_numero':
+                payment_mode.nosso_numero_sequence.next_by_id(),
+            })
+        return move
+
+    def action_register_boleto(self, move_lines):
+        for move_line in move_lines:
+            self |= self.generate_payment_order_line(move_line)
+        move_lines.write({'boleto_emitido': True})
+        return self
+
+    def generate_boleto_list(self):
+        boleto_list = []
+        for line in self:
+            boleto = Boleto.getBoleto(line, line.nosso_numero)
+            boleto_list.append(boleto.boleto)
+        return boleto_list
+
     def action_print_boleto(self):
         return self.env.ref(
-            'br_boleto.action_boleto_account_invoice').report_action(self)
+            'br_boleto.action_boleto_payment_order_line').report_action(self)

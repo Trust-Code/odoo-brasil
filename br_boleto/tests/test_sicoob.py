@@ -79,7 +79,7 @@ class TestBoletoSicoob(TestBoleto):
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
         self.assertEquals(vals['report_type'], 'qweb-pdf')
 
-        vals = self.invoices.action_register_boleto()
+        vals = self.invoices.action_print_boleto()
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
         self.assertEquals(vals['report_type'], 'qweb-pdf')
