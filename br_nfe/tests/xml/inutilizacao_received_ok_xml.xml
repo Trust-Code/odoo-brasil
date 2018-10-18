@@ -1,1 +1,19 @@
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Header><nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeInutilizacao2"><cUF>11</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg></soap:Header><soap:Body><nfeInutilizacaoNF2Result xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeInutilizacao2"><retInutNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe"><infInut><tpAmb>2</tpAmb><verAplic>SVRS201601161002</verAplic><cStat>102</cStat><xMotivo>Rejeicao: Falha no schema XML</xMotivo><cUF>11</cUF><dhRecbto>2017-01-17T17:32:18-04:00</dhRecbto></infInut></retInutNFe></nfeInutilizacaoNF2Result></soap:Body></soap:Envelope>
+<nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeInutilizacao4">
+  <retInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+    <infInut>
+      <tpAmb>2</tpAmb>
+      <verAplic>SVRS201806282144</verAplic>
+      <cStat>102</cStat>
+      <xMotivo>Inutilizacao de numero homologado</xMotivo>
+      <cUF>42</cUF>
+      <ano>18</ano>
+      <CNPJ>80164221006215</CNPJ>
+      <mod>55</mod>
+      <serie>1</serie>
+      <nNFIni>600</nNFIni>
+      <nNFFin>601</nNFFin>
+      <dhRecbto>2018-07-31T10:00:38-03:00</dhRecbto>
+      <nProt>342180004306034</nProt>
+    </infInut>
+  </retInutNFe>
+</nfeResultMsg>

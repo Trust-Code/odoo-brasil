@@ -35,6 +35,19 @@ class InvoiceEletronicItem(models.Model):
         string=u"Cód. Tribut. Munic.", size=20, readonly=True,
         help="Código de Tributação no Munípio", states=STATE)
 
+    exigibilidade_iss = fields.Selection(
+        string="Exigibilidade ISS",
+        selection=[
+            ('1', 'Exigível'),
+            ('2', 'Não incidência'),
+            ('3', 'Isenção'),
+            ('4', 'Exportação'),
+            ('5', 'Imunidade'),
+            ('6', 'Exigibilidade Suspensa por Decisão Judicial'),
+            ('7', 'Exigibilidade Suspensa por Processo Administrativo '),
+        ],
+    )
+
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
@@ -69,7 +82,7 @@ class InvoiceEletronic(models.Model):
         tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
         dt_emissao = datetime.strptime(self.data_emissao, DTFT)
         dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
-        dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')
+        dt_emissao = dt_emissao.strftime('%Y-%m-%d')
 
         partner = self.commercial_partner_id
         city_tomador = partner.city_id
@@ -85,6 +98,7 @@ class InvoiceEletronic(models.Model):
             'cidade': '%s%s' % (city_tomador.state_id.ibge_code,
                                 city_tomador.ibge_code),
             'uf': partner.state_id.code,
+            'codigo_pais': int(partner.country_id.bc_code),
             'cep': re.sub('[^0-9]', '', partner.zip),
             'telefone': re.sub('[^0-9]', '', partner.phone or ''),
             'inscricao_municipal': re.sub(
@@ -105,6 +119,7 @@ class InvoiceEletronic(models.Model):
         itens_servico = []
         descricao = ''
         codigo_servico = ''
+        exigibilidade_iss = 0
         for item in self.eletronic_item_ids:
             descricao += item.name + '\n'
             itens_servico.append({
@@ -113,6 +128,7 @@ class InvoiceEletronic(models.Model):
                 'valor_unitario': str("%.2f" % item.preco_unitario)
             })
             codigo_servico = item.issqn_codigo
+            exigibilidade_iss = item.exigibilidade_iss
 
         rps = {
             'numero_lote': self.id,
@@ -137,8 +153,8 @@ class InvoiceEletronic(models.Model):
             'valor_iss':  str("%.2f" % self.valor_issqn),
             'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
             'base_calculo': str("%.2f" % self.valor_final),
-            'aliquota_issqn': str("%.4f" % (
-                self.eletronic_item_ids[0].issqn_aliquota / 100)),
+            'aliquota_issqn': str("%.2f" % (
+                self.eletronic_item_ids[0].issqn_aliquota)),
             'valor_liquido_nfse': str("%.2f" % self.valor_final),
             'codigo_servico': re.sub('[^0-9]', '', codigo_servico),
             'codigo_tributacao_municipio':
@@ -149,6 +165,8 @@ class InvoiceEletronic(models.Model):
             'itens_servico': itens_servico,
             'tomador': tomador,
             'prestador': prestador,
+            'codigo_pais': int(partner.country_id.bc_code),
+            'exigibilidade_iss': exigibilidade_iss,
         }
 
         res.update(rps)
@@ -235,12 +253,14 @@ class InvoiceEletronic(models.Model):
             certificado, xml=xml_to_send, ambiente=self.ambiente)
 
         retorno = enviar_nfse['object']
-        if "CompNfse" in dir(retorno):
+        if "ListaNfse" in dir(retorno) \
+                and "CompNfse" in dir(retorno.ListaNfse):
+            infNfse = retorno.ListaNfse.CompNfse.Nfse.InfNfse
             self.state = 'done'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'NFSe emitida com sucesso'
-            self.verify_code = retorno.CompNfse.Nfse.InfNfse.CodigoVerificacao
-            self.numero_nfse = retorno.CompNfse.Nfse.InfNfse.Numero
+            self.verify_code = infNfse.CodigoVerificacao
+            self.numero_nfse = infNfse.Numero
         else:
             mensagem_retorno = retorno.ListaMensagemRetorno \
                 .MensagemRetorno
@@ -293,7 +313,7 @@ class InvoiceEletronic(models.Model):
             certificado, cancelamento=canc, ambiente=self.ambiente)
 
         retorno = cancel['object']
-        if "Cancelamento" in dir(retorno):
+        if "RetCancelamento" in dir(retorno):
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = 'Nota Fiscal de Serviço Cancelada'

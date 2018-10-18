@@ -5,6 +5,7 @@
 import re
 import base64
 import copy
+import logging
 from datetime import datetime, timedelta
 import dateutil.relativedelta as relativedelta
 from odoo.exceptions import UserError
@@ -17,14 +18,15 @@ from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
+_logger = logging.getLogger(__name__)
 
 STATE = {'edit': [('readonly', False)]}
 
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
-
     _inherit = ['mail.thread']
+    _order = 'id desc'
 
     code = fields.Char(
         u'Código', size=100, required=True, readonly=True, states=STATE)
@@ -88,7 +90,7 @@ class InvoiceEletronic(models.Model):
     partner_shipping_id = fields.Many2one(
         'res.partner', string=u'Entrega', readonly=True, states=STATE)
     payment_term_id = fields.Many2one(
-        'account.payment.term', string=u'Forma pagamento',
+        'account.payment.term', string='Condição pagamento',
         readonly=True, states=STATE)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
@@ -370,23 +372,26 @@ class InvoiceEletronic(models.Model):
             if item.document_id and item.document_id.code != self.model:
                 continue
             template = mako_safe_env.from_string(tools.ustr(item.message))
-            variables = {
-                'user': self.env.user,
-                'ctx': self._context,
-                'invoice': self.invoice_id,
-            }
+            variables = self._get_variables_msg()
             render_result = template.render(variables)
             result += render_result + '\n'
         return result
+
+    def _get_variables_msg(self):
+        return {
+            'user': self.env.user,
+            'ctx': self._context,
+            'invoice': self.invoice_id
+            }
 
     @api.multi
     def validate_invoice(self):
         self.ensure_one()
         errors = self._hook_validation()
         if len(errors) > 0:
-            msg = u"\n".join(
-                [u"Por favor corrija os erros antes de prosseguir"] + errors)
-            self.unlink()
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            self.sudo().unlink()
             raise UserError(msg)
 
     @api.multi
@@ -432,7 +437,20 @@ class InvoiceEletronic(models.Model):
 
     def log_exception(self, exc):
         self.codigo_retorno = -1
-        self.mensagem_retorno = exc.message
+        self.mensagem_retorno = str(exc)
+
+    def notify_user(self):
+        redirect = {
+            'name': 'Invoices',
+            'model': 'account.invoice',
+            'view': 'form',
+            'domain': [['id', '=', self.invoice_id.id]],
+            'context': {}
+        }
+        msg = 'Verifique a %s, ocorreu um problema com o envio de \
+        documento eletrônico!' % self.name
+        self.create_uid.notify(msg, sticky=True, title="Ação necessária!",
+                               warning=True, redirect=redirect)
 
     def _get_state_to_send(self):
         return ('draft',)
@@ -448,6 +466,9 @@ class InvoiceEletronic(models.Model):
                 item.action_send_eletronic_invoice()
             except Exception as e:
                 item.log_exception(e)
+                item.notify_user()
+                _logger.error(
+                    'Erro no envio de documento eletrônico', exc_info=True)
 
     def _find_attachment_ids_email(self):
         return []
@@ -473,6 +494,10 @@ class InvoiceEletronic(models.Model):
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
+
+    @api.multi
+    def copy(self, default=None):
+        raise UserError('Não é possível duplicar uma Nota Fiscal.')
 
 
 class InvoiceEletronicEvent(models.Model):

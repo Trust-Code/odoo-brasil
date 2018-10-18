@@ -62,10 +62,10 @@ class PaymentMode(models.Model):
     def br_boleto_onchange_boleto_type(self):
         vals = {}
 
-        if self.boleto_type not in IMPLEMENTADOS:
+        if (self.boleto_type) and (self.boleto_type not in IMPLEMENTADOS):
             vals['warning'] = {
                 'title': u'Ação Bloqueada!',
-                'message': u'Este boleto ainda não foi implentado!'
+                'message': u'Este boleto ainda não foi implementado!'
             }
 
         if self.boleto_type == u'1':

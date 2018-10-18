@@ -6,7 +6,7 @@
 from odoo import fields, models
 
 
-class BrAccountCnae(models.Model):
-    _inherit = 'br_account.cnae'
+class BrAccountServiceType(models.Model):
+    _inherit = 'br_account.service.type'
 
     id_cnae = fields.Char(string="Id CNAE", size=10)

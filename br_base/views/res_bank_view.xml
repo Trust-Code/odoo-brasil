@@ -53,6 +53,9 @@
                 <field name="bra_number" select="1" />
                 <field name="bra_number_dig" select="1" />
             </field>
+            <field name="company_id" position="after">
+                <field name="partner_id" />
+            </field>
         </field>
     </record>
 

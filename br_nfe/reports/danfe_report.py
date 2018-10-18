@@ -27,7 +27,7 @@ class IrActionsReport(models.Model):
 
         nfe = self.env['invoice.eletronic'].search([('id', 'in', res_ids)])
 
-        nfe_xml = base64.decodestring(nfe.nfe_processada)
+        nfe_xml = base64.decodestring(nfe.nfe_processada or nfe.xml_to_send)
 
         cce_xml_element = []
         cce_list = self.env['ir.attachment'].search([
@@ -57,10 +57,11 @@ class IrActionsReport(models.Model):
         timezone = pytz.timezone(self.env.context.get('tz')) or pytz.utc
 
         xml_element = etree.fromstring(nfe_xml)
-        obj_danfe = danfe
         if nfe.model == '65':
-            obj_danfe = danfce
-        oDanfe = obj_danfe(list_xml=[xml_element], logo=tmpLogo,
+            oDanfe = danfce(
+                list_xml=[xml_element], logo=tmpLogo, timezone=timezone)
+        else:
+            oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo,
                            cce_xml=cce_xml_element, timezone=timezone)
 
         tmpDanfe = BytesIO()

@@ -158,6 +158,7 @@ class AccountInvoiceLine(models.Model):
             'cofins_valor': sum([x['amount'] for x in cofins]),
             'issqn_base_calculo': sum([x['base'] for x in issqn]),
             'issqn_valor': sum([x['amount'] for x in issqn]),
+            'ii_base_calculo': sum([x['base'] for x in ii]),
             'ii_valor': sum([x['amount'] for x in ii]),
             'csll_base_calculo': sum([x['base'] for x in csll]),
             'csll_valor': sum([x['amount'] for x in csll]),
@@ -477,7 +478,7 @@ class AccountInvoiceLine(models.Model):
     # Impostos de serviço - INSS
     # =========================================================================
     inss_rule_id = fields.Many2one('account.fiscal.position.tax.rule', 'Regra')
-    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota IRRF",
+    tax_inss_id = fields.Many2one('account.tax', string=u"Alíquota INSS",
                                   domain=[('domain', '=', 'inss')])
     inss_base_calculo = fields.Float(
         u'Base INSS', required=True, digits=dp.get_precision('Account'),
@@ -536,7 +537,7 @@ class AccountInvoiceLine(models.Model):
                 price * (service.municipal_imposto / 100)
         else:
             federal = ncm.federal_nacional if self.icms_origem in \
-                ('1', '2', '3', '8') else ncm.federal_importado
+                ('0', '3', '4', '5', '8') else ncm.federal_importado
 
             self.tributos_estimados_federais = price * (federal / 100)
             self.tributos_estimados_estaduais = \

@@ -9,6 +9,17 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    fiscal_position_type = fields.Selection(
+        related='fiscal_position_id.fiscal_type', readonly=True)
+
+    @api.multi
+    def copy(self, default=None):
+        new_acc_inv = super(AccountInvoice, self).copy(default)
+        for i in range(len(new_acc_inv.invoice_line_ids)):
+            new_acc_inv.invoice_line_ids[i].import_declaration_ids = \
+                self.invoice_line_ids[i].import_declaration_ids
+        return new_acc_inv
+
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'invoice_line_ids.price_total',
@@ -40,12 +51,13 @@ class AccountInvoice(models.Model):
 
     # Transporte
     freight_responsibility = fields.Selection(
-        [('0', u'0 - Emitente'),
-         ('1', u'1 - Destinatário'),
-         ('2', u'2 - Terceiros'),
-         ('9', u'9 - Sem Frete')],
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
         u'Modalidade do frete', default="9")
-    carrier_id = fields.Many2one('delivery.carrier', 'Método de Entrega')
     shipping_supplier_id = fields.Many2one('res.partner', 'Transportadora')
     vehicle_plate = fields.Char(u'Placa do Veículo', size=7)
     vehicle_state_id = fields.Many2one('res.country.state', 'UF da Placa')
@@ -76,7 +88,6 @@ class AccountInvoice(models.Model):
         res['valor_frete'] = inv.total_frete
         res['valor_despesas'] = inv.total_despesas
         res['valor_seguro'] = inv.total_seguro
-
         res['modalidade_frete'] = inv.freight_responsibility
         res['transportadora_id'] = inv.shipping_supplier_id.id
         res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
@@ -116,12 +127,20 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
+    valor_frete = fields.Float(
+        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
+    valor_seguro = fields.Float(
+        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
+    outras_despesas = fields.Float(
+        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
         res.update({
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
+            'ii_despesas': self.ii_valor_despesas,
         })
         return res
 
@@ -129,14 +148,6 @@ class AccountInvoiceLine(models.Model):
     @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
-
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
         self.update({'price_total': total})
-
-    valor_frete = fields.Float(
-        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
-    valor_seguro = fields.Float(
-        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
-    outras_despesas = fields.Float(
-        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)

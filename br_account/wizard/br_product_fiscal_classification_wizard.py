@@ -58,7 +58,6 @@ citação estiver marcado é necessário informá-lo!')
                         _logger.error(e.message, exc_info=True)
                 elif len(code.zfill(8)) == 8:
                     code = code.zfill(8)
-                    code = code[:4] + '.' + code[4:6] + '.' + code[6:]
                     try:
                         service = self.env['product.fiscal.classification'].\
                             search([('code', '=', code)])

@@ -5,7 +5,8 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_stock_account.br_account_product_invoice_form"/>
         <field name="arch" type="xml">
-            <field name="carrier_id" position="after">
+            <field name="freight_responsibility" position="before">
+                <field name="carrier_id" string="Método de Entrega" />
                 <field name="incoterm_id"/>
             </field>
         </field>
@@ -17,7 +18,8 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_stock_account.br_account_product_invoice_supplier_form" />
         <field name="arch" type="xml">
-            <field name="carrier_id" position="after">
+            <field name="freight_responsibility" position="before">
+                <field name="carrier_id" string="Método de Entrega" />
                 <field name="incoterm_id"/>
             </field>
         </field>

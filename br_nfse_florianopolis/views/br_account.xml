@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_br_nfse_floripa_account_cnae_form" model="ir.ui.view">
-        <field name="name">br_nfse_floripa.account.cnae.form</field>
-        <field name="model">br_account.cnae</field>
-        <field name="inherit_id" ref="br_account.view_br_account_cnae_form"/>
+    <record id="view_br_nfse_floripa_account_service_form" model="ir.ui.view">
+        <field name="name">br_nfse_floripa.account.service.type.form</field>
+        <field name="model">br_account.service.type</field>
+        <field name="inherit_id" ref="br_account.view_br_account_service_type_form"/>
         <field name="arch" type="xml">
-            <field name="name" position="after">
-                  <field name="id_cnae" />
+            <field name="parent_id" position="after">
+                  <field name="id_cnae"/>
             </field>
         </field>
     </record>
