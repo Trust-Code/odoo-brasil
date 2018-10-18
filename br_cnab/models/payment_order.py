@@ -25,7 +25,7 @@ class PaymentOrder(models.Model):
         self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         for order_id in self:
             cnab = Cnab.get_cnab(
-                order_id.payment_mode_id.bank_account_id.bank_bic, '240')()
+                order_id.src_bank_account_id.bank_bic, '240')()
             remessa = cnab.remessa(order_id)
             order_id.line_ids.write({'state': 'sent'})
 
