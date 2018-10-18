@@ -5,6 +5,7 @@
 import re
 import base64
 import copy
+import logging
 from datetime import datetime, timedelta
 import dateutil.relativedelta as relativedelta
 from odoo.exceptions import UserError
@@ -17,6 +18,7 @@ from odoo.addons.br_account.models.cst import CST_PIS_COFINS
 from odoo.addons.br_account.models.cst import ORIGEM_PROD
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
+_logger = logging.getLogger(__name__)
 
 STATE = {'edit': [('readonly', False)]}
 
@@ -465,6 +467,8 @@ class InvoiceEletronic(models.Model):
             except Exception as e:
                 item.log_exception(e)
                 item.notify_user()
+                _logger.error(
+                    'Erro no envio de documento eletrônico', exc_info=True)
 
     def _find_attachment_ids_email(self):
         return []
