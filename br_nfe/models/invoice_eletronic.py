@@ -380,8 +380,6 @@ class InvoiceEletronic(models.Model):
         if self.model not in ('55', '65'):
             return res
 
-        dt_emissao = datetime.strptime(self.data_emissao, DTFT)
-
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
@@ -389,8 +387,8 @@ class InvoiceEletronic(models.Model):
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
-            'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhEmi': self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhSaiEnt': self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -737,7 +735,7 @@ class InvoiceEletronic(models.Model):
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'estado': self.company_id.state_id.ibge_code,
-            'emissao': self.data_emissao[2:4] + self.data_emissao[5:7],
+            'emissao': self.data_emissao.strftime("%y%M"),
             'modelo': self.model,
             'numero': self.numero,
             'serie': self.serie.code.zfill(3),
