@@ -388,7 +388,7 @@ class InvoiceEletronic(models.Model):
         if len(errors) > 0:
             msg = u"\n".join(
                 [u"Por favor corrija os erros antes de prosseguir"] + errors)
-            self.unlink()
+            self.sudo().unlink()
             raise UserError(msg)
 
     @api.multi
