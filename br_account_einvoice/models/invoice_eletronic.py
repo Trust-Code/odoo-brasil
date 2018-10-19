@@ -62,7 +62,10 @@ class InvoiceEletronic(models.Model):
     numero_controle = fields.Integer(
         string=u'Número de Controle', readonly=True, states=STATE)
     data_agendada = fields.Date(
-        string=u'Data agendada', readonly=True, states=STATE)
+        string=u'Data agendada',
+        readonly=True,
+        default=fields.Date.today,
+        states=STATE)
     data_emissao = fields.Datetime(
         string=u'Data emissão', readonly=True, states=STATE)
     data_fatura = fields.Datetime(
@@ -458,7 +461,7 @@ class InvoiceEletronic(models.Model):
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
         nfes = inv_obj.search([('state', 'in', states),
-                               ('data_agendada', '=', fields.Date.today())],
+                               ('data_agendada', '<=', fields.Date.today())],
                               limit=limit)
         for item in nfes:
             try:
