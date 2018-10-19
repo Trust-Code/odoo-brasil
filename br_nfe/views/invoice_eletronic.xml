@@ -9,7 +9,7 @@
             <div name="alertas" position="before">
                 <field name="ambiente_nfe" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('model', '!=', '55')]}">
+                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('model', 'not in', ('55', '65'))]}">
                     A NFe está em ambiente de homologação
                 </div>
             </div>
@@ -20,6 +20,7 @@
             </button>
             <field name="payment_term_id" position="after">
                 <field name="payment_mode_id" />
+                <field name="metodo_pagamento" />
             </field>
             <page name="totais" position="after">
                 <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
@@ -96,6 +97,8 @@
             </field>
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
+                <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
                 <field name="nfe_processada_name" invisible="1"/>
                 <field name="nfe_processada" filename="nfe_processada_name"/>
             </field>

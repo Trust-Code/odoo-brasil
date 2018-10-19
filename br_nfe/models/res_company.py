@@ -16,3 +16,6 @@ class ResCompany(models.Model):
                                         ('horizontal', 'Modelo Horizontal')],
                                        string=u"Cabeçalho Danfe",
                                        default='vertical')
+    # NFC-e
+    id_token_csc = fields.Char(string="Identificador do CSC")
+    csc = fields.Char(string=u'Código de Segurança do Contribuinte')

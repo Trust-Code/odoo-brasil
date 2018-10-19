@@ -12,7 +12,7 @@
                 <field name="sending_nfe" invisible="1" />
                 <field name="nfe_exception" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('invoice_model', '!=', '55')]}">
+                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('invoice_model', 'not in', ('55', '65'))]}">
                     A NFe está em ambiente de homologação
                 </div>
                 <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('sending_nfe', '==', False)]}">
@@ -49,7 +49,7 @@
                 <field name="sending_nfe" invisible="1" />
                 <field name="nfe_exception" invisible="1" />
                 <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('invoice_model', '!=', '55')]}">
+                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1'), ('invoice_model', 'not in', ('55', '65'))]}">
                     A NFe está em ambiente de homologação
                 </div>
                 <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('sending_nfe', '==', False)]}">
