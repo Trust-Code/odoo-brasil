@@ -171,6 +171,11 @@ class AccountInvoice(models.Model):
             }))
 
         res['fiscal_document_related_ids'] = documentos
+
+        # NFC-e
+        res['valor_troco'] = 0.0
+        res['metodo_pagamento'] = inv.payment_mode_id.tipo_pagamento or '01'
+        res['valor_pago'] = inv.amount_total
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):

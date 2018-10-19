@@ -5,7 +5,7 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Odoo Brasil - Módulo Base',
     'description': 'Brazilian Localization Base',
-    'version': '11.0.1.0.0',
+    'version': '11.0.1.0.1',
     'category': 'Localisation',
     'license': 'AGPL-3',
     'author': 'Akretion, OpenERP Brasil',
