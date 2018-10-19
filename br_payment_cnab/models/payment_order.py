@@ -32,9 +32,7 @@ class PaymentOrder(models.Model):
 
     def get_file_number(self):
         if all(item.payment_information_id.l10n_br_environment == 'production'
-               for item in self.line_ids) or\
-               self.src_bank_account_id.bank_id != self.env.ref(
-                   'br_data_base.res_bank_12'):
+               for item in self.line_ids):
             return self.env['ir.sequence'].next_by_code('cnab.nsa')
         else:
             return '1'

@@ -5,10 +5,10 @@
 from odoo.addons.br_boleto.boleto.document import getBoletoSelection
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 selection = getBoletoSelection()
-IMPLEMENTADOS = (u'1', u'3', u'4', u'7', u'9', u'10')
+IMPLEMENTADOS = ('1', '3', '4', '6', '7', '8', '9', '10')
 
 
 class PaymentMode(models.Model):
@@ -29,7 +29,7 @@ class PaymentMode(models.Model):
     boleto_aceite = fields.Selection(
         [('S', 'Sim'), ('N', 'Não')], string='Aceite', default='N')
     boleto_type = fields.Selection(
-        selection, string="Boleto")
+        selection, string="Banco do Boleto")
     boleto_especie = fields.Selection([
         ('01', u'DUPLICATA MERCANTIL'),
         ('02', u'NOTA PROMISSÓRIA'),
@@ -139,6 +139,28 @@ class PaymentMode(models.Model):
     def _check_boleto_protesto(self):
         if self.boleto_protesto == '0' and self.boleto_type == '3':
             raise UserError('Código de protesto inválido para banco Bradesco!')
+
+    @api.constrains('boleto', 'journal_id', 'type', 'boleto_type')
+    def _check_payment_mode(self):
+        for rec in self:
+            if rec.type != 'receivable' or not rec.boleto:
+                continue
+            if not rec.journal_id:
+                raise ValidationError('Para boleto o diário é obrigatório')
+            if not rec.journal_id.bank_account_id:
+                raise ValidationError(
+                    'Não existe conta bancária cadastrada no diário escolhido')
+            if not rec.nosso_numero_sequence:
+                raise ValidationError(
+                    'Para boleto a Sequência do Nosso Número é obrigatória')
+            total = self.search_count(
+                [('nosso_numero_sequence', '=', rec.nosso_numero_sequence.id),
+                 ('id', '!=', rec.id)])
+            if total > 0:
+                raise ValidationError(
+                    'Sequência já usada em outro modo de pagamento')
+            if not rec.boleto_type:
+                raise ValidationError('Escolha o banco do boleto!')
 
     @api.multi
     def write(self, vals):

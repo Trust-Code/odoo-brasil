@@ -31,7 +31,7 @@
             <tree string="Payment Modes">
                 <field name="name"/>
                 <field name="journal_id"/>
-                <field name="bank_account_id"/>
+                <field name="type" />
                 <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>

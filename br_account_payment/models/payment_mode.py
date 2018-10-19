@@ -18,7 +18,7 @@ class PaymentMode(models.Model):
         'res.company', string='Company', ondelete='restrict')
     active = fields.Boolean(string='Active', default=True)
     journal_id = fields.Many2one(
-        'account.journal', string="Journal", required=True,
+        'account.journal', string="Journal",
         domain=[('type', 'in', ('cash', 'bank'))])
     # TODO Remove this fields latter on, from now on we use just journal_id
     bank_account_id = fields.Many2one(
