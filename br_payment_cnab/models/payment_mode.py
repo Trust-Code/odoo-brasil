@@ -1,7 +1,8 @@
 # © 2018 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class PaymentMode(models.Model):
@@ -19,34 +20,38 @@ class PaymentMode(models.Model):
          ('09', 'ICMS')],
         string="Tipo de Operação")
 
+    schedule_days_before = fields.Integer('Antecipar em: (dias)')
+    one_time_payment = fields.Boolean('Pagar Mensal?')
+    one_time_payment_day = fields.Integer('Dia do mês a pagar', default=10)
+
     mov_finality = fields.Selection([
-        ('01', u'Current Account Credit'),
-        ('02', u'Rent Payment/Condominium'),
-        ('03', u'Dept Security Payment'),
-        ('04', u'Dividend Payment'),
-        ('05', u'Tuition Payment'),
-        ('07', u'Provider/Fees Payment'),
-        ('08', u'Currency Exchange/Fund/Stock Exchange Payment'),
-        ('09', u'Transfer of Collection / Payment of Taxes'),
-        ('11', u'DOC/TED to Saving Account'),
-        ('12', u'DOC/TED to Judicial Deposit'),
-        ('13', u'Child Support/Alimony'),
-        ('14', u'Income Tax Rebate'),
-        ('99', u'Other')
+        ('01', 'Current Account Credit'),
+        ('02', 'Rent Payment/Condominium'),
+        ('03', 'Dept Security Payment'),
+        ('04', 'Dividend Payment'),
+        ('05', 'Tuition Payment'),
+        ('07', 'Provider/Fees Payment'),
+        ('08', 'Currency Exchange/Fund/Stock Exchange Payment'),
+        ('09', 'Transfer of Collection / Payment of Taxes'),
+        ('11', 'DOC/TED to Saving Account'),
+        ('12', 'DOC/TED to Judicial Deposit'),
+        ('13', 'Child Support/Alimony'),
+        ('14', 'Income Tax Rebate'),
+        ('99', 'Other')
         ], string=u'Move Finality')
 
     finality_ted = fields.Selection([
-        ('01', u'Pagamento de impostos, tributos e taxas'),
-        ('02', u'Pagamento Concessionárias Serviço Público'),
-        ('03', u'Pagamento de Dividendos'),
-        ('04', u'Pagamento de Salários'),
-        ('05', u'Pagamento de Fornecedores'),
-        ('06', u'Pagamentos de Honorários'),
-        ('07', u'Pagamento de Aluguel/Condomínios'),
-        ('08', u'Pagamento de Duplicatas/Títulos'),
-        ('09', u'Pagamento de Mensalidades Escolares'),
-        ('11', u'Crédito em Conta'),
-        ('300', u'Restituição de Imposto de Renda')
+        ('01', 'Pagamento de impostos, tributos e taxas'),
+        ('02', 'Pagamento Concessionárias Serviço Público'),
+        ('03', 'Pagamento de Dividendos'),
+        ('04', 'Pagamento de Salários'),
+        ('05', 'Pagamento de Fornecedores'),
+        ('06', 'Pagamentos de Honorários'),
+        ('07', 'Pagamento de Aluguel/Condomínios'),
+        ('08', 'Pagamento de Duplicatas/Títulos'),
+        ('09', 'Pagamento de Mensalidades Escolares'),
+        ('11', 'Crédito em Conta'),
+        ('300', 'Restituição de Imposto de Renda')
         ], string=u'TED Purpose')
 
     codigo_receita = fields.Char('Código da Receita')
@@ -64,3 +69,20 @@ class PaymentMode(models.Model):
         string='Environment',
         default='production'
     )
+
+    @api.constrains('type', 'journal_id', 'payment_type')
+    def _check_payment_mode_payable(self):
+        for rec in self:
+            if rec.type != 'payable':
+                continue
+            if not rec.journal_id:
+                raise ValidationError('Para pagamentos o diário é obrigatório')
+            if not rec.journal_id.bank_account_id:
+                raise ValidationError(
+                    'Não existe conta bancária cadastrada no diário escolhido')
+            if not rec.journal_id.l10n_br_sequence_nosso_numero:
+                raise ValidationError(
+                    'Não existe sequência para o Nosso Número no \
+                    diário escolhido')
+            if not rec.payment_type:
+                raise ValidationError('Escolha o tipo de operação!')

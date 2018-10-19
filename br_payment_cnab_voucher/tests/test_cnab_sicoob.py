@@ -46,6 +46,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         return voucher_line.voucher_id
 
     def get_payment_mode(self):
+        nosso_numero = self.env['ir.sequence'].create({
+            'name': "Nosso Numero"})
         sicoob = self.env['res.bank'].search([('bic', '=', '756')])
         conta = self.env['res.partner.bank'].create({
             'acc_number': '45425',  # 5 digitos
@@ -61,6 +63,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'type': 'bank',
             'bank_account_id': conta.id,
             'company_id': self.main_company.id,
+            'l10n_br_sequence_nosso_numero': nosso_numero.id,
         })
         payment_mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob TED',

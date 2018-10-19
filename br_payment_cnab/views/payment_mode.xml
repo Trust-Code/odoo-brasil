@@ -9,21 +9,21 @@
         <field name="arch" type="xml">
             <field name="type" position="after">
                 <field name="payment_type" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
-                <field name="nosso_numero_sequence" required="1" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
+                <field name="schedule_days_before" attrs="{'invisible': [('type', '!=', 'payable')]}" />
+                <field name="one_time_payment" attrs="{'invisible': ['|', ('type', '!=', 'payable'), ('payment_type', 'not in', ('01', '02', '03'))]}" />
+                <field name="one_time_payment_day" attrs="{'invisible': [('one_time_payment', '=', False)]}"/>
             </field>
             <field name="active" position="after">
                 <field name="l10n_br_environment" />
             </field>
             <group name="main" position="after">
                 <notebook attrs="{'invisible': [('type', '!=', 'payable')]}">
-                    <page string="Informações DOC/TED" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}">
-                        <group>
+                    <page string="Informações Adicionais">
+                        <group attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}">
                             <field name="mov_finality" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
                             <field name="finality_ted" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
                         </group>
-                    </page>
-                    <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}">
-                        <group>
+                        <group attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}">
                             <field name="codigo_receita" />
                             <field name="numero_referencia" />
                             <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
