@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <field name="zip" position="after">
                 <button name="zip_search" type="object" class="oe_inline" invisible="1">
-                    <i class="fa fa-search"></i>
+                    <i class="fa fa-search" aria-label="Search"></i>
                 </button>
             </field>
         </field>

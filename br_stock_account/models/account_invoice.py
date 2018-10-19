@@ -9,7 +9,16 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    pos_fiscal = fields.Selection(related='fiscal_position_id.fiscal_type')
+    fiscal_position_type = fields.Selection(
+        related='fiscal_position_id.fiscal_type', readonly=True)
+
+    @api.multi
+    def copy(self, default=None):
+        new_acc_inv = super(AccountInvoice, self).copy(default)
+        for i in range(len(new_acc_inv.invoice_line_ids)):
+            new_acc_inv.invoice_line_ids[i].import_declaration_ids = \
+                self.invoice_line_ids[i].import_declaration_ids
+        return new_acc_inv
 
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
@@ -131,7 +140,6 @@ class AccountInvoiceLine(models.Model):
             'valor_frete': self.valor_frete,
             'valor_seguro': self.valor_seguro,
             'outras_despesas': self.outras_despesas,
-            'fiscal_type': self.invoice_id.fiscal_position_id.fiscal_type,
             'ii_despesas': self.ii_valor_despesas,
         })
         return res

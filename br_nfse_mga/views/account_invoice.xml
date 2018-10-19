@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Form view -->
+    <record id="view_br_nfse_mga_invoice_line_form" model="ir.ui.view">
+        <field name="name">br_nfse_mga.invoice_line.form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <field name="service_type_id" position="after">
+                <field name="exigibilidade_iss"></field>
+            </field>
+        </field>
+    </record>
+</odoo>

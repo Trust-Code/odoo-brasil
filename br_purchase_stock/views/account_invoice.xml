@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="br_account_product_invoice_form" model="ir.ui.view">
+        <field name="name">br_account_product.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                 <field name="ii_valor_despesas" invisible="1" />
+            </xpath>
+            <field name="total_frete" position="after">
+                <field name="fiscal_position_type" invisible="1"/>
+                <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Vendor view -->
+    <record id="br_account_product_invoice_supplier_form" model="ir.ui.view">
+        <field name="name">br_account.invoice.supplier.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                 <field name="ii_valor_despesas" invisible="1" />
+            </xpath>
+            <field name="total_frete" position="after">
+                <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_br_account_invoice_line_form">
+        <field name="name">br_account.invoice.line.form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form" />
+        <field name="priority">36</field>
+        <field name="arch" type="xml">
+            <field name="price_subtotal" position="after">
+                <field name="ii_valor_despesas" invisible="1" />
+            </field>
+        </field>
+    </record>
+
+</odoo>

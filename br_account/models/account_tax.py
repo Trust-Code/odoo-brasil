@@ -339,6 +339,15 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
+    def _compute_others(self, price_base):
+        others = self.filtered(lambda x: x.domain == 'outros')
+        if not others:
+            return []
+        vals = self._tax_vals(others)
+        vals['amount'] = others._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
     def sum_taxes(self, price_base):
         ipi = self._compute_ipi(price_base)
         icms = self._compute_icms(
@@ -356,6 +365,7 @@ class AccountTax(models.Model):
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)
+        taxes += self._compute_others(price_base)
         return taxes
 
     @api.multi
@@ -376,7 +386,7 @@ class AccountTax(models.Model):
         for tax in taxes:
             tax_id = self.filtered(lambda x: x.id == tax['id'])
             if not tax_id.price_include:
-                total_included += tax['amount']
+                total_included += round(tax['amount'], 2)
 
         return {
             'taxes': sorted(taxes, key=lambda k: k['sequence']),

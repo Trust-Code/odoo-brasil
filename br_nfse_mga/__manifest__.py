@@ -22,6 +22,7 @@
     'data': [
         'views/br_account_service.xml',
         'views/res_company.xml',
+        'views/account_invoice.xml',
         'reports/danfpse.xml',
     ],
     'application': True,
