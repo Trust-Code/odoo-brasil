@@ -26,8 +26,8 @@ class PaymentOrder(models.Model):
         }
         bank = banks.get(code)
         if not bank:
-            raise UserError(_("You can't generate cnab for the bank {} yet!"
-                              .format(code)))
+            raise UserError(
+                _("You can't generate cnab for the bank {} yet!".format(code)))
         return bank
 
     def get_file_number(self):
@@ -41,7 +41,7 @@ class PaymentOrder(models.Model):
         self.file_number = self.get_file_number()
         self.data_emissao_cnab = datetime.now()
         cnab = self.select_bank_cnab(str(
-            self.payment_mode_id.bank_account_id.bank_id.bic))
+            self.src_bank_account_id.bank_id.bic))
         cnab.create_cnab(self.line_ids)
         self.line_ids.write({'state': 'sent'})
         self.cnab_file = base64.b64encode(cnab.write_cnab())
@@ -71,7 +71,7 @@ class PaymentOrderLine(models.Model):
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência")
 
-    def get_opration_code(self, payment_mode):
+    def get_operation_code(self, payment_mode):
         if payment_mode.payment_type == '01':
             return '018'
         elif payment_mode.payment_type == '02':
@@ -81,14 +81,16 @@ class PaymentOrderLine(models.Model):
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
-            ('src_bank_account_id', '=', payment_mode.bank_account_id.id),
+            ('src_bank_account_id', '=',
+             payment_mode.journal_id.bank_account_id.id),
             ('type', '=', 'payable')], limit=1)
         if not payment_order:
             payment_order = payment_order.sudo().create({
                 'name': order_name or '',
                 'user_id': self.env.user.id,
                 'payment_mode_id': payment_mode.id,
-                'src_bank_account_id': payment_mode.bank_account_id.id,
+                'src_bank_account_id':
+                payment_mode.journal_id.bank_account_id.id,
                 'state': 'draft',
                 'type': 'payable',
             })
@@ -105,7 +107,7 @@ class PaymentOrderLine(models.Model):
             'payment_type': payment_mode_id.payment_type,
             'finality_ted': payment_mode_id.finality_ted,
             'mov_finality': payment_mode_id.mov_finality,
-            'operation_code': self.get_opration_code(payment_mode_id),
+            'operation_code': self.get_operation_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
             'barcode': vals.pop('barcode'),

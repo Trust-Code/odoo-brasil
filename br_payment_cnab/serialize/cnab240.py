@@ -50,8 +50,7 @@ class Cnab_240(object):
         return date_value.strftime("%d%m%Y")
 
     def _get_header_arq(self):
-        payment = self._order.payment_mode_id
-        bank = payment.bank_account_id
+        bank = self._order.src_bank_account_id
         headerArq = {
             'cedente_inscricao_tipo': 2,  # 0 = Isento, 1 = CPF, 2 = CNPJ
             # número do registro da empresa
@@ -94,7 +93,7 @@ class Cnab_240(object):
             "favorecido_doc_numero": line.partner_id.cnpj_cpf,
             "numero_documento_cliente": line.nosso_numero,
             "data_pagamento": self.format_date(line.date_maturity),
-            "valor_pagamento": line.value,
+            "valor_pagamento": line.amount_total,
             "data_real_pagamento": self.format_date(
                 self._order.data_emissao_cnab),
             "valor_real_pagamento": line.value_final,  # TODO
@@ -113,7 +112,7 @@ class Cnab_240(object):
             "favorecido_cidade": line.partner_id.city_id.name,
             "favorecido_cep": line.partner_id.zip,
             "favorecido_uf": line.partner_id.state_id.code,
-            "valor_documento": line.value,
+            "valor_documento": line.amount_total,
             "valor_abatimento": information_id.rebate_value,
             "valor_desconto": information_id.discount_value,
             "valor_mora": information_id.interest_value,
@@ -121,7 +120,7 @@ class Cnab_240(object):
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
             "cedente_nome": self._order.company_id.name,
-            "valor_nominal_titulo": line.value,
+            "valor_nominal_titulo": line.amount_total,
             "valor_desconto_abatimento": information_id.rebate_value +
                 information_id.discount_value,
             "valor_multa_juros": information_id.interest_value +
@@ -147,10 +146,10 @@ class Cnab_240(object):
             "codigo_identificacao_tributo": information_id.tax_identification\
                 or '',
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
-            "valor_previsto_inss": self._string_to_monetary(line.value),
+            "valor_previsto_inss": self._string_to_monetary(line.amount_total),
             # DARF
             "periodo_apuracao": int(self.format_date(line.invoice_date) or 0),
-            "valor_principal": self._string_to_monetary(line.value),
+            "valor_principal": self._string_to_monetary(line.amount_total),
             "valor_receita_bruta_acumulada": self._string_to_monetary(
                 self._order.company_id.annual_revenue),
             "percentual_receita_bruta_acumulada": self._string_to_monetary(
@@ -158,7 +157,7 @@ class Cnab_240(object):
             # GARE SP
             'inscricao_estadual': int(self._string_to_num(
                 self._order.company_id.inscr_est)),
-            'valor_receita': self._string_to_monetary(line.value),
+            'valor_receita': self._string_to_monetary(line.amount_total),
             'numero_referencia': self._string_to_num(
                 information_id.numero_referencia),
         }
@@ -178,23 +177,22 @@ class Cnab_240(object):
 
     def _get_header_lot(self, line, num_lot):
         information_id = line.payment_information_id
-        payment = self._order.payment_mode_id
-        bank = payment.bank_account_id
+        bank = self._order.src_bank_account_id
         header_lot = {
             "controle_lote": num_lot,
             "tipo_servico": information_id.service_type,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
-                payment.company_id.cnpj_cpf),
+                self._order.company_id.cnpj_cpf),
             "codigo_convenio": str(bank.codigo_convenio),
             "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.bra_number_dig or '',
             "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig or '',
-            "cedente_nome": payment.company_id.name,
+            "cedente_nome": self._order.company_id.name,
             "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
-            "cedente_endereco_numero": payment.company_id.number,
+            "cedente_endereco_numero": self._order.company_id.number,
             "cedente_endereco_complemento": str(
                 self._order.company_id.street2)[0:15] if
             self._order.company_id.street2 else '',

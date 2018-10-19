@@ -98,12 +98,12 @@ class PaymentOrder(models.Model):
     @api.depends('line_ids.state')
     def _compute_state(self):
         for item in self:
-            if all(line.state == 'draft' for line in item.line_ids):
+            lines = item.line_ids.filtered(lambda x: x.state != 'cancelled')
+            if all(line.state == 'draft' for line in lines):
                 item.state = 'draft'
-            elif all(line.state == 'paid' for line in item.line_ids.filtered(
-               lambda x: x.state != 'cancelled')):
+            elif all(line.state == 'paid' for line in lines):
                 item.state = 'done'
-            elif any(line.state == 'rejected' for line in item.line_ids):
+            elif any(line.state == 'rejected' for line in lines):
                 item.state = 'attention'
             else:
                 item.state = 'open'
