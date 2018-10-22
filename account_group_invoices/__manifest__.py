@@ -3,8 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {   # pylint: disable=C8101,C8103
-    'name': "BR Group Invoices",
-
+    'name': "Group Invoices",
     'summary': """
     Adiciona o recurso de agrupar faturas para o mesmo cliente, respeitando
     as regras conforme configurado. Roda automáticamente conforme
@@ -21,8 +20,7 @@
         'Mackilem Van der Laan <mack.vdl@gmail.com>',
     ],
     'depends': ['br_account'],
-    'data': ['data/ir_cron.xml'],
-    'installable': True,
-    'application': False,
-    'auto_install': False,
+    'data': [
+        'data/ir_cron.xml'
+    ],
 }

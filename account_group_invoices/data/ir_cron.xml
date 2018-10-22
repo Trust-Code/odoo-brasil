@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="ir_cron_invoice_group" model="ir.cron">
-        <field name="name">Invoice Group</field>
+        <field name="name">Group Invoices</field>
         <field name="model_id" ref="account.model_account_invoice"/>
         <field name="state">code</field>
         <field name="code">
