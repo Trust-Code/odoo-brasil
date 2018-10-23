@@ -9,6 +9,7 @@
                 <field name="id_token_csc" />
                 <field name="csc" />
                 <field name="tipo_ambiente" />
+                <field name="nfe_sinc"/>
                 <field name="cabecalho_danfe" />
             </field>
         </field>
