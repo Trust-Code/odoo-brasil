@@ -4,7 +4,7 @@
 import re
 import logging
 from io import StringIO
-from decimal import Decimal, Context
+from decimal import Decimal
 from datetime import datetime, date
 from odoo.exceptions import UserError
 

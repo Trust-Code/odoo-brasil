@@ -251,7 +251,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_nominal_titulo': Decimal('120.00'),
             'valor_desconto_abatimento': Decimal('3.00'),
             'valor_multa_juros': Decimal('4.00'),
-            'codigo_moeda': '09',
+            'codigo_moeda': 9,
             'codigo_de_barras': 0,
             'codigo_de_barras_alfa': '0',
             'nome_concessionaria': '',
