@@ -104,7 +104,9 @@ class AccountVoucher(models.Model):
         if vals.get('fine_value'):
             vals = self.create_interest_fine_line('fine', vals)
         res = super(AccountVoucher, self).write(vals)
-        self.validate_cnab_fields()
+        for item in self:
+            if item.payment_mode_id and item.payment_mode_id.type == 'payable':
+                item.validate_cnab_fields()
         return res
 
     @api.model
@@ -114,5 +116,6 @@ class AccountVoucher(models.Model):
         if vals.get('fine_value', 0) > 0:
             vals = self.create_interest_fine_line('fine', vals)
         res = super(AccountVoucher, self).create(vals)
-        res.validate_cnab_fields()
+        if res.payment_mode_id and res.payment_mode_id.type == 'payable':
+            res.validate_cnab_fields()
         return res

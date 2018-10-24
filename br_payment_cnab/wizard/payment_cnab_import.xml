@@ -31,7 +31,7 @@
     </record>
 
     <act_window id="action_import_bank_payments_cnab"
-        name="Import bank payments via CNAB"
+        name="Importar Pagamentos via CNAB"
         res_model="l10n_br.payment.cnab.import"
         view_mode="form,tree"
         target="new"
