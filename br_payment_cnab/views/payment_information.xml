@@ -29,6 +29,7 @@
                                 <field name="rebate_value" widget="monetary"/>
                                 <field name="discount_value" widget="monetary"/>
                                 <field name="credit_hist_code"/>
+                                <field name="l10n_br_environment" />
                             </group>
                             <group>
                                 <field name="warning_code"/>
@@ -39,6 +40,7 @@
                                 <field name="interest_value" widget="monetary"/>
                                 <field name="mov_type"/>
                                 <field name="mov_instruc"/>
+                                <field name="service_type"/>
                             </group>
                         </group>
                         <notebook>
@@ -46,10 +48,13 @@
                                 <group>
                                     <group>
                                         <field name="mov_finality"/>
-                                        <field name="finality_ted"/>
-                                        <field name="service_type"/>
                                     </group>
                                 </group>
+                            </page>
+                            <page string="Informações Títulos Bancários" attrs="{'invisible': [('payment_type', 'not in', ('03'))]}">
+                              <group>
+                                  <field name="barcode"/>
+                              </group>
                             </page>
                             <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07'))]}">
                                 <group>

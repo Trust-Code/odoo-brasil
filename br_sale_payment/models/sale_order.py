@@ -10,7 +10,7 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     payment_mode_id = fields.Many2one(
-        'payment.mode', string=u"Modo de pagamento")
+        'l10n_br.payment.mode', string=u"Modo de pagamento")
 
     @api.multi
     def _prepare_invoice(self):
