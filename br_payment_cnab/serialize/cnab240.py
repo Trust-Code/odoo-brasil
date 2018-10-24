@@ -4,7 +4,7 @@
 import re
 import logging
 from io import StringIO
-from decimal import Decimal
+from decimal import Decimal, Context
 from datetime import datetime, date
 from odoo.exceptions import UserError
 
@@ -24,6 +24,9 @@ class Cnab_240(object):
     def _string_to_monetary(self, numero, precision=2):
         frmt = '{:.%df}' % precision
         return Decimal(frmt.format(numero))
+
+    def _float_to_monetary(self, number, precision=2):
+        return Decimal(str(number)).quantize(Decimal('0.01'))
 
     def _just_numbers(self, value):
         return re.sub('[^0-9]', '', str(value or ''))
@@ -99,7 +102,6 @@ class Cnab_240(object):
             "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": information_id.message2 or '',
             "finalidade_doc_ted": information_id.mov_finality or '',
-            "finalidade_ted": information_id.finality_ted or '',
             "favorecido_emissao_aviso": int(information_id.warning_code) if
             information_id.warning_code else 0,
             "favorecido_inscricao_tipo":
@@ -120,12 +122,13 @@ class Cnab_240(object):
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
             "cedente_nome": self._order.company_id.name,
-            "valor_nominal_titulo": line.amount_total,
-            "valor_desconto_abatimento": information_id.rebate_value +
-                information_id.discount_value,
-            "valor_multa_juros": information_id.interest_value +
-                information_id.fine_value,
-            "codigo_moeda": information_id.currency_code,
+            "valor_nominal_titulo":  self._float_to_monetary(
+                line.amount_total),
+            "valor_desconto_abatimento": self._float_to_monetary(
+                information_id.rebate_value + information_id.discount_value),
+            "valor_multa_juros": self._float_to_monetary(
+                information_id.interest_value + information_id.fine_value),
+            "codigo_moeda": int(information_id.currency_code),
             "codigo_de_barras": self._string_to_num(codigo_barras),
             "codigo_de_barras_alfa": str(codigo_barras),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
@@ -239,7 +242,11 @@ class Cnab_240(object):
             'HeaderLote', self._get_header_lot(line, num_lot))
 
     def create_detail(self, operation, event, lot_sequency, num_lot):
-        for segment in self.segments_per_operation().get(operation, []):
+        segments = self.segments_per_operation().get(operation, [])
+        if not segments:
+            raise Exception(
+                'Pelo menos um segmento por tipo deve ser implementado!')
+        for segment in segments:
             self._cnab_file.add_segment(
                 segment, self._get_segmento(event, lot_sequency, num_lot))
             lot_sequency += 1
@@ -282,19 +289,28 @@ class Cnab_240(object):
     def get_barcode(self, line):
         barcode = line.payment_information_id.barcode
         barcode_len = len(barcode or '')
-        if barcode_len > 44:
+        if barcode_len >= 47 and barcode_len <= 48:
             return self.convert_line_to_barcode(
                 barcode)
-        elif barcode_len > 0 and barcode_len < 44:
-            raise UserError("Barcode must have at least 44 characters")
+        elif barcode_len > 0:
+            raise UserError("Linha digitável must have at least 47 characters")
         return barcode
 
     def convert_line_to_barcode(self, barcode):
-        barcode = str(self._string_to_num(barcode))
-        return int("{}{}{}{}{}{}".format(
-            barcode[0:4],
-            barcode[32],
-            barcode[-14:],
-            barcode[4:9],
-            barcode[10:20],
-            barcode[21:31]))
+        if len(barcode) == 47:
+            return "{}{}{}{}{}{}".format(
+                barcode[0:4],
+                barcode[32],
+                barcode[-14:],
+                barcode[4:9],
+                barcode[10:20],
+                barcode[21:31])
+        elif len(barcode) == 48:
+            return "{}{}{}{}".format(
+                barcode[0:11],
+                barcode[12:23],
+                barcode[24:35],
+                barcode[36:47],
+            )
+        else:
+            raise UserError('Código de barras com tamanho inválido!')

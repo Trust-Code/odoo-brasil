@@ -19,9 +19,9 @@
             <group name="main" position="after">
                 <notebook attrs="{'invisible': [('type', '!=', 'payable')]}">
                     <page string="Informações Adicionais">
-                        <group attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}">
-                            <field name="mov_finality" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
-                            <field name="finality_ted" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
+                        <group>
+                            <field name="mov_finality" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}"/>
+                            <field name="service_type" />
                         </group>
                         <group attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}">
                             <field name="codigo_receita" />

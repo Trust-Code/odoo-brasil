@@ -38,7 +38,7 @@ class ResConfigSettings(models.TransientModel):
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.l10n_br_l10n_br_interest_account_id',
+            'br_payment_cnab.l10n_br_interest_account_id',
             self.l10n_br_interest_account_id.id)
         self.env['ir.config_parameter'].sudo().set_param(
             'br_payment_cnab.l10n_br_fine_account_id',

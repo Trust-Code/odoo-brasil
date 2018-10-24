@@ -24,34 +24,21 @@ class PaymentInformation(models.Model):
         return result
 
     mov_finality = fields.Selection([
-        ('01', u'Current Account Credit'),
-        ('02', u'Rent Payment/Condominium'),
-        ('03', u'Dept Security Payment'),
-        ('04', u'Dividend Payment'),
-        ('05', u'Tuition Payment'),
-        ('07', u'Provider/Fees Payment'),
-        ('08', u'Currency Exchange/Fund/Stock Exchange Payment'),
-        ('09', u'Transfer of Collection / Payment of Taxes'),
-        ('11', u'DOC/TED to Saving Account'),
-        ('12', u'DOC/TED to Judicial Deposit'),
-        ('13', u'Child Support/Alimony'),
-        ('14', u'Income Tax Rebate'),
-        ('99', u'Other')
-        ], string=u'Movimentation Purpose')
-
-    finality_ted = fields.Selection([
-        ('01', u'Pagamento de impostos, tributos e taxas'),
-        ('02', u'Pagamento Concessionárias Serviço Público'),
-        ('03', u'Pagamento de Dividendos'),
-        ('04', u'Pagamento de Salários'),
-        ('05', u'Pagamento de Fornecedores'),
-        ('06', u'Pagamentos de Honorários'),
-        ('07', u'Pagamento de Aluguel/Condomínios'),
-        ('08', u'Pagamento de Duplicatas/Títulos'),
-        ('09', u'Pagamento de Mensalidades Escolares'),
-        ('11', u'Crédito em Conta'),
-        ('300', u'Restituição de Imposto de Renda')
-        ], string=u'Movimentation TED Purpose')
+        ('01', 'Crédito em Conta Corrente'),
+        ('02', 'Pagamento de Aluguel / Condomínio'),
+        ('03', 'Pagamento de Duplicatas e Títulos'),
+        ('04', 'Pagamento de Dividendos'),
+        ('05', 'Pagamento de Mensalidades Escolares'),
+        ('06', 'Pagamento de Salários'),
+        ('07', 'Pagamento a Fornecedor / Honorários'),
+        ('08', 'Pagamento de Câmbio/Fundos/Bolsas'),
+        ('09', 'Repasse de Arrecadação / Pagamento de Tributos'),
+        ('11', 'DOC/TED para Poupança'),
+        ('12', 'DOC/TED para Depósito Judicial'),
+        ('13', 'Pensão Alimentícia'),
+        ('14', 'Restituição de Imposto de Renda'),
+        ('99', 'Outros')
+        ], string='Finalidade do Movimento')
 
     operation_code = fields.Selection([     # G14
         ('018', u'TED CIP'),
@@ -111,21 +98,19 @@ class PaymentInformation(models.Model):
          ('33', 'Refund Chargeback')],
         string='Movimentation Instrution', default='00')
 
-    service_type = fields.Selection(
-        [('03', 'Bloqueto Eletronico'),
-         ('10', 'Pagamento de dividendos'),
-         ('14', 'Consulta de tributos a pagar DETRAN com RENAVAM'),
-         ('20', 'Provider/Fees Payment'),
-         ('22', 'Bill and tax payment'),
-         ('29', 'Alegacao do sacado'),
-         ('50', 'Pagamento de sinistros segurados'),
-         ('60', 'Pagamento Despesas Viajante em Transito'),
-         ('70', 'Pagamento Autorizado'),
-         ('75', 'Pagamento Credenciados'),
-         ('80', 'Pagamento Representantes / Vendedores Autorizados'),
-         ('90', 'Pagamento Beneficios'),
-         ('98', 'Pagamentos Diversos')],
-        string='Service Type')
+    service_type = fields.Selection([
+        ('03', 'Bloqueto Eletrônico'),
+        ('10', 'Pagamento Dividendos'),
+        ('20', 'Pagamento Fornecedor'),
+        ('22', 'Pagamento de Contas, Tributos e Impostos'),
+        ('50', 'Pagamento Sinistros Segurados'),
+        ('60', 'Pagamento Despesas Viajante em Trânsito'),
+        ('70', 'Pagamento Autorizado'),
+        ('75', 'Pagamento Credenciados'),
+        ('80', 'Pagamento Representantes / Vendedores'),
+        ('90', 'Pagamento Benefícios'),
+        ('98', 'Pagamento Diversos'),
+    ], string="Tipo de Serviço")
 
     message2 = fields.Char(string='Note Detail', size=40, default='')
 

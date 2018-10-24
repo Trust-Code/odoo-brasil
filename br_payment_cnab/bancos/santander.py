@@ -101,6 +101,14 @@ class Santander240(Cnab_240):
                 segmento.get('favorecido_cep')), 0),
             'favorecido_endereco_numero': self._string_to_num(
                 segmento.get('favorecido_endereco_numero'), default=0),
+            'favorecido_nome':
+                segmento.get('favorecido_nome')[:30],
+            'favorecido_endereco_rua':
+                segmento.get('favorecido_endereco_rua')[:30],
+            'favorecido_bairro':
+                segmento.get('favorecido_bairro')[:15],
+            'favorecido_cidade':
+                segmento.get('favorecido_cidade')[:15],
         })
         return segmento
 
@@ -115,6 +123,7 @@ class Santander240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Santander240, self).segments_per_operation()
         segments.update({
+            "03": ["SegmentoJ"],
             "04": ["SegmentoO"],
             "05": ["SegmentoN_GPS"],
             "06": ["SegmentoN_DarfNormal"],

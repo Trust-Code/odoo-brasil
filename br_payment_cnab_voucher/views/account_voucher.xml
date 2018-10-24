@@ -16,7 +16,7 @@
                 <field name="fine_value" widget="monetary"/>
             </field>
             <group position="inside">
-                <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('04'))]}" />
+                <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}" />
             </group>
         </field>
     </record>

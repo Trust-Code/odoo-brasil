@@ -47,7 +47,8 @@ class AccountVoucher(models.Model):
             lambda x: x.account_id == self.account_id)
         return {
             'partner_id': self.partner_id.id,
-            'value': self.amount - self.fine_value - self.interest_value,
+            'amount_total':
+            self.amount - self.fine_value - self.interest_value,
             'name': self.number,
             'bank_account_id': self.bank_account_id.id,
             'move_line_id': move_line_id.id,
@@ -64,8 +65,11 @@ class AccountVoucher(models.Model):
         # TODO Validate before call super
         res = super(AccountVoucher, self).proforma_voucher()
         for item in self:
-            self.env['payment.order.line'].action_generate_payment_order_line(
-                self.payment_mode_id, **self._prepare_payment_order_vals())
+            order_line_obj = self.env['payment.order.line']
+            if item.payment_mode_id:
+                order_line_obj.action_generate_payment_order_line(
+                    item.payment_mode_id,
+                    **item._prepare_payment_order_vals())
         return res
 
     def validate_cnab_fields(self):

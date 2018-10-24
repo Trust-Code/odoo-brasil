@@ -37,15 +37,35 @@ class PaymentOrder(models.Model):
         else:
             return '1'
 
+    def action_approve_all(self):
+        lines = self.line_ids.filtered(lambda x: x.state == 'draft')
+        lines.write({'state': 'approved'})
+
     def action_generate_payable_cnab(self):
+        lines = self.line_ids.filtered(
+            lambda x: x.state in ('approved', 'sent'))
+        if not lines:
+            raise UserError('Nenhum pagamento aprovado!')
+
         self.file_number = self.get_file_number()
         self.data_emissao_cnab = datetime.now()
         cnab = self.select_bank_cnab(str(
             self.src_bank_account_id.bank_id.bic))
-        cnab.create_cnab(self.line_ids)
-        self.line_ids.write({'state': 'sent'})
+        cnab.create_cnab(lines)
+        lines.write({'state': 'sent'})
         self.cnab_file = base64.b64encode(cnab.write_cnab())
-        self.name = self.env['ir.sequence'].next_by_code('payment.cnab.name')
+        self.name = self.env['ir.sequence'].next_by_code(
+            'payment.cnab.name')
+
+        remaining_lines = self.line_ids - lines
+        if remaining_lines:
+            new_order = self.copy({
+                'data_emissao_cnab': False, 'cnab_file': False,
+                'file_number': 0,
+                'name': self.env['ir.sequence'].next_by_code(
+                    'payment.order')
+            })
+            remaining_lines.write({'payment_order_id': new_order.id})
 
 
 class PaymentOrderLine(models.Model):
@@ -55,6 +75,30 @@ class PaymentOrderLine(models.Model):
         'l10n_br.payment_information', string="Payment Information")
 
     invoice_date = fields.Date('Data da Fatura')
+
+    # Pagamento de Títulos Bancários
+    def validate_payment_type_03(self, payment_mode, vals):
+        # Pagamento mensal pode salvar sem código de barras
+        if not payment_mode.one_time_payment:
+            if not vals.get('barcode'):
+                raise UserError('Código de barras obrigatório')
+            if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
+                raise UserError(
+                    'Código de barras deve possuir 47 ou 48 dígitos')
+
+    # Tributos com códigos de barras
+    def validate_payment_type_04(self, payment_mode, vals):
+        if not vals.get('barcode'):
+            raise UserError('Código de barras obrigatório')
+        if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
+            raise UserError('Código de barras deve possuir 47 ou 48 dígitos')
+
+    def validate_information(self, payment_mode, vals):
+        validate = getattr(
+            self, 'validate_payment_type_%s' %
+            payment_mode.payment_type, False)
+        if validate:
+            validate(payment_mode, vals)
 
     @api.depends('payment_information_id')
     def _compute_final_value(self):
@@ -97,37 +141,37 @@ class PaymentOrderLine(models.Model):
         return payment_order
 
     def get_service_type(self, payment_mode):
-        if payment_mode.finality_ted == '05':
-            return '20'
         if payment_mode.payment_type in ('04', '05', '06', '07', '08', '09'):
             return '22'
+        else:
+            return payment_mode.service_type
 
     def get_information_vals(self, payment_mode_id, vals):
         return {
             'payment_type': payment_mode_id.payment_type,
-            'finality_ted': payment_mode_id.finality_ted,
             'mov_finality': payment_mode_id.mov_finality,
             'operation_code': self.get_operation_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
-            'barcode': vals.pop('barcode'),
-            'fine_value': vals.pop('fine_value'),
-            'interest_value': vals.pop('interest_value'),
+            'barcode': vals.get('barcode'),
+            'fine_value': vals.get('fine_value'),
+            'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
             'l10n_br_environment': payment_mode_id.l10n_br_environment
         }
 
     def action_generate_payment_order_line(self, payment_mode, **vals):
+        self.validate_information(payment_mode, vals)
         payment_order = self.get_payment_order(payment_mode)
         info_vals = self.get_information_vals(payment_mode, vals)
         information_id = self.env['l10n_br.payment_information'].sudo().create(
             info_vals)
+        journal = payment_mode.journal_id
         line_vals = {
             'payment_mode_id': payment_mode.id,
             'payment_information_id': information_id.id,
             'payment_order_id': payment_order.id,
-            'nosso_numero': payment_mode.nosso_numero_sequence
-            .next_by_id(),
+            'nosso_numero': journal.l10n_br_sequence_nosso_numero.next_by_id(),
         }
         line_vals.update(vals)
         self.sudo().create(line_vals)

@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models
+from odoo.exceptions import UserError
 from ..boleto.document import Boleto
 
 
@@ -60,5 +61,10 @@ class PaymentOrderLine(models.Model):
         return boleto_list
 
     def action_print_boleto(self):
+        for item in self:
+            if item.payment_mode_id.type != 'receivable':
+                raise UserError('Modo de pagamento não é boleto!')
+            if not item.payment_mode_id.boleto:
+                raise UserError('Modo de pagamento não é boleto!')
         return self.env.ref(
             'br_boleto.action_boleto_payment_order_line').report_action(self)

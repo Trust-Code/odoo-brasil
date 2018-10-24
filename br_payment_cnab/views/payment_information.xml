@@ -48,9 +48,13 @@
                                 <group>
                                     <group>
                                         <field name="mov_finality"/>
-                                        <field name="finality_ted"/>
                                     </group>
                                 </group>
+                            </page>
+                            <page string="Informações Títulos Bancários" attrs="{'invisible': [('payment_type', 'not in', ('03'))]}">
+                              <group>
+                                  <field name="barcode"/>
+                              </group>
                             </page>
                             <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07'))]}">
                                 <group>
