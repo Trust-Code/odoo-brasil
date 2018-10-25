@@ -6,17 +6,18 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_frete" invisible="1" />
-                <field name="valor_seguro" invisible="1" />
-                <field name="outras_despesas" invisible="1" />
+                <field name="l10n_br_valor_frete" invisible="1" />
+                <field name="l10n_br_valor_seguro" invisible="1" />
+                <field name="l10n_br_outras_despesas" invisible="1" />
             </xpath>
             <field name="l10n_br_total_tax" position="after">
-                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_localization" invisible="1"/>
             </field>
             <page name="vencimentos" position="after">
-                <page name="transporte" string="Transporte">
+                <page name="transporte" string="Transporte" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <group>
                         <group name="delivery_info">
                             <field name="freight_responsibility"/>
@@ -58,17 +59,18 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
-                <field name="valor_frete" invisible="1" />
-                <field name="valor_seguro" invisible="1" />
-                <field name="outras_despesas" invisible="1" />
+                <field name="l10n_br_valor_frete" invisible="1" />
+                <field name="l10n_br_valor_seguro" invisible="1" />
+                <field name="l10n_br_outras_despesas" invisible="1" />
             </xpath>
             <field name="l10n_br_total_tax" position="after">
-                <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                <field name="total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_seguro" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_total_frete" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="l10n_br_localization" invisible="1"/>
             </field>
             <page  name="vencimentos" position="after">
-                <page name="transporte" string="Transporte">
+                <page name="transporte" string="Transporte" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <group>
                         <group name="delivery_info">
                             <field name="freight_responsibility"/>
@@ -102,9 +104,9 @@
         <field name="priority">36</field>
         <field name="arch" type="xml">
             <field name="price_subtotal" position="after">
-                <field name="valor_frete" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
-                <field name="valor_seguro" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
-                <field name="outras_despesas" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
+                <field name="l10n_br_valor_frete" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
+                <field name="l10n_br_valor_seguro" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
+                <field name="l10n_br_outras_despesas" attrs="{'invisible': [('l10n_br_product_type', '=', 'service')]}" />
             </field>
         </field>
     </record>
