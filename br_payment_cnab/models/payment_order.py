@@ -71,6 +71,7 @@ class PaymentOrder(models.Model):
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
+    journal_id = fields.Many2one('account.journal', string="Diário")
     payment_information_id = fields.Many2one(
         'l10n_br.payment_information', string="Payment Information")
 
@@ -169,8 +170,12 @@ class PaymentOrderLine(models.Model):
         journal = payment_mode.journal_id
         line_vals = {
             'payment_mode_id': payment_mode.id,
+            'journal_id': payment_mode.journal_id.id,
+            'currency_id': payment_mode.journal_id.currency_id.id or
+            payment_mode.journal_id.company_id.currency_id.id,
             'payment_information_id': information_id.id,
             'payment_order_id': payment_order.id,
+            'emission_date': date.today(),
             'nosso_numero': journal.l10n_br_sequence_nosso_numero.next_by_id(),
         }
         line_vals.update(vals)
@@ -179,6 +184,40 @@ class PaymentOrderLine(models.Model):
     def action_aprove_payment_line(self):
         # TODO Check if user has access
         self.state = 'approved'
+
+    def create_move_and_reconcile(self, order_line):
+        move = self.env['account.move'].create({
+            'name': '/',
+            'journal_id': order_line.journal_id.id,
+            'company_id': order_line.journal_id.company_id.id,
+            'date': date.today(),
+            'ref': order_line.name,
+        })
+        aml_obj = self.env['account.move.line'].with_context(
+            check_move_validity=False)
+        counterpart_aml_dict = {
+            'name': order_line.name,
+            'move_id': move.id,
+            'partner_id': order_line.partner_id.id,
+            'debit': order_line.amount_total,
+            'credit': 0.0,
+            'currency_id': order_line.currency_id.id,
+            'account_id': order_line.move_line_id.account_id.id,
+        }
+        liquidity_aml_dict = {
+            'name': order_line.name,
+            'move_id': move.id,
+            'partner_id': order_line.partner_id.id,
+            'debit': 0.0,
+            'credit': order_line.amount_total,
+            'currency_id': order_line.currency_id.id,
+            'account_id': order_line.journal_id.default_debit_account_id.id,
+        }
+        counterpart_aml = aml_obj.create(counterpart_aml_dict)
+        aml_obj.create(liquidity_aml_dict)
+        move.post()
+        (counterpart_aml + order_line.move_line_id).reconcile()
+        return move
 
     def mark_order_line_paid(self):
         bank_account_ids = self.mapped('src_bank_account_id')
@@ -195,14 +234,17 @@ class PaymentOrderLine(models.Model):
                 'journal_id': journal_id.id,
             })
             for item in order_lines:
-                line = self.env['l10n_br.payment.statement.line'].create({
+                move_id = self.create_move_and_reconcile(item)
+                self.env['l10n_br.payment.statement.line'].create({
                     'statement_id': statement_id.id,
                     'date': date.today(),
                     'name': '0001/Manual',
                     'partner_id': item.partner_id.id,
                     'ref': item.name,
                     'amount': item.value_final,
+                    'move_id': move_id.id,
                 })
+            order_lines.write({'state': 'paid'})
 
     def action_view_more_info(self):
         return {

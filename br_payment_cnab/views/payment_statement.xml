@@ -9,7 +9,7 @@
                 <field name="name"/>
                 <field name="date"/>
                 <field name="journal_id"/>
-                <field name="end_balance"/>
+                <field name="amount_total"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="state"/>
                 <field name='company_id' groups="base.group_multi_company" />
@@ -41,7 +41,7 @@
                         </group>
                         <group>
                             <field name="create_uid"/>
-                            <field name="end_balance"/>
+                            <field name="amount_total"/>
                         </group>
                     </group>
 
@@ -53,6 +53,7 @@
                                     <field name="name" />
                                     <field name="partner_id" domain="['|',('parent_id','=',False),('is_company','=',True)]"
                                          context="{'default_supplier': 1}" />
+                                    <field name="move_id" />
                                     <field name="ref" groups="base.group_no_one"/>
                                     <field name="amount" />
                                     <field name="journal_currency_id" invisible="1"/>

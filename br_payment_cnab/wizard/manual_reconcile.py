@@ -20,7 +20,7 @@ class l10nBrPaymentManualReconcile(models.TransientModel):
         active_ids = context.get('active_ids', []) or []
         line_ids = self.env['payment.order.line'].browse(active_ids)
 
-        if line_ids.filtered(lambda x: x.state != 'sent'):
+        if line_ids.filtered(lambda x: x.state not in ('processed', 'sent')):
             raise UserError(
                 'Apenas itens enviados podem ser baixados manualmente')
 
