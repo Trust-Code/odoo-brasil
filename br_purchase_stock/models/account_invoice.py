@@ -11,9 +11,9 @@ class AccountInvoice(models.Model):
     def _prepare_invoice_line_from_po_line(self, line):
         res = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(
             line)
-        res['valor_seguro'] = line.valor_seguro
-        res['outras_despesas'] = line.outras_despesas
-        res['valor_frete'] = line.valor_frete
+        res['l10n_br_valor_seguro'] = line.l10n_br_valor_seguro
+        res['l10n_br_outras_despesas'] = line.l10n_br_outras_despesas
+        res['l10n_br_valor_frete'] = line.l10n_br_valor_frete
         res['ii_valor_despesas'] = line.valor_aduana
         return res
 
@@ -33,6 +33,6 @@ class AccountInvoice(models.Model):
             l.l10n_br_ii_valor_despesas for l in lines)
         self.amount_total = (
             self.l10n_br_total_bruto - self.l10n_br_total_desconto +
-            self.l10n_br_total_tax + self.total_frete +
-            self.total_seguro + self.total_despesas
+            self.l10n_br_total_tax + self.l10n_br_total_frete +
+            self.l10n_br_total_seguro + self.l10n_br_total_despesas
         )
