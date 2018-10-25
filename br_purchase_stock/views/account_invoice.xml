@@ -10,7 +10,7 @@
             </xpath>
             <field name="l10n_br_total_frete" position="after">
                 <field name="l10n_br_fiscal_position_type" invisible="1"/>
-                <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="l10n_br_total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
         </field>
     </record>
@@ -25,7 +25,7 @@
                  <field name="l10n_br_ii_valor_despesas" invisible="1" />
             </xpath>
             <field name="l10n_br_total_frete" position="after">
-                <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="l10n_br_total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
         </field>
     </record>
