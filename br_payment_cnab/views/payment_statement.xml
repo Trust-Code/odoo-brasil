@@ -40,10 +40,8 @@
                             <field name="currency_id" invisible="1"/>
                         </group>
                         <group>
-                            <label for="end_balance"/>
-                            <div>
-                                <field class="oe_inline" name="end_balance"/>
-                            </div>
+                            <field name="create_uid"/>
+                            <field name="end_balance"/>
                         </group>
                     </group>
 

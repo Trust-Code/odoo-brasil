@@ -36,6 +36,7 @@
         'views/payment_statement.xml',
         'views/res_config_settings.xml',
         'wizard/payment_cnab_import.xml',
+        'wizard/manual_reconcile.xml',
     ],
     'application': True,
 }

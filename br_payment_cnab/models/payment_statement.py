@@ -29,7 +29,7 @@ class l10nBrPaymentStatement(models.Model):
     currency_id = fields.Many2one(
         'res.currency', compute='_compute_currency', string="Currency")
     state = fields.Selection(
-        [('open', 'New'), ('confirm', 'Validated')], string='Status',
+        [('open', 'New'), ('validated', 'Validated')], string='Status',
         required=True, readonly=True, copy=False, default='open')
     journal_id = fields.Many2one(
         'account.journal', string='Journal', required=True,

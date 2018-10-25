@@ -3,7 +3,7 @@
 
 import logging
 import base64
-from datetime import datetime
+from datetime import datetime, date
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
@@ -180,8 +180,29 @@ class PaymentOrderLine(models.Model):
         # TODO Check if user has access
         self.state = 'approved'
 
-    def action_open_edit_wizard(self):
-        pass
+    def mark_order_line_paid(self):
+        bank_account_ids = self.mapped('src_bank_account_id')
+        for account in bank_account_ids:
+            order_lines = self.filtered(
+                lambda x: x.src_bank_account_id == account)
+            journal_id = self.env['account.journal'].search(
+                [('bank_account_id', '=', account.id)], limit=1)
+
+            statement_id = self.env['l10n_br.payment.statement'].create({
+                'name': '0001/Manual',
+                'date': date.today(),
+                'state': 'validated',
+                'journal_id': journal_id.id,
+            })
+            for item in order_lines:
+                line = self.env['l10n_br.payment.statement.line'].create({
+                    'statement_id': statement_id.id,
+                    'date': date.today(),
+                    'name': '0001/Manual',
+                    'partner_id': item.partner_id.id,
+                    'ref': item.name,
+                    'amount': item.value_final,
+                })
 
     def action_view_more_info(self):
         return {
