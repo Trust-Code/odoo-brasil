@@ -19,6 +19,8 @@ class AccountInvoice(models.Model):
                  'currency_id', 'company_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
+        if not self.l10n_br_localization:
+            return
         lines = self.invoice_line_ids
         self.l10n_br_total_tax = sum(l.l10n_br_price_tax for l in lines)
         self.l10n_br_icms_base = \
@@ -343,10 +345,10 @@ class AccountInvoice(models.Model):
     @api.model
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
-
         contador = 0
 
-        for line in self.invoice_line_ids:
+        for line in self.invoice_line_ids.filtered(
+                lambda x: x.l10n_br_localization):
             if line.quantity == 0:
                 continue
             res[contador]['price'] = line.price_total
@@ -378,6 +380,8 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
+        if not self.l10n_br_localization:
+            return res
         count = 1
         for invoice_line in res:
             line = invoice_line[2]
@@ -424,7 +428,8 @@ class AccountInvoice(models.Model):
     @api.model
     def tax_line_move_line_get(self):
         res = super(AccountInvoice, self).tax_line_move_line_get()
-
+        if not self.l10n_br_localization:
+            return res
         done_taxes = []
         for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
             if tax_line.amount and tax_line.tax_id.l10n_br_deduced_account_id:
@@ -453,7 +458,8 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_refund(
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
-
+        if not self.l10n_br_localization:
+            return res
         res['l10n_br_product_document_id'] = \
             invoice.l10n_br_product_document_id.id
         res['l10n_br_product_serie_id'] = invoice.l10n_br_product_serie_id.id

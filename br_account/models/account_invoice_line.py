@@ -610,6 +610,8 @@ class AccountInvoiceLine(models.Model):
 
     def _set_taxes(self):
         super(AccountInvoiceLine, self)._set_taxes()
+        if not self.l10n_br_localization:
+            return
         self._update_tax_from_ncm()
         fpos = self.invoice_id.fiscal_position_id
         if fpos:

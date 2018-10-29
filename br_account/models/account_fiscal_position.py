@@ -154,6 +154,8 @@ class AccountFiscalPosition(models.Model):
         fpos = super(AccountFiscalPosition, self)._get_fpos_by_region(
             country_id=country_id, state_id=state_id, zipcode=zipcode,
             vat_required=vat_required)
+        if not self.l10n_br_localization:
+            return fpos
         type_inv = self.env.context.get('type', False)
         supplier = self.env.context.get('search_default_supplier', False)
         customer = self.env.context.get('search_default_customer', False)
