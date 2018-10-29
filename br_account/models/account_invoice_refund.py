@@ -14,6 +14,8 @@ class AccountInvoiceRefund(models.TransientModel):
     @api.multi
     def invoice_refund(self):
         res = super(AccountInvoiceRefund, self).invoice_refund()
+        if not self.l10n_br_localization:
+            return res
         if type(res) is bool:
             return res
         if "domain" not in res:
