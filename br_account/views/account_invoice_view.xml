@@ -360,7 +360,7 @@
                             <group>
                                 <group>
                                     <field name="l10n_br_issqn_tipo"/>
-                                    <field name="l10n_br_service_type_id" attrs="{'required': [('l10n_br_product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                    <field name="l10n_br_service_type_id" domain="[('internal_type','=','normal')]"/>
                                 </group>
                                 <group>
                                     <field name="l10n_br_issqn_deduction" />
