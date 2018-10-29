@@ -18,8 +18,8 @@ class AccountInvoice(models.Model):
     def copy(self, default=None):
         new_acc_inv = super(AccountInvoice, self).copy(default)
         for i in range(len(new_acc_inv.invoice_line_ids)):
-            new_acc_inv.invoice_line_ids[i].import_declaration_ids = \
-                self.invoice_line_ids[i].import_declaration_ids
+            new_acc_inv.invoice_line_ids[i].l10n_br_import_declaration_ids = \
+                self.invoice_line_ids[i].l10n_br_import_declaration_ids
         return new_acc_inv
 
     @api.one
