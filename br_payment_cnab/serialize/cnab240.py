@@ -235,7 +235,8 @@ class Cnab_240(object):
     def create_detail(self, operation, event, lot_sequency, num_lot):
         for segment in self.segments_per_operation().get(operation, []):
             self._cnab_file.add_segment(
-                segment, self._get_segmento(event, lot_sequency, num_lot))
+                segment, self._get_segmento(
+                    event, lot_sequency, num_lot))
             lot_sequency += 1
         self._cnab_file.get_active_lot().get_active_event().close_event()
         return lot_sequency
