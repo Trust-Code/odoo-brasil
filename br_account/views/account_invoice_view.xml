@@ -329,7 +329,7 @@
                             <group>
                                 <group>
                                     <field name="l10n_br_issqn_tipo"/>
-                                    <field name="l10n_br_service_type_id" attrs="{'required': [('l10n_br_product_type','=', 'service')]}" domain="[('internal_type','=','normal')]"/>
+                                    <field name="l10n_br_service_type_id" attrs="{'required': [('l10n_br_product_type','=', 'service'),('l10n_br_localization', '=', True)]}" domain="[('internal_type','=','normal')]"/>
                                 </group>
                                 <group>
                                     <field name="l10n_br_issqn_deduction" />
@@ -343,7 +343,7 @@
                         <page name="ipi" string="IPI" attrs="{'invisible': [('l10n_br_product_type','=', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>
-                                    <field name="l10n_br_ipi_cst" attrs="{'required': [('l10n_br_product_type','=', 'product')]}"/>
+                                    <field name="l10n_br_ipi_cst" attrs="{'required': [('l10n_br_product_type','=', 'product'),('l10n_br_localization', '=', True)]}"/>
                                     <field name="l10n_br_ipi_tipo"/>
                                     <field name="l10n_br_ipi_rule_id" />
                                 </group>
@@ -360,7 +360,7 @@
                         <page name="pis" string="PIS">
                             <group string="Detalhes do PIS">
                                 <group>
-                                    <field name="l10n_br_pis_cst" attrs="{'required': [('l10n_br_product_type','=', 'product')]}"/>
+                                    <field name="l10n_br_pis_cst" attrs="{'required': [('l10n_br_product_type','=', 'product'),('l10n_br_localization', '=', True)]}"/>
                                     <field name="l10n_br_pis_tipo"/>
                                     <field name="l10n_br_pis_rule_id" />
                                 </group>
@@ -376,7 +376,7 @@
                         <page name="cofins" string="COFINS">
                             <group string="Detalhes do COFINS">
                                 <group>
-                                    <field name="l10n_br_cofins_cst" attrs="{'required': [('l10n_br_product_type','=', 'product')]}"/>
+                                    <field name="l10n_br_cofins_cst" attrs="{'required': [('l10n_br_product_type','=', 'product'),('l10n_br_localization', '=', True)]}"/>
                                     <field name="l10n_br_cofins_tipo"/>
                                     <field name="l10n_br_cofins_rule_id" />
                                 </group>
