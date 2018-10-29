@@ -16,17 +16,17 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_line_outras_despesas
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_line_l10n_br_outras_despesas
 msgid "(+) Despesas"
 msgstr "(+) Despesas"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_line_valor_frete
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_line_l10n_br_valor_frete
 msgid "(+) Frete"
 msgstr "(+) Frete"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_line_valor_seguro
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_line_l10n_br_valor_seguro
 msgid "(+) Seguro"
 msgstr "(+) Seguro"
 
@@ -76,7 +76,7 @@ msgid "<strong>Insurance ( + )</strong>"
 msgstr "<strong>Seguro ( + )</strong>"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_total_despesas
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_l10n_br_total_despesas
 msgid "Despesas ( + )"
 msgstr "Despesas ( + )"
 
@@ -91,7 +91,7 @@ msgid "Exportação"
 msgstr "Exportação"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_total_frete
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_l10n_br_total_frete
 msgid "Frete ( + )"
 msgstr "Frete ( + )"
 
@@ -176,7 +176,7 @@ msgid "RNTC Reboque"
 msgstr "RNTC Reboque"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_total_seguro
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_l10n_br_total_seguro
 msgid "Seguro ( + )"
 msgstr "Seguro ( + )"
 

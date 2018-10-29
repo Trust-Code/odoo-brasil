@@ -147,8 +147,8 @@ class SaleOrderLine(models.Model):
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-        res['valor_seguro'] = self.valor_seguro
-        res['outras_despesas'] = self.outras_despesas
-        res['valor_frete'] = self.valor_frete * (round(
+        res['l10n_br_valor_seguro'] = self.valor_seguro
+        res['l10n_br_outras_despesas'] = self.outras_despesas
+        res['l10n_br_valor_frete'] = self.valor_frete * (round(
             res['quantity'] / self.product_uom_qty, 2))
         return res

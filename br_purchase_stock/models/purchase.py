@@ -8,7 +8,8 @@ from odoo.addons import decimal_precision as dp
 
 
 class PurchaseOrder(models.Model):
-    _inherit = 'purchase.order'
+    _name = 'purchase.order'
+    _inherit = ['purchase.order', 'br.localization.filtering']
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
@@ -18,9 +19,9 @@ class PurchaseOrder(models.Model):
                 'amount_total': (
                     order.l10n_br_total_bruto +
                     order.l10n_br_total_tax +
-                    order.total_frete +
-                    order.total_seguro +
-                    order.total_despesas),
+                    order.l10n_br_total_frete +
+                    order.l10n_br_total_seguro +
+                    order.l10n_br_total_despesas),
             })
         self._onchange_despesas_frete_seguro()
 
@@ -32,15 +33,15 @@ class PurchaseOrder(models.Model):
 
     def calc_rateio(self, line, total):
         porcentagem = self._calc_ratio(line.valor_bruto, total)
-        frete = self.total_frete * porcentagem
-        seguro = self.total_seguro * porcentagem
-        despesas = self.total_despesas * porcentagem
-        aduana = self.total_despesas_aduana * porcentagem
+        frete = self.l10n_br_total_frete * porcentagem
+        seguro = self.l10n_br_total_seguro * porcentagem
+        despesas = self.l10n_br_total_despesas * porcentagem
+        aduana = self.l10n_br_total_despesas_aduana * porcentagem
         line.update({
-            'valor_seguro': seguro,
-            'valor_frete': frete,
-            'outras_despesas': despesas,
-            'valor_aduana': aduana
+            'l10n_br_valor_seguro': seguro,
+            'l10n_br_valor_frete': frete,
+            'l10n_br_outras_despesas': despesas,
+            'l10n_br_valor_aduana': aduana
         })
         return frete, seguro, despesas, aduana
 
@@ -51,14 +52,14 @@ class PurchaseOrder(models.Model):
                 amount += line.l10n_br_valor_bruto
         return amount
 
-    @api.onchange('total_despesas', 'total_seguro',
-                  'total_frete', 'total_despesas_aduana')
+    @api.onchange('l10n_br_total_despesas', 'l10n_br_total_seguro',
+                  'l10n_br_total_frete', 'l10n_br_total_despesas_aduana')
     def _onchange_despesas_frete_seguro(self):
         amount = self.calc_total_amount()
-        sub_frete = self.total_frete
-        sub_seguro = self.total_seguro
-        sub_aduana = self.total_despesas_aduana
-        sub_desp = self.total_despesas
+        sub_frete = self.l10n_br_total_frete
+        sub_seguro = self.l10n_br_total_seguro
+        sub_aduana = self.l10n_br_total_despesas_aduana
+        sub_desp = self.l10n_br_total_despesas
         for l in self.order_line:
             if l.product_id.l10n_br_fiscal_type == 'service':
                 continue
@@ -72,47 +73,56 @@ class PurchaseOrder(models.Model):
         if self.order_line:
             self.order_line[0].update({
                 'valor_seguro':
-                    self.order_line[0].valor_seguro + sub_seguro,
+                    self.order_line[0].l10n_br_valor_seguro + sub_seguro,
                 'valor_frete':
-                    self.order_line[0].valor_frete + sub_frete,
+                    self.order_line[0].l10n_br_valor_frete + sub_frete,
                 'outras_despesas':
-                    self.order_line[0].outras_despesas + sub_desp,
+                    self.order_line[0].l10n_br_outras_despesas + sub_desp,
                 'valor_aduana':
-                    self.order_line[0].valor_aduana + sub_aduana
+                    self.order_line[0].l10n_br_valor_aduana + sub_aduana
                 })
 
-    total_despesas = fields.Float(
+    l10n_br_total_despesas = fields.Float(
         string='Despesas ( + )', default=0.00,
         digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
-                               'sent': [('readonly', False)]})
-    total_despesas_aduana = fields.Float(
+                               'sent': [('readonly', False)]},
+        oldname='total_despesas')
+    l10n_br_total_despesas_aduana = fields.Float(
         string='Despesas Aduaneiras', default=0.00,
         digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
-                               'sent': [('readonly', False)]})
-    total_seguro = fields.Float(
+                               'sent': [('readonly', False)]},
+        oldaname='total_despesas_aduana')
+    l10n_br_total_seguro = fields.Float(
         string='Seguro ( + )', default=0.00,
         digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
-                               'sent': [('readonly', False)]})
-    total_frete = fields.Float(
+                               'sent': [('readonly', False)]},
+        oldname='total_seguro')
+    l10n_br_total_frete = fields.Float(
         string='Frete ( + )', default=0.00, digits=dp.get_precision('Account'),
         readonly=True, states={'draft': [('readonly', False)],
-                               'sent': [('readonly', False)]})
+                               'sent': [('readonly', False)]},
+        oldname='total_frete')
 
 
 class PuchaseOrderLine(models.Model):
-    _inherit = 'purchase.order.line'
+    _name = 'purchase.order.line'
+    _inherit = ['purchase.order.line', 'br.localization.filtering']
 
-    valor_seguro = fields.Float(
-        'Seguro', default=0.0, digits=dp.get_precision('Account'))
-    outras_despesas = fields.Float(
-        'Despesas', default=0.0, digits=dp.get_precision('Account'))
-    valor_frete = fields.Float(
-        'Frete', default=0.0, digits=dp.get_precision('Account'))
-    valor_aduana = fields.Float(
-        default=0.0, digits=dp.get_precision('Account'))
+    l10n_br_valor_seguro = fields.Float(
+        'Seguro', default=0.0, digits=dp.get_precision('Account'),
+        oldname='valor_seguro')
+    l10n_br_outras_despesas = fields.Float(
+        'Despesas', default=0.0, digits=dp.get_precision('Account'),
+        oldanme='outras_despesas')
+    l10n_br_valor_frete = fields.Float(
+        'Frete', default=0.0, digits=dp.get_precision('Account'),
+        oldname='valor_frete')
+    l10n_br_valor_aduana = fields.Float(
+        default=0.0, digits=dp.get_precision('Account'),
+        oldname='valor_aduana')
 
     def _prepare_tax_context(self):
         res = super(PuchaseOrderLine, self)._prepare_tax_context()
@@ -129,7 +139,7 @@ class PuchaseOrderLine(models.Model):
     def _get_stock_move_price_unit(self):
         price = super(PuchaseOrderLine, self)._get_stock_move_price_unit()
         price = price + \
-            (self.valor_frete/self.product_qty) + \
-            (self.valor_seguro/self.product_qty) + \
-            (self.outras_despesas/self.product_qty)
+            (self.l10n_br_valor_frete/self.product_qty) + \
+            (self.l10n_br_valor_seguro/self.product_qty) + \
+            (self.l10n_br_outras_despesas/self.product_qty)
         return price

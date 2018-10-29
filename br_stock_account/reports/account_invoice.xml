@@ -3,12 +3,12 @@
 
     <template id="br_sale_stock_report_sale_order" inherit_id="br_account.br_account_report_invoice">
         <tr name="tr_taxes" position="before">
-            <tr t-if="o.ipi_value" name="tr_ipi">
+            <tr t-if="o.l10n_br_ipi_value" name="tr_ipi">
                  <td>
                      <strong>IPI</strong>
                  </td>
                  <td class="text-right">
-                     <span t-field="o.ipi_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                     <span t-field="o.l10n_br_ipi_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                  </td>
              </tr>
              <tr t-if="o.l10n_br_icms_st_value" name="tr_icms_st">
@@ -21,22 +21,22 @@
               </tr>
         </tr>
         <tr name="tr_taxes" position="after">
-            <tr t-if="o.total_despesas" name="tr_expenses" style="border-top:1px solid #dddddd;">
+            <tr t-if="o.l10n_br_total_despesas" name="tr_expenses" style="border-top:1px solid #dddddd;">
                 <td><strong>Expenses ( + )</strong></td>
                 <td class="text-right">
-                    <span t-field="o.total_despesas" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                    <span t-field="o.l10n_br_total_despesas" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                 </td>
             </tr>
-            <tr t-if="o.total_seguro" name="tr_insurance">
+            <tr t-if="o.l10n_br_total_seguro" name="tr_insurance">
                 <td><strong>Insurance ( + )</strong></td>
                 <td class="text-right">
-                    <span t-field="o.total_seguro" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                    <span t-field="o.l10n_br_total_seguro" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                 </td>
             </tr>
-            <tr t-if="o.total_frete" name="tr_freight">
+            <tr t-if="o.l10n_br_total_frete" name="tr_freight">
                 <td><strong>Freight ( + )</strong></td>
                 <td class="text-right">
-                    <span t-field="o.total_frete" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                    <span t-field="o.l10n_br_total_frete" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                 </td>
             </tr>
         </tr>
