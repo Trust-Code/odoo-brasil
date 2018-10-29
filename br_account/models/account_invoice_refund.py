@@ -25,7 +25,7 @@ class AccountInvoiceRefund(models.TransientModel):
             'fiscal_position_id': self.l10n_br_fiscal_position_id.id
         })
 
-        if self.fiscal_position_id:
+        if self.l10n_br_fiscal_position_id:
             for item in invoice_id.invoice_line_ids:
                 price_unit = item.price_unit
                 item._onchange_product_id()
