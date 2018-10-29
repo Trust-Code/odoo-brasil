@@ -16,9 +16,12 @@
             <xpath expr="//sheet/label" position="before">
                 <div class="oe_button_box" name="button_box"></div>
             </xpath>
-            <field name="fiscal_position_id" position="replace"></field>
+            <field name="fiscal_position_id" position="attributes">
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
+            </field>
             <field name="payment_term_id" position="after">
-                <field name="fiscal_position_id" domain="['|', ('l10n_br_fiscal_type', '=', None), ('l10n_br_fiscal_type', '=', 'saida')]" />
+                <field name="l10n_br_localization" invisible="1" />
+                <field name="fiscal_position_id" domain="['|', ('l10n_br_fiscal_type', '=', None), ('l10n_br_fiscal_type', '=', 'saida')]" attrs="{'invisible': [('l10n_br_localization', '=', False)]}"/>
             </field>
             <field name="partner_bank_id" position="after">
                 <field name="l10n_br_product_document_id" />
@@ -32,14 +35,14 @@
                 <attribute name="editable"></attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attrs">{'column_invisible': [('parent.l10n_br_localization', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="l10n_br_valor_bruto" invisible="1" />
                 <field name="l10n_br_valor_desconto" invisible="1" />
             </xpath>
             <page name="other_info" position="before">
-                <page name="vencimentos" string="Vencimentos">
+                <page name="vencimentos" string="Vencimentos" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field nolabel="1" name="l10n_br_receivable_move_line_ids">
                         <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
@@ -53,7 +56,7 @@
                 </page>
             </page>
             <field name="tax_line_ids" position="after">
-                <group name="documentos_relacionados" string="Documentos Relacionados">
+                <group name="documentos_relacionados" string="Documentos Relacionados" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field colspan="4" nolabel="1" name="l10n_br_fiscal_document_related_ids">
                         <tree>
                             <field name="document_type"/>
@@ -84,21 +87,21 @@
                         </form>
                     </field>
                 </group>
-                <group string="Mensagens Documento Eletrônico">
+                <group string="Mensagens Documento Eletrônico" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="l10n_br_fiscal_observation_ids" nolabel="1"/>
                 </group>
-                <group string="Observações">
+                <group string="Observações" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="comment" nolabel="1"/>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Observações Fiscais" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="l10n_br_fiscal_comment" nolabel="1"/>
                 </group>
             </field>
             <field name="amount_untaxed" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="amount_tax" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="amount_tax" position="before">
                 <field name="l10n_br_total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -111,8 +114,12 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account_cancel.invoice_form_cancel_inherit"/>
         <field name="arch" type="xml">
-            <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/></button>
+            <xpath expr="//button[@name='action_invoice_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('l10n_br_localization' ,'=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_invoice_cancel']" position="after">
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice" attrs="{'invisible': ['|',('l10n_br_localization', '=', False)]}"/>
+            </xpath>
         </field>
     </record>
     <record id="view_br_account_invoice_supplier_form" model="ir.ui.view">
@@ -123,9 +130,13 @@
             <xpath expr="//sheet/div" position="before">
                 <div class="oe_button_box" name="button_box"></div>
             </xpath>
-            <field name="fiscal_position_id" position="replace"></field>
+            <field name="fiscal_position_id" position="attributes">
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
+            </field>
             <field name="reference" position="after">
-                <field name="fiscal_position_id" domain="['|', ('l10n_br_fiscal_type', '=', 'import'), '|', ('l10n_br_fiscal_type', '=', 'entrada'), ('l10n_br_fiscal_type', '=', None)]" /></field>
+                <field name="l10n_br_localization" invisible="1" />
+                <field name="fiscal_position_id" domain="['|', ('l10n_br_fiscal_type', '=', 'import'), '|', ('l10n_br_fiscal_type', '=', 'entrada'), ('l10n_br_fiscal_type', '=', None)]" attrs="{'invisible':[('l10n_br_localization', '=', False)]}"/>
+            </field>
             <field name="partner_bank_id" position="after">
                 <field name="l10n_br_product_document_id" />
                 <field name="l10n_br_product_serie_id" />
@@ -141,14 +152,14 @@
                 <attribute name="editable"></attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attrs">{'column_invisible': [('parent.l10n_br_localization', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="l10n_br_valor_bruto" invisible="1" />
                 <field name="l10n_br_valor_desconto" invisible="1" />
             </xpath>
             <xpath expr="//notebook/page" position="after">
-                <page name="vencimentos" string="Vencimentos">
+                <page name="vencimentos" string="Vencimentos" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field nolabel="1" name="l10n_br_payable_move_line_ids">
                         <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
@@ -161,8 +172,8 @@
                     </field>
                 </page>
             </xpath>
-            <xpath expr="//notebook/page[last()]/group" position="after">
-                <group name="documentos_relacionados" string="Documentos Relacionados">
+            <xpath expr="//notebook/page[@name='other_info']/group" position="after">
+                <group name="documentos_relacionados" string="Documentos Relacionados" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field colspan="4" nolabel="1" name="l10n_br_fiscal_document_related_ids">
                         <tree>
                             <field name="document_type"/>
@@ -193,21 +204,21 @@
                         </form>
                     </field>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Observações Fiscais" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="l10n_br_fiscal_observation_ids" nolabel="1"/>
                 </group>
-                <group string="Observações">
+                <group string="Observações" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="comment" nolabel="1"/>
                 </group>
-                <group string="Observações Fiscais">
+                <group string="Observações Fiscais" attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="l10n_br_fiscal_comment" nolabel="1"/>
                 </group>
             </xpath>
             <field name="amount_untaxed" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="amount_tax" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="amount_tax" position="before">
                 <field name="l10n_br_total_bruto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -220,8 +231,13 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account_cancel.invoice_supplier_cancel_form_inherit"/>
         <field name="arch" type="xml">
-            <button name="action_invoice_cancel" position="replace">
-                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice"/></button>
+            <xpath expr="//button[@name='action_invoice_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('l10n_br_localization' ,'=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_invoice_cancel']" position="after">
+                <field name="l10n_br_localization" invisible="1"/>
+                <button name="action_invoice_cancel_paid" type="object" states="draft,proforma2,open,paid" string="Cancelar Fatura" groups="account.group_account_invoice" attrs="{'invisible': ['|',('l10n_br_localization', '=', False)]}"/>
+            </xpath>
         </field>
     </record>
     <!-- Invoice Line views -->
@@ -231,8 +247,12 @@
         <field name="inherit_id" ref="account.view_invoice_line_tree" />
         <field name="priority">26</field>
         <field name="arch" type="xml">
-            <field name="account_id" position="replace">
-                <field name="l10n_br_cfop_id" /></field>
+            <xpath expr="//field[@name='account_id']" position="attributes">
+                <attribute name="attrs">{'column_invisible': [('parent.l10n_br_localization', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='account_id']" position="before">
+                <field name="l10n_br_cfop_id"/>
+            </xpath>
         </field>
     </record>
     <record model="ir.ui.view" id="view_br_account_invoice_line_form">
@@ -241,9 +261,15 @@
         <field name="inherit_id" ref="account.view_invoice_line_form" />
         <field name="priority">36</field>
         <field name="arch" type="xml">
-            <form position="replace">
-                <form string="Invoice Line">
-                    <notebook>
+            <xpath expr="//form/group" position="attributes">
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//form" position="inside">
+                    <field name="l10n_br_localization" invisible="1"/>
+                    <notebook attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                         <page string="Geral">
                             <group>
                                 <group>
@@ -462,12 +488,11 @@
                             </group>
                         </page>
                     </notebook>
-                </form>
-            </form>
+            </xpath>
         </field>
     </record>
     <record id="group_edit_bases_calculo" model="res.groups">
         <field name="name">Habilitar edição das bases de cálculo</field>
         <field name="category_id" ref="base.module_category_hidden"/>
-    </record>>
+    </record>
 </odoo>

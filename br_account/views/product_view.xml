@@ -7,23 +7,24 @@
         <field name="inherit_id" ref="account.product_template_form_view"/>
         <field name="arch" type="xml">
             <field name="taxes_id" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attributes">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <field name="supplier_taxes_id" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="attributes">{'invisible': [('l10n_br_localization', '=', True)]}</attribute>
             </field>
             <group name="accounting" position="inside">
-                <group>
+                <group attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="l10n_br_fiscal_category_id" />
                     <field name="l10n_br_fiscal_type" />
                     <field name="l10n_br_origin" attrs="{'required': [('l10n_br_fiscal_type', '=', 'product')], 'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
                     <field name="l10n_br_fiscal_classification_id" attrs="{'required': [('l10n_br_fiscal_type', '=', 'product')], 'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
                     <field name="l10n_br_service_type_id" attrs="{'required': [('l10n_br_fiscal_type', '=', 'service')], 'invisible': [('l10n_br_fiscal_type', '=', 'product')]}" domain="[('internal_type', '=', 'normal')]"/>
                     <field name="l10n_br_cest" attrs="{'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
+                    <field name="l10n_br_localization" invisible="1"/>
                 </group>
             </group>
             <group name="description" position="inside">
-                <separator string="Mensagens Documento Eletrônico" colspan="4"/>
+                <separator string="Mensagens Documento Eletrônico" colspan="4" attrs="{'invisible': [('l10n_br_localization', '=', False)]}"/>
                 <field name="l10n_br_fiscal_observation_ids" colspan="4" nolabel="1"/>
             </group>
         </field>
