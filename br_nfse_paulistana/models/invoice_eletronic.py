@@ -99,10 +99,6 @@ class InvoiceEletronic(models.Model):
                     if not eletr.codigo_servico_paulistana:
                         errors.append(u'%s - Código da NFSe paulistana não \
                                       configurado' % prod)
-                if not eletr.pis_cst:
-                    errors.append(u'%s - CST do PIS' % prod)
-                if not eletr.cofins_cst:
-                    errors.append(u'%s - CST do Cofins' % prod)
 
         return errors
 
