@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report id="action_boleto_payment_order_line"
+                name="br_boleto.order_line.report"
+                model="payment.order.line"
+                report_type="qweb-pdf"
+                string="boleto-payment-order-line"/>
+
+        <record id="action_boleto_payment_order_line" model="ir.actions.report">
+            <field name="print_report_name">"boleto-%s-%s.pdf" % (object.name, object.partner_id.commercial_partner_id.name)</field>
+        </record>
+
+    </data>
+</odoo>

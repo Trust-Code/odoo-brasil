@@ -57,7 +57,7 @@ class InvoiceEletronic(models.Model):
         }
 
     payment_mode_id = fields.Many2one(
-        'payment.mode', string='Modo de Pagamento',
+        'l10n_br.payment.mode', string='Modo de Pagamento',
         readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
@@ -795,7 +795,7 @@ class InvoiceEletronic(models.Model):
     def _prepare_lote(self, lote, nfe_values):
         return {
             'idLote': lote,
-            'indSinc': 0,
+            'indSinc': 1 if self.company_id.nfe_sinc else 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{

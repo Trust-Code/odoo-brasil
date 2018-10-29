@@ -121,9 +121,9 @@ class Sicoob240(Cnab_240):
         segments = super(Sicoob240, self).segments_per_operation()
         segments.update({
             '03': ["SegmentoJ"],
-            '04': ["SegmentoO", "SegmentoW", "SegmentoZ"],
+            '04': ["SegmentoO"],
             '05': ["SegmentoN_GPS"],
-            '06': ["SegmentoN_DarfNormal", "SegmentoW", "SegmentoZ"],
-            '07': ["SegmentoN_DarfSimples", "SegmentoW", "SegmentoZ"],
+            '06': ["SegmentoN_DarfNormal", "SegmentoW"],
+            '07': ["SegmentoN_DarfSimples", "SegmentoW"],
         })
         return segments

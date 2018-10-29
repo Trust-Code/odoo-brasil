@@ -1,0 +1,330 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_account_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-09-12 02:07+0000\n"
+"PO-Revision-Date: 2018-09-12 02:07+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "A pagar"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "A receber"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Abertos"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_journal_bank_agency_dig
+msgid "Account Agency Digit"
+msgstr "Dígito Agência"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_journal_acc_partner_id
+msgid "Account Holder"
+msgstr "Titular da Conta"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_journal_acc_number_dig
+msgid "Account Number Digit"
+msgstr "Dígito da Conta"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_active
+msgid "Active"
+msgstr "Ativo"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_journal_bank_agency_number
+msgid "Agency"
+msgstr "Agência"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Agrupar por..."
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_bank_account_id
+msgid "Bank Account"
+msgstr "Conta Bancária"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_payment_order_src_bank_account_id
+msgid "Conta de Origem"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.actions.act_window,name:br_account_payment.action_receivable_move_line
+#: model:ir.ui.menu,name:br_account_payment.menu_action_receivable_move_line
+msgid "Contas a Receber/Pagar"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Contas em atraso"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
+msgid "Data de Pagamento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Data de Vencimento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_display_name
+msgid "Display Name"
+msgstr "Nome a exibir"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_id
+msgid "ID"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_account_invoice
+msgid "Invoice"
+msgstr "Fatura"
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_account_journal
+msgid "Journal"
+msgstr "Diário"
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_account_move_line
+msgid "Journal Item"
+msgstr "Lançamento de diário"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode___last_update
+msgid "Last Modified on"
+msgstr "Última modificação em"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_payment_move_line_id
+msgid "Linha de fatura"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_payment_total_moves
+msgid "Linha(s)"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.trustcode_payment_order_form_view
+msgid "Linhas de Cobrança"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_l10n_br_payment_mode
+#: model:ir.model,name:br_account_payment.model_payment_mode
+msgid "Modo de Pagamento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_invoice_payment_mode_id
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_line_payment_mode_id
+msgid "Modo de pagamento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Mês"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_name
+msgid "Name"
+msgstr "Nome"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.trustcode_payment_order_form_view
+msgid "Ordem de Pagamento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.actions.act_window,name:br_account_payment.action_payment_order_form
+#: model:ir.ui.menu,name:br_account_payment.menu_action_payment_order
+msgid "Ordens de Cobrança"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.trustcode_payment_order_line_tree_view
+#: model:ir.ui.view,arch_db:br_account_payment.trustcode_payment_order_tree_view
+msgid "Ordens de Pagamento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Pagamentos em aberto"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_pagar
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_receber
+msgid "Pago"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Pagos"
+msgstr ""
+
+#. module: br_account_payment
+#: selection:l10n_br.payment.mode,type:0
+#: selection:payment.order,type:0
+msgid "Pagável"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Parceiro"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.account_payment_mode_form
+msgid "Payment Mode"
+msgstr "Modo de Pagamento"
+
+#. module: br_account_payment
+#: model:ir.actions.act_window,name:br_account_payment.account_payment_mode_action
+#: model:ir.ui.menu,name:br_account_payment.account_payment_mode_menu
+#: model:ir.ui.view,arch_db:br_account_payment.account_payment_mode_tree
+msgid "Payment Modes"
+msgstr "Modos de Pagamento"
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_pagar
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_receber
+msgid "Payments"
+msgstr "Pagamentos"
+
+#. module: br_account_payment
+#: model:ir.ui.menu,name:br_account_payment.menu_br_payments
+msgid "Receber e Pagar"
+msgstr ""
+
+#. module: br_account_payment
+#: selection:l10n_br.payment.mode,type:0
+#: selection:payment.order,type:0
+msgid "Recebível"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_invoice_form
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_invoice_supplier_form
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_pagar
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_receber
+msgid "Register Payment"
+msgstr "Registrar pagamento"
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Registros pagos"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
+msgid "Search Payments"
+msgstr "Pesquisar pagamentos"
+
+#. module: br_account_payment
+#: code:addons/br_account_payment/models/account_payment.py:32
+#, python-format
+msgid "This method should only be calledto process a single invoice's payment."
+msgstr "Este método deve ser chamado para processar apenas uma fatura"
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_payment_order_line_type
+#: model:ir.model.fields,field_description:br_account_payment.field_payment_order_type
+msgid "Tipo de Ordem"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
+msgid "Tipo de Parceiro"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_l10n_br_payment_mode_type
+msgid "Tipo de Transação"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_pagar
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_receber
+msgid "Total"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_pagar
+#: model:ir.ui.view,arch_db:br_account_payment.view_payments_tree_a_receber
+msgid "Total das parcelas"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model.fields,field_description:br_account_payment.field_account_move_line_payment_value
+msgid "Valor"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.ui.view,arch_db:br_account_payment.view_br_account_payment_payment_form_inherit
+msgid "Valor do Pagamento"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_payment_order
+msgid "payment.order"
+msgstr ""
+
+#. module: br_account_payment
+#: model:ir.model,name:br_account_payment.model_payment_order_line
+msgid "payment.order.line"
+msgstr ""
