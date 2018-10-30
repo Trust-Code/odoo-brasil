@@ -17,7 +17,7 @@ class ResBank(models.Model):
     l10n_br_number = fields.Char(u'Number', size=10, oldname='number')
     street2 = fields.Char('Complement', size=128)
     l10n_br_district = fields.Char('District', size=32, oldname='district')
-    city_id = fields.Many2one(comodel_name='res.state.city',
+    city_id = fields.Many2one(comodel_name='res.city',
                               string=u'City',
                               domain="[('state_id','=',state_id)]")
 

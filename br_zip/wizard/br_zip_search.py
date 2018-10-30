@@ -16,7 +16,7 @@ class BrZipSearch(models.TransientModel):
     country_id = fields.Many2one('res.country', u'País')
     state_id = fields.Many2one("res.country.state", 'Estado',
                                domain="[('country_id','=',country_id)]")
-    city_id = fields.Many2one('res.state.city', 'Cidade',
+    city_id = fields.Many2one('res.city', 'Cidade',
                               domain="[('state_id','=',state_id)]")
     zip_ids = fields.Many2many('br.zip.result', 'zip_search', 'zip_search_id',
                                'zip_id', 'CEP', readonly=False)
@@ -113,7 +113,7 @@ class BrZipResult(models.TransientModel):
     state_id = fields.Many2one('res.country.state', 'Estado',
                                domain="[('country_id', '=', country_id)]",
                                readonly=True)
-    city_id = fields.Many2one('res.state.city', 'Cidade', required=True,
+    city_id = fields.Many2one('res.city', 'Cidade', required=True,
                               domain="[('state_id', '=', state_id)]",
                               readonly=True)
 

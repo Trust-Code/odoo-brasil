@@ -6,24 +6,26 @@
     </record>
 
     <record id="view_br_base_city_tree" model="ir.ui.view">
-        <field name="name">l10n_br_base.res.state.city</field>
-        <field name="model">res.state.city</field>
+        <field name="name">l10n_br_base.res.city</field>
+        <field name="model">res.city</field>
+        <field name="inherit_id" ref="base_address_city.view_city_tree" />
         <field name="arch" type="xml">
-            <tree string="Cities">
-                <field name="name" select="1"/>
-                <field name="state_id" select="1"/>
+            <field name="state_id" position="after">
                 <field name="l10n_br_ibge_code"/>
-            </tree>
+            </field>
         </field>
     </record>
 
     <record id="action_br_base_city_form" model="ir.actions.act_window">
         <field name="name">City</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.state.city</field>
+        <field name="res_model">res.city</field>
         <field name="view_mode">tree,form</field>
         <field name="view_type">form</field>
         <field name="view_id" ref="view_br_base_city_tree"/>
     </record>
+
+    <menuitem id="menu_action_br_base_city_form" name="Municípios"
+        parent="contacts.menu_localisation" action="br_base.action_br_base_city_form"/>
 
 </odoo>

@@ -23,6 +23,8 @@ class BrLocalizationFiltering(models.AbstractModel):
             tmpl_id3 and tmpl_id3.id or False] if x]
 
     def _get_user_localization(self):
+        if not hasattr(self.env.user.company_id, 'chart_template_id'):
+            return False
         user_localization = self.env.user.company_id.chart_template_id
         return user_localization and user_localization.id or False
 
@@ -98,6 +100,8 @@ class BrLocalizationFiltering(models.AbstractModel):
         user_template = self._get_user_localization()
         for record in self:
             if hasattr(record, 'company_id'):
+                if not hasattr(record.company_id, 'chart_template_id'):
+                    continue
                 user_template = (record.company_id.chart_template_id
                                  and record.company_id.chart_template_id.id
                                  or user_template)

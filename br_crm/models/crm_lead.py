@@ -18,7 +18,7 @@ class CrmLead(models.Model):
     inscr_est = fields.Char(u'Inscrição Estadual', size=16)
     inscr_mun = fields.Char(u'Inscrição Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    city_id = fields.Many2one('res.state.city', u'Município',
+    city_id = fields.Many2one('res.city', u'Município',
                               domain="[('state_id','=',state_id)]")
     l10n_br_district = fields.Char('Bairro', size=32, oldname="district")
     number = fields.Char(u'Número', size=10)

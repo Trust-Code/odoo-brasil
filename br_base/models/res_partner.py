@@ -38,10 +38,10 @@ class ResPartner(models.Model):
                                     oldname='inscr_mun')
     l10n_br_suframa = fields.Char('Suframa', size=18, oldname='suframa')
     l10n_br_legal_name = fields.Char(
-        u'Legal Name', size=60, help="Name used in fiscal documents",
+        'Legal Name', size=60, help="Name used in fiscal documents",
         oldname='legal_name')
     city_id = fields.Many2one(
-        'res.state.city', u'City',
+        'res.city', 'City',
         domain="[('state_id','=',state_id)]")
     l10n_br_district = fields.Char('District', size=32, oldname='district')
     l10n_br_number = fields.Char(u'Number', size=10, oldname='number')
@@ -237,11 +237,11 @@ class ResPartner(models.Model):
                 xMun = get_value(info.infCad.ender, 'xMun')
                 city = None
                 if cMun:
-                    city = self.env['res.state.city'].search(
+                    city = self.env['res.city'].search(
                         [('l10n_br_ibge_code', '=', str(cMun)[2:]),
                          ('state_id', '=', self.state_id.id)])
                 if not city and xMun:
-                    city = self.env['res.state.city'].search(
+                    city = self.env['res.city'].search(
                         [('name', 'ilike', xMun),
                          ('state_id', '=', self.state_id.id)])
                 if city:
