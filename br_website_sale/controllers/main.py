@@ -29,7 +29,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
                 methods=['POST'], website=True)
     def get_cities_json(self, state_id):
         if state_id and state_id.isdigit():
-            cities = request.env['res.state.city'].sudo().search(
+            cities = request.env['res.city'].sudo().search(
                 [('state_id', '=', int(state_id))])
             return [(city.id, city.name) for city in cities]
         return []

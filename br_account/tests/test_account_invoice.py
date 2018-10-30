@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from mock import patch
 from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 
@@ -72,7 +73,9 @@ class TestAccountInvoice(TestBaseBr):
             # Verifico as linhas recebiveis
             self.assertEquals(len(invoice.l10n_br_receivable_move_line_ids), 1)
 
-    def test_invoice_pis_cofins_taxes(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')   # noqa  java feelings
+    def test_invoice_pis_cofins_taxes(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             first_item = invoice.invoice_line_ids[0]
 
@@ -127,7 +130,9 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.l10n_br_pis_value, 32.5)
             self.assertEquals(invoice.l10n_br_cofins_value, 97.5)
 
-    def test_invoice_issqn_and_ii_taxes(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')   # noqa
+    def test_invoice_issqn_and_ii_taxes(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
 
             prod_item = invoice.invoice_line_ids[0]
@@ -162,7 +167,9 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.l10n_br_ii_value, 90.0)
             self.assertEquals(invoice.l10n_br_issqn_value, 25.0)
 
-    def test_invoice_icms_normal_tax(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')   # noqa
+    def test_invoice_icms_normal_tax(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
 
             first_item = invoice.invoice_line_ids[0]
@@ -197,7 +204,9 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(invoice.l10n_br_icms_base, 650.0)
             self.assertEquals(invoice.l10n_br_icms_value, 110.5)
 
-    def test_invoice_icms_reducao_base_tax(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')   # noqa
+    def test_invoice_icms_reducao_base_tax(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             first_item = invoice.invoice_line_ids[0]
 

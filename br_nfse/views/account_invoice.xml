@@ -8,7 +8,7 @@
             <div class="alert alert-info" position="after">
                 <field name="l10n_br_ambiente_nfse" invisible="1" />
                 <field name="l10n_br_nfse_eletronic" invisible="1" />
-                <div class="l10n_br_alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('l10n_br_ambiente_nfse', '==', 'producao'), ('l10n_br_nfse_eletronic', '=', False)]}">
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('l10n_br_ambiente_nfse', '==', 'producao'), ('l10n_br_nfse_eletronic', '=', False)]}">
                                       A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
