@@ -28,7 +28,7 @@ try:
         gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
-    from pytrustnfe.Servidores import localizar_qrcode
+    from pytrustnfe.Servidores import localizar_qrcode, localizar_url
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
@@ -786,9 +786,11 @@ class InvoiceEletronic(models.Model):
             QR_code_url = "p={0}|2|{1}|{2}|{3}".format(
                 chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
             qr_code_server = localizar_qrcode(estado, ambiente)
+            url_chave = localizar_url(
+                'NfeConsultaProtocolo', estado, '65', ambiente)
 
             vals['qrCode'] = qr_code_server + QR_code_url
-            vals['urlChave'] = 'www.fazenda.df.gov.br/nfce/consulta'
+            vals['urlChave'] = url_chave
         return vals
 
     @api.multi
