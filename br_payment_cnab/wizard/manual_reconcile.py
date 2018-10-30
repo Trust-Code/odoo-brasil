@@ -25,10 +25,11 @@ class l10nBrPaymentManualReconcile(models.TransientModel):
                 'Apenas itens enviados podem ser baixados manualmente')
 
         if self.confirmation == 'processed':
-            line_ids.write({'state': 'processed'})
+            line_ids.mark_order_line_processed('AA', 'Processado manualmente')
         elif self.confirmation == 'rejected':
-            line_ids.write({'state': 'rejected'})
+            line_ids.mark_order_line_processed(
+                True, 'ZZ', 'Rejeitado manualmente')
         elif self.confirmation == 'paid':
-            line_ids.mark_order_line_paid()
+            line_ids.mark_order_line_paid('00', 'Confirmação manual')
         else:
             raise UserError('Confirmação inválida!')
