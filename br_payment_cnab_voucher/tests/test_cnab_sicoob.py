@@ -2,11 +2,13 @@
 # © 2018 Marina Domingues, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from ..tests.test_cnab_common import TestBrCnabPayment
-from ..bancos.sicoob import Sicoob240
 import time
 import base64
 from decimal import Decimal
+
+from odoo.addons.br_payment_cnab.tests.test_common import TestBrCnabPayment
+from odoo.addons.br_payment_cnab.bancos.sicoob import Sicoob240
+
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
@@ -15,8 +17,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
 
     def setUp(self):
         super(TestBrCnabSicoob, self).setUp()
-        pay_mode = self.get_payment_mode()
-        self.payment_order = self.set_payment_order(pay_mode)
+        payment_mode = self.get_payment_mode()
+        self.payment_order = self.set_payment_order(payment_mode)
         self.set_order_lines()
 
     def get_voucher_id(self):
@@ -44,6 +46,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         return voucher_line.voucher_id
 
     def get_payment_mode(self):
+        nosso_numero = self.env['ir.sequence'].create({
+            'name': "Nosso Numero"})
         sicoob = self.env['res.bank'].search([('bic', '=', '756')])
         conta = self.env['res.partner.bank'].create({
             'acc_number': '45425',  # 5 digitos
@@ -53,57 +57,65 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'codigo_convenio': '123458-8',  # 7 digitos
             'bank_id': sicoob.id,
         })
-        mode = self.env['payment.mode'].create({
+        journal = self.env['account.journal'].create({
+            'name': 'Banco Sicoob',
+            'code': 'SIC',
+            'type': 'bank',
+            'bank_account_id': conta.id,
+            'company_id': self.main_company.id,
+            'l10n_br_sequence_nosso_numero': nosso_numero.id,
+        })
+        payment_mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob TED',
             'type': 'payable',
             'payment_type': '01',
-            'bank_account_id': conta.id
+            'journal_id': journal.id,
         })
-        return mode.id
+        return payment_mode
 
     def set_payment_order(self, payment_mode):
         self.payment_order = self.env['payment.order'].create({
             'name': 'cnab240_sicoob',
             'user_id': self.user.id,
-            'payment_mode_id': payment_mode,
+            'payment_mode_id': payment_mode.id,
             'file_number': 1,
             'company_id': self.main_company.id,
             'type': 'payable',
-            'data_emissao_cnab': time.strftime(DTFT)
+            'data_emissao_cnab': time.strftime(DTFT),
+            'src_bank_account_id': payment_mode.journal_id.bank_account_id.id,
         })
-        return self.payment_order.id
+        return self.payment_order
 
     def set_order_lines(self):
         order_lines = []
         nosso_numero = self.env['ir.sequence'].create({
             'name': "Nosso Numero"})
-        ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
         info_id = self.get_payment_information()
         order_lines.append(self.env['payment.order.line'].create({
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
-            'payment_order_id': ordem_cobranca.id,
-            'payment_mode_id': ordem_cobranca.payment_mode_id.id,
-            'value': 150.00,
+            'payment_order_id': self.payment_order.id,
+            'payment_mode_id': self.payment_order.payment_mode_id.id,
+            'amount_total': 150.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
             'state': 'sent',
             'value_final': 150.00,
-            'payment_information_id': info_id,
+            'payment_information_id': info_id.id,
             'voucher_id': self.get_voucher_line().id,
             'bank_account_id': self.receivable_account.id,
         }))
         order_lines.append(self.env['payment.order.line'].create({
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
-            'payment_order_id': ordem_cobranca.id,
-            'payment_mode_id': ordem_cobranca.payment_mode_id.id,
-            'value': 120.00,
+            'payment_order_id': self.payment_order.id,
+            'payment_mode_id': self.payment_order.payment_mode_id.id,
+            'amount_total': 120.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
             'state': 'sent',
             'value_final': 120.00,
-            'payment_information_id': info_id,
+            'payment_information_id': info_id.id,
             'voucher_id': self.get_voucher_line().id,
             'bank_account_id': self.receivable_account.id,
         }))
@@ -117,7 +129,6 @@ class TestBrCnabSicoob(TestBrCnabPayment):
                 'payment_type': '01',
                 'mov_finality': '01',
                 'warning_code': '0',
-                'finality_ted': '11',
                 'mov_instruc': '00',
                 'rebate_value': 1.00,
                 'discount_value': 2.00,
@@ -127,7 +138,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
                 'operation_code': '018',
                 'percentual_receita_bruta_acumulada': Decimal('12.00')
             })
-        return payment_information.id
+        return payment_information
 
     def get_cnab_obj(self, ordem_cobranca):
         cnab = Sicoob240(ordem_cobranca)
@@ -135,9 +146,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         return cnab
 
     def get_cnab_file(self):
-        ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
-        ordem_cobranca.action_generate_payable_cnab()
-        cnab = base64.decodestring(ordem_cobranca.cnab_file)
+        self.payment_order.action_generate_payable_cnab()
+        cnab = base64.decodestring(self.payment_order.cnab_file)
         cnab = cnab.decode('utf-8').split('\r\n')
         cnab.pop()
         return cnab
@@ -149,8 +159,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             self.assertEquals(len(line), 240)
 
     def test_header_arq(self):
-        ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
-        cnab = self.get_cnab_obj(ordem_cobranca)
+        cnab = self.get_cnab_obj(self.payment_order)
         arq_teste = cnab._get_header_arq()
         arq_ok = {
             'cedente_inscricao_tipo': 2,
@@ -160,7 +169,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'cedente_agencia_dv': '0',
             'cedente_conta': 45425,
             'cedente_conta_dv': 0,
-            'cedente_nome': 'Trustcode',
+            'cedente_nome': 'Trustcode Tecnologia da Inform',
             'data_geracao_arquivo': int(time.strftime("%d%m%Y")),
             'hora_geracao_arquivo': int(time.strftime("%H%M%S")[:4]),
             'numero_sequencial_arquivo': 1,
@@ -168,9 +177,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         self.assertEquals(arq_ok, arq_teste)
 
     def test_header_lot(self):
-        ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
-        cnab = self.get_cnab_obj(ordem_cobranca)
-        lot_teste = cnab._get_header_lot(ordem_cobranca.line_ids[1], 1)
+        cnab = self.get_cnab_obj(self.payment_order)
+        lot_teste = cnab._get_header_lot(self.payment_order.line_ids[1], 1)
         lot_ok = {
             'controle_lote': 1,
             'cedente_agencia': 4321,
@@ -184,7 +192,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'cedente_conta_dv': 0,
             'cedente_agencia_dv': '0',
             'mensagem1': '',
-            'cedente_nome': 'Trustcode',
+            'cedente_nome': 'Trustcode Tecnologia da Inform',
             'cedente_cep': 88037,
             'cedente_cidade': 'Florianópolis',
             'cedente_conta': 45425,
@@ -195,9 +203,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         self.assertEquals(lot_ok, lot_teste)
 
     def test_seg(self):
-        ordem_cobranca = self.env['payment.order'].browse(self.payment_order)
-        cnab = self.get_cnab_obj(ordem_cobranca)
-        seg_teste = cnab._get_segmento(ordem_cobranca.line_ids[1], 1, 1)
+        cnab = self.get_cnab_obj(self.payment_order)
+        seg_teste = cnab._get_segmento(self.payment_order.line_ids[1], 1, 1)
         seg_ok = {
             'controle_lote': 1,
             'sequencial_registro_lote': 1,
@@ -221,7 +228,6 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_real_pagamento': Decimal('121.00'),
             'mensagem2': '',
             'finalidade_doc_ted': '01',
-            'finalidade_ted': '11',
             'favorecido_emissao_aviso': 0,
             'favorecido_inscricao_tipo': 1,
             'favorecido_inscricao_numero': 6621204930,
@@ -239,15 +245,16 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_multa': Decimal('3.00'),
             'hora_envio_ted': (int(time.strftime("%H%M%S")[0:4])),
             'codigo_historico_credito': '2644',
-            'cedente_nome': 'Trustcode',
+            'cedente_nome': 'Trustcode Tecnologia da Inform',
             'valor_nominal_titulo': Decimal('120.00'),
             'valor_desconto_abatimento': Decimal('3.00'),
             'valor_multa_juros': Decimal('4.00'),
-            'codigo_moeda': '09',
+            'codigo_moeda': 9,
             'codigo_de_barras': 0,
-            'nome_concessionaria': '',
+            'codigo_de_barras_alfa': '0',
+            'nome_concessionaria': 'Parceiro',
             'data_vencimento': int(time.strftime("%d%m%Y")),
-            'contribuinte_nome': 'Trustcode',
+            'contribuinte_nome': 'Trustcode Tecnologia da Inform',
             'valor_total_pagamento': Decimal('121.00'),
             'codigo_receita_tributo': '',
             'tipo_identificacao_contribuinte': 1,
@@ -263,7 +270,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_receita': Decimal('120.0'),
             'numero_referencia': 0,
             'percentual_receita_bruta_acumulada': Decimal('12.00')}
-        self.assertEquals(seg_ok, seg_teste)
+        for key, value in seg_ok.items():
+            self.assertEquals(value, seg_teste[key], 'Key: %s' % key)
 
     def sequency_lot(self):
         cnab = self.get_cnab_file()

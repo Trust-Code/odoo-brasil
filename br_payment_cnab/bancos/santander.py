@@ -18,7 +18,7 @@ class Santander240(Cnab_240):
         super(Santander240, self).__init__()
 
     def _get_cod_convenio_santander(self):
-        bank_account = self._order.payment_mode_id.bank_account_id
+        bank_account = self._order.src_bank_account_id
         return "{:4s}{:4s}{:12s}".format(
             str(bank_account.bank_id.bic).zfill(4),
             str(bank_account.bra_number).zfill(4),
@@ -38,7 +38,6 @@ class Santander240(Cnab_240):
         info_id = line.payment_information_id
         header = super()._get_header_lot(line, num_lot)
         header.update({
-            'numero_versao_lote': 31,
             'forma_lancamento': int(get_forma_de_lancamento(
                 'santander', info_id.payment_type)),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
@@ -60,6 +59,8 @@ class Santander240(Cnab_240):
         segmento = super(Santander240, self)._get_segmento(
             line, lot_sequency, num_lot)
         segmento.update({
+            'tipo_identificacao_contribuinte': 2,  # CNPJ
+            'tipo_identificacao_contribuinte_alfa': '2',  # CNPJ
             'favorecido_conta': self._string_to_num(
                 segmento.get('favorecido_conta'), 0),
             'tipo_movimento': int(segmento.get('tipo_movimento')),
@@ -99,6 +100,14 @@ class Santander240(Cnab_240):
                 segmento.get('favorecido_cep')), 0),
             'favorecido_endereco_numero': self._string_to_num(
                 segmento.get('favorecido_endereco_numero'), default=0),
+            'favorecido_nome':
+                segmento.get('favorecido_nome')[:30],
+            'favorecido_endereco_rua':
+                segmento.get('favorecido_endereco_rua')[:30],
+            'favorecido_bairro':
+                segmento.get('favorecido_bairro')[:15],
+            'favorecido_cidade':
+                segmento.get('favorecido_cidade')[:15],
         })
         return segmento
 
@@ -113,10 +122,12 @@ class Santander240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Santander240, self).segments_per_operation()
         segments.update({
+            "03": ["SegmentoJ"],
             "04": ["SegmentoO"],
             "05": ["SegmentoN_GPS"],
             "06": ["SegmentoN_DarfNormal"],
             "07": ["SegmentoN_DarfSimples"],
             "08": ["SegmentoO", "SegmentoW"],
+            "09": ["SegmentoN_GareSP"],
         })
         return segments

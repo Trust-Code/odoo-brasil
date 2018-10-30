@@ -7,6 +7,7 @@ import io
 import base64
 import logging
 import pytz
+import hashlib
 from lxml import etree
 from datetime import datetime
 from odoo import api, fields, models
@@ -27,6 +28,7 @@ try:
         gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
+    from pytrustnfe.Servidores import localizar_qrcode, localizar_url
 except ImportError:
     _logger.info('Cannot import pytrustnfe', exc_info=True)
 
@@ -55,7 +57,7 @@ class InvoiceEletronic(models.Model):
         }
 
     payment_mode_id = fields.Many2one(
-        'payment.mode', string='Modo de Pagamento',
+        'l10n_br.payment.mode', string='Modo de Pagamento',
         readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
     ambiente_nfe = fields.Selection(
@@ -186,6 +188,26 @@ class InvoiceEletronic(models.Model):
         help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
         da UF de destino')
 
+    # NFC-e
+    qrcode_hash = fields.Char(string='QR-Code hash')
+    qrcode_url = fields.Char(string='QR-Code URL')
+    metodo_pagamento = fields.Selection(
+        [('01', 'Dinheiro'),
+         ('02', 'Cheque'),
+         ('03', 'Catão de Crédito'),
+         ('04', 'Cartão de Débito'),
+         ('05', 'Crédito Loja'),
+         ('10', 'Vale Alimentação'),
+         ('11', 'Vale Refeição'),
+         ('12', 'Vale Presente'),
+         ('13', 'Vale Combustível'),
+         ('15', 'Boleto Bancário'),
+         ('90', 'Sem pagamento'),
+         ('99', 'Outros')],
+        string="Forma de Pagamento", default="01")
+    valor_pago = fields.Monetary(string='Valor pago')
+    troco = fields.Monetary(string='Troco')
+
     # Documentos Relacionados
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_eletronic_id',
@@ -213,14 +235,9 @@ class InvoiceEletronic(models.Model):
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
-        if self.model == '55':
+        if self.model in ('55', '65'):
             if not self.company_id.partner_id.inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
-            if not self.fiscal_position_id:
-                errors.append(u'Configure a posição fiscal')
-            if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
-                errors.append(u'Emitente / CNPJ do escritório contabilidade')
 
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
@@ -239,6 +256,23 @@ class InvoiceEletronic(models.Model):
                     errors.append(u'%s - CST do PIS' % prod)
                 if not eletr.cofins_cst:
                     errors.append(u'%s - CST do Cofins' % prod)
+        # NF-e
+        if self.model == '55':
+            if not self.fiscal_position_id:
+                errors.append(u'Configure a posição fiscal')
+            if self.company_id.accountant_id and not \
+               self.company_id.accountant_id.cnpj_cpf:
+                errors.append(u'Emitente / CNPJ do escritório contabilidade')
+        # NFC-e
+        if self.model == '65':
+            if len(self.company_id.id_token_csc or '') != 6:
+                errors.append(u"Identificador do CSC inválido")
+            if not len(self.company_id.csc or ''):
+                errors.append(u"CSC Inválido")
+            if self.partner_id.cnpj_cpf is None:
+                errors.append(u"CNPJ/CPF do Parceiro inválido")
+            if len(self.serie) == 0:
+                errors.append(u"Número de Série da NFe Inválido")
 
         return errors
 
@@ -732,13 +766,38 @@ class InvoiceEletronic(models.Model):
             vals['cobr'] = cobr
             pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final
+
+        if self.model == '65':
+            vals['pag'][0]['tPag'] = self.metodo_pagamento
+            vals['pag'][0]['vPag'] = "%.02f" % self.valor_pago
+            vals['pag'][0]['vTroco'] = "%.02f" % self.troco or '0.00'
+
+            chave_nfe = self.chave_nfe
+            ambiente = 1 if self.ambiente == 'producao' else 2
+            estado = self.company_id.state_id.ibge_code
+
+            cid_token = int(self.company_id.id_token_csc)
+            csc = self.company_id.csc
+
+            c_hash_QR_code = "{0}|2|{1}|{2}{3}".format(
+                chave_nfe, ambiente, int(cid_token), csc)
+            c_hash_QR_code = hashlib.sha1(c_hash_QR_code.encode()).hexdigest()
+
+            QR_code_url = "p={0}|2|{1}|{2}|{3}".format(
+                chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
+            qr_code_server = localizar_qrcode(estado, ambiente)
+            url_chave = localizar_url(
+                'NfeConsultaProtocolo', estado, '65', ambiente)
+
+            vals['qrCode'] = qr_code_server + QR_code_url
+            vals['urlChave'] = url_chave
         return vals
 
     @api.multi
     def _prepare_lote(self, lote, nfe_values):
         return {
             'idLote': lote,
-            'indSinc': 0,
+            'indSinc': 1 if self.company_id.nfe_sinc else 0,
             'estado': self.company_id.partner_id.state_id.ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{

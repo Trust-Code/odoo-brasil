@@ -6,7 +6,7 @@ from odoo import fields, models
 
 
 class PaymentMode(models.Model):
-    _name = "payment.mode"
+    _name = "l10n_br.payment.mode"
     _description = 'Modo de Pagamento'
     _order = 'name'
 
@@ -15,9 +15,11 @@ class PaymentMode(models.Model):
         [('receivable', 'Recebível'), ('payable', 'Pagável')],
         string="Tipo de Transação", default='receivable')
     company_id = fields.Many2one(
-        'res.company', string='Company', required=True, ondelete='restrict',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'account.payment.mode'))
+        'res.company', string='Company', ondelete='restrict')
     active = fields.Boolean(string='Active', default=True)
+    journal_id = fields.Many2one(
+        'account.journal', string="Journal",
+        domain=[('type', 'in', ('cash', 'bank'))])
+    # TODO Remove this fields latter on, from now on we use just journal_id
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Bank Account", ondelete='restrict')

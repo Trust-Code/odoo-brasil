@@ -7,10 +7,19 @@
                 report_type="qweb-pdf"
                 string="Boleto"/>
 
+        <record id="action_boleto_account_move_line" model="ir.actions.report">
+            <field name="print_report_name">"boleto-%s-%s.pdf" % (object.move_id.name, object.partner_id.commercial_partner_id.name)</field>
+        </record>
+
         <report id="action_boleto_account_invoice"
                 name="br_boleto.report.print"
                 model="account.invoice"
                 report_type="qweb-pdf"
                 string="Boleto"/>
+
+        <record id="action_boleto_account_invoice" model="ir.actions.report">
+            <field name="print_report_name">"boleto-%s-%s.pdf" % (object.number, object.partner_id.commercial_partner_id.name)</field>
+        </record>
+
     </data>
 </odoo>

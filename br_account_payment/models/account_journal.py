@@ -35,12 +35,13 @@ class AccountJournal(models.Model):
     def create(self, vals):
         journal = super(AccountJournal, self).create(vals)
         if journal.bank_account_id:
-            bank_account_vals = {
+            acc_vals = {
                 'acc_number_dig': vals.get('acc_number_dig'),
                 'bra_number': vals.get('bank_agency_number'),
                 'bra_number_dig': vals.get('bank_agency_dig'),
                 'currency_id': vals.get('currency_id'),
                 'partner_id': vals.get('acc_partner_id'),
             }
-            journal.bank_account_id.write(bank_account_vals)
+            acc_vals = {k: v for k, v in acc_vals.items() if v}
+            journal.bank_account_id.write(acc_vals)
         return journal

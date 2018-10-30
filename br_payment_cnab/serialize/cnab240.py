@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 try:
     from pycnab240.file import File
 except ImportError:
-    _logger.info('Cannot import pytrustnfe', exc_info=True)
+    _logger.info('Cannot import pycnab240', exc_info=True)
 
 
 class Cnab_240(object):
@@ -24,6 +24,12 @@ class Cnab_240(object):
     def _string_to_monetary(self, numero, precision=2):
         frmt = '{:.%df}' % precision
         return Decimal(frmt.format(numero))
+
+    def _float_to_monetary(self, number, precision=2):
+        return Decimal(str(number)).quantize(Decimal('0.01'))
+
+    def _just_numbers(self, value):
+        return re.sub('[^0-9]', '', str(value or ''))
 
     def _string_to_num(self, toTransform, default=None):
         if not toTransform:
@@ -47,8 +53,7 @@ class Cnab_240(object):
         return date_value.strftime("%d%m%Y")
 
     def _get_header_arq(self):
-        payment = self._order.payment_mode_id
-        bank = payment.bank_account_id
+        bank = self._order.src_bank_account_id
         headerArq = {
             'cedente_inscricao_tipo': 2,  # 0 = Isento, 1 = CPF, 2 = CNPJ
             # número do registro da empresa
@@ -63,7 +68,7 @@ class Cnab_240(object):
             'cedente_agencia_dv': bank.bra_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
             'cedente_conta_dv': bank.acc_number_dig,
-            'cedente_nome': self._order.company_id.name,
+            'cedente_nome': self._order.company_id.legal_name[:30],
             'data_geracao_arquivo': int(self.format_date(date.today())),
             'hora_geracao_arquivo': self._hour_now(),
             'numero_sequencial_arquivo': self._order.file_number,
@@ -72,6 +77,7 @@ class Cnab_240(object):
 
     def _get_segmento(self, line, lot_sequency, num_lot):
         information_id = line.payment_information_id
+        codigo_barras = self.get_barcode(line) or 0
         segmento = {
             "controle_lote": num_lot,
             "sequencial_registro_lote": lot_sequency,
@@ -86,17 +92,17 @@ class Cnab_240(object):
             "favorecido_conta": line.bank_account_id.acc_number,
             "favorecido_conta_dv": line.bank_account_id.acc_number_dig or '',
             "favorecido_agencia_conta_dv": '',
-            "favorecido_nome": line.partner_id.name,
+            "favorecido_nome":
+            line.partner_id.legal_name or line.partner_id.name,
             "favorecido_doc_numero": line.partner_id.cnpj_cpf,
             "numero_documento_cliente": line.nosso_numero,
             "data_pagamento": self.format_date(line.date_maturity),
-            "valor_pagamento": line.value,
+            "valor_pagamento": line.amount_total,
             "data_real_pagamento": self.format_date(
                 self._order.data_emissao_cnab),
             "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": information_id.message2 or '',
             "finalidade_doc_ted": information_id.mov_finality or '',
-            "finalidade_ted": information_id.finality_ted or '',
             "favorecido_emissao_aviso": int(information_id.warning_code) if
             information_id.warning_code else 0,
             "favorecido_inscricao_tipo":
@@ -109,50 +115,56 @@ class Cnab_240(object):
             "favorecido_cidade": line.partner_id.city_id.name,
             "favorecido_cep": line.partner_id.zip,
             "favorecido_uf": line.partner_id.state_id.code,
-            "valor_documento": line.value,
+            "valor_documento": line.amount_total,
             "valor_abatimento": information_id.rebate_value,
             "valor_desconto": information_id.discount_value,
             "valor_mora": information_id.interest_value,
             "valor_multa": information_id.fine_value,
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
-            "cedente_nome": self._order.company_id.name,
-            "valor_nominal_titulo": line.value,
-            "valor_desconto_abatimento": information_id.rebate_value +
-                information_id.discount_value,
-            "valor_multa_juros": information_id.interest_value +
-                information_id.fine_value,
-            "codigo_moeda": information_id.currency_code,
-            "codigo_de_barras": self.get_barcode(line) or 0,
+            "cedente_nome": self._order.company_id.legal_name[:30],
+            "valor_nominal_titulo":  self._float_to_monetary(
+                line.amount_total),
+            "valor_desconto_abatimento": self._float_to_monetary(
+                information_id.rebate_value + information_id.discount_value),
+            "valor_multa_juros": self._float_to_monetary(
+                information_id.interest_value + information_id.fine_value),
+            "codigo_moeda": int(information_id.currency_code),
+            "codigo_de_barras": self._string_to_num(codigo_barras),
+            "codigo_de_barras_alfa": str(codigo_barras),
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
-            "nome_concessionaria": information_id.agency_name or '',
+            "nome_concessionaria":
+            line.partner_id.legal_name or line.partner_id.name,
             "data_vencimento": self.format_date(line.date_maturity),
             "valor_juros_encargos": self._string_to_monetary(
                 information_id.interest_value),
             # GPS
-            "contribuinte_nome": self._order.company_id.name,
+            "contribuinte_nome": self._order.company_id.legal_name[:30],
             "valor_total_pagamento": self._string_to_monetary(
                 line.value_final),
             "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(
                 self._order.company_id.cnpj_cpf),
+            "identificacao_contribuinte_alfa": self._just_numbers(
+                self._order.company_id.cnpj_cpf),
             "codigo_identificacao_tributo": information_id.tax_identification\
                 or '',
             "mes_ano_competencia": self.get_mes_ano_competencia(line),
-            "valor_previsto_inss": self._string_to_monetary(line.value),
+            "valor_previsto_inss": self._string_to_monetary(line.amount_total),
             # DARF
             "periodo_apuracao": int(self.format_date(line.invoice_date) or 0),
-            "valor_principal": self._string_to_monetary(line.value),
+            "valor_principal": self._string_to_monetary(line.amount_total),
             "valor_receita_bruta_acumulada": self._string_to_monetary(
                 self._order.company_id.annual_revenue),
             "percentual_receita_bruta_acumulada": self._string_to_monetary(
                 information_id.percentual_receita_bruta_acumulada),
             # GARE SP
-            'inscricao_estadual': self._string_to_num(
-                self._order.company_id.inscr_est),
-            'valor_receita': line.value,
-            'numero_referencia': int(information_id.numero_referencia) or 0,
+            'inscricao_estadual': int(self._string_to_num(
+                self._order.company_id.inscr_est)),
+            'valor_receita': self._string_to_monetary(line.amount_total),
+            'numero_referencia': self._string_to_num(
+                information_id.numero_referencia),
         }
         return segmento
 
@@ -170,23 +182,22 @@ class Cnab_240(object):
 
     def _get_header_lot(self, line, num_lot):
         information_id = line.payment_information_id
-        payment = self._order.payment_mode_id
-        bank = payment.bank_account_id
+        bank = self._order.src_bank_account_id
         header_lot = {
             "controle_lote": num_lot,
             "tipo_servico": information_id.service_type,
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
-                payment.company_id.cnpj_cpf),
+                self._order.company_id.cnpj_cpf),
             "codigo_convenio": str(bank.codigo_convenio),
             "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.bra_number_dig or '',
             "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig or '',
-            "cedente_nome": payment.company_id.name,
+            "cedente_nome": self._order.company_id.legal_name[:30],
             "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
-            "cedente_endereco_numero": payment.company_id.number,
+            "cedente_endereco_numero": self._order.company_id.number,
             "cedente_endereco_complemento": str(
                 self._order.company_id.street2)[0:15] if
             self._order.company_id.street2 else '',
@@ -233,7 +244,11 @@ class Cnab_240(object):
             'HeaderLote', self._get_header_lot(line, num_lot))
 
     def create_detail(self, operation, event, lot_sequency, num_lot):
-        for segment in self.segments_per_operation().get(operation, []):
+        segments = self.segments_per_operation().get(operation, [])
+        if not segments:
+            raise Exception(
+                'Pelo menos um segmento por tipo deve ser implementado!')
+        for segment in segments:
             self._cnab_file.add_segment(
                 segment, self._get_segmento(event, lot_sequency, num_lot))
             lot_sequency += 1
@@ -276,19 +291,28 @@ class Cnab_240(object):
     def get_barcode(self, line):
         barcode = line.payment_information_id.barcode
         barcode_len = len(barcode or '')
-        if barcode_len > 44:
+        if barcode_len >= 47 and barcode_len <= 48:
             return self.convert_line_to_barcode(
                 barcode)
-        elif barcode_len > 0 and barcode_len < 44:
-            raise UserError("Barcode must have at least 44 characters")
+        elif barcode_len > 0:
+            raise UserError("Linha digitável must have at least 47 characters")
         return barcode
 
     def convert_line_to_barcode(self, barcode):
-        barcode = str(self._string_to_num(barcode))
-        return int("{}{}{}{}{}{}".format(
-            barcode[0:4],
-            barcode[32],
-            barcode[-14:],
-            barcode[4:9],
-            barcode[10:20],
-            barcode[21:31]))
+        if len(barcode) == 47:
+            return "{}{}{}{}{}{}".format(
+                barcode[0:4],
+                barcode[32],
+                barcode[-14:],
+                barcode[4:9],
+                barcode[10:20],
+                barcode[21:31])
+        elif len(barcode) == 48:
+            return "{}{}{}{}".format(
+                barcode[0:11],
+                barcode[12:23],
+                barcode[24:35],
+                barcode[36:47],
+            )
+        else:
+            raise UserError('Código de barras com tamanho inválido!')

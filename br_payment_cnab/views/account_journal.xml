@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="br_payment_cnab_account_journal_form" model="ir.ui.view">
+        <field name="name">br_payment_cnab_account_journal_form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='journal_entries']/group/group" position="inside">
+                <label for="l10n_br_sequence_nosso_numero"/>
+                <div>
+                    <field name="l10n_br_sequence_nosso_numero" />
+                </div>
+                <label for="l10n_br_sequence_statements"/>
+                <div>
+                    <field name="l10n_br_sequence_statements" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

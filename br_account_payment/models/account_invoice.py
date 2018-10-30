@@ -12,7 +12,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     payment_mode_id = fields.Many2one(
-        'payment.mode', readonly=True,
+        'l10n_br.payment.mode', readonly=True,
         states=FIELD_STATE, string=u"Modo de pagamento")
 
     @api.multi

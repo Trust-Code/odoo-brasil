@@ -22,13 +22,21 @@ class TestBoletoSicoob(TestBoleto):
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
         })
-        mode = self.env['payment.mode'].create({
+        journal = self.env['account.journal'].create({
+            'name': 'Banco Sicoob',
+            'code': 'SIC',
+            'type': 'bank',
+            'bank_account_id': conta.id,
+            'company_id': self.main_company.id,
+        })
+        mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob',
+            'boleto': True,
             'boleto_type': '9',
             'boleto_carteira': '1',
             'boleto_modalidade': '01',
             'nosso_numero_sequence': sequencia.id,
-            'bank_account_id': conta.id
+            'journal_id': journal.id,
         })
         return mode.id
 
@@ -79,9 +87,20 @@ class TestBoletoSicoob(TestBoleto):
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
         self.assertEquals(vals['report_type'], 'qweb-pdf')
 
-        vals = self.invoices.action_register_boleto()
+        vals = self.invoices.action_print_boleto()
 
         self.assertEquals(vals['report_name'], 'br_boleto.report.print')
         self.assertEquals(vals['report_type'], 'qweb-pdf')
 
-        move.action_register_boleto()
+        line_ids = self.env['payment.order.line'].action_register_boleto(
+            self.invoices.receivable_move_line_ids)
+
+        boleto_list = line_ids.generate_boleto_list()
+        boleto = boleto_list[0]
+        self.assertEquals(len(boleto_list), 1)
+        self.assertEquals(boleto.valor_documento, '1000.00')
+        self.assertEquals(boleto.valor, '1000.00')
+
+        self.assertEquals(boleto.cedente_documento, self.main_company.cnpj_cpf)
+        self.assertEquals(
+            boleto.sacado_documento, self.partner_fisica.cnpj_cpf)
