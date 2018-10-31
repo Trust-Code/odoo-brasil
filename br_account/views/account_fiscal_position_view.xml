@@ -12,7 +12,7 @@
                 </group>
                 <group string="Usar a seguinte tributação">
                     <group>
-                        <field name="tax_id" domain="[('domain', '=', domain)]" />
+                        <field name="tax_id" domain="[('l10n_br_domain', '=', domain)]" />
                         <field name="cfop_id" domain="[('internal_type', '=', 'normal')]" attrs="{'invisible': [('domain', 'not in', ('icms', 'issqn'))]}"/>
                     </group>
                     <group>
