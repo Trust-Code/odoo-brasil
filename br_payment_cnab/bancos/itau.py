@@ -112,7 +112,7 @@ class Itau240(Cnab_240):
             segmento.update({'favorecido_cidade': ''})  # Verificar se isso
             # deve existir mesmo. Talvez tratar o erro da cidade faltando,
             # pro caso de obrigatoriedade desse campo
-
+        del(segmento['codigo_camara_compensacao'])
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_cep': self._string_to_num(str(
@@ -130,6 +130,7 @@ class Itau240(Cnab_240):
                 segmento.get('favorecido_endereco_complemento'))[:15],
             'favorecido_inscricao_numero': self._string_to_num(
                 segmento.get('favorecido_inscricao_numero')),
+            'favorecido_nome': segmento.get('favorecido_nome')[:30],
             'data_real_pagamento': int(segmento.get(
                 'data_real_pagamento')),
             'valor_pagamento': self._string_to_monetary(
@@ -144,8 +145,6 @@ class Itau240(Cnab_240):
                 segmento.get('favorecido_agencia'), 0),
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
-            'codigo_camara_compensacao': self._string_to_num(
-                segmento.get('codigo_camara_compensacao'), default=0),
             'favorecido_banco': int(line.bank_account_id.bank_id.bic),
             'finalidade_doc_ted': get_ted_doc_finality(
                 'itau', line.payment_information_id.payment_type,
