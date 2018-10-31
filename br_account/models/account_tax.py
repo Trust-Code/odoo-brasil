@@ -375,7 +375,9 @@ class AccountTax(models.Model):
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None, fisc_pos=None):
-
+        if not self.filtered(lambda x: x.l10n_br_localization):
+            super(AccountTax, self).compute_all(price_unit, currency, quantity,
+                                                product, partner)
         exists_br_tax = len(self.filtered(lambda x: x.l10n_br_domain)) > 0
         if not exists_br_tax:
             res = super(AccountTax, self).compute_all(

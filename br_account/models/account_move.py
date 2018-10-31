@@ -7,13 +7,16 @@ from odoo import models
 
 
 class AccountMoveLine(models.Model):
-    _inherit = 'account.move.line'
+    _name = 'account.move.line'
+    _inherit = ['account.move.line', 'br.localization.filtering']
 
     # Correção na ordenação do faturamento, remover esse código caso o PR 14852
     # no Odoo seja aceito ou eles corrijam de outra forma
     def _get_pair_to_reconcile(self):
         # field is either 'amount_residual' or 'amount_residual_currency'
         # (if the reconciled account has a secondary currency set)
+        if not self.l10n_br_localization:
+            super(AccountMoveLine, self)._get_pair_to_reconcile()
         field = self[0].account_id.currency_id and 'amount_residual_currency'\
             or 'amount_residual'
         rounding = self[0].company_id.currency_id.rounding

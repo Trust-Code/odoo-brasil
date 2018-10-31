@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
+from mock import patch
 
 from odoo.addons.br_cnab.tests.test_cnab_common import TestCnab
 
@@ -33,7 +34,9 @@ class TestCnabSicoob(TestCnab):
         })
         return mode.id
 
-    def test_gen_account_move_line(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_gen_account_move_line(self, br_localization):
+        br_localization.return_value = True
         self.invoices.action_invoice_open()
         move = self.invoices.l10n_br_receivable_move_line_ids[0]
         move.action_register_boleto()

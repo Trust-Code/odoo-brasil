@@ -309,7 +309,9 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_exterior.id
         ))
 
-    def test_computed_fields(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_computed_fields(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             self.assertEquals(invoice.l10n_br_total_edocs, 0)
             self.assertEquals(invoice.nfe_number, 0)
@@ -327,7 +329,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice.nfe_exception, False)
             self.assertEquals(invoice.sending_nfe, True)
 
-    def test_print_actions(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_print_actions(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Antes de confirmar a fatura
             with self.assertRaises(UserError):
@@ -348,7 +352,8 @@ class TestNFeBrasil(TransactionCase):
                               'br_nfe.main_template_br_nfe_danfe')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic._prepare_lote')  # noqa
-    def test_check_invoice_eletronic_values(self, prepare):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_check_invoice_eletronic_values(self, prepare, br_localization):
         def _prepare_lote(lote, nfe_values):
             # Let's fix some values
             nfe_values['ide']['cNF'] = '66382470'
@@ -367,6 +372,7 @@ class TestNFeBrasil(TransactionCase):
             }
 
         prepare.side_effect = _prepare_lote
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -384,11 +390,15 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
             self.assertEquals(xml_test, xml_generated.decode('utf-8'))
 
-    def test_nfe_validation(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfe_validation(self, br_localization):
+        br_localization.return_value = True
         with self.assertRaises(UserError):
             self.inv_incomplete.action_invoice_open()
 
-    def test_send_nfe(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_send_nfe(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -400,7 +410,10 @@ class TestNFeBrasil(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
-    def test_nfe_with_concept_error(self, autorizar, ret_autorizar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfe_with_concept_error(self, autorizar, ret_autorizar,
+                                    br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -433,7 +446,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(invoice_eletronic.codigo_retorno, '694')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')  # noqa
-    def test_nfe_cancelamento_ok(self, cancelar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfe_cancelamento_ok(self, cancelar, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()

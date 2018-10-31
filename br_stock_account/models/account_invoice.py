@@ -29,6 +29,8 @@ class AccountInvoice(models.Model):
                  'currency_id', 'company_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
+        if not self.l10n_br_localization:
+            return
         lines = self.invoice_line_ids
 
         self.l10n_br_total_seguro = sum(l.l10n_br_valor_seguro for l in lines)
@@ -144,6 +146,8 @@ class AccountInvoiceLine(models.Model):
 
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        if not self.l10n_br_localization:
+            return res
         res.update({
             'valor_frete': self.l10n_br_valor_frete,
             'valor_seguro': self.l10n_br_valor_seguro,
@@ -157,7 +161,8 @@ class AccountInvoiceLine(models.Model):
                  'l10n_br_outras_despesas')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
-
+        if not self.l10n_br_localization:
+            return
         total = (self.l10n_br_valor_bruto - self.l10n_br_valor_desconto +
                  self.l10n_br_valor_frete + self.l10n_br_valor_seguro +
                  self.l10n_br_outras_despesas)

@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from mock import patch
 from odoo.exceptions import UserError
 from odoo.addons.br_boleto.tests.test_common import TestBoleto
 
@@ -36,7 +37,9 @@ class TestBoletoSicoob(TestBoleto):
         super(TestBoletoSicoob, self).setUp()
 
     # Não precisa fazer essa validação em outras classes
-    def test_basic_validation(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_basic_validation(self, br_localization):
+        br_localization.return_value = True
         with self.assertRaises(UserError):
             self.invoices.action_invoice_open()
 
@@ -66,7 +69,9 @@ class TestBoletoSicoob(TestBoleto):
             'city_id': self.env.ref('br_base.city_4205407').id,
         })
 
-    def test_raise_error_if_not_payment(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_raise_error_if_not_payment(self, br_localization):
+        br_localization.return_value = True
         self._update_main_company()
         self._update_partner_fisica()
         self.invoices.action_invoice_open()

@@ -247,7 +247,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
-        for item in self:
+        for item in self.filtered(lambda x: x.l10n_br_localization):
             if item.l10n_br_product_document_id.electronic:
                 inv_lines = item.invoice_line_ids.filtered(
                     lambda x: x.product_id.l10n_br_fiscal_type == 'product')
@@ -276,7 +276,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_cancel(self):
         res = super(AccountInvoice, self).action_cancel()
-        for item in self:
+        for item in self.filtered(lambda x: x.l10n_br_localization):
             edocs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:

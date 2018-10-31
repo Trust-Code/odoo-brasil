@@ -102,7 +102,8 @@ class AccountInvoice(models.Model):
     @api.depends('move_id.line_ids')
     def _compute_receivables(self):
         receivable_lines = []
-        for line in self.move_id.line_ids:
+        for line in self.move_id.line_ids.filtered(
+                lambda x: x.l10n_br_localization):
             if line.account_id.user_type_id.type == "receivable":
                 receivable_lines.append(line.id)
         self.l10n_br_receivable_move_line_ids = \
@@ -112,7 +113,8 @@ class AccountInvoice(models.Model):
     @api.depends('move_id.line_ids')
     def _compute_payables(self):
         payable_lines = []
-        for line in self.move_id.line_ids:
+        for line in self.move_id.line_ids.filtered(
+                lambda x: x.l10n_br_localization):
             if line.account_id.user_type_id.type == "payable":
                 payable_lines.append(line.id)
         self.l10n_br_payable_move_line_ids = \
@@ -313,6 +315,8 @@ class AccountInvoice(models.Model):
 
     @api.onchange('fiscal_position_id')
     def _onchange_br_account_fiscal_position_id(self):
+        if not self.l10n_br_localization:
+            return
         if (self.fiscal_position_id
                 and self.fiscal_position_id.l10n_br_account_id):
             self.account_id = self.fiscal_position_id.l10n_br_account_id.id
@@ -345,6 +349,8 @@ class AccountInvoice(models.Model):
     @api.model
     def invoice_line_move_line_get(self):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
+        if not self.l10n_br_localization:
+            return res
         contador = 0
 
         for line in self.invoice_line_ids.filtered(
@@ -394,6 +400,8 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def get_taxes_values(self):
+        if not self.l10n_br_localization:
+            return super(AccountInvoice, self).get_taxes_values()
         tax_grouped = {}
         for line in self.invoice_line_ids:
             other_taxes = line.invoice_line_tax_ids.filtered(
