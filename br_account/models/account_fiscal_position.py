@@ -193,35 +193,38 @@ class AccountFiscalPosition(models.Model):
 
             # Retorna dicionario com o valores dos campos de acordo com a regra
             return {
-                ('%s_rule_id' % type_tax): rules[0],
-                'cfop_id': rules[0].cfop_id,
-                ('tax_%s_id' % type_tax): rules[0].tax_id,
+                ('l10n_br_%s_rule_id' % type_tax): rules[0],
+                'l10n_br_cfop_id': rules[0].cfop_id,
+                ('l10n_br_tax_%s_id' % type_tax): rules[0].tax_id,
                 # ICMS
-                'icms_cst_normal': rules[0].cst_icms,
-                'icms_aliquota_reducao_base': rules[0].reducao_icms,
-                'incluir_ipi_base': rules[0].incluir_ipi_base,
+                'l10n_br_icms_cst_normal': rules[0].cst_icms,
+                'l10n_br_icms_aliquota_reducao_base': rules[0].reducao_icms,
+                'l10n_br_incluir_ipi_base': rules[0].incluir_ipi_base,
                 # ICMS ST
-                'tax_icms_st_id': rules[0].tax_icms_st_id,
-                'icms_st_aliquota_mva': rules[0].aliquota_mva,
-                'icms_st_aliquota_reducao_base': rules[0].reducao_icms_st,
-                'icms_st_aliquota_deducao': rules[0].icms_st_aliquota_deducao,
+                'l10n_br_tax_icms_st_id': rules[0].tax_icms_st_id,
+                'l10n_br_icms_st_aliquota_mva': rules[0].aliquota_mva,
+                'l10n_br_icms_st_aliquota_reducao_base':
+                rules[0].reducao_icms_st,
+                'l10n_br_icms_st_aliquota_deducao':
+                rules[0].icms_st_aliquota_deducao,
                 # ICMS Difal
-                'tem_difal': rules[0].tem_difal,
-                'tax_icms_inter_id': rules[0].tax_icms_inter_id,
-                'tax_icms_intra_id': rules[0].tax_icms_intra_id,
-                'tax_icms_fcp_id': rules[0].tax_icms_fcp_id,
+                'l10n_br_tem_difal': rules[0].tem_difal,
+                'l10n_br_tax_icms_inter_id': rules[0].tax_icms_inter_id,
+                'l10n_br_tax_icms_intra_id': rules[0].tax_icms_intra_id,
+                'l10n_br_tax_icms_fcp_id': rules[0].tax_icms_fcp_id,
                 # Simples
-                'icms_csosn_simples': rules[0].csosn_icms,
-                'icms_aliquota_credito': rules[0].icms_aliquota_credito,
+                'l10n_br_icms_csosn_simples': rules[0].csosn_icms,
+                'l10n_br_icms_aliquota_credito':
+                rules[0].icms_aliquota_credito,
                 # IPI
-                'ipi_cst': rules[0].cst_ipi,
-                'ipi_reducao_bc': rules[0].reducao_ipi,
+                'l10n_br_ipi_cst': rules[0].cst_ipi,
+                'l10n_br_ipi_reducao_bc': rules[0].reducao_ipi,
                 # PIS
-                'pis_cst': rules[0].cst_pis,
+                'l10n_br_pis_cst': rules[0].cst_pis,
                 # PIS
-                'cofins_cst': rules[0].cst_cofins,
+                'l10n_br_cofins_cst': rules[0].cst_cofins,
                 # ISSQN
-                'issqn_deduction': rules[0].issqn_deduction,
+                'l10n_br_issqn_deduction': rules[0].issqn_deduction,
             }
         else:
             return{}
