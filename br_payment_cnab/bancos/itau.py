@@ -6,6 +6,7 @@ _logger = logging.getLogger(__name__)
 try:
     from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.utils import get_tipo_de_servico
+    from pycnab240.utils import get_ted_doc_finality
     from pycnab240.bancos import itau
 except ImportError:
     _logger.info('Cannot import from pytrustnfe', exc_info=True)
@@ -35,8 +36,8 @@ class Itau240(Cnab_240):
             return False
 
     def is_same_titularity(self, line):
-        company = self._order.company_id.partner_id
-        if company == line.bank_account_id.partner_id:
+        partner = line.src_bank_account_id.partner_id
+        if partner == line.bank_account_id.partner_id:
             return True
         else:
             return False
@@ -107,11 +108,6 @@ class Itau240(Cnab_240):
         segmento = super(Itau240, self)._get_segmento(
             line, lot_sequency, num_lot)
 
-        # Valor do DAC é int quando é mesmo banco e str quando é outro banco...
-        # NICE!
-        if self.is_same_bank(line):
-            segmento.update({'dac': int(
-                segmento.get('favorecido_conta_dv'))})
         if not segmento.get('favorecido_cidade'):
             segmento.update({'favorecido_cidade': ''})  # Verificar se isso
             # deve existir mesmo. Talvez tratar o erro da cidade faltando,
@@ -150,7 +146,10 @@ class Itau240(Cnab_240):
                 segmento.get('valor_real_pagamento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao'), default=0),
-            'favorecido_banco': int(line.bank_account_id.bank_id.bic)
+            'favorecido_banco': int(line.bank_account_id.bank_id.bic),
+            'finalidade_doc_ted': get_ted_doc_finality(
+                'itau', line.payment_information_id.payment_type,
+                segmento.get('finalidade_doc_ted'))
         })
         return segmento
 
