@@ -12,6 +12,8 @@ class AccountInvoice(models.Model):
     def _prepare_invoice_line_from_po_line(self, line):
         res = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(
             line)
+        if not self.l10n_br_localization:
+            return res
         res['l10n_br_valor_seguro'] = line.l10n_br_valor_seguro
         res['l10n_br_outras_despesas'] = line.l10n_br_outras_despesas
         res['l10n_br_valor_frete'] = line.l10n_br_valor_frete
@@ -29,11 +31,12 @@ class AccountInvoice(models.Model):
                  'currency_id', 'company_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
-        lines = self.invoice_line_ids
-        self.l10n_br_total_despesas_aduana = sum(
-            l.l10n_br_ii_valor_despesas for l in lines)
-        self.amount_total = (
-            self.l10n_br_total_bruto - self.l10n_br_total_desconto +
-            self.l10n_br_total_tax + self.l10n_br_total_frete +
-            self.l10n_br_total_seguro + self.l10n_br_total_despesas
-        )
+        if self.l10n_br_localization:
+            lines = self.invoice_line_ids
+            self.l10n_br_total_despesas_aduana = sum(
+                l.l10n_br_ii_valor_despesas for l in lines)
+            self.amount_total = (
+                self.l10n_br_total_bruto - self.l10n_br_total_desconto +
+                self.l10n_br_total_tax + self.l10n_br_total_frete +
+                self.l10n_br_total_seguro + self.l10n_br_total_despesas
+            )

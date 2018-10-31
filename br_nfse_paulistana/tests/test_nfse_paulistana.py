@@ -161,7 +161,9 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_juridica.id
         ))
 
-    def test_computed_fields(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_computed_fields(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             self.assertEquals(invoice.l10n_br_total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
@@ -169,7 +171,9 @@ class TestNFeBrasil(TransactionCase):
             # Verifica algumas propriedades computadas que dependem do edoc
             self.assertEquals(invoice.l10n_br_total_edocs, 1)
 
-    def test_check_invoice_eletronic_values(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_check_invoice_eletronic_values(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -182,7 +186,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.teste_envio_lote_rps')  # noqa
-    def test_nfse_sucesso_homologacao(self, envio_lote):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfse_sucesso_homologacao(self, envio_lote, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -204,7 +210,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
 
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.cancelamento_nfe')  # noqa
-    def test_nfse_cancel(self, cancelar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfse_cancel(self, cancelar, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -232,7 +240,9 @@ class TestNFeBrasil(TransactionCase):
                               "Nota Fiscal Paulistana Cancelada")
 
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.cancelamento_nfe')  # noqa
-    def test_nfse_cancelamento_erro(self, cancelar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfse_cancelamento_erro(self, cancelar, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             invoice.company_id.l10n_br_tipo_ambiente_nfse = 'producao'
             # Confirmando a fatura deve gerar um documento eletrônico

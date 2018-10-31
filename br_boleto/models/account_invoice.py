@@ -8,7 +8,8 @@ from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'br.localization.filtering']
 
     boleto = fields.Boolean(related="payment_mode_id.boleto")
 
@@ -59,6 +60,8 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
+        if not self.l10n_br_localization:
+            return res
         error = ''
         for item in self:
             if not item.l10n_br_payment_mode_id:
