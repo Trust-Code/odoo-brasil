@@ -189,6 +189,7 @@ class AccountInvoice(models.Model):
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'numero_controle': num_controle,
             'data_emissao': datetime.now(),
+            'data_agendada': invoice.date_invoice,
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
             'partner_id': invoice.partner_id.id,

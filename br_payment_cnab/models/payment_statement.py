@@ -54,7 +54,7 @@ class l10nBrPaymentStatementLine(models.Model):
     _description = "Bank Statement Line"
     _order = "statement_id desc, date desc, id desc"
 
-    name = fields.Char(string='Label', required=True)
+    name = fields.Char(string='Reference', required=True)
     date = fields.Date()
     amount = fields.Monetary(digits=0, currency_field='journal_currency_id')
     journal_currency_id = fields.Many2one(
@@ -68,7 +68,8 @@ class l10nBrPaymentStatementLine(models.Model):
         'account.journal', related='statement_id.journal_id',
         string='Journal', store=True, readonly=True)
     move_id = fields.Many2one('account.move', string="Lançamento")
-    ref = fields.Char(string='Reference')
+    cnab_code = fields.Char(string="Código")
+    cnab_message = fields.Char(string="Mensagem")
     company_id = fields.Many2one(
         'res.company', related='statement_id.company_id',
         string='Company', store=True, readonly=True)

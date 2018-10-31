@@ -180,6 +180,7 @@
                                 <field name="invoice_id"/>
                                 <field name="partner_id"/>
                                 <field name="partner_shipping_id"/>
+                                <field name="data_agendada"/>
                             </group>
                             <group>
                                 <field name="tipo_operacao" />
