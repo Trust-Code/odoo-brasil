@@ -21,7 +21,6 @@
         <field name="arch" type="xml">
             <form>
             <field name="type" invisible="1"/>
-            <!-- <group attrs="{'invisible': [('type', '!=', payable)]}"> -->
             <group name='payable_info'>
                 <field name="bank_account_id"/>
                 <field name="partner_id"/>
@@ -33,7 +32,8 @@
             <group name='payment_info'>
                 <field name='payment_mode_id'/>
                 <field name='date_maturity'/>
-                <field name='value_final'/>
+                <field name='cnab_code'/>
+                <field name='cnab_message'/>
             </group>
             </form>
         </field>
