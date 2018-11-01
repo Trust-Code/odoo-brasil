@@ -4,7 +4,7 @@
 
 import base64
 from ..febraban.cnab import Cnab
-from datetime import datetime
+from datetime import datetime, date
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -40,3 +40,72 @@ class PaymentOrder(models.Model):
                 'res_model': 'payment.order',
                 'res_id': order_id
             })
+
+
+class PaymentOrderLine(models.Model):
+    _inherit = 'payment.order.line'
+
+    def mark_order_line_processed(self, cnab_code, cnab_message,
+                                  rejected=False, statement_id=None):
+        if self.type != 'receivable':
+            return super(PaymentOrderLine, self).mark_order_line_processed(
+                cnab_code, cnab_message, rejected, statement_id)
+
+        state = 'processed'
+        if rejected:
+            state = 'rejected'
+
+        self.write({
+            'state': state, 'cnab_code': cnab_code,
+            'cnab_message': cnab_message
+        })
+        if not statement_id:
+            statement_id = self.env['l10n_br.payment.statement'].create({
+                'name': '0001/Manual',
+                'date': date.today(),
+                'state': 'validated',
+            })
+        for item in self:
+            self.env['l10n_br.payment.statement.line'].create({
+                'statement_id': statement_id.id,
+                'date': date.today(),
+                'name': item.name,
+                'partner_id': item.partner_id.id,
+                'amount': item.amount_total,
+                'cnab_code': cnab_code,
+                'cnab_message': cnab_message,
+            })
+        return statement_id
+
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+        if self.type != 'receivable':
+            return super(PaymentOrderLine, self).mark_order_line_paid(
+                cnab_code, cnab_message, statement_id)
+
+        bank_account_ids = self.mapped('src_bank_account_id')
+        for account in bank_account_ids:
+            order_lines = self.filtered(
+                lambda x: x.src_bank_account_id == account)
+            journal_id = self.env['account.journal'].search(
+                [('bank_account_id', '=', account.id)], limit=1)
+            if not statement_id:
+                statement_id = self.env['l10n_br.payment.statement'].create({
+                    'name':
+                    journal_id.l10n_br_sequence_statements.next_by_id(),
+                    'date': date.today(),
+                    'state': 'validated',
+                    'journal_id': journal_id.id,
+                })
+            for item in order_lines:
+                move_id = self.create_move_and_reconcile(item)
+                self.env['l10n_br.payment.statement.line'].create({
+                    'statement_id': statement_id.id,
+                    'date': date.today(),
+                    'name': item.name,
+                    'partner_id': item.partner_id.id,
+                    'amount': item.amount_total,
+                    'move_id': move_id.id,
+                    'cnab_code': cnab_code,
+                    'cnab_message': cnab_message,
+                })
+            order_lines.write({'state': 'paid'})

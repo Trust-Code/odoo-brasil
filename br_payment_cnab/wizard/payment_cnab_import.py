@@ -2,12 +2,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
-import base64
 from io import StringIO
 from datetime import date
 
-from odoo import fields, models
-from odoo.exceptions import UserError
+from odoo import models
 
 _logger = logging.getLogger(__name__)
 
@@ -19,32 +17,17 @@ except ImportError:
 
 
 class l10nBrPaymentCnabImport(models.TransientModel):
-    _name = 'l10n_br.payment.cnab.import'
+    _inherit = 'l10n_br.payment.cnab.import'
 
-    cnab_file = fields.Binary(
-        string='Arquivo', help='Arquivo de retorno do tipo CNAB 240')
+    def _get_account(self, cnab_file):
+        stream = StringIO(cnab_file.decode('ascii'))
+        bank = get_bank(self.journal_id.bank_id.bic)
+        cnab = File(bank)
+        cnab.load_return_file(stream)
+        return cnab.header.cedente_conta, cnab.header.cedente_agencia
 
-    journal_id = fields.Many2one(
-        'account.journal', string="Diário Contábil",
-        domain=[('type', '=', 'bank')],
-        help="Diário Contábil a ser utilizado na importação do CNAB.")
-
-    cnab_preview = fields.Html(string='Resumo da importação', readonly=True)
-
-    def validate_journal(self, cnab):
-        account = self.journal_id.bank_account_id
-        if cnab.header.cedente_conta != int(account.acc_number):
-            raise UserError(
-                'A conta não é a mesma do extrato.\nDiário: %s\nExtrato: %s' %
-                (int(account.acc_number), cnab.header.cedente_conta))
-        if cnab.header.cedente_agencia != int(account.bra_number):
-            raise UserError(
-                'A agência não é a mesma do extrato: %s' %
-                cnab.header.cedente_agencia)
-
-    def import_cnab(self):
-        cnab = base64.decodestring(self.cnab_file)
-        stream = StringIO(cnab.decode('ascii'))
+    def do_import(self, cnab_file):
+        stream = StringIO(cnab_file.decode('ascii'))
 
         bank = get_bank(self.journal_id.bank_id.bic)
         loaded_cnab = File(bank)
@@ -54,7 +37,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         statement = self.env['l10n_br.payment.statement'].create({
             'journal_id': self.journal_id.id,
             'date': date.today(),
-            'company_id': self.journal_id.id,
+            'company_id': self.journal_id.company_id.id,
             'name': self.journal_id.l10n_br_sequence_statements.next_by_id(),
         })
 
@@ -83,5 +66,5 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         statement_id=statement,
                     )
 
-        action = self.env.ref('br_payment_cnab.action_payment_statement_tree')
+        action = self.env.ref('br_account_payment.action_payment_statement_tree')
         return action.read()[0]
