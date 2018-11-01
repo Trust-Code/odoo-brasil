@@ -1,16 +1,11 @@
 # © 2018 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import models
 
 
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
-
-    l10n_br_sequence_nosso_numero = fields.Many2one(
-        'ir.sequence', string="Sequência Nosso Número")
-    l10n_br_sequence_statements = fields.Many2one(
-        'ir.sequence', string="Sequência Extratos de Retorno")
 
     def wizard_import_bank_payments_cnab(self):
         action = self.env.ref(
