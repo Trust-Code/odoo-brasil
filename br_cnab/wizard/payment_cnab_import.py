@@ -6,6 +6,7 @@ from io import StringIO
 from datetime import date
 
 from odoo import models
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -35,22 +36,25 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         stream = StringIO(cnab_file.decode('ascii'))
         bank = get_bank(self.journal_id.bank_id.bic)
         arquivo = Arquivo(bank, arquivo=stream)
-
-        statement = self.env['l10n_br.payment.statement'].create({
-            'journal_id': self.journal_id.id,
-            'date': date.today(),
-            'company_id': self.journal_id.company_id.id,
-            'name': self.journal_id.l10n_br_sequence_statements.next_by_id(),
-        })
+        sequence = self.journal_id.l10n_br_sequence_statements
+        statement = None
 
         for lote in arquivo.lotes:
             for evento in lote.eventos:
+                print(evento.servico_codigo_movimento)
+                print(evento.motivo_ocorrencia)
                 payment_line = self.env['payment.order.line'].search(
                     [('nosso_numero', '=', evento.nosso_numero)])
-
                 if not payment_line:
                     continue
 
+                if not statement:
+                    statement = self.env['l10n_br.payment.statement'].create({
+                        'journal_id': self.journal_id.id,
+                        'date': date.today(),
+                        'company_id': self.journal_id.company_id.id,
+                        'name': sequence.next_by_id(),
+                    })
                 code, message = parse_cnab_code(
                     self.journal_id.bank_id.bic,
                     evento.servico_codigo_movimento)
@@ -73,6 +77,8 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         statement_id=statement,
                     )
 
+        if not statement:
+            raise UserError('Nenhum registro localizado nesse extrato!')
         action = self.env.ref(
             'br_account_payment.action_payment_statement_tree')
         return action.read()[0]

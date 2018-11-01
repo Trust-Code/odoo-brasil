@@ -9,7 +9,13 @@ from odoo.exceptions import UserError
 class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
 
+    def _compute_identifier(self):
+        for item in self:
+            item.identifier = "%08d" % item.id
+
     name = fields.Char(string="Ref.", size=20)
+    identifier = fields.Char(
+        string="Identificador", compute='_compute_identifier')
     payment_order_id = fields.Many2one(
         'payment.order', string="Ordem de Pagamento", ondelete="restrict")
     src_bank_account_id = fields.Many2one(

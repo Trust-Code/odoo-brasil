@@ -7,7 +7,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml" >
             <field name="nosso_numero" position="after">
-                <button name="action_print_boleto" type="object" string="Print Boleto" icon="fa-print"/>
+                <button name="action_print_boleto" type="object" string="BOLETO" class="btn btn-success btn-xs" attrs="{'invisible': [('type', '!=', 'receivable')]}"/>
             </field>
         </field>
     </record>
