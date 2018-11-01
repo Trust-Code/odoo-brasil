@@ -48,6 +48,11 @@ class PaymentOrderLine(models.Model):
         return move
 
     def action_register_boleto(self, move_lines):
+        for item in move_lines:
+            if item.payment_mode_id.type != 'receivable':
+                raise UserError('Modo de pagamento não é boleto!')
+            if not item.payment_mode_id.boleto:
+                raise UserError('Modo de pagamento não é boleto!')
         for move_line in move_lines:
             self |= self.generate_payment_order_line(move_line)
         move_lines.write({'boleto_emitido': True})
