@@ -353,7 +353,7 @@ class TestNFeBrasil(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.InvoiceEletronic._prepare_lote')  # noqa
     @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
-    def test_check_invoice_eletronic_values(self, prepare, br_localization):
+    def test_check_invoice_eletronic_values(self, br_localization, prepare):
         def _prepare_lote(lote, nfe_values):
             # Let's fix some values
             nfe_values['ide']['cNF'] = '66382470'
@@ -411,8 +411,8 @@ class TestNFeBrasil(TransactionCase):
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.retorno_autorizar_nfe')
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.autorizar_nfe')
     @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
-    def test_nfe_with_concept_error(self, autorizar, ret_autorizar,
-                                    br_localization):
+    def test_nfe_with_concept_error(self, br_localization, autorizar,
+                                    ret_autorizar):
         br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
@@ -447,7 +447,7 @@ class TestNFeBrasil(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.recepcao_evento_cancelamento')  # noqa
     @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
-    def test_nfe_cancelamento_ok(self, cancelar, br_localization):
+    def test_nfe_cancelamento_ok(self, br_localization, cancelar):
         br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
