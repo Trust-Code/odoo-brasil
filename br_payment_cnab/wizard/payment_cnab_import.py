@@ -66,5 +66,6 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         statement_id=statement,
                     )
 
-        action = self.env.ref('br_account_payment.action_payment_statement_tree')
+        action = self.env.ref(
+            'br_account_payment.action_payment_statement_tree')
         return action.read()[0]

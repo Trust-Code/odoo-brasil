@@ -15,7 +15,7 @@
         <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
         <field name="arch" type="xml">
             <xpath expr='//div[@name="bank_journal_cta"]' position='after'>
-                <a context="{'default_journal_id': active_id}" type="object" name="br_payment_cnab.action_import_bank_payment_cnab" class="oe_inline">Importar Pagamentos via CNAB</a>
+                <a context="{'default_journal_id': active_id}" type="action" name="br_payment_cnab.action_import_bank_payment_cnab" class="oe_inline">Importar Pagamentos via CNAB</a>
             </xpath>
         </field>
     </record>

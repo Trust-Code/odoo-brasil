@@ -25,7 +25,8 @@ class PaymentOrderLine(models.Model):
         'res.company', string="Company",
         related="payment_order_id.company_id", store=True)
     type = fields.Selection(
-        related='payment_order_id.type', readonly=True, store=True)
+        [('receivable', 'Recebível'), ('payable', 'Pagável')],
+        string="Tipo de Ordem", default='receivable')
     move_line_id = fields.Many2one(
         'account.move.line', string=u'Linhas de Cobrança')
     partner_id = fields.Many2one(
