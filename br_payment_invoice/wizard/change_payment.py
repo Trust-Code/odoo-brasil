@@ -45,4 +45,4 @@ class WizardChangePayment(models.TransientModel):
             vals['barcode'] = self.barcode
             vals['bank_account_id'] = self.bank_account_id.id
             self.env['payment.order.line'].action_generate_payment_order_line(
-                self.payment_mode_id, **vals)
+                self.payment_mode_id, vals)

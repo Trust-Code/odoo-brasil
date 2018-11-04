@@ -3,3 +3,4 @@
 
 from . import payment_cnab_import
 from . import manual_reconcile
+from . import approve_payments

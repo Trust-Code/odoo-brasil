@@ -32,6 +32,7 @@ class TestCnabSicoob(TestCnab):
         })
         mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob',
+            'boleto': True,
             'boleto_type': '9',
             'boleto_carteira': '1',
             'boleto_modalidade': '01',

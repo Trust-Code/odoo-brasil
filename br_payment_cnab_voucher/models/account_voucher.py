@@ -62,14 +62,16 @@ class AccountVoucher(models.Model):
 
     @api.multi
     def proforma_voucher(self):
-        # TODO Validate before call super
+        for item in self:
+            if item.payment_mode_id and item.payment_mode_id.type == 'payable':
+                item.validate_cnab_fields()
         res = super(AccountVoucher, self).proforma_voucher()
         for item in self:
             order_line_obj = self.env['payment.order.line']
             if item.payment_mode_id:
                 order_line_obj.action_generate_payment_order_line(
                     item.payment_mode_id,
-                    **item._prepare_payment_order_vals())
+                    item._prepare_payment_order_vals())
         return res
 
     def validate_cnab_fields(self):
@@ -104,9 +106,6 @@ class AccountVoucher(models.Model):
         if vals.get('fine_value'):
             vals = self.create_interest_fine_line('fine', vals)
         res = super(AccountVoucher, self).write(vals)
-        for item in self:
-            if item.payment_mode_id and item.payment_mode_id.type == 'payable':
-                item.validate_cnab_fields()
         return res
 
     @api.model
@@ -116,6 +115,4 @@ class AccountVoucher(models.Model):
         if vals.get('fine_value', 0) > 0:
             vals = self.create_interest_fine_line('fine', vals)
         res = super(AccountVoucher, self).create(vals)
-        if res.payment_mode_id and res.payment_mode_id.type == 'payable':
-            res.validate_cnab_fields()
         return res
