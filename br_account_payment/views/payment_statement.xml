@@ -11,7 +11,6 @@
                 <field name="journal_id"/>
                 <field name="amount_total"/>
                 <field name="currency_id" invisible="1"/>
-                <field name="state"/>
                 <field name='company_id' groups="base.group_multi_company" />
             </tree>
         </field>
@@ -24,9 +23,6 @@
         <field name="priority">1</field>
         <field name="arch" type="xml">
             <form string="Bank Statement">
-                <header>
-                    <field name="state" widget="statusbar" statusbar_visible="open,confirm"/>
-                </header>
                 <sheet>
                     <div class="oe_title oe_inline">
                         <label for="name" class="oe_edit_only"/>

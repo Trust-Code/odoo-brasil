@@ -24,6 +24,10 @@ class PaymentOrder(models.Model):
         self.data_emissao_cnab = datetime.now()
         self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         for order_id in self:
+            if order_id.line_ids.filtered(
+               lambda x: x.state in ('processed', 'rejected', 'paid')):
+                raise UserError('Arquivo já enviado e processado pelo banco!')
+
             cnab = Cnab.get_cnab(
                 order_id.src_bank_account_id.bank_bic, '240')()
             remessa = cnab.remessa(order_id)
@@ -77,6 +81,40 @@ class PaymentOrderLine(models.Model):
             })
         return statement_id
 
+    def create_receivable_move_and_reconcile(self, order_line):
+        move = self.env['account.move'].create({
+            'name': '/',
+            'journal_id': order_line.journal_id.id,
+            'company_id': order_line.journal_id.company_id.id,
+            'date': date.today(),
+            'ref': order_line.name,
+        })
+        aml_obj = self.env['account.move.line'].with_context(
+            check_move_validity=False)
+        counterpart_aml_dict = {
+            'name': order_line.name,
+            'move_id': move.id,
+            'partner_id': order_line.partner_id.id,
+            'debit': 0.0,
+            'credit': order_line.amount_total,
+            'currency_id': order_line.currency_id.id,
+            'account_id': order_line.move_line_id.account_id.id,
+        }
+        liquidity_aml_dict = {
+            'name': order_line.name,
+            'move_id': move.id,
+            'partner_id': order_line.partner_id.id,
+            'debit': order_line.amount_total,
+            'credit': 0.0,
+            'currency_id': order_line.currency_id.id,
+            'account_id': order_line.journal_id.default_debit_account_id.id,
+        }
+        counterpart_aml = aml_obj.create(counterpart_aml_dict)
+        aml_obj.create(liquidity_aml_dict)
+        move.post()
+        (counterpart_aml + order_line.move_line_id).reconcile()
+        return move
+
     def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
         if self.type != 'receivable':
             return super(PaymentOrderLine, self).mark_order_line_paid(
@@ -97,7 +135,7 @@ class PaymentOrderLine(models.Model):
                     'journal_id': journal_id.id,
                 })
             for item in order_lines:
-                move_id = self.create_move_and_reconcile(item)
+                move_id = self.create_receivable_move_and_reconcile(item)
                 self.env['l10n_br.payment.statement.line'].create({
                     'statement_id': statement_id.id,
                     'date': date.today(),

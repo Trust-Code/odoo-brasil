@@ -71,7 +71,6 @@ class PaymentOrder(models.Model):
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
-    journal_id = fields.Many2one('account.journal', string="Diário")
     payment_information_id = fields.Many2one(
         'l10n_br.payment_information', string="Payment Information")
 

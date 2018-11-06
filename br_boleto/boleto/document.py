@@ -231,12 +231,10 @@ class BoletoItau157(Boleto):
 class BoletoItau(Boleto):
     def __init__(self, order_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(order_line)()
-        self.account_number = order_line.payment_mode_id.\
-            bank_account_id.acc_number
-        self.branch_number = order_line.payment_mode_id.\
-            bank_account_id.bra_number
-        self.account_digit = order_line.payment_mode_id.\
-            bank_account_id.acc_number_dig
+        conta = order_line.src_bank_account_id
+        self.account_number = conta.acc_number
+        self.branch_number = conta.bra_number
+        self.account_digit = conta.acc_number_dig
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
         if '-' in self.boleto.conta_cedente:
