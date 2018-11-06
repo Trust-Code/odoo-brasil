@@ -3,12 +3,14 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import time
 import pytz
 import base64
 import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
 _logger = logging.getLogger(__name__)
@@ -233,14 +235,17 @@ class InvoiceEletronic(models.Model):
             return atts
 
         attachment_obj = self.env['ir.attachment']
-        danfe_report = self.env['ir.actions.report.xml'].search(
-            [('report_name', '=', 'br_nfse.main_template_br_nfse_danfe')])
-        report_service = danfe_report.report_name
-        danfse = self.env['report'].get_pdf([self.id], report_service)
+        danfe_report = self.env['ir.actions.report'].search(
+            [('report_name', '=',
+              'br_nfse_paulistana.main_template_br_nfse_danfe')])
+        report_service = danfe_report.xml_id
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
         if danfse:
             danfe_id = attachment_obj.create(dict(
-                name="paulistana-%08d.pdf" % self.numero,
-                datas_fname="paulistana-%08d.pdf" % self.numero,
+                name=report_name,
+                datas_fname=report_name,
                 datas=base64.b64encode(danfse),
                 mimetype='application/pdf',
                 res_model='account.invoice',
