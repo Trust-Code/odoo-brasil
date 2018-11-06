@@ -17,6 +17,14 @@ class Santander240(Cnab_240):
         self._order = payment_order
         super(Santander240, self).__init__()
 
+    def _get_versao_lote(self, line):
+        if line.payment_mode_id.payment_type in ('01', '02'):  # DOC, TED
+            return 31
+        elif line.payment_mode_id.payment_type == '03':  # Titulos
+            return 30
+        else:  # Impostos
+            return 10
+
     def _get_cod_convenio_santander(self):
         bank_account = self._order.src_bank_account_id
         return "{:4s}{:4s}{:12s}".format(
@@ -38,6 +46,7 @@ class Santander240(Cnab_240):
         info_id = line.payment_information_id
         header = super()._get_header_lot(line, num_lot)
         header.update({
+            'numero_versao_lote': self._get_versao_lote(line),
             'forma_lancamento': int(get_forma_de_lancamento(
                 'santander', info_id.payment_type)),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
