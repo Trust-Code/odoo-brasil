@@ -258,6 +258,9 @@ class PaymentOrderLine(models.Model):
             if item.state != 'draft':
                 raise UserError(
                     'Apenas pagamentos em provisório podem ser aprovados!')
+            if item.type != 'payable':
+                raise UserError(
+                    'Apenas pagamentos a fornecedor podem ser aprovados')
             payment_order = self.get_payment_order(item.payment_mode_id)
             item.write({
                 'payment_order_id': payment_order.id,
