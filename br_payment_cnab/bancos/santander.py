@@ -114,9 +114,9 @@ class Santander240(Cnab_240):
             'favorecido_endereco_rua':
                 segmento.get('favorecido_endereco_rua')[:30],
             'favorecido_bairro':
-                segmento.get('favorecido_bairro')[:15],
+                segmento.get('favorecido_bairro', '')[:15],
             'favorecido_cidade':
-                segmento.get('favorecido_cidade')[:15],
+                segmento.get('favorecido_cidade', '')[:15],
         })
         return segmento
 
