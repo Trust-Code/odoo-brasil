@@ -14,7 +14,9 @@ class TestNFeBrasil(TransactionCase):
 
     caminho = os.path.dirname(__file__)
 
-    def setUp(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def setUp(self, br_localization):
+        br_localization.return_value = True
         super(TestNFeBrasil, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.main_company.write({
