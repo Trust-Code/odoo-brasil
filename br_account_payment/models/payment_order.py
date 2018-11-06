@@ -9,7 +9,13 @@ from odoo.exceptions import UserError
 class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
 
+    def _compute_identifier(self):
+        for item in self:
+            item.identifier = "%08d" % item.id
+
     name = fields.Char(string="Ref.", size=20)
+    identifier = fields.Char(
+        string="Identificador", compute='_compute_identifier')
     payment_order_id = fields.Many2one(
         'payment.order', string="Ordem de Pagamento", ondelete="restrict")
     src_bank_account_id = fields.Many2one(
@@ -19,7 +25,8 @@ class PaymentOrderLine(models.Model):
         'res.company', string="Company",
         related="payment_order_id.company_id", store=True)
     type = fields.Selection(
-        related='payment_order_id.type', readonly=True, store=True)
+        [('receivable', 'Recebível'), ('payable', 'Pagável')],
+        string="Tipo de Ordem", default='receivable')
     move_line_id = fields.Many2one(
         'account.move.line', string=u'Linhas de Cobrança')
     partner_id = fields.Many2one(
@@ -93,6 +100,13 @@ class PaymentOrder(models.Model):
     currency_id = fields.Many2one('res.currency', string='Moeda')
     amount_total = fields.Float(string="Total",
                                 compute='_compute_amount_total')
+
+    def mark_order_line_processed(self, cnab_code, cnab_message,
+                                  rejected=False, statement_id=None):
+        pass
+
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+        pass
 
     @api.multi
     @api.depends('line_ids.state')

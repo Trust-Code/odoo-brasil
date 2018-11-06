@@ -79,29 +79,100 @@ class PaymentOrderLine(models.Model):
     cnab_code = fields.Char(string="Código Retorno")
     cnab_message = fields.Char(string="Mensagem Retorno")
 
+    def validate_partner_data(self, vals):
+        errors = []
+        if "partner_id" not in vals:
+            errors += ['Selecione o parceiro!']
+            return errors
+        partner = self.env['res.partner'].browse(vals['partner_id'])
+        if not partner.cnpj_cpf:
+            errors += ['CNPJ/CPF do parceiro é obrigatório!']
+        if not partner.legal_name and not partner.name:
+            errors += ['Nome e/ou Razão Social é obrigatório!']
+        if not partner.zip:
+            errors += ['CEP do parceiro é obrigatório!']
+        if not partner.street:
+            errors += ['Endereço do parceiro é obrigatório!']
+        if not partner.country_id:
+            errors += ['País do parceiro é obrigatório!']
+        if not partner.state_id:
+            errors += ['Estado do parceiro é obrigatório!']
+        if not partner.city_id:
+            errors += ['Cidade do parceiro é obrigatório!']
+        return errors
+
+    def validate_bank_account(self, vals):
+        errors = []
+        if "bank_account_id" not in vals or not vals["bank_account_id"]:
+            errors += ['Selecione a conta bancária para transferência!']
+            return errors
+        bnk_account = self.env['res.partner.bank'].browse(
+            vals["bank_account_id"])
+        if not bnk_account.bank_id:
+            errors += ['Selecione o banco na conta bancária!']
+        if not bnk_account.acc_number:
+            errors += ['Preencha o número da conta bancária!']
+        if not bnk_account.acc_number_dig:
+            errors += ['Preencha o digito verificador da conta bancária!']
+        if not bnk_account.bra_number:
+            errors += ['Preencha a agência na conta bancária!']
+        return errors
+
+    # DOC
+    def validate_payment_type_01(self, payment_mode, vals):
+        errors = []
+        errors += self.validate_partner_data(vals)
+        errors += self.validate_bank_account(vals)
+        return errors
+
+    # TED
+    def validate_payment_type_02(self, payment_mode, vals):
+        errors = []
+        errors += self.validate_partner_data(vals)
+        errors += self.validate_bank_account(vals)
+        return errors
+
     # Pagamento de Títulos Bancários
     def validate_payment_type_03(self, payment_mode, vals):
         # Pagamento mensal pode salvar sem código de barras
+        errors = []
+        errors += self.validate_partner_data(vals)
         if not payment_mode.one_time_payment:
             if not vals.get('barcode'):
-                raise UserError('Código de barras obrigatório')
+                errors += ['Código de barras obrigatório']
             if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
-                raise UserError(
-                    'Código de barras deve possuir 47 ou 48 dígitos')
+                errors += ['Código de barras deve possuir 47 ou 48 dígitos']
+        return errors
 
     # Tributos com códigos de barras
     def validate_payment_type_04(self, payment_mode, vals):
+        errors = []
         if not vals.get('barcode'):
-            raise UserError('Código de barras obrigatório')
+            errors += ['Código de barras obrigatório']
         if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
-            raise UserError('Código de barras deve possuir 47 ou 48 dígitos')
+            errors += ['Código de barras deve possuir 47 ou 48 dígitos']
+        return errors
+
+    def validate_base_information(self, payment_mode):
+        errors = []
+        if not payment_mode.journal_id.company_id.cnpj_cpf:
+            errors += ['Preencha o CNPJ da empresa']
+        if not payment_mode.journal_id.company_id.legal_name:
+            errors += ['Preencha a Razão Social da empresa']
+        return errors
 
     def validate_information(self, payment_mode, vals):
+        errors = []
+        errors += self.validate_base_information(payment_mode)
         validate = getattr(
             self, 'validate_payment_type_%s' %
             payment_mode.payment_type, False)
         if validate:
-            validate(payment_mode, vals)
+            errors += validate(payment_mode, vals)
+        if len(errors) > 0:
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            raise UserError(msg)
 
     @api.onchange('payment_information_id', 'payment_mode_id')
     def _validate_payment_info(self):
@@ -193,9 +264,8 @@ class PaymentOrderLine(models.Model):
             'l10n_br_environment': payment_mode_id.l10n_br_environment
         }
 
-    def action_generate_payment_order_line(self, payment_mode, **vals):
+    def action_generate_payment_order_line(self, payment_mode, vals):
         self.validate_information(payment_mode, vals)
-        payment_order = self.get_payment_order(payment_mode)
         info_vals = self.get_information_vals(payment_mode, vals)
         information_id = self.env['l10n_br.payment_information'].sudo().create(
             info_vals)
@@ -206,16 +276,23 @@ class PaymentOrderLine(models.Model):
             'currency_id': payment_mode.journal_id.currency_id.id or
             payment_mode.journal_id.company_id.currency_id.id,
             'payment_information_id': information_id.id,
-            'payment_order_id': payment_order.id,
             'emission_date': date.today(),
+            'type': 'payable',
             'nosso_numero': journal.l10n_br_sequence_nosso_numero.next_by_id(),
         }
         line_vals.update(vals)
         self.sudo().create(line_vals)
 
     def action_aprove_payment_line(self):
-        # TODO Check if user has access
-        self.state = 'approved'
+        for item in self:
+            if item.state != 'draft':
+                raise UserError(
+                    'Apenas pagamentos em provisório podem ser aprovados!')
+            payment_order = self.get_payment_order(item.payment_mode_id)
+            item.write({
+                'payment_order_id': payment_order.id,
+            })
+        self.write({'state': 'approved'})
 
     def create_move_and_reconcile(self, order_line):
         move = self.env['account.move'].create({

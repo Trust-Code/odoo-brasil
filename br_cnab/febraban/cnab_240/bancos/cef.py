@@ -45,7 +45,7 @@ class Cef240(Cnab240):
             line.payment_mode_id.boleto_modalidade.zfill(2),
             line.nosso_numero.zfill(10))
 
-        vals['identificacao_titulo'] = str(vals['numero_documento'])
+        vals['identificacao_titulo'] = vals['numero_documento']
         # TODO: campo 27.3P CEF. Código do juros de mora
         vals['juros_cod_mora'] = 3
         vals['prazo_baixa'] = str(vals['prazo_baixa'])

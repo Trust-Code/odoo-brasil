@@ -7,9 +7,8 @@
         <field name="type">tree</field>
         <field name="arch" type="xml" >
             <field name="nosso_numero" position="after">
-                <button name="action_aprove_payment_line" type="object" string="Aprove this payment" icon="fa-check-circle" groups="account.group_account_user"/>
-                <button name="action_view_more_info" type="object" string="View more Info" icon="fa-info"/>
-            <field name="payment_information_id" invisible='1'/>
+                <button name="action_aprove_payment_line" type="object" string="APROVAR" class="btn btn-success btn-xs" groups="account.group_account_user"/>
+                <button name="action_view_more_info" type="object" string="VER" class="btn btn-success btn-xs"/>
             </field>
         </field>
     </record>
@@ -47,7 +46,6 @@
         <field name="arch" type="xml" >
             <group name="payment_order" position="before">
                 <div class="oe_button_box" name="button_payment_cnab" attrs="{'invisible': [('type', '!=', 'payable')]}" groups="account.group_account_user">
-                    <button name="action_approve_all" type="object" class="oe_stat_button" icon="fa-thumbs-up" string="Aprovar todos"/>
                     <button name="action_generate_payable_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB de Pagamentos"/>
                 </div>
             </group>
@@ -65,6 +63,7 @@
             <search string="Search Payments">
                 <filter string="Contas em atraso" domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Contas em atraso" name="overdue"/>
                 <separator orientation="vertical"/>
+                <filter string="Aguardando Aprovação!" domain="[('state','=', 'draft')]" help="Registros provisórios" name="draft"/>
                 <filter string="Pagos" domain="[('state','=', 'paid')]" help="Registros pagos" name="paid"/>
                 <filter string="Enviados" domain="[('state','in', ('sent',))]" help="Pagamentos Enviados" name="sent"/>
                 <filter string="Abertos" domain="[('state','in', ('approved', 'sent', 'processed'))]" help="Pagamentos em aberto" name="open"/>
@@ -91,11 +90,11 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form,graph,pivot</field>
         <field name="search_view_id" ref="view_cnab_payments_filter"/>
-        <field name="context">{'search_default_sent': 1}</field>
+        <field name="context">{'search_default_draft': 1}</field>
         <field name="domain">[('type', '=', 'payable')]</field>
     </record>
 
-    <menuitem sequence="30" action="action_payment_order_line"
+    <menuitem sequence="10" action="action_payment_order_line"
               id="menu_action_payment_order_line"
               parent="br_account_payment.menu_bank_payments"/>
 

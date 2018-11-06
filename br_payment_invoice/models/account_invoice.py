@@ -43,7 +43,7 @@ class AccountInvoice(models.Model):
             vals = self.prepare_payment_line_vals(item)
             line_obj = self.env['payment.order.line'].with_context({})
             line_obj.action_generate_payment_order_line(
-                item.payment_mode_id, **vals)
+                item.payment_mode_id, vals)
 
     @api.multi
     def action_move_create(self):

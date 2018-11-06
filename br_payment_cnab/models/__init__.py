@@ -6,5 +6,4 @@ from . import payment_information
 from . import payment_order
 from . import account_move
 from . import account_journal
-from . import payment_statement
 from . import res_config_settings

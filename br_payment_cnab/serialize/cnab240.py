@@ -103,8 +103,8 @@ class Cnab_240(object):
             "valor_real_pagamento": line.value_final,  # TODO
             "mensagem2": information_id.message2 or '',
             "finalidade_doc_ted": information_id.mov_finality or '',
-            "favorecido_emissao_aviso": int(information_id.warning_code) if
-            information_id.warning_code else 0,
+            "favorecido_emissao_aviso_alfa": information_id.warning_code,
+            "favorecido_emissao_aviso": int(information_id.warning_code),
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
             "favorecido_inscricao_numero": line.partner_id.cnpj_cpf,
