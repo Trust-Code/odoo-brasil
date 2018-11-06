@@ -23,30 +23,24 @@ class l10nBrPaymentStatement(models.Model):
             item.amount_total = sum([x.amount for x in item.line_ids])
 
     name = fields.Char(
-        string='Reference', states={'open': [('readonly', False)]},
+        string='Reference',
         copy=False, readonly=True)
     date = fields.Date(
-        states={'confirm': [('readonly', True)]},
         copy=False, default=fields.Date.context_today)
     amount_total = fields.Monetary(
-        'Valor Total', states={'confirm': [('readonly', True)]},
+        'Valor Total',
         currency_field='currency_id', compute='_compute_amount_total')
     currency_id = fields.Many2one(
         'res.currency', compute='_compute_currency', string="Currency")
-    state = fields.Selection(
-        [('open', 'New'), ('validated', 'Validated')], string='Status',
-        required=True, readonly=True, copy=False, default='open')
     journal_id = fields.Many2one(
-        'account.journal', string='Journal', required=True,
-        states={'confirm': [('readonly', True)]})
+        'account.journal', string='Journal', required=True)
     company_id = fields.Many2one(
         'res.company', related='journal_id.company_id', string='Company',
         store=True, readonly=True)
 
     line_ids = fields.One2many(
         'l10n_br.payment.statement.line', 'statement_id',
-        string='Statement lines', states={'confirm': [('readonly', True)]},
-        copy=True)
+        string='Statement lines', readonly=True, copy=True)
 
 
 class l10nBrPaymentStatementLine(models.Model):
