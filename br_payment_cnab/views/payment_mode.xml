@@ -20,13 +20,22 @@
                 <notebook attrs="{'invisible': [('type', '!=', 'payable')]}">
                     <page string="Informações Adicionais">
                         <group>
-                            <field name="mov_finality" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}"/>
-                            <field name="service_type" />
-                        </group>
-                        <group attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}">
-                            <field name="codigo_receita" />
-                            <field name="numero_referencia" />
-                            <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
+                            <group>
+                                <field name="service_type" />
+                                <field name="mov_finality" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}"/>
+                                <field name="codigo_receita" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}" />
+                                <field name="numero_referencia" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}" />
+                                <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
+                            </group>
+                            <div>
+                                <h4>Manuais de configuração</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/integracao-de-pagamentos-via-cnab-213" target="_blank">Configurações Gerais</a></li>
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/cnab-de-pagamentos-santander-214" target="_blank">Pagamentos Santander</a></li>
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/cnab-de-pagamentos-sicoob-216" target="_blank">Pagamentos Sicoob</a></li>
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/cnab-de-pagamentos-itau-215" target="_blank">Pagamentos Itaú</a></li>
+                                </ul>
+                            </div>
                         </group>
                     </page>
                 </notebook>

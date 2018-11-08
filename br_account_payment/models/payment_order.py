@@ -19,8 +19,7 @@ class PaymentOrderLine(models.Model):
     payment_order_id = fields.Many2one(
         'payment.order', string="Ordem de Pagamento", ondelete="restrict")
     src_bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Conta Bancária",
-        related="payment_order_id.src_bank_account_id", store=True)
+        'res.partner.bank', string="Conta Bancária")
     company_id = fields.Many2one(
         'res.company', string="Company",
         related="payment_order_id.company_id", store=True)
@@ -31,6 +30,7 @@ class PaymentOrderLine(models.Model):
         'account.move.line', string=u'Linhas de Cobrança')
     partner_id = fields.Many2one(
         'res.partner', string="Parceiro", readonly=True)
+    journal_id = fields.Many2one('account.journal', string="Diário")
     move_id = fields.Many2one('account.move', string=u"Lançamento de Diário",
                               related='move_line_id.move_id', readonly=True)
     nosso_numero = fields.Char(string=u"Nosso Número", size=20)

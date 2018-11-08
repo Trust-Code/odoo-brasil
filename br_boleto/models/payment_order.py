@@ -35,6 +35,9 @@ class PaymentOrderLine(models.Model):
         if not move:
             return self.env['payment.order.line'].create({
                 'move_line_id': move_line.id,
+                'src_bank_account_id':
+                payment_mode.journal_id.bank_account_id.id,
+                'journal_id': payment_mode.journal_id.id,
                 'payment_order_id': payment_order.id,
                 'payment_mode_id': move_line.payment_mode_id.id,
                 'date_maturity': move_line.date_maturity,
