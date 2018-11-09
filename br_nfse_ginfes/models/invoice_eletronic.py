@@ -83,6 +83,9 @@ class InvoiceEletronic(models.Model):
                     if issqn_codigo != eletr.issqn_codigo:
                         errors.append(u'%s - Apenas itens com o mesmo código \
                                       de serviço podem ser enviados' % prod)
+                    if not eletr.codigo_tributacao_municipio:
+                        errors.append(u'%s - Código de tributação do município \
+                        obrigatório' % prod)
 
         return errors
 
