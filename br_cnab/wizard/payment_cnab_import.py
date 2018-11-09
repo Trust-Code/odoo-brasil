@@ -42,7 +42,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         for lote in arquivo.lotes:
             for evento in lote.eventos:
                 payment_line = self.env['payment.order.line'].search(
-                    [('nosso_numero', '=', evento.nosso_numero),
+                    [('nosso_numero', '=', int(evento.nosso_numero)),
                      ('src_bank_account_id', '=',
                       self.journal_id.bank_account_id.id)])
                 if not payment_line:
