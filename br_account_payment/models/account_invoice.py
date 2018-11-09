@@ -21,7 +21,8 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
-
+        if not self.l10n_br_localization:
+            return res
         for invoice_line in res:
             line = invoice_line[2]
             line['l10n_br_payment_mode_id'] = self.l10n_br_payment_mode_id.id

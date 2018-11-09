@@ -8,7 +8,9 @@ from odoo.addons.br_account.tests.test_base import TestBaseBr
 
 class TestAccountInvoice(TestBaseBr):
 
-    def setUp(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def setUp(self, br_localization):
+        br_localization.return_value = True
         super(TestAccountInvoice, self).setUp()
         self.partner = self.env['res.partner'].create({
             'name': 'Nome Parceiro',
@@ -56,7 +58,9 @@ class TestAccountInvoice(TestBaseBr):
             partner_id=self.partner.id
         ))
 
-    def test_compute_total_values(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_compute_total_values(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             self.assertEquals(invoice.amount_total, 650.0)
             self.assertEquals(invoice.amount_total_signed, 650.0)

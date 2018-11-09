@@ -27,7 +27,8 @@ class AccountJournal(models.Model):
     def write(self, vals):
         result = super(AccountJournal, self).write(vals)
         journal_ids = self.filtered(
-            lambda r: r.type == 'bank' and r.bank_account_id)
+            lambda r: r.type == 'bank' and r.bank_account_id
+            and r.l10n_br_localization)
         for journal in journal_ids:
             acc_vals = {
                 'acc_number_dig': vals.get('l10n_br_acc_number_dig'),

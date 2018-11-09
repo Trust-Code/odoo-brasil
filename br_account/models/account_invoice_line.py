@@ -81,6 +81,8 @@ class AccountInvoiceLine(models.Model):
                  'l10n_br_icms_st_aliquota_deducao', 'l10n_br_ii_base_calculo',
                  'l10n_br_icms_aliquota_inter_part', 'l10n_br_issqn_deduction')
     def _compute_price(self):
+        if not self.l10n_br_localization:
+            return super(AccountInvoiceLine, self)._compute_price()
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
 
@@ -661,10 +663,13 @@ class AccountInvoiceLine(models.Model):
 
     @api.onchange('price_subtotal')
     def _br_account_onchange_quantity(self):
-        self._set_extimated_taxes(self.price_subtotal)
+        if self.l10n_br_localization:
+            self._set_extimated_taxes(self.price_subtotal)
 
     @api.onchange('product_id')
     def _br_account_onchange_product_id(self):
+        if not self.l10n_br_localization:
+            return
         self.l10n_br_product_type = self.product_id.l10n_br_fiscal_type
         self.l10n_br_icms_origem = self.product_id.l10n_br_origin
         ncm = self.product_id.l10n_br_fiscal_classification_id

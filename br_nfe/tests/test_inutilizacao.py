@@ -176,7 +176,10 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
-    def test_inutilizacao_2_sequences(self, inutilizar, validar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_inutilizacao_2_sequences(self, br_localization, inutilizar,
+                                      validar):
+        br_localization.return_value = True
         validar.return_value = ''
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
@@ -215,7 +218,10 @@ class TestInutilizacao(TransactionCase):
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')
-    def test_inutilizacao_return_ok(self, inutilizar, validar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_inutilizacao_return_ok(self, br_localization, inutilizar,
+                                    validar):
+        br_localization.return_value = True
         validar.return_value = ''
         with open(os.path.join(self.caminho,
                                'xml/inutilizacao_sent_xml.xml')) as f:
@@ -328,7 +334,9 @@ class TestInutilizacao(TransactionCase):
             wizard.action_inutilize_nfe()
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
-    def test_inutilizacao_user_error(self, validar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_inutilizacao_user_error(self, br_localization, validar):
+        br_localization.return_value = True
         validar.return_value = ''
         wizard = self.env['wizard.inutilization.nfe.numeration'].create(dict(
             numeration_start=0,

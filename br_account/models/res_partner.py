@@ -13,6 +13,8 @@ class ResPartner(models.Model):
 
     @api.multi
     def _invoice_total(self):
+        if not self.filtered(lambda x: x.l10n_br_localization):
+            return super(ResPartner, self)._invoice_total()
         account_invoice_report = self.env['account.invoice.report']
         if not self.ids:
             self.total_invoiced = 0.0

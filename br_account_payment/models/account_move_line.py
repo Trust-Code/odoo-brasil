@@ -15,7 +15,7 @@ class AccountMoveLine(models.Model):
     @api.multi
     @api.depends('debit', 'credit', 'user_type_id', 'amount_residual')
     def _compute_payment_value(self):
-        for item in self:
+        for item in self.filtered(lambda x: x.l10n_br_localization):
             item.l10n_br_payment_value = item.debit \
                 if item.user_type_id.type == 'receivable' else item.credit * -1
     l10n_br_payment_value = fields.Monetary(

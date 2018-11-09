@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 
@@ -100,7 +101,9 @@ class TestEletronicInvoice(TransactionCase):
             invoice_line_ids=invoice_line_incomplete
         ))
 
-    def test_basic_validation_for_eletronic_doc(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_basic_validation_for_eletronic_doc(self, br_localization):
+        br_localization.return_value = True
         self.assertEquals(self.inv_incomplete.l10n_br_total_edocs, 0)
 
         vals = self.inv_incomplete.action_view_edocs()

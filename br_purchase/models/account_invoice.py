@@ -6,11 +6,14 @@ from odoo import fields, models
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'br.localization.filtering']
 
     def _prepare_invoice_line_from_po_line(self, line):
         res = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(
             line)
+        if not self.l10n_br_localization:
+            return res
         res['valor_bruto'] = line.l10n_br_valor_bruto
         res['discount'] = line.discount
 
@@ -120,7 +123,8 @@ class AccountInvoice(models.Model):
 
 
 class AccountInvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
+    _name = 'account.invoice.line'
+    _inherit = ['account.invoice.line', 'br.localization.filtering']
 
     fiscal_position_type = fields.Selection(
         [('saida', 'Saída'), ('entrada', 'Entrada'),
@@ -129,6 +133,8 @@ class AccountInvoiceLine(models.Model):
 
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        if not self.l10n_br_localization:
+            return res
         res.update({
             'fiscal_type': self.fiscal_position_type,
         })
