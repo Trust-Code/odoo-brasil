@@ -204,7 +204,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
 
     def test_seg(self):
         cnab = self.get_cnab_obj(self.payment_order)
-        seg_teste = cnab._get_segmento(self.payment_order.line_ids[1], 1, 1)
+        seg_teste = cnab._get_segmento(self.payment_order.line_ids[0], 1, 1)
         seg_ok = {
             'controle_lote': 1,
             'sequencial_registro_lote': 1,
