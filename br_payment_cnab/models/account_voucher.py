@@ -66,7 +66,8 @@ class AccountVoucher(models.Model):
         res = super(AccountVoucher, self).proforma_voucher()
         for item in self:
             self.env['payment.order.line'].action_generate_payment_order_line(
-                self.l10n_br_payment_mode_id, **self._prepare_payment_order_vals())
+                self.l10n_br_payment_mode_id,
+                **self._prepare_payment_order_vals())
         return res
 
     def validade_cnab_fields(self):

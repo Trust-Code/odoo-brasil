@@ -83,7 +83,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
             'payment_order_id': ordem_cobranca.id,
-            'l10n_br_payment_mode_id': ordem_cobranca.l10n_br_payment_mode_id.id,
+            'l10n_br_payment_mode_id':
+                ordem_cobranca.l10n_br_payment_mode_id.id,
             'value': 150.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),

@@ -82,8 +82,8 @@ class Cnab240(Cnab):
             'cedente_conta': int(
                 self.order.l10n_br_payment_mode_id.bank_account_id.acc_number),
             'cedente_conta_dv': cedente_conta_dv,
-            'cedente_convenio': self.order.
-                l10n_br_payment_mode_id.bank_account_id.codigo_convenio,
+            'cedente_convenio': (self.order.l10n_br_payment_mode_id.
+                                 bank_account_id.codigo_convenio),
             'cedente_agencia_dv': self.order.l10n_br_payment_mode_id.
             bank_account_id.l10n_br_number_dig,
             'cedente_nome': self.order.user_id.company_id.l10n_br_legal_name,
