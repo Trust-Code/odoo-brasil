@@ -20,6 +20,9 @@ class l10nBrPaymentCnabImport(models.TransientModel):
     _inherit = 'l10n_br.payment.cnab.import'
 
     def _get_account(self, cnab_file):
+        if self.cnab_type != 'payable':
+            return super(l10nBrPaymentCnabImport, self).do_import(cnab_file)
+
         stream = StringIO(cnab_file.decode('ascii'))
         bank = get_bank(self.journal_id.bank_id.bic)
         cnab = File(bank)
@@ -27,12 +30,13 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         return cnab.header.cedente_conta, cnab.header.cedente_agencia
 
     def do_import(self, cnab_file):
-        stream = StringIO(cnab_file.decode('ascii'))
+        if self.cnab_type != 'payable':
+            return super(l10nBrPaymentCnabImport, self).do_import(cnab_file)
 
+        stream = StringIO(cnab_file.decode('ascii'))
         bank = get_bank(self.journal_id.bank_id.bic)
         loaded_cnab = File(bank)
         loaded_cnab.load_return_file(stream)
-        self.validate_journal(loaded_cnab)
 
         statement = self.env['l10n_br.payment.statement'].create({
             'journal_id': self.journal_id.id,

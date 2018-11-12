@@ -77,7 +77,6 @@ class Cnab_240(object):
 
     def _get_segmento(self, line, lot_sequency, num_lot):
         information_id = line.payment_information_id
-        codigo_barras = self.get_barcode(line) or 0
         segmento = {
             "controle_lote": num_lot,
             "sequencial_registro_lote": lot_sequency,
@@ -130,8 +129,8 @@ class Cnab_240(object):
             "valor_multa_juros": self._float_to_monetary(
                 information_id.interest_value + information_id.fine_value),
             "codigo_moeda": int(information_id.currency_code),
-            "codigo_de_barras": self._string_to_num(codigo_barras),
-            "codigo_de_barras_alfa": str(codigo_barras),
+            "codigo_de_barras": self._string_to_num(line.barcode),
+            "codigo_de_barras_alfa": line.barcode,
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
             line.partner_id.legal_name or line.partner_id.name,
@@ -287,32 +286,3 @@ class Cnab_240(object):
             return 0
         date = datetime.strptime(line.invoice_date, "%Y-%m-%d")
         return int('{}{}'.format(date.month, date.year))
-
-    def get_barcode(self, line):
-        barcode = line.payment_information_id.barcode
-        barcode_len = len(barcode or '')
-        if barcode_len >= 47 and barcode_len <= 48:
-            return self.convert_line_to_barcode(
-                barcode)
-        elif barcode_len > 0:
-            raise UserError("Linha digitável must have at least 47 characters")
-        return barcode
-
-    def convert_line_to_barcode(self, barcode):
-        if len(barcode) == 47:
-            return "{}{}{}{}{}{}".format(
-                barcode[0:4],
-                barcode[32],
-                barcode[-14:],
-                barcode[4:9],
-                barcode[10:20],
-                barcode[21:31])
-        elif len(barcode) == 48:
-            return "{}{}{}{}".format(
-                barcode[0:11],
-                barcode[12:23],
-                barcode[24:35],
-                barcode[36:47],
-            )
-        else:
-            raise UserError('Código de barras com tamanho inválido!')
