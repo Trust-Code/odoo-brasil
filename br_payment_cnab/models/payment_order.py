@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from ..bancos import santander, sicoob
+    from ..bancos import santander, sicoob, itau
 except ImportError:
     _logger.debug('Cannot import bancos.')
 
@@ -21,7 +21,7 @@ class PaymentOrder(models.Model):
         banks = {
             '756': sicoob.Sicoob240(self),
             '033': santander.Santander240(self),
-            # '641': Itau240(self),
+            '341': itau.Itau240(self),
             # '237': Bradesco240(self)
         }
         bank = banks.get(code)
@@ -77,6 +77,20 @@ class PaymentOrderLine(models.Model):
     invoice_date = fields.Date('Data da Fatura')
     cnab_code = fields.Char(string="Código Retorno")
     cnab_message = fields.Char(string="Mensagem Retorno")
+    value_final = fields.Float(
+        string="Final Value", compute="_compute_final_value",
+        digits=(18, 2), readonly=True)
+
+    bank_account_id = fields.Many2one(
+        'res.partner.bank', string="Conta p/ Transferência")
+
+    partner_acc_number = fields.Char(
+        string="Conta do Favorecido",
+        readonly=True)
+
+    partner_bra_number = fields.Char(
+        string="Agência do Favorecido",
+        readonly=True)
 
     def validate_partner_data(self, vals):
         errors = []
@@ -180,13 +194,6 @@ class PaymentOrderLine(models.Model):
             desconto = payment.rebate_value + payment.discount_value
             acrescimo = payment.fine_value + payment.interest_value
             item.value_final = (item.amount_total - desconto + acrescimo)
-
-    value_final = fields.Float(
-        string="Final Value", compute="_compute_final_value",
-        digits=(18, 2), readonly=True)
-
-    bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Conta p/ Transferência")
 
     def get_operation_code(self, payment_mode):
         if payment_mode.payment_type == '01':
