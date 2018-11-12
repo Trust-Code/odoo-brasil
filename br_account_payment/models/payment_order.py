@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 
 class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
+    _order = 'id desc'
 
     def _compute_identifier(self):
         for item in self:

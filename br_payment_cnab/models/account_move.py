@@ -24,7 +24,7 @@ class AccountMoveLine(models.Model):
             total = self.env['payment.order.line'].search_count(
                 [('move_line_id', '=', item.id),
                  ('state', 'not in', ('draft', 'cancelled', 'rejected'))])
-        if total > 0:
-            raise UserError('Existe uma ordem de pagamento relacionada!\
-                            Cancele o item da ordem primeiro')
+            if total > 0:
+                raise UserError('Existe uma ordem de pagamento relacionada!\
+                                Cancele o item da ordem primeiro')
         return super(AccountMoveLine, self)._update_check()

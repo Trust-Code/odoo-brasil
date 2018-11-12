@@ -42,7 +42,14 @@ class WizardChangePayment(models.TransientModel):
                 Não é possível modificar informações aqui!')
         else:
             vals = invoice.prepare_payment_line_vals(self.move_line_id)
+            vals['date_maturity'] = \
+                self.date_maturity or self.move_line_id.date_maturity
             vals['barcode'] = self.barcode
             vals['bank_account_id'] = self.bank_account_id.id
             self.env['payment.order.line'].action_generate_payment_order_line(
                 self.payment_mode_id, vals)
+            if self.date_maturity:
+                self.move_line_id.write({
+                    'payment_mode_id': self.payment_mode_id.id,
+                    'date_maturity': self.date_maturity,
+                })

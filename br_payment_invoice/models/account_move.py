@@ -23,5 +23,6 @@ class AccountMoveLine(models.Model):
                 'default_bank_account_id':
                 self.invoice_id.l10n_br_bank_account_id.id,
                 'default_barcode': line.payment_information_id.barcode or '',
+                'default_date_maturity': line.date_maturity,
             }
         })
