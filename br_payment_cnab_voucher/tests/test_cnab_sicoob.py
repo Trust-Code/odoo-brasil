@@ -40,7 +40,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'quantity': 1.0,
             'price_unit': 150.0,
             'price_subtotal': 150.0,
-            'account_id': self.payable_account.id,
+            'account_id': self.expense_account.id,
             'voucher_id': self.get_voucher_id()
         })
         return voucher_line.voucher_id

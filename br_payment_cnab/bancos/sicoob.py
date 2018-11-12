@@ -56,6 +56,7 @@ class Sicoob240(Cnab_240):
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_cep': self._string_to_num(str(
                 segmento.get('favorecido_cep')), 0),
+            'favorecido_nome': segmento.get('favorecido_nome')[:30],
             'valor_documento': self._string_to_monetary(
                 segmento.get('valor_documento')),
             'valor_abatimento': self._string_to_monetary(
