@@ -52,7 +52,9 @@ class AccountVoucher(models.Model):
     @api.depends('linha_digitavel')
     def _compute_barcode(self):
         for item in self:
-            linha = re.sub('[^0-9]', '', item.linha_digitavel or '')
+            if not item.linha_digitavel:
+                continue
+            linha = re.sub('[^0-9]', '', item.linha_digitavel)
             if len(linha) not in (47, 48):
                 raise UserError(
                     'Tamanho da linha digitável inválido %s' % len(linha))

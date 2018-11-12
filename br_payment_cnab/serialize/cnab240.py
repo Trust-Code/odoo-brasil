@@ -6,7 +6,6 @@ import logging
 from io import StringIO
 from decimal import Decimal
 from datetime import datetime, date
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -130,7 +129,7 @@ class Cnab_240(object):
                 information_id.interest_value + information_id.fine_value),
             "codigo_moeda": int(information_id.currency_code),
             "codigo_de_barras": self._string_to_num(line.barcode),
-            "codigo_de_barras_alfa": line.barcode,
+            "codigo_de_barras_alfa": line.barcode or '',
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
             line.partner_id.legal_name or line.partner_id.name,
