@@ -20,7 +20,7 @@ class PaymentOrderLine(models.Model):
     move_id = fields.Many2one('account.move', string=u"Lançamento de Diário",
                               related='move_line_id.move_id', readonly=True)
     nosso_numero = fields.Char(string=u"Nosso Número", size=20)
-    payment_mode_id = fields.Many2one(
+    l10n_br_payment_mode_id = fields.Many2one(
         'payment.mode', string="Modo de pagamento")
     date_maturity = fields.Date(string="Vencimento")
     value = fields.Float(string="Valor", digits=(18, 2))
@@ -51,9 +51,9 @@ class PaymentOrder(models.Model):
         string="Tipo de Ordem", default='receivable')
     user_id = fields.Many2one('res.users', string=u'Responsável',
                               required=True)
-    payment_mode_id = fields.Many2one('payment.mode',
-                                      string='Modo de Pagamento',
-                                      required=True)
+    l10n_br_payment_mode_id = fields.Many2one('payment.mode',
+                                              string='Modo de Pagamento',
+                                              required=True)
     state = fields.Selection(
         [('draft', 'Rascunho'),
          ('sent', 'Enviado'),

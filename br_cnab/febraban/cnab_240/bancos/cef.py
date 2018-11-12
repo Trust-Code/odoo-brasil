@@ -37,7 +37,8 @@ class Cef240(Cnab240):
 
         vals['cedente_convenio'] = int(vals['cedente_convenio'])
         vals['cedente_beneficiario'] = vals['cedente_convenio']
-        vals['carteira_numero'] = int(line.payment_mode_id.boleto_modalidade)
+        vals['carteira_numero'] = int(
+            line.l10n_br_payment_mode_id.boleto_modalidade)
 
         # Informar o Número do Documento - Seu Número (mesmo das posições
         # 63-73 do Segmento P)

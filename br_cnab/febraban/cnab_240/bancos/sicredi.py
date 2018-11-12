@@ -77,7 +77,7 @@ class Sicredi240(Cnab240):
         vals['codigo_multa'] = '1'  # 1 - Valor por dia
         vlr_doc = line.debit
         juros_dia = vlr_doc * (
-            self.order.payment_mode_id.late_payment_interest / 100 / 30)
+            self.order.l10n_br_payment_mode_id.late_payment_interest / 100 / 30)
         vals['juros_mora_taxa'] = Decimal(str(juros_dia)).quantize(
             Decimal('1.00'))
         vals['codigo_baixa'] = 1

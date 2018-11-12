@@ -23,7 +23,7 @@ class Bradesco240(Cnab240):
     def _prepare_header(self):
         vals = super(Bradesco240, self)._prepare_header()
 
-        cod_convenio = self.order.payment_mode_id.bank_account_id.\
+        cod_convenio = self.order.l10n_br_payment_mode_id.bank_account_id.\
             codigo_convenio
 
         vals['servico_servico'] = 1
@@ -104,7 +104,7 @@ class Bradesco240(Cnab240):
             return resto
 
     def _hook_validation(self):
-        if not self.order.payment_mode_id.bank_account_id.\
+        if not self.order.l10n_br_payment_mode_id.bank_account_id.\
                 codigo_convenio:
             raise UserError(
                 'Código de convênio não pode estar vazio!')

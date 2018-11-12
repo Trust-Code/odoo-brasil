@@ -9,9 +9,11 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 
 class AccountVoucher(models.Model):
-    _inherit = 'account.voucher'
+    _name = 'account.voucher'
+    _inherit = ['account.voucher', 'br.localization.filtering']
 
-    payment_mode_id = fields.Many2one('payment.mode', "Modo de Pagamento")
+    l10n_br_payment_mode_id = fields.Many2one('payment.mode',
+                                              "Modo de Pagamento")
     payment_type = fields.Selection(
         [('01', 'TED - Transferência Bancária'),
          ('02', 'DOC - Transferência Bancária'),
@@ -32,9 +34,9 @@ class AccountVoucher(models.Model):
 
     fine_value = fields.Float('Fine Value')
 
-    @api.onchange('payment_mode_id')
+    @api.onchange('l10n_br_payment_mode_id')
     def _onchange_payment_mode_id(self):
-        self.payment_type = self.payment_mode_id.payment_type
+        self.payment_type = self.l10n_br_payment_mode_id.payment_type
 
     @api.onchange('partner_id')
     def _onchange_payment_cnab_partner_id(self):
@@ -64,7 +66,7 @@ class AccountVoucher(models.Model):
         res = super(AccountVoucher, self).proforma_voucher()
         for item in self:
             self.env['payment.order.line'].action_generate_payment_order_line(
-                self.payment_mode_id, **self._prepare_payment_order_vals())
+                self.l10n_br_payment_mode_id, **self._prepare_payment_order_vals())
         return res
 
     def validade_cnab_fields(self):
@@ -99,8 +101,9 @@ class AccountVoucher(models.Model):
         if vals.get('fine_value'):
             vals = self.create_interest_fine_line('fine', vals)
         res = super(AccountVoucher, self).write(vals)
-        if self.payment_mode_id and\
-                self.payment_mode_id.payment_type in ('01, 02', '06', '07'):
+        if self.l10n_br_payment_mode_id and\
+                self.l10n_br_payment_mode_id.payment_type in \
+                ('01, 02', '06', '07'):
             self.validade_cnab_fields()
         return res
 

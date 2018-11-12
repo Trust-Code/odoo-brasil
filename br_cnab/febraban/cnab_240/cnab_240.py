@@ -57,42 +57,43 @@ class Cnab240(Cnab):
 
     @property
     def inscricao_tipo(self):
-        if self.order.payment_mode_id.company_id.partner_id.is_company:
+        if self.order.l10n_br_payment_mode_id.company_id.partner_id.is_company:
             return 2
         else:
             return 1
 
     def _prepare_header(self):
-        cnpj_cpf = re.sub('[^0-9]', '', self.order.payment_mode_id.company_id.
+        cnpj_cpf = re.sub('[^0-9]', '',
+                          self.order.l10n_br_payment_mode_id.company_id.
                           l10n_br_cnpj_cpf)
-        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
+        cedente_conta_dv = self.order.l10n_br_payment_mode_id.bank_account_id.\
             acc_number_dig
         cedente_conta_dv = str(cedente_conta_dv)
         return {
-            'controle_banco': int(self.order.payment_mode_id.
+            'controle_banco': int(self.order.l10n_br_payment_mode_id.
                                   bank_account_id.bank_bic),
             'arquivo_data_de_geracao': self.data_hoje(),
             'arquivo_hora_de_geracao': self.hora_agora(),
             'arquivo_sequencia': self.order.file_number,
             'cedente_inscricao_tipo': self.inscricao_tipo,
             'cedente_inscricao_numero': int(cnpj_cpf),
-            'cedente_agencia': int(
-                self.order.payment_mode_id.bank_account_id.l10n_br_number),
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
+            'cedente_agencia': int(self.order.l10n_br_payment_mode_id.
+                                   bank_account_id.l10n_br_number),
+            'cedente_conta': int(
+                self.order.l10n_br_payment_mode_id.bank_account_id.acc_number),
             'cedente_conta_dv': cedente_conta_dv,
-            'cedente_convenio': self.order.payment_mode_id.bank_account_id.
-            codigo_convenio,
-            'cedente_agencia_dv': self.order.payment_mode_id.
+            'cedente_convenio': self.order.
+                l10n_br_payment_mode_id.bank_account_id.codigo_convenio,
+            'cedente_agencia_dv': self.order.l10n_br_payment_mode_id.
             bank_account_id.l10n_br_number_dig,
             'cedente_nome': self.order.user_id.company_id.l10n_br_legal_name,
             # DV ag e conta
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.
+            'cedente_dv_ag_cc': (self.order.l10n_br_payment_mode_id.
                                  bank_account_id.l10n_br_number_dig),
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
-            'nome_banco': str(self.order.payment_mode_id.bank_account_id
-                              .bank_name)
+            'nome_banco': str(self.order.l10n_br_payment_mode_id.
+                              bank_account_id.bank_name)
         }
 
     def get_file_numeration(self):
@@ -127,7 +128,7 @@ class Cnab240(Cnab):
     def _prepare_segmento(self, line):
         prefixo, sulfixo = self.cep(line.partner_id.zip)
 
-        # if not self.order.payment_mode_id.boleto_aceite == 'S':
+        # if not self.order.l10n_br_payment_mode_id.boleto_aceite == 'S':
         #    aceite = u'A'
 
         # Código agencia do cedente
@@ -146,24 +147,23 @@ class Cnab240(Cnab):
         # Era cedente_agencia_conta_dv agora é cedente_dv_ag_cc
 
         return {
-            'controle_banco': int(self.order.payment_mode_id.bank_account_id.
-                                  bank_bic),
-            'cedente_agencia': int(self.order.payment_mode_id.bank_account_id.
-                                   l10n_br_number),
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
-            'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
-            acc_number_dig,
-            'cedente_convenio': self.order.payment_mode_id.bank_account_id.
-            codigo_convenio,
-            'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
-            l10n_br_number_dig,
-            'cedente_nome':
-            self.order.payment_mode_id.bank_account_id.partner_id.
-                l10n_br_legal_name,
+            'controle_banco': int(self.order.l10n_br_payment_mode_id.
+                                  bank_account_id.bank_bic),
+            'cedente_agencia': int(self.order.l10n_br_payment_mode_id.
+                                   bank_account_id.l10n_br_number),
+            'cedente_conta': int(self.order.l10n_br_payment_mode_id.
+                                 bank_account_id.acc_number),
+            'cedente_conta_dv': (self.order.l10n_br_payment_mode_id.
+                                 bank_account_id.acc_number_dig),
+            'cedente_convenio': (self.order.l10n_br_payment_mode_id.
+                                 bank_account_id.codigo_convenio),
+            'cedente_agencia_dv': (self.order.l10n_br_payment_mode_id.
+                                   bank_account_id.l10n_br_number_dig),
+            'cedente_nome': (self.order.l10n_br_payment_mode_id.
+                             bank_account_id.partner_id.l10n_br_legal_name),
             # DV ag e cc
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
-                                 l10n_br_number_dig),
+            'cedente_dv_ag_cc': (self.order.l10n_br_payment_mode_id.
+                                 bank_account_id.l10n_br_number_dig),
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
@@ -174,8 +174,9 @@ class Cnab240(Cnab):
                 Decimal('1.00')),
             # TODO: Código adotado para identificar o título de cobrança.
             # 8 é Nota de cŕedito comercial
-            'especie_titulo': int(self.order.payment_mode_id.boleto_especie),
-            'aceite_titulo': self.order.payment_mode_id.boleto_aceite,
+            'especie_titulo': int(self.order.l10n_br_payment_mode_id.
+                                  boleto_especie),
+            'aceite_titulo': self.order.l10n_br_payment_mode_id.boleto_aceite,
             'data_emissao_titulo': self.format_date(
                 line.date),
             # Taxa de juros do Odoo padrão mensal: 2. Campo 27.3P
@@ -184,15 +185,15 @@ class Cnab240(Cnab):
             'juros_mora_data': self.format_date(
                 line.date_maturity),
             'juros_mora_taxa':  Decimal(
-                str(self.order.payment_mode_id.late_payment_interest)
+                str(self.order.l10n_br_payment_mode_id.late_payment_interest)
             ).quantize(Decimal('1.00')),
             # Multa padrão em percentual no Odoo, valor '2'
             'codigo_multa': '2',
             'data_multa': self.format_date(
                 line.date_maturity),
             'juros_multa': Decimal(
-                str(self.order.payment_mode_id.late_payment_fee)).quantize(
-                    Decimal('1.00')),
+                str(self.order.l10n_br_payment_mode_id.late_payment_fee)
+            ).quantize(Decimal('1.00')),
             # TODO Remover taxa dia - deixar apenas taxa normal
             'juros_mora_taxa_dia': Decimal('0.00'),
             'valor_abatimento': Decimal('0.00'),
@@ -209,14 +210,15 @@ class Cnab240(Cnab):
             'sacado_cep_sufixo': int(sulfixo),
             'sacado_cidade': line.partner_id.city_id.name,
             'sacado_uf': line.partner_id.state_id.code,
-            'codigo_protesto': int(self.order.payment_mode_id.boleto_protesto),
+            'codigo_protesto': int(self.order.l10n_br_payment_mode_id.
+                                   boleto_protesto),
             'prazo_protesto': int(
-                self.order.payment_mode_id.boleto_protesto_prazo),
+                self.order.l10n_br_payment_mode_id.boleto_protesto_prazo),
             'codigo_baixa': 2,
             'prazo_baixa': 0,  # De 5 a 120 dias.
             'controlecob_data_gravacao': self.data_hoje(),
             'cobranca_carteira': int(
-                self.order.payment_mode_id.boleto_carteira[:2]),
+                self.order.l10n_br_payment_mode_id.boleto_carteira[:2]),
         }
 
     def remessa(self, order):

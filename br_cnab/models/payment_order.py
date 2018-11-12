@@ -26,7 +26,8 @@ class PaymentOrder(models.Model):
         for order_id in self:
             order = self.env['payment.order'].browse(order_id.id)
             cnab = Cnab.get_cnab(
-                order.payment_mode_id.bank_account_id.bank_bic, '240')()
+                order.l10n_br_payment_mode_id.bank_account_id.bank_bic,
+                '240')()
             remessa = cnab.remessa(order)
 
             self.name = self.env['ir.sequence'].next_by_code('seq.boleto.name')

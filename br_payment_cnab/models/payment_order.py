@@ -34,7 +34,7 @@ class PaymentOrder(models.Model):
         self.file_number = self.env['ir.sequence'].next_by_code('cnab.nsa')
         self.data_emissao_cnab = datetime.now()
         cnab = self.select_bank_cnab(str(
-            self.payment_mode_id.bank_account_id.bank_id.bic))
+            self.l10n_br_payment_mode_id.bank_account_id.bank_id.bic))
         cnab.create_cnab(self.line_ids)
         self.line_ids.write({'state': 'sent'})
         self.cnab_file = base64.b64encode(cnab.write_cnab())
@@ -82,13 +82,13 @@ class PaymentOrderLine(models.Model):
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
-            ('payment_mode_id', '=', payment_mode.id),
+            ('l10n_br_payment_mode_id', '=', payment_mode.id),
             ('type', '=', 'payable')], limit=1)
         if not payment_order:
             payment_order = payment_order.create({
                 'name': order_name or '',
                 'user_id': self.env.user.id,
-                'payment_mode_id': payment_mode.id,
+                'l10n_br_payment_mode_id': payment_mode.id,
                 'state': 'draft',
                 'type': 'payable',
             })
@@ -117,7 +117,7 @@ class PaymentOrderLine(models.Model):
 
         information_id = self.get_information(payment_mode, vals)
         line_vals = {
-            'payment_mode_id': payment_mode.id,
+            'l10n_br_payment_mode_id': payment_mode.id,
             'payment_information_id': information_id.id,
             'payment_order_id': payment_order.id,
             'nosso_numero': payment_mode.nosso_numero_sequence
