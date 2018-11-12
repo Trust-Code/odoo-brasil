@@ -249,7 +249,8 @@ class Cnab_240(object):
                 'Pelo menos um segmento por tipo deve ser implementado!')
         for segment in segments:
             self._cnab_file.add_segment(
-                segment, self._get_segmento(event, lot_sequency, num_lot))
+                segment, self._get_segmento(
+                    event, lot_sequency, num_lot))
             lot_sequency += 1
         self._cnab_file.get_active_lot().get_active_event().close_event()
         return lot_sequency

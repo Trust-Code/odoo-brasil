@@ -32,16 +32,14 @@ class TestBrCnabPayment(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
-        sicoob = self.env['res.bank'].search([('bic', '=', '756')])
-        self.receivable_account = self.env['res.partner.bank'].create({
-            'acc_number': '12345',  # 5 digitos
-            'acc_number_dig': '0',  # 1 digito
-            'bra_number': '1234',  # 4 digitos
-            'bra_number_dig': '0',
-            'codigo_convenio': '123456-6',  # 7 digitos
-            'bank_id': sicoob.id,
+        self.expense_account = self.env['account.account'].create({
+            'code': '2.0.0',
+            'name': 'Despesas a pagar',
+            'user_type_id': self.env.ref(
+                'account.data_account_type_revenue').id,
+            'company_id': self.main_company.id
         })
-
+        sicoob = self.env['res.bank'].search([('bic', '=', '756')])
         self.default_ncm = self.env['product.fiscal.classification'].create({
             'code': '0201.20.20',
             'name': 'Furniture',
@@ -65,11 +63,20 @@ class TestBrCnabPayment(TransactionCase):
             cnpj_cpf='066.212.049-30',
             district='Centro',
             number=45,
-            property_account_receivable_id=self.receivable_account.id,
+            # property_account_receivable_id=self.receivable_account.id,
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id,
         ))
+        self.receivable_account = self.env['res.partner.bank'].create({
+            'acc_number': '12345',  # 5 digitos
+            'acc_number_dig': '0',  # 1 digito
+            'bra_number': '1234',  # 4 digitos
+            'bra_number_dig': '0',
+            'codigo_convenio': '123456-6',  # 7 digitos
+            'bank_id': sicoob.id,
+            'partner_id': self.partner_fisica.id,
+        })
         self.user = self.env['res.users'].create({
             'name': 'trustcode',
             'login': 'trust'

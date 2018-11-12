@@ -91,6 +91,8 @@ class AccountVoucher(models.Model):
             self.amount - self.fine_value - self.interest_value,
             'name': self.number,
             'bank_account_id': self.bank_account_id.id,
+            'partner_acc_number': self.bank_account_id.acc_number,
+            'partner_bra_number': self.bank_account_id.bra_number,
             'move_line_id': move_line_id.id,
             'voucher_id': self.id,
             'date_maturity': self.date_due,
