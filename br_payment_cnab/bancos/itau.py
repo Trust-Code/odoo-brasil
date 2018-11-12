@@ -9,7 +9,7 @@ try:
     from pycnab240.utils import get_ted_doc_finality
     from pycnab240.bancos import itau
 except ImportError:
-    _logger.info('Cannot import from pytrustnfe', exc_info=True)
+    _logger.error('Cannot import from pycnab240', exc_info=True)
 
 
 class Itau240(Cnab_240):

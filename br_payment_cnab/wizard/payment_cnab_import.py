@@ -36,10 +36,10 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         stream = StringIO(cnab_file.decode('ascii'))
 
         bank = get_bank(self.journal_id.bank_id.bic)
-        acc, ag = self._get_account(cnab_file)
+        account, bra_number = self._get_account(cnab_file)
         loaded_cnab = File(bank)
         loaded_cnab.load_return_file(stream)
-        self.validate_journal(acc, ag)
+        self.validate_journal(account, bra_number)
 
         statement = self.env['l10n_br.payment.statement'].create({
             'journal_id': self.journal_id.id,
