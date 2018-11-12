@@ -23,9 +23,8 @@
             <group name='payable_info'>
                 <field name="bank_account_id"/>
                 <field name="partner_id"/>
-                <field name="acc_favorecido"/>
-                <field name="bra_favorecido"/>
-                <field name="banco_favorecido"/>
+                <field name="partner_acc_number"/>
+                <field name="partner_bra_number"/>
                 <field name="payment_information_id"/>
             </group>
             <group name='payment_info'>

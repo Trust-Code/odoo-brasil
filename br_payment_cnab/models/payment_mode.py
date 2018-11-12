@@ -79,6 +79,10 @@ class PaymentMode(models.Model):
                 continue
             if not rec.journal_id:
                 raise ValidationError('Para pagamentos o diário é obrigatório')
+            if rec.journal_id.bank_id.bic == '341':
+                if not (rec.payment_type == '01' or rec.payment_type == '02'):
+                    raise ValidationError(
+                        'Tipo de pagamento não implementado para o banco Itaú')
             if not rec.journal_id.bank_account_id:
                 raise ValidationError(
                     'Não existe conta bancária cadastrada no diário escolhido')

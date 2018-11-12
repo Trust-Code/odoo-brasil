@@ -77,6 +77,20 @@ class PaymentOrderLine(models.Model):
     invoice_date = fields.Date('Data da Fatura')
     cnab_code = fields.Char(string="Código Retorno")
     cnab_message = fields.Char(string="Mensagem Retorno")
+    value_final = fields.Float(
+        string="Final Value", compute="_compute_final_value",
+        digits=(18, 2), readonly=True)
+
+    bank_account_id = fields.Many2one(
+        'res.partner.bank', string="Conta p/ Transferência")
+
+    partner_acc_number = fields.Char(
+        string="Conta do Favorecido",
+        readonly=True)
+
+    partner_bra_number = fields.Char(
+        string="Agência do Favorecido",
+        readonly=True)
 
     def validate_partner_data(self, vals):
         errors = []
@@ -173,16 +187,6 @@ class PaymentOrderLine(models.Model):
                 ["Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
 
-    @api.onchange('payment_information_id', 'payment_mode_id')
-    def _validate_payment_info(self):
-        for item in self:
-            info_type = item.payment_information_id.payment_type
-            mode_type = item.payment_mode_id.payment_type
-            if not (info_type == mode_type) and info_type and mode_type:
-                raise UserError(
-                    _("You can't choose this payment information for \
-                    this payment mode"))
-
     @api.depends('payment_information_id')
     def _compute_final_value(self):
         for item in self:
@@ -190,33 +194,6 @@ class PaymentOrderLine(models.Model):
             desconto = payment.rebate_value + payment.discount_value
             acrescimo = payment.fine_value + payment.interest_value
             item.value_final = (item.amount_total - desconto + acrescimo)
-
-    value_final = fields.Float(
-        string="Final Value", compute="_compute_final_value",
-        digits=(18, 2), readonly=True)
-
-    bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Conta p/ Transferência")
-
-    acc_favorecido = fields.Char(
-        string="Conta do Favorecido",
-        related='bank_account_id.acc_number',
-        readonly=True)
-
-    bra_favorecido = fields.Char(
-        string="Agencia do Favorecido",
-        related='bank_account_id.bra_number',
-        readonly=True)
-
-    banco_favorecido = fields.Many2one(
-        string='Banco do Favorecido',
-        related='bank_account_id.bank_id',
-        readonly=True)
-
-    partner_id = fields.Many2one(
-        string='Favorecido',
-        related='bank_account_id.partner_id',
-        readonly=True)
 
     def get_operation_code(self, payment_mode):
         if payment_mode.payment_type == '01':
