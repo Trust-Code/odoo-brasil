@@ -51,11 +51,12 @@ class l10nBrPaymentCnabImport(models.TransientModel):
             'company_id': self.journal_id.company_id.id,
             'name': self.journal_id.l10n_br_sequence_statements.next_by_id(),
         })
-
         for lot in loaded_cnab.lots:
             for event in lot.events:
                 payment_line = self.env['payment.order.line'].search(
-                    [('nosso_numero', '=', event.numero_documento_cliente)])
+                    [('nosso_numero', '=', event.numero_documento_cliente),
+                     ('journal_id', '=', self.journal_id.id),
+                     ('type', '=', 'payable')])
 
                 if not payment_line:
                     continue

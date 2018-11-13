@@ -257,7 +257,8 @@ class PaymentOrderLine(models.Model):
         journal = payment_mode.journal_id
         line_vals = {
             'payment_mode_id': payment_mode.id,
-            'journal_id': payment_mode.journal_id.id,
+            'journal_id': journal.id,
+            'src_bank_account_id': journal.bank_account_id.id,
             'currency_id': payment_mode.journal_id.currency_id.id or
             payment_mode.journal_id.company_id.currency_id.id,
             'payment_information_id': information_id.id,
