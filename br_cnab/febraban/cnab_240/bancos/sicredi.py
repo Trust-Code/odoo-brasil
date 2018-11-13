@@ -27,8 +27,8 @@ class Sicredi240(Cnab240):
 
     def _prepare_segmento(self, line):
         vals = super(Sicredi240, self)._prepare_segmento(line)
-        if not line.l10n_br_payment_mode_id.bank_account_id.codigo_convenio or\
-           not line.l10n_br_payment_mode_id.bank_account_id.l10n_br_number:
+        if not line.l10n_br_payment_mode_id.bank_account_id.codigo_convenio or \
+                not line.l10n_br_payment_mode_id.bank_account_id.l10n_br_number:
             raise UserError(
                 u'Código do beneficiario ou número da agência em branco')
         digito = self.dv_nosso_numero(
@@ -76,9 +76,10 @@ class Sicredi240(Cnab240):
         vals['especie_titulo'] = especie
         vals['codigo_multa'] = '1'  # 1 - Valor por dia
         vlr_doc = line.debit
-        juros_dia = vlr_doc * (
-                self.order.l10n_br_payment_mode_id.
-                late_payment_interest / 100 / 30)
+        juros_dia = (
+                vlr_doc *
+                (self.order.l10n_br_payment_mode_id.late_payment_interest /
+                 100 / 30))
         vals['juros_mora_taxa'] = Decimal(str(juros_dia)).quantize(
             Decimal('1.00'))
         vals['codigo_baixa'] = 1
