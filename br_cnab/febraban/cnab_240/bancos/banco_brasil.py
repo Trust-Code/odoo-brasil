@@ -15,7 +15,7 @@ class BancoBrasil240(Cnab240):
     def _prepare_header(self):
         vals = super(BancoBrasil240, self)._prepare_header()
         vals['codigo_convenio_banco'] = self.format_codigo_convenio_banco(
-            self.order.payment_mode_id)
+            self.order.l10n_br_payment_mode_id)
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         return vals

@@ -44,7 +44,8 @@ class Cef240(Cnab240):
 
         vals['cedente_convenio'] = int(vals['cedente_convenio'])
         vals['cedente_beneficiario'] = vals['cedente_convenio']
-        vals['carteira_numero'] = int(line.payment_mode_id.boleto_modalidade)
+        vals['carteira_numero'] = int(
+            line.l10n_br_payment_mode_id.boleto_modalidade)
 
         # Segue a mesma regra de geração do dv do boleto
         # Carteira 1 + fixo 4 + 15 posições nosso número - aplica modulo 11

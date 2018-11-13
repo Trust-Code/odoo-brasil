@@ -239,7 +239,7 @@ class PaymentOrderLine(models.Model):
         if not payment_order:
             payment_order = payment_order.sudo().create({
                 'user_id': self.env.user.id,
-                'payment_mode_id': payment_mode.id,
+                'l10n_br_payment_mode_id': payment_mode.id,
                 'journal_id': payment_mode.journal_id.id,
                 'src_bank_account_id':
                 payment_mode.journal_id.bank_account_id.id,
@@ -278,7 +278,7 @@ class PaymentOrderLine(models.Model):
             info_vals)
         journal = payment_mode.journal_id
         line_vals = {
-            'payment_mode_id': payment_mode.id,
+            'l10n_br_payment_mode_id': payment_mode.id,
             'journal_id': journal.id,
             'src_bank_account_id': journal.bank_account_id.id,
             'currency_id': payment_mode.journal_id.currency_id.id or

@@ -76,7 +76,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         self.payment_order = self.env['payment.order'].create({
             'name': 'cnab240_sicoob',
             'user_id': self.user.id,
-            'payment_mode_id': payment_mode.id,
+            'l10n_br_payment_mode_id': payment_mode.id,
             'file_number': 1,
             'company_id': self.main_company.id,
             'type': 'payable',
@@ -94,7 +94,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
             'payment_order_id': self.payment_order.id,
-            'payment_mode_id': self.payment_order.payment_mode_id.id,
+            'l10n_br_payment_mode_id': self.payment_order.l10n_br_payment_mode_id.id,
             'src_bank_account_id':
             self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
             'amount_total': 150.00,
@@ -114,7 +114,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
             'payment_order_id': self.payment_order.id,
-            'payment_mode_id': self.payment_order.payment_mode_id.id,
+            'l10n_br_payment_mode_id': self.payment_order.l10n_br_payment_mode_id.id,
             'src_bank_account_id':
             self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
             'amount_total': 120.00,

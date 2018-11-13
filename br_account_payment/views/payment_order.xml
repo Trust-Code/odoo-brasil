@@ -27,7 +27,7 @@
               <field name="type" invisible="1" />
               <field name="identifier"/>
               <field name="move_id" />
-              <field name="payment_mode_id" />
+              <field name="l10n_br_payment_mode_id" />
               <field name="state" />
               <field name="name" />
               <field name="emission_date" />
@@ -60,7 +60,7 @@
 
                         <group name='data'>
                             <field name="src_bank_account_id" />
-                            <field name="payment_mode_id" />
+                            <field name="l10n_br_payment_mode_id" />
                         </group>
                     </group>
 
@@ -93,7 +93,7 @@
                     <group name="first">
                         <group name='basic_info'>
                             <field name="partner_id"/>
-                            <field name="payment_mode_id"/>
+                            <field name="l10n_br_payment_mode_id"/>
                             <field name="type"/>
                             <field name="journal_id" />
                             <field name="src_bank_account_id" />
