@@ -47,7 +47,7 @@ class Cnab_240(object):
         return date_value.strftime("%d%m%Y")
 
     def _get_header_arq(self):
-        payment = self._order.payment_mode_id
+        payment = self._order.l10n_br_payment_mode_id
         bank = payment.bank_account_id
         headerArq = {
             'cedente_inscricao_tipo': 2,  # 0 = Isento, 1 = CPF, 2 = CNPJ
@@ -171,7 +171,7 @@ class Cnab_240(object):
 
     def _get_header_lot(self, line, num_lot):
         information_id = line.payment_information_id
-        payment = self._order.payment_mode_id
+        payment = self._order.l10n_br_payment_mode_id
         bank = payment.bank_account_id
         header_lot = {
             "controle_lote": num_lot,

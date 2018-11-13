@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account_voucher.view_purchase_receipt_form"/>
         <field name="arch" type="xml">
             <field name="company_id" position="after">
-                <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
+                <field name="l10n_br_payment_mode_id" domain="[('type', '=', 'payable')]" />
                 <field name="payment_type" invisible="1" />
                 <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
                 <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('04'))]}" />
@@ -25,7 +25,7 @@
         <field name="inherit_id" ref="account_voucher.view_sale_receipt_form"/>
         <field name="arch" type="xml">
             <field name="account_id" position="after">
-                <field name="payment_mode_id" domain="[('type', '=', 'receivable')]"/>
+                <field name="l10n_br_payment_mode_id" domain="[('type', '=', 'receivable')]"/>
             </field>
         </field>
     </record>

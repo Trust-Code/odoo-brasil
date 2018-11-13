@@ -9,7 +9,7 @@
             <tree string='Ordens de Pagamento'>
                 <field name="name" />
                 <field name="user_id" />
-                <field name="payment_mode_id" />
+                <field name="l10n_br_payment_mode_id" />
                 <field name="amount_total" />
                 <field name="state" />
             </tree>
@@ -53,7 +53,7 @@
                         </group>
 
                         <group name='data'>
-                            <field name="payment_mode_id" />
+                            <field name="l10n_br_payment_mode_id" />
                         </group>
                     </group>
 

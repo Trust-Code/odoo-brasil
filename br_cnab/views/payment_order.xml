@@ -11,7 +11,7 @@
                     <button name="gerar_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB"/>
                 </div>
             </group>
-            <field name="payment_mode_id" position="after">
+            <field name="l10n_br_payment_mode_id" position="after">
                 <field name="cnab_file" filename="name" />
                 <field name="file_number" />
                 <field name="data_emissao_cnab" />

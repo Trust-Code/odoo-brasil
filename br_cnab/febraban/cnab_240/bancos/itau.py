@@ -36,7 +36,7 @@ class Itau240(Cnab240):
         vals['nosso_numero'] = int(line.nosso_numero)
         vals['nosso_numero_dv'] = dv
         vals['carteira_numero'] = int(
-            self.order.payment_mode_id.boleto_carteira)
+            self.order.l10n_br_payment_mode_id.boleto_carteira)
         vals['cedente_conta_dv'] = int(vals['cedente_conta_dv'])
         vals['cedente_agencia_dv'] = int(vals['cedente_agencia_dv'])
         vals['cedente_dv_ag_cc'] = int(vals['cedente_dv_ag_cc'])
