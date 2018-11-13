@@ -93,13 +93,10 @@ class Itau240(Cnab_240):
                 get_forma_de_lancamento('itau', self.get_operation(line))),
             'tipo_pagamento': int(
                 get_tipo_de_servico('itau', info_id.service_type)),
-            'tipo_servico': int(header.get('tipo_servico')),
             'cedente_agencia': int(header.get('cedente_agencia')),
             'cedente_conta': self._string_to_num(header.get('cedente_conta')),
             'cedente_conta_dv': '0',
             'dac': self._string_to_num(header.get('cedente_conta_dv')),
-            'cedente_endereco_numero': self._string_to_num(
-                header.get('cedente_endereco_numero')),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')),
         })
         return header
@@ -115,12 +112,6 @@ class Itau240(Cnab_240):
         del(segmento['codigo_camara_compensacao'])
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
-            'favorecido_cep': self._string_to_num(str(
-                segmento.get('favorecido_cep')), 0),
-            'data_vencimento': self._string_to_num(
-                (segmento.get('data_vencimento'))),
-            'favorecido_endereco_numero': self._string_to_num(
-                segmento.get('favorecido_endereco_numero'), default=0),
             'favorecido_endereco_rua':
                 segmento.get('favorecido_endereco_rua')[:30],
             'favorecido_bairro':
@@ -128,15 +119,7 @@ class Itau240(Cnab_240):
                     'favorecido_bairro') else '',
             'favorecido_endereco_complemento': str(
                 segmento.get('favorecido_endereco_complemento'))[:15],
-            'favorecido_inscricao_numero': self._string_to_num(
-                segmento.get('favorecido_inscricao_numero')),
             'favorecido_nome': segmento.get('favorecido_nome')[:30],
-            'data_real_pagamento': int(segmento.get(
-                'data_real_pagamento')),
-            'valor_pagamento': self._string_to_monetary(
-                segmento.get('valor_pagamento')),
-            'data_pagamento': self._string_to_num(
-                segmento.get('data_pagamento')),
             'numero_documento_cliente': str(
                 segmento.get('numero_documento_cliente')),
             'favorecido_conta': self._string_to_num(

@@ -122,7 +122,7 @@ class PaymentOrder(models.Model):
     def _compute_state(self):
         for item in self:
             lines = item.line_ids.filtered(lambda x: x.state != 'cancelled')
-            if all(line.state == 'draft' for line in lines):
+            if all(line.state in ('draft', 'approved') for line in lines):
                 item.state = 'draft'
             elif all(line.state == 'paid' for line in lines):
                 item.state = 'done'

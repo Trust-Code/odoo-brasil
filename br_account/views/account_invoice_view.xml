@@ -343,7 +343,7 @@
                         <page name="ipi" string="IPI" attrs="{'invisible': [('product_type','=', 'service')]}">
                             <group string="Detalhes do IPI">
                                 <group>
-                                    <field name="ipi_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="ipi_cst"/>
                                     <field name="ipi_tipo"/>
                                     <field name="ipi_rule_id" />
                                 </group>
@@ -360,7 +360,7 @@
                         <page name="pis" string="PIS">
                             <group string="Detalhes do PIS">
                                 <group>
-                                    <field name="pis_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="pis_cst"/>
                                     <field name="pis_tipo"/>
                                     <field name="pis_rule_id" />
                                 </group>
@@ -376,7 +376,7 @@
                         <page name="cofins" string="COFINS">
                             <group string="Detalhes do COFINS">
                                 <group>
-                                    <field name="cofins_cst" attrs="{'required': [('product_type','=', 'product')]}"/>
+                                    <field name="cofins_cst"/>
                                     <field name="cofins_tipo"/>
                                     <field name="cofins_rule_id" />
                                 </group>
