@@ -7,7 +7,7 @@ try:
     from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import santander
 except ImportError:
-    _logger.debug('Cannot import pycnab240 dependencies.')
+    _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
 
 class Santander240(Cnab_240):
@@ -49,14 +49,8 @@ class Santander240(Cnab_240):
             'numero_versao_lote': self._get_versao_lote(line),
             'forma_lancamento': int(get_forma_de_lancamento(
                 'santander', info_id.payment_type)),
-            'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
-            'cedente_cep_complemento': self._string_to_num(
-                header.get('cedente_cep_complemento')[6:]),
-            'cedente_endereco_numero': self._string_to_num(
-                header.get('cedente_endereco_numero')),
             'cedente_conta': self._string_to_num(header.get('cedente_conta')),
             'cedente_agencia': int(header.get('cedente_agencia')),
-            'tipo_servico': int(header.get('tipo_servico')),
             'cedente_agencia_dv': "" if (
                 header.get('cedente_agencia_dv') is False)
             else header.get('cedente_agencia_dv'),
@@ -73,42 +67,20 @@ class Santander240(Cnab_240):
             'favorecido_conta': self._string_to_num(
                 segmento.get('favorecido_conta'), 0),
             'tipo_movimento': int(segmento.get('tipo_movimento')),
-            'valor_pagamento': self._string_to_monetary(
-                segmento.get('valor_pagamento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),
             'codigo_instrucao_movimento': self._string_to_num(
                 segmento.get('codigo_instrucao_movimento')),
             'codigo_historico_credito': self._string_to_num(
                 segmento.get('codigo_historico_credito')),
-            'data_real_pagamento': self._string_to_num(
-                segmento.get('data_real_pagamento')[0:10]),
-            'data_vencimento': self._string_to_num(
-                segmento.get('data_vencimento')),
-            'data_pagamento': self._string_to_num(
-                segmento.get('data_pagamento')),
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
-            'valor_documento': self._string_to_monetary(
-                segmento.get('valor_documento')),
-            'valor_multa': self._string_to_monetary(
-                segmento.get('valor_multa')),
             'valor_abatimento': self._string_to_monetary(
                 segmento.get('valor_abatimento')),
-            'valor_desconto': self._string_to_monetary(
-                segmento.get('valor_desconto')),
-            'valor_mora': self._string_to_monetary(
-                segmento.get('valor_mora')),
             'favorecido_conta_dv': self._string_to_num(
                 segmento.get('favorecido_conta_dv'), 0),
             'favorecido_agencia': self._string_to_num(
                 segmento.get('favorecido_agencia'), 0),
-            'favorecido_inscricao_numero': self._string_to_num(
-                segmento.get('favorecido_inscricao_numero')),
-            'favorecido_cep': self._string_to_num(str(
-                segmento.get('favorecido_cep')), 0),
-            'favorecido_endereco_numero': self._string_to_num(
-                segmento.get('favorecido_endereco_numero'), default=0),
             'favorecido_nome':
                 segmento.get('favorecido_nome')[:30],
             'favorecido_endereco_rua':

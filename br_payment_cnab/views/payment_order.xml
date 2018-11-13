@@ -84,7 +84,7 @@
                 <filter string="Pagos" domain="[('state','=', 'paid')]" help="Registros pagos" name="paid"/>
                 <filter string="Enviados" domain="[('state','in', ('sent',))]" help="Pagamentos Enviados" name="sent"/>
                 <filter string="Abertos" domain="[('state','in', ('approved', 'sent', 'processed'))]" help="Pagamentos em aberto" name="open"/>
-                <filter string="Rejeitados" domain="[('state','in', ('rejected'))]" help="Pagamentos rejeitados" name="rejected"/>
+                <filter string="Rejeitados" domain="[('state','=', 'rejected')]" help="Pagamentos rejeitados" name="rejected"/>
                 <separator orientation="vertical"/>
                 <field name="partner_id"/>
                 <field name="src_bank_account_id"/>

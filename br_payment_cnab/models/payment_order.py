@@ -9,9 +9,9 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from ..bancos import santander, sicoob, itau
+    from ..bancos import santander, sicoob, itau, bradesco
 except ImportError:
-    _logger.debug('Cannot import bancos.')
+    _logger.error('Cannot import bancos', exc_info=True)
 
 
 class PaymentOrder(models.Model):
@@ -22,7 +22,7 @@ class PaymentOrder(models.Model):
             '756': sicoob.Sicoob240(self),
             '033': santander.Santander240(self),
             '341': itau.Itau240(self),
-            # '237': Bradesco240(self)
+            '237': bradesco.Bradesco240(self),
         }
         bank = banks.get(code)
         if not bank:
@@ -223,6 +223,7 @@ class PaymentOrderLine(models.Model):
                 'name': order_name or '',
                 'user_id': self.env.user.id,
                 'payment_mode_id': payment_mode.id,
+                'journal_id': payment_mode.journal_id.id,
                 'src_bank_account_id':
                 payment_mode.journal_id.bank_account_id.id,
                 'state': 'draft',
