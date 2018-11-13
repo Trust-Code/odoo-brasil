@@ -266,7 +266,9 @@ class PaymentOrderLine(models.Model):
             'nosso_numero': journal.l10n_br_sequence_nosso_numero.next_by_id(),
         }
         line_vals.update(vals)
-        self.sudo().create(line_vals)
+        order_line = self.sudo().create(line_vals)
+        move_line = self.env['account.move.line'].browse(vals['move_line_id'])
+        move_line.write({'l10n_br_order_line_id': order_line.id})
 
     def action_aprove_payment_line(self):
         for item in self:

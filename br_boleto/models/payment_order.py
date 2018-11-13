@@ -57,7 +57,9 @@ class PaymentOrderLine(models.Model):
             if not item.payment_mode_id.boleto:
                 raise UserError('Modo de pagamento não é boleto!')
         for move_line in move_lines:
-            self |= self.generate_payment_order_line(move_line)
+            order_line = self.generate_payment_order_line(move_line)
+            move_line.write({'l10n_br_order_line_id': order_line.id})
+            self |= order_line
         move_lines.write({'boleto_emitido': True})
         return self
 
