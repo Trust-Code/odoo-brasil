@@ -11,7 +11,7 @@
                     <field name="move_line_id" string='Movimentação'/>
                     <field name="payment_mode_id" />
                     <field name="payment_type" invisible="1" />
-                    <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
+                    <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
                     <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" />
                     <field name="date_maturity" />
                 </group>

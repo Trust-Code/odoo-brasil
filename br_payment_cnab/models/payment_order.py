@@ -72,8 +72,11 @@ class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
     payment_information_id = fields.Many2one(
-        'l10n_br.payment_information', string="Payment Information")
+        'l10n_br.payment_information', string="Payment Information",
+        readonly=True)
 
+    linha_digitavel = fields.Char(string="Linha Digitável")
+    barcode = fields.Char('Código de Barras')
     invoice_date = fields.Date('Data da Fatura')
     cnab_code = fields.Char(string="Código Retorno")
     cnab_message = fields.Char(string="Mensagem Retorno")
@@ -91,6 +94,11 @@ class PaymentOrderLine(models.Model):
     partner_bra_number = fields.Char(
         string="Agência do Favorecido",
         readonly=True)
+
+    _sql_constraints = [
+        ('payment_order_line_barcode_uniq', 'unique (barcode)',
+         _('O código de barras deve ser único!'))
+    ]
 
     def validate_partner_data(self, vals):
         errors = []
@@ -153,8 +161,9 @@ class PaymentOrderLine(models.Model):
         if not payment_mode.one_time_payment:
             if not vals.get('barcode'):
                 errors += ['Código de barras obrigatório']
-            if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
-                errors += ['Código de barras deve possuir 47 ou 48 dígitos']
+            if len(vals['barcode']) != 44:
+                errors += ['Código de barras deve possuir 44 dígitos - \
+                           Verifique a linha digitável']
         return errors
 
     # Tributos com códigos de barras
@@ -162,8 +171,9 @@ class PaymentOrderLine(models.Model):
         errors = []
         if not vals.get('barcode'):
             errors += ['Código de barras obrigatório']
-        if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
-            errors += ['Código de barras deve possuir 47 ou 48 dígitos']
+        if len(vals['barcode']) != 44:
+            errors += ['Código de barras deve possuir 44 dígitos - \
+                       Verifique a linha digitável']
         return errors
 
     def validate_base_information(self, payment_mode):
@@ -233,7 +243,6 @@ class PaymentOrderLine(models.Model):
             'operation_code': self.get_operation_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
-            'barcode': vals.get('barcode'),
             'fine_value': vals.get('fine_value'),
             'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,

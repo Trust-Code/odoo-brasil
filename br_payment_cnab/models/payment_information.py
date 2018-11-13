@@ -162,8 +162,6 @@ class PaymentInformation(models.Model):
         string="Tax Identification",
         compute='_compute_tax_identification')
 
-    barcode = fields.Char('Barcode')
-
     numero_referencia = fields.Char('Número de Referência')
 
     percentual_receita_bruta_acumulada = fields.Float(

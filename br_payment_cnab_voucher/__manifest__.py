@@ -26,6 +26,7 @@
     ],
     'data': [
         'views/account_voucher.xml',
+        'views/payment_order.xml',
     ],
     'auto_install': True
 }

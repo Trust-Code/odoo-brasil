@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <form string="Importar CNAB">
             <group>
-                <field name="cnab_type" required="True" invisible="1"/>
+                <field name="cnab_type" required="True"/>
                 <field name="journal_id" required="True"/>
                 <field name="cnab_file" required="True"/>
             </group>

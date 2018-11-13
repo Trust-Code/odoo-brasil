@@ -251,7 +251,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_multa_juros': Decimal('4.00'),
             'codigo_moeda': 9,
             'codigo_de_barras': 0,
-            'codigo_de_barras_alfa': '0',
+            'codigo_de_barras_alfa': '',
             'nome_concessionaria': 'Parceiro',
             'data_vencimento': int(time.strftime("%d%m%Y")),
             'contribuinte_nome': 'Trustcode Tecnologia da Inform',
