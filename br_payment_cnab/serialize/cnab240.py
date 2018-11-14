@@ -95,30 +95,36 @@ class Cnab_240(object):
             line.partner_id.legal_name or line.partner_id.name,
             "favorecido_doc_numero": line.partner_id.cnpj_cpf,
             "numero_documento_cliente": line.nosso_numero,
-            "data_pagamento": self.format_date(line.date_maturity),
-            "valor_pagamento": line.amount_total,
-            "data_real_pagamento": self.format_date(
-                self._order.data_emissao_cnab),
-            "valor_real_pagamento": line.value_final,  # TODO
+            "data_pagamento": int(self.format_date(line.date_maturity)),
+            "valor_pagamento": self._float_to_monetary(line.amount_total),
+            "data_real_pagamento": int(self.format_date(
+                self._order.data_emissao_cnab)),
+            "valor_real_pagamento": self._float_to_monetary(line.value_final),
             "mensagem2": information_id.message2 or '',
             "finalidade_doc_ted": information_id.mov_finality or '',
             "favorecido_emissao_aviso_alfa": information_id.warning_code,
             "favorecido_emissao_aviso": int(information_id.warning_code),
             "favorecido_inscricao_tipo":
             2 if line.partner_id.is_company else 1,
-            "favorecido_inscricao_numero": line.partner_id.cnpj_cpf,
+            "favorecido_inscricao_numero": self._string_to_num(
+                line.partner_id.cnpj_cpf),
             "favorecido_endereco_rua": line.partner_id.street or '',
-            "favorecido_endereco_numero": line.partner_id.number or '',
+            "favorecido_endereco_numero": self._string_to_num(
+                line.partner_id.number, default=0),
             "favorecido_endereco_complemento": line.partner_id.street2 or '',
             "favorecido_bairro": line.partner_id.district or '',
             "favorecido_cidade": line.partner_id.city_id.name or '',
-            "favorecido_cep": line.partner_id.zip,
+            "favorecido_cep": self._string_to_num(line.partner_id.zip),
+            "cep_complemento": self._just_numbers(line.partner_id.zip[5:]),
             "favorecido_uf": line.partner_id.state_id.code or '',
-            "valor_documento": line.amount_total,
-            "valor_abatimento": information_id.rebate_value,
-            "valor_desconto": information_id.discount_value,
-            "valor_mora": information_id.interest_value,
-            "valor_multa": information_id.fine_value,
+            "valor_documento": self._float_to_monetary(line.amount_total),
+            "valor_abatimento": self._float_to_monetary(
+                information_id.rebate_value),
+            "valor_desconto": self._float_to_monetary(
+                information_id.discount_value),
+            "valor_mora": self._float_to_monetary(
+                information_id.interest_value),
+            "valor_multa": self._float_to_monetary(information_id.fine_value),
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
             "cedente_nome": self._order.company_id.legal_name[:30],
@@ -134,7 +140,7 @@ class Cnab_240(object):
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
             line.partner_id.legal_name or line.partner_id.name,
-            "data_vencimento": self.format_date(line.date_maturity),
+            "data_vencimento": int(self.format_date(line.date_maturity)),
             "valor_juros_encargos": self._string_to_monetary(
                 information_id.interest_value),
             # GPS
@@ -185,7 +191,7 @@ class Cnab_240(object):
         header_lot = {
             'forma_lancamento': lot,
             "controle_lote": num_lot,
-            "tipo_servico": information_id.service_type,
+            "tipo_servico": int(information_id.service_type),
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 self._order.company_id.cnpj_cpf),
@@ -197,14 +203,16 @@ class Cnab_240(object):
             "cedente_nome": self._order.company_id.legal_name[:30],
             "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
-            "cedente_endereco_numero": self._order.company_id.number,
+            "cedente_endereco_numero": self._string_to_num(
+                self._order.company_id.number),
             "cedente_endereco_complemento": str(
                 self._order.company_id.street2)[0:15] if
             self._order.company_id.street2 else '',
             "cedente_cidade": str(self._order.company_id.city_id.name)[:20] if
             self._order.company_id.city_id.name else '',
-            "cedente_cep": self._order.company_id.zip,
-            "cedente_cep_complemento": self._order.company_id.zip,
+            "cedente_cep": self._string_to_num(self._order.company_id.zip[:6]),
+            "cedente_cep_complemento": self._string_to_num(
+                self._order.company_id.zip[6:]),
             "cedente_uf": self._order.company_id.state_id.code,
         }
         return header_lot
