@@ -4,7 +4,6 @@ from ..serialize.cnab240 import Cnab_240
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import sicoob
 except ImportError:
     _logger.debug('Cannot import pycnab240 dependencies.')
@@ -28,12 +27,9 @@ class Sicoob240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
-        info_id = line.payment_information_id
+    def _get_header_lot(self, line, num_lot, lot):
         header = super(Sicoob240, self)._get_header_lot(line, num_lot)
         header.update({
-            'forma_lancamento':
-            get_forma_de_lancamento('sicoob', info_id.payment_type),
             'tipo_servico': int(header.get('tipo_servico')),
             'cedente_agencia': int(header.get('cedente_agencia')),
             'cedente_conta_dv': self._string_to_num(
@@ -121,10 +117,15 @@ class Sicoob240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Sicoob240, self).segments_per_operation()
         segments.update({
-            '03': ["SegmentoJ"],
-            '04': ["SegmentoO"],
-            '05': ["SegmentoN_GPS"],
-            '06': ["SegmentoN_DarfNormal", "SegmentoW"],
-            '07': ["SegmentoN_DarfSimples", "SegmentoW"],
+            "01": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
+            "41": ["SegmentoA", "SegmentoB"],
+            "43": ["SegmentoA", "SegmentoB"],
+            '30': ["SegmentoJ"],
+            '31': ["SegmentoJ"],
+            '11': ["SegmentoO"],
+            '17': ["SegmentoN_GPS"],
+            '16': ["SegmentoN_DarfNormal", "SegmentoW"],
+            '18': ["SegmentoN_DarfSimples", "SegmentoW"],
         })
         return segments

@@ -4,7 +4,6 @@ from ..serialize.cnab240 import Cnab_240
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import santander
 except ImportError:
     _logger.debug('Cannot import pycnab240 dependencies.')
@@ -42,13 +41,10 @@ class Santander240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
-        info_id = line.payment_information_id
+    def _get_header_lot(self, line, num_lot, lot):
         header = super()._get_header_lot(line, num_lot)
         header.update({
             'numero_versao_lote': self._get_versao_lote(line),
-            'forma_lancamento': int(get_forma_de_lancamento(
-                'santander', info_id.payment_type)),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
             'cedente_cep_complemento': self._string_to_num(
                 header.get('cedente_cep_complemento')[6:]),
@@ -131,12 +127,14 @@ class Santander240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Santander240, self).segments_per_operation()
         segments.update({
-            "03": ["SegmentoJ"],
-            "04": ["SegmentoO"],
-            "05": ["SegmentoN_GPS"],
-            "06": ["SegmentoN_DarfNormal"],
-            "07": ["SegmentoN_DarfSimples"],
-            "08": ["SegmentoO", "SegmentoW"],
-            "09": ["SegmentoN_GareSP"],
+            "01": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
+            '30': ["SegmentoJ"],
+            '31': ["SegmentoJ"],
+            '11': ["SegmentoO"],
+            "17": ["SegmentoN_GPS"],
+            "16": ["SegmentoN_DarfNormal"],
+            "18": ["SegmentoN_DarfSimples"],
+            "22": ["SegmentoN_GareSP"],
         })
         return segments

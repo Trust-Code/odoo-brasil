@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.file import File
+    from pycnab240.utils import get_operation
 except ImportError:
     _logger.info('Cannot import pycnab240', exc_info=True)
 
@@ -178,10 +179,11 @@ class Cnab_240(object):
         }
         return trailer_lot
 
-    def _get_header_lot(self, line, num_lot):
+    def _get_header_lot(self, line, num_lot, lot):
         information_id = line.payment_information_id
         bank = self._order.src_bank_account_id
         header_lot = {
+            'forma_lancamento': lot,
             "controle_lote": num_lot,
             "tipo_servico": information_id.service_type,
             "cedente_inscricao_tipo": 2,
@@ -207,14 +209,21 @@ class Cnab_240(object):
         }
         return header_lot
 
+    def get_operation(self, line):
+        bank_origin = line.bank_account_id.bank_id.bic
+        bank_dest = line.src_bank_account_id.bank_id.bic
+        tit_origin = line.src_bank_account_id.partner_id
+        tit_dest = line.bank_account_id.partner_id
+        return get_operation(bank_origin, bank_dest, tit_origin, tit_dest)
+
     def _ordenate_lines(self, listOfLines):
         operacoes = {}
         for line in listOfLines:
-            if line.payment_information_id.payment_type in operacoes:
-                operacoes[
-                    line.payment_information_id.payment_type].append(line)
+            op = self.get_operation(line)
+            if op in operacoes:
+                operacoes[op].append(line)
             else:
-                operacoes[line.payment_information_id.payment_type] = [line]
+                operacoes[op] = [line]
         self._lot_qty = len(operacoes)
         return operacoes
 
@@ -228,7 +237,7 @@ class Cnab_240(object):
     def create_details(self, operacoes):
         num_lot = 1
         for lote, events in operacoes.items():
-            self._create_header_lote(events[0], num_lot)
+            self._create_header_lote(events[0], num_lot, lote)
             lot_sequency = 1
             for event in events:
                 lot_sequency = self.create_detail(
@@ -237,9 +246,9 @@ class Cnab_240(object):
             self._create_trailer_lote(total_lote, num_lot)
             num_lot = num_lot + 1
 
-    def _create_header_lote(self, line, num_lot):
+    def _create_header_lote(self, line, num_lot, lot):
         self._cnab_file.add_segment(
-            'HeaderLote', self._get_header_lot(line, num_lot))
+            'HeaderLote', self._get_header_lot(line, num_lot, lot))
 
     def create_detail(self, operation, event, lot_sequency, num_lot):
         segments = self.segments_per_operation().get(operation, [])
@@ -257,7 +266,7 @@ class Cnab_240(object):
     def segments_per_operation(self):
         return {
             "01": ["SegmentoA", "SegmentoB"],
-            "02": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
         }
 
     def _create_trailer_lote(self, total, num_lot):
