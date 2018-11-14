@@ -15,16 +15,6 @@
                 <field name="acc_number_dig" />
                 <field name="bank_agency_dig" />
             </field>
-            <xpath expr="//page[@name='journal_entries']/group/group" position="inside">
-                <label for="l10n_br_sequence_nosso_numero"/>
-                <div>
-                    <field name="l10n_br_sequence_nosso_numero" />
-                </div>
-                <label for="l10n_br_sequence_statements"/>
-                <div>
-                    <field name="l10n_br_sequence_statements" />
-                </div>
-            </xpath>
         </field>
     </record>
 
