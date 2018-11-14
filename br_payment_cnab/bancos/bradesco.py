@@ -3,6 +3,11 @@ from ..serialize.cnab240 import Cnab_240
 
 _logger = logging.getLogger(__name__)
 
+try:
+    from pycnab240.bancos import bradesco
+except ImportError:
+    _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
+
 
 class Bradesco240(Cnab_240):
 
@@ -28,7 +33,6 @@ class Bradesco240(Cnab_240):
         return header
 
     def _get_header_lot(self, line, num_lot, lot):
-        info_id = line.payment_information_id
         header = super(Bradesco240, self)._get_header_lot(line, num_lot)
         header.update({
             'numero_versao_lote': self._get_versao_lote(line),
