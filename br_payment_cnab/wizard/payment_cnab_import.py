@@ -21,7 +21,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
 
     def _get_account(self, cnab_file):
         if self.cnab_type != 'payable':
-            return super(l10nBrPaymentCnabImport, self).do_import(cnab_file)
+            return super(l10nBrPaymentCnabImport, self)._get_account(cnab_file)
 
         stream = StringIO(cnab_file.decode('ascii'))
         bank = get_bank(self.journal_id.bank_id.bic)
@@ -57,7 +57,6 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                     [('nosso_numero', '=', event.numero_documento_cliente),
                      ('journal_id', '=', self.journal_id.id),
                      ('type', '=', 'payable')])
-
                 if not payment_line:
                     continue
                 cnab_code = event.ocorrencias_retorno[:2]
