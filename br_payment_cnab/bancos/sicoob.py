@@ -28,7 +28,7 @@ class Sicoob240(Cnab_240):
         return header
 
     def _get_header_lot(self, line, num_lot, lot):
-        header = super(Sicoob240, self)._get_header_lot(line, num_lot)
+        header = super(Sicoob240, self)._get_header_lot(line, num_lot, lot)
         header.update({
             'tipo_servico': int(header.get('tipo_servico')),
             'cedente_agencia': int(header.get('cedente_agencia')),

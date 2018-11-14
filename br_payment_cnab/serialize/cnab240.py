@@ -218,11 +218,12 @@ class Cnab_240(object):
         return header_lot
 
     def get_operation(self, line):
-        bank_origin = line.bank_account_id.bank_id.bic
-        bank_dest = line.src_bank_account_id.bank_id.bic
+        bank_origin = line.src_bank_account_id.bank_id.bic
+        bank_dest = line.bank_account_id.bank_id.bic
         tit_origin = line.src_bank_account_id.partner_id
         tit_dest = line.bank_account_id.partner_id
-        return get_operation(bank_origin, bank_dest, tit_origin, tit_dest)
+        op = line.payment_information_id.payment_type
+        return get_operation(bank_origin, bank_dest, tit_origin, tit_dest, op)
 
     def _ordenate_lines(self, listOfLines):
         operacoes = {}

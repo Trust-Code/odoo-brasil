@@ -42,7 +42,7 @@ class Santander240(Cnab_240):
         return header
 
     def _get_header_lot(self, line, num_lot, lot):
-        header = super()._get_header_lot(line, num_lot)
+        header = super()._get_header_lot(line, num_lot, lot)
         header.update({
             'numero_versao_lote': self._get_versao_lote(line),
             'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
@@ -90,6 +90,8 @@ class Santander240(Cnab_240):
                 segmento.get('favorecido_bairro', '')[:15],
             'favorecido_cidade':
                 segmento.get('favorecido_cidade', '')[:15],
+            'nome_concessionaria':
+                segmento.get('nome_concessionaria', '')[:30]
         })
         return segmento
 

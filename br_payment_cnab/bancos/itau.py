@@ -52,7 +52,7 @@ class Itau240(Cnab_240):
 
     def _get_header_lot(self, line, num_lot, lot):
         info_id = line.payment_information_id
-        header = super(Itau240, self)._get_header_lot(line, num_lot)
+        header = super(Itau240, self)._get_header_lot(line, num_lot, lot)
         header.update({
             'tipo_pagamento': int(
                 get_tipo_de_servico('itau', info_id.service_type)),

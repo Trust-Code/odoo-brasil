@@ -33,7 +33,7 @@ class Bradesco240(Cnab_240):
         return header
 
     def _get_header_lot(self, line, num_lot, lot):
-        header = super(Bradesco240, self)._get_header_lot(line, num_lot)
+        header = super(Bradesco240, self)._get_header_lot(line, num_lot, lot)
         header.update({
             'numero_versao_lote': self._get_versao_lote(line),
             'cedente_agencia': self._string_to_num(
