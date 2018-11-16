@@ -16,7 +16,10 @@
                 <field name="fine_value" widget="monetary"/>
             </field>
             <group position="inside">
-                <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}" />
+                <h3>
+                    <strong><label string="Linha Digitável" /></strong>
+                    <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}" />
+                </h3>
             </group>
         </field>
     </record>

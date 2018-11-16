@@ -40,7 +40,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'quantity': 1.0,
             'price_unit': 150.0,
             'price_subtotal': 150.0,
-            'account_id': self.payable_account.id,
+            'account_id': self.expense_account.id,
             'voucher_id': self.get_voucher_id()
         })
         return voucher_line.voucher_id
@@ -54,7 +54,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'acc_number_dig': '0',  # 1 digito
             'bra_number': '4321',  # 4 digitos
             'bra_number_dig': '0',
-            'codigo_convenio': '123458-8',  # 7 digitos
+            'l10n_br_convenio_pagamento': '123458-8',  # 7 digitos
             'bank_id': sicoob.id,
         })
         journal = self.env['account.journal'].create({
@@ -204,7 +204,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
 
     def test_seg(self):
         cnab = self.get_cnab_obj(self.payment_order)
-        seg_teste = cnab._get_segmento(self.payment_order.line_ids[1], 1, 1)
+        seg_teste = cnab._get_segmento(self.payment_order.line_ids[0], 1, 1)
         seg_ok = {
             'controle_lote': 1,
             'sequencial_registro_lote': 1,
@@ -251,7 +251,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'valor_multa_juros': Decimal('4.00'),
             'codigo_moeda': 9,
             'codigo_de_barras': 0,
-            'codigo_de_barras_alfa': '0',
+            'codigo_de_barras_alfa': '',
             'nome_concessionaria': 'Parceiro',
             'data_vencimento': int(time.strftime("%d%m%Y")),
             'contribuinte_nome': 'Trustcode Tecnologia da Inform',

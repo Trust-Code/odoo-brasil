@@ -30,6 +30,24 @@
         </field>
     </record>
 
+    <record id="br_payment_cnab_payment_order_line_form" model="ir.ui.view">
+        <field name="name">br_payment_cnab_payment_order_line_form</field>
+        <field name="model">payment.order.line</field>
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <field name="nosso_numero" position="after">
+                <field name="linha_digitavel" />
+                <field name="barcode" />
+                <field name="cnab_code" />
+                <field name="cnab_message" />
+            </field>
+            <field name="emission_date" position="after">
+                <field name="invoice_date"/>
+            </field>
+        </field>
+    </record>
+
     <record id="view_cnab_payments_filter" model="ir.ui.view">
         <field name="name">Payments Filter</field>
         <field name="model">payment.order.line</field>
@@ -42,7 +60,7 @@
                 <filter string="Pagos" domain="[('state','=', 'paid')]" help="Registros pagos" name="paid"/>
                 <filter string="Enviados" domain="[('state','in', ('sent',))]" help="Pagamentos Enviados" name="sent"/>
                 <filter string="Abertos" domain="[('state','in', ('approved', 'sent', 'processed'))]" help="Pagamentos em aberto" name="open"/>
-                <filter string="Rejeitados" domain="[('state','in', ('rejected'))]" help="Pagamentos rejeitados" name="rejected"/>
+                <filter string="Rejeitados" domain="[('state','=', 'rejected')]" help="Pagamentos rejeitados" name="rejected"/>
                 <separator orientation="vertical"/>
                 <field name="partner_id"/>
                 <field name="src_bank_account_id"/>

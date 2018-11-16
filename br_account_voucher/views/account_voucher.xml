@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_br_account_voucher_tree" model="ir.ui.view">
+        <field name="name">view.br_account_voucher.tree</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_voucher_tree"/>
+        <field name="arch" type="xml">
+            <field name="amount" position="after">
+                <field name="l10n_br_residual" sum="Amount Due" />
+                <field name="l10n_br_paid" />
+            </field>
+        </field>
+    </record>
+
     <record id="view_br_account_voucher_purchase_form" model="ir.ui.view">
         <field name="name">view.br_account_voucher.purchase.form</field>
         <field name="model">account.voucher</field>
@@ -12,6 +24,9 @@
             <xpath expr="//field[@name='line_ids']/tree/field[@name='account_analytic_id']" position="after">
                 <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
             </xpath>
+            <field name="amount" position="after">
+                <field name="l10n_br_residual" />
+            </field>
         </field>
     </record>
 
@@ -26,6 +41,9 @@
             <xpath expr="//field[@name='line_ids']/tree/field[@name='account_analytic_id']" position="after">
                 <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
             </xpath>
+            <field name="amount" position="after">
+                <field name="l10n_br_residual" />
+            </field>
         </field>
     </record>
 

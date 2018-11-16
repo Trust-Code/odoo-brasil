@@ -9,9 +9,9 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from ..bancos import santander, sicoob
+    from ..bancos import santander, sicoob, itau, bradesco
 except ImportError:
-    _logger.debug('Cannot import bancos.')
+    _logger.error('Cannot import bancos', exc_info=True)
 
 
 class PaymentOrder(models.Model):
@@ -21,8 +21,8 @@ class PaymentOrder(models.Model):
         banks = {
             '756': sicoob.Sicoob240(self),
             '033': santander.Santander240(self),
-            # '641': Itau240(self),
-            # '237': Bradesco240(self)
+            '341': itau.Itau240(self),
+            '237': bradesco.Bradesco240(self),
         }
         bank = banks.get(code)
         if not bank:
@@ -72,11 +72,33 @@ class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
     payment_information_id = fields.Many2one(
-        'l10n_br.payment_information', string="Payment Information")
+        'l10n_br.payment_information', string="Payment Information",
+        readonly=True)
 
+    linha_digitavel = fields.Char(string="Linha Digitável")
+    barcode = fields.Char('Código de Barras')
     invoice_date = fields.Date('Data da Fatura')
     cnab_code = fields.Char(string="Código Retorno")
     cnab_message = fields.Char(string="Mensagem Retorno")
+    value_final = fields.Float(
+        string="Final Value", compute="_compute_final_value",
+        digits=(18, 2), readonly=True)
+
+    bank_account_id = fields.Many2one(
+        'res.partner.bank', string="Conta p/ Transferência")
+
+    partner_acc_number = fields.Char(
+        string="Conta do Favorecido",
+        readonly=True)
+
+    partner_bra_number = fields.Char(
+        string="Agência do Favorecido",
+        readonly=True)
+
+    _sql_constraints = [
+        ('payment_order_line_barcode_uniq', 'unique (barcode)',
+         _('O código de barras deve ser único!'))
+    ]
 
     def validate_partner_data(self, vals):
         errors = []
@@ -139,8 +161,9 @@ class PaymentOrderLine(models.Model):
         if not payment_mode.one_time_payment:
             if not vals.get('barcode'):
                 errors += ['Código de barras obrigatório']
-            if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
-                errors += ['Código de barras deve possuir 47 ou 48 dígitos']
+            if len(vals['barcode']) != 44:
+                errors += ['Código de barras deve possuir 44 dígitos - \
+                           Verifique a linha digitável']
         return errors
 
     # Tributos com códigos de barras
@@ -148,8 +171,9 @@ class PaymentOrderLine(models.Model):
         errors = []
         if not vals.get('barcode'):
             errors += ['Código de barras obrigatório']
-        if len(vals['barcode']) < 47 or len(vals['barcode']) > 48:
-            errors += ['Código de barras deve possuir 47 ou 48 dígitos']
+        if len(vals['barcode']) != 44:
+            errors += ['Código de barras deve possuir 44 dígitos - \
+                       Verifique a linha digitável']
         return errors
 
     def validate_base_information(self, payment_mode):
@@ -181,13 +205,6 @@ class PaymentOrderLine(models.Model):
             acrescimo = payment.fine_value + payment.interest_value
             item.value_final = (item.amount_total - desconto + acrescimo)
 
-    value_final = fields.Float(
-        string="Final Value", compute="_compute_final_value",
-        digits=(18, 2), readonly=True)
-
-    bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Conta p/ Transferência")
-
     def get_operation_code(self, payment_mode):
         if payment_mode.payment_type == '01':
             return '018'
@@ -206,6 +223,7 @@ class PaymentOrderLine(models.Model):
                 'name': order_name or '',
                 'user_id': self.env.user.id,
                 'payment_mode_id': payment_mode.id,
+                'journal_id': payment_mode.journal_id.id,
                 'src_bank_account_id':
                 payment_mode.journal_id.bank_account_id.id,
                 'state': 'draft',
@@ -226,7 +244,6 @@ class PaymentOrderLine(models.Model):
             'operation_code': self.get_operation_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
-            'barcode': vals.get('barcode'),
             'fine_value': vals.get('fine_value'),
             'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
@@ -241,7 +258,8 @@ class PaymentOrderLine(models.Model):
         journal = payment_mode.journal_id
         line_vals = {
             'payment_mode_id': payment_mode.id,
-            'journal_id': payment_mode.journal_id.id,
+            'journal_id': journal.id,
+            'src_bank_account_id': journal.bank_account_id.id,
             'currency_id': payment_mode.journal_id.currency_id.id or
             payment_mode.journal_id.company_id.currency_id.id,
             'payment_information_id': information_id.id,
@@ -250,7 +268,9 @@ class PaymentOrderLine(models.Model):
             'nosso_numero': journal.l10n_br_sequence_nosso_numero.next_by_id(),
         }
         line_vals.update(vals)
-        self.sudo().create(line_vals)
+        order_line = self.sudo().create(line_vals)
+        move_line = self.env['account.move.line'].browse(vals['move_line_id'])
+        move_line.write({'l10n_br_order_line_id': order_line.id})
 
     def action_aprove_payment_line(self):
         for item in self:
@@ -329,6 +349,10 @@ class PaymentOrderLine(models.Model):
         return statement_id
 
     def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+        if self.type != 'payable':
+            return super(PaymentOrderLine, self).mark_order_line_paid(
+                cnab_code, cnab_message, statement_id)
+
         bank_account_ids = self.mapped('src_bank_account_id')
         for account in bank_account_ids:
             order_lines = self.filtered(

@@ -9,6 +9,8 @@ class AccountMoveLine(models.Model):
 
     payment_mode_id = fields.Many2one(
         'l10n_br.payment.mode', string=u"Modo de pagamento")
+    l10n_br_order_line_id = fields.Many2one(
+        'payment.order.line', string='Linha de Pagamento')
 
     @api.multi
     @api.depends('debit', 'credit', 'user_type_id', 'amount_residual')

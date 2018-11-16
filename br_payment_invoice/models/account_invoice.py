@@ -12,7 +12,8 @@ class AccountInvoice(models.Model):
         related="payment_mode_id.payment_type")
     l10n_br_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
-        domain="[('partner_id', '=', partner_id)]")
+        domain="[('partner_id', '=', partner_id)]", readonly=True,
+        states={'draft': [('readonly', False)]})
 
     def prepare_payment_line_vals(self, move_line_id):
         return {
@@ -20,6 +21,8 @@ class AccountInvoice(models.Model):
             'amount_total': abs(move_line_id.amount_residual),
             'name': self.number,
             'bank_account_id': self.l10n_br_bank_account_id.id,
+            'partner_acc_number': self.l10n_br_bank_account_id.acc_number,
+            'partner_bra_number': self.l10n_br_bank_account_id.bra_number,
             'move_line_id': move_line_id.id,
             'date_maturity': move_line_id.date_maturity,
             'invoice_date': move_line_id.date,

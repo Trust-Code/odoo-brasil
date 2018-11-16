@@ -6,7 +6,7 @@
         <field name="res_model">l10n_br.payment.cnab.import</field>
         <field name="view_mode">form,tree</field>
         <field name="target">new</field>
-        <field name="context">{'default_cnab_type': 'receivable'}</field>
+        <field name="context">{'default_cnab_type': 'payable'}</field>
     </record>
 
     <record id="journal_dashboard_view_cnab_import" model="ir.ui.view">

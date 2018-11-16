@@ -8,6 +8,9 @@ from odoo.exceptions import UserError
 
 class PaymentOrderLine(models.Model):
     _name = 'payment.order.line'
+    _order = 'id desc'
+    _description = 'Linha de Pagamento/Cobrança'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     def _compute_identifier(self):
         for item in self:
@@ -27,11 +30,11 @@ class PaymentOrderLine(models.Model):
         [('receivable', 'Recebível'), ('payable', 'Pagável')],
         string="Tipo de Ordem", default='receivable')
     move_line_id = fields.Many2one(
-        'account.move.line', string=u'Linhas de Cobrança')
+        'account.move.line', string='Item de Diário')
     partner_id = fields.Many2one(
         'res.partner', string="Parceiro", readonly=True)
     journal_id = fields.Many2one('account.journal', string="Diário")
-    move_id = fields.Many2one('account.move', string=u"Lançamento de Diário",
+    move_id = fields.Many2one('account.move', string="Lançamento de Diário",
                               related='move_line_id.move_id', readonly=True)
     nosso_numero = fields.Char(string=u"Nosso Número", size=20)
     payment_mode_id = fields.Many2one(
@@ -49,7 +52,7 @@ class PaymentOrderLine(models.Model):
                               ("paid", "Pago"),
                               ("cancelled", "Cancelado")],
                              string="Situação",
-                             default="draft")
+                             default="draft", track_visibility='onchange')
 
     @api.multi
     def unlink(self):
@@ -58,6 +61,10 @@ class PaymentOrderLine(models.Model):
             raise UserError(
                 'Apenas pagamentos no estado provisório podem ser excluídos')
         return super(PaymentOrderLine, self).unlink()
+
+    @api.multi
+    def action_cancel_line(self):
+        self.write({'state': 'cancelled'})
 
 
 class PaymentOrder(models.Model):
@@ -76,7 +83,7 @@ class PaymentOrder(models.Model):
     company_id = fields.Many2one(
         'res.company', string='Company', required=True, ondelete='restrict',
         default=lambda self: self.env['res.company']._company_default_get(
-            'account.payment.mode'))
+            'account.l10n_br.payment.mode'))
     type = fields.Selection(
         [('receivable', 'Recebível'), ('payable', 'Pagável')],
         string="Tipo de Ordem", default='receivable')
@@ -85,6 +92,8 @@ class PaymentOrder(models.Model):
     payment_mode_id = fields.Many2one('l10n_br.payment.mode',
                                       string='Modo de Pagamento',
                                       required=True)
+    journal_id = fields.Many2one(
+        'account.journal', string="Diário")
     src_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta Bancária")
     state = fields.Selection(
@@ -113,7 +122,7 @@ class PaymentOrder(models.Model):
     def _compute_state(self):
         for item in self:
             lines = item.line_ids.filtered(lambda x: x.state != 'cancelled')
-            if all(line.state == 'draft' for line in lines):
+            if all(line.state in ('draft', 'approved') for line in lines):
                 item.state = 'draft'
             elif all(line.state == 'paid' for line in lines):
                 item.state = 'done'

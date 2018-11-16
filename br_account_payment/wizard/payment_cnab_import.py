@@ -41,5 +41,5 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         cnab = base64.decodestring(self.cnab_file)
         acc_number, bra_number = self._get_account(cnab)
 
-        # self.validate_journal(acc_number, bra_number)
+        self.validate_journal(acc_number, bra_number)
         return self.do_import(cnab)
