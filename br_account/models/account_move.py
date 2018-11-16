@@ -15,7 +15,7 @@ class AccountMoveLine(models.Model):
     def _get_pair_to_reconcile(self):
         # field is either 'amount_residual' or 'amount_residual_currency'
         # (if the reconciled account has a secondary currency set)
-        if not self.l10n_br_localization:
+        if not self.filtered(lambda r: r.l10n_br_localization):
             super(AccountMoveLine, self)._get_pair_to_reconcile()
         field = self[0].account_id.currency_id and 'amount_residual_currency'\
             or 'amount_residual'
