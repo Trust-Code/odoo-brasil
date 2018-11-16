@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
         res['l10n_br_valor_seguro'] = line.l10n_br_valor_seguro
         res['l10n_br_outras_despesas'] = line.l10n_br_outras_despesas
         res['l10n_br_valor_frete'] = line.l10n_br_valor_frete
-        res['ii_valor_despesas'] = line.valor_aduana
+        res['ii_valor_despesas'] = line.l10n_br_valor_aduana
         return res
 
     l10n_br_total_despesas_aduana = fields.Float(
