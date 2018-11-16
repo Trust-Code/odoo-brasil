@@ -22,8 +22,8 @@ class Sicoob240(Cnab_240):
         header.update({
             'cedente_conta_dv': self._string_to_num(
                 header.get('cedente_conta_dv')),
-            'codigo_convenio': self._string_to_num(str(
-                header.get('codigo_convenio'))[:20]),
+            'codigo_convenio': self._string_to_num(
+                self._order.src_bank_account_id.l10n_br_convenio_pagamento),
             'cedente_conta': self._string_to_num(header.get('cedente_conta'))
         })
         return header
@@ -38,8 +38,8 @@ class Sicoob240(Cnab_240):
             'cedente_conta_dv': self._string_to_num(
                 header.get('cedente_conta_dv')),
             'cedente_conta': self._string_to_num(header.get('cedente_conta')),
-            'codigo_convenio': self._string_to_num(str(
-                header.get('codigo_convenio'))[:20]),
+            'codigo_convenio': self._string_to_num(
+                self._order.src_bank_account_id.l10n_br_convenio_pagamento),
         })
         return header
 

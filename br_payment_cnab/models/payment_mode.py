@@ -86,7 +86,7 @@ class PaymentMode(models.Model):
             if not rec.journal_id.bank_account_id:
                 raise ValidationError(
                     'Não existe conta bancária cadastrada no diário escolhido')
-            if not rec.journal_id.bank_account_id.codigo_convenio:
+            if not rec.journal_id.bank_account_id.l10n_br_convenio_pagamento:
                 raise ValidationError(
                     'Configure o código de convênio na conta bancária!')
             if not rec.journal_id.l10n_br_sequence_nosso_numero:
