@@ -33,6 +33,7 @@
         'views/payment_information.xml',
         'views/payment_order.xml',
         'views/res_config_settings.xml',
+        'views/res_partner_bank.xml',
         'wizard/payment_cnab_import.xml',
         'wizard/manual_reconcile.xml',
         'wizard/approve_payments.xml',
