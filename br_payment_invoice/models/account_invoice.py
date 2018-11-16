@@ -12,7 +12,8 @@ class AccountInvoice(models.Model):
         related="payment_mode_id.payment_type")
     l10n_br_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
-        domain="[('partner_id', '=', partner_id)]")
+        domain="[('partner_id', '=', partner_id)]", readonly=True,
+        states={'draft': [('readonly', False)]})
 
     def prepare_payment_line_vals(self, move_line_id):
         return {
