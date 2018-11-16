@@ -32,7 +32,7 @@ class PurchaseOrder(models.Model):
             return 0
 
     def calc_rateio(self, line, total):
-        porcentagem = self._calc_ratio(line.valor_bruto, total)
+        porcentagem = self._calc_ratio(line.l10n_br_valor_bruto, total)
         frete = self.l10n_br_total_frete * porcentagem
         seguro = self.l10n_br_total_seguro * porcentagem
         despesas = self.l10n_br_total_despesas * porcentagem
@@ -72,13 +72,13 @@ class PurchaseOrder(models.Model):
                 sub_desp -= round(despesas, 2)
         if self.order_line:
             self.order_line[0].update({
-                'valor_seguro':
+                'l10n_br_valor_seguro':
                     self.order_line[0].l10n_br_valor_seguro + sub_seguro,
-                'valor_frete':
+                'l10n_br_valor_frete':
                     self.order_line[0].l10n_br_valor_frete + sub_frete,
-                'outras_despesas':
+                'l10n_br_outras_despesas':
                     self.order_line[0].l10n_br_outras_despesas + sub_desp,
-                'valor_aduana':
+                'l10n_br_valor_aduana':
                     self.order_line[0].l10n_br_valor_aduana + sub_aduana
                 })
 
@@ -127,10 +127,10 @@ class PuchaseOrderLine(models.Model):
     def _prepare_tax_context(self):
         res = super(PuchaseOrderLine, self)._prepare_tax_context()
         res.update({
-            'valor_frete': self.valor_frete,
-            'valor_seguro': self.valor_seguro,
-            'outras_despesas': self.outras_despesas,
-            'ii_despesas': self.valor_aduana,
+            'valor_frete': self.l10n_br_valor_frete,
+            'valor_seguro': self.l10n_br_valor_seguro,
+            'outras_despesas': self.l10n_br_outras_despesas,
+            'ii_despesas': self.l10n_br_valor_aduana,
             'fiscal_type': self.fiscal_position_type,
         })
         return res
