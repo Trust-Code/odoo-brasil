@@ -81,80 +81,11 @@ class PaymentOrderLine(models.Model):
             })
         return statement_id
 
-    def create_multi_company_moves(self, line):
-        # Primeira parte gera o movimento para a empresa do modo de pagamento
-        # Não precisa conciliar esse movimento
-        move = self.env['account.move'].create({
-            'name': '/',
-            'journal_id': line.journal_id.id,
-            'company_id': line.journal_id.company_id.id,
-            'date': date.today(),
-            'ref': line.name,
-        })
-        aml_obj = self.env['account.move.line'].with_context(
-            check_move_validity=False)
-        counterpart_aml_dict = {
-            'name': line.name,
-            'move_id': move.id,
-            'partner_id': line.partner_id.id,
-            'debit': 0.0,
-            'credit': line.amount_total,
-            'currency_id': line.currency_id.id,
-            'account_id': 159,
-        }
-        liquidity_aml_dict = {
-            'name': line.name,
-            'move_id': move.id,
-            'partner_id': line.partner_id.id,
-            'debit': line.amount_total,
-            'credit': 0.0,
-            'currency_id': line.currency_id.id,
-            'account_id': line.journal_id.default_debit_account_id.id,
-        }
-        aml_obj.create(counterpart_aml_dict)
-        aml_obj.create(liquidity_aml_dict)
-        move.post()
-        # Segunda parte cria-se o movimento na filial
-        # Esse movimento deve ser conciliado
-        journal_filial = self.env['account.journal'].search(
-            [('type', '=', 'bank'),
-             ('company_id', '=', line.move_line_id.company_id.id)], limit=1)
-        move_filial = self.env['account.move'].create({
-            'name': '/',
-            'journal_id': journal_filial.id,
-            'company_id': journal_filial.company_id.id,
-            'date': date.today(),
-            'ref': line.name,
-        })
-        counterpart_aml_dict = {
-            'name': line.name,
-            'move_id': move_filial.id,
-            'partner_id': line.partner_id.id,
-            'debit': 0.0,
-            'credit': line.amount_total,
-            'currency_id': line.currency_id.id,
-            'account_id': line.move_line_id.account_id.id,
-        }
-        liquidity_aml_dict = {
-            'name': line.name,
-            'move_id': move_filial.id,
-            'partner_id': line.partner_id.id,
-            'debit': line.amount_total,
-            'credit': 0.0,
-            'currency_id': line.currency_id.id,
-            'account_id': journal_filial.default_debit_account_id.id,
-        }
-        aml_obj = self.env['account.move.line'].with_context(
-            check_move_validity=False, default_journal_id=journal_filial.id)
-        counterpart_aml = aml_obj.create(counterpart_aml_dict)
-        aml_obj.create(liquidity_aml_dict)
-        move_filial.post()
-        (counterpart_aml + line.move_line_id).reconcile()
-        return move
-
     def create_receivable_move_and_reconcile(self, line):
         if line.move_line_id.company_id != line.journal_id.company_id:
-            return self.create_multi_company_moves(line)
+            return self.env[
+                'multicompany.payment'].create_multi_company_moves(
+                    line.move_line_id)
 
         move = self.env['account.move'].create({
             'name': '/',

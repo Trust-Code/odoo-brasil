@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_multicompany_payment_wizard_form" model="ir.ui.view">
+        <field name="name">Recebimetos Todas Filias</field>
+        <field name="model">multicompany.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Multicompany Payment">
+                <group>
+                    <field name="partner_id" options="{'no_create': True, 'no_create_edit':True}"></field>
+                </group>
+                <footer>
+                    <button name="button_receivable_move_line_search" string="Search" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_multicompany_payment_wizard_form" model="ir.actions.act_window">
+        <field name="name">Multicompany Payment</field>
+        <field name="res_model">multicompany.payment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem sequence="10" action="action_multicompany_payment_wizard_form"
+              id="menu_action_multicompany_payment_wizard"
+              parent="br_account_payment.menu_br_payments"/>
+</odoo>

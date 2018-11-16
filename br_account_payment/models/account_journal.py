@@ -18,6 +18,8 @@ class AccountJournal(models.Model):
     bank_agency_dig = fields.Char(related='bank_account_id.bra_number_dig')
     acc_partner_id = fields.Many2one('res.partner',
                                      related='bank_account_id.partner_id')
+    default_bank_journal = fields.Boolean(string="Default Bank Journal")
+    default_general_journal = fields.Boolean(string="Default General Journal")
 
     @api.multi
     def write(self, vals):

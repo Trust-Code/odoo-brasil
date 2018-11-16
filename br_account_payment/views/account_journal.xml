@@ -25,6 +25,12 @@
                     <field name="l10n_br_sequence_statements" />
                 </div>
             </xpath>
+            <xpath expr="//page[@name='advanced_settings']/group" position="inside">
+                <group name="multicompany_payments" string="Multicompany Payments">
+                    <field name="default_bank_journal"></field>
+                    <field name="default_general_journal"></field>
+                </group>
+            </xpath>
         </field>
     </record>
 

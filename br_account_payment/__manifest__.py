@@ -15,7 +15,8 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
-        'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br',
+        'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br>',
+        'Fábio Luna <fabiocluna@hotmail.com>',
     ],
     'depends': [
         'br_account',
@@ -32,6 +33,8 @@
         'views/payment_statement.xml',
         'security/account_security.xml',
         'wizard/payment_cnab_import.xml',
+        'views/multicompany_payment.xml',
+        'wizard/multicompany_payment_wizard.xml',
     ],
     'installable': True,
     'application': True,

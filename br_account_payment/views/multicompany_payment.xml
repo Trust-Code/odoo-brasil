@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_multicompany_payments_tree_a_receber" model="ir.ui.view">
+        <field name="name">Multicompany Payment</field>
+        <field name="model">multicompany.payment</field>
+        <field name="field_parent">partner_id</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree default_order="date_maturity" string="Payments" colors="grey:reconciled==True;red:date_maturity&lt;current_date" create="false">
+                <field name="partner_id" readonly="1"/>
+                <field name="account_id" readonly="1"/>
+                <field name="payment_value" sum="Total das parcelas" />
+                <field name="amount_residual" readonly="1" sum="Total"/>
+                <field name="date_maturity"/>
+                <field name="move_name" readonly="1"/>
+                <field name="reconciled" string="Pago" />
+                <button name="action_register_payment" type="object" string="PAGAR" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" class="btn btn-success btn-xs"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="multicompany_payment_action" model="ir.actions.act_window">
+            <field name="name">Multicompany Payments</field>
+            <field name="res_model">multicompany.payment</field>
+            <field name="view_mode">tree</field>
+    </record>
+</odoo>
