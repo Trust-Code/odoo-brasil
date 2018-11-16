@@ -349,6 +349,10 @@ class PaymentOrderLine(models.Model):
         return statement_id
 
     def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+        if self.type != 'payable':
+            return super(PaymentOrderLine, self).mark_order_line_paid(
+                cnab_code, cnab_message, statement_id)
+
         bank_account_ids = self.mapped('src_bank_account_id')
         for account in bank_account_ids:
             order_lines = self.filtered(
