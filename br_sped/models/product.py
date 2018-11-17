@@ -1,23 +1,7 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2018 Carlos R. Silveira, ATSti
+# © 2018 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 
 from odoo import api, fields, models
 
@@ -37,7 +21,7 @@ class ProductTemplate(models.Model):
         ('08', u'08 - Ativo Imobilizado'),
         ('09', u'09 - Serviços'),
         ('10', u'10 - Outros insumos'),
-        ('99', u'99 - Outras')        
+        ('99', u'99 - Outras')
      ], 'Tipo do Item',
     default='00')
     sped_ids = fields.One2many('product.template.sped', 'product_id', 'Alteração Cadastro', copy=False)
@@ -51,21 +35,21 @@ class ProductTemplate(models.Model):
             values['ocorrido'] = 'Alterado'
             values['valor_anterior'] = self.name
             values['valor_novo'] = vals.get('name')
-            self.sped_ids.create(values)                    
+            self.sped_ids.create(values)
         if 'default_code' in vals:
             values['name'] = 'Código'
             values['ocorrido'] = 'Alterado'
             values['valor_anterior'] = self.default_code
             values['valor_novo'] = vals.get('default_code')
-            self.sped_ids.create(values)                    
-            
-        return super(ProductTemplate, self).write(vals)        
+            self.sped_ids.create(values)
+
+        return super(ProductTemplate, self).write(vals)
 
 
 class ProductUom(models.Model):
     _inherit = 'product.uom'
-    
-    
+
+
     description = fields.Char('Descrição')
     type_uom = fields.Selection([
         ('int', u'Unidade uso interno'),
