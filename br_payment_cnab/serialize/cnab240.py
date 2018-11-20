@@ -139,7 +139,7 @@ class Cnab_240(object):
             "codigo_de_barras_alfa": line.barcode or '',
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
-            line.partner_id.legal_name or line.partner_id.name,
+            (line.partner_id.legal_name or line.partner_id.name)[:30],
             "data_vencimento": int(self.format_date(line.date_maturity)),
             "valor_juros_encargos": self._string_to_monetary(
                 information_id.interest_value),

@@ -54,7 +54,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'acc_number_dig': '0',  # 1 digito
             'bra_number': '4321',  # 4 digitos
             'bra_number_dig': '0',
-            'codigo_convenio': '123458-8',  # 7 digitos
+            'l10n_br_convenio_pagamento': '123458-8',  # 7 digitos
             'bank_id': sicoob.id,
         })
         journal = self.env['account.journal'].create({

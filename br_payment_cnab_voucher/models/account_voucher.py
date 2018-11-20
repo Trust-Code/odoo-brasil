@@ -17,7 +17,8 @@ class AccountVoucher(models.Model):
     _inherit = 'account.voucher'
 
     payment_mode_id = fields.Many2one(
-        'l10n_br.payment.mode', "Modo de Pagamento")
+        'l10n_br.payment.mode', "Modo de Pagamento", readonly=True,
+        states={'draft': [('readonly', False)]})
     payment_type = fields.Selection(
         [('01', 'TED - Transferência Bancária'),
          ('02', 'DOC - Transferência Bancária'),
@@ -28,15 +29,23 @@ class AccountVoucher(models.Model):
          ('07', 'DARF Simples'),
          ('08', 'FGTS'),
          ('09', 'ICMS')],
-        string="Tipo de Operação")
+        string="Tipo de Operação", readonly=True,
+        states={'draft': [('readonly', False)]})
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
-        domain="[('partner_id', '=', partner_id)]")
+        domain="[('partner_id', '=', partner_id)]", readonly=True,
+        states={'draft': [('readonly', False)]})
 
-    linha_digitavel = fields.Char(string="Linha Digitável")
-    barcode = fields.Char('Barcode', compute="_compute_barcode", store=True)
-    interest_value = fields.Float('Interest Value')
-    fine_value = fields.Float('Fine Value')
+    linha_digitavel = fields.Char(
+        string="Linha Digitável", readonly=True,
+        states={'draft': [('readonly', False)]})
+    barcode = fields.Char(
+        'Barcode', compute="_compute_barcode", store=True, readonly=True)
+    interest_value = fields.Float(
+        'Interest Value', readonly=True,
+        states={'draft': [('readonly', False)]})
+    fine_value = fields.Float(
+        'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
 
     _sql_constraints = [
         ('account_voucher_barcode_uniq', 'unique (barcode)',
