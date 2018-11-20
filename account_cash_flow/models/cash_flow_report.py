@@ -114,7 +114,8 @@ class CashFlowReport(models.TransientModel):
             y=moves['despesas'],
             name='Despesas'
         )
-
+        moves.drop_duplicates(
+            subset='date_maturity', keep='last', inplace=True)
         x = acumulado_x.append(moves["date_maturity"])
         y = acumulado_y.append(moves["acumulado"])
 
@@ -122,7 +123,10 @@ class CashFlowReport(models.TransientModel):
             x=x,
             y=y,
             mode='lines+markers',
-            name="Saldo"
+            name="Saldo",
+            line=dict(
+                shape='spline'
+            )
         )
 
         data = [trace3, trace4, trace5]
