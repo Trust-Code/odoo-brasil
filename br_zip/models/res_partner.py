@@ -22,3 +22,15 @@ class ResPartner(models.Model):
         res = self.env['br.zip'].search_by_zip(zip_code=self.zip)
         if res:
             self.update(res)
+
+    @api.onchange('street', 'city_id')
+    def _search_street(self):
+        if self.city_id and self.state_id and self.street:
+            res = self.env['br.zip'].seach_by_address(
+                state_id=self.city_id.state_id.id,
+                city_id=self.city_id.id,
+                street=self.street,
+                obj=None
+            )
+            if res:
+                self.update(res)
