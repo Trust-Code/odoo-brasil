@@ -90,3 +90,12 @@ class AccountVoucher(models.Model):
             line.analytic_tag_ids = [(6, False, line2.analytic_tag_ids.ids)]
 
         return line_total
+
+    @api.multi
+    def first_move_line_get(self, move_id, company_currency, current_currency):
+        vals = super(AccountVoucher, self).first_move_line_get(
+            move_id, company_currency, current_currency)
+        # Correção do valor quando retenção - tax_amount é negativo
+        if self.tax_amount < 0.0:
+            vals['credit'] += self.tax_amount
+        return vals
