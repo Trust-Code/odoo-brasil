@@ -23,3 +23,9 @@ class PaymentMode(models.Model):
     # TODO Remove this fields latter on, from now on we use just journal_id
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Bank Account", ondelete='restrict')
+    l10n_br_environment = fields.Selection(
+        [('test', 'Teste'),
+         ('production', 'Produção')],
+        string='Ambiente',
+        default='production'
+    )
