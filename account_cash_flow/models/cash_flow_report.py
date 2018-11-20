@@ -190,8 +190,9 @@ class CashFlowReport(models.TransientModel):
             if not credit and not debit:
                 continue
 
+            name = "%s/%s" % (move.move_id.name, move.ref or move.name)
             moves.append({
-                'name': move.ref or move.name,
+                'name': name,
                 'cashflow_id': self.id,
                 'partner_id': move.partner_id.id,
                 'journal_id': move.journal_id.id,
