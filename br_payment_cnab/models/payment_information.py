@@ -181,4 +181,4 @@ class PaymentInformation(models.Model):
         for item in self:
             if item.payment_type not in ('05', '06', '07', '09'):
                 continue
-            return TAX_IDENTIFICATION.get(item.payment_type)
+            item.tax_identification = TAX_IDENTIFICATION.get(item.payment_type)
