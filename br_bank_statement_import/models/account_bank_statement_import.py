@@ -58,7 +58,7 @@ class AccountBankStatementImport(models.TransientModel):
                         transacao.memo and ': ' + transacao.memo or ''),
                     'ref': transacao.id,
                     'amount': transacao.amount,
-                    'unique_import_id': transaction.id,
+                    'unique_import_id': transacao.id,
                     'sequence': len(transacoes) + 1,
                 })
                 total += float(transacao.amount)
