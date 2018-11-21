@@ -176,10 +176,6 @@ class AccountInvoiceLine(models.Model):
             item.icms_cst = item.icms_cst_normal \
                 if item.company_fiscal_type == '3' else item.icms_csosn_simples
 
-    price_cost = fields.Float(
-        string='Vlr. Custo',
-        digits=dp.get_precision('Account')
-    )
     price_tax = fields.Float(
         compute='_compute_price', string='Impostos', store=True,
         digits=dp.get_precision('Account'))
@@ -649,7 +645,3 @@ class AccountInvoiceLine(models.Model):
         if self.tax_inss_id:
             self.inss_aliquota = self.tax_inss_id.amount
         self._update_invoice_line_ids()
-
-    @api.onchange('product_id')
-    def price_cost_update(self):
-        self.price_cost = self.product_id.standard_price
