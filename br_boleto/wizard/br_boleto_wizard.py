@@ -2,7 +2,9 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import date
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class BrBoletoWizard(models.TransientModel):
@@ -14,10 +16,27 @@ class BrBoletoWizard(models.TransientModel):
 
     @api.multi
     def imprimir_boleto(self):
+        line_id = self.move_line_id.l10n_br_order_line_id
         if self.date_change:
-            self.move_line_id.date_maturity = self.date_change
-            self.move_line_id.boleto_emitido = False
+            if line_id.state == 'draft':
+                self.move_line_id.date_maturity = self.date_change
+                line_id.write({
+                    'emission_date': date.today(),
+                    'date_maturity': self.date_change,
+                })
+            elif line_id.state != 'cancelled':
+                raise UserError(
+                    'O boleto está na situação %s, cancele o item de \
+                    cobrança antes de reemitir outro boleto' %
+                    dict(line_id._fields['state'].selection).get(
+                        line_id.state))
+
+        if not line_id or line_id.state in ('rejected', 'cancelled'):
+            if self.date_change:
+                self.move_line_id.date_maturity = self.date_change
+            line_id = self.env['payment.order.line'].action_register_boleto(
+                self.move_line_id)
 
         return self.env.ref(
-            'br_boleto.action_boleto_account_move_line').report_action(
-                self.move_line_id)
+            'br_boleto.action_boleto_payment_order_line').report_action(
+                line_id)
