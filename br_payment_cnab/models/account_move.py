@@ -23,6 +23,7 @@ class AccountMoveLine(models.Model):
         for item in self:
             total = self.env['payment.order.line'].search_count(
                 [('move_line_id', '=', item.id),
+                 ('type', '=', 'payable'),
                  ('state', 'not in', ('draft', 'cancelled', 'rejected'))])
             if total > 0:
                 raise UserError('Existe uma ordem de pagamento relacionada!\
