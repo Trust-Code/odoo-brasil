@@ -65,6 +65,13 @@ class PaymentMode(models.Model):
         help='Percentual decorrente da receita bruta acumulada a ser aplicado\
         sobre a receita mensal.')
 
+    l10n_br_environment = fields.Selection(
+        [('test', 'Test'),
+         ('production', 'Production')],
+        string='Environment',
+        default='production'
+    )
+
     @api.constrains('type', 'journal_id', 'payment_type')
     def _check_payment_mode_payable(self):
         for rec in self:
