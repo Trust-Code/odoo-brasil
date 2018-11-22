@@ -123,8 +123,11 @@ class PaymentOrder(models.Model):
         for item in self:
             lines = item.line_ids.filtered(lambda x: x.state != 'cancelled')
             if all(line.state in ('draft', 'approved') for line in lines):
-                item.state = 'draft'
-            elif all(line.state == 'paid' for line in lines):
+                if len(item.line_ids - lines) > 0:
+                    item.state = 'done'
+                else:
+                    item.state = 'draft'
+            elif all(line.state in ('paid', 'rejected') for line in lines):
                 item.state = 'done'
             elif any(line.state == 'rejected' for line in lines):
                 item.state = 'attention'

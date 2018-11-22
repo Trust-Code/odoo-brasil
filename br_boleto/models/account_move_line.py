@@ -13,6 +13,27 @@ class AccountMoveLine(models.Model):
     nosso_numero = fields.Char(string=u"Nosso Número", size=30)
 
     @api.multi
+    def unlink(self):
+        for item in self:
+            line_ids = self.env['payment.order.line'].search(
+                [('move_line_id', '=', item.id),
+                 ('state', '=', 'draft')])
+            line_ids.sudo().unlink()
+        return super(AccountMoveLine, self).unlink()
+
+    @api.multi
+    def _update_check(self):
+        for item in self:
+            total = self.env['payment.order.line'].search_count(
+                [('move_line_id', '=', item.id),
+                 ('type', '=', 'receivable'),
+                 ('state', 'not in', ('draft', 'cancelled', 'rejected'))])
+            if total > 0:
+                raise UserError('Existem boletos emitidos para esta fatura!\
+                                Cancele estes boletos primeiro')
+        return super(AccountMoveLine, self)._update_check()
+
+    @api.multi
     def action_print_boleto(self):
         if self.move_id.state in ('draft', 'cancel'):
             raise UserError(

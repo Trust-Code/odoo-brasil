@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import datetime
+from datetime import date
 import openerp.addons.decimal_precision as dp
 from openerp import api, fields, models
 
@@ -36,6 +37,7 @@ class CashFlowReport(models.TransientModel):
         self.period_balance = balance_period
         self.final_amount = balance
 
+    ignore_outstanding = fields.Boolean(string="Ignorar Vencidos?")
     end_date = fields.Date(
         string=u"End Date", required=True,
         default=fields.date.today()+datetime.timedelta(6*365/12))
@@ -169,7 +171,7 @@ class CashFlowReport(models.TransientModel):
     @api.multi
     def calculate_moves(self):
         moveline_obj = self.env['account.move.line']
-        moveline_ids = moveline_obj.search([
+        domain = [
             '|',
             ('account_id.user_type_id.type', '=', 'receivable'),
             ('account_id.user_type_id.type', '=', 'payable'),
@@ -177,7 +179,10 @@ class CashFlowReport(models.TransientModel):
             ('move_id.state', '!=', 'draft'),
             ('company_id', '=', self.env.user.company_id.id),
             ('date_maturity', '<=', self.end_date),
-        ])
+        ]
+        if self.ignore_outstanding:
+            domain += [('date_maturity', '>=', date.today())]
+        moveline_ids = moveline_obj.search(domain)
 
         moves = []
         for move in moveline_ids:
