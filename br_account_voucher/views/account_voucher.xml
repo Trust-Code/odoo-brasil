@@ -69,13 +69,14 @@
                           <field name="voucher_type" required="True" />
                           <field name="pay_now" invisible="True"/>
                           <field name="currency_id" invisible="True"/>
-                          <field name="journal_id" domain="[('type','=', voucher_type)]" widget="selection" groups="account.group_account_user"/>
-                          <field name="account_id" groups="account.group_account_user" />
                           <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                          <field name="journal_id" domain="[('type','=', voucher_type), ('company_id', '=', company_id)]" groups="account.group_account_user"/>
+                          <field name="l10n_br_post_automatic" />
                       </group>
                       <group>
                           <field name="partner_id" required="True" />
-                          <field name="date" required="True"/>
+                          <field name="account_id" groups="account.group_account_user" domain="[('company_id', '=', company_id), ('deprecated', '=', False), ('internal_type','=', (pay_now == 'pay_now' and 'liquidity' or voucher_type == 'purchase' and 'payable' or 'receivable'))]" />
+                          <field name="date" required="True" string="Data da Conta"/>
                           <field name="date_due" required="True"/>
                           <field name="name" colspan="2" />
                           <field name="reference"/>

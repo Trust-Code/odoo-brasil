@@ -11,6 +11,7 @@ class AccountVoucher(models.Model):
     _inherit = 'account.voucher'
 
     l10n_br_recurring = fields.Boolean(string="Recurring ?")
+    l10n_br_post_automatic = fields.Boolean(string="Lançar automaticamente?")
     l10n_br_residual = fields.Monetary(
         string='Saldo', compute='_compute_residual',
         store=True, help="Saldo restante.")
@@ -72,7 +73,8 @@ class AccountVoucher(models.Model):
             item.date = current_date + relativedelta(months=1)
             item.date_due = due_date + relativedelta(months=1)
             try:
-                voucher.proforma_voucher()
+                if item.l10n_br_post_automatic:
+                    voucher.proforma_voucher()
             except:
                 pass
 
