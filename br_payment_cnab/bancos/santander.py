@@ -44,10 +44,9 @@ class Santander240(Cnab_240):
     def _get_header_lot(self, line, num_lot, lot):
         header = super()._get_header_lot(line, num_lot, lot)
         header.update({
+            'forma_lancamento': self._string_to_num(
+                header.get('forma_lancamento')),
             'numero_versao_lote': self._get_versao_lote(line),
-            'cedente_cep': self._string_to_num(header.get('cedente_cep')[:6]),
-            'cedente_cep_complemento': self._string_to_num(
-                header.get('cedente_cep_complemento')[6:]),
             'cedente_endereco_numero': self._string_to_num(
                 header.get('cedente_endereco_numero')),
             'cedente_conta': self._string_to_num(header.get('cedente_conta')),

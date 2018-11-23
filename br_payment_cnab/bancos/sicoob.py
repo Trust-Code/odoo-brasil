@@ -5,6 +5,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.bancos import sicoob
+    from pycnab240.utils import get_ted_doc_finality
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
@@ -68,6 +69,12 @@ class Sicoob240(Cnab_240):
                 segmento.get('codigo_instrucao_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),
+            'finalidade_doc_ted': get_ted_doc_finality(
+                'sicoob', line.payment_information_id.payment_type,
+                segmento.get('finalidade_doc_ted')),
+            'finalidade_ted': get_ted_doc_finality(
+                'sicoob', line.payment_information_id.payment_type,
+                segmento.get('finalidade_doc_ted'))
         })
         return segmento
 
