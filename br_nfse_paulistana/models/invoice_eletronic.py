@@ -21,7 +21,7 @@ try:
     from pytrustnfe.nfse.paulistana import cancelamento_nfe
     from pytrustnfe.certificado import Certificado
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 STATE = {'edit': [('readonly', False)]}

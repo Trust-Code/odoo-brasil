@@ -96,6 +96,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'partner_id': self.partner_fisica.id,
             'payment_order_id': self.payment_order.id,
             'payment_mode_id': self.payment_order.payment_mode_id.id,
+            'src_bank_account_id':
+            self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
             'amount_total': 150.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
@@ -110,6 +112,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'partner_id': self.partner_fisica.id,
             'payment_order_id': self.payment_order.id,
             'payment_mode_id': self.payment_order.payment_mode_id.id,
+            'src_bank_account_id':
+            self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
             'amount_total': 120.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
@@ -178,7 +182,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
 
     def test_header_lot(self):
         cnab = self.get_cnab_obj(self.payment_order)
-        lot_teste = cnab._get_header_lot(self.payment_order.line_ids[1], 1)
+        lot_teste = cnab._get_header_lot(
+            self.payment_order.line_ids[1], 1, '41')
         lot_ok = {
             'controle_lote': 1,
             'cedente_agencia': 4321,
@@ -200,7 +205,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'cedente_endereco_rua': 'Vinicius de Moraes',
             'cedente_inscricao_numero': 92743275000133
         }
-        self.assertEquals(lot_ok, lot_teste)
+        for key, value in lot_ok.items():
+            self.assertEquals(value, lot_teste[key], 'Key: %s' % key)
 
     def test_seg(self):
         cnab = self.get_cnab_obj(self.payment_order)
@@ -227,7 +233,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'data_real_pagamento': int(time.strftime("%d%m%Y")),
             'valor_real_pagamento': Decimal('121.00'),
             'mensagem2': '',
-            'finalidade_doc_ted': '01',
+            'finalidade_doc_ted': '10',
             'favorecido_emissao_aviso': 0,
             'favorecido_inscricao_tipo': 1,
             'favorecido_inscricao_numero': 6621204930,

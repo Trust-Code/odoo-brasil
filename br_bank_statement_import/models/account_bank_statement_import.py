@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 try:
     from ofxparse import OfxParser
 except ImportError:
-    _logger.debug('Cannot import ofxparse dependencies.')
+    _logger.error('Cannot import ofxparse dependencies.', exc_info=True)
 
 
 class AccountBankStatementImport(models.TransientModel):

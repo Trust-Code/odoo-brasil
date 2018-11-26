@@ -14,7 +14,7 @@ try:
     from cnab240 import get_bank, parse_cnab_code
     from cnab240.tipos import Arquivo
 except ImportError:
-    _logger.warning('Cannot import cnab240 cobranca')
+    _logger.error('Cannot import cnab240 cobranca', exc_info=True)
 
 
 class l10nBrPaymentCnabImport(models.TransientModel):

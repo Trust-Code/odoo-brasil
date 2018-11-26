@@ -13,7 +13,7 @@ try:
     from pycnab240.file import File
     from pycnab240.utils import get_operation
 except ImportError:
-    _logger.info('Cannot import pycnab240', exc_info=True)
+    _logger.error('Cannot import pycnab240', exc_info=True)
 
 
 class Cnab_240(object):
