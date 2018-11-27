@@ -76,10 +76,13 @@ class AccountVoucher(models.Model):
         if len(linha) in (47, 48):
             self.linha_digitavel = pretty_format_line(linha)
             vals = decode_digitable_line(linha)
-            self.line_ids = [(0, 0, {
-                'quantity': 1.0,
-                'price_unit': vals.get('valor', 0.0)
-            })]
+            if self.line_ids:
+                self.line_ids[0].price_unit = vals.get('valor', 0.0)
+            else:
+                self.line_ids = [(0, 0, {
+                    'quantity': 1.0,
+                    'price_unit': vals.get('valor', 0.0)
+                })]
             self.date_due = vals.get('vencimento')
 
     @api.onchange('payment_mode_id')
