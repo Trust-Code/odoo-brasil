@@ -23,7 +23,7 @@ try:
     from pytrustnfe.nfse.imperial import consulta_notas_protocolo
     from pytrustnfe.nfse.imperial import cancelar_nfse
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 STATE = {'edit': [('readonly', False)]}

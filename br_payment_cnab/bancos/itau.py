@@ -4,7 +4,6 @@ import logging
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.utils import get_tipo_de_servico
     from pycnab240.utils import get_ted_doc_finality
     from pycnab240.bancos import itau
@@ -13,61 +12,27 @@ except ImportError:
 
 
 class Itau240(Cnab_240):
-
     def __init__(self, pay_order):
         self._bank = itau
         self._order = pay_order
         super(Itau240, self).__init__()
 
     def segments_per_operation(self):
-        return {
-            "01": ["SegmentoA_outros_bancos", "SegmentoB"],
-            "02": ["SegmentoA_outros_bancos", "SegmentoB"],
-            "97": ["SegmentoA_outros_bancos", "SegmentoB"],
-            "98": ["SegmentoA_outros_bancos", "SegmentoB"],
-            "99": ["SegmentoA_Itau_Unibanco", "SegmentoB"]
+        return {  # TODO: SEGMENTOS DE TITULOS E TRIBUTOS
+            "41": ["SegmentoA_outros_bancos", "SegmentoB"],  # TED - outros
+            "03": ["SegmentoA_outros_bancos", "SegmentoB"],  # DOC - outros
+            "31": ["SegmentoJ", "SegmentoJ52"],              # Títulos
+            "91": ["SegmentoO"],                             # Barcode
+            "17": ["SegmentoN_GPS", "SegmentoB"],            # GPS
+            "16": ["SegmentoN_DarfNormal", "SegmentoB"],     # DARF normal
+            "18": ["SegmentoN_DarfSimples", "SegmentoB"],    # DARF simples
+            "35": ["SegmentoN_FGTS", "SegmentoB"],           # FGTS
+            "22": ["SegmentoN_GareSP", "SegmentoB"],         # ICMS
+            "06": ["SegmentoA_Itau_Unibanco", "SegmentoB"],  # CC - mesmo
+            "07": ["SegmentoA_outros_bancos", "SegmentoB"],  # DOC - mesmo
+            "43": ["SegmentoA_outros_bancos", "SegmentoB"],  # TED - mesmo
+            "01": ["SegmentoA_Itau_Unibanco", "SegmentoB"],  # CC - outros
             }
-
-    def is_same_bank(self, line):
-        bank_line = line.bank_account_id.bank_id.bic
-        if bank_line == '341' or bank_line == '409':
-            return True
-        else:
-            return False
-
-    def is_same_titularity(self, line):
-        partner = line.src_bank_account_id.partner_id
-        if partner == line.bank_account_id.partner_id:
-            return True
-        else:
-            return False
-
-    def set_position(self, operation, line, dic):
-        if not dic.get(operation, False):
-            dic[operation] = [line]
-        else:
-            dic[operation].append(line)
-        return dic
-
-    def get_operation(self, line):
-        pay_type = line.payment_information_id.payment_type
-        if self.is_same_bank(line):
-            return '99'
-        if self.is_same_titularity(line):
-            if pay_type == '01':
-                return '98'
-            elif pay_type == '02':
-                return '97'
-        else:
-            return pay_type
-
-    def _ordenate_lines(self, listOfLines):
-        operacoes = {}
-        for line in listOfLines:
-            operacoes = self.set_position(
-                self.get_operation(line), line, operacoes)
-        self._lot_qty = len(operacoes)
-        return operacoes
 
     def _hour_now(self):
         return (int(time.strftime("%H%M%S")))
@@ -85,12 +50,10 @@ class Itau240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
+    def _get_header_lot(self, line, num_lot, lot):
         info_id = line.payment_information_id
-        header = super(Itau240, self)._get_header_lot(line, num_lot)
+        header = super(Itau240, self)._get_header_lot(line, num_lot, lot)
         header.update({
-            'forma_pagamento': int(
-                get_forma_de_lancamento('itau', self.get_operation(line))),
             'tipo_pagamento': int(
                 get_tipo_de_servico('itau', info_id.service_type)),
             'cedente_agencia': int(header.get('cedente_agencia')),

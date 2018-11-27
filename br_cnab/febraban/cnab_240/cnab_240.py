@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 try:
     from cnab240.tipos import Arquivo
 except ImportError:
-    _logger.debug('Cannot import cnab240')
+    _logger.error('Cannot import cnab240', exc_info=True)
 
 
 class Cnab240(Cnab):

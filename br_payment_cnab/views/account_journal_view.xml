@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu Diários -->
+    <record id="view_account_journal_cnab_form" model="ir.ui.view">
+        <field name="name">view.br_journal.cnab.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="sequence_number_next" position="after">
+                <label for="l10n_br_sequence_nosso_numero" string="Seq. Nosso Número"/>
+                <div>
+                    <field name="l10n_br_sequence_nosso_numero" />
+                </div>
+                <label for="l10n_br_sequence_statements" string="Seq. Retorno"/>
+                <div>
+                    <field name="l10n_br_sequence_statements" />
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
