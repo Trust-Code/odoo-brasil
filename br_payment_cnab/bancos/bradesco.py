@@ -4,7 +4,6 @@ from ..serialize.cnab240 import Cnab_240
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import bradesco
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
@@ -33,13 +32,10 @@ class Bradesco240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
-        info_id = line.payment_information_id
-        header = super(Bradesco240, self)._get_header_lot(line, num_lot)
+    def _get_header_lot(self, line, num_lot, lot):
+        header = super(Bradesco240, self)._get_header_lot(line, num_lot, lot)
         header.update({
             'numero_versao_lote': self._get_versao_lote(line),
-            'forma_lancamento': int(get_forma_de_lancamento(
-                'bradesco', info_id.payment_type)),
             'cedente_agencia': self._string_to_num(
                 header.get('cedente_agencia')),
             'cedente_conta': self._string_to_num(
@@ -72,6 +68,7 @@ class Bradesco240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Bradesco240, self).segments_per_operation()
         segments.update({
+            # CORRIGIRRRR!!
             "03": ["SegmentoJ"],
             "04": ["SegmentoO"],
             "05": ["SegmentoN_GPS"],

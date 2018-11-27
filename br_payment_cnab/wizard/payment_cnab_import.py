@@ -13,7 +13,7 @@ try:
     from pycnab240.file import File
     from pycnab240.utils import get_bank, get_return_message
 except ImportError:
-    _logger.warning('Cannot import pycnab240')
+    _logger.error('Cannot import pycnab240', exc_info=True)
 
 
 class l10nBrPaymentCnabImport(models.TransientModel):

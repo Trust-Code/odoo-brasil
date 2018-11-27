@@ -16,7 +16,7 @@ try:
     from pytrustnfe.nfe import inutilizar_nfe
     from pytrustnfe.certificado import Certificado
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe', exc_info=True)
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 STATE = {'edit': [('readonly', False)], 'draft': [('readonly', False)]}
 
