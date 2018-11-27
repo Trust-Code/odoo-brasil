@@ -23,7 +23,7 @@ try:
     from pytrustnfe.nfse.ginfes import cancelar_nfse
     from pytrustnfe.certificado import Certificado
 except ImportError:
-    _logger.warning('Cannot import pytrustnfe')
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 STATE = {'edit': [('readonly', False)]}

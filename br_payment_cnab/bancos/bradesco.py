@@ -74,7 +74,6 @@ class Bradesco240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Bradesco240, self).segments_per_operation()
         segments.update({
-            # CORRIGIRRRR!!
             "41": ["SegmentoA", "SegmentoB"],
             "43": ["SegmentoA", "SegmentoB"],
             "03": ["SegmentoA", "SegmentoB"],

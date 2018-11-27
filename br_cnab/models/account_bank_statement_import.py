@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 try:
     from cnab240.tipos import Arquivo
 except ImportError:
-    _logger.debug('Cannot import cnab240 dependencies.')
+    _logger.error('Cannot import cnab240 dependencies.', exc_info=True)
 
 
 class AccountBankStatementImport(models.TransientModel):

@@ -3,7 +3,7 @@
 
 import logging
 from io import StringIO
-from datetime import date
+from datetime import date, datetime
 
 from odoo import models
 
@@ -13,7 +13,7 @@ try:
     from pycnab240.file import File
     from pycnab240.utils import get_bank, get_return_message
 except ImportError:
-    _logger.warning('Cannot import pycnab240')
+    _logger.error('Cannot import pycnab240', exc_info=True)
 
 
 class l10nBrPaymentCnabImport(models.TransientModel):
@@ -45,7 +45,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         loaded_cnab = File(bank)
         loaded_cnab.load_return_file(stream)
 
-        statement = self.env['l10n_br.payment.statement'].create({
+        statement = self.env['l10n_br.payment.statement'].sudo().create({
             'journal_id': self.journal_id.id,
             'date': date.today(),
             'company_id': self.journal_id.company_id.id,
@@ -57,12 +57,24 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                     [('nosso_numero', '=', event.numero_documento_cliente),
                      ('journal_id', '=', self.journal_id.id),
                      ('type', '=', 'payable')])
-                if not payment_line:
-                    continue
+
                 cnab_code = event.ocorrencias_retorno[:2]
                 message = self._get_message(
                     self.journal_id.bank_id.bic,
                     event.ocorrencias_retorno.strip())
+                if not payment_line:
+                    self.env['l10n_br.payment.statement.line'].sudo().create({
+                        'date': datetime.strptime(
+                            "{:06}".format(event.data_pagamento), "%d%m%Y"),
+                        'name': "%s - %s" % (event.numero_documento_cliente,
+                                             event.favorecido_nome),
+                        'amount': event.valor_pagamento,
+                        'cnab_code': cnab_code,
+                        'cnab_message': message,
+                        'statement_id': statement.id,
+                    })
+                    continue
+
                 self.select_routing(
                     payment_line, cnab_code, bank, message, statement)
 

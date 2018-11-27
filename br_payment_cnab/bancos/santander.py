@@ -113,6 +113,7 @@ class Santander240(Cnab_240):
         segments.update({
             "41": ["SegmentoA", "SegmentoB"],
             "43": ["SegmentoA", "SegmentoB"],
+            "01": ["SegmentoA", "SegmentoB"],
             "03": ["SegmentoA", "SegmentoB"],
             '30': ["SegmentoJ"],
             '31': ["SegmentoJ"],

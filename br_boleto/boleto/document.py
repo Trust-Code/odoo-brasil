@@ -15,7 +15,7 @@ try:
     from pyboleto import bank
     BoletoException = bank.BoletoException
 except ImportError:
-    _logger.debug('Cannot import pyboleto')
+    _logger.error('Cannot import pyboleto', exc_info=True)
 
 
 especie = {
