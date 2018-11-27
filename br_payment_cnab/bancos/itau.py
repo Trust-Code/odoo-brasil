@@ -54,6 +54,8 @@ class Itau240(Cnab_240):
         info_id = line.payment_information_id
         header = super(Itau240, self)._get_header_lot(line, num_lot, lot)
         header.update({
+            'forma_lancamento': self._string_to_num(
+                header.get('forma_lancamento')),
             'tipo_pagamento': int(
                 get_tipo_de_servico('itau', info_id.service_type)),
             'cedente_agencia': int(header.get('cedente_agencia')),
