@@ -1,7 +1,7 @@
 
 import re
 import logging
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -26,6 +26,16 @@ class WizardChangePayment(models.TransientModel):
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]")
     date_maturity = fields.Date(string="Data de Vencimento")
+    amount = fields.Float(string="Valor no boleto", readonly=True)
+
+    @api.onchange('linha_digitavel')
+    def _onchange_linha_digitavel(self):
+        linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
+        if len(linha) in (47, 48):
+            self.linha_digitavel = pretty_format_line(linha)
+            vals = decode_digitable_line(linha)
+            self.amount = vals.get('valor', 0.0)
+            self.date_maturity = vals.get('vencimento')
 
     def action_update_info(self):
         linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
