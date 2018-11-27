@@ -65,6 +65,7 @@ class AccountVoucher(models.Model):
                 'date': current_date,
                 'date_due': due_date,
                 'l10n_br_recurring': False,
+                'reference': item.reference,
             })
             voucher = item.copy(vals)
             for line in voucher.line_ids:
