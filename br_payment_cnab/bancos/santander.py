@@ -5,6 +5,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.bancos import santander
+    from pycnab240.utils import get_ted_doc_finality
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
@@ -61,6 +62,8 @@ class Santander240(Cnab_240):
     def _get_segmento(self, line, lot_sequency, num_lot):
         segmento = super(Santander240, self)._get_segmento(
             line, lot_sequency, num_lot)
+        ignore = not self.is_doc_or_ted(
+            line.payment_information_id.payment_type)
         segmento.update({
             'tipo_identificacao_contribuinte': 2,  # CNPJ
             'tipo_identificacao_contribuinte_alfa': '2',  # CNPJ
@@ -90,7 +93,10 @@ class Santander240(Cnab_240):
             'favorecido_cidade':
                 segmento.get('favorecido_cidade', '')[:15],
             'nome_concessionaria':
-                segmento.get('nome_concessionaria', '')[:30]
+                segmento.get('nome_concessionaria', '')[:30],
+            'finalidade_doc_ted': get_ted_doc_finality(
+                'santander', segmento.get('finalidade_doc_ted'),
+                line.payment_information_id.payment_type, ignore),
         })
         return segmento
 
@@ -105,7 +111,8 @@ class Santander240(Cnab_240):
     def segments_per_operation(self):
         segments = super(Santander240, self).segments_per_operation()
         segments.update({
-            "01": ["SegmentoA", "SegmentoB"],
+            "41": ["SegmentoA", "SegmentoB"],
+            "43": ["SegmentoA", "SegmentoB"],
             "03": ["SegmentoA", "SegmentoB"],
             '30': ["SegmentoJ"],
             '31': ["SegmentoJ"],

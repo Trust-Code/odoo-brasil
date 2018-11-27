@@ -18,7 +18,7 @@ class Itau240(Cnab_240):
         super(Itau240, self).__init__()
 
     def segments_per_operation(self):
-        return {  # TODO: SEGMENTOS DE TITULOS E TRIBUTOS
+        return {
             "41": ["SegmentoA_outros_bancos", "SegmentoB"],  # TED - outros
             "03": ["SegmentoA_outros_bancos", "SegmentoB"],  # DOC - outros
             "31": ["SegmentoJ", "SegmentoJ52"],              # Títulos
@@ -72,6 +72,8 @@ class Itau240(Cnab_240):
             segmento.update({'favorecido_cidade': ''})  # Verificar se isso
             # deve existir mesmo. Talvez tratar o erro da cidade faltando,
             # pro caso de obrigatoriedade desse campo
+        ignore = not self.is_doc_or_ted(
+            line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
@@ -93,8 +95,10 @@ class Itau240(Cnab_240):
                 segmento.get('valor_real_pagamento')),
             'favorecido_banco': int(line.bank_account_id.bank_id.bic),
             'finalidade_doc_ted': get_ted_doc_finality(
-                'itau', line.payment_information_id.payment_type,
-                segmento.get('finalidade_doc_ted'))
+                'itau', segmento.get('finalidade_doc_ted'),
+                line.payment_information_id.payment_type, ignore),
+            'codigo_receita_tributo': int(
+                segmento.get('codigo_receita_tributo'))
         })
         return segmento
 

@@ -5,6 +5,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.bancos import bradesco
+    from pycnab240.utils import get_ted_doc_finality
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
@@ -48,6 +49,8 @@ class Bradesco240(Cnab_240):
     def _get_segmento(self, line, lot_sequency, num_lot):
         segmento = super(Bradesco240, self)._get_segmento(
             line, lot_sequency, num_lot)
+        ignore = not self.is_doc_or_ted(
+            line.payment_information_id.payment_type)
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
@@ -62,6 +65,9 @@ class Bradesco240(Cnab_240):
                 segmento.get('favorecido_agencia'), 0),
             'favorecido_cep': self._string_to_num(
                 str(segmento.get('favorecido_cep'))[:5]),
+            'finalidade_doc_ted': get_ted_doc_finality(
+                'bradesco', segmento.get('finalidade_doc_ted'),
+                line.payment_information_id.payment_type, ignore),
         })
         return segmento
 
@@ -69,12 +75,16 @@ class Bradesco240(Cnab_240):
         segments = super(Bradesco240, self).segments_per_operation()
         segments.update({
             # CORRIGIRRRR!!
-            "03": ["SegmentoJ"],
-            "04": ["SegmentoO"],
-            "05": ["SegmentoN_GPS"],
-            "06": ["SegmentoN_DarfNormal"],
-            "07": ["SegmentoN_DarfSimples"],
-            "08": ["SegmentoO", "SegmentoW"],
-            "09": ["SegmentoN_GareSP"],
+            "41": ["SegmentoA", "SegmentoB"],
+            "43": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
+            "01": ["SegmentoA", "SegmentoB"],
+            "30": ["SegmentoJ"],                # Títulos
+            "31": ["SegmentoJ"],                # Títulos
+            "17": ["SegmentoN_GPS"],            # GPS
+            "16": ["SegmentoN_DarfNormal"],     # Darf Normal
+            "18": ["SegmentoN_DarfSimples"],    # Darf Simples
+            "11": ["SegmentoO", "SegmentoW"],   # Barcode
+            "22": ["SegmentoN_GareSP"],         # Gare SP - ICMS
         })
         return segments

@@ -52,6 +52,11 @@ class Cnab_240(object):
             date_value = datetime.strptime(date_value[0:10], "%Y-%m-%d")
         return date_value.strftime("%d%m%Y")
 
+    def is_doc_or_ted(self, op):
+        if op == '01' and op == '02':
+            return True
+        return False
+
     def _get_header_arq(self):
         bank = self._order.src_bank_account_id
         headerArq = {
@@ -189,7 +194,7 @@ class Cnab_240(object):
         information_id = line.payment_information_id
         bank = self._order.src_bank_account_id
         header_lot = {
-            'forma_lancamento': lot,
+            'forma_pagamento': lot,
             "controle_lote": num_lot,
             "tipo_servico": int(information_id.service_type),
             "cedente_inscricao_tipo": 2,
