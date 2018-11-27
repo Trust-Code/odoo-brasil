@@ -194,11 +194,8 @@ class Cnab_240(object):
         information_id = line.payment_information_id
         bank = self._order.src_bank_account_id
         header_lot = {
-<<<<<<< HEAD
             'forma_pagamento': lot,
-=======
             'forma_lancamento': lot,
->>>>>>> 727749370ba05d284dbfb10a42fbe3255b399c1d
             "controle_lote": num_lot,
             "tipo_servico": int(information_id.service_type),
             "cedente_inscricao_tipo": 2,
