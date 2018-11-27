@@ -33,7 +33,7 @@ class AccountCashFlow(models.TransientModel):
                     'account_id': voucher.line_ids[0].account_id.id,
                     'line_type': voucher.account_id.internal_type,
                     'date': due_date.strftime('%Y-%m-%d'),
-                    'debit': voucher.amount
+                    'debit': voucher.amount * -1
                     if voucher.voucher_type == 'purchase' else 0.0,
                     'credit': voucher.amount
                     if voucher.voucher_type == 'sale' else 0.0,
