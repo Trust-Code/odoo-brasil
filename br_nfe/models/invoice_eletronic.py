@@ -376,7 +376,7 @@ class InvoiceEletronic(models.Model):
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
-                    'vAliq': "%.02f" % item.issqn_base_calculo,
+                    'vAliq': "%.02f" % item.issqn_aliquota,
                     'vISSQN': "%.02f" % item.issqn_valor,
                     'cMunFG': "%s%s" % (invoice.company_id.state_id.ibge_code,
                                         invoice.company_id.city_id.ibge_code),
