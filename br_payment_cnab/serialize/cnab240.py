@@ -71,7 +71,7 @@ class Cnab240(object):
             'cedente_agencia_dv': bank.l10n_br_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
             'cedente_conta_dv': bank.acc_number_dig,
-            'cedente_nome': self._order.company_id.legal_name[:30],
+            'cedente_nome': self._order.company_id.l10n_br_legal_name[:30],
             'data_geracao_arquivo': int(self.format_date(date.today())),
             'hora_geracao_arquivo': self._hour_now(),
             'numero_sequencial_arquivo': self._order.file_number,
@@ -153,7 +153,7 @@ class Cnab240(object):
             "valor_juros_encargos": self._string_to_monetary(
                 line.interest_value),
             # GPS
-            "contribuinte_nome": self._order.company_id.legal_name[:30],
+            "contribuinte_nome": self._order.company_id.l10n_br_legal_name[:30],
             "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(
@@ -208,7 +208,7 @@ class Cnab240(object):
             "cedente_agencia_dv": bank.l10n_br_number_dig or '',
             "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig or '',
-            "cedente_nome": self._order.company_id.legal_name[:30],
+            "cedente_nome": self._order.company_id.l10n_br_legal_name[:30],
             "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
             "cedente_endereco_numero": self._string_to_num(

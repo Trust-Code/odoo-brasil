@@ -272,7 +272,7 @@ class InvoiceEletronic(models.Model):
                 errors.append(u"Identificador do CSC inválido")
             if not len(self.company_id.csc or ''):
                 errors.append(u"CSC Inválido")
-            if self.partner_id.cnpj_cpf is None:
+            if self.partner_id.l10n_br_cnpj_cpf is None:
                 errors.append(u"CNPJ/CPF do Parceiro inválido")
             if len(self.serie) == 0:
                 errors.append(u"Número de Série da NFe Inválido")

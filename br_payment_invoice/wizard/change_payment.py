@@ -98,14 +98,14 @@ class WizardChangePayment(models.TransientModel):
 
         if order_line and order_line.state == 'draft':
             order_line.write({
-                'payment_mode_id': self.payment_mode_id.id,
+                'l10n_br_payment_mode_id': self.payment_mode_id.id,
                 'linha_digitavel': linha_digitavel or '',
                 'bank_account_id': self.bank_account_id.id,
                 'discount_value': self.discount,
                 'date_maturity': self.date_maturity or order_line.date_maturity
             })
             self.move_line_id.write({
-                'payment_mode_id': self.payment_mode_id.id,
+                'l10n_br_payment_mode_id': self.payment_mode_id.id,
                 'date_maturity':
                     self.date_maturity or self.move_line_id.date_maturity,
             })
@@ -127,12 +127,12 @@ class WizardChangePayment(models.TransientModel):
             'partner_ref': ','.join([x.move_id.name for x in move_line_ids]),
             'bank_account_id': self.bank_account_id.id,
             'partner_acc_number': self.bank_account_id.acc_number,
-            'partner_bra_number': self.bank_account_id.bra_number,
+            'partner_bra_number': self.bank_account_id.l10n_br_number,
             'date_maturity': self.date_maturity,
             'discount_value': self.discount,
             'linha_digitavel': linha_digitavel,
             'barcode': barcode,
-            'payment_mode_id': self.payment_mode_id.id,
+            'payment_mode_id': self.l10n_br_payment_mode_id.id,
         }
         if len(move_line_ids) == 1:
             vals['move_line_id'] = move_line_ids[0].id,
