@@ -3,13 +3,15 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
     _name = 'account.invoice'
     _inherit = ['account.invoice', 'br.localization.filtering']
+
+    boleto = fields.Boolean(related="payment_mode_id.boleto")
 
     def _get_email_template_invoice(self):
         return self.env.user.company_id.boleto_email_tmpl
@@ -62,55 +64,60 @@ class AccountInvoice(models.Model):
             return res
         error = ''
         for item in self:
-            if (item.l10n_br_payment_mode_id
-                    and item.l10n_br_payment_mode_id.boleto_type != ''):
-                if not item.company_id.partner_id.l10n_br_legal_name:
-                    error += u'Empresa - Razão Social\n'
-                if not item.company_id.l10n_br_cnpj_cpf:
-                    error += u'Empresa - CNPJ\n'
-                if not item.company_id.l10n_br_district:
-                    error += u'Empresa - Bairro\n'
-                if not item.company_id.zip:
-                    error += u'Empresa - CEP\n'
-                if not item.company_id.city_id.name:
-                    error += u'Empresa - Cidade\n'
-                if not item.company_id.street:
-                    error += u'Empresa - Logradouro\n'
-                if not item.company_id.l10n_br_number:
-                    error += u'Empresa - Número\n'
-                if not item.company_id.state_id.code:
-                    error += u'Empresa - Estado\n'
-                if not item.commercial_partner_id.name:
-                    error += u'Cliente - Nome\n'
-                if item.commercial_partner_id.is_company and \
-                   not item.commercial_partner_id.l10n_br_legal_name:
-                    error += u'Cliente - Razão Social\n'
-                if not item.commercial_partner_id.l10n_br_cnpj_cpf:
-                    error += u'Cliente - CNPJ/CPF \n'
-                if not item.commercial_partner_id.l10n_br_district:
-                    error += u'Cliente - Bairro\n'
-                if not item.commercial_partner_id.zip:
-                    error += u'Cliente - CEP\n'
-                if not item.commercial_partner_id.city_id.name:
-                    error += u'Cliente - Cidade\n'
-                if not item.commercial_partner_id.street:
-                    error += u'Cliente - Logradouro\n'
-                if not item.commercial_partner_id.l10n_br_number:
-                    error += u'Cliente - Número\n'
-                if not item.commercial_partner_id.state_id.code:
-                    error += u'Cliente - Estado\n'
+            if not item.l10n_br_payment_mode_id:
+                continue
+            if item.l10n_br_payment_mode_id.type != 'receivable':
+                continue
+            if not item.l10n_br_payment_mode_id.boleto:
+                continue
+            if not item.company_id.partner_id.l10n_br_legal_name:
+                error += u'Empresa - Razão Social\n'
+            if not item.company_id.l10n_br_cnpj_cpf:
+                error += u'Empresa - CNPJ\n'
+            if not item.company_id.l10n_br_district:
+                error += u'Empresa - Bairro\n'
+            if not item.company_id.zip:
+                error += u'Empresa - CEP\n'
+            if not item.company_id.city_id.name:
+                error += u'Empresa - Cidade\n'
+            if not item.company_id.street:
+                error += u'Empresa - Logradouro\n'
+            if not item.company_id.l10n_br_number:
+                error += u'Empresa - Número\n'
+            if not item.company_id.state_id.code:
+                error += u'Empresa - Estado\n'
 
-                if item.number and len(item.number) > 12:
-                    error += u'Numeração da fatura deve ser menor que 12 ' + \
-                        'caracteres quando usado boleto\n'
+            if not item.commercial_partner_id.name:
+                error += u'Cliente - Nome\n'
+            if item.commercial_partner_id.is_company and \
+               not item.commercial_partner_id.l10n_br_legal_name:
+                error += u'Cliente - Razão Social\n'
+            if not item.commercial_partner_id.l10n_br_cnpj_cpf:
+                error += u'Cliente - CNPJ/CPF \n'
+            if not item.commercial_partner_id.l10n_br_district:
+                error += u'Cliente - Bairro\n'
+            if not item.commercial_partner_id.zip:
+                error += u'Cliente - CEP\n'
+            if not item.commercial_partner_id.city_id.name:
+                error += u'Cliente - Cidade\n'
+            if not item.commercial_partner_id.street:
+                error += u'Cliente - Logradouro\n'
+            if not item.commercial_partner_id.l10n_br_number:
+                error += u'Cliente - Número\n'
+            if not item.commercial_partner_id.state_id.code:
+                error += u'Cliente - Estado\n'
 
-                if len(error) > 0:
-                    raise UserError(u"""Ação Bloqueada!
+            if item.number and len(item.number) > 12:
+                error += u'Numeração da fatura deve ser menor que 12 ' + \
+                    'caracteres quando usado boleto\n'
+
+            if len(error) > 0:
+                raise UserError(u"""Ação Bloqueada!
 Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
         return res
 
     @api.multi
-    def action_register_boleto(self):
+    def action_print_boleto(self):
         if self.state in ('draft', 'cancel'):
             raise UserError(
                 u'Fatura provisória ou cancelada não permite emitir boleto')

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_import_bank_payment_cnab" model="ir.actions.act_window">
+        <field name="name">Importar Pagamentos via CNAB</field>
+        <field name="res_model">l10n_br.payment.cnab.import</field>
+        <field name="view_mode">form,tree</field>
+        <field name="target">new</field>
+        <field name="context">{'default_cnab_type': 'payable'}</field>
+    </record>
+
+    <record id="journal_dashboard_view_cnab_import" model="ir.ui.view">
+        <field name="name">account.journal.dashboard.import.cnab</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//div[@name="bank_journal_cta"]' position='after'>
+                <a context="{'default_journal_id': active_id}" type="action" name="br_payment_cnab.action_import_bank_payment_cnab" class="oe_inline">Importar Pagamentos via CNAB</a>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem sequence="40" action="action_import_bank_payment_cnab"
+              id="menu_import_bank_payments_cnab"
+              parent="br_account_payment.menu_bank_payments"/>
+
+</odoo>

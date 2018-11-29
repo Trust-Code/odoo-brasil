@@ -32,6 +32,7 @@ class TestBrCnabPayment(TransactionCase):
                 'account.data_account_type_revenue').id,
             'company_id': self.main_company.id
         })
+<<<<<<< HEAD:br_payment_cnab/tests/test_cnab_common.py
         sicoob = self.env['res.bank'].search([('bic', '=', '756')])
         self.receivable_account = self.env['res.partner.bank'].create({
             'acc_number': '12345',  # 5 digitos
@@ -40,8 +41,16 @@ class TestBrCnabPayment(TransactionCase):
             'l10n_br_number_dig': '0',
             'codigo_convenio': '123456-6',  # 7 digitos
             'bank_id': sicoob.id,
+=======
+        self.expense_account = self.env['account.account'].create({
+            'code': '2.0.0',
+            'name': 'Despesas a pagar',
+            'user_type_id': self.env.ref(
+                'account.data_account_type_revenue').id,
+            'company_id': self.main_company.id
+>>>>>>> 11.0:br_payment_cnab/tests/test_common.py
         })
-
+        sicoob = self.env['res.bank'].search([('bic', '=', '756')])
         self.default_ncm = self.env['product.fiscal.classification'].create({
             'code': '0201.20.20',
             'name': 'Furniture',
@@ -62,14 +71,30 @@ class TestBrCnabPayment(TransactionCase):
             is_company=False,
             street='Donicia',
             zip='88032-050',
+<<<<<<< HEAD:br_payment_cnab/tests/test_cnab_common.py
             l10n_br_cnpj_cpf='066.212.049-30',
             l10n_br_district='Centro',
             l10n_br_number=45,
             property_account_receivable_id=self.receivable_account.id,
+=======
+            cnpj_cpf='066.212.049-30',
+            district='Centro',
+            number=45,
+            # property_account_receivable_id=self.receivable_account.id,
+>>>>>>> 11.0:br_payment_cnab/tests/test_common.py
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id,
         ))
+        self.receivable_account = self.env['res.partner.bank'].create({
+            'acc_number': '12345',  # 5 digitos
+            'acc_number_dig': '0',  # 1 digito
+            'bra_number': '1234',  # 4 digitos
+            'bra_number_dig': '0',
+            'codigo_convenio': '123456-6',  # 7 digitos
+            'bank_id': sicoob.id,
+            'partner_id': self.partner_fisica.id,
+        })
         self.user = self.env['res.users'].create({
             'name': 'trustcode',
             'login': 'trust'

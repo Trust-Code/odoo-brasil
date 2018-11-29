@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_br_payment_cnab_manual_reconcile_wizard">
+        <field name="name">view_br_payment_cnab.manual.reconcile.wizard</field>
+        <field name="model">l10n_br_payment.manual.reconcile</field>
+        <field name="arch" type="xml">
+            <form string="Baixar ou rejeitar pagamentos">
+                <group>
+                    <group>
+                        <field name="confirmation" required="1" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_confirm_payments" type="object" string="Confirmar Pagamentos Manualmente" class="oe_highlight"/>
+                        or
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <act_window id="br_payment_cnab_manual_reconcile_action"
+        name="Baixa Manual de Pagamentos"
+        src_model="payment.order.line"
+        res_model="l10n_br_payment.manual.reconcile"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"/>
+
+</odoo>

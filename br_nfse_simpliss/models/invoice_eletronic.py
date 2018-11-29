@@ -19,7 +19,7 @@ try:
     from pytrustnfe.nfse.simpliss import gerar_nfse
     from pytrustnfe.certificado import Certificado
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 STATE = {'edit': [('readonly', False)]}

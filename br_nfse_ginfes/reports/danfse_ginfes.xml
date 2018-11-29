@@ -332,7 +332,7 @@
                     Valor dos Serviços R$
                 </div>
                 <div class="col-xs-2 linha br direita">
-                    <span t-field="doc.valor_bruto" />
+                    <span t-field="doc.valor_servicos" />
                 </div>
                 <div class="col-xs-2 rotulo br">
                     Natureza Operação
@@ -341,7 +341,7 @@
                     Valor dos Serviços R$
                 </div>
                 <div class="col-xs-2 linha direita">
-                    <span t-field="doc.valor_bruto" />
+                    <span t-field="doc.valor_servicos" />
                 </div>
             </div>
 
@@ -395,7 +395,7 @@
                     Base de Cálculo
                 </div>
                 <div class="col-xs-2 linha direita">
-                    <span t-field="doc.valor_bruto" />
+                    <span t-field="doc.valor_servicos" />
                 </div>
             </div>
 

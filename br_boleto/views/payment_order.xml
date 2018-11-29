@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="br_boleto_payment_order_line_form" model="ir.ui.view">
+        <field name="name">br_boleto.payment.order.line.form</field>
+        <field name="model">payment.order.line</field>
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_tree_view"/>
+        <field name="type">tree</field>
+        <field name="arch" type="xml" >
+            <field name="nosso_numero" position="after">
+                <button name="action_print_boleto" type="object" string="BOLETO" class="btn btn-success btn-xs" attrs="{'invisible': [('type', '!=', 'receivable')]}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

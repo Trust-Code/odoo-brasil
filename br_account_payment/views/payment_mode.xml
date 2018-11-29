@@ -3,7 +3,7 @@
 
     <record id="account_payment_mode_form" model="ir.ui.view">
         <field name="name">payment.mode.form</field>
-        <field name="model">payment.mode</field>
+        <field name="model">l10n_br.payment.mode</field>
         <field name="arch" type="xml">
             <form string="Payment Mode">
                 <sheet>
@@ -14,7 +14,8 @@
                             <field name="type" />
                         </group>
                         <group>
-                            <field name="bank_account_id" attrs="{'required': [('type', '=', 'payable')]}"/>
+                            <field name="journal_id" />
+                            <field name="bank_account_id" />
                             <field name="active"/>
                         </group>
                     </group>
@@ -25,11 +26,12 @@
 
     <record id="account_payment_mode_tree" model="ir.ui.view">
         <field name="name">payment.mode.tree</field>
-        <field name="model">payment.mode</field>
+        <field name="model">l10n_br.payment.mode</field>
         <field name="arch" type="xml">
             <tree string="Payment Modes">
                 <field name="name"/>
-                <field name="bank_account_id"/>
+                <field name="journal_id"/>
+                <field name="type" />
                 <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
@@ -37,7 +39,7 @@
 
     <record id="account_payment_mode_action" model="ir.actions.act_window">
         <field name="name">Payment Modes</field>
-        <field name="res_model">payment.mode</field>
+        <field name="res_model">l10n_br.payment.mode</field>
         <field name="view_mode">tree,form</field>
     </record>
 

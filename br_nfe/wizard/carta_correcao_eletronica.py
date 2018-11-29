@@ -15,7 +15,7 @@ try:
     from pytrustnfe.nfe import recepcao_evento_carta_correcao
     from pytrustnfe.certificado import Certificado
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe', exc_info=True)
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 COND_USO = "A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o \
 do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para \

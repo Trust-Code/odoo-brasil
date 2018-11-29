@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_br_payment_cnab_approve_wizard">
+        <field name="name">view_br_payment_cnab.manual.reconcile.wizard</field>
+        <field name="model">l10n_br_payment.approve</field>
+        <field name="arch" type="xml">
+            <form string="Aprovar pagamentos">
+                <footer>
+                    <button name="action_approve_payments" type="object" string="Aprovar pagamentos" class="oe_highlight"/>
+                        or
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <act_window id="br_payment_cnab_approve_payments_action"
+        name="Aprovar Pagamentos"
+        src_model="payment.order.line"
+        res_model="l10n_br_payment.approve"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"/>
+
+</odoo>

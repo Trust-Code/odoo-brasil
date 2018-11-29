@@ -14,7 +14,7 @@ try:
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.nfe.danfce import danfce
 except ImportError:
-    _logger.warning('Cannot import pytrustnfe', exc_info=True)
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 class IrActionsReport(models.Model):

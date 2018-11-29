@@ -3,27 +3,39 @@
 
     <record id="br_payment_cnab_payment_mode_form" model="ir.ui.view">
         <field name="name">br_payment_cnab_payment_mode_form</field>
-        <field name="model">payment.mode</field>
+        <field name="model">l10n_br.payment.mode</field>
         <field name="inherit_id" ref="br_account_payment.account_payment_mode_form"/>
         <field name="type">form</field>
         <field name="arch" type="xml">
             <field name="type" position="after">
                 <field name="payment_type" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
-                <field name="nosso_numero_sequence" required="1" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
+                <field name="schedule_days_before" attrs="{'invisible': [('type', '!=', 'payable')]}" />
+                <field name="one_time_payment" attrs="{'invisible': ['|', ('type', '!=', 'payable'), ('payment_type', 'not in', ('01', '02', '03'))]}" />
+                <field name="one_time_payment_day" attrs="{'invisible': [('one_time_payment', '=', False)]}"/>
+            </field>
+            <field name="active" position="after">
+                <field name="l10n_br_environment" />
             </field>
             <group name="main" position="after">
                 <notebook attrs="{'invisible': [('type', '!=', 'payable')]}">
-                    <page string="Informações DOC/TED" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}">
+                    <page string="Informações Adicionais">
                         <group>
-                            <field name="mov_finality" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
-                            <field name="finality_ted" attrs="{'required': [('payment_type', 'in', ('01', '02'))]}"/>
-                        </group>
-                    </page>
-                    <page string="Pagamento de Tributos" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08'))]}">
-                        <group>
-                            <field name="codigo_receita" />
-                            <field name="numero_referencia" />
-                            <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
+                            <group>
+                                <field name="service_type" />
+                                <field name="mov_finality" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}"/>
+                                <field name="codigo_receita" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}" />
+                                <field name="numero_referencia" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}" />
+                                <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
+                            </group>
+                            <div>
+                                <h4>Manuais de configuração</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/integracao-de-pagamentos-via-cnab-213" target="_blank">Configurações Gerais</a></li>
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/cnab-de-pagamentos-santander-214" target="_blank">Pagamentos Santander</a></li>
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/cnab-de-pagamentos-sicoob-216" target="_blank">Pagamentos Sicoob</a></li>
+                                    <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/cnab-de-pagamentos-itau-215" target="_blank">Pagamentos Itaú</a></li>
+                                </ul>
+                            </div>
                         </group>
                     </page>
                 </notebook>

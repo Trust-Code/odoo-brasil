@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_payment_account_invoice_form" model="ir.ui.view">
+        <field name="name">view.br_account_invoice.purchase.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <field name="date_due" position="after">
+                <field name="payment_mode_id" />
+                <field name="l10n_br_payment_type" invisible="1" />
+                <field name="l10n_br_bank_account_id" attrs="{'invisible': [('l10n_br_payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
+            </field>
+            <tree name="vencimentos" position="inside">
+                <button name="open_wizard_schedule_payment" type="object" string="AGENDAR" class="btn btn-success btn-xs"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

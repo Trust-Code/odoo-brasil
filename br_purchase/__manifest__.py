@@ -16,7 +16,6 @@
     'data': [
         'views/purchase_view.xml',
         'views/account_invoice.xml',
-        'views/product.xml',
     ],
     'installable': True,
     'auto_install': True

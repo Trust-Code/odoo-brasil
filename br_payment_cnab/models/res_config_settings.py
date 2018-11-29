@@ -7,12 +7,15 @@ from odoo import models, fields, api
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    interest_account_id = fields.Many2one(
+    l10n_br_multi_company_payment = fields.Boolean(
+        string="Pay Bills in Head Office?")
+
+    l10n_br_interest_account_id = fields.Many2one(
         comodel_name='account.account',
         string='Interests Account'
     )
 
-    fine_account_id = fields.Many2one(
+    l10n_br_fine_account_id = fields.Many2one(
         comodel_name='account.account',
         string='Fines Account'
     )
@@ -21,11 +24,14 @@ class ResConfigSettings(models.TransientModel):
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
         params = self.env['ir.config_parameter'].sudo()
+        multi_company = params.get_param(
+            'br_payment_cnab.l10n_br_multi_company_payment', default=0)
         res.update(
-            interest_account_id=int(params.get_param(
-                'br_payment_cnab.interest_account_id', default=0)),
-            fine_account_id=int(params.get_param(
-                'br_payment_cnab.fine_account_id', default=0))
+            l10n_br_interest_account_id=int(params.get_param(
+                'br_payment_cnab.l10n_br_interest_account_id', default=0)),
+            l10n_br_fine_account_id=int(params.get_param(
+                'br_payment_cnab.l10n_br_fine_account_id', default=0)),
+            l10n_br_multi_company_payment=(multi_company == 'True')
         )
         return res
 
@@ -33,6 +39,11 @@ class ResConfigSettings(models.TransientModel):
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.interest_account_id', self.interest_account_id.id)
+            'br_payment_cnab.l10n_br_interest_account_id',
+            self.l10n_br_interest_account_id.id)
         self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.fine_account_id', self.fine_account_id.id)
+            'br_payment_cnab.l10n_br_fine_account_id',
+            self.l10n_br_fine_account_id.id)
+        self.env['ir.config_parameter'].sudo().set_param(
+            'br_payment_cnab.l10n_br_multi_company_payment',
+            self.l10n_br_multi_company_payment)

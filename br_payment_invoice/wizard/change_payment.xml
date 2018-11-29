@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_br_payment_wizard">
+        <field name="name">view_br_payment.change.form</field>
+        <field name="model">wizard.change.payment</field>
+        <field name="arch" type="xml">
+            <form string="Alterar Dados Pagamento">
+                <group>
+                    <field name="partner_id" />
+                    <field name="move_line_id" string='Movimentação'/>
+                    <field name="payment_mode_id" />
+                    <field name="payment_type" invisible="1" />
+                    <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
+                    <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" />
+                    <field name="date_maturity" />
+                    <field name="amount" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
+                </group>
+                <footer>
+                    <button name="action_update_info" type="object" string="Atualizar informações" class="oe_highlight"/>
+                        or
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

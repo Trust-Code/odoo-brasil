@@ -6,9 +6,9 @@
         <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_tree_view"/>
         <field name="type">tree</field>
         <field name="arch" type="xml" >
-            <field name= "partner_id" position="after">
-                <field name="invoice_date" />
-                <field name="bank_account_id" domain="[('partner_id', '=', partner_id)]" />
+            <field name="nosso_numero" position="after">
+                <button name="action_aprove_payment_line" type="object" string="APROVAR" class="btn btn-success btn-xs" groups="account.group_account_user"/>
+                <button name="action_view_more_info" type="object" string="VER" class="btn btn-success btn-xs"/>
             </field>
         </field>
     </record>
@@ -20,14 +20,75 @@
         <field name="type">form</field>
         <field name="arch" type="xml" >
             <group name="payment_order" position="before">
-                <div class="oe_button_box" name="button_payment_cnab" attrs="{'invisible': [('type', '!=', 'payable')]}">
+                <div class="oe_button_box" name="button_payment_cnab" attrs="{'invisible': [('type', '!=', 'payable')]}" groups="account.group_account_user">
                     <button name="action_generate_payable_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB de Pagamentos"/>
                 </div>
             </group>
-          <field name="amount_total" position="after">
-              <field name="company_id" invisible="0"/>
-          </field>
+            <field name="amount_total" position="after">
+                <field name="company_id" invisible="0"/>
+            </field>
         </field>
     </record>
+
+    <record id="br_payment_cnab_payment_order_line_form" model="ir.ui.view">
+        <field name="name">br_payment_cnab_payment_order_line_form</field>
+        <field name="model">payment.order.line</field>
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <field name="nosso_numero" position="after">
+                <field name="linha_digitavel" />
+                <field name="barcode" />
+                <field name="cnab_code" />
+                <field name="cnab_message" />
+            </field>
+            <field name="emission_date" position="after">
+                <field name="invoice_date"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_cnab_payments_filter" model="ir.ui.view">
+        <field name="name">Payments Filter</field>
+        <field name="model">payment.order.line</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <search string="Search Payments">
+                <filter string="Contas em atraso" domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Contas em atraso" name="overdue"/>
+                <separator orientation="vertical"/>
+                <filter string="Aguardando Aprovação!" domain="[('state','=', 'draft')]" help="Registros provisórios" name="draft"/>
+                <filter string="Pagos" domain="[('state','=', 'paid')]" help="Registros pagos" name="paid"/>
+                <filter string="Enviados" domain="[('state','in', ('sent',))]" help="Pagamentos Enviados" name="sent"/>
+                <filter string="Abertos" domain="[('state','in', ('approved', 'sent', 'processed'))]" help="Pagamentos em aberto" name="open"/>
+                <filter string="Rejeitados" domain="[('state','=', 'rejected')]" help="Pagamentos rejeitados" name="rejected"/>
+                <separator orientation="vertical"/>
+                <field name="partner_id"/>
+                <field name="src_bank_account_id"/>
+                <field name="payment_mode_id"/>
+                <field name="date_maturity"/>
+                <group expand="0" string="Agrupar por...">
+                    <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_journal" string="Diário" domain="[]" context="{'group_by':'src_bank_account_id'}"/>
+                    <filter name="group_payment_mode" string="Modo de Pagamento" domain="[]" context="{'group_by':'payment_mode_id'}"/>
+                    <filter name="group_date" string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity:day'}"/>
+                    <filter name="group_month" string="Mês" domain="[]" context="{'group_by':'date_maturity'}"/>
+               </group>
+           </search>
+        </field>
+    </record>
+
+    <record id="action_payment_order_line" model="ir.actions.act_window">
+        <field name="name">Itens de Pagamento</field>
+        <field name="res_model">payment.order.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_cnab_payments_filter"/>
+        <field name="context">{'search_default_draft': 1}</field>
+        <field name="domain">[('type', '=', 'payable')]</field>
+    </record>
+
+    <menuitem sequence="10" action="action_payment_order_line"
+              id="menu_action_payment_order_line"
+              parent="br_account_payment.menu_bank_payments"/>
 
 </odoo>
