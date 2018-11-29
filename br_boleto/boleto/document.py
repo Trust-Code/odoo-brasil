@@ -70,7 +70,7 @@ class Boleto:
                        self.branch_digit)
         return self.branch_number
 
-    def _move_line(self, order_line):
+    def _order_line(self, order_line):
         self._payment_mode(order_line.l10n_br_payment_mode_id)
         self.boleto.data_vencimento = datetime.date(datetime.strptime(
             order_line.date_maturity, '%Y-%m-%d'))
@@ -166,7 +166,7 @@ class BoletoBB(Boleto):
         # 2: Nosso Numero with 17 positions
         self.boleto = Boleto.getBoletoClass(order_line)(7, 2)
         self.account_number = order_line.src_bank_account_id.acc_number
-        self.branch_number = order_line.src_bank_account_id.bra_number
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -179,10 +179,10 @@ class BoletoBradesco(Boleto):
     def __init__(self, order_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(order_line)()
         self.account_number = order_line.src_bank_account_id.acc_number
-        self.branch_number = order_line.src_bank_account_id.bra_number
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
         # bank specific
         self.account_digit = order_line.src_bank_account_id.acc_number_dig
-        self.branch_digit = order_line.src_bank_account_id.bra_number_dig
+        self.branch_digit = order_line.src_bank_account_id.l10n_br_number_dig
         # end bank specific
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero

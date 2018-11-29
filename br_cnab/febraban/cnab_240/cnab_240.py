@@ -141,7 +141,8 @@ class Cnab240(Cnab):
 
         return {
             'controle_banco': int(self.order.src_bank_account_id.bank_bic),
-            'cedente_agencia': int(self.order.src_bank_account_id.l10n_br_number),
+            'cedente_agencia':
+                int(self.order.src_bank_account_id.l10n_br_number),
             'cedente_conta': int(self.order.src_bank_account_id.acc_number),
             'cedente_conta_dv': self.order.src_bank_account_id.acc_number_dig,
             'cedente_convenio': self.order.src_bank_account_id.codigo_convenio,
@@ -149,7 +150,8 @@ class Cnab240(Cnab):
             self.order.src_bank_account_id.l10n_br_number_dig,
             'cedente_nome': self.order.company_id.l10n_br_legal_name,
             # DV ag e cc
-            'cedente_dv_ag_cc': self.order.src_bank_account_id.l10n_br_number_dig,
+            'cedente_dv_ag_cc':
+                self.order.src_bank_account_id.l10n_br_number_dig,
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),

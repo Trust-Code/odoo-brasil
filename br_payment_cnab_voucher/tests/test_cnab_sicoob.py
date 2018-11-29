@@ -52,15 +52,9 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         conta = self.env['res.partner.bank'].create({
             'acc_number': '45425',  # 5 digitos
             'acc_number_dig': '0',  # 1 digito
-<<<<<<< HEAD:br_payment_cnab/tests/test_cnab_sicoob.py
             'l10n_br_number': '4321',  # 4 digitos
             'l10n_br_number_dig': '0',
-            'codigo_convenio': '123458-8',  # 7 digitos
-=======
-            'bra_number': '4321',  # 4 digitos
-            'bra_number_dig': '0',
             'l10n_br_convenio_pagamento': '123458-8',  # 7 digitos
->>>>>>> 11.0:br_payment_cnab_voucher/tests/test_cnab_sicoob.py
             'bank_id': sicoob.id,
         })
         journal = self.env['account.journal'].create({
@@ -83,11 +77,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         self.payment_order = self.env['payment.order'].create({
             'name': 'cnab240_sicoob',
             'user_id': self.user.id,
-<<<<<<< HEAD:br_payment_cnab/tests/test_cnab_sicoob.py
-            'l10n_br_payment_mode_id': payment_mode,
-=======
-            'payment_mode_id': payment_mode.id,
->>>>>>> 11.0:br_payment_cnab_voucher/tests/test_cnab_sicoob.py
+            'l10n_br_payment_mode_id': payment_mode.id,
             'file_number': 1,
             'company_id': self.main_company.id,
             'type': 'payable',
@@ -104,18 +94,12 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         order_lines.append(self.env['payment.order.line'].create({
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
-<<<<<<< HEAD:br_payment_cnab/tests/test_cnab_sicoob.py
-            'payment_order_id': ordem_cobranca.id,
-            'l10n_br_payment_mode_id':
-                ordem_cobranca.l10n_br_payment_mode_id.id,
-            'value': 150.00,
-=======
             'payment_order_id': self.payment_order.id,
-            'payment_mode_id': self.payment_order.payment_mode_id.id,
-            'src_bank_account_id':
-            self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
+            'l10n_br_payment_mode_id':
+                self.payment_order.l10n_br_payment_mode_id.id,
+            'src_bank_account_id': self.payment_order.l10n_br_payment_mode_id.
+                journal_id.bank_account_id.id,
             'amount_total': 150.00,
->>>>>>> 11.0:br_payment_cnab_voucher/tests/test_cnab_sicoob.py
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
             'state': 'sent',
@@ -127,18 +111,12 @@ class TestBrCnabSicoob(TestBrCnabPayment):
         order_lines.append(self.env['payment.order.line'].create({
             'type': 'payable',
             'partner_id': self.partner_fisica.id,
-<<<<<<< HEAD:br_payment_cnab/tests/test_cnab_sicoob.py
-            'payment_order_id': ordem_cobranca.id,
-            'l10n_br_payment_mode_id':
-                ordem_cobranca.l10n_br_payment_mode_id.id,
-            'value': 120.00,
-=======
             'payment_order_id': self.payment_order.id,
-            'payment_mode_id': self.payment_order.payment_mode_id.id,
-            'src_bank_account_id':
-            self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
+            'l10n_br_payment_mode_id':
+                self.payment_order.l10n_br_payment_mode_id.id,
+            'src_bank_account_id': self.payment_order.l10n_br_payment_mode_id.
+                journal_id.bank_account_id.id,
             'amount_total': 120.00,
->>>>>>> 11.0:br_payment_cnab_voucher/tests/test_cnab_sicoob.py
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
             'state': 'sent',

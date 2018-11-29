@@ -99,7 +99,7 @@ class TestBoletoSicoob(TestBoleto):
         self.assertEquals(vals['report_type'], 'qweb-pdf')
 
         line_ids = self.env['payment.order.line'].action_register_boleto(
-            self.invoices.receivable_move_line_ids)
+            self.invoices.l10n_br_receivable_move_line_ids)
 
         boleto_list = line_ids.generate_boleto_list()
         boleto = boleto_list[0]
@@ -107,6 +107,8 @@ class TestBoletoSicoob(TestBoleto):
         self.assertEquals(boleto.valor_documento, '1000.00')
         self.assertEquals(boleto.valor, '1000.00')
 
-        self.assertEquals(boleto.cedente_documento, self.main_company.cnpj_cpf)
+        self.assertEquals(boleto.cedente_documento,
+                          self.main_company.l10n_br_cnpj_cpf)
         self.assertEquals(
-            boleto.sacado_documento, self.partner_fisica.cnpj_cpf)
+            boleto.sacado_documento,
+            self.partner_fisica.l10n_br_cnpj_cpf)

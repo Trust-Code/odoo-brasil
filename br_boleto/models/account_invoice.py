@@ -11,7 +11,7 @@ class AccountInvoice(models.Model):
     _name = 'account.invoice'
     _inherit = ['account.invoice', 'br.localization.filtering']
 
-    boleto = fields.Boolean(related="payment_mode_id.boleto")
+    boleto = fields.Boolean(related="l10n_br_payment_mode_id.boleto")
 
     def _get_email_template_invoice(self):
         return self.env.user.company_id.boleto_email_tmpl

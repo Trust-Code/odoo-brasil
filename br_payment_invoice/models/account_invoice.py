@@ -9,7 +9,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     l10n_br_payment_type = fields.Selection(
-        related="payment_mode_id.payment_type")
+        related="l10n_br_payment_mode_id.payment_type")
     l10n_br_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]", readonly=True,
@@ -22,7 +22,7 @@ class AccountInvoice(models.Model):
             'name': self.number,
             'bank_account_id': self.l10n_br_bank_account_id.id,
             'partner_acc_number': self.l10n_br_bank_account_id.acc_number,
-            'partner_bra_number': self.l10n_br_bank_account_id.bra_number,
+            'partner_bra_number': self.l10n_br_bank_account_id.l10n_br_number,
             'move_line_id': move_line_id.id,
             'date_maturity': move_line_id.date_maturity,
             'invoice_date': move_line_id.date,

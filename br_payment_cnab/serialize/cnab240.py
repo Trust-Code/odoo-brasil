@@ -71,7 +71,7 @@ class Cnab_240(object):
             'cedente_agencia_dv': bank.l10n_br_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
             'cedente_conta_dv': bank.acc_number_dig,
-            'cedente_nome': self._order.company_id.legal_name[:30],
+            'cedente_nome': self._order.company_id.l10n_br_legal_name[:30],
             'data_geracao_arquivo': int(self.format_date(date.today())),
             'hora_geracao_arquivo': self._hour_now(),
             'numero_sequencial_arquivo': self._order.file_number,
@@ -131,7 +131,7 @@ class Cnab_240(object):
             "valor_multa": self._float_to_monetary(information_id.fine_value),
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
-            "cedente_nome": self._order.company_id.legal_name[:30],
+            "cedente_nome": self._order.company_id.l10n_br_legal_name[:30],
             "valor_nominal_titulo":  self._float_to_monetary(
                 line.amount_total),
             "valor_desconto_abatimento": self._float_to_monetary(
@@ -143,12 +143,13 @@ class Cnab_240(object):
             "codigo_de_barras_alfa": line.barcode or '',
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
-            (line.partner_id.legal_name or line.partner_id.name)[:30],
+            (line.partner_id.l10n_br_legal_name or line.partner_id.name)[:30],
             "data_vencimento": int(self.format_date(line.date_maturity)),
             "valor_juros_encargos": self._string_to_monetary(
                 information_id.interest_value),
             # GPS
-            "contribuinte_nome": self._order.company_id.legal_name[:30],
+            "contribuinte_nome":
+                self._order.company_id.l10n_br_legal_name[:30],
             "valor_total_pagamento": self._string_to_monetary(
                 line.value_final),
             "codigo_receita_tributo": information_id.codigo_receita or '',
@@ -204,7 +205,7 @@ class Cnab_240(object):
             "cedente_agencia_dv": bank.l10n_br_number_dig or '',
             "cedente_conta": bank.acc_number,
             "cedente_conta_dv": bank.acc_number_dig or '',
-            "cedente_nome": self._order.company_id.legal_name[:30],
+            "cedente_nome": self._order.company_id.l10n_br_legal_name[:30],
             "mensagem1": information_id.message1 or '',
             "cedente_endereco_rua": self._order.company_id.street,
             "cedente_endereco_numero": self._string_to_num(

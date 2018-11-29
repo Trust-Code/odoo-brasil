@@ -87,7 +87,6 @@ class AccountInvoice(models.Model):
             numero_nfe = self.action_number(serie_id)
         else:
             numero_nfe = res['numero']
-
         res['payment_mode_id'] = inv.l10n_br_payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
@@ -175,7 +174,8 @@ class AccountInvoice(models.Model):
 
         # NFC-e
         res['valor_troco'] = 0.0
-        res['metodo_pagamento'] = inv.payment_mode_id.tipo_pagamento or '01'
+        res['metodo_pagamento'] = (inv.l10n_br_payment_mode_id.tipo_pagamento
+                                   or '01')
         res['valor_pago'] = inv.amount_total
         return res
 

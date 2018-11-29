@@ -106,9 +106,9 @@ class PaymentOrderLine(models.Model):
             errors += ['Selecione o parceiro!']
             return errors
         partner = self.env['res.partner'].browse(vals['partner_id'])
-        if not partner.cnpj_cpf:
+        if not partner.l10n_br_cnpj_cpf:
             errors += ['CNPJ/CPF do parceiro é obrigatório!']
-        if not partner.legal_name and not partner.name:
+        if not partner.l10n_br_legal_name and not partner.name:
             errors += ['Nome e/ou Razão Social é obrigatório!']
         if not partner.zip:
             errors += ['CEP do parceiro é obrigatório!']
@@ -135,7 +135,7 @@ class PaymentOrderLine(models.Model):
             errors += ['Preencha o número da conta bancária!']
         if not bnk_account.acc_number_dig:
             errors += ['Preencha o digito verificador da conta bancária!']
-        if not bnk_account.bra_number:
+        if not bnk_account.l10n_br_number:
             errors += ['Preencha a agência na conta bancária!']
         return errors
 
@@ -178,9 +178,9 @@ class PaymentOrderLine(models.Model):
 
     def validate_base_information(self, payment_mode):
         errors = []
-        if not payment_mode.journal_id.company_id.cnpj_cpf:
+        if not payment_mode.journal_id.company_id.l10n_br_cnpj_cpf:
             errors += ['Preencha o CNPJ da empresa']
-        if not payment_mode.journal_id.company_id.legal_name:
+        if not payment_mode.journal_id.company_id.l10n_br_legal_name:
             errors += ['Preencha a Razão Social da empresa']
         return errors
 
