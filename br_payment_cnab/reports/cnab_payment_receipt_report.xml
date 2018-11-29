@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="cnab_payment_receipt_report"
+        model="payment.order"
+        report_type="qweb-pdf"
+        string="Recibo de Pagamento CNAB"
+        name="br_payment_cnab.cnab_payment_receipt_document"
+        file="br_payment_cnab.cnab_payment_receipt_report" />
+
+    <template id="br_payment_cnab.cnab_payment_receipt_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="row" name="bank_infos">
+                        <div class="col-xs-12">
+                            <span t-field="doc.payment_mode_id.journal_id.bank_id.name"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="template_cnab_payment_receipt_report">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="br_payment_cnab.cnab_payment_receipt_document" t-lang="doc.partner_id.lang"/>
+        </t>
+    </template>
+</odoo>

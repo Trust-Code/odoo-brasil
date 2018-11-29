@@ -38,7 +38,7 @@
         'wizard/payment_cnab_import.xml',
         'wizard/manual_reconcile.xml',
         'wizard/approve_payments.xml',
-        'reports/payment_receipt.xml'
+        'reports/cnab_payment_receipt_report.xml'
     ],
     'application': True,
 }
