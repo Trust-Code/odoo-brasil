@@ -84,6 +84,10 @@ class PaymentOrderLine(models.Model):
         string="Final Value", compute="_compute_final_value",
         digits=(18, 2), readonly=True)
 
+    autenticacao_pagamento = fields.Char(
+        string="Chave de Autenticação do pagamento")
+    protocolo_pagamento = fields.Char(string="Protocolo do Pagamento")
+
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência")
 
