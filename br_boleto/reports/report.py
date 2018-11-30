@@ -12,8 +12,13 @@ from ..boleto.document import Boleto
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
 
-    def render_qweb_pdf(self, res_ids, data=None):
+    def render_qweb_html(self, res_ids, data=None):
+        if self.name == 'Boleto':
+            return
+        return super(IrActionsReport, self).render_qweb_html(
+            res_ids, data=data)
 
+    def render_qweb_pdf(self, res_ids, data=None):
         if not self.name == 'Boleto':
             return super(IrActionsReport, self).render_qweb_pdf(
                 res_ids, data=data)
