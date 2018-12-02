@@ -70,10 +70,6 @@ class Itau240(Cnab_240):
         segmento = super(Itau240, self)._get_segmento(
             line, lot_sequency, num_lot)
 
-        if not segmento.get('favorecido_cidade'):
-            segmento.update({'favorecido_cidade': ''})  # Verificar se isso
-            # deve existir mesmo. Talvez tratar o erro da cidade faltando,
-            # pro caso de obrigatoriedade desse campo
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
@@ -96,22 +92,11 @@ class Itau240(Cnab_240):
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
             'favorecido_banco': int(line.bank_account_id.bank_id.bic),
-            'finalidade_doc_ted': get_ted_doc_finality(
-                'itau', segmento.get('finalidade_doc_ted'),
-                line.payment_information_id.payment_type, ignore),
+            'finalidade_ted': get_ted_doc_finality(
+                'itau', '01', segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'itau', '02', segmento.get('finalidade_doc_ted'), ignore),
             'codigo_receita_tributo': int(
-                segmento.get('codigo_receita_tributo'))
+                segmento.get('codigo_receita_tributo') or 0)
         })
         return segmento
-
-    def _get_trailer_lot(self, total, num_lot):
-        trailer = super(Itau240, self)._get_trailer_lot(total, num_lot)
-        trailer.update({
-        })
-        return trailer
-
-    def _get_trailer_arq(self):
-        trailer = super(Itau240, self)._get_trailer_arq()
-        trailer.update({
-        })
-        return trailer

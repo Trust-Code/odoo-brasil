@@ -124,3 +124,8 @@ class TestVoucher(TestBaseCnab):
         orders = self.env['payment.order'].search([])
         # Uma ordem por banco de origem = 4
         self.assertEqual(len(orders), 4)
+
+        for order in orders:
+            self.assertEqual(order.cnab_file, None)
+            order.action_generate_payable_cnab()
+            self.assertNotEqual(order.cnab_file, None)

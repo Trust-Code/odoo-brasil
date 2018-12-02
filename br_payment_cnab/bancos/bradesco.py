@@ -67,9 +67,12 @@ class Bradesco240(Cnab_240):
                 segmento.get('favorecido_agencia'), 0),
             'favorecido_cep': self._string_to_num(
                 str(segmento.get('favorecido_cep'))[:5]),
-            'finalidade_doc_ted': get_ted_doc_finality(
-                'bradesco', segmento.get('finalidade_doc_ted'),
-                line.payment_information_id.payment_type, ignore),
+            'finalidade_ted': get_ted_doc_finality(
+                'bradesco', '01',
+                segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'bradesco', '02',
+                segmento.get('finalidade_doc_ted'), ignore),
         })
         return segmento
 

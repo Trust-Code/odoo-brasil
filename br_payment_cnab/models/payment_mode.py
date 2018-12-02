@@ -15,8 +15,6 @@ class PaymentMode(models.Model):
          ('04', 'Tributos com código de barras'),
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
-         ('07', 'DARF Simples'),
-         ('08', 'FGTS'),
          ('09', 'ICMS')],
         string="Tipo de Operação")
 
