@@ -225,8 +225,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'favorecido_conta': 12345,
             'favorecido_conta_dv': 0,
             'favorecido_agencia_conta_dv': '',
-            'favorecido_nome': 'Parceiro',
-            'favorecido_doc_numero': 6621204930,
+            'favorecido_nome': 'Razão Social',
+            'favorecido_doc_numero': 54577015498,
             'numero_documento_cliente': '2',
             'data_pagamento': int(time.strftime("%d%m%Y")),
             'valor_pagamento': Decimal('120.00'),
@@ -236,13 +236,13 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'finalidade_doc_ted': '10',
             'favorecido_emissao_aviso': 0,
             'favorecido_inscricao_tipo': 1,
-            'favorecido_inscricao_numero': 6621204930,
-            'favorecido_endereco_rua': 'Donicia',
-            'favorecido_endereco_numero': 45,
+            'favorecido_inscricao_numero': 54577015498,
+            'favorecido_endereco_rua': 'Endereço Rua',
+            'favorecido_endereco_numero': 42,
             'favorecido_endereco_complemento': '',
             'favorecido_bairro': 'Centro',
             'favorecido_cidade': 'Florianópolis',
-            'favorecido_cep': 88032050,
+            'favorecido_cep': 88037240,
             'favorecido_uf': 'SC',
             'valor_documento': Decimal('120.00'),
             'valor_abatimento': Decimal('1.00'),
@@ -258,7 +258,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'codigo_moeda': 9,
             'codigo_de_barras': 0,
             'codigo_de_barras_alfa': '',
-            'nome_concessionaria': 'Parceiro',
+            'nome_concessionaria': 'Razão Social',
             'data_vencimento': int(time.strftime("%d%m%Y")),
             'contribuinte_nome': 'Trustcode Tecnologia da Inform',
             'valor_total_pagamento': Decimal('121.00'),
@@ -278,9 +278,3 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'percentual_receita_bruta_acumulada': Decimal('12.00')}
         for key, value in seg_ok.items():
             self.assertEquals(value, seg_teste[key], 'Key: %s' % key)
-
-    def sequency_lot(self):
-        cnab = self.get_cnab_file()
-        self.assertEquals(len(cnab), 8)
-        for i in range(2, len(cnab)):
-            self.assertEquals(cnab[i][13], i-1)
