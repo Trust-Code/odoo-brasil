@@ -94,19 +94,14 @@ class Santander240(Cnab_240):
                 segmento.get('favorecido_cidade', '')[:15],
             'nome_concessionaria':
                 segmento.get('nome_concessionaria', '')[:30],
-            'finalidade_doc_ted': get_ted_doc_finality(
-                'santander', segmento.get('finalidade_doc_ted'),
-                line.payment_information_id.payment_type, ignore),
+            'finalidade_ted': get_ted_doc_finality(
+                'santander', '01',
+                segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'santander', '02',
+                segmento.get('finalidade_doc_ted'), ignore),
         })
         return segmento
-
-    def _get_trailer_arq(self):
-        trailer = super(Santander240, self)._get_trailer_arq()
-        return trailer
-
-    def _get_trailer_lot(self, total, num_lot):
-        trailer = super(Santander240, self)._get_trailer_lot(total, num_lot)
-        return trailer
 
     def segments_per_operation(self):
         segments = super(Santander240, self).segments_per_operation()

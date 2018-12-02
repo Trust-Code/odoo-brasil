@@ -233,7 +233,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'data_real_pagamento': int(time.strftime("%d%m%Y")),
             'valor_real_pagamento': Decimal('121.00'),
             'mensagem2': '',
-            'finalidade_doc_ted': '10',
+            'finalidade_doc_ted': '01',
             'favorecido_emissao_aviso': 0,
             'favorecido_inscricao_tipo': 1,
             'favorecido_inscricao_numero': 54577015498,
