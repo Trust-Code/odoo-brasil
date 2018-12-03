@@ -20,6 +20,7 @@ class AccountInvoice(models.Model):
             'partner_id': self.partner_id.id,
             'amount_total': abs(move_line_id.amount_residual),
             'name': self.number,
+            'partner_ref': self.reference,
             'bank_account_id': self.l10n_br_bank_account_id.id,
             'partner_acc_number': self.l10n_br_bank_account_id.acc_number,
             'partner_bra_number': self.l10n_br_bank_account_id.bra_number,

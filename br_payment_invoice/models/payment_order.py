@@ -9,3 +9,4 @@ class PaymentOrderLine(models.Model):
 
     invoice_id = fields.Many2one(
         'account.invoice', string="Fatura Origem")
+    partner_ref = fields.Char(string="Ref. Parceiro")
