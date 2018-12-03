@@ -37,10 +37,6 @@ class PaymentOrder(models.Model):
         else:
             return '1'
 
-    def action_approve_all(self):
-        lines = self.line_ids.filtered(lambda x: x.state == 'draft')
-        lines.write({'state': 'approved'})
-
     def action_generate_payable_cnab(self):
         lines = self.line_ids.filtered(
             lambda x: x.state in ('approved', 'sent'))
@@ -56,16 +52,6 @@ class PaymentOrder(models.Model):
         self.cnab_file = base64.b64encode(cnab.write_cnab())
         self.name = self.env['ir.sequence'].next_by_code(
             'payment.cnab.name')
-
-        remaining_lines = self.line_ids - lines
-        if remaining_lines:
-            new_order = self.copy({
-                'data_emissao_cnab': False, 'cnab_file': False,
-                'file_number': 0,
-                'name': self.env['ir.sequence'].next_by_code(
-                    'payment.order')
-            })
-            remaining_lines.write({'payment_order_id': new_order.id})
 
 
 class PaymentOrderLine(models.Model):
@@ -326,15 +312,24 @@ class PaymentOrderLine(models.Model):
         if rejected:
             state = 'rejected'
 
+        if self.state in ('rejected', 'paid', 'cancelled'):
+            cnab_message = 'Registro já processado anteriormente'
+            state = self.state
+            cnab_code = '00'
         self.write({
             'state': state, 'cnab_code': cnab_code,
             'cnab_message': cnab_message
         })
         if not statement_id:
+            journal_id = self.env['account.journal'].search(
+                [('bank_account_id', '=', self.src_bank_account_id.id)],
+                limit=1)
+            if not journal_id.l10n_br_sequence_statements:
+                raise UserError('Configure a sequência de extrato no diário')
             statement_id = self.env['l10n_br.payment.statement'].create({
-                'name': '0001/Manual',
+                'name': journal_id.l10n_br_sequence_statements.next_by_id(),
                 'date': date.today(),
-                'state': 'validated',
+                'journal_id': journal_id.id,
             })
         for item in self:
             self.env['l10n_br.payment.statement.line'].create({
@@ -349,7 +344,7 @@ class PaymentOrderLine(models.Model):
         return statement_id
 
     def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
-        if self.type != 'payable':
+        if self.filtered(lambda x: x.type != 'payable'):
             return super(PaymentOrderLine, self).mark_order_line_paid(
                 cnab_code, cnab_message, statement_id)
 
@@ -360,12 +355,13 @@ class PaymentOrderLine(models.Model):
             journal_id = self.env['account.journal'].search(
                 [('bank_account_id', '=', account.id)], limit=1)
 
+            if not journal_id.l10n_br_sequence_statements:
+                raise UserError('Configure a sequência de extrato no diário')
             if not statement_id:
                 statement_id = self.env['l10n_br.payment.statement'].create({
                     'name':
                     journal_id.l10n_br_sequence_statements.next_by_id(),
                     'date': date.today(),
-                    'state': 'validated',
                     'journal_id': journal_id.id,
                 })
             for item in order_lines:

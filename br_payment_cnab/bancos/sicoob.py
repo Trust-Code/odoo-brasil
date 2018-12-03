@@ -71,26 +71,12 @@ class Sicoob240(Cnab_240):
                 segmento.get('codigo_instrucao_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),
-            'finalidade_doc_ted': get_ted_doc_finality(
-                'sicoob', line.payment_information_id.payment_type,
-                segmento.get('finalidade_doc_ted'), ignore),
             'finalidade_ted': get_ted_doc_finality(
-                'sicoob', line.payment_information_id.payment_type,
-                segmento.get('finalidade_doc_ted'), ignore)
+                'sicoob', '01', segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'sicoob', '02', segmento.get('finalidade_doc_ted'), ignore)
         })
         return segmento
-
-    def _get_trailer_lot(self, total, num_lot):
-        trailer = super(Sicoob240, self)._get_trailer_lot(total, num_lot)
-        trailer.update({
-        })
-        return trailer
-
-    def _get_trailer_arq(self):
-        trailer = super(Sicoob240, self)._get_trailer_arq()
-        trailer.update({
-        })
-        return trailer
 
     def segments_per_operation(self):
         segments = super(Sicoob240, self).segments_per_operation()
