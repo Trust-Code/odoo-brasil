@@ -16,9 +16,9 @@
                 <field name="fine_value" widget="monetary"/>
             </field>
             <group position="inside">
-                <h3>
+                <h3 attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}">
                     <strong><label string="Linha Digitável" /></strong>
-                    <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}" />
+                    <field name="linha_digitavel" />
                 </h3>
             </group>
         </field>
