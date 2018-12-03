@@ -29,8 +29,9 @@ class TestBrCnabPayment(TransactionCase):
             'code': '3.0.0',
             'name': 'Despesas com Fornecedores',
             'user_type_id': self.env.ref(
-                'account.data_account_type_revenue').id,
-            'company_id': self.main_company.id
+                'account.data_account_type_payable').id,
+            'company_id': self.main_company.id,
+            'reconcile': True,
         })
         self.expense_account = self.env['account.account'].create({
             'code': '2.0.0',

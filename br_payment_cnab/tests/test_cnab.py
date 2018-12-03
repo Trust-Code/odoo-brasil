@@ -84,6 +84,10 @@ class TestBaseCnab(TestBrCnabPayment):
                 self.env['ir.sequence'].create({
                     'name': account.bank_id.name,
                 }).id,
+                'l10n_br_sequence_statements':
+                self.env['ir.sequence'].create({
+                    'name': account.bank_id.name,
+                }).id,
             })
 
         self.ted_payment = self.env['l10n_br.payment.mode']
