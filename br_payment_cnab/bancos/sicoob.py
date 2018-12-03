@@ -74,7 +74,10 @@ class Sicoob240(Cnab_240):
             'finalidade_ted': get_ted_doc_finality(
                 'sicoob', '01', segmento.get('finalidade_doc_ted'), ignore),
             'finalidade_doc': get_ted_doc_finality(
-                'sicoob', '02', segmento.get('finalidade_doc_ted'), ignore)
+                'sicoob', '02', segmento.get('finalidade_doc_ted'), ignore),
+            'nome_concessionaria': (
+                '' if line.payment_information_id.payment_type == '10'
+                else segmento.get('nome_concessionaria'))
         })
         return segmento
 

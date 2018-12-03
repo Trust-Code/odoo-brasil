@@ -54,7 +54,8 @@ class PaymentInformation(models.Model):
          ('04', 'Tributos com código de barras'),
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
-         ('09', 'ICMS')],
+         ('09', 'ICMS'),
+         ('10', 'FGTS com Código de Barras')],
         string="Tipo de Operação")
 
     warning_code = fields.Selection([
