@@ -8,7 +8,23 @@
         <field name="arch" type="xml" >
             <field name="move_line_id" position="after">
                 <field name="invoice_id" />
+                <field name="partner_ref" />
             </field>
         </field>
     </record>
+
+    <record id="view_br_payment_invoice_order_line_tree" model="ir.ui.view">
+        <field name="name">view_br_payment_invoice_order_line_tree</field>
+        <field name="model">payment.order.line</field>
+        <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_tree_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <field name="name" position="after">
+                <field name="partner_ref" />
+            </field>
+        </field>
+    </record>
+
+
+
 </odoo>
