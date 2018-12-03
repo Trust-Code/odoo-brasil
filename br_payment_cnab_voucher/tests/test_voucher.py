@@ -1,11 +1,15 @@
 # © 2018 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import os
+import base64
 from odoo.exceptions import UserError
 from odoo.addons.br_payment_cnab.tests.test_cnab import TestBaseCnab
 
 
 class TestVoucher(TestBaseCnab):
+
+    caminho = os.path.dirname(__file__)
 
     def setUp(self):
         super(TestVoucher, self).setUp()
@@ -98,7 +102,6 @@ class TestVoucher(TestBaseCnab):
         self.assertNotEqual(voucher.bank_account_id.id, False)
 
     # TODO Criar teste para campos de juros e multas
-
     def test_voucher_ted(self):
         vouchers = self.env['account.voucher']
         doc_ted_payments = self.ted_payment | self.doc_payment
@@ -117,6 +120,63 @@ class TestVoucher(TestBaseCnab):
         lines = self.env['payment.order.line'].search([])
         # 2 parceiros x 4 bancos x 4 bancos dest x 2 operacoes (ted, doc) = 64
         self.assertEqual(len(lines),  64)
+
+        # Aprova todas as linhas
+        lines.action_aprove_payment_line()
+
+        orders = self.env['payment.order'].search([])
+        # Uma ordem por banco de origem = 4
+        self.assertEqual(len(orders), 4)
+
+        for order in orders:
+            self.assertEqual(order.cnab_file, None)
+            order.action_generate_payable_cnab()
+            self.assertNotEqual(order.cnab_file, None)
+
+            cnab = base64.decodestring(order.cnab_file)
+            name = '%s.rem' % order.journal_id.name
+            with open(os.path.join(self.caminho, 'cnab/%s' % name), 'w') as f:
+                # cnab_teste = f.read()
+                # self.assertEqual(cnab_teste, cnab.decode('ascii'))
+                f.write(cnab.decode('ascii'))
+
+    def test_boletos_titulos(self):
+        boletos = {
+            '756': {
+                'valor': '1424.68',
+                'linha': '85810000014-524680270200-832415823300-601852018107-0'
+            },
+            '033': {
+                'valor': '480.00',
+                'linha': '858700000049 800001791819 107622050820 415823300017',
+            },
+            '237': {
+                'valor': '2546.06',
+                'linha': '858000000259 460503281831 240720183202 339122710600'
+            },
+            '341': {
+                'valor': '836.73',
+                'linha': '858700000081 367301791813 018620053820 415823300017'
+            }
+        }
+
+        vouchers = self.env['account.voucher']
+        for mode in self.tributo_payment:
+            voucher = self.env['account.voucher'].create(dict(
+                self.voucher_vals.items(),
+                partner_id=self.partner_juridica.id,
+                account_id=self.partner_juridica.
+                property_account_payable_id.id,
+                payment_mode_id=mode.id,
+                linha_digitavel=boletos[mode.journal_id.code]['linha'],
+            ))
+            voucher._onchange_linha_digitavel()
+            voucher.proforma_voucher()
+            vouchers |= voucher
+
+        lines = self.env['payment.order.line'].search([])
+        # 4 bancos x 1 boleto
+        self.assertEqual(len(lines),  4)
 
         # Aprova todas as linhas
         lines.action_aprove_payment_line()
