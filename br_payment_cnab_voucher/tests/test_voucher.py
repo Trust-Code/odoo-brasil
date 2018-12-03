@@ -213,3 +213,24 @@ class TestVoucher(TestBaseCnab):
             self.assertEqual(order.cnab_file, None)
             order.action_generate_payable_cnab()
             self.assertNotEqual(order.cnab_file, None)
+
+        # Testa se estão processados
+        statement_id = None
+        for line in lines:
+            statement_id = line.mark_order_line_processed(
+                'BD', 'Recebido', statement_id=statement_id)
+            self.assertEqual(line.state, 'processed')
+
+        lines.mark_order_line_paid('00', 'Liquidação')
+
+        for voucher in vouchers:
+            self.assertEqual(
+                voucher.l10n_br_residual, 0.0, 'Voucher deve estar pago')
+
+        for line in lines:
+            self.assertEqual(line.state, 'paid')
+            line.mark_order_line_processed('BD', 'Recebido')
+            self.assertEqual(line.state, 'paid')
+            with self.assertRaises(UserError):
+                line.action_aprove_payment_line()
+            self.assertEqual(line.state, 'paid')
