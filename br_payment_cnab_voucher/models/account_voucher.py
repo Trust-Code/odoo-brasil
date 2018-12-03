@@ -29,7 +29,8 @@ class AccountVoucher(models.Model):
          ('06', 'DARF Normal'),
          ('07', 'DARF Simples'),
          ('08', 'FGTS'),
-         ('09', 'ICMS')],
+         ('09', 'ICMS'),
+         ('10', 'FGTS com Código de Barras')],
         string="Tipo de Operação", readonly=True,
         states={'draft': [('readonly', False)]})
     bank_account_id = fields.Many2one(
@@ -47,6 +48,11 @@ class AccountVoucher(models.Model):
         states={'draft': [('readonly', False)]})
     fine_value = fields.Float(
         'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
+
+    conec_social_fgts = fields.Char(
+        string='Lacre Conectividade Social', size=16)
+    conec_social_dv_fgts = fields.Char(
+        string='Dígito do Lacre CS', size=9)
 
     _sql_constraints = [
         ('account_voucher_barcode_uniq', 'unique (barcode)',
