@@ -84,7 +84,8 @@ class AccountVoucher(models.Model):
                     'quantity': 1.0,
                     'price_unit': vals.get('valor', 0.0)
                 })]
-            self.date_due = vals.get('vencimento')
+            if vals.get('vencimento'):
+                self.date_due = vals.get('vencimento')
 
     def _get_digitable_line_vals(self, digitable_line):
         try:
