@@ -63,11 +63,20 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                     self.journal_id.bank_id.bic,
                     event.ocorrencias_retorno.strip())
                 if not payment_line:
+                    nome = ''
+                    if hasattr(event, 'favorecido_nome'):
+                        nome = event.favorecido_nome
+                    elif hasattr(event, 'nome_concessionaria'):
+                        nome = event.nome_concessionaria
+                    elif hasattr(event, 'contribuinte_nome'):
+                        nome = event.contribuinte_nome
+
                     self.env['l10n_br.payment.statement.line'].sudo().create({
                         'date': datetime.strptime(
                             "{:06}".format(event.data_pagamento), "%d%m%Y"),
-                        'name': "%s - %s" % (event.numero_documento_cliente,
-                                             event.favorecido_nome),
+                        'name': "%s - %s" % (
+                            event.numero_documento_cliente,
+                            nome),
                         'amount': event.valor_pagamento,
                         'cnab_code': cnab_code,
                         'cnab_message': message,

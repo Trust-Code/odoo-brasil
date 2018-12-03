@@ -80,8 +80,6 @@ class Santander240(Cnab_240):
                 segmento.get('valor_real_pagamento')),
             'valor_abatimento': self._string_to_monetary(
                 segmento.get('valor_abatimento')),
-            'favorecido_conta_dv': self._string_to_num(
-                segmento.get('favorecido_conta_dv'), 0),
             'favorecido_agencia': self._string_to_num(
                 segmento.get('favorecido_agencia'), 0),
             'favorecido_nome':
