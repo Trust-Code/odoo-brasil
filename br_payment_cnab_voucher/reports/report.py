@@ -1,4 +1,5 @@
-from openerp import api, models, UserError
+from openerp import api, models
+from odoo.exceptions import UserError
 
 
 class PaymentCnabReport(models.AbstractModel):
