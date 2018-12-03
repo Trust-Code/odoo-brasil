@@ -85,7 +85,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
     def select_routing(self, pay_line, cnab_code, bank, message, statement):
         if cnab_code == 'BD':  # Inclusão OK
             pay_line.mark_order_line_processed(
-                cnab_code, message
+                cnab_code, message, statement_id=statement
             )
         elif cnab_code in ('00', '03'):  # Débito
             pay_line.mark_order_line_paid(
