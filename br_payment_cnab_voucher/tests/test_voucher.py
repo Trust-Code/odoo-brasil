@@ -101,6 +101,30 @@ class TestVoucher(TestBaseCnab):
         self.assertEqual(voucher.payment_type, '01')   # TED
         self.assertNotEqual(voucher.bank_account_id.id, False)
 
+    def test_voucher_cancel(self):
+        voucher = self.env['account.voucher'].create(dict(
+            self.voucher_vals.items(),
+            partner_id=self.partner_fisica.id,
+            account_id=self.partner_fisica.property_account_payable_id.id,
+            payment_mode_id=self.titulos_payment[0].id,
+            linha_digitavel='75691.30698 01245.640006 00373.360015 5 76560000033435'  # noqa
+        ))
+        voucher._onchange_linha_digitavel()
+        voucher.proforma_voucher()
+        lines = self.env['payment.order.line'].search([])
+        self.assertEqual(len(lines), 1)
+        # Cancelar
+        voucher.journal_id.update_posted = True
+        voucher.cancel_voucher()
+        lines = self.env['payment.order.line'].search([])
+        self.assertEqual(len(lines), 0)
+
+        voucher.proforma_voucher()
+        lines = self.env['payment.order.line'].search([])
+        lines.action_aprove_payment_line()
+        with self.assertRaises(UserError):
+            voucher.cancel_voucher()
+
     # TODO Criar teste para campos de juros e multas
     def test_voucher_ted(self):
         vouchers = self.env['account.voucher']
