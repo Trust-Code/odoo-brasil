@@ -45,6 +45,7 @@ Este repositório adapta o Odoo 11 para ser usado no Brasil
 * Emissão de NFSe Paulistana, GINFES, Susesu, SimplISS
 * Emissão de Boletos (boletos homologados: Bradesco, Sicoob, Cecred, BB, Santander, Caixa Econômica, Itaú)
 * Integração Bancária (cnab240)
+* Integração de Pagamentos (cnab240)
 * Folha de Pagamento
 * Importação de extratos bancários (OFX)
 * Contas a pagar e Receber
