@@ -308,12 +308,14 @@ class PaymentOrderLine(models.Model):
 
     def mark_order_line_processed(self, cnab_code, cnab_message,
                                   rejected=False, statement_id=None):
-        if self.state in ('rejected', 'paid', 'cancelled'):
-            return
         state = 'processed'
         if rejected:
             state = 'rejected'
 
+        if self.state in ('rejected', 'paid', 'cancelled'):
+            cnab_message = 'Registro já processado anteriormente'
+            state = self.state
+            cnab_code = '00'
         self.write({
             'state': state, 'cnab_code': cnab_code,
             'cnab_message': cnab_message
