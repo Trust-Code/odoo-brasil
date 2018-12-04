@@ -28,9 +28,8 @@ class AccountVoucher(models.Model):
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
          ('07', 'DARF Simples'),
-         ('08', 'FGTS'),
-         ('09', 'ICMS'),
-         ('10', 'FGTS com Código de Barras')],
+         ('08', 'FGTS com Código de Barras'),
+         ('09', 'ICMS')],
         string="Tipo de Operação", readonly=True,
         states={'draft': [('readonly', False)]})
     bank_account_id = fields.Many2one(
