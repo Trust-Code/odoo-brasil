@@ -785,9 +785,9 @@ class InvoiceEletronic(models.Model):
 
             QR_code_url = "p={0}|2|{1}|{2}|{3}".format(
                 chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
-            qr_code_server = url_qrcode(estado, ambiente)
+            qr_code_server = url_qrcode(estado, str(ambiente))
             vals['qrCode'] = qr_code_server + QR_code_url
-            vals['urlChave'] = qr_code_server
+            vals['urlChave'] = qr_code_server.replace('?', '')
         return vals
 
     @api.multi
