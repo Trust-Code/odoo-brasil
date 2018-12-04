@@ -271,8 +271,8 @@ class Cnab_240(object):
         for nome_segmento in segments:
             vals = self._get_segmento(
                 event, lot_sequency, num_lot, nome_segmento)
-            if vals not None:
-                self._cnab_file.add_segment(segment, vals)
+            if vals is not None:
+                self._cnab_file.add_segment(nome_segmento, vals)
             lot_sequency += 1
         self._cnab_file.get_active_lot().get_active_event(None).close_event()
         return lot_sequency
