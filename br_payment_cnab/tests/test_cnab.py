@@ -145,6 +145,14 @@ class TestBaseCnab(TestBrCnabPayment):
                 'codigo_receita': '0561',  # IRRF - Retido na fonte
                 'journal_id': journal.id,
             })
+            self.fgts_payment |= self.env['l10n_br.payment.mode'].create({
+                'name': 'FGTS com Código de barras',
+                'type': 'payable',
+                'payment_type': '08',
+                'service_type': '22',
+                'codigo_receita': '0561',
+                'journal_id': journal.id,
+            })
             self.icms_gare_payment |= self.env['l10n_br.payment.mode'].create({
                 'name': 'ICMS Gare',
                 'type': 'payable',
