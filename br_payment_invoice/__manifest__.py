@@ -25,6 +25,7 @@
         'views/account_invoice.xml',
         'views/payment_order.xml',
         'wizard/change_payment.xml',
+        'reports/receipt.xml'
     ],
     'auto_install': True
 }
