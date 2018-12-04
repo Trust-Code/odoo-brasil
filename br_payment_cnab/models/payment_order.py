@@ -64,8 +64,6 @@ class PaymentOrderLine(models.Model):
     linha_digitavel = fields.Char(string="Linha Digitável")
     barcode = fields.Char('Código de Barras')
     invoice_date = fields.Date('Data da Fatura')
-    cnab_code = fields.Char(string="Código Retorno")
-    cnab_message = fields.Char(string="Mensagem Retorno")
     value_final = fields.Float(
         string="Final Value", compute="_compute_final_value",
         digits=(18, 2), readonly=True)

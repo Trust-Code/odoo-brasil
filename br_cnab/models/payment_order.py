@@ -78,6 +78,7 @@ class PaymentOrderLine(models.Model):
                 'amount': item.amount_total,
                 'cnab_code': cnab_code,
                 'cnab_message': cnab_message,
+                'nosso_numero': item.nosso_numero,
             })
         return statement_id
 
