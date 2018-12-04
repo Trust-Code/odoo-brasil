@@ -18,12 +18,13 @@
                     <page string="Informações Adicionais">
                         <group>
                             <group>
-                                <field name="service_type" attrs="{'invisible': [('payment_type', 'not in', ('01', '02', '03', '04', '05', '06', '07', '08', '09'))]}"/>
+                                <field name="service_type" attrs="{'invisible': [('payment_type', 'not in', ('01', '02', '03', '04', '05', '06', '07', '09'))]}"/>
                                 <field name="mov_finality" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}"/>
-                                <field name="codigo_receita" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09', '10'))]}" />
-                                <field name="numero_referencia" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '08', '09'))]}" />
+                                <field name="codigo_receita" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '09', '08'))]}" />
+                                <field name="numero_referencia" attrs="{'invisible': [('payment_type', 'not in', ('04', '05', '06', '07', '09'))]}" />
                                 <field name="percentual_receita_bruta_acumulada" attrs="{'invisible': [('payment_type', '!=', '07')]}" />
-                                <field name="fgts_id" attrs="{'invisible': [('payment_type', '!=', '10')]}" />
+                                <field name="fgts_id" attrs="{'invisible': [('payment_type', '!=', '08')]}" />
+                                <field name="cod_recolhimento" attrs="{'invisible': [('payment_type', '!=', '08')]}" />
                             </group>
                             <div>
                                 <h4>Manuais de configuração</h4>

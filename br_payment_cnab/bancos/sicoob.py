@@ -41,11 +41,13 @@ class Sicoob240(Cnab_240):
         })
         return header
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Sicoob240, self)._get_segmento(
             line, lot_sequency, num_lot)
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
+        if (line.payment_type == "08"):
+            segmento.update({'nome_concessionaria': ''})
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_nome': segmento.get('favorecido_nome')[:30],

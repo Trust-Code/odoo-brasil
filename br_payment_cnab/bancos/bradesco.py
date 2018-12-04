@@ -48,7 +48,7 @@ class Bradesco240(Cnab_240):
         })
         return header
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Bradesco240, self)._get_segmento(
             line, lot_sequency, num_lot)
         ignore = not self.is_doc_or_ted(
@@ -78,6 +78,7 @@ class Bradesco240(Cnab_240):
 
     def segments_per_operation(self):
         segments = super(Bradesco240, self).segments_per_operation()
+
         segments.update({
             "41": ["SegmentoA", "SegmentoB"],
             "43": ["SegmentoA", "SegmentoB"],

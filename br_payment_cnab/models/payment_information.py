@@ -53,9 +53,9 @@ class PaymentInformation(models.Model):
          ('03', 'Pagamento de Títulos'),
          ('04', 'Tributos com código de barras'),
          ('05', 'GPS - Guia de previdencia Social'),
-         ('06', 'DARF Normal'),
-         ('09', 'ICMS'),
-         ('10', 'FGTS com Código de Barras')],
+         ('06', 'DARF Nomal'),
+         ('08', 'FGTS com Código de Barras'),
+         ('09', 'ICMS')],
         string="Tipo de Operação")
 
     warning_code = fields.Selection([
@@ -150,6 +150,10 @@ class PaymentInformation(models.Model):
         string='History Code')
 
     codigo_receita = fields.Char('Código da Receita')
+
+    cod_recolhimento_fgts = fields.Integer('Código de Recolhimento do FGTS')
+
+    identificacao_fgts = fields.Integer('Número de Identificação do FGTS')
 
     tax_identification = fields.Selection(
         [('16', 'DARF Normal'),

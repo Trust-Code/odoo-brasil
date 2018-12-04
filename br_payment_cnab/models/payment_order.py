@@ -233,6 +233,8 @@ class PaymentOrderLine(models.Model):
             'fine_value': vals.get('fine_value'),
             'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
+            'cod_recolhimento_fgts': payment_mode_id.cod_recolhimento,
+            'identificacao_fgts': payment_mode_id.identificacao_fgts,
             'l10n_br_environment': payment_mode_id.l10n_br_environment
         }
 

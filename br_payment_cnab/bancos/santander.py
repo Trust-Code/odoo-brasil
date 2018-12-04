@@ -59,11 +59,14 @@ class Santander240(Cnab_240):
             })
         return header
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Santander240, self)._get_segmento(
             line, lot_sequency, num_lot)
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
+        if ((nome_segmento == "SegmentoW") and
+                (not line.payment_information_id.cod_recolhimento)):
+            return None
         segmento.update({
             'tipo_identificacao_contribuinte': 2,  # CNPJ
             'tipo_identificacao_contribuinte_alfa': '2',  # CNPJ
@@ -110,7 +113,7 @@ class Santander240(Cnab_240):
             "03": ["SegmentoA", "SegmentoB"],
             '30': ["SegmentoJ"],
             '31': ["SegmentoJ"],
-            '11': ["SegmentoO"],
+            '11': ["SegmentoO", "SegmentoW"],
             "17": ["SegmentoN_GPS"],
             "16": ["SegmentoN_DarfNormal"],
             "18": ["SegmentoN_DarfSimples"],

@@ -66,7 +66,7 @@ class Itau240(Cnab_240):
         })
         return header
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Itau240, self)._get_segmento(
             line, lot_sequency, num_lot)
 
