@@ -50,14 +50,14 @@ class AccountInvoice(models.Model):
     def invoice_print(self):
         doc = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)], limit=1)
-        if doc.model == '55':
+        if doc.model in ('55', '65'):
             return self.env.ref(
                 'br_nfe.report_br_nfe_danfe').report_action(doc)
         else:
             return super(AccountInvoice, self).invoice_print()
 
     def _return_pdf_invoice(self, doc):
-        if doc.model == '55':
+        if doc.model in ('55', '65'):
             return 'br_nfe.report_br_nfe_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
