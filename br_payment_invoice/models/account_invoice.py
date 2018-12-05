@@ -9,7 +9,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     l10n_br_payment_type = fields.Selection(
-        related="payment_mode_id.payment_type", readonly=True)
+        related="l10n_br_payment_mode_id.payment_type", readonly=True)
     l10n_br_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]", readonly=True,
@@ -23,7 +23,7 @@ class AccountInvoice(models.Model):
             'partner_ref': self.reference,
             'bank_account_id': self.l10n_br_bank_account_id.id,
             'partner_acc_number': self.l10n_br_bank_account_id.acc_number,
-            'partner_bra_number': self.l10n_br_bank_account_id.bra_number,
+            'partner_bra_number': self.l10n_br_bank_account_id.l10n_br_number,
             'move_line_id': move_line_id.id,
             'date_maturity': move_line_id.date_maturity,
             'invoice_date': move_line_id.date,
@@ -36,7 +36,7 @@ class AccountInvoice(models.Model):
                 return line.l10n_br_order_line_id
 
     def check_create_payment_line(self):
-        if self.payment_mode_id.type != 'payable':
+        if self.l10_br_payment_mode_id.type != 'payable':
             return
         if self.l10n_br_payment_type in ('03'):  # Boletos
             return

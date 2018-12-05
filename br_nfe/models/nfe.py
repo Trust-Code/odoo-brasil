@@ -21,9 +21,10 @@ class AccountDocumentRelated(models.Model):
 
     @api.onchange('invoice_related_id')
     def onchange_br_nfe_invoice_related_id(self):
-        if len(self.invoice_related_id.invoice_eletronic_ids) > 0:
+        if len(self.invoice_related_id.l10n_br_invoice_eletronic_ids) > 0:
             self.access_key = \
-                self.invoice_related_id.invoice_eletronic_ids[0].chave_nfe
+                self.invoice_related_id.l10n_br_invoice_eletronic_ids[0].\
+                chave_nfe
 
 
 class NfeReboque(models.Model):

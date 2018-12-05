@@ -28,11 +28,11 @@ class Sicredi240(Cnab240):
     def _prepare_segmento(self, line):
         vals = super(Sicredi240, self)._prepare_segmento(line)
         if not line.src_bank_account_id.codigo_convenio or \
-           not line.src_bank_account_id.bra_number:
+           not line.src_bank_account_id.l10n_br_number:
             raise UserError(
                 u'Código do beneficiario ou número da agência em branco')
         digito = self.dv_nosso_numero(
-            line.src_bank_account_id.bra_number,
+            line.src_bank_account_id.l10n_br_number,
             re.sub('[^0-9]', '', line.src_bank_account_id.codigo_convenio),
             line.nosso_numero)
         vals['nosso_numero'] = self.format_nosso_numero(
@@ -43,39 +43,40 @@ class Sicredi240(Cnab240):
         vals['cedente_conta_dv'] = str(vals['cedente_conta_dv'])
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
-        if line.payment_mode_id.boleto_especie == '01':
+        if line.l10n_br_payment_mode_id.boleto_especie == '01':
             especie = '03'
-        elif line.payment_mode_id.boleto_especie == '02':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '02':
             especie = '12'
-        elif line.payment_mode_id.boleto_especie == '03':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '03':
             especie = '16'
-        elif line.payment_mode_id.boleto_especie == '04':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '04':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '05':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '05':
             especie = '17'
-        elif line.payment_mode_id.boleto_especie == '06':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '06':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '07':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '07':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '08':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '08':
             especie = '05'
-        elif line.payment_mode_id.boleto_especie == '09':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '09':
             especie = '07'
-        elif line.payment_mode_id.boleto_especie == '13':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '13':
             especie = '19'
-        elif line.payment_mode_id.boleto_especie == '15':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '15':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '16':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '16':
             especie = '99'
-        elif line.payment_mode_id.boleto_especie == '17':
+        elif line.l10n_br_payment_mode_id.boleto_especie == '17':
             especie = '99'
         else:
             especie = '99'
         vals['especie_titulo'] = especie
         vals['codigo_multa'] = '1'  # 1 - Valor por dia
         vlr_doc = line.debit
-        juros_dia = vlr_doc * (
-            self.order.payment_mode_id.late_payment_interest / 100 / 30)
+        juros_dia = (vlr_doc *
+                     (self.order.l10n_br_payment_mode_id.
+                      late_payment_interest / 100 / 30))
         vals['juros_mora_taxa'] = Decimal(str(juros_dia)).quantize(
             Decimal('1.00'))
         vals['codigo_baixa'] = 1

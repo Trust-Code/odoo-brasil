@@ -39,6 +39,7 @@ class TestFiscalPosition(TransactionCase):
         vals = self.fpos.map_tax_extra_values(
             self.main_company, self.product, self.partner)
 
-        self.assertEquals(vals['icms_rule_id'].id, self.rule_icms.id)
+        self.assertEquals(vals['l10n_br_icms_rule_id'].id, self.rule_icms.id)
         self.assertEquals(
-            vals['icms_aliquota_reducao_base'], self.rule_icms.reducao_icms)
+            vals['l10n_br_icms_aliquota_reducao_base'],
+            self.rule_icms.reducao_icms)

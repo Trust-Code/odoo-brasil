@@ -25,19 +25,19 @@ class TestNFeBrasil(TransactionCase):
         self.main_company = self.env.ref('base.main_company')
         self.main_company.write({
             'name': 'Trustcode',
-            'legal_name': 'Trustcode Tecnologia da Informação',
-            'cnpj_cpf': '92.743.275/0001-33',
-            'inscr_mun': '51212300',
+            'l10n_br_legal_name': 'Trustcode Tecnologia da Informação',
+            'l10n_br_cnpj_cpf': '92.743.275/0001-33',
+            'l10n_br_inscr_mun': '51212300',
             'zip': '88037-240',
             'street': 'Vinicius de Moraes',
-            'number': '42',
-            'district': 'Córrego Grande',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Córrego Grande',
             'country_id': self.env.ref('base.br').id,
             'state_id': self.env.ref('base.state_br_sp').id,
             'city_id': self.env.ref('br_base.city_4205407').id,
             'phone': '(48) 9801-6226',
-            'nfe_a1_password': '123456',
-            'nfe_a1_file': base64.b64encode(
+            'l10n_br_nfe_a1_password': '123456',
+            'l10n_br_nfe_a1_file': base64.b64encode(
                 open(os.path.join(self.caminho, 'teste.pfx'), 'rb').read()),
         })
         self.revenue_account = self.env['account.account'].create({
@@ -61,23 +61,23 @@ class TestNFeBrasil(TransactionCase):
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.service_type.id,
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.service_type.id,
             'list_price': 50.0
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'l10n_br_legal_name': 'Razão Social',
             'zip': '88037-240',
             'street': 'Endereço Rua',
-            'number': '42',
-            'district': 'Centro',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Centro',
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='545.770.154-98',
+            l10n_br_cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
             country_id=self.env.ref('base.br').id,
@@ -86,10 +86,10 @@ class TestNFeBrasil(TransactionCase):
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='05.075.837/0001-13',
+            l10n_br_cnpj_cpf='05.075.837/0001-13',
             company_type='company',
             is_company=True,
-            inscr_est='433.992.727',
+            l10n_br_inscr_est='433.992.727',
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id,
@@ -119,8 +119,8 @@ class TestNFeBrasil(TransactionCase):
 
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda',
-            'service_document_id': self.fiscal_doc.id,
-            'service_serie_id': self.serie.id
+            'l10n_br_service_document_id': self.fiscal_doc.id,
+            'l10n_br_service_serie_id': self.serie.id
         })
 
         invoice_line_data = [
@@ -131,21 +131,22 @@ class TestNFeBrasil(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
-                    'service_type_id': self.service.service_type_id.id,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_product_type': self.service.l10n_br_fiscal_type,
+                    'l10n_br_service_type_id':
+                        self.service.l10n_br_service_type_id.id,
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              )
         ]
         default_invoice = {
             'name': "Teste Validação",
             'reference_type': "none",
-            'service_document_id': self.env.ref(
+            'l10n_br_service_document_id': self.env.ref(
                 'br_data_account.fiscal_document_001').id,
-            'service_serie_id': self.fpos.service_serie_id.id,
+            'l10n_br_service_serie_id': self.fpos.l10n_br_service_serie_id.id,
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
@@ -161,15 +162,19 @@ class TestNFeBrasil(TransactionCase):
             partner_id=self.partner_juridica.id
         ))
 
-    def test_computed_fields(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_computed_fields(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
-            self.assertEquals(invoice.total_edocs, 0)
+            self.assertEquals(invoice.l10n_br_total_edocs, 0)
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
             # Verifica algumas propriedades computadas que dependem do edoc
-            self.assertEquals(invoice.total_edocs, 1)
+            self.assertEquals(invoice.l10n_br_total_edocs, 1)
 
-    def test_check_invoice_eletronic_values(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_check_invoice_eletronic_values(self, br_localization):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -182,7 +187,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEquals(inv_eletr.partner_id, invoice.partner_id)
 
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.teste_envio_lote_rps')  # noqa
-    def test_nfse_sucesso_homologacao(self, envio_lote):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfse_sucesso_homologacao(self, br_localization, envio_lote):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -204,7 +211,9 @@ class TestNFeBrasil(TransactionCase):
             self.assertEqual(len(invoice_eletronic.eletronic_event_ids), 1)
 
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.cancelamento_nfe')  # noqa
-    def test_nfse_cancel(self, cancelar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfse_cancel(self, br_localization, cancelar):
+        br_localization.return_value = True
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
@@ -232,9 +241,11 @@ class TestNFeBrasil(TransactionCase):
                               "Nota Fiscal Paulistana Cancelada")
 
     @patch('odoo.addons.br_nfse_paulistana.models.invoice_eletronic.cancelamento_nfe')  # noqa
-    def test_nfse_cancelamento_erro(self, cancelar):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_nfse_cancelamento_erro(self, br_localization, cancelar):
+        br_localization.return_value = True
         for invoice in self.invoices:
-            invoice.company_id.tipo_ambiente_nfse = 'producao'
+            invoice.company_id.l10n_br_tipo_ambiente_nfse = 'producao'
             # Confirmando a fatura deve gerar um documento eletrônico
             invoice.action_invoice_open()
 

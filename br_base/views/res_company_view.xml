@@ -6,9 +6,9 @@
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('oe_title')]/h1" position="after">
-                <label for="legal_name" class="oe_edit_only"/>
+                <label for="l10n_br_legal_name" class="oe_edit_only"/>
                 <h3>
-                    <field name="legal_name" placeholder="Legal Name"/>
+                    <field name="l10n_br_legal_name" placeholder="Legal Name"/>
                 </h3>
             </xpath>
             <field name="street2" position="replace"/>
@@ -16,9 +16,9 @@
             <field name="street" position="replace">
                 <field name="zip" placeholder="Zip Code" class="o_address_zip" />
                 <field name="street" placeholder="Street" class="o_address_street" />
-                <field name="number" placeholder="Number" class="o_address_city"/>
+                <field name="l10n_br_number" placeholder="Number" class="o_address_city"/>
                 <field name="street2" placeholder="Complement" class="o_address_street" />
-                <field name="district" placeholder="District" class="o_address_state" />
+                <field name="l10n_br_district" placeholder="District" class="o_address_state" />
             </field>
             <field name="state_id" position="attributes">
                 <attribute name="domain">[('country_id','=',country_id)]</attribute>
@@ -36,18 +36,18 @@
                 <field name="city" invisible="1"/>
             </field>
             <field name="company_registry" position="after">
-                <field name="cnpj_cpf" placeholder="CNPJ"/>
-                <field name="inscr_est" placeholder="State Inscription"/>
-                <field name="inscr_mun" placeholder="Municipal Inscription"/>
-                <field name="suframa" placeholder="Suframa"/>
+                <field name="l10n_br_cnpj_cpf" placeholder="CNPJ"/>
+                <field name="l10n_br_inscr_est" placeholder="State Inscription"/>
+                <field name="l10n_br_inscr_mun" placeholder="Municipal Inscription"/>
+                <field name="l10n_br_suframa" placeholder="Suframa"/>
             </field>
             <group position="inside">
                 <group string="Digital Certificate">
-                    <field name="nfe_a1_file" />
-                    <field name="nfe_a1_password" password="True" />
-                    <field name="cert_state" />
-                    <field name="cert_expire_date" />
-                    <field name="cert_information" />
+                    <field name="l10n_br_nfe_a1_file" />
+                    <field name="l10n_br_nfe_a1_password" password="True" />
+                    <field name="l10n_br_cert_state" />
+                    <field name="l10n_br_cert_expire_date" />
+                    <field name="l10n_br_cert_information" />
                 </group>
             </group>
         </field>
@@ -59,7 +59,7 @@
         <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
             <field name="name" position="after">
-                <field name="cnpj_cpf"/>
+                <field name="l10n_br_cnpj_cpf"/>
             </field>
         </field>
     </record>

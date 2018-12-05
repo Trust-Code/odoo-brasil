@@ -94,23 +94,23 @@
                     </div>
                     <div class="col-xs-12">
                         Nome/Razão Social:
-                        <strong t-field="doc.company_id.partner_id.legal_name"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_legal_name"></strong>
                     </div>
                     <div class="col-xs-8">
                         CNPJ:
-                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_cnpj_cpf"></strong>
                     </div>
                     <div class="col-xs-4">
                         Inscrição Municipal:
-                        <strong t-field="doc.company_id.partner_id.inscr_mun"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_inscr_mun"></strong>
                     </div>
                     <div class="col-xs-12">
                         Endereço:
                         <strong t-field="doc.company_id.partner_id.street">
                         </strong>
-                        <strong t-field="doc.company_id.partner_id.number">
+                        <strong t-field="doc.company_id.partner_id.l10n_br_number">
                         </strong>
-                        <strong t-field="doc.company_id.partner_id.district">
+                        <strong t-field="doc.company_id.partner_id.l10n_br_district">
                         </strong>
                     </div>
                     <div class="col-xs-6">
@@ -129,23 +129,23 @@
                 </div>
                 <div class="col-xs-12">
                     Nome/Razão Social:
-                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
+                    <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"></strong>
                 </div>
                 <div class="col-xs-8">
                     CNPJ:
-                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
+                    <strong t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf"></strong>
                 </div>
                 <div class="col-xs-4">
                     Inscrição Municipal:
-                    <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
+                    <strong t-field="doc.commercial_partner_id.l10n_br_inscr_mun"></strong>
                 </div>
                 <div class="col-xs-12">
                     Endereço:
                     <strong t-field="doc.commercial_partner_id.street">
                     </strong>
-                    <strong t-field="doc.commercial_partner_id.number">
+                    <strong t-field="doc.commercial_partner_id.l10n_br_number">
                     </strong>
-                    <strong t-field="doc.commercial_partner_id.district">
+                    <strong t-field="doc.commercial_partner_id.l10n_br_district">
                     </strong>
                 </div>
                 <div class="col-xs-4">
@@ -187,7 +187,7 @@
                     Código do serviço:
                     <br />
                     <strong t-field="doc.eletronic_item_ids[0].codigo_tributacao_municipio"></strong> -
-                    <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
+                    <strong t-field="doc.eletronic_item_ids[0].product_id.l10n_br_service_type_id.name"></strong>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;">
@@ -199,32 +199,32 @@
                 <div class="col-xs-3" style="text-align:center;">
                     Base de Cálculo (R$):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_bruto"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>*</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="text-align:center;">
                     Alíquota (%):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong><span t-field="doc.eletronic_item_ids[0].issqn_aliquota" />%</strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>*</strong>
                     </t>
                 </div>
                 <div class="col-xs-2" style="text-align:center;">
                     Valor do ISS (R$):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type == '3'">
                         <strong t-field="doc.valor_issqn"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
+                    <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                         <strong>*</strong>
                     </t>
                 </div>
@@ -241,7 +241,7 @@
                   <li>Esta NFS-e foi emitida com respaldo na Lei nº 5.098 de 15/10/2009 e no Decreto nº 32.250 de 11/05/2010</li>
                   <li>PROCON-RJ: Av. Rio Branco nº 25, 5º andar, tel 151: www.procon.rj.gov.br</li>
                   <li>ISS devido deve ser recolhido por meio de Documento de Arrecadação do Simples Nacional (DAS)</li>
-                  <t t-if="doc.company_id.fiscal_type != '3'">
+                  <t t-if="doc.company_id.l10n_br_fiscal_type != '3'">
                     <li>Documento emitido por ME ou EPP optantee pelo Simples Nacional. Não gera direito a crédito fiscal de IPI.</li>
                   </t>
                   <li>Esta NFS-e não gera crédito</li>

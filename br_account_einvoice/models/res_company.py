@@ -11,9 +11,11 @@ class ResCompany(models.Model):
     l10n_br_nfse_conjugada = fields.Boolean(
         string="Emite NFSe Conjugada?", default=False)
 
-    tipo_ambiente_nfse = fields.Selection(
+    l10n_br_tipo_ambiente_nfse = fields.Selection(
         [('producao', u'Produção'), ('homologacao', u'Homologação')],
-        string="Ambiente NFSe", default='homologacao')
+        string="Ambiente NFSe", default='homologacao',
+        oldname='tipo_ambiente_nfse')
 
-    nfe_email_template = fields.Many2one(
-        'mail.template', string="Template de Email para NFe")
+    l10n_br_nfe_email_template = fields.Many2one(
+        'mail.template', string="Template de Email para NFe",
+        oldname='nfe_email_template')

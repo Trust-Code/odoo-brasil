@@ -12,7 +12,12 @@
     'website': 'http://openerpbrasil.org',
     'version': '11.0.1.0.0',
     'depends': [
-        'contacts', 'sale', 'br_account', 'br_zip', 'br_data_account_product'
+        'contacts',
+        'sale',
+        'br_account',
+        'br_zip',
+        'br_data_account_product',
+        'br_localization_filtering',
     ],
     'data': [
         'reports/sale_order.xml',

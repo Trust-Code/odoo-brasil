@@ -18,9 +18,9 @@ class CrmLead(models.Model):
     inscr_est = fields.Char(u'Inscrição Estadual', size=16)
     inscr_mun = fields.Char(u'Inscrição Municipal', size=18)
     suframa = fields.Char('Suframa', size=18)
-    city_id = fields.Many2one('res.state.city', u'Município',
+    city_id = fields.Many2one('res.city', u'Município',
                               domain="[('state_id','=',state_id)]")
-    district = fields.Char('Bairro', size=32)
+    l10n_br_district = fields.Char('Bairro', size=32, oldname="district")
     number = fields.Char(u'Número', size=10)
     name_surname = fields.Char(u'Nome e Sobrenome', size=128,
                                help="Nome utilizado em documentos fiscais")
@@ -103,18 +103,18 @@ class CrmLead(models.Model):
         res = super(CrmLead, self)._onchange_partner_id_values(partner_id)
         if partner_id:
             partner = self.env['res.partner'].browse(partner_id)
-            val = re.sub('[^0-9]', '', partner.cnpj_cpf or '')
+            val = re.sub('[^0-9]', '', partner.l10n_br_cnpj_cpf or '')
             if len(val) == 11:
                 cnpj_cpf = 'cpf'
             else:
                 cnpj_cpf = 'cnpj'
             res.update({
-                'legal_name': partner.legal_name,
-                cnpj_cpf: partner.cnpj_cpf,
-                'inscr_est': partner.inscr_est,
-                'suframa': partner.suframa,
-                'number': partner.number,
-                'district': partner.district,
+                'legal_name': partner.l10n_br_legal_name,
+                cnpj_cpf: partner.l10n_br_cnpj_cpf,
+                'inscr_est': partner.l10n_br_inscr_est,
+                'suframa': partner.l10n_br_suframa,
+                'number': partner.l10n_br_number,
+                'l10n_br_district': partner.l10n_br_district,
                 'city_id': partner.city_id.id,
             })
         return res
@@ -124,23 +124,23 @@ class CrmLead(models.Model):
         partner = super(CrmLead, self)._create_lead_partner_data(
             name, is_company, parent_id)
         partner.update({
-            'number': self.number,
-            'district': self.district,
+            'l10n_br_number': self.number,
+            'l10n_br_district': self.l10n_br_district,
             'city_id': self.city_id.id
         })
         if is_company:
             partner.update({
-                'legal_name': self.legal_name,
-                'cnpj_cpf': self.cnpj,
-                'inscr_est': self.inscr_est,
-                'inscr_mun': self.inscr_mun,
-                'suframa': self.suframa,
+                'l10n_br_legal_name': self.legal_name,
+                'l10n_br_cnpj_cpf': self.cnpj,
+                'l10n_br_inscr_est': self.inscr_est,
+                'l10n_br_inscr_mun': self.inscr_mun,
+                'l10n_br_suframa': self.suframa,
                 })
         else:
             partner.update({
-                'legal_name': self.name_surname,
-                'cnpj_cpf': self.cpf,
-                'inscr_est': self.rg,
+                'l10n_br_legal_name': self.name_surname,
+                'l10n_br_cnpj_cpf': self.cpf,
+                'l10n_br_inscr_est': self.rg,
                 })
         return partner
 

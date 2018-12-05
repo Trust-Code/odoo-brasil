@@ -19,9 +19,10 @@ class SaleOrder(models.Model):
         super(SaleOrder, self)._amount_all()
         for order in self:
             order.update({
-                'amount_total': order.total_bruto - order.total_desconto +
-                order.total_tax + order.total_frete + order.total_seguro +
-                order.total_despesas,
+                'amount_total': (
+                    order.l10n_br_total_bruto - order.l10n_br_total_desconto +
+                    order.l10n_br_total_tax + order.total_frete +
+                    order.total_seguro + order.total_despesas),
             })
 
     def _calc_ratio(self, qty, total):
@@ -34,8 +35,9 @@ class SaleOrder(models.Model):
     def _onchange_despesas_frete_seguro(self):
         amount = 0
         for line in self.order_line:
-            if line.product_id.fiscal_type == 'product':
-                amount += line.valor_bruto - line.valor_desconto
+            if line.product_id.l10n_br_fiscal_type == 'product':
+                amount += (line.l10n_br_valor_bruto -
+                           line.l10n_br_valor_desconto)
 
         index = 0
         prec = self.currency_id.decimal_places
@@ -46,9 +48,9 @@ class SaleOrder(models.Model):
 
         for l in self.order_line:
             index += 1
-            if l.product_id.fiscal_type == 'service':
+            if l.product_id.l10n_br_fiscal_type == 'service':
                 continue
-            item_liquido = l.valor_bruto - l.valor_desconto
+            item_liquido = l.l10n_br_valor_bruto - l.l10n_br_valor_desconto
             percentual = self._calc_ratio(item_liquido, amount)
             if index == total_items:
                 amount_seguro = balance_seguro
@@ -145,7 +147,7 @@ class SaleOrderLine(models.Model):
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-        res['valor_seguro'] = self.valor_seguro
-        res['outras_despesas'] = self.outras_despesas
-        res['valor_frete'] = self.valor_frete
+        res['l10n_br_valor_seguro'] = self.valor_seguro
+        res['l10n_br_outras_despesas'] = self.outras_despesas
+        res['l10n_br_valor_frete'] = self.valor_frete
         return res

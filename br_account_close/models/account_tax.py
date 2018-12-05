@@ -8,13 +8,15 @@ from odoo import api, fields, models
 class AccountTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
-    domain = fields.Selection(selection_add=[('simples', 'Simples Nacional')])
+    l10n_br_domain = fields.Selection(
+        selection_add=[('simples', 'Simples Nacional')])
 
 
 class AccountTax(models.Model):
     _inherit = 'account.tax'
 
-    domain = fields.Selection(selection_add=[('simples', 'Simples Nacional')])
+    l10n_br_domain = fields.Selection(
+        selection_add=[('simples', 'Simples Nacional')])
     l10n_br_tax_interval_ids = fields.One2many(
         'l10n_br.taxation.simples', 'tax_id', string="Tax Rules")
     l10n_br_revenue_account_ids = fields.Many2many(
@@ -22,7 +24,7 @@ class AccountTax(models.Model):
 
     @api.multi
     def aggregate_tax_to_pay(self, period):
-        if self.filtered(lambda x: x.domain == 'simples'):
+        if self.filtered(lambda x: x.l10n_br_domain == 'simples'):
             total = 0.0
             for tax in self:
                 total += tax._calculate_simples_nacional_tax()

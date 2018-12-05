@@ -8,12 +8,12 @@
             <div name="button_box" position="inside">
                 <button name="action_view_edocs" type="object" class="oe_stat_button" icon="fa-file-text-o"
                     context="{ 'search_default_invoice_id': id }"
-                    attrs="{'invisible': [('total_edocs', '=', 0)]}">
-                    <field name="total_edocs" /> <span> E-Docs</span>
+                    attrs="{'invisible': [('l10n_br_total_edocs', '=', 0)]}">
+                    <field name="l10n_br_total_edocs" /> <span> E-Docs</span>
                 </button>
                  <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
                     string="Imprimir Danfe"
-                    attrs="{'invisible': [('total_edocs', '=', 0)]}">
+                    attrs="{'invisible': [('l10n_br_total_edocs', '=', 0)]}">
                 </button>
             </div>
         </field>
@@ -27,12 +27,12 @@
             <div name="button_box" position="inside">
                 <button name="action_view_edocs" type="object" class="oe_stat_button" icon="fa-file-text-o"
                     context="{ 'search_default_invoice_id': id }"
-                    attrs="{'invisible': [('total_edocs', '=', 0)]}">
-                    <field name="total_edocs" /> <span> E-Docs</span>
+                    attrs="{'invisible': [('l10n_br_total_edocs', '=', 0)]}">
+                    <field name="l10n_br_total_edocs" /> <span> E-Docs</span>
                 </button>
                  <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
                     string="Imprimir Danfe"
-                    attrs="{'invisible': [('total_edocs', '=', 0)]}">
+                    attrs="{'invisible': [('l10n_br_total_edocs', '=', 0)]}">
                 </button>
             </div>
         </field>
@@ -44,8 +44,8 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
         <field name="arch" type="xml">
             <field name="price_subtotal" position="after">
-                <field name="item_pedido_compra" />
-                <field name="state"/>
+                <field name="l10n_br_item_pedido_compra" />
+                <field name="l10n_br_state"/>
             </field>
         </field>
     </record>
@@ -56,11 +56,14 @@
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
-                <attribute name="decoration-info">state == 'pendente'</attribute>
-                <attribute name="decoration-muted">state == 'transmitido'</attribute>
+                <attribute name="decoration-info">l10n_br_state == 'pendente'</attribute>
+                <attribute name="decoration-muted">l10n_br_state == 'transmitido'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']" position="before">
+                <field name="l10n_br_localization" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
-                <field name="state"/>
+                <field name="l10n_br_state" attrs="{'column_invisible': [('parent.l10n_br_localization', '=', False)]}"/>
             </xpath>
         </field>
     </record>

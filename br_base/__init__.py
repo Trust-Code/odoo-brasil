@@ -11,7 +11,7 @@ def post_init(cr, registry):
     """Import CSV data as it is faster than xml and because we can't use
     noupdate anymore with csv"""
     from odoo.tools import convert_file
-    filename = 'data/res.state.city.csv'
+    filename = 'data/res.city.csv'
     convert_file(cr, 'br_base', filename, None, mode='init',
                  noupdate=True, kind='init', report=None)
 

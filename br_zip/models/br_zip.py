@@ -28,7 +28,7 @@ class BrZip(models.Model):
         'res.country.state', 'Estado',
         domain="[('country_id','=',country_id)]")
     city_id = fields.Many2one(
-        'res.state.city', 'Cidade',
+        'res.city', 'Cidade',
         required=True, domain="[('state_id','=',state_id)]")
 
     def set_domain(self, country_id=False, state_id=False,
@@ -66,7 +66,7 @@ class BrZip(models.Model):
                 'country_id': zip_obj.country_id.id,
                 'state_id': zip_obj.state_id.id,
                 'city_id': zip_obj.city_id.id,
-                'district': zip_obj.district,
+                'l10n_br_district': zip_obj.district,
                 'street': ((zip_obj.street_type or '') +
                            ' ' + (zip_obj.street or '')) if
                 zip_obj.street_type else (zip_obj.street or ''),
@@ -107,8 +107,8 @@ class BrZip(models.Model):
             obj_viacep = requests.get(url_viacep)
             res = obj_viacep.json()
             if not res.get('erro', False):
-                city = self.env['res.state.city'].search(
-                    [('ibge_code', '=', res['ibge'][2:]),
+                city = self.env['res.city'].search(
+                    [('l10n_br_ibge_code', '=', res['ibge'][2:]),
                      ('state_id.code', '=', res['uf'])])
 
                 self.env['br.zip'].create(
@@ -124,15 +124,15 @@ class BrZip(models.Model):
 
     def _search_by_address(self, state_id, city_id, street):
         try:
-            city = self.env['res.state.city'].browse(city_id)
+            city = self.env['res.city'].browse(city_id)
             url_viacep = 'http://viacep.com.br/ws/' + city.state_id.code + \
                 '/' + city.name + '/' + street + '/json/unicode/'
             obj_viacep = requests.get(url_viacep)
             results = obj_viacep.json()
             if results:
                 for res in results:
-                    city = self.env['res.state.city'].search(
-                        [('ibge_code', '=', res['ibge'][2:]),
+                    city = self.env['res.city'].search(
+                        [('l10n_br_ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
 
                     self.env['br.zip'].create(

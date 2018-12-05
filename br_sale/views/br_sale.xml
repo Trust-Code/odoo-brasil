@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <menuitem id="menu_action_br_base_city_form" name="Municípios"
-        parent="contacts.menu_localisation" action="br_base.action_br_base_city_form"/>
-
     <menuitem id="menu_action_br_base_res_region_form" name="Regiões"
         parent="contacts.menu_localisation" action="br_base.action_br_base_res_region_form"/>
 

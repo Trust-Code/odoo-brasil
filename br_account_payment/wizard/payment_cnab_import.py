@@ -28,7 +28,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
             raise UserError(
                 'A conta não é a mesma do extrato.\nDiário: %s\nExtrato: %s' %
                 (int(account.acc_number), acc_number))
-        if bra_number != int(account.bra_number):
+        if bra_number != int(account.l10n_br_number):
             raise UserError(
                 'A agência não é a mesma do extrato: %s' %
                 bra_number)

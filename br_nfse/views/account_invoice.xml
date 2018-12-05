@@ -6,14 +6,14 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
             <div class="alert alert-info" position="after">
-                <field name="ambiente_nfse" invisible="1" />
-                <field name="nfse_eletronic" invisible="1" />
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
+                <field name="l10n_br_ambiente_nfse" invisible="1" />
+                <field name="l10n_br_nfse_eletronic" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('l10n_br_ambiente_nfse', '==', 'producao'), ('l10n_br_nfse_eletronic', '=', False)]}">
                                       A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
             <field name="date_invoice" position="before">
-                  <field name="numero_nfse" attrs="{'invisible': [('numero_nfse', '=', '')]}" />
+                  <field name="l10n_br_numero_nfse" attrs="{'invisible': [('l10n_br_numero_nfse', '=', '')]}" />
             </field>
         </field>
     </record>
@@ -23,14 +23,14 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
         <field name="arch" type="xml">
             <div class="alert alert-info" position="after">
-                <field name="ambiente_nfse" invisible="1" />
-                <field name="nfse_eletronic" invisible="1" />
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('ambiente_nfse', '==', 'producao'), ('nfse_eletronic', '=', False)]}">
+                <field name="l10n_br_ambiente_nfse" invisible="1" />
+                <field name="l10n_br_nfse_eletronic" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|', ('l10n_br_ambiente_nfse', '==', 'producao'), ('l10n_br_nfse_eletronic', '=', False)]}">
                                       A Nota de Serviço está em ambiente de homologação
                 </div>
             </div>
             <field name="date_invoice" position="before">
-                  <field name="numero_nfse" attrs="{'invisible': [('numero_nfse', '=', None)]}" />
+                  <field name="l10n_br_numero_nfse" attrs="{'invisible': [('l10n_br_numero_nfse', '=', None)]}" />
             </field>
         </field>
     </record>
@@ -40,7 +40,7 @@
         <field name="inherit_id" ref="account.invoice_tree"/>
         <field name="arch" type="xml">
             <field name="number" position="after">
-                <field name="numero_nfse" />
+                <field name="l10n_br_numero_nfse" />
             </field>
       	</field>
     </record>
@@ -50,11 +50,11 @@
         <field name="inherit_id" ref="br_account_einvoice.view_br_nfse_invoice_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
-                <attribute name="decoration-info">state == 'pendente'</attribute>
-                <attribute name="decoration-muted">state == 'transmitido'</attribute>
+                <attribute name="decoration-info">l10n_br_state == 'pendente'</attribute>
+                <attribute name="decoration-muted">l10n_br_state == 'transmitido'</attribute>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='state']" position="after">
-                <field name="numero_nfse"/>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='l10n_br_state']" position="after">
+                <field name="l10n_br_numero_nfse"/>
             </xpath>
         </field>
     </record>
@@ -63,8 +63,8 @@
         <field name="model">account.invoice.line</field>
         <field name="inherit_id" ref="br_account_einvoice.view_br_account_einvoice_invoice_line_form"/>
         <field name="arch" type="xml">
-            <field name="item_pedido_compra" position="after">
-                <field name="numero_nfse" attrs="{'required': [('state', '=', 'transmitido')]}"/>
+            <field name="l10n_br_item_pedido_compra" position="after">
+                <field name="l10n_br_numero_nfse" attrs="{'required': [('l10n_br_state', '=', 'transmitido')]}"/>
             </field>
         </field>
     </record>

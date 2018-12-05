@@ -6,7 +6,7 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
         <field name="arch" type="xml">
-            <field name="payment_mode_id" position="after">
+            <field name="l10n_br_payment_mode_id" position="after">
                 <field name="boleto" invisible="1" />
             </field>
             <div name="button_box" position="inside">

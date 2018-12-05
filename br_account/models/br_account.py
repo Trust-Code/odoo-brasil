@@ -109,9 +109,10 @@ class BrAccountDocumentSerie(models.Model):
     code = fields.Char(u'Código', size=3, required=True)
     name = fields.Char(u'Descrição', required=True)
     active = fields.Boolean('Ativo')
-    fiscal_type = fields.Selection([('service', u'Serviço'),
-                                    ('product', 'Produto')], 'Tipo Fiscal',
-                                   default='service')
+    fiscal_type = fields.Selection(
+        [('service', u'Serviço'),
+         ('product', 'Produto')],
+        'Tipo Fiscal', default='service', oldname='fiscal_type')
     fiscal_document_id = fields.Many2one('br_account.fiscal.document',
                                          'Documento Fiscal', required=True)
     company_id = fields.Many2one('res.company', 'Empresa',
@@ -293,21 +294,21 @@ class AccountDocumentRelated(models.Model):
         if not self.invoice_related_id:
             return
         inv_id = self.invoice_related_id
-        if not inv_id.product_document_id:
+        if not inv_id.l10n_br_product_document_id:
             return
 
-        if inv_id.product_document_id.code == '55':
+        if inv_id.l10n_br_product_document_id.code == '55':
             self.document_type = 'nfe'
-        elif inv_id.product_document_id.code == '04':
+        elif inv_id.l10n_br_product_document_id.code == '04':
             self.document_type = 'nfrural'
-        elif inv_id.product_document_id.code == '57':
+        elif inv_id.l10n_br_product_document_id.code == '57':
             self.document_type = 'cte'
-        elif inv_id.product_document_id.code in ('2B', '2C', '2D'):
+        elif inv_id.l10n_br_product_document_id.code in ('2B', '2C', '2D'):
             self.document_type = 'cf'
         else:
             self.document_type = 'nf'
 
-        if inv_id.product_document_id.code in ('55', '57'):
+        if inv_id.l10n_br_product_document_id.code in ('55', '57'):
             self.serie = False
             self.internal_number = False
             self.state_id = False

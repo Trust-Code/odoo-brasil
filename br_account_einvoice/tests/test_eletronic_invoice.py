@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
 
@@ -40,14 +41,14 @@ class TestEletronicInvoice(TransactionCase):
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'default_code': '12',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
         self.service = self.env['product.product'].create({
             'name': 'Normal Service',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.env.ref(
                 'br_data_account.service_type_101').id,
             'list_price': 50.0
         })
@@ -85,14 +86,14 @@ class TestEletronicInvoice(TransactionCase):
                     'account_id': self.revenue_account.id,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'product_type': self.service.fiscal_type,
+                    'l10n_br_product_type': self.service.l10n_br_fiscal_type,
                 }
              )
         ]
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
             reference_type="none",
-            product_document_id=self.env.ref(
+            l10n_br_product_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             journal_id=self.journalrec.id,
             partner_id=self.partner_fisica.id,
@@ -100,8 +101,10 @@ class TestEletronicInvoice(TransactionCase):
             invoice_line_ids=invoice_line_incomplete
         ))
 
-    def test_basic_validation_for_eletronic_doc(self):
-        self.assertEquals(self.inv_incomplete.total_edocs, 0)
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_basic_validation_for_eletronic_doc(self, br_localization):
+        br_localization.return_value = True
+        self.assertEquals(self.inv_incomplete.l10n_br_total_edocs, 0)
 
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
@@ -113,7 +116,7 @@ class TestEletronicInvoice(TransactionCase):
         invoice_eletronic = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.inv_incomplete.id)])
 
-        self.assertEquals(self.inv_incomplete.total_edocs, 0)
+        self.assertEquals(self.inv_incomplete.l10n_br_total_edocs, 0)
         vals = self.inv_incomplete.action_view_edocs()
         self.assertEquals(vals['type'], 'ir.actions.act_window')
         self.assertEquals(vals['res_model'], 'invoice.eletronic')

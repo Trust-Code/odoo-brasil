@@ -9,9 +9,10 @@ FIELD_STATE = {'draft': [('readonly', False)]}
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'br.localization.filtering']
 
-    payment_mode_id = fields.Many2one(
+    l10n_br_payment_mode_id = fields.Many2one(
         'l10n_br.payment.mode', readonly=True,
         states=FIELD_STATE, string=u"Modo de pagamento")
 
@@ -19,8 +20,9 @@ class AccountInvoice(models.Model):
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
-
+        if not self.l10n_br_localization:
+            return res
         for invoice_line in res:
             line = invoice_line[2]
-            line['payment_mode_id'] = self.payment_mode_id.id
+            line['l10n_br_payment_mode_id'] = self.l10n_br_payment_mode_id.id
         return res

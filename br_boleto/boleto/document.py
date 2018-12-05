@@ -41,7 +41,7 @@ class Boleto:
 
     @staticmethod
     def getBoleto(order_line, nosso_numero):
-        boleto_type = order_line.payment_mode_id.boleto_type
+        boleto_type = order_line.l10n_br_payment_mode_id.boleto_type
         if boleto_type:
             return dict_boleto[boleto_type][0](order_line, nosso_numero)
         raise BoletoException(u'Configure o tipo de boleto no modo de '
@@ -71,7 +71,7 @@ class Boleto:
         return self.branch_number
 
     def _order_line(self, order_line):
-        self._payment_mode(order_line.payment_mode_id)
+        self._payment_mode(order_line.l10n_br_payment_mode_id)
         self.boleto.data_vencimento = datetime.date(datetime.strptime(
             order_line.date_maturity, '%Y-%m-%d'))
         self.boleto.data_documento = datetime.date(datetime.strptime(
@@ -101,17 +101,18 @@ class Boleto:
         :param company:
         :return:
         """
-        company_legal_name = company.partner_id.legal_name
+        company_legal_name = company.partner_id.l10n_br_legal_name
 
         if len(company_legal_name) > 45:
             company_legal_name = company_legal_name[0:42] + '...'
 
         self.boleto.cedente = company_legal_name
-        self.boleto.cedente_documento = company.cnpj_cpf
-        self.boleto.cedente_bairro = company.district
+        self.boleto.cedente_documento = company.l10n_br_cnpj_cpf
+        self.boleto.cedente_bairro = company.l10n_br_district
         self.boleto.cedente_cep = company.zip
         self.boleto.cedente_cidade = company.city_id.name
-        self.boleto.cedente_logradouro = company.street + ', ' + company.number
+        self.boleto.cedente_logradouro = (company.street + ', ' +
+                                          company.l10n_br_number)
         self.boleto.cedente_uf = company.state_id.code
         self.boleto.agencia_cedente = self.getBranchNumber()
         self.boleto.conta_cedente = self.getAccountNumber()
@@ -122,14 +123,16 @@ class Boleto:
         :param partner:
         :return:
         """
-        self.boleto.sacado_endereco = partner.street + ', ' + partner.number
+        self.boleto.sacado_endereco = (partner.street
+                                       + ', '
+                                       + partner.l10n_br_number)
         self.boleto.sacado_cidade = partner.city_id.name
-        self.boleto.sacado_bairro = partner.district
+        self.boleto.sacado_bairro = partner.l10n_br_district
         self.boleto.sacado_uf = partner.state_id.code
         self.boleto.sacado_cep = partner.zip
-        self.boleto.sacado_nome = partner.legal_name\
+        self.boleto.sacado_nome = partner.l10n_br_legal_name\
             if partner.company_type == 'company' else partner.name
-        self.boleto.sacado_documento = partner.cnpj_cpf
+        self.boleto.sacado_documento = partner.l10n_br_cnpj_cpf
 
     @classmethod
     def get_pdfs(cls, boleto_list):
@@ -163,7 +166,7 @@ class BoletoBB(Boleto):
         # 2: Nosso Numero with 17 positions
         self.boleto = Boleto.getBoletoClass(order_line)(7, 2)
         self.account_number = order_line.src_bank_account_id.acc_number
-        self.branch_number = order_line.src_bank_account_id.bra_number
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -176,10 +179,10 @@ class BoletoBradesco(Boleto):
     def __init__(self, order_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(order_line)()
         self.account_number = order_line.src_bank_account_id.acc_number
-        self.branch_number = order_line.src_bank_account_id.bra_number
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
         # bank specific
         self.account_digit = order_line.src_bank_account_id.acc_number_dig
-        self.branch_digit = order_line.src_bank_account_id.bra_number_dig
+        self.branch_digit = order_line.src_bank_account_id.l10n_br_number_dig
         # end bank specific
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
@@ -192,10 +195,10 @@ class BoletoCaixa(Boleto):
         self.boleto = Boleto.getBoletoClass(order_line)()
         conta = order_line.src_bank_account_id
         self.account_number = conta.acc_number
-        self.branch_number = conta.bra_number
+        self.branch_number = conta.l10n_br_number
         # bank specific
         self.account_digit = conta.acc_number_dig
-        self.branch_digit = conta.bra_number_dig
+        self.branch_digit = conta.l10n_br_number_dig
         # end bank specific
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
@@ -211,8 +214,8 @@ class BoletoCecred(Boleto):
         self.boleto = Boleto.getBoletoClass(order_line)()
         self.account_number = conta.acc_number
         self.account_digit = conta.acc_number_dig
-        self.branch_number = conta.bra_number
-        self.branch_digit = conta.bra_number_dig
+        self.branch_number = conta.l10n_br_number
+        self.branch_digit = conta.l10n_br_number_dig
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.codigo_beneficiario = re.sub(
             r'\D', '', conta.codigo_convenio)
@@ -234,11 +237,12 @@ class BoletoItau157(Boleto):
 
 
 class BoletoItau(Boleto):
+
     def __init__(self, order_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(order_line)()
         conta = order_line.src_bank_account_id
         self.account_number = conta.acc_number
-        self.branch_number = conta.bra_number
+        self.branch_number = conta.l10n_br_number
         self.account_digit = conta.acc_number_dig
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
@@ -251,19 +255,19 @@ class BoletoSantander(Boleto):
     def __init__(self, order_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(order_line)()
         self.account_number = order_line.src_bank_account_id.acc_number[:7]
-        self.branch_number = order_line.src_bank_account_id.bra_number
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
         self.boleto.conta_cedente = \
-            order_line.payment_mode_id.boleto_cnab_code
+            order_line.l10n_br_payment_mode_id.boleto_cnab_code
 
 
 class BoletoSicredi(Boleto):
     def __init__(self, order_line, nosso_numero):
         self.boleto = Boleto.getBoletoClass(order_line)()
         self.account_number = order_line.src_bank_account_id.acc_number
-        self.branch_number = order_line.src_bank_account_id.bra_number
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
 
@@ -273,8 +277,8 @@ class BoletoSicoob(Boleto):
         self.boleto = Boleto.getBoletoClass(order_line)()
         self.account_number = order_line.src_bank_account_id.acc_number
         self.account_digit = order_line.src_bank_account_id.acc_number_dig
-        self.branch_number = order_line.src_bank_account_id.bra_number
-        self.branch_digit = order_line.src_bank_account_id.bra_number_dig
+        self.branch_number = order_line.src_bank_account_id.l10n_br_number
+        self.branch_digit = order_line.src_bank_account_id.l10n_br_number_dig
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.codigo_beneficiario = \
             re.sub('[^0-9]', '',

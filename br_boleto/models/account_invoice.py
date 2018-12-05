@@ -8,9 +8,10 @@ from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'br.localization.filtering']
 
-    boleto = fields.Boolean(related="payment_mode_id.boleto")
+    boleto = fields.Boolean(related="l10n_br_payment_mode_id.boleto")
 
     def _get_email_template_invoice(self):
         return self.env.user.company_id.boleto_email_tmpl
@@ -59,19 +60,21 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
+        if not self.l10n_br_localization:
+            return res
         error = ''
         for item in self:
-            if not item.payment_mode_id:
+            if not item.l10n_br_payment_mode_id:
                 continue
-            if item.payment_mode_id.type != 'receivable':
+            if item.l10n_br_payment_mode_id.type != 'receivable':
                 continue
-            if not item.payment_mode_id.boleto:
+            if not item.l10n_br_payment_mode_id.boleto:
                 continue
-            if not item.company_id.partner_id.legal_name:
+            if not item.company_id.partner_id.l10n_br_legal_name:
                 error += u'Empresa - Razão Social\n'
-            if not item.company_id.cnpj_cpf:
+            if not item.company_id.l10n_br_cnpj_cpf:
                 error += u'Empresa - CNPJ\n'
-            if not item.company_id.district:
+            if not item.company_id.l10n_br_district:
                 error += u'Empresa - Bairro\n'
             if not item.company_id.zip:
                 error += u'Empresa - CEP\n'
@@ -79,7 +82,7 @@ class AccountInvoice(models.Model):
                 error += u'Empresa - Cidade\n'
             if not item.company_id.street:
                 error += u'Empresa - Logradouro\n'
-            if not item.company_id.number:
+            if not item.company_id.l10n_br_number:
                 error += u'Empresa - Número\n'
             if not item.company_id.state_id.code:
                 error += u'Empresa - Estado\n'
@@ -87,11 +90,11 @@ class AccountInvoice(models.Model):
             if not item.commercial_partner_id.name:
                 error += u'Cliente - Nome\n'
             if item.commercial_partner_id.is_company and \
-               not item.commercial_partner_id.legal_name:
+               not item.commercial_partner_id.l10n_br_legal_name:
                 error += u'Cliente - Razão Social\n'
-            if not item.commercial_partner_id.cnpj_cpf:
+            if not item.commercial_partner_id.l10n_br_cnpj_cpf:
                 error += u'Cliente - CNPJ/CPF \n'
-            if not item.commercial_partner_id.district:
+            if not item.commercial_partner_id.l10n_br_district:
                 error += u'Cliente - Bairro\n'
             if not item.commercial_partner_id.zip:
                 error += u'Cliente - CEP\n'
@@ -99,7 +102,7 @@ class AccountInvoice(models.Model):
                 error += u'Cliente - Cidade\n'
             if not item.commercial_partner_id.street:
                 error += u'Cliente - Logradouro\n'
-            if not item.commercial_partner_id.number:
+            if not item.commercial_partner_id.l10n_br_number:
                 error += u'Cliente - Número\n'
             if not item.commercial_partner_id.state_id.code:
                 error += u'Cliente - Estado\n'

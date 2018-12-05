@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <field name="payment_term_id" position="after">
-                <field name="payment_mode_id" />
+                <field name="l10n_br_payment_mode_id" />
             </field>
         </field>
     </record>

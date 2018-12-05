@@ -33,7 +33,7 @@ class InvoiceEletronic(models.Model):
         import urllib
 
         url_consulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
-consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.inscr_mun)
+consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.l10n_br_inscr_mun)
 
         url = '<img class="center-block"\
 style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
@@ -53,7 +53,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             if not self.company_id.aedf:
                 errors.append('Código AEDF da empresa obrigatório')
             for item in self.eletronic_item_ids:
-                if not item.product_id.service_type_id.id_cnae:
+                if not item.product_id.l10n_br_service_type_id.id_cnae:
                     errors.append('%s - %s: ID CNAE obrigatório' % (
                         item.product_id.default_code or '',
                         item.product_id.name))
@@ -69,18 +69,18 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
 
         tomador = {
             'cnpj_cpf': re.sub(
-                '[^0-9]', '', partner.cnpj_cpf or ''),
+                '[^0-9]', '', partner.l10n_br_cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
-                '[^0-9]', '', partner.inscr_mun or
+                '[^0-9]', '', partner.l10n_br_inscr_mun or
                 '0000000'),
-            'razao_social': partner.legal_name or partner.name,
+            'razao_social': partner.l10n_br_legal_name or partner.name,
             'logradouro': partner.street,
-            'numero': partner.number,
-            'bairro': partner.district,
+            'numero': partner.l10n_br_number,
+            'bairro': partner.l10n_br_district,
             'cep': re.sub('[^0-9]', '', partner.zip or ''),
             'cidade': '%s%s' % (
-                partner.state_id.ibge_code,
-                partner.city_id.ibge_code),
+                partner.state_id.l10n_br_ibge_code,
+                partner.city_id.l10n_br_ibge_code),
             'uf': partner.state_id.code,
             'email': self.partner_id.email,
             'phone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
@@ -89,14 +89,14 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         for line in self.eletronic_item_ids:
             aliquota = line.issqn_aliquota / 100
             base = line.issqn_base_calculo
-            if self.company_id.fiscal_type != '3':
+            if self.company_id.l10n_br_fiscal_type != '3':
                 aliquota, base = 0.0, 0.0
             unitario = round(line.valor_liquido / line.quantidade, 2)
             items.append({
                 'name': line.product_id.name,
                 'cnae': re.sub(
                     '[^0-9]', '',
-                    line.product_id.service_type_id.id_cnae or ''),
+                    line.product_id.l10n_br_service_type_id.id_cnae or ''),
                 'cst_servico': '1',
                 'aliquota': aliquota,
                 'base_calculo': base,
@@ -111,7 +111,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         if self.company_id.state_id.id != partner.state_id.id:
             cfps = '9203'
         base, issqn = self.valor_bc_issqn, self.valor_issqn
-        if self.company_id.fiscal_type != '3':
+        if self.company_id.l10n_br_fiscal_type != '3':
             base, issqn = 0.0, 0.0
         return {
             'numero': "%06d" % self.numero,
@@ -175,11 +175,11 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             return
 
         cert = self.company_id.with_context(
-            {'bin_size': False}).nfe_a1_file
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
 
         certificado = Certificado(
-            cert_pfx, self.company_id.nfe_a1_password)
+            cert_pfx, self.company_id.l10n_br_nfe_a1_password)
 
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_processar_nota(certificado, rps=nfse_values)
@@ -200,7 +200,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
             None, xml=xml_to_send, ambiente=self.ambiente,
             client_id=self.company_id.client_id,
             secret_id=self.company_id.client_secret,
-            username=self.company_id.inscr_mun,
+            username=self.company_id.l10n_br_inscr_mun,
             password=self.company_id.user_password)
 
         retorno = recebe_lote['object']
@@ -245,9 +245,11 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                     'default_edoc_id': self.id
                 }
             }
-        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert = self.company_id.with_context(
+            {'bin_size': False}).l10n_br_nfe_a1_file
         cert_pfx = base64.decodestring(cert)
-        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+        certificado = Certificado(cert_pfx,
+                                  self.company_id.l10n_br_nfe_a1_password)
 
         company = self.company_id
         canc = {
@@ -260,7 +262,7 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
                                  ambiente=self.ambiente,
                                  client_id=self.company_id.client_id,
                                  secret_id=self.company_id.client_secret,
-                                 username=self.company_id.inscr_mun,
+                                 username=self.company_id.l10n_br_inscr_mun,
                                  password=self.company_id.user_password)
         retorno = resposta['object']
         msg_cancelada = 'A Nota Fiscal já está com a situação cancelada.'

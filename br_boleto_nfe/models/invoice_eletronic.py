@@ -11,7 +11,7 @@ class InvoiceEletronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        if not self.invoice_id.payment_mode_id.boleto:
+        if not self.invoice_id.l10n_br_payment_mode_id.boleto:
             return atts
 
         attachment_obj = self.env['ir.attachment']

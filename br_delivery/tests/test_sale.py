@@ -41,31 +41,31 @@ class TestSaleOrder(TransactionCase):
             'name': 'Normal Service',
             'default_code': '25',
             'type': 'service',
-            'fiscal_type': 'service',
-            'service_type_id': self.env.ref(
+            'l10n_br_fiscal_type': 'service',
+            'l10n_br_service_type_id': self.env.ref(
                 'br_data_account.service_type_101').id,
             'list_price': 50.0,
             'property_account_income_id': self.revenue_account.id,
         })
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
-            'fiscal_classification_id': self.default_ncm.id,
+            'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0,
             'property_account_income_id': self.revenue_account.id,
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'l10n_br_legal_name': 'Razão Social',
             'zip': '88037-240',
             'street': 'Endereço Rua',
-            'number': '42',
-            'district': 'Centro',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Centro',
             'phone': '(48) 9801-6226',
             'property_account_receivable_id': self.receivable_account.id,
         }
         self.partner_fisica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='545.770.154-98',
+            l10n_br_cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
             country_id=self.env.ref('base.br').id,
@@ -74,10 +74,10 @@ class TestSaleOrder(TransactionCase):
         ))
         self.partner_juridica = self.env['res.partner'].create(dict(
             default_partner.items(),
-            cnpj_cpf='05.075.837/0001-13',
+            l10n_br_cnpj_cpf='05.075.837/0001-13',
             company_type='company',
             is_company=True,
-            inscr_est='433.992.727',
+            l10n_br_inscr_est='433.992.727',
             country_id=self.env.ref('base.br').id,
             state_id=self.env.ref('base.state_br_sc').id,
             city_id=self.env.ref('br_base.city_4205407').id,
@@ -86,7 +86,7 @@ class TestSaleOrder(TransactionCase):
         self.pis = self.tax_model.create({
             'name': "PIS",
             'amount_type': 'division',
-            'domain': 'pis',
+            'l10n_br_domain': 'pis',
             'amount': 5,
             'sequence': 1,
             'price_include': True,
@@ -94,7 +94,7 @@ class TestSaleOrder(TransactionCase):
         self.cofins = self.tax_model.create({
             'name': "Cofins",
             'amount_type': 'division',
-            'domain': 'cofins',
+            'l10n_br_domain': 'cofins',
             'amount': 15,
             'sequence': 2,
             'price_include': True,
@@ -102,14 +102,14 @@ class TestSaleOrder(TransactionCase):
         self.ipi = self.tax_model.create({
             'name': "IPI",
             'amount_type': 'percent',
-            'domain': 'ipi',
+            'l10n_br_domain': 'ipi',
             'amount': 7,
             'sequence': 3,
         })
         self.icms = self.tax_model.create({
             'name': "ICMS",
             'amount_type': 'division',
-            'domain': 'icms',
+            'l10n_br_domain': 'icms',
             'amount': 17,
             'sequence': 4,
             'price_include': True,
@@ -117,7 +117,7 @@ class TestSaleOrder(TransactionCase):
         self.icms_inter = self.tax_model.create({
             'name': "ICMS Inter",
             'amount_type': 'division',
-            'domain': 'icms',
+            'l10n_br_domain': 'icms',
             'amount': 12,
             'sequence': 4,
             'price_include': True,
@@ -125,42 +125,42 @@ class TestSaleOrder(TransactionCase):
         self.icms_st = self.tax_model.create({
             'name': "ICMS ST",
             'amount_type': 'icmsst',
-            'domain': 'icmsst',
+            'l10n_br_domain': 'icmsst',
             'amount': 18,
             'price_include': False,
         })
         self.icms_difal_inter = self.tax_model.create({
             'name': "ICMS Difal Inter",
             'amount_type': 'division',
-            'domain': 'icms_inter',
+            'l10n_br_domain': 'icms_inter',
             'amount': 7,
             'price_include': True,
         })
         self.icms_difal_intra = self.tax_model.create({
             'name': "ICMS Difal Intra",
             'amount_type': 'division',
-            'domain': 'icms_intra',
+            'l10n_br_domain': 'icms_intra',
             'amount': 17,
             'price_include': True,
         })
         self.icms_fcp = self.tax_model.create({
             'name': "FCP",
             'amount_type': 'division',
-            'domain': 'fcp',
+            'l10n_br_domain': 'fcp',
             'amount': 2,
             'price_include': True,
         })
         self.issqn = self.tax_model.create({
             'name': "ISSQN",
             'amount_type': 'division',
-            'domain': 'issqn',
+            'l10n_br_domain': 'issqn',
             'amount': 5,
             'price_include': True,
         })
         self.ii = self.tax_model.create({
             'name': "II",
             'amount_type': 'division',
-            'domain': 'ii',
+            'l10n_br_domain': 'ii',
             'amount': 60,
             'price_include': True,
         })
@@ -175,13 +175,13 @@ class TestSaleOrder(TransactionCase):
                     'product_uom_qty': 10.0,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'icms_cst_normal': '40',
-                    'icms_csosn_simples': '102',
-                    'ipi_cst': '50',
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_icms_cst_normal': '40',
+                    'l10n_br_icms_csosn_simples': '102',
+                    'l10n_br_ipi_cst': '50',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              ),
             (0, 0,
@@ -191,10 +191,10 @@ class TestSaleOrder(TransactionCase):
                     'product_uom_qty': 10.0,
                     'name': 'product test 5',
                     'price_unit': 100.00,
-                    'cfop_id': self.env.ref(
+                    'l10n_br_cfop_id': self.env.ref(
                         'br_data_account_product.cfop_5101').id,
-                    'pis_cst': '01',
-                    'cofins_cst': '01',
+                    'l10n_br_pis_cst': '01',
+                    'l10n_br_cofins_cst': '01',
                 }
              )
         ]

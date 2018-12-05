@@ -7,17 +7,19 @@ from odoo.addons import decimal_precision as dp
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _name = 'account.invoice'
+    _inherit = ['account.invoice', 'br.localization.filtering']
 
-    fiscal_position_type = fields.Selection(
-        related='fiscal_position_id.fiscal_type', readonly=True)
+    l10n_br_fiscal_position_type = fields.Selection(
+        related='fiscal_position_id.l10n_br_fiscal_type',
+        readonly=True, oldname='fiscal_position_type')
 
     @api.multi
     def copy(self, default=None):
         new_acc_inv = super(AccountInvoice, self).copy(default)
         for i in range(len(new_acc_inv.invoice_line_ids)):
-            new_acc_inv.invoice_line_ids[i].import_declaration_ids = \
-                self.invoice_line_ids[i].import_declaration_ids
+            new_acc_inv.invoice_line_ids[i].l10n_br_import_declaration_ids = \
+                self.invoice_line_ids[i].l10n_br_import_declaration_ids
         return new_acc_inv
 
     @api.one
@@ -27,27 +29,31 @@ class AccountInvoice(models.Model):
                  'currency_id', 'company_id')
     def _compute_amount(self):
         super(AccountInvoice, self)._compute_amount()
+        if not self.l10n_br_localization:
+            return
         lines = self.invoice_line_ids
 
-        self.total_seguro = sum(l.valor_seguro for l in lines)
-        self.total_frete = sum(l.valor_frete for l in lines)
-        self.total_despesas = sum(l.outras_despesas for l in lines)
-        self.amount_total = self.total_bruto - self.total_desconto + \
-            self.total_tax + self.total_frete + self.total_seguro + \
-            self.total_despesas
+        self.l10n_br_total_seguro = sum(l.l10n_br_valor_seguro for l in lines)
+        self.l10n_br_total_frete = sum(l.l10n_br_valor_frete for l in lines)
+        self.l10n_br_total_despesas = sum(
+            l.l10n_br_outras_despesas for l in lines)
+        self.amount_total = (
+            self.l10n_br_total_bruto - self.l10n_br_total_desconto +
+            self.l10n_br_total_tax + self.l10n_br_total_frete +
+            self.l10n_br_total_seguro + self.l10n_br_total_despesas)
         sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
 
-    total_seguro = fields.Float(
+    l10n_br_total_seguro = fields.Float(
         string='Seguro ( + )', digits=dp.get_precision('Account'),
-        compute="_compute_amount")
-    total_despesas = fields.Float(
+        compute="_compute_amount", oldname='total_seguro')
+    l10n_br_total_despesas = fields.Float(
         string='Despesas ( + )', digits=dp.get_precision('Account'),
-        compute="_compute_amount")
-    total_frete = fields.Float(
+        compute="_compute_amount", oldname='total_despesas')
+    l10n_br_total_frete = fields.Float(
         string='Frete ( + )', digits=dp.get_precision('Account'),
-        compute="_compute_amount")
+        compute="_compute_amount", oldname='total_frete')
 
     # Transporte
     freight_responsibility = fields.Selection(
@@ -85,9 +91,9 @@ class AccountInvoice(models.Model):
     def _prepare_edoc_vals(self, inv, inv_lines, serie_id):
         res = super(AccountInvoice, self)._prepare_edoc_vals(
             inv, inv_lines, serie_id)
-        res['valor_frete'] = inv.total_frete
-        res['valor_despesas'] = inv.total_despesas
-        res['valor_seguro'] = inv.total_seguro
+        res['valor_frete'] = inv.l10n_br_total_frete
+        res['valor_despesas'] = inv.l10n_br_total_despesas
+        res['valor_seguro'] = inv.l10n_br_total_seguro
         res['modalidade_frete'] = inv.freight_responsibility
         res['transportadora_id'] = inv.shipping_supplier_id.id
         res['placa_veiculo'] = (inv.vehicle_plate or '').upper()
@@ -116,38 +122,48 @@ class AccountInvoice(models.Model):
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):
-        vals = super(AccountInvoice, self).\
+        vals = super(AccountInvoice, self). \
             _prepare_edoc_item_vals(invoice_line)
-        vals['frete'] = invoice_line.valor_frete
-        vals['seguro'] = invoice_line.valor_seguro
-        vals['outras_despesas'] = invoice_line.outras_despesas
+        vals['frete'] = invoice_line.l10n_br_valor_frete
+        vals['seguro'] = invoice_line.l10n_br_valor_seguro
+        vals['outras_despesas'] = invoice_line.l10n_br_outras_despesas
         return vals
 
 
 class AccountInvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
+    _name = 'account.invoice.line'
+    _inherit = ['account.invoice.line', 'br.localization.filtering']
 
-    valor_frete = fields.Float(
-        '(+) Frete', digits=dp.get_precision('Account'), default=0.00)
-    valor_seguro = fields.Float(
-        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00)
-    outras_despesas = fields.Float(
-        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00)
+    l10n_br_valor_frete = fields.Float(
+        '(+) Frete', digits=dp.get_precision('Account'), default=0.00,
+        oldname='valor_frete')
+    l10n_br_valor_seguro = fields.Float(
+        '(+) Seguro', digits=dp.get_precision('Account'), default=0.00,
+        oldname='valor_seguro')
+    l10n_br_outras_despesas = fields.Float(
+        '(+) Despesas', digits=dp.get_precision('Account'), default=0.00,
+        oldname='outras_despesas')
 
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
+        if not self.l10n_br_localization:
+            return res
         res.update({
-            'valor_frete': self.valor_frete,
-            'valor_seguro': self.valor_seguro,
-            'outras_despesas': self.outras_despesas,
-            'ii_despesas': self.ii_valor_despesas,
+            'valor_frete': self.l10n_br_valor_frete,
+            'valor_seguro': self.l10n_br_valor_seguro,
+            'outras_despesas': self.l10n_br_outras_despesas,
+            'ii_despesas': self.l10n_br_ii_valor_despesas,
         })
         return res
 
     @api.one
-    @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
+    @api.depends('l10n_br_valor_frete', 'l10n_br_valor_seguro',
+                 'l10n_br_outras_despesas')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()
-        total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
-            self.valor_seguro + self.outras_despesas
+        if not self.l10n_br_localization:
+            return
+        total = (self.l10n_br_valor_bruto - self.l10n_br_valor_desconto +
+                 self.l10n_br_valor_frete + self.l10n_br_valor_seguro +
+                 self.l10n_br_outras_despesas)
         self.update({'price_total': total})

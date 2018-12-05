@@ -12,14 +12,14 @@ class PaymentOrderLine(models.Model):
     def generate_payment_order_line(self, move_line):
         """Gera um objeto de payment.order ao imprimir um boleto"""
         order_name = self.env['ir.sequence'].next_by_code('payment.order')
-        payment_mode = move_line.payment_mode_id
+        payment_mode = move_line.l10n_br_payment_mode_id
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
-            ('payment_mode_id', '=', payment_mode.id)], limit=1)
+            ('l10n_br_payment_mode_id', '=', payment_mode.id)], limit=1)
         order_dict = {
             'name': u'%s' % order_name,
             'user_id': self.env.user.id,
-            'payment_mode_id': move_line.payment_mode_id.id,
+            'l10n_br_payment_mode_id': move_line.l10n_br_payment_mode_id.id,
             'state': 'draft',
             'currency_id': move_line.company_currency_id.id,
             'company_id': payment_mode.journal_id.company_id.id,
@@ -41,7 +41,8 @@ class PaymentOrderLine(models.Model):
                 payment_mode.journal_id.bank_account_id.id,
                 'journal_id': payment_mode.journal_id.id,
                 'payment_order_id': payment_order.id,
-                'payment_mode_id': move_line.payment_mode_id.id,
+                'l10n_br_payment_mode_id':
+                    move_line.l10n_br_payment_mode_id.id,
                 'date_maturity': move_line.date_maturity,
                 'partner_id': move_line.partner_id.id,
                 'emission_date': move_line.date,
@@ -54,9 +55,9 @@ class PaymentOrderLine(models.Model):
 
     def action_register_boleto(self, move_lines):
         for item in move_lines:
-            if item.payment_mode_id.type != 'receivable':
+            if item.l10n_br_payment_mode_id.type != 'receivable':
                 raise UserError('Modo de pagamento não é boleto!')
-            if not item.payment_mode_id.boleto:
+            if not item.l10n_br_payment_mode_id.boleto:
                 raise UserError('Modo de pagamento não é boleto!')
         for move_line in move_lines:
             order_line = self.generate_payment_order_line(move_line)
@@ -77,9 +78,9 @@ class PaymentOrderLine(models.Model):
 
     def action_print_boleto(self):
         for item in self:
-            if item.payment_mode_id.type != 'receivable':
+            if item.l10n_br_payment_mode_id.type != 'receivable':
                 raise UserError('Modo de pagamento não é boleto!')
-            if not item.payment_mode_id.boleto:
+            if not item.l10n_br_payment_mode_id.boleto:
                 raise UserError('Modo de pagamento não é boleto!')
         return self.env.ref(
             'br_boleto.action_boleto_payment_order_line').report_action(self)

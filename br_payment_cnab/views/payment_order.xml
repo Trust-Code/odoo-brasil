@@ -61,12 +61,12 @@
                 <separator orientation="vertical"/>
                 <field name="partner_id"/>
                 <field name="src_bank_account_id"/>
-                <field name="payment_mode_id"/>
+                <field name="l10n_br_payment_mode_id"/>
                 <field name="date_maturity"/>
                 <group expand="0" string="Agrupar por...">
                     <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter name="group_journal" string="Diário" domain="[]" context="{'group_by':'src_bank_account_id'}"/>
-                    <filter name="group_payment_mode" string="Modo de Pagamento" domain="[]" context="{'group_by':'payment_mode_id'}"/>
+                    <filter name="group_payment_mode" string="Modo de Pagamento" domain="[]" context="{'group_by':'l10n_br_payment_mode_id'}"/>
                     <filter name="group_date" string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity:day'}"/>
                     <filter name="group_month" string="Mês" domain="[]" context="{'group_by':'date_maturity'}"/>
                </group>

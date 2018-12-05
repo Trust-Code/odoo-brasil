@@ -22,8 +22,9 @@ class AccountAccount(models.Model):
 
 
 class AccountPaymentTerm(models.Model):
-    _inherit = 'account.payment.term'
+    _name = 'account.payment.term'
+    _inherit = ['account.payment.term', 'br.localization.filtering']
 
-    indPag = fields.Selection(
+    l10n_br_indPag = fields.Selection(
         [('0', u'Pagamento à Vista'), ('1', u'Pagamento à Prazo')],
         'Indicador de Pagamento', default='0')

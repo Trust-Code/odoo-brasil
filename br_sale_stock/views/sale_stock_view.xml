@@ -10,9 +10,9 @@
                 <field name="valor_seguro" invisible="1" />
                 <field name="valor_frete" invisible="1" />
             </xpath>
-            <field name="total_desconto" position="after">
-                <field name="total_ipi" widget='monetary' options="{'currency_field': 'currency_id'}" />
-                <field name="total_icms_st" widget='monetary' options="{'currency_field': 'currency_id'}" />
+            <field name="l10n_br_total_desconto" position="after">
+                <field name="l10n_br_total_ipi" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                <field name="l10n_br_total_icms_st" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
             <field name="amount_tax" position="after">
                 <field name="total_despesas" widget='monetary' options="{'currency_field': 'currency_id'}"/>
