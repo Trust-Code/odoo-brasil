@@ -18,9 +18,9 @@ class Bradesco240(Cnab_240):
         super(Bradesco240, self).__init__()
 
     def _get_versao_lote(self, line):
-        if line.payment_mode_id.payment_type in ('01', '02'):  # DOC, TED
+        if line.l10n_br_payment_mode_id.payment_type in ('01', '02'):  # DOCTED
             return 31
-        elif line.payment_mode_id.payment_type == '03':  # Titulos
+        elif line.l10n_br_payment_mode_id.payment_type == '03':  # Titulos
             return 30
         else:  # Impostos
             return 10

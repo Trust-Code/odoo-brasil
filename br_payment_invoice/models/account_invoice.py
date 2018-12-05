@@ -36,7 +36,7 @@ class AccountInvoice(models.Model):
                 return line.l10n_br_order_line_id
 
     def check_create_payment_line(self):
-        if self.l10_br_payment_mode_id.type != 'payable':
+        if self.l10n_br_payment_mode_id.type != 'payable':
             return
         if self.l10n_br_payment_type in ('03'):  # Boletos
             return
