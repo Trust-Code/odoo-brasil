@@ -73,14 +73,14 @@ class l10nBrPaymentCnabImport(models.TransientModel):
 
                     self.env['l10n_br.payment.statement.line'].sudo().create({
                         'date': datetime.strptime(
-                            "{:06}".format(event.data_pagamento), "%d%m%Y"),
-                        'name': "%s - %s" % (
-                            event.numero_documento_cliente,
-                            nome),
+                            "{:08}".format(event.data_pagamento), "%d%m%Y"),
+                        'nosso_numero': event.numero_documento_cliente,
+                        'name': nome,
                         'amount': event.valor_pagamento,
                         'cnab_code': cnab_code,
                         'cnab_message': message,
                         'statement_id': statement.id,
+                        'ignored': True,
                     })
                     continue
 

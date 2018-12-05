@@ -30,6 +30,11 @@ class AccountInvoice(models.Model):
             'invoice_id': self.id,
         }
 
+    def get_order_line(self):
+        for line in self.move_id.line_ids:
+            if (line.l10n_br_order_line_id.autenticacao_pagamento):
+                return line.l10n_br_order_line_id
+
     def check_create_payment_line(self):
         if self.payment_mode_id.type != 'payable':
             return

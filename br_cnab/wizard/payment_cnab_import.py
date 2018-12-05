@@ -3,7 +3,7 @@
 
 import logging
 from io import StringIO
-from datetime import date
+from datetime import date, datetime
 
 from odoo import models
 from odoo.exceptions import UserError
@@ -41,12 +41,6 @@ class l10nBrPaymentCnabImport(models.TransientModel):
 
         for lote in arquivo.lotes:
             for evento in lote.eventos:
-                payment_line = self.env['payment.order.line'].search(
-                    [('nosso_numero', '=', int(evento.nosso_numero)),
-                     ('src_bank_account_id', '=',
-                      self.journal_id.bank_account_id.id)])
-                if not payment_line:
-                    continue
 
                 if not statement:
                     statement = self.env['l10n_br.payment.statement'].create({
@@ -55,9 +49,35 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         'company_id': self.journal_id.company_id.id,
                         'name': sequence.next_by_id(),
                     })
+
                 code, message = parse_cnab_code(
                     self.journal_id.bank_id.bic,
                     evento.servico_codigo_movimento)
+
+                payment_line = self.env['payment.order.line'].search(
+                    [('nosso_numero', '=', int(evento.nosso_numero)),
+                     ('src_bank_account_id', '=',
+                      self.journal_id.bank_account_id.id)])
+
+                if not payment_line:
+                    data = date.today()
+                    if evento.vencimento_titulo:
+                        data = datetime.strptime(
+                            "{:08}".format(evento.vencimento_titulo),
+                            "%d%m%Y")
+                    self.env['l10n_br.payment.statement.line'].sudo().create({
+                        'date': data,
+                        'nosso_numero': evento.nosso_numero,
+                        'name': "%s - %s" % (
+                            evento.numero_documento,
+                            evento.sacado_nome),
+                        'amount': evento.valor_titulo,
+                        'cnab_code': code,
+                        'cnab_message': message,
+                        'statement_id': statement.id,
+                        'ignored': True,
+                    })
+                    continue
 
                 if code == '0000':  # Titulo Liquidado
                     payment_line.mark_order_line_paid(

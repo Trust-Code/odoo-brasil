@@ -262,7 +262,6 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'nome_concessionaria': 'Razão Social',
             'data_vencimento': int(time.strftime("%d%m%Y")),
             'contribuinte_nome': 'Trustcode Tecnologia da Inform',
-            'valor_total_pagamento': Decimal('121.00'),
             'codigo_receita_tributo': '',
             'tipo_identificacao_contribuinte': 1,
             'identificacao_contribuinte': 92743275000133,

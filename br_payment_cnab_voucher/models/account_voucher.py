@@ -58,6 +58,11 @@ class AccountVoucher(models.Model):
          _('O código de barras deve ser único!'))
     ]
 
+    def get_order_line(self):
+        for line in self.move_id.line_ids:
+            if (line.l10n_br_order_line_id.autenticacao_pagamento):
+                return line.l10n_br_order_line_id
+
     @api.multi
     def copy(self, default=None):
         default = default or {}
