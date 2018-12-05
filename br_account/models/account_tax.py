@@ -340,7 +340,7 @@ class AccountTax(models.Model):
         return taxes
 
     def _compute_others(self, price_base):
-        others = self.filtered(lambda x: x.domain == 'outros')
+        others = self.filtered(lambda x: x.domain == 'outros' or not x.domain)
         if not others:
             return []
         vals = self._tax_vals(others)
