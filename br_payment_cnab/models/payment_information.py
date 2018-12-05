@@ -81,6 +81,8 @@ class PaymentInformation(models.Model):
 
     discount_value = fields.Float('Discount Value')
 
+    data_referencia_icms = fields.Date('Período de referência (ICMS)')
+
     mov_type = fields.Selection(
         [('0', 'Inclusion'),
          ('5', 'Modification'),

@@ -134,6 +134,13 @@ class PaymentOrderLine(models.Model):
         errors += self.validate_bank_account(vals)
         return errors
 
+    # ICMS
+    def validate_payment_type_09(self, payment_mode, vals):
+        errors = []
+        if not vals.get('data_referencia_icms'):
+            errors += ['Preencha o período de referência!']
+        return errors
+
     # TED
     def validate_payment_type_02(self, payment_mode, vals):
         errors = []
@@ -235,7 +242,8 @@ class PaymentOrderLine(models.Model):
             'fine_value': vals.get('fine_value'),
             'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
-            'l10n_br_environment': payment_mode_id.l10n_br_environment
+            'l10n_br_environment': payment_mode_id.l10n_br_environment,
+            'data_referencia_icms': vals.get('data_referencia_icms')
         }
 
     def action_generate_payment_order_line(self, payment_mode, vals):

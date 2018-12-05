@@ -35,7 +35,7 @@
                                 <field name="warning_code"/>
                                 <field name="agency_name"/>
                                 <field name="operation_code"/>
-                                <field name="message1"/>
+                                <field name="data_referencia_icms"/>
                                 <field name="fine_value" widget="monetary"/>
                                 <field name="interest_value" widget="monetary"/>
                                 <field name="mov_type"/>

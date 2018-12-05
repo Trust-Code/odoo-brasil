@@ -171,6 +171,7 @@ class Cnab_240(object):
             'valor_receita': self._string_to_monetary(line.amount_total),
             'numero_referencia': self._string_to_num(
                 information_id.numero_referencia),
+            'data_referencia': information_id.data_referencia_icms,
         }
         return segmento
 
