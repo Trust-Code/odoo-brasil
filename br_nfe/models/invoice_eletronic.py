@@ -519,6 +519,7 @@ class InvoiceEletronic(models.Model):
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
+                'xCpl': self.company_id.street2 or '',
                 'xBairro': self.company_id.district,
                 'cMun': '%s%s' % (
                     self.company_id.partner_id.state_id.ibge_code,
@@ -548,6 +549,7 @@ class InvoiceEletronic(models.Model):
                 'enderDest': {
                     'xLgr': partner.street,
                     'nro': partner.number,
+                    'xCpl': partner.street2 or '',
                     'xBairro': partner.district,
                     'cMun': '%s%s' % (partner.state_id.ibge_code,
                                       partner.city_id.ibge_code),
