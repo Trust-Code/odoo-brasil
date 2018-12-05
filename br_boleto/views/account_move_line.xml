@@ -21,7 +21,7 @@
         <field name="inherit_id" ref="br_account_payment.view_payments_tree_a_receber" />
         <field name="arch" type="xml">
             <button name="action_register_payment" position="after">
-                <button name="open_wizard_print_boleto" type="object" string="Boletos" icon="fa-barcode"/>
+                <button name="open_wizard_print_boleto" type="object" string="BOLETO" class="btn btn-success btn-xs"/>
             </button>
         </field>
     </record>

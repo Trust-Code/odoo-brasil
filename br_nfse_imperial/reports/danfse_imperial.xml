@@ -334,8 +334,11 @@
             <div class="row"
                 style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
                 <div style="text-align:center"><b>Outras informações</b></div>
-                <div class="col-xs-6">
-                    Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
+                <div style="float:left; width:50%;">
+                    (1) Esta NFS-e foi emitida com respaldo na Lei nº 14.097/2005;
+                </div>
+                <div style="float:left; width:50%;">
+                    (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' />
                 </div>
                 <br />
                 <span t-field="doc.informacoes_legais"></span>

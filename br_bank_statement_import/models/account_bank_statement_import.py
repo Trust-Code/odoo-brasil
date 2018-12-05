@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 try:
     from ofxparse import OfxParser
 except ImportError:
-    _logger.debug('Cannot import ofxparse dependencies.')
+    _logger.error('Cannot import ofxparse dependencies.', exc_info=True)
 
 
 class AccountBankStatementImport(models.TransientModel):
@@ -50,7 +50,6 @@ class AccountBankStatementImport(models.TransientModel):
         ofx = OfxParser.parse(io.BytesIO(data_file))
         transacoes = []
         total = 0.0
-        index = 1  # Some banks don't use a unique transaction id, we make one
         for account in ofx.accounts:
             for transacao in account.statement.transactions:
                 transacoes.append({
@@ -59,10 +58,10 @@ class AccountBankStatementImport(models.TransientModel):
                         transacao.memo and ': ' + transacao.memo or ''),
                     'ref': transacao.id,
                     'amount': transacao.amount,
-                    'unique_import_id': "%s-%s" % (transacao.id, index)
+                    'unique_import_id': transacao.id,
+                    'sequence': len(transacoes) + 1,
                 })
                 total += float(transacao.amount)
-                index += 1
         # Really? Still using Brazilian Cruzeiros :/
         if ofx.account.statement.currency.upper() == "BRC":
             ofx.account.statement.currency = "BRL"

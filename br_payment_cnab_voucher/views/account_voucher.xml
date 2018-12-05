@@ -7,14 +7,32 @@
         <field name="inherit_id" ref="account_voucher.view_purchase_receipt_form"/>
         <field name="arch" type="xml">
             <field name="company_id" position="after">
-                <field name="l10n_br_payment_mode_id" domain="[('type', '=', 'payable')]" />
+                <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
                 <field name="payment_type" invisible="1" />
                 <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
-                <field name="barcode" attrs="{'invisible': [('payment_type', 'not in', ('04'))]}" />
             </field>
             <field name="tax_amount" position="before">
                 <field name="interest_value" widget="monetary"/>
                 <field name="fine_value" widget="monetary"/>
+            </field>
+            <group position="inside">
+                <h3>
+                    <strong><label string="Linha Digitável" /></strong>
+                    <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}" />
+                </h3>
+            </group>
+        </field>
+    </record>
+
+    <record id="view_br_payment_voucher_recurring_form" model="ir.ui.view">
+        <field name="name">view.br_account_voucher.purchase.form</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="br_account_voucher.view_br_account_voucher_recurring_form"/>
+        <field name="arch" type="xml">
+            <field name="account_id" position="after">
+                <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
+                <field name="payment_type" invisible="1" />
+                <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
             </field>
         </field>
     </record>
@@ -25,7 +43,7 @@
         <field name="inherit_id" ref="account_voucher.view_sale_receipt_form"/>
         <field name="arch" type="xml">
             <field name="account_id" position="after">
-                <field name="l10n_br_payment_mode_id" domain="[('type', '=', 'receivable')]"/>
+                <field name="payment_mode_id" domain="[('type', '=', 'receivable')]"/>
             </field>
         </field>
     </record>

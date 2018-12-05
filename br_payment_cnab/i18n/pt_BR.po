@@ -289,7 +289,7 @@ msgid "Fine Value"
 msgstr "Valor de Multa"
 
 #. module: br_payment_cnab
-#: model:ir.model.fields,field_description:br_payment_cnab.field_res_config_settings_fine_account_id
+#: model:ir.model.fields,field_description:br_payment_cnab.field_res_config_settings_l10n_br_fine_account_id
 #: model:ir.ui.view,arch_db:br_payment_cnab.res_config_settings_payment_cnab
 msgid "Fines Account"
 msgstr "Conta de Multas"
@@ -405,7 +405,7 @@ msgid "Interest Value"
 msgstr "Valor de Juros"
 
 #. module: br_payment_cnab
-#: model:ir.model.fields,field_description:br_payment_cnab.field_res_config_settings_interest_account_id
+#: model:ir.model.fields,field_description:br_payment_cnab.field_res_config_settings_l10n_br_l10n_br_interest_account_id
 msgid "Interests Account"
 msgstr "Conta de Juros"
 
@@ -430,7 +430,7 @@ msgid "Modification"
 msgstr "Modification"
 
 #. module: br_payment_cnab
-#: model:ir.model,name:br_payment_cnab.model_payment_mode
+#: model:ir.model,name:br_payment_cnab.model_l10n_br_payment_mode
 #: model:ir.model.fields,field_description:br_payment_cnab.field_account_voucher_payment_mode_id
 msgid "Modo de Pagamento"
 msgstr "Modo de Pagamento"
@@ -832,4 +832,3 @@ msgstr "payment.order.line"
 #: model:ir.model,name:br_payment_cnab.model_res_config_settings
 msgid "res.config.settings"
 msgstr "res.config.settings"
-

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_invoice_group" model="ir.cron">
+        <field name="name">Group Invoices</field>
+        <field name="model_id" ref="account.model_account_invoice"/>
+        <field name="state">code</field>
+        <field name="code">
+          model.group_invoices(group_dict=[{"rule_name": 'SERVIÇOS-01.06', "fpos": 1, "domain": [('service_type_id', '=', 7)]},
+                                           {"rule_name": 'SERVIÇOS-01.02', "fpos": 1, "domain": [('service_type_id', '=', 3)]},
+                                           {"rule_name": 'OUTROS SERVIÇOS', "fpos": 1, "domain": [('product_type', '=', 'service')]},
+                                           {"rule_name": 'TODOS PRODUTOS', "fpos": 1, "domain": [('product_type', '=', 'product')]},
+                                           ])
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

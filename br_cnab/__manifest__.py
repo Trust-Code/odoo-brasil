@@ -25,6 +25,7 @@
     'data': [
         'sequence/br_cnab_sequence.xml',
         'views/payment_order.xml',
+        'wizard/payment_cnab_import.xml',
     ],
     'installable': True
 }

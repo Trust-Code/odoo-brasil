@@ -195,6 +195,7 @@ class AccountInvoice(models.Model):
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'numero_controle': num_controle,
             'data_emissao': datetime.now(),
+            'data_agendada': invoice.date_invoice,
             'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
             'partner_id': invoice.partner_id.id,
@@ -231,9 +232,9 @@ class AccountInvoice(models.Model):
         eletronic_items = []
         for inv_line in inv_lines:
             if inv_line.l10n_br_product_type == 'service':
-                total_servicos += inv_line.price_subtotal
+                total_servicos += inv_line.l10n_br_valor_bruto
             else:
-                total_produtos += inv_line.price_subtotal
+                total_produtos += inv_line.l10n_br_valor_bruto
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 

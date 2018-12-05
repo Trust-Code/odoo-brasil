@@ -63,6 +63,15 @@ class ResPartnerBank(models.Model):
     l10n_br_number_dig = fields.Char(u'Account Agency Digit', size=8,
                                      oldname='bra_number_dig')
 
+    @api.multi
+    def name_get(self):
+        result = []
+        for rec in self:
+            result.append((rec.id, "cc: %s-%s - %s - %s" % (
+                rec.acc_number, rec.acc_number_dig or '',
+                rec.partner_id.name or '', rec.bank_id.name or '')))
+        return result
+
     @api.depends('bank_id', 'acc_number', 'acc_number_dig',
                  'l10n_br_number', 'l10n_br_number_dig')
     def _compute_sanitized_acc_number(self):

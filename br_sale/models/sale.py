@@ -120,9 +120,9 @@ class SaleOrderLine(models.Model):
 
             for tax in taxes['taxes']:
                 tax_id = self.env['account.tax'].browse(tax['id'])
-                if tax_id.domain == 'ipi':
+                if tax_id.l10n_br_domain == 'ipi':
                     ipi += tax['amount']
-                if tax_id.domain == 'icmsst':
+                if tax_id.l10n_br_domain == 'icmsst':
                     icms_st += tax['amount']
 
             valor_bruto = line.price_unit * line.product_uom_qty

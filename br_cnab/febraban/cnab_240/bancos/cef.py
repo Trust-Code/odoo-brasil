@@ -24,8 +24,8 @@ class Cef240(Cnab240):
 
         vals['cedente_codigo_codCedente'] = 6088
         vals['nome_do_banco'] = u'CAIXA ECONOMICA FEDERAL'
-        # Não pode pegar comentário da payment_line.
-        vals['reservado_cedente_campo23'] = u'REMESSA TESTE'
+        if self.order.l10n_br_payment_mode_id.l10n_br_environment == 'test':
+            vals['reservado_cedente_campo23'] = u'REMESSA TESTE'
         # reservado_banco_campo22 não é required. Código atualizado na
         # biblioteca cnab240
         vals['data_credito_hd_lote'] = 15052015
@@ -46,9 +46,7 @@ class Cef240(Cnab240):
             line.l10n_br_payment_mode_id.boleto_modalidade.zfill(2),
             line.nosso_numero.zfill(10))
 
-        vals['identificacao_titulo'] = str(vals['numero_documento'])
-        # TODO: campo 27.3P CEF. Código do juros de mora
-        vals['juros_cod_mora'] = 3
+        vals['identificacao_titulo'] = vals['numero_documento']
         vals['prazo_baixa'] = str(vals['prazo_baixa'])
 
         # Precisam estar preenchidos

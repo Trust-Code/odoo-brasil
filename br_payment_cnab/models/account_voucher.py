@@ -12,7 +12,7 @@ class AccountVoucher(models.Model):
     _name = 'account.voucher'
     _inherit = ['account.voucher', 'br.localization.filtering']
 
-    l10n_br_payment_mode_id = fields.Many2one('payment.mode',
+    l10n_br_payment_mode_id = fields.Many2one('l10n_br.payment.mode',
                                               "Modo de Pagamento")
     payment_type = fields.Selection(
         [('01', 'TED - Transferência Bancária'),

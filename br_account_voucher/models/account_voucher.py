@@ -4,12 +4,34 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
+from odoo.tools import float_is_zero
 
 
 class AccountVoucher(models.Model):
     _inherit = 'account.voucher'
 
     l10n_br_recurring = fields.Boolean(string="Recurring ?")
+    l10n_br_post_automatic = fields.Boolean(string="Lançar automaticamente?")
+    l10n_br_residual = fields.Monetary(
+        string='Saldo', compute='_compute_residual',
+        store=True, help="Saldo restante.")
+    l10n_br_paid = fields.Boolean(string="Pago?", compute='_compute_residual')
+
+    @api.one
+    @api.depends('move_id.line_ids.amount_residual')
+    def _compute_residual(self):
+        residual = 0.0
+        for line in self.sudo().move_id.line_ids:
+            if line.account_id == self.account_id:
+                residual += line.amount_residual
+        precision = self.currency_id.rounding
+        if float_is_zero(residual, precision_rounding=precision) \
+           and self.state == 'posted':
+            self.update({'l10n_br_residual': abs(residual),
+                         'l10n_br_paid': True})
+        else:
+            self.update({'l10n_br_residual': abs(residual),
+                         'l10n_br_paid': False})
 
     @api.multi
     def action_mark_done(self):
@@ -43,6 +65,7 @@ class AccountVoucher(models.Model):
                 'date': current_date,
                 'date_due': due_date,
                 'l10n_br_recurring': False,
+                'reference': item.reference,
             })
             voucher = item.copy(vals)
             for line in voucher.line_ids:
@@ -51,7 +74,8 @@ class AccountVoucher(models.Model):
             item.date = current_date + relativedelta(months=1)
             item.date_due = due_date + relativedelta(months=1)
             try:
-                voucher.proforma_voucher()
+                if item.l10n_br_post_automatic:
+                    voucher.proforma_voucher()
             except:
                 pass
 
@@ -69,3 +93,12 @@ class AccountVoucher(models.Model):
             line.analytic_tag_ids = [(6, False, line2.analytic_tag_ids.ids)]
 
         return line_total
+
+    @api.multi
+    def first_move_line_get(self, move_id, company_currency, current_currency):
+        vals = super(AccountVoucher, self).first_move_line_get(
+            move_id, company_currency, current_currency)
+        # Correção do valor quando retenção - tax_amount é negativo
+        if self.tax_amount < 0.0:
+            vals['credit'] += self.tax_amount
+        return vals
