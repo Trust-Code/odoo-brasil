@@ -50,9 +50,12 @@ class Bradesco240(Cnab_240):
 
     def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Bradesco240, self)._get_segmento(
-            line, lot_sequency, num_lot)
+            line, lot_sequency, num_lot, nome_segmento)
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
+        if ((nome_segmento == "SegmentoW") and
+                (not line.payment_information_id.cod_recolhimento_fgts)):
+            return None
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
@@ -68,11 +71,11 @@ class Bradesco240(Cnab_240):
             'favorecido_cep': self._string_to_num(
                 str(segmento.get('favorecido_cep'))[:5]),
             'finalidade_ted': get_ted_doc_finality(
-                'bradesco', '01',
-                segmento.get('finalidade_doc_ted'), ignore),
+                'bradesco',
+                segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
-                'bradesco', '02',
-                segmento.get('finalidade_doc_ted'), ignore),
+                'bradesco',
+                segmento.get('finalidade_doc_ted'), '02', ignore),
         })
         return segmento
 
