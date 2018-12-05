@@ -25,7 +25,4 @@
         <field name="view_id" ref="view_br_base_city_tree"/>
     </record>
 
-    <menuitem id="menu_action_br_base_city_form" name="Municípios"
-        parent="contacts.menu_localisation" action="br_base.action_br_base_city_form"/>
-
 </odoo>

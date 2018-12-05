@@ -65,7 +65,7 @@ class TestBrCnabPayment(TransactionCase):
         })
         default_partner = {
             'name': 'Nome Parceiro',
-            'legal_name': 'Razão Social',
+            'l10n_br_legal_name': 'Razão Social',
             'zip': '88037-240',
             'street': 'Endereço Rua',
             'number': '42',

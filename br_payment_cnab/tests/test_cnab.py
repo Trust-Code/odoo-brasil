@@ -17,8 +17,8 @@ class TestBaseCnab(TestBrCnabPayment):
         self.source_bank_accounts = self.env['res.partner.bank'].create({
             'acc_number': '84724',  # 5 digitos
             'acc_number_dig': '2',  # 1 digito
-            'bra_number': '3070',  # 4 digitos
-            'bra_number_dig': '0',
+            'l10n_br_number': '3070',  # 4 digitos
+            'l10n_br_number_dig': '0',
             'l10n_br_convenio_pagamento': '54',  # 7 digitos
             'bank_id': sicoob.id,
             'partner_id': self.main_company.partner_id.id,
@@ -28,8 +28,8 @@ class TestBaseCnab(TestBrCnabPayment):
         self.source_bank_accounts |= self.env['res.partner.bank'].create({
             'acc_number': '13000172',  # 8 digitos
             'acc_number_dig': '5',  # 1 digito
-            'bra_number': '0823',  # 4 digitos
-            'bra_number_dig': '',
+            'l10n_br_number': '0823',  # 4 digitos
+            'l10n_br_number_dig': '',
             'l10n_br_convenio_pagamento': '004900819753',  # 12 digitos
             'bank_id': santander.id,
             'partner_id': self.main_company.partner_id.id,
@@ -39,8 +39,8 @@ class TestBaseCnab(TestBrCnabPayment):
         self.source_bank_accounts |= self.env['res.partner.bank'].create({
             'acc_number': '87388',  # 5 digitos
             'acc_number_dig': '2',  # 1 digito
-            'bra_number': '0504',  # 4 digitos
-            'bra_number_dig': '',
+            'l10n_br_number': '0504',  # 4 digitos
+            'l10n_br_number_dig': '',
             'l10n_br_convenio_pagamento': '012345678',  # até 20 digitos
             'bank_id': bradesco.id,
             'partner_id': self.main_company.partner_id.id,
@@ -50,8 +50,8 @@ class TestBaseCnab(TestBrCnabPayment):
         self.source_bank_accounts |= self.env['res.partner.bank'].create({
             'acc_number': '22440',  # 5 digitos
             'acc_number_dig': '1',  # 1 digito
-            'bra_number': '0730',  # 4 digitos
-            'bra_number_dig': '',
+            'l10n_br_number': '0730',  # 4 digitos
+            'l10n_br_number_dig': '',
             'l10n_br_convenio_pagamento': '00',  # 0 digitos
             'bank_id': itau.id,
             'partner_id': self.main_company.partner_id.id,
