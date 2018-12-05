@@ -47,7 +47,9 @@ class AccountVoucher(models.Model):
         states={'draft': [('readonly', False)]})
     fine_value = fields.Float(
         'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
-
+    data_referencia_icms = fields.Date(
+        'Período de referência (ICMS)', readonly=True,
+        states={'draft': [('readonly', False)]})
     _sql_constraints = [
         ('account_voucher_barcode_uniq', 'unique (barcode)',
          _('O código de barras deve ser único!'))
@@ -126,6 +128,7 @@ class AccountVoucher(models.Model):
             'invoice_date': self.date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
+            'data_referencia_icms': self.data_referencia_icms,
             # TODO Ajustar o valor de multa e de juros
             # 'fine_value': self.fine_value,
             # 'interest_value': self.interest_value,
