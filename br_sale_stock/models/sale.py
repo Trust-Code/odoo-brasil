@@ -149,6 +149,5 @@ class SaleOrderLine(models.Model):
 
         res['l10n_br_valor_seguro'] = self.valor_seguro
         res['l10n_br_outras_despesas'] = self.outras_despesas
-        res['l10n_br_valor_frete'] = self.valor_frete * (round(
-            res['quantity'] / self.product_uom_qty, 2))
+        res['l10n_br_valor_frete'] = self.valor_frete
         return res

@@ -9,6 +9,7 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 try:
     from pycnab240.utils import decode_digitable_line, pretty_format_line
+    from pycnab240.errors import DvNotValidError
 except ImportError:
     _logger.error('Cannot import pycnab240', exc_info=True)
 
@@ -52,6 +53,11 @@ class AccountVoucher(models.Model):
          _('O código de barras deve ser único!'))
     ]
 
+    def get_order_line(self):
+        for line in self.move_id.line_ids:
+            if (line.l10n_br_order_line_id.autenticacao_pagamento):
+                return line.l10n_br_order_line_id
+
     @api.multi
     def copy(self, default=None):
         default = default or {}
@@ -67,7 +73,7 @@ class AccountVoucher(models.Model):
             if len(linha) not in (47, 48):
                 raise UserError(
                     'Tamanho da linha digitável inválido %s' % len(linha))
-            vals = decode_digitable_line(linha)
+            vals = self._get_digitable_line_vals(linha)
             item.barcode = vals['barcode']
 
     @api.onchange('linha_digitavel')
@@ -75,7 +81,7 @@ class AccountVoucher(models.Model):
         linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
         if len(linha) in (47, 48):
             self.linha_digitavel = pretty_format_line(linha)
-            vals = decode_digitable_line(linha)
+            vals = self._get_digitable_line_vals(linha)
             if self.line_ids:
                 self.line_ids[0].price_unit = vals.get('valor', 0.0)
             else:
@@ -83,7 +89,14 @@ class AccountVoucher(models.Model):
                     'quantity': 1.0,
                     'price_unit': vals.get('valor', 0.0)
                 })]
-            self.date_due = vals.get('vencimento')
+            if vals.get('vencimento'):
+                self.date_due = vals.get('vencimento')
+
+    def _get_digitable_line_vals(self, digitable_line):
+        try:
+            return decode_digitable_line(digitable_line)
+        except DvNotValidError:
+            raise UserError("DV do código de Barras não confere!")
 
     @api.onchange('payment_mode_id')
     def _onchange_payment_mode_id(self):
@@ -113,8 +126,9 @@ class AccountVoucher(models.Model):
             'invoice_date': self.date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
-            'fine_value': self.fine_value,
-            'interest_value': self.interest_value,
+            # TODO Ajustar o valor de multa e de juros
+            # 'fine_value': self.fine_value,
+            # 'interest_value': self.interest_value,
         }
 
     @api.multi

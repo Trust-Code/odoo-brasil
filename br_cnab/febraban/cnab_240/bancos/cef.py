@@ -5,9 +5,16 @@
 #        KMEE - www.kmee.com.br
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
+import logging
 from decimal import Decimal
 from ..cnab_240 import Cnab240
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from pyboleto.data import BoletoData
+except ImportError:
+    _logger.error('Cannot import pyboleto', exc_info=True)
 
 
 class Cef240(Cnab240):
@@ -24,8 +31,14 @@ class Cef240(Cnab240):
 
         vals['cedente_codigo_codCedente'] = 6088
         vals['nome_do_banco'] = u'CAIXA ECONOMICA FEDERAL'
-        if self.order.l10n_br_payment_mode_id.l10n_br_environment == 'test':
-            vals['reservado_cedente_campo23'] = u'REMESSA TESTE'
+        if self.order.payment_mode_id.l10n_br_environment == 'test':
+            vals['reservado_cedente_campo23'] = 'REMESSA TESTE'
+        else:
+            vals['reservado_cedente_campo23'] = 'REMESSA-PRODUCAO'
+
+        vals['controlecob_numero'] = self.order.file_number
+        vals['controlecob_data_gravacao'] = self.data_hoje()
+
         # reservado_banco_campo22 não é required. Código atualizado na
         # biblioteca cnab240
         vals['data_credito_hd_lote'] = 15052015
@@ -40,19 +53,17 @@ class Cef240(Cnab240):
         vals['carteira_numero'] = int(
             line.l10n_br_payment_mode_id.boleto_modalidade)
 
-        # Informar o Número do Documento - Seu Número (mesmo das posições
-        # 63-73 do Segmento P)
-        vals['nosso_numero'] = "%s%s" % (
-            line.l10n_br_payment_mode_id.boleto_modalidade.zfill(2),
-            line.nosso_numero.zfill(10))
+        # Segue a mesma regra de geração do dv do boleto
+        # Carteira 1 + fixo 4 + 15 posições nosso número - aplica modulo 11
+        numero = "%1s4%15s" % (
+            int(line.l10n_br_payment_mode_id.boleto_carteira),
+            line.nosso_numero.zfill(15))
+        nosso_numero = "%s%s" % (line.nosso_numero,
+                                 BoletoData.modulo11(numero))
+        vals['nosso_numero'] = int(nosso_numero)
 
         vals['identificacao_titulo'] = vals['numero_documento']
-        vals['prazo_baixa'] = str(vals['prazo_baixa'])
 
-        # Precisam estar preenchidos
-        # Header lote
-        # vals['servico_operacao'] = u'R'
-        # vals['servico_servico'] = 1
         vals['cedente_conta_dv'] = str(vals['cedente_conta_dv'])
         vals['cedente_codigo_codCedente'] = 6088
         vals['data_credito_hd_lote'] = 15052015

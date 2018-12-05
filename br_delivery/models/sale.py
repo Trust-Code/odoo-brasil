@@ -21,8 +21,8 @@ class SaleOrder(models.Model):
         if pick:
             result.update({
                 'carrier_id': pick[0].carrier_id.id,
-                'incoterm': pick[0].incoterm.id,
-                'shipping_supplier': pick[0].carrier_id.partner_id.id,
+                'incoterm_id': pick[0].incoterm.id,
+                'shipping_supplier_id': pick[0].carrier_id.partner_id.id,
                 'freight_responsibility': pick[0].freight_responsibility,
                 'vehicle_plate': pick[0].vehicle_plate,
                 'vehicle_state_id': pick[0].vehicle_state_id.id,

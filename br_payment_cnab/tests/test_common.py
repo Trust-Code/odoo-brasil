@@ -29,8 +29,9 @@ class TestBrCnabPayment(TransactionCase):
             'code': '3.0.0',
             'name': 'Despesas com Fornecedores',
             'user_type_id': self.env.ref(
-                'account.data_account_type_revenue').id,
-            'company_id': self.main_company.id
+                'account.data_account_type_payable').id,
+            'company_id': self.main_company.id,
+            'reconcile': True,
         })
         self.expense_account = self.env['account.account'].create({
             'code': '2.0.0',
@@ -54,19 +55,32 @@ class TestBrCnabPayment(TransactionCase):
             'l10n_br_fiscal_classification_id': self.default_ncm.id,
             'list_price': 15.0
         })
+        default_partner = {
+            'name': 'Nome Parceiro',
+            'l10n_br_legal_name': 'Razão Social',
+            'zip': '88037-240',
+            'street': 'Endereço Rua',
+            'l10n_br_number': '42',
+            'l10n_br_district': 'Centro',
+            'phone': '(48) 9801-6226',
+            'country_id': self.env.ref('base.br').id,
+            'state_id': self.env.ref('base.state_br_sc').id,
+            'city_id': self.env.ref('br_base.city_4205407').id,
+            'property_account_payable_id': self.payable_account.id,
+        }
         self.partner_fisica = self.env['res.partner'].create(dict(
-            name='Parceiro',
+            default_partner.items(),
+            l10n_br_cnpj_cpf='545.770.154-98',
             company_type='person',
             is_company=False,
-            street='Donicia',
-            zip='88032-050',
-            l10n_br_cnpj_cpf='066.212.049-30',
-            l10n_br_district='Centro',
-            l10n_br_number=45,
-            # property_account_receivable_id=self.receivable_account.id,
-            country_id=self.env.ref('base.br').id,
-            state_id=self.env.ref('base.state_br_sc').id,
-            city_id=self.env.ref('br_base.city_4205407').id,
+        ))
+        self.partner_juridica = self.env['res.partner'].create(dict(
+            default_partner.items(),
+            name='Pessoa Juridica',
+            l10n_br_cnpj_cpf='05.075.837/0001-13',
+            company_type='company',
+            is_company=True,
+            l10n_br_inscr_est='433.992.727',
         ))
         self.receivable_account = self.env['res.partner.bank'].create({
             'acc_number': '12345',  # 5 digitos
@@ -88,6 +102,10 @@ class TestBrCnabPayment(TransactionCase):
             'default_debit_account_id': self.payable_account.id,
             'default_credit_account_id': self.payable_account.id,
         })
-
-    def test_ordenate_lines(self):
-        pass  # TODO
+        self.journal_payment = self.env['account.journal'].create({
+            'name': 'Compras',
+            'code': 'PURC',
+            'type': 'purchase',
+            'default_debit_account_id': self.payable_account.id,
+            'default_credit_account_id': self.payable_account.id,
+        })

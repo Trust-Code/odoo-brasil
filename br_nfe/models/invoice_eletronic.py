@@ -376,7 +376,7 @@ class InvoiceEletronic(models.Model):
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
-                    'vAliq': "%.02f" % item.issqn_base_calculo,
+                    'vAliq': "%.02f" % item.issqn_aliquota,
                     'vISSQN': "%.02f" % item.issqn_valor,
                     'cMunFG': "%s%s" % (invoice.company_id.state_id.ibge_code,
                                         invoice.company_id.city_id.ibge_code),
@@ -519,6 +519,7 @@ class InvoiceEletronic(models.Model):
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.l10n_br_number,
+                'xCpl': self.company_id.street2 or '',
                 'xBairro': self.company_id.l10n_br_district,
                 'cMun': '%s%s' % (
                     self.company_id.partner_id.state_id.l10n_br_ibge_code,
@@ -551,6 +552,7 @@ class InvoiceEletronic(models.Model):
                 'enderDest': {
                     'xLgr': partner.street,
                     'nro': partner.l10n_br_number,
+                    'xCpl': partner.street2 or '',
                     'xBairro': partner.l10n_br_district,
                     'cMun': '%s%s' % (partner.state_id.l10n_br_ibge_code,
                                       partner.city_id.l10n_br_ibge_code),
@@ -792,9 +794,9 @@ class InvoiceEletronic(models.Model):
 
             QR_code_url = "p={0}|2|{1}|{2}|{3}".format(
                 chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
-            qr_code_server = url_qrcode(estado, ambiente)
+            qr_code_server = url_qrcode(estado, str(ambiente))
             vals['qrCode'] = qr_code_server + QR_code_url
-            vals['urlChave'] = qr_code_server
+            vals['urlChave'] = qr_code_server.replace('?', '')
         return vals
 
     @api.multi

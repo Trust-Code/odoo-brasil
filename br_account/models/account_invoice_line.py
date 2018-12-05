@@ -624,6 +624,8 @@ class AccountInvoiceLine(models.Model):
                 if value and key in self._fields:
                     self.update({key: value})
 
+        other_taxes = self.invoice_line_tax_ids.filtered(
+            lambda x: not x.l10n_br_domain)
         self.invoice_line_tax_ids = \
             self.l10n_br_tax_icms_id | self.l10n_br_tax_icms_st_id | \
             self.l10n_br_tax_icms_inter_id | self.l10n_br_tax_icms_intra_id | \
@@ -631,7 +633,7 @@ class AccountInvoiceLine(models.Model):
             self.l10n_br_tax_pis_id | self.l10n_br_tax_cofins_id | \
             self.l10n_br_tax_issqn_id | self.l10n_br_tax_ii_id | \
             self.l10n_br_tax_csll_id | self.l10n_br_tax_irrf_id | \
-            self.l10n_br_tax_inss_id
+            self.l10n_br_tax_inss_id | other_taxes
 
     def _set_extimated_taxes(self, price):
         service = self.product_id.l10n_br_service_type_id

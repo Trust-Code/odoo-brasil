@@ -53,6 +53,8 @@ class PaymentOrderLine(models.Model):
                               ("cancelled", "Cancelado")],
                              string="Situação",
                              default="draft", track_visibility='onchange')
+    cnab_code = fields.Char(string="Código Retorno")
+    cnab_message = fields.Char(string="Mensagem Retorno")
 
     @api.multi
     def unlink(self):

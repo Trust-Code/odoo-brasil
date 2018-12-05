@@ -63,15 +63,24 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                     self.journal_id.bank_id.bic,
                     event.ocorrencias_retorno.strip())
                 if not payment_line:
+                    nome = ''
+                    if hasattr(event, 'favorecido_nome'):
+                        nome = event.favorecido_nome
+                    elif hasattr(event, 'nome_concessionaria'):
+                        nome = event.nome_concessionaria
+                    elif hasattr(event, 'contribuinte_nome'):
+                        nome = event.contribuinte_nome
+
                     self.env['l10n_br.payment.statement.line'].sudo().create({
                         'date': datetime.strptime(
-                            "{:06}".format(event.data_pagamento), "%d%m%Y"),
-                        'name': "%s - %s" % (event.numero_documento_cliente,
-                                             event.favorecido_nome),
+                            "{:08}".format(event.data_pagamento), "%d%m%Y"),
+                        'nosso_numero': event.numero_documento_cliente,
+                        'name': nome,
                         'amount': event.valor_pagamento,
                         'cnab_code': cnab_code,
                         'cnab_message': message,
                         'statement_id': statement.id,
+                        'ignored': True,
                     })
                     continue
 
@@ -85,7 +94,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
     def select_routing(self, pay_line, cnab_code, bank, message, statement):
         if cnab_code == 'BD':  # Inclusão OK
             pay_line.mark_order_line_processed(
-                cnab_code, message
+                cnab_code, message, statement_id=statement
             )
         elif cnab_code in ('00', '03'):  # Débito
             pay_line.mark_order_line_paid(

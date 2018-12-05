@@ -129,15 +129,14 @@ class AccountTax(models.Model):
         if not ipi_tax:
             return []
         vals = self._tax_vals(ipi_tax)
-
         base_tax = self.calc_ipi_base(price_base)
 
-        vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
         if 'ipi_base_calculo_manual' in self.env.context and\
                 self.env.context['ipi_base_calculo_manual'] > 0:
             vals['base'] = self.env.context['ipi_base_calculo_manual']
         else:
             vals['base'] = base_tax
+        vals['amount'] = ipi_tax._compute_amount(vals['base'], 1.0)
         return [vals]
 
     def calc_ipi_base(self, price_base):
@@ -354,7 +353,9 @@ class AccountTax(models.Model):
         return taxes
 
     def _compute_others(self, price_base):
-        others = self.filtered(lambda x: x.l10n_br_domain == 'outros')
+        others = self.filtered(
+            lambda x: x.l10n_br_domain == 'outros' or not x.l10n_br_domain)
+
         if not others:
             return []
         vals = self._tax_vals(others)

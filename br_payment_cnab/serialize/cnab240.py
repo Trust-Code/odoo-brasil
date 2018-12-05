@@ -150,8 +150,6 @@ class Cnab_240(object):
             # GPS
             "contribuinte_nome":
                 self._order.company_id.l10n_br_legal_name[:30],
-            "valor_total_pagamento": self._string_to_monetary(
-                line.value_final),
             "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(

@@ -15,8 +15,14 @@ class AccountInvoiceRefund(models.TransientModel):
     @api.multi
     def invoice_refund(self):
         res = super(AccountInvoiceRefund, self).invoice_refund()
+
         if not self.l10n_br_localization:
             return res
+        if type(res) is bool:
+            return res
+        if "domain" not in res:
+            return res
+
         invoice_id = res['domain'][1][2][0]
         invoice_id = self.env['account.invoice'].search([
             ('id', '=', invoice_id)
