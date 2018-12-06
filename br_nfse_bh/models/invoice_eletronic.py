@@ -309,7 +309,7 @@ class InvoiceEletronic(models.Model):
             certificado, cancelamento=canc, ambiente=self.ambiente)
 
         retorno = cancel['object']
-        if "Cancelamento" in dir(retorno):
+        if "RetCancelamento" in dir(retorno):
             self.state = 'cancel'
             self.codigo_retorno = '100'
             self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
