@@ -24,7 +24,6 @@
         'account_invoicing',
         'br_account_payment',
         'br_account_voucher',
-        'br_cnab'
     ],
     'data': [
         'data/data.xml',
