@@ -87,7 +87,7 @@ class TestBrCnabPayment(TransactionCase):
             'acc_number_dig': '0',  # 1 digito
             'bra_number': '1234',  # 4 digitos
             'bra_number_dig': '0',
-            'codigo_convenio': '123456-6',  # 7 digitos
+            'l10n_br_convenio_pagamento': '123456-6',  # 7 digitos
             'bank_id': sicoob.id,
             'partner_id': self.partner_fisica.id,
         })
