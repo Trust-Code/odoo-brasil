@@ -197,7 +197,7 @@ class Cnab_240(object):
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 self._order.company_id.cnpj_cpf),
-            "codigo_convenio": str(bank.codigo_convenio),
+            "codigo_convenio": str(bank.l10n_br_convenio_pagamento),
             "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.bra_number_dig or '',
             "cedente_conta": bank.acc_number,
