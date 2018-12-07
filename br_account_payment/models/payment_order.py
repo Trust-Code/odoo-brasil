@@ -111,6 +111,9 @@ class PaymentOrder(models.Model):
     currency_id = fields.Many2one('res.currency', string='Moeda')
     amount_total = fields.Float(string="Total",
                                 compute='_compute_amount_total')
+    cnab_file = fields.Binary('CNAB File', readonly=True)
+    file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
+    data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
 
     def mark_order_line_processed(self, cnab_code, cnab_message,
                                   rejected=False, statement_id=None):
