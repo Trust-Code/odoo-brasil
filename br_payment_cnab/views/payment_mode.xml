@@ -9,9 +9,6 @@
         <field name="arch" type="xml">
             <field name="type" position="after">
                 <field name="payment_type" attrs="{'invisible': [('type', '!=', 'payable')]}"/>
-                <field name="schedule_days_before" attrs="{'invisible': [('type', '!=', 'payable')]}" />
-                <field name="one_time_payment" attrs="{'invisible': ['|', ('type', '!=', 'payable'), ('payment_type', 'not in', ('01', '02', '03'))]}" />
-                <field name="one_time_payment_day" attrs="{'invisible': [('one_time_payment', '=', False)]}"/>
             </field>
             <field name="active" position="after">
                 <field name="l10n_br_environment" />

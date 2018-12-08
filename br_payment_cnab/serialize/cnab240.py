@@ -11,8 +11,9 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.file import File
+    from pycnab240.utils import get_operation
 except ImportError:
-    _logger.info('Cannot import pycnab240', exc_info=True)
+    _logger.error('Cannot import pycnab240', exc_info=True)
 
 
 class Cnab_240(object):
@@ -51,6 +52,11 @@ class Cnab_240(object):
             date_value = datetime.strptime(date_value[0:10], "%Y-%m-%d")
         return date_value.strftime("%d%m%Y")
 
+    def is_doc_or_ted(self, op):
+        if op == '01' or op == '02':
+            return True
+        return False
+
     def _get_header_arq(self):
         bank = self._order.src_bank_account_id
         headerArq = {
@@ -60,9 +66,7 @@ class Cnab_240(object):
                 self._order.company_id.cnpj_cpf),
             # Usado pelo Banco para identificar o contrato - númerodo banco(4),
             # códigode agência(4 "sem DV"), número do convênio(12).
-            'codigo_convenio': bank.codigo_convenio,
-            # Para ordem de pagamento, saque em uma agência -número da agência,
-            # caso contrário preencher com zeros.
+            'codigo_convenio': bank.l10n_br_convenio_pagamento,
             'cedente_agencia': self._string_to_num(bank.bra_number, 0),
             'cedente_agencia_dv': bank.bra_number_dig,
             'cedente_conta': self._string_to_num(bank.acc_number),
@@ -144,8 +148,6 @@ class Cnab_240(object):
                 information_id.interest_value),
             # GPS
             "contribuinte_nome": self._order.company_id.legal_name[:30],
-            "valor_total_pagamento": self._string_to_monetary(
-                line.value_final),
             "codigo_receita_tributo": information_id.codigo_receita or '',
             "tipo_identificacao_contribuinte": 1,
             "identificacao_contribuinte": self._string_to_num(
@@ -184,16 +186,17 @@ class Cnab_240(object):
         }
         return trailer_lot
 
-    def _get_header_lot(self, line, num_lot):
+    def _get_header_lot(self, line, num_lot, lot):
         information_id = line.payment_information_id
         bank = self._order.src_bank_account_id
         header_lot = {
+            'forma_lancamento': lot,
             "controle_lote": num_lot,
             "tipo_servico": int(information_id.service_type),
             "cedente_inscricao_tipo": 2,
             "cedente_inscricao_numero": self._string_to_num(
                 self._order.company_id.cnpj_cpf),
-            "codigo_convenio": str(bank.codigo_convenio),
+            "codigo_convenio": str(bank.l10n_br_convenio_pagamento),
             "cedente_agencia": bank.bra_number,
             "cedente_agencia_dv": bank.bra_number_dig or '',
             "cedente_conta": bank.acc_number,
@@ -215,14 +218,22 @@ class Cnab_240(object):
         }
         return header_lot
 
+    def get_operation(self, line):
+        bank_origin = line.src_bank_account_id.bank_id.bic
+        bank_dest = line.bank_account_id.bank_id.bic
+        tit_origin = line.src_bank_account_id.partner_id
+        tit_dest = line.bank_account_id.partner_id
+        op = line.payment_information_id.payment_type
+        return get_operation(bank_origin, bank_dest, tit_origin, tit_dest, op)
+
     def _ordenate_lines(self, listOfLines):
         operacoes = {}
         for line in listOfLines:
-            if line.payment_information_id.payment_type in operacoes:
-                operacoes[
-                    line.payment_information_id.payment_type].append(line)
+            op = self.get_operation(line)
+            if op in operacoes:
+                operacoes[op].append(line)
             else:
-                operacoes[line.payment_information_id.payment_type] = [line]
+                operacoes[op] = [line]
         self._lot_qty = len(operacoes)
         return operacoes
 
@@ -236,7 +247,7 @@ class Cnab_240(object):
     def create_details(self, operacoes):
         num_lot = 1
         for lote, events in operacoes.items():
-            self._create_header_lote(events[0], num_lot)
+            self._create_header_lote(events[0], num_lot, lote)
             lot_sequency = 1
             for event in events:
                 lot_sequency = self.create_detail(
@@ -245,9 +256,9 @@ class Cnab_240(object):
             self._create_trailer_lote(total_lote, num_lot)
             num_lot = num_lot + 1
 
-    def _create_header_lote(self, line, num_lot):
+    def _create_header_lote(self, line, num_lot, lot):
         self._cnab_file.add_segment(
-            'HeaderLote', self._get_header_lot(line, num_lot))
+            'HeaderLote', self._get_header_lot(line, num_lot, lot))
 
     def create_detail(self, operation, event, lot_sequency, num_lot):
         segments = self.segments_per_operation().get(operation, [])
@@ -259,13 +270,13 @@ class Cnab_240(object):
                 segment, self._get_segmento(
                     event, lot_sequency, num_lot))
             lot_sequency += 1
-        self._cnab_file.get_active_lot().get_active_event().close_event()
+        self._cnab_file.get_active_lot().get_active_event(None).close_event()
         return lot_sequency
 
     def segments_per_operation(self):
         return {
             "01": ["SegmentoA", "SegmentoB"],
-            "02": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
         }
 
     def _create_trailer_lote(self, total, num_lot):

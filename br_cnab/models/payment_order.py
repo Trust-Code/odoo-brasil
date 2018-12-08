@@ -5,16 +5,12 @@
 import base64
 from ..febraban.cnab import Cnab
 from datetime import datetime, date
-from odoo import api, fields, models
+from odoo import api, models
 from odoo.exceptions import UserError
 
 
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
-
-    cnab_file = fields.Binary('CNAB File', readonly=True)
-    file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
-    data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
 
     @api.multi
     def gerar_cnab(self):
@@ -78,6 +74,7 @@ class PaymentOrderLine(models.Model):
                 'amount': item.amount_total,
                 'cnab_code': cnab_code,
                 'cnab_message': cnab_message,
+                'nosso_numero': item.nosso_numero,
             })
         return statement_id
 

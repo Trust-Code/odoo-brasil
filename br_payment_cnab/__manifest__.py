@@ -24,7 +24,6 @@
         'account_invoicing',
         'br_account_payment',
         'br_account_voucher',
-        'br_cnab'
     ],
     'data': [
         'data/data.xml',
@@ -34,9 +33,11 @@
         'views/payment_order.xml',
         'views/res_config_settings.xml',
         'views/res_partner_bank.xml',
+        'views/account_journal_view.xml',
         'wizard/payment_cnab_import.xml',
         'wizard/manual_reconcile.xml',
         'wizard/approve_payments.xml',
+        'reports/cnab_payment_receipt_report.xml'
     ],
     'application': True,
 }

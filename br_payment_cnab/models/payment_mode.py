@@ -15,8 +15,6 @@ class PaymentMode(models.Model):
          ('04', 'Tributos com código de barras'),
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
-         ('07', 'DARF Simples'),
-         ('08', 'FGTS'),
          ('09', 'ICMS')],
         string="Tipo de Operação")
 
@@ -72,10 +70,6 @@ class PaymentMode(models.Model):
                 continue
             if not rec.journal_id:
                 raise ValidationError('Para pagamentos o diário é obrigatório')
-            if rec.journal_id.bank_id.bic == '341':
-                if not (rec.payment_type == '01' or rec.payment_type == '02'):
-                    raise ValidationError(
-                        'Tipo de pagamento não implementado para o banco Itaú')
             if not rec.journal_id.bank_account_id:
                 raise ValidationError(
                     'Não existe conta bancária cadastrada no diário escolhido')

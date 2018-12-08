@@ -23,6 +23,7 @@ class PaymentOrderLine(models.Model):
             'state': 'draft',
             'currency_id': move_line.company_currency_id.id,
             'company_id': payment_mode.journal_id.company_id.id,
+            'journal_id': payment_mode.journal_id.id,
             'src_bank_account_id': payment_mode.journal_id.bank_account_id.id,
         }
         if not payment_order:

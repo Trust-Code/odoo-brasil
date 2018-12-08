@@ -4,8 +4,8 @@ from ..serialize.cnab240 import Cnab_240
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import sicoob
+    from pycnab240.utils import get_ted_doc_finality
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
@@ -28,12 +28,10 @@ class Sicoob240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
-        info_id = line.payment_information_id
-        header = super(Sicoob240, self)._get_header_lot(line, num_lot)
+    def _get_header_lot(self, line, num_lot, lot):
+        header = super(Sicoob240, self)._get_header_lot(line, num_lot, lot)
         header.update({
-            'forma_lancamento':
-            get_forma_de_lancamento('sicoob', info_id.payment_type),
+            'tipo_servico': int(header.get('tipo_servico')),
             'cedente_agencia': int(header.get('cedente_agencia')),
             'cedente_conta_dv': self._string_to_num(
                 header.get('cedente_conta_dv')),
@@ -46,6 +44,8 @@ class Sicoob240(Cnab_240):
     def _get_segmento(self, line, lot_sequency, num_lot):
         segmento = super(Sicoob240, self)._get_segmento(
             line, lot_sequency, num_lot)
+        ignore = not self.is_doc_or_ted(
+            line.payment_information_id.payment_type)
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_nome': segmento.get('favorecido_nome')[:30],
@@ -71,28 +71,25 @@ class Sicoob240(Cnab_240):
                 segmento.get('codigo_instrucao_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),
+            'finalidade_ted': get_ted_doc_finality(
+                'sicoob', '01', segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'sicoob', '02', segmento.get('finalidade_doc_ted'), ignore)
         })
         return segmento
-
-    def _get_trailer_lot(self, total, num_lot):
-        trailer = super(Sicoob240, self)._get_trailer_lot(total, num_lot)
-        trailer.update({
-        })
-        return trailer
-
-    def _get_trailer_arq(self):
-        trailer = super(Sicoob240, self)._get_trailer_arq()
-        trailer.update({
-        })
-        return trailer
 
     def segments_per_operation(self):
         segments = super(Sicoob240, self).segments_per_operation()
         segments.update({
-            '03': ["SegmentoJ"],
-            '04': ["SegmentoO"],
-            '05': ["SegmentoN_GPS"],
-            '06': ["SegmentoN_DarfNormal", "SegmentoW"],
-            '07': ["SegmentoN_DarfSimples", "SegmentoW"],
+            "01": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
+            "41": ["SegmentoA", "SegmentoB"],
+            "43": ["SegmentoA", "SegmentoB"],
+            '30': ["SegmentoJ"],
+            '31': ["SegmentoJ"],
+            '11': ["SegmentoO"],
+            '17': ["SegmentoN_GPS"],
+            '16': ["SegmentoN_DarfNormal", "SegmentoW"],
+            '18': ["SegmentoN_DarfSimples", "SegmentoW"],
         })
         return segments

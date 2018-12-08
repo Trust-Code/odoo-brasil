@@ -24,9 +24,6 @@
                     <button name="action_generate_payable_cnab" type="object" class="oe_stat_button" icon="fa-file-text-o" string="Gerar CNAB de Pagamentos"/>
                 </div>
             </group>
-            <field name="amount_total" position="after">
-                <field name="company_id" invisible="0"/>
-            </field>
         </field>
     </record>
 
