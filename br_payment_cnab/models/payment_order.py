@@ -50,8 +50,7 @@ class PaymentOrder(models.Model):
         cnab.create_cnab(lines)
         lines.write({'state': 'sent'})
         self.cnab_file = base64.b64encode(cnab.write_cnab())
-        self.name = self.env['ir.sequence'].next_by_code(
-            'payment.cnab.name')
+        self.name = self._get_next_code()
 
 
 class PaymentOrderLine(models.Model):
@@ -113,7 +112,8 @@ class PaymentOrderLine(models.Model):
     def validate_bank_account(self, vals):
         errors = []
         if "bank_account_id" not in vals or not vals["bank_account_id"]:
-            errors += ['Selecione a conta bancária para transferência!']
+            errors += [
+                'Preencha a conta bancária para transferência no diário!']
             return errors
         bnk_account = self.env['res.partner.bank'].browse(
             vals["bank_account_id"])
@@ -207,7 +207,6 @@ class PaymentOrderLine(models.Model):
             return '700'
 
     def get_payment_order(self, payment_mode):
-        order_name = self.env['ir.sequence'].next_by_code('payment.order')
         payment_order = self.env['payment.order'].search([
             ('state', '=', 'draft'),
             ('src_bank_account_id', '=',
@@ -215,7 +214,6 @@ class PaymentOrderLine(models.Model):
             ('type', '=', 'payable')], limit=1)
         if not payment_order:
             payment_order = payment_order.sudo().create({
-                'name': order_name or '',
                 'user_id': self.env.user.id,
                 'payment_mode_id': payment_mode.id,
                 'journal_id': payment_mode.journal_id.id,
@@ -270,8 +268,11 @@ class PaymentOrderLine(models.Model):
         }
         line_vals.update(vals)
         order_line = self.sudo().create(line_vals)
-        move_line = self.env['account.move.line'].browse(vals['move_line_id'])
-        move_line.write({'l10n_br_order_line_id': order_line.id})
+        if "move_line_id" in vals:
+            move_line = self.env['account.move.line'].browse(
+                vals['move_line_id'])
+            move_line.write({'l10n_br_order_line_id': order_line.id})
+        return order_line
 
     def action_aprove_payment_line(self):
         for item in self:

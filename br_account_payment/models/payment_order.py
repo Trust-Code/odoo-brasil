@@ -81,7 +81,8 @@ class PaymentOrder(models.Model):
                 amount_total += line.amount_total
             item.amount_total = amount_total
 
-    name = fields.Char(max_length=30, string="Nome", required=True)
+    name = fields.Char(max_length=30, string="Nome",
+                       required=True, default='/')
     company_id = fields.Many2one(
         'res.company', string='Company', required=True, ondelete='restrict',
         default=lambda self: self.env['res.company']._company_default_get(
@@ -114,6 +115,20 @@ class PaymentOrder(models.Model):
     cnab_file = fields.Binary('CNAB File', readonly=True)
     file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
+
+    def _get_next_code(self):
+        sequence_id = self.env['ir.sequence'].sudo().search(
+            [('code', '=', 'l10n_br_.payment.cnab.sequential'),
+             ('company_id', '=', self.company_id.id)])
+        if not sequence_id:
+            sequence_id = self.env['ir.sequence'].sudo().create({
+                'name': 'Sequencia para numeração CNAB',
+                'code': 'l10n_br_.payment.cnab.sequential',
+                'company_id': self.company_id.id,
+                'suffix': '.REM',
+                'padding': 8,
+            })
+        return sequence_id.next_by_id()
 
     def mark_order_line_processed(self, cnab_code, cnab_message,
                                   rejected=False, statement_id=None):
