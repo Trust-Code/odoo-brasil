@@ -24,13 +24,14 @@ class ResConfigSettings(models.TransientModel):
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
         params = self.env['ir.config_parameter'].sudo()
+        multi_company = params.get_param(
+            'br_payment_cnab.l10n_br_multi_company_payment', default=0)
         res.update(
             l10n_br_interest_account_id=int(params.get_param(
                 'br_payment_cnab.l10n_br_interest_account_id', default=0)),
             l10n_br_fine_account_id=int(params.get_param(
                 'br_payment_cnab.l10n_br_fine_account_id', default=0)),
-            l10n_br_multi_company_payment=int(params.get_param(
-                'br_payment_cnab.l10n_br_multi_company_payment', default=0))
+            l10n_br_multi_company_payment=(multi_company == 'True')
         )
         return res
 

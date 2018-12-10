@@ -4,8 +4,8 @@ from ..serialize.cnab240 import Cnab_240
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import bradesco
+    from pycnab240.utils import get_ted_doc_finality
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
@@ -33,13 +33,12 @@ class Bradesco240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
-        info_id = line.payment_information_id
-        header = super(Bradesco240, self)._get_header_lot(line, num_lot)
+    def _get_header_lot(self, line, num_lot, lot):
+        header = super(Bradesco240, self)._get_header_lot(line, num_lot, lot)
         header.update({
+            'forma_lancamento': self._string_to_num(
+                header.get('forma_lancamento')),
             'numero_versao_lote': self._get_versao_lote(line),
-            'forma_lancamento': int(get_forma_de_lancamento(
-                'bradesco', info_id.payment_type)),
             'cedente_agencia': self._string_to_num(
                 header.get('cedente_agencia')),
             'cedente_conta': self._string_to_num(
@@ -52,6 +51,8 @@ class Bradesco240(Cnab_240):
     def _get_segmento(self, line, lot_sequency, num_lot):
         segmento = super(Bradesco240, self)._get_segmento(
             line, lot_sequency, num_lot)
+        ignore = not self.is_doc_or_ted(
+            line.payment_information_id.payment_type)
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
@@ -66,18 +67,28 @@ class Bradesco240(Cnab_240):
                 segmento.get('favorecido_agencia'), 0),
             'favorecido_cep': self._string_to_num(
                 str(segmento.get('favorecido_cep'))[:5]),
+            'finalidade_ted': get_ted_doc_finality(
+                'bradesco', '01',
+                segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'bradesco', '02',
+                segmento.get('finalidade_doc_ted'), ignore),
         })
         return segmento
 
     def segments_per_operation(self):
         segments = super(Bradesco240, self).segments_per_operation()
         segments.update({
-            "03": ["SegmentoJ"],
-            "04": ["SegmentoO"],
-            "05": ["SegmentoN_GPS"],
-            "06": ["SegmentoN_DarfNormal"],
-            "07": ["SegmentoN_DarfSimples"],
-            "08": ["SegmentoO", "SegmentoW"],
-            "09": ["SegmentoN_GareSP"],
+            "41": ["SegmentoA", "SegmentoB"],
+            "43": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
+            "01": ["SegmentoA", "SegmentoB"],
+            "30": ["SegmentoJ"],                # Títulos
+            "31": ["SegmentoJ"],                # Títulos
+            "17": ["SegmentoN_GPS"],            # GPS
+            "16": ["SegmentoN_DarfNormal"],     # Darf Normal
+            "18": ["SegmentoN_DarfSimples"],    # Darf Simples
+            "11": ["SegmentoO", "SegmentoW"],   # Barcode
+            "22": ["SegmentoN_GareSP"],         # Gare SP - ICMS
         })
         return segments

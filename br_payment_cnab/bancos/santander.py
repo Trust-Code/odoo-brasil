@@ -4,8 +4,8 @@ from ..serialize.cnab240 import Cnab_240
 _logger = logging.getLogger(__name__)
 
 try:
-    from pycnab240.utils import get_forma_de_lancamento
     from pycnab240.bancos import santander
+    from pycnab240.utils import get_ted_doc_finality
 except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
@@ -30,7 +30,7 @@ class Santander240(Cnab_240):
         return "{:4s}{:4s}{:12s}".format(
             str(bank_account.bank_id.bic).zfill(4),
             str(bank_account.bra_number).zfill(4),
-            str(bank_account.codigo_convenio).zfill(12))
+            str(bank_account.l10n_br_convenio_pagamento).zfill(12))
 
     def _get_header_arq(self):
         header = super()._get_header_arq()
@@ -42,13 +42,14 @@ class Santander240(Cnab_240):
         })
         return header
 
-    def _get_header_lot(self, line, num_lot):
-        info_id = line.payment_information_id
-        header = super()._get_header_lot(line, num_lot)
+    def _get_header_lot(self, line, num_lot, lot):
+        header = super()._get_header_lot(line, num_lot, lot)
         header.update({
+            'forma_lancamento': self._string_to_num(
+                header.get('forma_lancamento')),
             'numero_versao_lote': self._get_versao_lote(line),
-            'forma_lancamento': int(get_forma_de_lancamento(
-                'santander', info_id.payment_type)),
+            'cedente_endereco_numero': self._string_to_num(
+                header.get('cedente_endereco_numero')),
             'cedente_conta': self._string_to_num(header.get('cedente_conta')),
             'cedente_agencia': int(header.get('cedente_agencia')),
             'cedente_agencia_dv': "" if (
@@ -61,6 +62,8 @@ class Santander240(Cnab_240):
     def _get_segmento(self, line, lot_sequency, num_lot):
         segmento = super(Santander240, self)._get_segmento(
             line, lot_sequency, num_lot)
+        ignore = not self.is_doc_or_ted(
+            line.payment_information_id.payment_type)
         segmento.update({
             'tipo_identificacao_contribuinte': 2,  # CNPJ
             'tipo_identificacao_contribuinte_alfa': '2',  # CNPJ
@@ -77,8 +80,6 @@ class Santander240(Cnab_240):
                 segmento.get('valor_real_pagamento')),
             'valor_abatimento': self._string_to_monetary(
                 segmento.get('valor_abatimento')),
-            'favorecido_conta_dv': self._string_to_num(
-                segmento.get('favorecido_conta_dv'), 0),
             'favorecido_agencia': self._string_to_num(
                 segmento.get('favorecido_agencia'), 0),
             'favorecido_nome':
@@ -89,26 +90,30 @@ class Santander240(Cnab_240):
                 segmento.get('favorecido_bairro', '')[:15],
             'favorecido_cidade':
                 segmento.get('favorecido_cidade', '')[:15],
+            'nome_concessionaria':
+                segmento.get('nome_concessionaria', '')[:30],
+            'finalidade_ted': get_ted_doc_finality(
+                'santander', '01',
+                segmento.get('finalidade_doc_ted'), ignore),
+            'finalidade_doc': get_ted_doc_finality(
+                'santander', '02',
+                segmento.get('finalidade_doc_ted'), ignore),
         })
         return segmento
-
-    def _get_trailer_arq(self):
-        trailer = super(Santander240, self)._get_trailer_arq()
-        return trailer
-
-    def _get_trailer_lot(self, total, num_lot):
-        trailer = super(Santander240, self)._get_trailer_lot(total, num_lot)
-        return trailer
 
     def segments_per_operation(self):
         segments = super(Santander240, self).segments_per_operation()
         segments.update({
-            "03": ["SegmentoJ"],
-            "04": ["SegmentoO"],
-            "05": ["SegmentoN_GPS"],
-            "06": ["SegmentoN_DarfNormal"],
-            "07": ["SegmentoN_DarfSimples"],
-            "08": ["SegmentoO", "SegmentoW"],
-            "09": ["SegmentoN_GareSP"],
+            "41": ["SegmentoA", "SegmentoB"],
+            "43": ["SegmentoA", "SegmentoB"],
+            "01": ["SegmentoA", "SegmentoB"],
+            "03": ["SegmentoA", "SegmentoB"],
+            '30': ["SegmentoJ"],
+            '31': ["SegmentoJ"],
+            '11': ["SegmentoO"],
+            "17": ["SegmentoN_GPS"],
+            "16": ["SegmentoN_DarfNormal"],
+            "18": ["SegmentoN_DarfSimples"],
+            "22": ["SegmentoN_GareSP"],
         })
         return segments

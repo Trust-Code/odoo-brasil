@@ -16,9 +16,9 @@
                 <field name="fine_value" widget="monetary"/>
             </field>
             <group position="inside">
-                <h3>
+                <h3 attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}">
                     <strong><label string="Linha Digitável" /></strong>
-                    <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}" />
+                    <field name="linha_digitavel" />
                 </h3>
             </group>
         </field>
@@ -29,7 +29,7 @@
         <field name="model">account.voucher</field>
         <field name="inherit_id" ref="br_account_voucher.view_br_account_voucher_recurring_form"/>
         <field name="arch" type="xml">
-            <field name="company_id" position="after">
+            <field name="account_id" position="after">
                 <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
                 <field name="payment_type" invisible="1" />
                 <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>

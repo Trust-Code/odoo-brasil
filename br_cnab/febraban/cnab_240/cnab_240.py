@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 try:
     from cnab240.tipos import Arquivo
 except ImportError:
-    _logger.debug('Cannot import cnab240')
+    _logger.error('Cannot import cnab240', exc_info=True)
 
 
 class Cnab240(Cnab):
@@ -57,7 +57,7 @@ class Cnab240(Cnab):
 
     @property
     def inscricao_tipo(self):
-        if self.order.payment_mode_id.company_id.partner_id.is_company:
+        if self.order.company_id.partner_id.is_company:
             return 2
         else:
             return 1
@@ -177,8 +177,6 @@ class Cnab240(Cnab):
             'juros_multa': Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
                     Decimal('1.00')),
-            # TODO Remover taxa dia - deixar apenas taxa normal
-            'juros_mora_taxa_dia': Decimal('0.00'),
             'valor_abatimento': Decimal('0.00'),
             'sacado_inscricao_tipo': int(
                 self.sacado_inscricao_tipo(line.partner_id)),

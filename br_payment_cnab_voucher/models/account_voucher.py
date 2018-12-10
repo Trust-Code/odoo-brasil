@@ -9,6 +9,7 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 try:
     from pycnab240.utils import decode_digitable_line, pretty_format_line
+    from pycnab240.errors import DvNotValidError
 except ImportError:
     _logger.error('Cannot import pycnab240', exc_info=True)
 
@@ -17,7 +18,8 @@ class AccountVoucher(models.Model):
     _inherit = 'account.voucher'
 
     payment_mode_id = fields.Many2one(
-        'l10n_br.payment.mode', "Modo de Pagamento")
+        'l10n_br.payment.mode', "Modo de Pagamento", readonly=True,
+        states={'draft': [('readonly', False)]})
     payment_type = fields.Selection(
         [('01', 'TED - Transferência Bancária'),
          ('02', 'DOC - Transferência Bancária'),
@@ -28,20 +30,33 @@ class AccountVoucher(models.Model):
          ('07', 'DARF Simples'),
          ('08', 'FGTS'),
          ('09', 'ICMS')],
-        string="Tipo de Operação")
+        string="Tipo de Operação", readonly=True,
+        states={'draft': [('readonly', False)]})
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
-        domain="[('partner_id', '=', partner_id)]")
+        domain="[('partner_id', '=', partner_id)]", readonly=True,
+        states={'draft': [('readonly', False)]})
 
-    linha_digitavel = fields.Char(string="Linha Digitável")
-    barcode = fields.Char('Barcode', compute="_compute_barcode", store=True)
-    interest_value = fields.Float('Interest Value')
-    fine_value = fields.Float('Fine Value')
+    linha_digitavel = fields.Char(
+        string="Linha Digitável", readonly=True,
+        states={'draft': [('readonly', False)]})
+    barcode = fields.Char(
+        'Barcode', compute="_compute_barcode", store=True, readonly=True)
+    interest_value = fields.Float(
+        'Interest Value', readonly=True,
+        states={'draft': [('readonly', False)]})
+    fine_value = fields.Float(
+        'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
 
     _sql_constraints = [
         ('account_voucher_barcode_uniq', 'unique (barcode)',
          _('O código de barras deve ser único!'))
     ]
+
+    def get_order_line(self):
+        for line in self.move_id.line_ids:
+            if (line.l10n_br_order_line_id.autenticacao_pagamento):
+                return line.l10n_br_order_line_id
 
     @api.multi
     def copy(self, default=None):
@@ -58,7 +73,7 @@ class AccountVoucher(models.Model):
             if len(linha) not in (47, 48):
                 raise UserError(
                     'Tamanho da linha digitável inválido %s' % len(linha))
-            vals = decode_digitable_line(linha)
+            vals = self._get_digitable_line_vals(linha)
             item.barcode = vals['barcode']
 
     @api.onchange('linha_digitavel')
@@ -66,12 +81,22 @@ class AccountVoucher(models.Model):
         linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
         if len(linha) in (47, 48):
             self.linha_digitavel = pretty_format_line(linha)
-            vals = decode_digitable_line(linha)
-            self.line_ids = [(0, 0, {
-                'quantity': 1.0,
-                'price_unit': vals.get('valor', 0.0)
-            })]
-            self.date_due = vals.get('vencimento')
+            vals = self._get_digitable_line_vals(linha)
+            if self.line_ids:
+                self.line_ids[0].price_unit = vals.get('valor', 0.0)
+            else:
+                self.line_ids = [(0, 0, {
+                    'quantity': 1.0,
+                    'price_unit': vals.get('valor', 0.0)
+                })]
+            if vals.get('vencimento'):
+                self.date_due = vals.get('vencimento')
+
+    def _get_digitable_line_vals(self, digitable_line):
+        try:
+            return decode_digitable_line(digitable_line)
+        except DvNotValidError:
+            raise UserError("DV do código de Barras não confere!")
 
     @api.onchange('payment_mode_id')
     def _onchange_payment_mode_id(self):
@@ -101,8 +126,9 @@ class AccountVoucher(models.Model):
             'invoice_date': self.date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
-            'fine_value': self.fine_value,
-            'interest_value': self.interest_value,
+            # TODO Ajustar o valor de multa e de juros
+            # 'fine_value': self.fine_value,
+            # 'interest_value': self.interest_value,
         }
 
     @api.multi

@@ -15,7 +15,7 @@ try:
     from pyboleto import bank
     BoletoException = bank.BoletoException
 except ImportError:
-    _logger.debug('Cannot import pyboleto')
+    _logger.error('Cannot import pyboleto', exc_info=True)
 
 
 especie = {
@@ -195,9 +195,14 @@ class BoletoCaixa(Boleto):
         self.branch_number = conta.bra_number
         # bank specific
         self.account_digit = conta.acc_number_dig
+        self.branch_digit = conta.bra_number_dig
         # end bank specific
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero
+        self.boleto.codigo_beneficiario = conta.codigo_convenio
+
+    def getBranchNumber(self):
+        return self.branch_number
 
 
 class BoletoCecred(Boleto):

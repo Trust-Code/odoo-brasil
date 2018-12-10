@@ -23,6 +23,7 @@ class PaymentOrderLine(models.Model):
             'state': 'draft',
             'currency_id': move_line.company_currency_id.id,
             'company_id': payment_mode.journal_id.company_id.id,
+            'journal_id': payment_mode.journal_id.id,
             'src_bank_account_id': payment_mode.journal_id.bank_account_id.id,
         }
         if not payment_order:
@@ -31,7 +32,8 @@ class PaymentOrderLine(models.Model):
         move = self.env['payment.order.line'].search(
             [('src_bank_account_id', '=',
               payment_mode.journal_id.bank_account_id.id),
-             ('move_line_id', '=', move_line.id)])
+             ('move_line_id', '=', move_line.id),
+             ('state', 'not in', ('cancelled', 'rejected'))])
         if not move:
             return self.env['payment.order.line'].create({
                 'move_line_id': move_line.id,
@@ -64,6 +66,9 @@ class PaymentOrderLine(models.Model):
         return self
 
     def generate_boleto_list(self):
+        if self.filtered(lambda x: x.state in ('cancelled', 'rejected')):
+            raise UserError(
+                'Boletos cancelados ou rejeitados não permitem a impressão')
         boleto_list = []
         for line in self:
             boleto = Boleto.getBoleto(line, line.nosso_numero)

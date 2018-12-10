@@ -54,8 +54,6 @@ class PaymentInformation(models.Model):
          ('04', 'Tributos com código de barras'),
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
-         ('07', 'DARF Simples'),
-         ('08', 'FGTS'),
          ('09', 'ICMS')],
         string="Tipo de Operação")
 
@@ -181,4 +179,4 @@ class PaymentInformation(models.Model):
         for item in self:
             if item.payment_type not in ('05', '06', '07', '09'):
                 continue
-            return TAX_IDENTIFICATION.get(item.payment_type)
+            item.tax_identification = TAX_IDENTIFICATION.get(item.payment_type)

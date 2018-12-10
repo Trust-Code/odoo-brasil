@@ -2,9 +2,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
-
+import logging
 from odoo import fields, models
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class l10nBrPaymentCnabImport(models.TransientModel):
@@ -38,8 +40,15 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         pass
 
     def action_import_cnab(self):
-        cnab = base64.decodestring(self.cnab_file)
-        acc_number, bra_number = self._get_account(cnab)
+        try:
+            cnab = base64.decodestring(self.cnab_file)
+            acc_number, bra_number = self._get_account(cnab)
 
-        self.validate_journal(acc_number, bra_number)
-        return self.do_import(cnab)
+            self.validate_journal(acc_number, bra_number)
+            return self.do_import(cnab)
+        except UserError:
+            raise
+        except Exception as e:
+            _logger.error(str(e), exc_info=True)
+            msg = 'O arquivo importado não parece ser o correto:\n%s' % str(e)
+            raise UserError(msg)

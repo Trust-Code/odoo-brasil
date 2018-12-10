@@ -28,9 +28,9 @@ try:
         gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
-    from pytrustnfe.Servidores import localizar_qrcode, localizar_url
+    from pytrustnfe.urls import url_qrcode
 except ImportError:
-    _logger.info('Cannot import pytrustnfe', exc_info=True)
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 STATE = {'edit': [('readonly', False)]}
 
@@ -376,7 +376,7 @@ class InvoiceEletronic(models.Model):
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
-                    'vAliq': "%.02f" % item.issqn_base_calculo,
+                    'vAliq': "%.02f" % item.issqn_aliquota,
                     'vISSQN': "%.02f" % item.issqn_valor,
                     'cMunFG': "%s%s" % (invoice.company_id.state_id.ibge_code,
                                         invoice.company_id.city_id.ibge_code),
@@ -519,6 +519,7 @@ class InvoiceEletronic(models.Model):
             'enderEmit': {
                 'xLgr': self.company_id.street,
                 'nro': self.company_id.number,
+                'xCpl': self.company_id.street2 or '',
                 'xBairro': self.company_id.district,
                 'cMun': '%s%s' % (
                     self.company_id.partner_id.state_id.ibge_code,
@@ -548,6 +549,7 @@ class InvoiceEletronic(models.Model):
                 'enderDest': {
                     'xLgr': partner.street,
                     'nro': partner.number,
+                    'xCpl': partner.street2 or '',
                     'xBairro': partner.district,
                     'cMun': '%s%s' % (partner.state_id.ibge_code,
                                       partner.city_id.ibge_code),
@@ -785,12 +787,9 @@ class InvoiceEletronic(models.Model):
 
             QR_code_url = "p={0}|2|{1}|{2}|{3}".format(
                 chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
-            qr_code_server = localizar_qrcode(estado, ambiente)
-            url_chave = localizar_url(
-                'NfeConsultaProtocolo', estado, '65', ambiente)
-
+            qr_code_server = url_qrcode(estado, str(ambiente))
             vals['qrCode'] = qr_code_server + QR_code_url
-            vals['urlChave'] = url_chave
+            vals['urlChave'] = qr_code_server.replace('?', '')
         return vals
 
     @api.multi

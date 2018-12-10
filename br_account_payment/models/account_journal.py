@@ -8,8 +8,6 @@ from odoo import api, fields, models
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
-    l10n_br_sequence_nosso_numero = fields.Many2one(
-        'ir.sequence', string="Sequência Nosso Número")
     l10n_br_sequence_statements = fields.Many2one(
         'ir.sequence', string="Sequência Extratos de Retorno")
 

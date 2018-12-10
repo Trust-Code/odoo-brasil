@@ -505,9 +505,7 @@ class AccountInvoiceLine(models.Model):
                 'tax_ipi_id': ncm.tax_ipi_id.id,
             })
 
-    def _set_taxes(self):
-        super(AccountInvoiceLine, self)._set_taxes()
-        self._update_tax_from_ncm()
+    def _set_taxes_from_fiscal_pos(self):
         fpos = self.invoice_id.fiscal_position_id
         if fpos:
             vals = fpos.map_tax_extra_values(
@@ -517,12 +515,18 @@ class AccountInvoiceLine(models.Model):
                 if value and key in self._fields:
                     self.update({key: value})
 
+    def _set_taxes(self):
+        super(AccountInvoiceLine, self)._set_taxes()
+        self._update_tax_from_ncm()
+        self._set_taxes_from_fiscal_pos()
+        other_taxes = self.invoice_line_tax_ids.filtered(
+            lambda x: not x.domain)
         self.invoice_line_tax_ids = self.tax_icms_id | self.tax_icms_st_id | \
             self.tax_icms_inter_id | self.tax_icms_intra_id | \
             self.tax_icms_fcp_id | self.tax_ipi_id | \
             self.tax_pis_id | self.tax_cofins_id | self.tax_issqn_id | \
             self.tax_ii_id | self.tax_csll_id | self.tax_irrf_id | \
-            self.tax_inss_id
+            self.tax_inss_id | other_taxes
 
     def _set_extimated_taxes(self, price):
         service = self.product_id.service_type_id

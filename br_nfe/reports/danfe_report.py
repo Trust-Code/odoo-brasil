@@ -14,11 +14,18 @@ try:
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.nfe.danfce import danfce
 except ImportError:
-    _logger.warning('Cannot import pytrustnfe', exc_info=True)
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
+
+    def render_qweb_html(self, res_ids, data=None):
+        if self.report_name == 'br_nfe.main_template_br_nfe_danfe':
+            return
+
+        return super(IrActionsReport, self).render_qweb_html(
+            res_ids, data=data)
 
     def render_qweb_pdf(self, res_ids, data=None):
         if self.report_name != 'br_nfe.main_template_br_nfe_danfe':

@@ -50,14 +50,14 @@ class AccountInvoice(models.Model):
     def invoice_print(self):
         doc = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)], limit=1)
-        if doc.model == '55':
+        if doc.model in ('55', '65'):
             return self.env.ref(
                 'br_nfe.report_br_nfe_danfe').report_action(doc)
         else:
             return super(AccountInvoice, self).invoice_print()
 
     def _return_pdf_invoice(self, doc):
-        if doc.model == '55':
+        if doc.model in ('55', '65'):
             return 'br_nfe.report_br_nfe_danfe'
         return super(AccountInvoice, self)._return_pdf_invoice(doc)
 
@@ -173,7 +173,7 @@ class AccountInvoice(models.Model):
         res['fiscal_document_related_ids'] = documentos
 
         # NFC-e
-        res['valor_troco'] = 0.0
+        res['troco'] = 0.0
         res['metodo_pagamento'] = inv.payment_mode_id.tipo_pagamento or '01'
         res['valor_pago'] = inv.amount_total
         return res

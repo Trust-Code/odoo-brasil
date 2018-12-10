@@ -21,7 +21,7 @@ try:
     from pytrustnfe.nfse.susesu import xml_enviar_nota_retorna_url
     from pytrustnfe.nfse.susesu import enviar_nota_retorna_url
 except ImportError:
-    _logger.debug('Cannot import pytrustnfe')
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 class InvoiceEletronic(models.Model):

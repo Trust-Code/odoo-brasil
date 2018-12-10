@@ -53,6 +53,8 @@ class PaymentOrderLine(models.Model):
                               ("cancelled", "Cancelado")],
                              string="Situação",
                              default="draft", track_visibility='onchange')
+    cnab_code = fields.Char(string="Código Retorno")
+    cnab_message = fields.Char(string="Mensagem Retorno")
 
     @api.multi
     def unlink(self):
@@ -109,6 +111,9 @@ class PaymentOrder(models.Model):
     currency_id = fields.Many2one('res.currency', string='Moeda')
     amount_total = fields.Float(string="Total",
                                 compute='_compute_amount_total')
+    cnab_file = fields.Binary('CNAB File', readonly=True)
+    file_number = fields.Integer(u'Número sequencial do arquivo', readonly=1)
+    data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
 
     def mark_order_line_processed(self, cnab_code, cnab_message,
                                   rejected=False, statement_id=None):
@@ -123,8 +128,11 @@ class PaymentOrder(models.Model):
         for item in self:
             lines = item.line_ids.filtered(lambda x: x.state != 'cancelled')
             if all(line.state in ('draft', 'approved') for line in lines):
-                item.state = 'draft'
-            elif all(line.state == 'paid' for line in lines):
+                if len(item.line_ids - lines) > 0:
+                    item.state = 'done'
+                else:
+                    item.state = 'draft'
+            elif all(line.state in ('paid', 'rejected') for line in lines):
                 item.state = 'done'
             elif any(line.state == 'rejected' for line in lines):
                 item.state = 'attention'
