@@ -83,16 +83,11 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         'ignored': True,
                     })
                     continue
-
-                try:
-                    protocol = event.protocolo_pagamento or None
-                    autentication = event.autenticacao_pagamento or None
-                    self.select_routing(
-                        payment_line, cnab_code, bank, message, statement,
-                        protocolo=protocol, autenticacao=autentication)
-                except AttributeError:
-                    self.select_routing(payment_line, cnab_code, bank, message,
-                                        statement)
+                protocol = event.protocolo_pagamento or None
+                autentication = event.autenticacao_pagamento or None
+                self.select_routing(
+                    payment_line, cnab_code, bank, message, statement,
+                    protocolo=protocol, autenticacao=autentication)
 
         action = self.env.ref(
             'br_account_payment.action_payment_statement_tree')

@@ -112,10 +112,12 @@ class PaymentOrderLine(models.Model):
         (counterpart_aml + order_line.move_line_id).reconcile()
         return move
 
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None,
+                             autenticacao=None, protocolo=None):
         if self.type != 'receivable':
             return super(PaymentOrderLine, self).mark_order_line_paid(
-                cnab_code, cnab_message, statement_id)
+                cnab_code, cnab_message, statement_id,
+                autenticacao=autenticacao, protocolo=protocolo)
 
         bank_account_ids = self.mapped('src_bank_account_id')
         for account in bank_account_ids:

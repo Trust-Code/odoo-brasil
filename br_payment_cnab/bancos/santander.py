@@ -93,11 +93,11 @@ class Santander240(Cnab_240):
             'nome_concessionaria':
                 segmento.get('nome_concessionaria', '')[:30],
             'finalidade_ted': get_ted_doc_finality(
-                'santander', '01',
-                segmento.get('finalidade_doc_ted'), ignore),
+                'santander', segmento.get('finalidade_doc_ted'),
+                '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
-                'santander', '02',
-                segmento.get('finalidade_doc_ted'), ignore),
+                'santander', segmento.get('finalidade_doc_ted'),
+                '02', ignore),
         })
         return segmento
 

@@ -349,7 +349,8 @@ class PaymentOrderLine(models.Model):
                              autenticacao=None, protocolo=None):
         if self.filtered(lambda x: x.type != 'payable'):
             return super(PaymentOrderLine, self).mark_order_line_paid(
-                cnab_code, cnab_message, statement_id, autenticacao, protocolo)
+                cnab_code, cnab_message, statement_id,
+                autenticacao=autenticacao, protocolo=protocolo)
 
         bank_account_ids = self.mapped('src_bank_account_id')
         for account in bank_account_ids:
