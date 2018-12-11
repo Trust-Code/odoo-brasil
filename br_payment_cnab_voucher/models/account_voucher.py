@@ -131,6 +131,8 @@ class AccountVoucher(models.Model):
             'invoice_date': self.date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
+            'conec_social_fgts': self.conec_social_fgts,
+            'conec_social_dv_fgts': self.conec_social_dv_fgts,
             # TODO Ajustar o valor de multa e de juros
             # 'fine_value': self.fine_value,
             # 'interest_value': self.interest_value,
