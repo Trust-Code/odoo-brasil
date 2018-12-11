@@ -8,7 +8,7 @@
                     <span> Comprovante de pagamento de </span> <span t-field="line.payment_mode_id.payment_type"/>
                 </div>
             </div>
-            <div class="row" name="account_infos" style="margin-bottom:20px;margin-left:30px;margin-right:90px">
+            <div class="row" name="account_infos" style="margin-bottom:20px;margin-left:30px;margin-right:30px">
                 <t t-set="acc" t-value="line.src_bank_account_id"/>
                 <div class="col-xs-6" style="font-size:20">
                     <span>Conta: </span> <span t-field="acc.acc_number"/> - 
