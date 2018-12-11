@@ -235,6 +235,8 @@ class PaymentOrderLine(models.Model):
             'fine_value': vals.get('fine_value'),
             'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
+            'cod_recolhimento_fgts': payment_mode_id.cod_recolhimento,
+            'identificacao_fgts': payment_mode_id.identificacao_fgts,
             'l10n_br_environment': payment_mode_id.l10n_br_environment
         }
 
@@ -345,10 +347,12 @@ class PaymentOrderLine(models.Model):
             })
         return statement_id
 
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None,
+                             autenticacao=None, protocolo=None):
         if self.filtered(lambda x: x.type != 'payable'):
             return super(PaymentOrderLine, self).mark_order_line_paid(
-                cnab_code, cnab_message, statement_id)
+                cnab_code, cnab_message, statement_id,
+                autenticacao=autenticacao, protocolo=protocolo)
 
         bank_account_ids = self.mapped('src_bank_account_id')
         for account in bank_account_ids:
@@ -368,6 +372,9 @@ class PaymentOrderLine(models.Model):
                 })
             for item in order_lines:
                 move_id = self.create_move_and_reconcile(item)
+                item.write({
+                    'autenticacao_pagamento': autenticacao,
+                    'protocolo_pagamento': protocolo})
                 self.env['l10n_br.payment.statement.line'].create({
                     'statement_id': statement_id.id,
                     'date': date.today(),

@@ -119,7 +119,8 @@ class PaymentOrder(models.Model):
                                   rejected=False, statement_id=None):
         pass
 
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None,
+                             autenticacao=None, protocolo=None):
         pass
 
     @api.multi
