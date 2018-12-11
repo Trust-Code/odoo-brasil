@@ -38,6 +38,8 @@
                 <field name="barcode" />
                 <field name="cnab_code" />
                 <field name="cnab_message" />
+                <field name="autenticacao_pagamento" />
+                <field name="protocolo_pagamento"/>
             </field>
             <field name="emission_date" position="after">
                 <field name="invoice_date"/>

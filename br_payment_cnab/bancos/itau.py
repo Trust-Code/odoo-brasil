@@ -66,14 +66,16 @@ class Itau240(Cnab_240):
         })
         return header
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Itau240, self)._get_segmento(
-            line, lot_sequency, num_lot)
+            line, lot_sequency, num_lot, nome_segmento)
 
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
         segmento.update({
+            'identificador_fgts': self._string_to_num(
+                segmento.get('identificador_fgts')),
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_endereco_rua':
                 segmento.get('favorecido_endereco_rua')[:30],
@@ -93,9 +95,9 @@ class Itau240(Cnab_240):
                 segmento.get('valor_real_pagamento')),
             'favorecido_banco': int(line.bank_account_id.bank_id.bic),
             'finalidade_ted': get_ted_doc_finality(
-                'itau', '01', segmento.get('finalidade_doc_ted'), ignore),
+                'itau', segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
-                'itau', '02', segmento.get('finalidade_doc_ted'), ignore),
+                'itau', segmento.get('finalidade_doc_ted'), '02', ignore),
             'codigo_receita_tributo': int(
                 segmento.get('codigo_receita_tributo') or 0)
         })
