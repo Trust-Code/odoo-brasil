@@ -29,6 +29,7 @@
         'views/account_journal.xml',
         'views/account_move.xml',
         'views/payment_order.xml',
+        'views/res_settings.xml',
         'views/payment_statement.xml',
         'security/account_security.xml',
         'wizard/payment_cnab_import.xml',
