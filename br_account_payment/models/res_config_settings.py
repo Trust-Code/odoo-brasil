@@ -36,36 +36,3 @@ class ResConfigSettings(models.TransientModel):
         string="Conta para recebimento de multa",
         help='Conta onde será creditado o montante das multas recebidas'
     )
-
-    @api.model
-    def get_values(self):
-        res = super(ResConfigSettings, self).get_values()
-        params = self.env['ir.config_parameter'].sudo()
-        res.update(
-            l10n_br_interest_account_id=int(params.get_param(
-                'br_payment_cnab.l10n_br_interest_account_id', default=0)),
-            l10n_br_fine_account_id=int(params.get_param(
-                'br_payment_cnab.l10n_br_fine_account_id', default=0)),
-            l10n_br_pymt_interest_account_id=int(params.get_param(
-                'br_payment_cnab.l10n_br_pymt_interest_account_id',
-                default=0)),
-            l10n_br_pymt_fine_account_id=int(params.get_param(
-                'br_payment_cnab.l10n_br_pymt_fine_account_id', default=0))
-        )
-        return res
-
-    @api.multi
-    def set_values(self):
-        super(ResConfigSettings, self).set_values()
-        self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.l10n_br_interest_account_id',
-            self.l10n_br_interest_account_id.id)
-        self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.l10n_br_fine_account_id',
-            self.l10n_br_fine_account_id.id)
-        self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.l10n_br_pymt_interest_account_id',
-            self.l10n_br_pymt_interest_account_id.id)
-        self.env['ir.config_parameter'].sudo().set_param(
-            'br_payment_cnab.l10n_br_pymt_fine_account_id',
-            self.l10n_br_pymt_fine_account_id.id)
