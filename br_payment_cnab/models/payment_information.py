@@ -155,6 +155,10 @@ class PaymentInformation(models.Model):
 
     identificacao_fgts = fields.Integer('Número de Identificação do FGTS')
 
+    conec_social_dv_fgts = fields.Integer("DV do conectividade Social")
+
+    conec_social_fgts = fields.Integer("Lacre do conectividade social")
+
     tax_identification = fields.Selection(
         [('16', 'DARF Normal'),
          ('18', 'DARF Simples'),
