@@ -141,6 +141,13 @@ class PaymentOrderLine(models.Model):
         errors += self.validate_bank_account(vals)
         return errors
 
+    # ICMS
+    def validate_payment_type_09(self, payment_mode, vals):
+        errors = []
+        if not payment_mode.journal_id.company_id.inscr_est:
+            errors += ['Preencha a Inscrição Estadual da Empresa!']
+        return errors
+
     # Pagamento de Títulos Bancários
     def validate_payment_type_03(self, payment_mode, vals):
         # Pagamento mensal pode salvar sem código de barras
@@ -227,6 +234,8 @@ class PaymentOrderLine(models.Model):
 
     def get_information_vals(self, payment_mode_id, vals):
         return {
+            'divida_ativa_etiqueta': vals.get('divida_ativa_etiqueta'),
+            'numero_parcela_icms': vals.get('numero_parcela_icms'),
             'payment_type': payment_mode_id.payment_type,
             'mov_finality': payment_mode_id.mov_finality,
             'operation_code': self.get_operation_code(payment_mode_id),
@@ -237,7 +246,9 @@ class PaymentOrderLine(models.Model):
             'numero_referencia': payment_mode_id.numero_referencia,
             'cod_recolhimento_fgts': payment_mode_id.cod_recolhimento,
             'identificacao_fgts': payment_mode_id.identificacao_fgts,
-            'l10n_br_environment': payment_mode_id.l10n_br_environment
+            'l10n_br_environment': payment_mode_id.l10n_br_environment,
+            'conec_social_dv_fgts': payment_mode_id.conec_social_dv_fgts,
+            'conec_social_fgts': payment_mode_id.conec_social_fgts,
         }
 
     def action_generate_payment_order_line(self, payment_mode, vals):
