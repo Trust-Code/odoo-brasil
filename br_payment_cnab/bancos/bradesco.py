@@ -57,6 +57,9 @@ class Bradesco240(Cnab_240):
                 (not line.payment_information_id.cod_recolhimento_fgts)):
             return None
         segmento.update({
+            'numero_parcela': int(segmento.get('numero_parcela')[:13]),
+            'divida_ativa_etiqueta': int(
+                segmento.get('divida_ativa_etiqueta')[:13]),
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),

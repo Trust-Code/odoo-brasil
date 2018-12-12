@@ -81,6 +81,8 @@ class Cnab_240(object):
     def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         information_id = line.payment_information_id
         segmento = {
+            'numero_parcela': str(information_id.numero_parcela_icms),
+            'divida_ativa_etiqueta': str(information_id.divida_ativa_etiqueta),
             "cedente_inscricao_numero": self._string_to_num(
                 self._order.company_id.cnpj_cpf),
             "identificador_fgts": information_id.identificacao_fgts,
