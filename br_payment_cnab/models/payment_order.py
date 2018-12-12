@@ -374,7 +374,9 @@ class PaymentOrderLine(models.Model):
                 move_id = self.create_move_and_reconcile(item)
                 item.write({
                     'autenticacao_pagamento': autenticacao,
-                    'protocolo_pagamento': protocolo})
+                    'protocolo_pagamento': protocolo,
+                    'cnab_code': cnab_code,
+                    'cnab_message': cnab_message})
                 self.env['l10n_br.payment.statement.line'].create({
                     'statement_id': statement_id.id,
                     'date': date.today(),
