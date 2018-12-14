@@ -154,11 +154,16 @@ class BrZip(models.Model):
 
     @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
-                          city_id=False, district=False, street=False, error=True):
+                          city_id=False, district=False, street=False,
+                          error=True):
 
         zip_ids = self.zip_search_multi(
-            country_id=country_id, state_id=state_id,
-            city_id=city_id, district=district, street=street)
+            country_id=country_id,
+            state_id=state_id,
+            city_id=city_id,
+            district=district,
+            street=street
+        )
 
         if len(zip_ids) == 1:
             res = self.set_result(zip_ids[0])
@@ -166,7 +171,10 @@ class BrZip(models.Model):
         elif len(zip_ids) > 1 and obj is not None:
             obj_zip_result = self.env['br.zip.result']
             zip_ids = obj_zip_result.map_to_zip_result(
-                zip_ids, obj._name, obj.id)
+                zip_ids,
+                obj._name,
+                obj.id
+            )
 
             return self.create_wizard(
                 obj._name,
@@ -186,9 +194,8 @@ class BrZip(models.Model):
             return False
 
     def create_wizard(self, object_name, address_id, country_id=False,
-                      state_id=False, city_id=False,
-                      district=False, street=False, zip_code=False,
-                      zip_ids=False):
+                      state_id=False, city_id=False, district=False,
+                      street=False, zip_code=False, zip_ids=False):
         context = dict(self.env.context)
         context.update({
             'zip': zip_code,
