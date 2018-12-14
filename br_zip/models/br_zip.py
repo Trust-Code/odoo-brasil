@@ -154,7 +154,8 @@ class BrZip(models.Model):
 
     @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
-                          city_id=False, district=False, street=False, user_error=True):
+                          city_id=False, district=False, street=False,
+                          user_error=True):
 
         zip_ids = self.zip_search_multi(
             country_id=country_id, state_id=state_id,
