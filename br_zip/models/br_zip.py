@@ -154,8 +154,7 @@ class BrZip(models.Model):
 
     @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
-                          city_id=False, district=False, street=False,
-                          user_error=True):
+                          city_id=False, district=False, street=False, error=True):
 
         zip_ids = self.zip_search_multi(
             country_id=country_id, state_id=state_id,
@@ -181,7 +180,7 @@ class BrZip(models.Model):
                 zip_ids=[z.id for z in zip_ids]
             )
 
-        elif user_error and len(zip_ids) == 0:
+        elif error and len(zip_ids) == 0:
             raise UserError(_(u'Nenhum registro encontrado'))
         else:
             return False

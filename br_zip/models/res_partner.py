@@ -33,7 +33,7 @@ class ResPartner(models.Model):
                 street=self.street,
                 obj=None,
                 district=self.district,
-                user_error=False
+                error=False
             )
             if res:
                 self.update(res)
