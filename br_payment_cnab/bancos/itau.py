@@ -74,6 +74,9 @@ class Itau240(Cnab_240):
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
         segmento.update({
+            'numero_parcela': int(segmento.get('numero_parcela')[:13]),
+            'divida_ativa_etiqueta': int(
+                segmento.get('divida_ativa_etiqueta')[:13]),
             'identificador_fgts': self._string_to_num(
                 segmento.get('identificador_fgts')),
             'tipo_movimento': int(segmento.get('tipo_movimento')),

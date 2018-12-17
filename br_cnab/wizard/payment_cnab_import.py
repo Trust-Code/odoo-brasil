@@ -108,7 +108,6 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                     'cnab_code': code,
                     'cnab_message': message,
                 }
-                print(vals)
 
                 IMMUTABLE_STATES = ('paid', 'rejected', 'cancelled')
                 if payment_line and payment_line.state in IMMUTABLE_STATES:

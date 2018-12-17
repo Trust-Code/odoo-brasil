@@ -5,7 +5,7 @@
 import base64
 from ..febraban.cnab import Cnab
 from decimal import Decimal
-from datetime import datetime, date
+from datetime import datetime
 from odoo import api, models
 from odoo.exceptions import UserError
 

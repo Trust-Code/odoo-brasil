@@ -68,6 +68,9 @@ class Santander240(Cnab_240):
                 (not line.payment_information_id.cod_recolhimento_fgts)):
             return None
         segmento.update({
+            'numero_parcela': int(segmento.get('numero_parcela')[:13]),
+            'divida_ativa_etiqueta': int(
+                segmento.get('divida_ativa_etiqueta')[:13]),
             'tipo_identificacao_contribuinte': 2,  # CNPJ
             'tipo_identificacao_contribuinte_alfa': '2',  # CNPJ
             'favorecido_conta': self._string_to_num(
@@ -117,6 +120,6 @@ class Santander240(Cnab_240):
             "17": ["SegmentoN_GPS"],
             "16": ["SegmentoN_DarfNormal"],
             "18": ["SegmentoN_DarfSimples"],
-            "22": ["SegmentoN_GareSP"],
+            "22": ["SegmentoN_GareSP", "SegmentoW"],
         })
         return segments
