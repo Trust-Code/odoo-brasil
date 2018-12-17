@@ -254,7 +254,6 @@ class PaymentOrderLine(models.Model):
     def action_generate_payment_order_line(self, payment_mode, vals):
         self.validate_information(payment_mode, vals)
         info_vals = self.get_information_vals(payment_mode, vals)
-        
         information_id = self.env['l10n_br.payment_information'].sudo().create(
             info_vals)
         journal = payment_mode.journal_id
