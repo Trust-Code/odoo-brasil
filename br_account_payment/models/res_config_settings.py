@@ -29,10 +29,9 @@ class ResConfigSettings(models.TransientModel):
         string="Conta para recebimento de juros",
         help='Conta onde será creditado o montante dos juros recebidos'
     )
-
-    l10n_br_fine_account_id = fields.Many2one(
+    l10n_br_bankfee_account_id = fields.Many2one(
         'account.account',
-        related='company_id.l10n_br_fine_account_id',
-        string="Conta para recebimento de multa",
-        help='Conta onde será creditado o montante das multas recebidas'
+        related='company_id.l10n_br_bankfee_account_id',
+        string="Conta para tarifas bancárias",
+        help='Conta onde será debitado o montante de tarifas pagas'
     )

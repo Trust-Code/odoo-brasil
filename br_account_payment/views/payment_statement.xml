@@ -34,6 +34,7 @@
                             <field name="date"/>
                             <field name='company_id' options="{'no_create': True}" groups="base.group_multi_company" />
                             <field name="currency_id" invisible="1"/>
+                            <field name="type" invisible="1"/>
                         </group>
                         <group>
                             <field name="create_uid"/>
@@ -47,6 +48,7 @@
                                 <tree editable="bottom" string="Statement lines" decoration-bf="ignored==False" decoration-muted="ignored==True">
                                     <field name="ignored" invisible="1" />
                                     <field name="date" />
+                                    <field name="effective_date" />
                                     <field name="nosso_numero" />
                                     <field name="name" />
                                     <field name="partner_id" domain="['|',('parent_id','=',False),('is_company','=',True)]"
@@ -84,6 +86,7 @@
                 <group col="4">
                     <field name="statement_id"/>
                     <field name="date"/>
+                    <field name="effective_date"/>
                     <field name="name"/>
                     <field name="cnab_code"/>
                     <field name="cnab_message"/>
