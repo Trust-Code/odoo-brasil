@@ -234,8 +234,8 @@ class PaymentOrderLine(models.Model):
 
     def get_information_vals(self, payment_mode_id, vals):
         return {
-            'divida_ativa_etiqueta': vals.get('divida_ativa_etiqueta'),
-            'numero_parcela_icms': vals.get('numero_parcela_icms'),
+            'divida_ativa_etiqueta': vals.pop('divida_ativa_etiqueta', False),
+            'numero_parcela_icms': vals.pop('numero_parcela_icms', False),
             'payment_type': payment_mode_id.payment_type,
             'mov_finality': payment_mode_id.mov_finality,
             'operation_code': self.get_operation_code(payment_mode_id),
@@ -254,6 +254,7 @@ class PaymentOrderLine(models.Model):
     def action_generate_payment_order_line(self, payment_mode, vals):
         self.validate_information(payment_mode, vals)
         info_vals = self.get_information_vals(payment_mode, vals)
+        
         information_id = self.env['l10n_br.payment_information'].sudo().create(
             info_vals)
         journal = payment_mode.journal_id
