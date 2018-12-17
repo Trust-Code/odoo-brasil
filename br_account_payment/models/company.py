@@ -16,10 +16,7 @@ class ResCompany(models.Model):
 
     l10n_br_interest_account_id = fields.Many2one(
         'account.account',
-        string="Conta para recebimento de juros",
-        domain=[('user_type_id', '=', 'receivable')])
-
-    l10n_br_fine_account_id = fields.Many2one(
+        string="Conta para recebimento de juros/multa")
+    l10n_br_bankfee_account_id = fields.Many2one(
         'account.account',
-        string="Conta para recebimento de multa",
-        domain=[('user_type_id.type', '=', 'receivable')])
+        string="Conta para tarifas bancárias")

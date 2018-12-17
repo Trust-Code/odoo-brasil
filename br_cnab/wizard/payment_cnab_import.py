@@ -29,6 +29,29 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         cnab = Arquivo(bank, arquivo=stream)
         return cnab.header.cedente_conta, cnab.header.cedente_agencia
 
+    def _create_ignored_line(self, statement, vals, payment_line=None):
+        name = "%s - %s" % (vals['numero_documento'], vals['sacado_nome'])
+        if payment_line:
+            name = payment_line.name
+
+        self.env['l10n_br.payment.statement.line'].sudo().create({
+            'date': vals['vencimento_titulo'],
+            'effective_date': vals['data_ocorrencia'],
+            'nosso_numero': vals['nosso_numero'],
+            'name': name,
+            'amount': vals['titulo_pago'],
+            'amount_fee': vals['titulo_acrescimos'],
+            'discount': vals['titulo_desconto'],
+            'original_amount': vals['valor_titulo'],
+            'bank_fee': vals['valor_tarifas'],
+            'cnab_code': vals['cnab_code'],
+            'cnab_message': vals['cnab_message'],
+            'statement_id': statement.id,
+            'ignored': True,
+            'partner_id': payment_line and payment_line.partner_id.id,
+            'move_id': payment_line and payment_line.move_id.id,
+        })
+
     def do_import(self, cnab_file):
         if self.cnab_type != 'receivable':
             return super(l10nBrPaymentCnabImport, self).do_import(cnab_file)
@@ -48,6 +71,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         'date': date.today(),
                         'company_id': self.journal_id.company_id.id,
                         'name': sequence.next_by_id(),
+                        'type': 'receivable',
                     })
 
                 code, message = parse_cnab_code(
@@ -59,43 +83,45 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                      ('src_bank_account_id', '=',
                       self.journal_id.bank_account_id.id)])
 
-                if not payment_line:
-                    data = date.today()
-                    if evento.vencimento_titulo:
-                        data = datetime.strptime(
-                            "{:08}".format(evento.vencimento_titulo),
-                            "%d%m%Y")
-                    self.env['l10n_br.payment.statement.line'].sudo().create({
-                        'date': data,
-                        'nosso_numero': evento.nosso_numero,
-                        'name': "%s - %s" % (
-                            evento.numero_documento,
-                            evento.sacado_nome),
-                        'amount': evento.valor_titulo,
-                        'cnab_code': code,
-                        'cnab_message': message,
-                        'statement_id': statement.id,
-                        'ignored': True,
-                    })
+                due_date = date.today()
+                effective_date = None
+                if evento.vencimento_titulo:
+                    due_date = datetime.strptime(
+                        "{:08}".format(evento.vencimento_titulo), "%d%m%Y")
+                if evento.data_ocorrencia:
+                    effective_date = datetime.strptime(
+                        "{:08}".format(evento.data_ocorrencia), "%d%m%Y")
+
+                vals = {
+                    'nosso_numero': evento.nosso_numero,
+                    'numero_documento': evento.numero_documento,
+                    'sacado_nome': evento.sacado_nome,
+                    'valor_titulo': evento.valor_titulo,
+                    'titulo_acrescimos': evento.titulo_acrescimos,
+                    'titulo_desconto': evento.titulo_desconto,
+                    'titulo_abatimento': evento.titulo_abatimento,
+                    'titulo_pago': evento.titulo_pago,
+                    'valor_tarifas': evento.valor_tarifas,
+                    'titulo_liquido': evento.titulo_liquido,
+                    'vencimento_titulo': due_date,
+                    'data_ocorrencia': effective_date,
+                    'cnab_code': code,
+                    'cnab_message': message,
+                }
+                print(vals)
+
+                IMMUTABLE_STATES = ('paid', 'rejected', 'cancelled')
+                if payment_line and payment_line.state in IMMUTABLE_STATES:
+                    vals['cnab_message'] = 'Importado previamente'
+                    self._create_ignored_line(statement, vals, payment_line)
                     continue
 
-                if code == '0000':  # Titulo Liquidado
-                    payment_line.mark_order_line_paid(
-                        code, message, statement_id=statement
-                    )
-                elif code == '1111':  # Entrada Confirmada
-                    payment_line.mark_order_line_processed(
-                        evento.servico_codigo_movimento, message,
-                        statement_id=statement
-                    )
-                elif code == '2222':   # Título baixado
-                    # TODO Implementar esse caso
-                    pass
-                elif code == '3333':   # Entrada Rejeitada
-                    payment_line.mark_order_line_processed(
-                        code, message, rejected=True,
-                        statement_id=statement,
-                    )
+                if not payment_line:
+                    self._create_ignored_line(statement, vals)
+                    continue
+
+                # Process the line
+                payment_line.process_receivable_line(statement, vals)
 
         if not statement:
             raise UserError('Nenhum registro localizado nesse extrato!')
