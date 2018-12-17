@@ -126,6 +126,9 @@ class PaymentInformation(models.Model):
          ('09', 'Real')],
         string="Currency code", default='09')
 
+    numero_parcela_icms = fields.Integer('Número da parcela/notificação')
+    divida_ativa_etiqueta = fields.Integer('Dívida ativa/número da etiqueta')
+
     message1 = fields.Char(string='Note Header', size=40, default='')
 
     credit_hist_code = fields.Selection(

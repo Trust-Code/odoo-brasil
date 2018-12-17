@@ -48,10 +48,13 @@ class AccountVoucher(models.Model):
     fine_value = fields.Float(
         'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
 
-    conec_social_fgts = fields.Char(
-        string='Lacre Conectividade Social', size=16)
-    conec_social_dv_fgts = fields.Char(
-        string='Dígito do Lacre CS', size=9)
+    numero_parcela_icms = fields.Integer(
+        'Número da parcela/notificação', readonly=True,
+        states={'draft': [('readonly', False)]})
+
+    divida_ativa_etiqueta = fields.Integer(
+        'Dívida ativa/número da etiqueta', readonly=True,
+        states={'draft': [('readonly', False)]})
 
     _sql_constraints = [
         ('account_voucher_barcode_uniq', 'unique (barcode)',
@@ -118,6 +121,8 @@ class AccountVoucher(models.Model):
         move_line_id = self.move_id.line_ids.filtered(
             lambda x: x.account_id == self.account_id)
         return {
+            'numero_parcela_icms': self.numero_parcela_icms,
+            'divida_ativa_etiqueta': self.divida_ativa_etiqueta,
             'partner_id': self.partner_id.id,
             'amount_total':
             self.amount - self.fine_value - self.interest_value,
@@ -131,8 +136,6 @@ class AccountVoucher(models.Model):
             'invoice_date': self.date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
-            'conec_social_fgts': self.conec_social_fgts,
-            'conec_social_dv_fgts': self.conec_social_dv_fgts,
             # TODO Ajustar o valor de multa e de juros
             # 'fine_value': self.fine_value,
             # 'interest_value': self.interest_value,

@@ -63,6 +63,10 @@ class PaymentMode(models.Model):
 
     cod_recolhimento = fields.Integer('Código de Recolhimento do FGTS')
 
+    conec_social_dv_fgts = fields.Integer("DV do conectividade Social")
+
+    conec_social_fgts = fields.Integer("Lacre do conectividade social")
+
     percentual_receita_bruta_acumulada = fields.Char(
         string='Percentual de Receita Bruta Acumulada',
         help='Percentual decorrente da receita bruta acumulada a ser aplicado\
