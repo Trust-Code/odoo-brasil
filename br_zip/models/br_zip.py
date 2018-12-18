@@ -10,7 +10,6 @@ import requests
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -94,7 +93,7 @@ class BrZip(models.Model):
             elif zip_code:
                 raise UserError(u'Digite o cep corretamente')
             else:
-                self._search_by_address(state_id, city_id, street)
+                self._search_by_address(city_id, street)
 
             return self.search(domain)
         else:
@@ -103,7 +102,7 @@ class BrZip(models.Model):
     def _search_by_cep(self, zip_code):
         try:
             url_viacep = 'http://viacep.com.br/ws/' + \
-                zip_code + '/json/unicode/'
+                         zip_code + '/json/unicode/'
             obj_viacep = requests.get(url_viacep)
             res = obj_viacep.json()
             if not res.get('erro', False):
@@ -122,11 +121,11 @@ class BrZip(models.Model):
         except Exception as e:
             _logger.error(e.message, exc_info=True)
 
-    def _search_by_address(self, state_id, city_id, street):
+    def _search_by_address(self, city_id, street):
         try:
             city = self.env['res.state.city'].browse(city_id)
             url_viacep = 'http://viacep.com.br/ws/' + city.state_id.code + \
-                '/' + city.name + '/' + street + '/json/unicode/'
+                         '/' + city.name + '/' + street + '/json/'
             obj_viacep = requests.get(url_viacep)
             results = obj_viacep.json()
             if results:
@@ -134,7 +133,6 @@ class BrZip(models.Model):
                     city = self.env['res.state.city'].search(
                         [('ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
-
                     self.env['br.zip'].create(
                         {'zip': re.sub('[^0-9]', '', res['cep']),
                          'street': res['logradouro'],
@@ -155,40 +153,49 @@ class BrZip(models.Model):
             raise UserError(_(u'Nenhum CEP encontrado'))
 
     @api.multi
-    def seach_by_address(self, obj, country_id=False, state_id=False,
-                         city_id=False, district=False, street=False):
+    def search_by_address(self, obj, country_id=False, state_id=False,
+                          city_id=False, district=False, street=False,
+                          error=True):
 
         zip_ids = self.zip_search_multi(
-            country_id=country_id, state_id=state_id,
-            city_id=city_id, district=district, street=street)
+            country_id=country_id,
+            state_id=state_id,
+            city_id=city_id,
+            district=district,
+            street=street
+        )
 
         if len(zip_ids) == 1:
             res = self.set_result(zip_ids[0])
             return res
-        else:
-            if len(zip_ids) > 1:
-                obj_zip_result = self.env['br.zip.result']
-                zip_ids = obj_zip_result.map_to_zip_result(
-                    zip_ids, obj._name, obj.id)
+        elif len(zip_ids) > 1 and obj is not None:
+            obj_zip_result = self.env['br.zip.result']
+            zip_ids = obj_zip_result.map_to_zip_result(
+                zip_ids,
+                obj._name,
+                obj.id
+            )
 
-                return self.create_wizard(
-                    obj._name,
-                    obj.id,
-                    country_id=obj.country_id.id,
-                    state_id=obj.state_id.id,
-                    city_id=obj.city_id.id,
-                    district=obj.district,
-                    street=obj.street,
-                    zip_code=obj.zip,
-                    zip_ids=[z.id for z in zip_ids]
-                )
-            else:
-                raise UserError(_(u'Nenhum registro encontrado'))
+            return self.create_wizard(
+                obj._name,
+                obj.id,
+                country_id=obj.country_id.id,
+                state_id=obj.state_id.id,
+                city_id=obj.city_id.id,
+                district=obj.district,
+                street=obj.street,
+                zip_code=obj.zip,
+                zip_ids=[z.id for z in zip_ids]
+            )
+
+        elif error and len(zip_ids) == 0:
+            raise UserError(_(u'Nenhum registro encontrado'))
+        else:
+            return False
 
     def create_wizard(self, object_name, address_id, country_id=False,
-                      state_id=False, city_id=False,
-                      district=False, street=False, zip_code=False,
-                      zip_ids=False):
+                      state_id=False, city_id=False, district=False,
+                      street=False, zip_code=False, zip_ids=False):
         context = dict(self.env.context)
         context.update({
             'zip': zip_code,
