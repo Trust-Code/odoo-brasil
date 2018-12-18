@@ -34,12 +34,12 @@
         <field name="type">form</field>
         <field name="arch" type="xml" >
             <field name="nosso_numero" position="after">
-                <field name="linha_digitavel" />
-                <field name="barcode" />
-                <field name="cnab_code" />
-                <field name="cnab_message" />
-                <field name="autenticacao_pagamento" />
-                <field name="protocolo_pagamento"/>
+                <field name="linha_digitavel"/>
+                <field name="barcode"/>
+                <field name="cnab_code" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
+                <field name="cnab_message" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
+                <field name="autenticacao_pagamento" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
+                <field name="protocolo_pagamento" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
             </field>
             <field name="emission_date" position="after">
                 <field name="invoice_date"/>

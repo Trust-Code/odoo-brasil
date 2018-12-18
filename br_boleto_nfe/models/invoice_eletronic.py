@@ -11,16 +11,13 @@ class InvoiceEletronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        if not self.invoice_id.payment_mode_id.boleto:
-            return atts
-
         attachment_obj = self.env['ir.attachment']
         boleto_report = self.env['ir.actions.report'].search(
             [('report_name', '=',
               'br_boleto.report.print')])
         report_service = boleto_report.xml_id
-        boleto, dummy = self.env.ref(report_service).render_qweb_pdf(
-            [self.invoice_id.id])
+        boleto, dummy = self.env.ref(report_service).with_context(
+            ignore_empty_boleto=True).render_qweb_pdf([self.invoice_id.id])
         if boleto:
             boleto_id = attachment_obj.create(dict(
                 name="boleto-%s.pdf" % self.invoice_id.number,
