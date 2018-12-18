@@ -16,6 +16,7 @@ class WizardChangePayment(models.TransientModel):
     _name = 'wizard.change.payment'
 
     move_line_id = fields.Many2one('account.move.line', readonly=True)
+    amount_total = fields.Float(string="Valor Total", readonly=True)
     payment_mode_id = fields.Many2one(
         'l10n_br.payment.mode', string="Modo de Pagamento")
     payment_type = fields.Selection(
@@ -28,6 +29,21 @@ class WizardChangePayment(models.TransientModel):
         domain="[('partner_id', '=', partner_id)]")
     date_maturity = fields.Date(string="Data de Vencimento")
     amount = fields.Float(string="Valor no boleto", readonly=True)
+
+    @api.model
+    def default_get(self, fields):
+        res = super(WizardChangePayment, self).default_get(fields)
+        active_ids = self.env.context.get('active_ids', [])
+        move_line_ids = self.env['account.move.line'].browse(active_ids)
+        partner_ids = move_line_ids.mapped('partner_id')
+        if len(partner_ids) > 1:
+            raise UserError(
+                'É possível agendar apenas pagamentos para o mesmo cliente')
+        elif len(partner_ids) == 1:
+            res['partner_id'] = partner_ids[0].id
+            res['amount_total'] = sum(
+                [x.amount_residual for x in move_line_ids])
+        return res
 
     @api.onchange('linha_digitavel')
     def _onchange_linha_digitavel(self):
