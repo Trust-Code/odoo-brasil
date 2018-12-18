@@ -126,6 +126,9 @@ class PaymentInformation(models.Model):
          ('09', 'Real')],
         string="Currency code", default='09')
 
+    numero_parcela_icms = fields.Integer('Número da parcela/notificação')
+    divida_ativa_etiqueta = fields.Integer('Dívida ativa/número da etiqueta')
+
     message1 = fields.Char(string='Note Header', size=40, default='')
 
     credit_hist_code = fields.Selection(
@@ -154,6 +157,10 @@ class PaymentInformation(models.Model):
     cod_recolhimento_fgts = fields.Integer('Código de Recolhimento do FGTS')
 
     identificacao_fgts = fields.Integer('Número de Identificação do FGTS')
+
+    conec_social_dv_fgts = fields.Integer("DV do conectividade Social")
+
+    conec_social_fgts = fields.Integer("Lacre do conectividade social")
 
     tax_identification = fields.Selection(
         [('16', 'DARF Normal'),

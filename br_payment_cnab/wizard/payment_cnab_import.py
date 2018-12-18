@@ -50,6 +50,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
             'date': date.today(),
             'company_id': self.journal_id.company_id.id,
             'name': self.journal_id.l10n_br_sequence_statements.next_by_id(),
+            'type': 'payable',
         })
         for lot in loaded_cnab.lots:
             for event in lot.events:
@@ -83,8 +84,11 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         'ignored': True,
                     })
                     continue
-                protocol = event.protocolo_pagamento or None
-                autentication = event.autenticacao_pagamento or None
+                protocol = autentication = None
+                if hasattr(event, 'protocolo_pagamento'):
+                    protocol = event.protocolo_pagamento
+                if hasattr(event, 'autenticacao_pagamento'):
+                    autentication = event.autenticacao_pagamento
                 self.select_routing(
                     payment_line, cnab_code, bank, message, statement,
                     protocolo=protocol, autenticacao=autentication)
