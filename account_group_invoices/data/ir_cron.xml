@@ -5,11 +5,13 @@
         <field name="model_id" ref="account.model_account_invoice"/>
         <field name="state">code</field>
         <field name="code">
-          model.group_invoices(group_dict=[{"rule_name": 'SERVIÇOS-01.06', "fpos": 1, "domain": [('service_type_id', '=', 7)]},
-                                           {"rule_name": 'SERVIÇOS-01.02', "fpos": 1, "domain": [('service_type_id', '=', 3)]},
-                                           {"rule_name": 'OUTROS SERVIÇOS', "fpos": 1, "domain": [('product_type', '=', 'service')]},
-                                           {"rule_name": 'TODOS PRODUTOS', "fpos": 1, "domain": [('product_type', '=', 'product')]},
-                                           ])
+# EXEMPLO
+model.group_invoices(group_dict=[
+    {"rule_name": 'SERVIÇOS-01.06', "domain": [('service_type_id', '=', 7), ('invoice_id.fiscal_position_id', '=', 1)]},
+    {"rule_name": 'SERVIÇOS-01.02', "domain": [('service_type_id', '=', 3)]},
+    {"rule_name": 'OUTROS SERVIÇOS', "domain": [('product_type', '=', 'service')]},
+    {"rule_name": 'TODOS PRODUTOS', "fpos": 1, "domain": [('product_type', '=', 'product')]},
+    ])
         </field>
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
