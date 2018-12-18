@@ -4,7 +4,8 @@
 
 import base64
 from ..febraban.cnab import Cnab
-from datetime import datetime, date
+from decimal import Decimal
+from datetime import datetime
 from odoo import api, models
 from odoo.exceptions import UserError
 
@@ -42,105 +43,124 @@ class PaymentOrder(models.Model):
             })
 
 
+TITULO_LIQUIDADO = '0000'
+ENTRADA_CONFIRMADA = '1111'
+BAIXA_TITULO = '2222'
+ENTRADA_REJEITADA = '3333'
+
+
 class PaymentOrderLine(models.Model):
     _inherit = 'payment.order.line'
 
-    def mark_order_line_processed(self, cnab_code, cnab_message,
-                                  rejected=False, statement_id=None):
-        if self.type != 'receivable':
-            return super(PaymentOrderLine, self).mark_order_line_processed(
-                cnab_code, cnab_message, rejected, statement_id)
+    def process_receivable_line(self, statement_id, cnab_vals):
+        self.ensure_one()
+        state = message = payment_move = None
+        ignored = False
+        if cnab_vals['cnab_code'] == TITULO_LIQUIDADO:
+            state = 'paid'
+            payment_move = self.register_receivable_payment(cnab_vals)
 
-        state = 'processed'
-        if rejected:
+        elif cnab_vals['cnab_code'] == ENTRADA_CONFIRMADA:
+            state = 'processed'
+
+        elif cnab_vals['cnab_code'] == BAIXA_TITULO:
+            state = 'cancelled'
+            message = 'Item cancelado via baixa bancária'
+
+        elif cnab_vals['cnab_code'] == ENTRADA_REJEITADA:   # Entrada Rejeitada
             state = 'rejected'
+        else:
+            ignored = True
 
-        self.write({
-            'state': state, 'cnab_code': cnab_code,
-            'cnab_message': cnab_message
+        self.env['l10n_br.payment.statement.line'].sudo().create({
+            'statement_id': statement_id.id,
+            'name': self.name,
+            'partner_id': self.partner_id.id,
+            'amount': cnab_vals['titulo_pago'],
+            'nosso_numero': self.nosso_numero,
+            'date': cnab_vals['vencimento_titulo'],
+            'effective_date': cnab_vals['data_ocorrencia'],
+            'amount_fee': cnab_vals['titulo_acrescimos'],
+            'discount': cnab_vals['titulo_desconto'],
+            'original_amount': cnab_vals['valor_titulo'],
+            'bank_fee': cnab_vals['valor_tarifas'],
+            'cnab_code': cnab_vals['cnab_code'],
+            'cnab_message': cnab_vals['cnab_message'],
+            'move_id': payment_move and payment_move.id or self.move_id.id,
+            'ignored': ignored,
         })
-        if not statement_id:
-            statement_id = self.env['l10n_br.payment.statement'].create({
-                'name': '0001/Manual',
-                'date': date.today(),
-                'state': 'validated',
-            })
-        for item in self:
-            self.env['l10n_br.payment.statement.line'].create({
-                'statement_id': statement_id.id,
-                'date': date.today(),
-                'name': item.name,
-                'partner_id': item.partner_id.id,
-                'amount': item.amount_total,
-                'cnab_code': cnab_code,
-                'cnab_message': cnab_message,
-                'nosso_numero': item.nosso_numero,
-            })
-        return statement_id
+        self.write({
+            'state': state,
+            'cnab_code': cnab_vals['cnab_code'],
+            'cnab_message': message or cnab_vals['cnab_message'],
+        })
 
-    def create_receivable_move_and_reconcile(self, order_line):
+    def register_receivable_payment(self, cnab_vals):
+        self.ensure_one()
         move = self.env['account.move'].create({
             'name': '/',
-            'journal_id': order_line.journal_id.id,
-            'company_id': order_line.journal_id.company_id.id,
-            'date': date.today(),
-            'ref': order_line.name,
+            'journal_id': self.journal_id.id,
+            'company_id': self.journal_id.company_id.id,
+            'date': cnab_vals['data_ocorrencia'],
+            'ref': self.name,
         })
         aml_obj = self.env['account.move.line'].with_context(
             check_move_validity=False)
         counterpart_aml_dict = {
-            'name': order_line.name,
+            'name': self.name,
             'move_id': move.id,
-            'partner_id': order_line.partner_id.id,
+            'partner_id': self.partner_id.id,
             'debit': 0.0,
-            'credit': order_line.amount_total,
-            'currency_id': order_line.currency_id.id,
-            'account_id': order_line.move_line_id.account_id.id,
+            'credit': float(cnab_vals['valor_titulo'] -
+                            cnab_vals['titulo_desconto']),
+            'currency_id': self.currency_id.id,
+            'account_id': self.move_line_id.account_id.id,
         }
         liquidity_aml_dict = {
-            'name': order_line.name,
+            'name': self.name,
             'move_id': move.id,
-            'partner_id': order_line.partner_id.id,
-            'debit': order_line.amount_total,
+            'partner_id': self.partner_id.id,
+            'debit': float(
+                cnab_vals['valor_titulo'] + cnab_vals['titulo_acrescimos'] -
+                cnab_vals['titulo_desconto'] - cnab_vals['valor_tarifas']
+                ),
             'credit': 0.0,
-            'currency_id': order_line.currency_id.id,
-            'account_id': order_line.journal_id.default_debit_account_id.id,
+            'currency_id': self.currency_id.id,
+            'account_id': self.journal_id.default_debit_account_id.id,
         }
+        if cnab_vals['titulo_acrescimos'] > Decimal(0):
+            account_id = self.journal_id.company_id.l10n_br_interest_account_id
+            if not account_id:
+                raise UserError(
+                    'Configure a conta de recebimento de juros/multa')
+            ext_line = {
+                'name': 'Título Acréscimos (juros/multa)',
+                'move_id': move.id,
+                'partner_id': self.partner_id.id,
+                'debit': 0.0,
+                'credit': float(cnab_vals['titulo_acrescimos']),
+                'currency_id': self.currency_id.id,
+                'account_id': account_id.id,
+            }
+            aml_obj.create(ext_line)
+        if cnab_vals['valor_tarifas'] > Decimal(0):
+            account_id = self.journal_id.company_id.l10n_br_bankfee_account_id
+            if not account_id:
+                raise UserError(
+                    'Configure a conta de tarifas bancárias')
+            ext_line = {
+                'name': 'Tarifas bancárias (boleto)',
+                'move_id': move.id,
+                'partner_id': self.partner_id.id,
+                'debit': float(cnab_vals['valor_tarifas']),
+                'credit': 0.0,
+                'currency_id': self.currency_id.id,
+                'account_id': account_id.id,
+            }
+            aml_obj.create(ext_line)
+
         counterpart_aml = aml_obj.create(counterpart_aml_dict)
         aml_obj.create(liquidity_aml_dict)
         move.post()
-        (counterpart_aml + order_line.move_line_id).reconcile()
+        (counterpart_aml + self.move_line_id).reconcile()
         return move
-
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
-        if self.type != 'receivable':
-            return super(PaymentOrderLine, self).mark_order_line_paid(
-                cnab_code, cnab_message, statement_id)
-
-        bank_account_ids = self.mapped('src_bank_account_id')
-        for account in bank_account_ids:
-            order_lines = self.filtered(
-                lambda x: x.src_bank_account_id == account)
-            journal_id = self.env['account.journal'].search(
-                [('bank_account_id', '=', account.id)], limit=1)
-            if not statement_id:
-                statement_id = self.env['l10n_br.payment.statement'].create({
-                    'name':
-                    journal_id.l10n_br_sequence_statements.next_by_id(),
-                    'date': date.today(),
-                    'state': 'validated',
-                    'journal_id': journal_id.id,
-                })
-            for item in order_lines:
-                move_id = self.create_receivable_move_and_reconcile(item)
-                self.env['l10n_br.payment.statement.line'].create({
-                    'statement_id': statement_id.id,
-                    'date': date.today(),
-                    'name': item.name,
-                    'partner_id': item.partner_id.id,
-                    'amount': item.amount_total,
-                    'move_id': move_id.id,
-                    'cnab_code': cnab_code,
-                    'cnab_message': cnab_message,
-                })
-            order_lines.write({'state': 'paid'})

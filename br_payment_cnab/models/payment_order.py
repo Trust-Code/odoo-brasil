@@ -141,6 +141,13 @@ class PaymentOrderLine(models.Model):
         errors += self.validate_bank_account(vals)
         return errors
 
+    # ICMS
+    def validate_payment_type_09(self, payment_mode, vals):
+        errors = []
+        if not payment_mode.journal_id.company_id.inscr_est:
+            errors += ['Preencha a Inscrição Estadual da Empresa!']
+        return errors
+
     # Pagamento de Títulos Bancários
     def validate_payment_type_03(self, payment_mode, vals):
         # Pagamento mensal pode salvar sem código de barras
@@ -225,6 +232,8 @@ class PaymentOrderLine(models.Model):
 
     def get_information_vals(self, payment_mode_id, vals):
         return {
+            'divida_ativa_etiqueta': vals.pop('divida_ativa_etiqueta', False),
+            'numero_parcela_icms': vals.pop('numero_parcela_icms', False),
             'payment_type': payment_mode_id.payment_type,
             'mov_finality': payment_mode_id.mov_finality,
             'operation_code': self.get_operation_code(payment_mode_id),
@@ -233,7 +242,11 @@ class PaymentOrderLine(models.Model):
             'fine_value': vals.get('fine_value'),
             'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
-            'l10n_br_environment': payment_mode_id.l10n_br_environment
+            'cod_recolhimento_fgts': payment_mode_id.cod_recolhimento,
+            'identificacao_fgts': payment_mode_id.identificacao_fgts,
+            'l10n_br_environment': payment_mode_id.l10n_br_environment,
+            'conec_social_dv_fgts': payment_mode_id.conec_social_dv_fgts,
+            'conec_social_fgts': payment_mode_id.conec_social_fgts,
         }
 
     def action_generate_payment_order_line(self, payment_mode, vals):
@@ -346,10 +359,12 @@ class PaymentOrderLine(models.Model):
             })
         return statement_id
 
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None):
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None,
+                             autenticacao=None, protocolo=None):
         if self.filtered(lambda x: x.type != 'payable'):
             return super(PaymentOrderLine, self).mark_order_line_paid(
-                cnab_code, cnab_message, statement_id)
+                cnab_code, cnab_message, statement_id,
+                autenticacao=autenticacao, protocolo=protocolo)
 
         bank_account_ids = self.mapped('src_bank_account_id')
         for account in bank_account_ids:
@@ -369,6 +384,11 @@ class PaymentOrderLine(models.Model):
                 })
             for item in order_lines:
                 move_id = self.create_move_and_reconcile(item)
+                item.write({
+                    'autenticacao_pagamento': autenticacao,
+                    'protocolo_pagamento': protocolo,
+                    'cnab_code': cnab_code,
+                    'cnab_message': cnab_message})
                 self.env['l10n_br.payment.statement.line'].create({
                     'statement_id': statement_id.id,
                     'date': date.today(),

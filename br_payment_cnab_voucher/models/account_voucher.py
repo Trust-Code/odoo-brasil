@@ -28,7 +28,7 @@ class AccountVoucher(models.Model):
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
          ('07', 'DARF Simples'),
-         ('08', 'FGTS'),
+         ('08', 'FGTS com Código de Barras'),
          ('09', 'ICMS')],
         string="Tipo de Operação", readonly=True,
         states={'draft': [('readonly', False)]})
@@ -47,6 +47,14 @@ class AccountVoucher(models.Model):
         states={'draft': [('readonly', False)]})
     fine_value = fields.Float(
         'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
+
+    numero_parcela_icms = fields.Integer(
+        'Número da parcela/notificação', readonly=True,
+        states={'draft': [('readonly', False)]})
+
+    divida_ativa_etiqueta = fields.Integer(
+        'Dívida ativa/número da etiqueta', readonly=True,
+        states={'draft': [('readonly', False)]})
 
     _sql_constraints = [
         ('account_voucher_barcode_uniq', 'unique (barcode)',
@@ -113,6 +121,8 @@ class AccountVoucher(models.Model):
         move_line_id = self.move_id.line_ids.filtered(
             lambda x: x.account_id == self.account_id)
         return {
+            'numero_parcela_icms': self.numero_parcela_icms,
+            'divida_ativa_etiqueta': self.divida_ativa_etiqueta,
             'partner_id': self.partner_id.id,
             'amount_total':
             self.amount - self.fine_value - self.interest_value,

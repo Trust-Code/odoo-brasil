@@ -25,13 +25,16 @@ class l10nBrPaymentStatement(models.Model):
     name = fields.Char(
         string='Reference',
         copy=False, readonly=True)
+    type = fields.Selection([('receivable', 'Receivable'),
+                             ('payable', 'Payable')], string="Type")
     date = fields.Date(
         copy=False, default=fields.Date.context_today)
     amount_total = fields.Monetary(
         'Valor Total',
         currency_field='currency_id', compute='_compute_amount_total')
     currency_id = fields.Many2one(
-        'res.currency', compute='_compute_currency', string="Currency")
+        'res.currency', compute='_compute_currency',
+        string="Currency", store=True)
     journal_id = fields.Many2one(
         'account.journal', string='Journal', required=True)
     company_id = fields.Many2one(
@@ -50,7 +53,8 @@ class l10nBrPaymentStatementLine(models.Model):
 
     name = fields.Char(string='Reference', required=True)
     nosso_numero = fields.Char(string="Nosso Número")
-    date = fields.Date(string="Data")
+    date = fields.Date(string="Vencimento")
+    effective_date = fields.Date(string="Data ocorrência")
     amount = fields.Monetary(
         digits=0, currency_field='journal_currency_id', string="Valor")
     journal_currency_id = fields.Many2one(
