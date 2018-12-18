@@ -37,7 +37,7 @@ class AccountInvoice(models.Model):
                 [('state', '=', 'draft'),
                  '|', '|',
                  ('date_invoice', '>=', today + relativedelta(day=1)),
-                 ('date_invoice', '<=', today + relativedelta(day=1)),
+                 ('date_invoice', '<=', today + relativedelta(day=31)),
                  ('date_invoice', '=', False)])
         lines = inv.mapped('invoice_line_ids')
 
