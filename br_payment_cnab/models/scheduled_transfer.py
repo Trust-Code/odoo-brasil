@@ -16,9 +16,6 @@ class L10nBrScheduledTransfer(models.Model):
     name = fields.Char(string="Nome", readonly=True, states=STATE)
     notes = fields.Char(string="Notas", readonly=True, states=STATE)
 
-    origin_journal_id = fields.Many2one(
-        'account.journal', string="Banco Origem", required=True,
-        readonly=True, states=STATE)
     destiny_journal_id = fields.Many2one(
         'account.journal', string="Banco Destino", required=True,
         readonly=True, states=STATE)
@@ -48,9 +45,10 @@ class L10nBrScheduledTransfer(models.Model):
     @api.multi
     def _validate_transfer(self):
         for item in self:
-            if item.origin_journal_id == item.destiny_journal_id:
+            if item.payment_mode_id.journal_id == item.destiny_journal_id:
                 raise UserError(
-                    'As conta de destino não pode ser a mesma de origem!')
+                    'As conta de destino não pode ser a mesma do modo \
+                    de pagamento!')
             if item.amount <= 0.0:
                 raise UserError('O valor a transferir deve ser positivo!')
             transfer_date = fields.Date.from_string(item.transfer_date)
@@ -65,6 +63,7 @@ class L10nBrScheduledTransfer(models.Model):
             'amount_total': self.amount,
             'name': self.name,
             'partner_ref': self.notes,
+            'destiny_journal_id': self.destiny_journal_id.id,
             "bank_account_id": bank_account.id,
             'partner_acc_number': bank_account.acc_number,
             'partner_bra_number': bank_account.bra_number,

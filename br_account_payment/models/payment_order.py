@@ -130,14 +130,6 @@ class PaymentOrder(models.Model):
             })
         return sequence_id.next_by_id()
 
-    def mark_order_line_processed(self, cnab_code, cnab_message,
-                                  rejected=False, statement_id=None):
-        pass
-
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None,
-                             autenticacao=None, protocolo=None):
-        pass
-
     @api.multi
     @api.depends('line_ids.state')
     def _compute_state(self):

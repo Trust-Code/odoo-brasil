@@ -7,20 +7,17 @@ from odoo import models, fields
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    l10n_br_pymt_interest_account_id = fields.Many2one(
+    l10n_br_payment_interest_account_id = fields.Many2one(
         'account.account',
-        related='company_id.l10n_br_pymt_interest_account_id',
-        string="Conta para pagamento de juros",
-        domain="[('company_id', '=', company_id),\
-                 ('user_type_id.type', '=', 'payable')]",
-        help='Conta onde será debitado o montante dos juros pagos'
+        related='company_id.l10n_br_payment_interest_account_id',
+        string="Conta para pagamento de juros/multa",
+        help='Conta onde será registrado o montante dos juros e multas pagos'
     )
-
-    l10n_br_pymt_fine_account_id = fields.Many2one(
+    l10n_br_payment_discount_account_id = fields.Many2one(
         'account.account',
-        related='company_id.l10n_br_pymt_fine_account_id',
-        string="Conta para pagamento de multa",
-        help='Conta onde será debitado o montante das multas pagas'
+        related='company_id.l10n_br_payment_discount_account_id',
+        string="Conta para desconto de pagamentos",
+        help='Conta onde será registrado o desconto recebido de pagamentos'
     )
 
     l10n_br_interest_account_id = fields.Many2one(

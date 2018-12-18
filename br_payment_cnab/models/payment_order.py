@@ -71,6 +71,8 @@ class PaymentOrderLine(models.Model):
         string="Chave de Autenticação do pagamento")
     protocolo_pagamento = fields.Char(string="Protocolo do Pagamento")
 
+    destiny_journal_id = fields.Many2one(
+        'account.journal', 'Diário p/ Transferência')
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência")
 
@@ -298,6 +300,13 @@ class PaymentOrderLine(models.Model):
         })
         aml_obj = self.env['account.move.line'].with_context(
             check_move_validity=False)
+
+        account_id = None
+        if not order_line.move_line_id:   # Transferência
+            account_id = order_line.destiny_journal_id.default_debit_account_id
+        else:
+            account_id = order_line.move_line_id.account_id
+
         counterpart_aml_dict = {
             'name': order_line.name,
             'move_id': move.id,
@@ -305,7 +314,7 @@ class PaymentOrderLine(models.Model):
             'debit': order_line.amount_total,
             'credit': 0.0,
             'currency_id': order_line.currency_id.id,
-            'account_id': order_line.move_line_id.account_id.id,
+            'account_id': account_id.id,
         }
         liquidity_aml_dict = {
             'name': order_line.name,
@@ -314,7 +323,7 @@ class PaymentOrderLine(models.Model):
             'debit': 0.0,
             'credit': order_line.amount_total,
             'currency_id': order_line.currency_id.id,
-            'account_id': order_line.journal_id.default_debit_account_id.id,
+            'account_id': order_line.journal_id.default_credit_account_id.id,
         }
         counterpart_aml = aml_obj.create(counterpart_aml_dict)
         aml_obj.create(liquidity_aml_dict)
@@ -322,12 +331,11 @@ class PaymentOrderLine(models.Model):
         (counterpart_aml + order_line.move_line_id).reconcile()
         return move
 
-    def mark_order_line_processed(self, cnab_code, cnab_message,
-                                  rejected=False, statement_id=None):
+    def mark_order_line_processed(self, cnab_code, cnab_message, statement_id,
+                                  rejected=False):
         state = 'processed'
         if rejected:
             state = 'rejected'
-
         if self.state in ('rejected', 'paid', 'cancelled'):
             cnab_message = 'Registro já processado anteriormente'
             state = self.state
@@ -336,17 +344,6 @@ class PaymentOrderLine(models.Model):
             'state': state, 'cnab_code': cnab_code,
             'cnab_message': cnab_message
         })
-        if not statement_id:
-            journal_id = self.env['account.journal'].search(
-                [('bank_account_id', '=', self.src_bank_account_id.id)],
-                limit=1)
-            if not journal_id.l10n_br_sequence_statements:
-                raise UserError('Configure a sequência de extrato no diário')
-            statement_id = self.env['l10n_br.payment.statement'].create({
-                'name': journal_id.l10n_br_sequence_statements.next_by_id(),
-                'date': date.today(),
-                'journal_id': journal_id.id,
-            })
         for item in self:
             self.env['l10n_br.payment.statement.line'].create({
                 'statement_id': statement_id.id,
@@ -359,47 +356,26 @@ class PaymentOrderLine(models.Model):
             })
         return statement_id
 
-    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id=None,
+    def mark_order_line_paid(self, cnab_code, cnab_message, statement_id,
                              autenticacao=None, protocolo=None):
-        if self.filtered(lambda x: x.type != 'payable'):
-            return super(PaymentOrderLine, self).mark_order_line_paid(
-                cnab_code, cnab_message, statement_id,
-                autenticacao=autenticacao, protocolo=protocolo)
-
-        bank_account_ids = self.mapped('src_bank_account_id')
-        for account in bank_account_ids:
-            order_lines = self.filtered(
-                lambda x: x.src_bank_account_id == account)
-            journal_id = self.env['account.journal'].search(
-                [('bank_account_id', '=', account.id)], limit=1)
-
-            if not journal_id.l10n_br_sequence_statements:
-                raise UserError('Configure a sequência de extrato no diário')
-            if not statement_id:
-                statement_id = self.env['l10n_br.payment.statement'].create({
-                    'name':
-                    journal_id.l10n_br_sequence_statements.next_by_id(),
-                    'date': date.today(),
-                    'journal_id': journal_id.id,
-                })
-            for item in order_lines:
-                move_id = self.create_move_and_reconcile(item)
-                item.write({
-                    'autenticacao_pagamento': autenticacao,
-                    'protocolo_pagamento': protocolo,
-                    'cnab_code': cnab_code,
-                    'cnab_message': cnab_message})
-                self.env['l10n_br.payment.statement.line'].create({
-                    'statement_id': statement_id.id,
-                    'date': date.today(),
-                    'name': item.name,
-                    'partner_id': item.partner_id.id,
-                    'amount': item.value_final,
-                    'move_id': move_id.id,
-                    'cnab_code': cnab_code,
-                    'cnab_message': cnab_message,
-                })
-            order_lines.write({'state': 'paid'})
+        for line in self:
+            move_id = self.create_move_and_reconcile(line)
+            line.write({
+                'autenticacao_pagamento': autenticacao,
+                'protocolo_pagamento': protocolo,
+                'cnab_code': cnab_code,
+                'cnab_message': cnab_message})
+            self.env['l10n_br.payment.statement.line'].create({
+                'statement_id': statement_id.id,
+                'date': date.today(),
+                'name': line.name,
+                'partner_id': line.partner_id.id,
+                'amount': line.value_final,
+                'move_id': move_id.id,
+                'cnab_code': cnab_code,
+                'cnab_message': cnab_message,
+            })
+        self.write({'state': 'paid'})
         return statement_id
 
     def action_view_more_info(self):
