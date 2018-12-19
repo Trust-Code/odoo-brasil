@@ -739,11 +739,6 @@ class InvoiceEletronic(models.Model):
             'infCpl': self.informacoes_complementares or '',
             'infAdFisco': self.informacoes_legais or '',
         }
-        compras = {
-            'xNEmp': self.nota_empenho or '',
-            'xPed': self.pedido_compra or '',
-            'xCont': self.contrato_compra or '',
-        }
         vals = {
             'Id': '',
             'ide': ide,
@@ -756,8 +751,13 @@ class InvoiceEletronic(models.Model):
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
-            'compra': compras,
         }
+        if self.model != '65':
+            vals['compra'] = {
+                'xNEmp': self.nota_empenho or '',
+                'xPed': self.pedido_compra or '',
+                'xCont': self.contrato_compra or '',
+            }
         if self.valor_servicos > 0.0:
             vals.update({
                 'ISSQNtot': issqn_total,
