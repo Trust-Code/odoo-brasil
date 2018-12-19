@@ -751,6 +751,7 @@ class InvoiceEletronic(models.Model):
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
+
         }
         if self.model != '65':
             vals['compra'] = {

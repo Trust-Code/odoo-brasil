@@ -16,7 +16,6 @@
     # any module necessary for this one to work correctly
     'depends': [
         'point_of_sale',
-        'pos_discount',
         'br_account_einvoice',
         'br_nfe',
     ],

@@ -1,34 +1,48 @@
 # coding=utf-8
-from odoo import api, models
+from odoo import api, fields, models
+from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
     @api.multi
-    def _hook_validation(self):
-        errors = super(InvoiceEletronic, self)._hook_validation()
-
-        if self.model == '65' and self.partner_id.cnpj_cpf is None:
+    def validate_invoice(self):
+        self.ensure_one()
+        errors = self._hook_validation()
+        errors1 = []
+        if self.model == '65' and self.partner_id.cnpj_cpf == False:
             final_costumer = self.env['res.partner'].search(
                 [('name', '=', 'Consumidor Final')]
             )
-            if final_costumer.id == self.partner_id.id:
-                errors.remove(u'CNPJ/CPF do Parceiro inválido')
-                errors.remove(u'Destinatário - CNPJ/CPF')
-        return errors
+            if int(final_costumer) == int(self.partner_id.id):
+                errors_remover = [
+                    u'CNPJ/CPF do Parceiro inválido',
+                    u'Destinatário - CNPJ/CPF'
+                ]
+                for erro in errors:
+                    if erro not in errors_remover:
+                        errors1.append(erro)
+                errors = errors1
+
+        if len(errors) > 0:
+            msg = u"\n".join(
+                [u"Por favor corrija os erros antes de prosseguir"] + errors)
+            self.unlink()
+            raise UserError(msg)
 
     @api.multi
-    def _prepare_eletronic_invoice_item(self, item, invoice):
-        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_item(
-            item, invoice)
-
-        if self.model != '65':
-            return res
-
-        final_costumer = self.env['res.partner'].search(
-            [('name', '=', 'Consumidor Final')]
-        )
-        if final_costumer.id == self.partner_id.id:
-            res['dest'] = None
+    def _prepare_eletronic_invoice_values(self):
+        res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
+        if self.model == '65':
+            final_costumer = self.env['res.partner'].search(
+                [('name', '=', 'Consumidor Final')]
+            )
+            if int(final_costumer) == int(self.partner_id.id):
+                self.partner_id = False  # Caso a prioridade seja outro modulo
+                self.commercial_partner_id = False  # Caso a prioridade seja outro modulo
+                res['dest'] = None  # Caso a prioridade esteja no modulo certo
         return res

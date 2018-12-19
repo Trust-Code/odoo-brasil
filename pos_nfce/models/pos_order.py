@@ -13,6 +13,7 @@ class PosOrder(models.Model):
             [('name', '=', 'Consumidor Final')]
         )
         if len(final_costumer) == 0:
+            _logger.info(user_id['user_id'])
             user = self.env['res.users'].search(
                 [('id', '=', user_id['user_id'])]
             )
