@@ -240,7 +240,7 @@ class AccountInvoiceLine(models.Model):
         oldname='fiscal_classification_id')
     l10n_br_product_type = fields.Selection(
         [('product', 'Produto'), ('service', u'Serviço')],
-        string='Tipo do Produto', required=True, default='product',
+        string='Tipo do Produto', default='product',
         oldname='product_type')
     l10n_br_company_fiscal_type = fields.Selection(
         COMPANY_FISCAL_TYPE,
@@ -273,7 +273,7 @@ class AccountInvoiceLine(models.Model):
          ('1', u'1 - Pauta (valor)'),
          ('2', u'2 - Preço Tabelado Máximo (valor)'),
          ('3', u'3 - Valor da Operação')],
-        'Tipo Base ICMS', required=True, default='3', oldname='icms_tipo_base')
+        'Tipo Base ICMS', default='3', oldname='icms_tipo_base')
     l10n_br_incluir_ipi_base = fields.Boolean(
         string="Incl. Valor IPI?",
         help=u"Se marcado o valor do IPI inclui a base de cálculo",
@@ -308,7 +308,7 @@ class AccountInvoiceLine(models.Model):
          ('3', u'3 - Lista Neutra (valor)'),
          ('4', u'4 - Margem Valor Agregado (%)'),
          ('5', u'5 - Pauta (valor)')],
-        'Tipo Base ICMS ST', required=True, default='4',
+        'Tipo Base ICMS ST', default='4',
         oldname='icms_st_tipo_base')
     l10n_br_icms_st_valor = fields.Float(
         'Valor ICMS ST', required=True, compute='_compute_price', store=True,
@@ -395,7 +395,7 @@ class AccountInvoiceLine(models.Model):
          ('R', 'Retida'),
          ('S', 'Substituta'),
          ('I', 'Isenta')],
-        string='Tipo do ISSQN', required=True, default='N',
+        string='Tipo do ISSQN', default='N',
         oldname='issqn_tipo')
     l10n_br_service_type_id = fields.Many2one(
         'br_account.service.type', u'Tipo de Serviço',
@@ -424,7 +424,7 @@ class AccountInvoiceLine(models.Model):
         domain=[('l10n_br_domain', '=', 'ipi')], oldname='tax_ipi_id')
     l10n_br_ipi_tipo = fields.Selection(
         [('percent', 'Percentual')],
-        'Tipo do IPI', required=True, default='percent', oldname='ipi_tipo')
+        'Tipo do IPI', default='percent', oldname='ipi_tipo')
     l10n_br_ipi_base_calculo = fields.Float(
         'Base IPI', required=True, digits=dp.get_precision('Account'),
         default=0.00, compute='_compute_price', store=True,
@@ -457,7 +457,7 @@ class AccountInvoiceLine(models.Model):
                                        oldname='pis_cst')
     l10n_br_pis_tipo = fields.Selection(
         [('percent', 'Percentual')],
-        string='Tipo do PIS', required=True, default='percent',
+        string='Tipo do PIS', default='percent',
         oldname='pis_tipo')
     l10n_br_pis_base_calculo = fields.Float(
         'Base PIS', required=True, compute='_compute_price', store=True,
@@ -488,7 +488,7 @@ class AccountInvoiceLine(models.Model):
         CST_PIS_COFINS, 'CST COFINS', oldname='cofins_cst')
     l10n_br_cofins_tipo = fields.Selection(
         [('percent', 'Percentual')],
-        string='Tipo do COFINS', required=True, default='percent',
+        string='Tipo do COFINS', default='percent',
         oldname='cofins_tipo')
     l10n_br_cofins_base_calculo = fields.Float(
         'Base COFINS', compute='_compute_price', store=True,
