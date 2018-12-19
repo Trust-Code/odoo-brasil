@@ -39,7 +39,11 @@ class PosOrder(models.Model):
 
         for order in self:
             # Force company for all SUPERUSER_ID action
-            local_context = dict(self.env.context, force_company=order.company_id.id, company_id=order.company_id.id)
+            local_context = dict(
+                self.env.context,
+                force_company=order.company_id.id,
+                company_id=order.company_id.id
+            )
             if order.invoice_id:
                 Invoice += order.invoice_id
                 continue
@@ -50,12 +54,15 @@ class PosOrder(models.Model):
             invoice = Invoice.new(order._prepare_invoice())
             invoice._onchange_partner_id()
             if order.fiscal_position_id != False:
-                invoice.fiscal_position_id = order.fiscal_position_id
-                invoice.product_serie_id = order.fiscal_position_id.product_serie_id.id
+                invoice.fiscal_position_id = \
+                    order.fiscal_position_id
+                invoice.product_serie_id = \
+                    order.fiscal_position_id.product_serie_id.id
                 invoice.product_document_id = \
                     order.fiscal_position_id.product_document_id.id
 
-                invoice.service_serie_id = order.fiscal_position_id.service_serie_id.id
+                invoice.service_serie_id = \
+                    order.fiscal_position_id.service_serie_id.id
                 invoice.service_document_id = \
                     order.fiscal_position_id.service_document_id.id
 
@@ -64,7 +71,11 @@ class PosOrder(models.Model):
 
             inv = invoice._convert_to_write({name: invoice[name] for name in invoice._cache})
             new_invoice = Invoice.with_context(local_context).sudo().create(inv)
-            message = _("This invoice has been created from the point of sale session: <a href=# data-oe-model=pos.order data-oe-id=%d>%s</a>") % (order.id, order.name)
+            message = _("This invoice has been created "
+                        "from the point of sale session: "
+                        "<a href=# data-oe-model=pos.order "
+                        "data-oe-id=%d>%s</a>") % \
+                      (order.id, order.name)
             new_invoice.message_post(body=message)
             order.write({'invoice_id': new_invoice.id, 'state': 'invoiced'})
             Invoice += new_invoice

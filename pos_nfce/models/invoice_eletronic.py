@@ -14,7 +14,7 @@ class InvoiceEletronic(models.Model):
         self.ensure_one()
         errors = self._hook_validation()
         errors1 = []
-        if self.model == '65' and self.partner_id.cnpj_cpf == False:
+        if self.model == '65' and self.partner_id.cnpj_cpf is False:
             final_costumer = self.env['res.partner'].search(
                 [('name', '=', 'Consumidor Final')]
             )
@@ -42,7 +42,9 @@ class InvoiceEletronic(models.Model):
                 [('name', '=', 'Consumidor Final')]
             )
             if int(final_costumer) == int(self.partner_id.id):
-                self.partner_id = False  # Caso a prioridade seja outro modulo
-                self.commercial_partner_id = False  # Caso a prioridade seja outro modulo
-                res['dest'] = None  # Caso a prioridade esteja no modulo certo
+                # Caso a prioridade seja outro modulo
+                self.partner_id = False
+                self.commercial_partner_id = False
+                # Caso a prioridade esteja no modulo certo
+                res['dest'] = None
         return res
