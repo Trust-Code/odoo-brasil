@@ -35,7 +35,7 @@ class AccountInvoice(models.Model):
             today = datetime.today()
             inv = self.search(
                 [('state', '=', 'draft'),
-                 '|', '|',
+                 '|', '&',
                  ('date_invoice', '>=', today + relativedelta(day=1)),
                  ('date_invoice', '<=', today + relativedelta(day=31)),
                  ('date_invoice', '=', False)])
