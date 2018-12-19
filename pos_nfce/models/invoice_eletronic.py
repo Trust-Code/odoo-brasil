@@ -1,5 +1,5 @@
 # coding=utf-8
-from odoo import api, fields, models
+from odoo import api, models
 
 
 class InvoiceEletronic(models.Model):
@@ -10,7 +10,9 @@ class InvoiceEletronic(models.Model):
         errors = super(InvoiceEletronic, self)._hook_validation()
 
         if self.model == '65' and self.partner_id.cnpj_cpf is None:
-            final_costumer = self.env['res.partner'].search([('name', '=', 'Consumidor Final')])
+            final_costumer = self.env['res.partner'].search(
+                [('name', '=', 'Consumidor Final')]
+            )
             if final_costumer.id == self.partner_id.id:
                 errors.remove(u'CNPJ/CPF do Parceiro inválido')
                 errors.remove(u'Destinatário - CNPJ/CPF')

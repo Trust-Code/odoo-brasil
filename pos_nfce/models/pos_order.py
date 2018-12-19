@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import api, models, fields
-from odoo.addons import decimal_precision as dp
+from odoo import api, models
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -10,9 +9,13 @@ class PosOrder(models.Model):
 
     @api.model
     def create_final_costumer(self, user_id):
-        final_costumer = self.env['res.partner'].search([('name', '=', 'Consumidor Final')])
+        final_costumer = self.env['res.partner'].search(
+            [('name', '=', 'Consumidor Final')]
+        )
         if len(final_costumer) == 0:
-            user = self.env['res.users'].search([('id', '=', user_id['user_id'])])
+            user = self.env['res.users'].search(
+                [('id', '=', user_id['user_id'])]
+            )
             final_costumer = self.env['res.partner'].create(dict(
                 name='Consumidor Final',
                 zip=user.company_id.partner_id.zip,
