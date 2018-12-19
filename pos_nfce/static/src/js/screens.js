@@ -33,15 +33,7 @@ odoo.define('pos_nfce.screens', function (require) {
                 invoiced.fail(function (error) {
                     self.invoicing = false;
                     order.finalized = false;
-                    if (error.message === 'Missing Customer') {
-                        self.gui.show_popup('confirm', {
-                            'title': _t('Please select the Customer'),
-                            'body': _t('You need to select the customer before you can invoice an order.'),
-                            confirm: function () {
-                                self.gui.show_screen('clientlist');
-                            },
-                        });
-                    } else if (error.code < 0) {        // XmlHttpRequest Errors
+                    if (error.code < 0) {        // XmlHttpRequest Errors
                         self.gui.show_popup('error', {
                             'title': _t('The order could not be sent'),
                             'body': _t('Check your internet connection and try again.'),
