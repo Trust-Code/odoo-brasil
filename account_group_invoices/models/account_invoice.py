@@ -25,8 +25,8 @@ class AccountInvoice(models.Model):
     @api.multi
     def _prepare_invoice_dict(self, group_dict):
         """
-        Primeiro pega todas as notas possível de agrupar e depois
-        agrupa conforme regras específicadas
+        Primeiro pega todas as notas possíveis de agrupar e depois
+        separa conforme regras específicadas
         """
         vals = []
         if self.ids:
@@ -42,15 +42,15 @@ class AccountInvoice(models.Model):
         lines = inv.mapped('invoice_line_ids')
 
         for group in group_dict:
-            if 'domain' not in group and not group['domain']:
+            if 'domain' not in group:
                 continue
             group['domain'].append(('id', 'in', lines.ids))
-            f_lines = lines.search(group['domain'])
-            for v in self._prepare_vals(f_lines):
+            group_lines = lines.search(group['domain'])
+            for v in self._prepare_vals(group_lines):
                 v['rule'] = group['rule_name']
                 v['fpos'] = group['fpos'] if 'fpos' in group else False
                 vals.append(v)
-            lines -= f_lines
+            lines -= group_lines
 
         return vals
 
