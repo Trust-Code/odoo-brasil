@@ -187,10 +187,10 @@ class Cnab_240(object):
         }
         return trailerArq
 
-    def _get_trailer_lot(self, total, num_lot):
+    def _get_trailer_lot(self, totais, num_lot):
         trailer_lot = {
             "controle_lote": num_lot,
-            "somatorio_valores": self._string_to_monetary(total)
+            "somatorio_valores": self._string_to_monetary(totais.get('total'))
         }
         return trailer_lot
 
@@ -260,8 +260,8 @@ class Cnab_240(object):
             for event in events:
                 lot_sequency = self.create_detail(
                     lote, event, lot_sequency, num_lot)
-            total_lote = self._sum_lot_values(events)
-            self._create_trailer_lote(total_lote, num_lot)
+            totais_lote = self._sum_lot_values(events)
+            self._create_trailer_lote(totais_lote, num_lot)
             num_lot = num_lot + 1
 
     def _create_header_lote(self, line, num_lot, lot):
@@ -288,9 +288,13 @@ class Cnab_240(object):
             "03": ["SegmentoA", "SegmentoB"],
         }
 
-    def _create_trailer_lote(self, total, num_lot):
+    def _get_trailer_lot_name(self):
+        return 'TrailerLote'
+
+    def _create_trailer_lote(self, totais, num_lot):
+        seg_name = self._get_trailer_lot_name()
         self._cnab_file.add_segment(
-            'TrailerLote', self._get_trailer_lot(total, num_lot))
+            seg_name, self._get_trailer_lot(totais, num_lot))
         self._cnab_file.get_active_lot().close_lot()
 
     def _generate_file(self):
@@ -307,7 +311,7 @@ class Cnab_240(object):
         total = 0
         for line in lot:
             total = total + line.value_final
-        return total
+        return {'total': total}
 
     def get_mes_ano_competencia(self, line):
         if not line.invoice_date:
