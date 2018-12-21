@@ -102,6 +102,7 @@ class PosOrder(models.Model):
             'target': 'current',
             'res_id': Invoice and Invoice.ids[0] or False,
         }
+
     def _action_create_invoice_line(self, line=False, invoice_id=False):
         InvoiceLine = self.env['account.invoice.line']
         inv_name = line.product_id.name_get()[0][1]

@@ -22,5 +22,6 @@
     # always loaded
     'data': [
         'views/header.xml'
-    ]
+    ],
+    'qweb': ['static/src/xml/pos.xml']
 }

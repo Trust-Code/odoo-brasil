@@ -15,6 +15,7 @@ odoo.define('pos_nfce.screens', function (require) {
                     method: 'create_final_costumer',
                     args: [{'user_id': this.pos.get_cashier().id}]
                 });
+                self.pos.load_new_partners();
                 const partnerParser = self.pos.db.get_partner_by_id(parseInt(partner));
                 order.finalized = false;
                 order.set({client: partnerParser});

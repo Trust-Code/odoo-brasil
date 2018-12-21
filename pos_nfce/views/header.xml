@@ -4,6 +4,7 @@
         <template id="pos_nfce.assets" inherit_id="point_of_sale.assets" name="point_of_sale assets">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/pos_nfce/static/src/js/screens.js"></script>
+                <script type="text/javascript" src="/pos_nfce/static/src/js/models.js"></script>
             </xpath>
         </template>
     </data>
