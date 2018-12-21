@@ -129,12 +129,12 @@ class Itau240(Cnab_240):
         trailer = super(Itau240, self)._get_trailer_lot(totais, num_lot)
         trailer.update({
             'total_valor_principal': self._float_to_monetary(
-                totais.get('total_principal')),
+                totais.get('total_principal', 0.00)),
             'total_valor_arrecadado': trailer.get('somatorio_valores'),
             'total_valor_acrecimos': self._float_to_monetary(
-                totais.get('acrescimos')),
+                totais.get('acrescimos', 0.00)),
             'total_outro_valor': self._float_to_monetary(
-                totais.get('outros'))
+                totais.get('outros', 0.00))
         })
         return trailer
 

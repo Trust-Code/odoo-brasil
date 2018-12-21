@@ -190,7 +190,8 @@ class Cnab_240(object):
     def _get_trailer_lot(self, totais, num_lot):
         trailer_lot = {
             "controle_lote": num_lot,
-            "somatorio_valores": self._string_to_monetary(totais.get('total'))
+            "somatorio_valores": self._string_to_monetary(
+                totais.get('total'))
         }
         return trailer_lot
 
