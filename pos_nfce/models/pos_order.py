@@ -75,11 +75,12 @@ class PosOrder(models.Model):
             })
             new_invoice = Invoice.with_context(local_context)
             new_invoice = new_invoice.sudo().create(inv)
-            message = _("This invoice has been created "
-                        "from the point of sale session: "
-                        "<a href=# data-oe-model=pos.order "
-                        "data-oe-id=%d>%s</a>") % \
-                      (order.id, order.name)
+            message = _(
+                "This invoice has been created "
+                "from the point of sale session: "
+                "<a href=# data-oe-model=pos.order "
+                "data-oe-id=%d>%s</a>") % (order.id, order.name)
+            
             new_invoice.message_post(body=message)
             order.write({
                 'invoice_id': new_invoice.id,
