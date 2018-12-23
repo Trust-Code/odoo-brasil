@@ -884,6 +884,8 @@ class InvoiceEletronic(models.Model):
         self.xml_to_send = base64.encodestring(
             xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+        self.qrcode_hash = nfe_values['qrCode']
+        self.qrcode_url = nfe_values['urlChave']
 
     @api.multi
     def action_send_eletronic_invoice(self):

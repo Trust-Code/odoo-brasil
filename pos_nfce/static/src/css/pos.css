@@ -1,0 +1,8 @@
+.pos-sale-ticket{
+    width: 450px !important;
+}
+@media print {
+    .pos-sale-ticket {
+        width: 140mm !important;
+    }
+}
