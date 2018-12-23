@@ -791,6 +791,8 @@ class InvoiceEletronic(models.Model):
             qr_code_server = url_qrcode(estado, str(ambiente))
             vals['qrCode'] = qr_code_server + QR_code_url
             vals['urlChave'] = qr_code_server.replace('?', '')
+            self.qrcode_hash = vals['qrCode']
+            self.qrcode_url = vals['urlChave']
         return vals
 
     @api.multi
@@ -884,8 +886,6 @@ class InvoiceEletronic(models.Model):
         self.xml_to_send = base64.encodestring(
             xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
-        self.qrcode_hash = nfe_values['qrCode']
-        self.qrcode_url = nfe_values['urlChave']
 
     @api.multi
     def action_send_eletronic_invoice(self):
