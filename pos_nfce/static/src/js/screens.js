@@ -1,3 +1,4 @@
+
 odoo.define('pos_nfce.screens', function (require) {
     "use strict";
     var gui = require('point_of_sale.gui');

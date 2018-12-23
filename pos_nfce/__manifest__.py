@@ -1,13 +1,6 @@
-# -*- coding: utf-8 -*-
 {
     'name': 'POS NFC-e',
-
     'summary': 'Esse modulo foi desenvolvido para emitir NFC-e via POS',
-
-    'description': """
-        Esse Modulo facilita a emissão de NFC-e via POS junto a sefaz
-    """,
-
     'author': "Implanti Soluções",
     'website': "http://www.implanti.com.br",
     'category': 'Point Of Sale',

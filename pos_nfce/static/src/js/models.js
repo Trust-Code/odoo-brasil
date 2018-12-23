@@ -1,3 +1,4 @@
+
 odoo.define('pos_nfce.models', function (require) {
     "use strict";
     var pos_model = require('point_of_sale.models');
