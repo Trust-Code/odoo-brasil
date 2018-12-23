@@ -8,7 +8,7 @@ odoo.define('pos_nfce.models', function (require) {
     ];
     pos_model.load_fields("res.company", fields);
     pos_model.Orderline = pos_model.Orderline.extend({
-        get_total: function(){
+        get_total: function () {
             return this.quantity * this.priceWithTax;
         },
     });

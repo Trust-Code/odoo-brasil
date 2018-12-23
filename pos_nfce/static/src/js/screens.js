@@ -8,7 +8,6 @@ odoo.define('pos_nfce.screens', function (require) {
     var _t = core._t;
     screens.PaymentScreenWidget.include({
         finalize_validation: async function () {
-            var self = this;
             var order = this.pos.get_order();
             if(!order.get_client()) {
                 const partner = await rpc.query({
@@ -16,8 +15,8 @@ odoo.define('pos_nfce.screens', function (require) {
                     method: 'create_final_costumer',
                     args: [{'user_id': this.pos.get_cashier().id}]
                 });
-                self.pos.load_new_partners();
-                const partnerParser = self.pos.db.get_partner_by_id(parseInt(partner));
+                this.pos.load_new_partners();
+                const partnerParser = this.pos.db.get_partner_by_id(parseInt(partner));
                 order.finalized = false;
                 order.set({client: partnerParser});
                 order.finalized = true;
@@ -33,20 +32,20 @@ odoo.define('pos_nfce.screens', function (require) {
                 var invoiced = this.pos.push_and_invoice_order(order);
                 this.invoicing = true;
                 invoiced.fail(function (error) {
-                    self.invoicing = false;
+                    this.invoicing = false;
                     order.finalized = false;
                     if (error.code < 0) {        // XmlHttpRequest Errors
-                        self.gui.show_popup('error', {
+                        this.gui.show_popup('error', {
                             'title': _t('The order could not be sent'),
                             'body': _t('Check your internet connection and try again.'),
                         });
                     } else if (error.code === 200) {    // OpenERP Server Errors
-                        self.gui.show_popup('error-traceback', {
+                        this.gui.show_popup('error-traceback', {
                             'title': error.data.message || _t("Server Error"),
                             'body': error.data.debug || _t('The server encountered an error while receiving your order.'),
                         });
                     } else {                            // ???
-                        self.gui.show_popup('error', {
+                        this.gui.show_popup('error', {
                             'title': _t("Unknown Error"),
                             'body': _t("The order could not be sent to the server due to an unknown error"),
                         });
@@ -54,8 +53,8 @@ odoo.define('pos_nfce.screens', function (require) {
                 });
 
                 invoiced.done(function () {
-                    self.invoicing = false;
-                    self.gui.show_screen('receipt');
+                    this.invoicing = false;
+                    this.gui.show_screen('receipt');
                 });
             } else {
                 this.pos.push_order(order);
