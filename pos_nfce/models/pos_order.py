@@ -80,7 +80,6 @@ class PosOrder(models.Model):
                 "from the point of sale session: "
                 "<a href=# data-oe-model=pos.order "
                 "data-oe-id=%d>%s</a>") % (order.id, order.name)
-            
             new_invoice.message_post(body=message)
             order.write({
                 'invoice_id': new_invoice.id,
