@@ -69,7 +69,11 @@ class PosOrder(models.Model):
                 ob_ids = [x.id for x in order.fiscal_position_id.fiscal_observation_ids]
                 invoice.fiscal_observation_ids = [(6, False, ob_ids)]
 
-            inv = invoice._convert_to_write({name: invoice[name] for name in invoice._cache})
+            inv = invoice._convert_to_write(
+                {
+                    name: invoice[name] for name in invoice._cache
+                }
+            )
             new_invoice = Invoice.with_context(local_context).sudo().create(inv)
             message = _("This invoice has been created "
                         "from the point of sale session: "
@@ -81,7 +85,10 @@ class PosOrder(models.Model):
             Invoice += new_invoice
 
             for line in order.lines:
-                self.with_context(local_context)._action_create_invoice_line(line, new_invoice.id)
+                self.with_context(local_context)._action_create_invoice_line(
+                    line,
+                    new_invoice.id
+                )
 
             new_invoice.with_context(local_context).sudo().compute_taxes()
             new_invoice._compute_amount()
@@ -112,12 +119,16 @@ class PosOrder(models.Model):
             'quantity': line.qty if self.amount_total >= 0 else -line.qty,
             'account_analytic_id': self._prepare_analytic_account(line),
             'name': inv_name,
-            'fiscal_classification_id': line.product_id.fiscal_classification_id
+            'fiscal_classification_id':
+                line.product_id.fiscal_classification_id
         }
         # Oldlin trick
         invoice_line = InvoiceLine.sudo().new(inv_line)
         invoice_line._onchange_product_id()
-        invoice_line.invoice_line_tax_ids = invoice_line.invoice_line_tax_ids.filtered(lambda t: t.company_id.id == line.order_id.company_id.id).ids
+        invoice_line.invoice_line_tax_ids = \
+            invoice_line.invoice_line_tax_ids.filtered(
+                lambda t: t.company_id.id == line.order_id.company_id.id
+            ).ids
         fiscal_position_id = line.order_id.fiscal_position_id
         if fiscal_position_id:
             invoice_line.invoice_line_tax_ids = fiscal_position_id.map_tax(
@@ -125,11 +136,16 @@ class PosOrder(models.Model):
                 line.product_id,
                 line.order_id.partner_id
             )
-        invoice_line.invoice_line_tax_ids = invoice_line.invoice_line_tax_ids.ids
+        invoice_line.invoice_line_tax_ids = \
+            invoice_line.invoice_line_tax_ids.ids
         # We convert a new id object back to a dictionary to write to
         # bridge between old and new api
         inv_line = invoice_line._convert_to_write(
             {name: invoice_line[name] for name in invoice_line._cache}
         )
-        inv_line.update(price_unit=line.price_unit, discount=line.discount, name=inv_name)
+        inv_line.update(
+            price_unit=line.price_unit,
+            discount=line.discount,
+            name=inv_name
+        )
         return InvoiceLine.sudo().create(inv_line)
