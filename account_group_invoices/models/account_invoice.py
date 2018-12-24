@@ -1,7 +1,7 @@
 # © 2018 Mackilem Van der Laan, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import api, models, _
 from itertools import product
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -19,8 +19,7 @@ class AccountInvoice(models.Model):
         """
         vals = self._prepare_invoice_dict(group_dict)
         for inv in vals:
-            if len(inv['inv_ids']) > 1:
-                self._create_invoices_grouped(inv)
+            self._create_invoices_grouped(inv)
 
     @api.multi
     def _prepare_invoice_dict(self, group_dict):
@@ -40,6 +39,7 @@ class AccountInvoice(models.Model):
                  ('date_invoice', '<=', today + relativedelta(day=31)),
                  ('date_invoice', '=', False)])
         lines = inv.mapped('invoice_line_ids')
+        inv_grouped = []
 
         for group in group_dict:
             if 'domain' not in group:
@@ -47,11 +47,21 @@ class AccountInvoice(models.Model):
             group['domain'].append(('id', 'in', lines.ids))
             group_lines = lines.search(group['domain'])
             for v in self._prepare_vals(group_lines):
+                if len(v['inv_ids']) <= 1:
+                    continue
                 v['rule'] = group['rule_name']
                 v['fpos'] = group['fpos'] if 'fpos' in group else False
                 vals.append(v)
+                [inv_grouped.append(id) for id in v['inv_ids'].ids]
             lines -= group_lines
-
+        # Remainig lines
+        for inv in lines.mapped('invoice_id'):
+            if inv.id in inv_grouped:
+                ln_remainig = lines.filtered(lambda x: x.invoice_id == inv)
+                rv = self._prepare_vals(ln_remainig)
+                rv[0]['rule'] = _('Reallocated by the grouping rule')
+                rv[0]['fpos'] = inv.fiscal_position_id.id or False
+                vals.append(rv[0])
         return vals
 
     def _prepare_vals(self, lines):
