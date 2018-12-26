@@ -3,6 +3,7 @@
 
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class StockPicking(models.Model):
@@ -24,7 +25,7 @@ class StockPicking(models.Model):
     def _prepare_inv_line_vals(self, move_line_id):
         linevals = {
             'product_id': move_line_id.product_id.id,
-            'quantity': move_line_id.product_uom_qty,
+            'quantity': move_line_id.qty_done,
             'price_unit': move_line_id.product_id.lst_price,
             'invoice_id': self.env['account.invoice'].new({
                 'fiscal_position_id': self.fiscal_position_id.id,
@@ -39,7 +40,7 @@ class StockPicking(models.Model):
             {name: line[name] for name in line._cache})
         vals = {k: v for k, v in linevals.items() if v}
         vals.update({
-            'quantity': move_line_id.product_uom_qty,
+            'quantity': move_line_id.qty_done,
             'price_unit': move_line_id.product_id.lst_price,
         })
         return vals
@@ -75,8 +76,18 @@ class StockPicking(models.Model):
         return vals
 
     @api.multi
+    def action_done(self):
+        res = super(StockPicking, self).action_done()
+        pickings_to_invoice = self.filtered(
+            lambda x: x.picking_type_id.enable_invoicing)
+        pickings_to_invoice.action_invoice_picking()
+        return res
+
+    @api.multi
     def action_invoice_picking(self):
         partner_ids = self.mapped('partner_id')
+        if not partner_ids:
+            raise UserError('No partner to invoice, please choose one!')
         invoice_ids = self.env['account.invoice']
         for partner_id in partner_ids:
             picking_ids = self.filtered(lambda x: x.partner_id == partner_id)
