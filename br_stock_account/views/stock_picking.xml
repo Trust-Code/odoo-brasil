@@ -22,9 +22,6 @@
                      <field name="invoice_count"/> <span> Invoices</span>
                  </button>
             </div>
-            <button name="button_validate" position="after">
-                <button name="action_invoice_picking" attrs="{'invisible': [('enable_invoicing', '=', False)]}" string="Faturar" type="object" class="oe_highlight"/>
-            </button>
             <field name="location_dest_id" position="after">
                 <field name="enable_invoicing" invisible="1" />
                 <field name="fiscal_position_id" attrs="{'invisible': [('enable_invoicing', '=', False)]}"/>
