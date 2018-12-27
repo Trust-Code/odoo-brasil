@@ -80,7 +80,8 @@ class StockPicking(models.Model):
         res = super(StockPicking, self).action_done()
         pickings_to_invoice = self.filtered(
             lambda x: x.picking_type_id.enable_invoicing)
-        pickings_to_invoice.action_invoice_picking()
+        if pickings_to_invoice:
+            pickings_to_invoice.action_invoice_picking()
         return res
 
     @api.multi
