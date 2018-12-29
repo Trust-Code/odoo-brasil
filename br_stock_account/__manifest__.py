@@ -19,6 +19,7 @@
     ],
     'data': [
         'views/account_invoice.xml',
+        'views/stock_picking.xml',
         'reports/account_invoice.xml',
     ],
     'auto_install': True,
