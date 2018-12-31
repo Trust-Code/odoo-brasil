@@ -283,19 +283,19 @@ class SaleOrderLine(models.Model):
                     lambda x: x.l10n_br_domain == 'ipi')
                 icmsst = line.tax_id.filtered(
                     lambda x: x.l10n_br_domain == 'icmsst')
-                tax_ids = vals.get('tax_icms_id', empty) | \
-                    vals.get('tax_icms_st_id', icmsst) | \
-                    vals.get('tax_icms_inter_id', empty) | \
-                    vals.get('tax_icms_intra_id', empty) | \
-                    vals.get('tax_icms_fcp_id', empty) | \
-                    vals.get('tax_ipi_id', ipi) | \
-                    vals.get('tax_pis_id', empty) | \
-                    vals.get('tax_cofins_id', empty) | \
-                    vals.get('tax_ii_id', empty) | \
-                    vals.get('tax_issqn_id', empty) | \
-                    vals.get('tax_csll_id', empty) | \
-                    vals.get('tax_irrf_id', empty) | \
-                    vals.get('tax_inss_id', empty)
+                tax_ids = vals.get('l10n_br_tax_icms_id', empty) | \
+                    vals.get('l10n_br_tax_icms_st_id', icmsst) | \
+                    vals.get('l10n_br_tax_icms_inter_id', empty) | \
+                    vals.get('l10n_br_tax_icms_intra_id', empty) | \
+                    vals.get('l10n_br_tax_icms_fcp_id', empty) | \
+                    vals.get('l10n_br_tax_ipi_id', ipi) | \
+                    vals.get('l10n_br_tax_pis_id', empty) | \
+                    vals.get('l10n_br_tax_cofins_id', empty) | \
+                    vals.get('l10n_br_tax_ii_id', empty) | \
+                    vals.get('l10n_br_tax_issqn_id', empty) | \
+                    vals.get('l10n_br_tax_csll_id', empty) | \
+                    vals.get('l10n_br_tax_irrf_id', empty) | \
+                    vals.get('l10n_br_tax_inss_id', empty)
                 line.update({
                     'tax_id': [(6, None, [x.id for x in tax_ids if x])]
                 })
