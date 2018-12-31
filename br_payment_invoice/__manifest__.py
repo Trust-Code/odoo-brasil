@@ -24,6 +24,7 @@
     'data': [
         'views/account_invoice.xml',
         'views/payment_order.xml',
+        'views/account_move.xml',
         'wizard/change_payment.xml',
         'reports/receipt.xml'
     ],

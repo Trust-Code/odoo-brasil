@@ -50,6 +50,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
             'date': date.today(),
             'company_id': self.journal_id.company_id.id,
             'name': self.journal_id.l10n_br_sequence_statements.next_by_id(),
+            'type': 'payable',
         })
         for lot in loaded_cnab.lots:
             for event in lot.events:
@@ -83,23 +84,29 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                         'ignored': True,
                     })
                     continue
-
+                protocol = autentication = None
+                if hasattr(event, 'protocolo_pagamento'):
+                    protocol = event.protocolo_pagamento
+                if hasattr(event, 'autenticacao_pagamento'):
+                    autentication = event.autenticacao_pagamento
                 self.select_routing(
-                    payment_line, cnab_code, bank, message, statement)
+                    payment_line, cnab_code, bank, message, statement,
+                    protocolo=protocol, autenticacao=autentication)
 
         action = self.env.ref(
             'br_account_payment.action_payment_statement_tree')
         return action.read()[0]
 
-    def select_routing(self, pay_line, cnab_code, bank, message, statement):
+    def select_routing(self, pay_line, cnab_code, bank, message,
+                       statement, protocolo=None, autenticacao=None):
         if cnab_code == 'BD':  # Inclusão OK
             pay_line.mark_order_line_processed(
                 cnab_code, message, statement_id=statement
             )
         elif cnab_code in ('00', '03'):  # Débito
             pay_line.mark_order_line_paid(
-                cnab_code, message, statement_id=statement
-            )
+                cnab_code, message, statement_id=statement,
+                autenticacao=autenticacao, protocolo=protocolo)
         else:
             pay_line.mark_order_line_processed(
                 cnab_code, message, rejected=True,

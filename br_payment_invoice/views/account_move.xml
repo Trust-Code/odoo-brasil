@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_payment_invoice_account_move_line_tree" model="ir.ui.view">
+        <field name="name">view_br_payment_invoice_account_move_line_tree</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="br_account_payment.view_payments_tree_a_receber" />
+        <field name="arch" type="xml">
+            <button name="action_register_payment" position="after">
+                <button name="open_wizard_schedule_payment" type="object" string="AGENDAR" class="btn btn-success btn-xs"/>
+            </button>
+        </field>
+    </record>
+
+    <act_window id="action_br_payment_invoice_schedule_payment"
+        name="Agendar Pagamento"
+        src_model="account.move.line"
+        res_model="wizard.change.payment"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"/>
+
+</odoo>
