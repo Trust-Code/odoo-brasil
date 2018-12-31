@@ -7,7 +7,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml" >
             <field name="nosso_numero" position="after">
-                <button name="action_aprove_payment_line" type="object" string="APROVAR" class="btn btn-success btn-xs" groups="account.group_account_user"/>
+                <button name="action_aprove_payment_line" type="object" string="APROVAR" class="btn btn-success btn-xs" groups="account.group_account_user" states="draft" />
                 <button name="action_view_more_info" type="object" string="VER" class="btn btn-success btn-xs"/>
             </field>
         </field>
@@ -34,10 +34,16 @@
         <field name="type">form</field>
         <field name="arch" type="xml" >
             <field name="nosso_numero" position="after">
-                <field name="linha_digitavel" />
-                <field name="barcode" />
-                <field name="cnab_code" />
-                <field name="cnab_message" />
+                <field name="linha_digitavel"/>
+                <field name="barcode"/>
+                <field name="destiny_journal_id" />
+                <field name="bank_account_id" />
+                <field name="partner_acc_number" />
+                <field name="partner_bra_number" />
+                <field name="cnab_code" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
+                <field name="cnab_message" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
+                <field name="autenticacao_pagamento" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
+                <field name="protocolo_pagamento" attrs="{'invisible': [('state', 'not in', ('paid', 'processed', 'rejected'))]}"/>
             </field>
             <field name="emission_date" position="after">
                 <field name="invoice_date"/>

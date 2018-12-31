@@ -171,8 +171,9 @@ class TestInutilizacao(TransactionCase):
             modelo='55',
             justificativa=justif
         ))
-        with self.assertRaises(UserError):
-            wizard.action_inutilize_nfe()
+        wizard.action_inutilize_nfe()
+        inutilized = self.env['invoice.eletronic.inutilized'].search([])
+        self.assertEqual(inutilized.state, 'error')
 
     @patch('odoo.addons.br_nfe.models.invoice_eletronic.valida_nfe')
     @patch('odoo.addons.br_nfe.models.inutilized_nfe.inutilizar_nfe')

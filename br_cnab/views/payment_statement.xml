@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_trustcode_l10n_br_payment_statement_tree" model="ir.ui.view">
+        <field name="name">view.trustcode.l10n_br.payment.statement.tree</field>
+        <field name="model">l10n_br.payment.statement</field>
+        <field name="inherit_id" ref="br_account_payment.view_payment_statement_form" />
+        <field name="arch" type="xml" >
+            <field name="amount" position="before" >
+                <field name="original_amount" attrs="{'column_invisible': [('parent.type', '!=', 'receivable')]}" />
+                <field name="amount_fee" attrs="{'column_invisible': [('parent.type', '!=', 'receivable')]}" />
+                <field name="discount" attrs="{'column_invisible': [('parent.type', '!=', 'receivable')]}" />
+                <field name="bank_fee"  attrs="{'column_invisible': [('parent.type', '!=', 'receivable')]}" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
