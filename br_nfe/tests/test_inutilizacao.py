@@ -132,7 +132,6 @@ class TestInutilizacao(TransactionCase):
         ]
         self.default_invoice = {
             'name': "Teste Validação",
-            'reference_type': "none",
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
