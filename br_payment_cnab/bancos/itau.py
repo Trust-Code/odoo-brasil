@@ -15,6 +15,7 @@ class Itau240(Cnab_240):
     def __init__(self, pay_order):
         self._bank = itau
         self._order = pay_order
+        self._operation = None
         super(Itau240, self).__init__()
 
     def segments_per_operation(self):
@@ -53,6 +54,7 @@ class Itau240(Cnab_240):
     def _get_header_lot(self, line, num_lot, lot):
         info_id = line.payment_information_id
         header = super(Itau240, self)._get_header_lot(line, num_lot, lot)
+        self._operation = lot
         header.update({
             'forma_lancamento': self._string_to_num(
                 header.get('forma_lancamento')),
@@ -69,7 +71,6 @@ class Itau240(Cnab_240):
     def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Itau240, self)._get_segmento(
             line, lot_sequency, num_lot, nome_segmento)
-
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
@@ -105,3 +106,39 @@ class Itau240(Cnab_240):
                 segmento.get('codigo_receita_tributo') or 0)
         })
         return segmento
+
+    def _sum_lot_values(self, lot):
+        if self._operation not in ['16', '17', '18', '35']:
+            return super(Itau240, self)._sum_lot_values(lot)
+
+        acrescimos, total_principal, outros = 0, 0, 0
+        for line in lot:
+            paymt_id = line.payment_information_id
+            if self._operation == '17':
+                outros += line.amount_total
+            total_principal += line.amount_total
+            acrescimos += paymt_id.interest_value + paymt_id.fine_value
+        return {
+            'total': total_principal + acrescimos,
+            'total_principal': total_principal,
+            'acrescimos': acrescimos,
+            'outros': outros or 0.00
+            }
+
+    def _get_trailer_lot(self, totais, num_lot):
+        trailer = super(Itau240, self)._get_trailer_lot(totais, num_lot)
+        trailer.update({
+            'total_valor_principal': self._float_to_monetary(
+                totais.get('total_principal', 0.00)),
+            'total_valor_arrecadado': trailer.get('somatorio_valores'),
+            'total_valor_acrecimos': self._float_to_monetary(
+                totais.get('acrescimos', 0.00)),
+            'total_outro_valor': self._float_to_monetary(
+                totais.get('outros', 0.00))
+        })
+        return trailer
+
+    def _get_trailer_lot_name(self):
+        if self._operation not in ['16', '17', '18', '35']:
+            return 'TrailerLote'
+        return 'TrailerLoteTributos'
