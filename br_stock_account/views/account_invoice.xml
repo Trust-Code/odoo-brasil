@@ -109,4 +109,15 @@
         </field>
     </record>
 
+    <record id="view_br_stock_account_invoice_search" model="ir.ui.view">
+        <field name="name">view_br_stock_account_invoice_search</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter" />
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="picking_origin_id" />
+            </field>
+        </field>
+    </record>
+
 </odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_br_stock_account_picking_type_form" model="ir.ui.view" >
+        <field name="name">view_br_stock_account_picking_type_form</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form" />
+        <field name="arch" type="xml">
+            <field name="warehouse_id" position="after">
+                <field name="enable_invoicing" />
+                <field name="fiscal_position_id" attrs="{'invisible': [('enable_invoicing', '=', False)]}" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_br_stock_account_picking_form" model="ir.ui.view" >
+        <field name="name">view_br_stock_account_picking_form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="%(account.action_invoice_tree1)d" type="action" class="oe_stat_button" icon="fa-file-text-o" context="{ 'search_default_picking_origin_id': id }" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                     <field name="invoice_count"/> <span> Invoices</span>
+                 </button>
+            </div>
+            <field name="location_dest_id" position="after">
+                <field name="enable_invoicing" invisible="1" />
+                <field name="fiscal_position_id" attrs="{'invisible': [('enable_invoicing', '=', False)]}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

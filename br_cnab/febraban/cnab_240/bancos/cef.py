@@ -38,11 +38,6 @@ class Cef240(Cnab240):
 
         vals['controlecob_numero'] = self.order.file_number
         vals['controlecob_data_gravacao'] = self.data_hoje()
-
-        # reservado_banco_campo22 não é required. Código atualizado na
-        # biblioteca cnab240
-        vals['data_credito_hd_lote'] = 15052015
-
         return vals
 
     def _prepare_segmento(self, line):
