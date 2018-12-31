@@ -197,7 +197,7 @@ class AccountInvoiceLine(models.Model):
         for item in self:
             item.l10n_br_icms_cst = (item.l10n_br_icms_cst_normal
                                      if item.l10n_br_company_fiscal_type == '3'
-                                     else item.il10n_br_cms_csosn_simples)
+                                     else item.l10n_br_icms_csosn_simples)
 
     l10n_br_price_tax = fields.Float(
         compute='_compute_price', string='Impostos', store=True,
@@ -610,11 +610,7 @@ class AccountInvoiceLine(models.Model):
                 'l10n_br_tax_ipi_id': ncm.tax_ipi_id.id,
             })
 
-    def _set_taxes(self):
-        super(AccountInvoiceLine, self)._set_taxes()
-        if not self.l10n_br_localization:
-            return
-        self._update_tax_from_ncm()
+    def _set_taxes_from_fiscal_pos(self):
         fpos = self.invoice_id.fiscal_position_id
         if fpos:
             vals = fpos.map_tax_extra_values(
@@ -624,6 +620,12 @@ class AccountInvoiceLine(models.Model):
                 if value and key in self._fields:
                     self.update({key: value})
 
+    def _set_taxes(self):
+        super(AccountInvoiceLine, self)._set_taxes()
+        if not self.l10n_br_localization:
+            return
+        self._update_tax_from_ncm()
+        self._set_taxes_from_fiscal_pos()
         other_taxes = self.invoice_line_tax_ids.filtered(
             lambda x: not x.l10n_br_domain)
         self.invoice_line_tax_ids = \

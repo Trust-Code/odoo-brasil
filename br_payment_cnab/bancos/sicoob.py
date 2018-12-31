@@ -41,11 +41,13 @@ class Sicoob240(Cnab_240):
         })
         return header
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Sicoob240, self)._get_segmento(
-            line, lot_sequency, num_lot)
+            line, lot_sequency, num_lot, nome_segmento)
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
+        if (line.payment_information_id.payment_type == "08"):
+            segmento.update({'nome_concessionaria': ''})
         segmento.update({
             'tipo_movimento': int(segmento.get('tipo_movimento')),
             'favorecido_nome': segmento.get('favorecido_nome')[:30],
@@ -72,9 +74,12 @@ class Sicoob240(Cnab_240):
             'codigo_camara_compensacao': self._string_to_num(
                 segmento.get('codigo_camara_compensacao')),
             'finalidade_ted': get_ted_doc_finality(
-                'sicoob', '01', segmento.get('finalidade_doc_ted'), ignore),
+                'sicoob', segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
-                'sicoob', '02', segmento.get('finalidade_doc_ted'), ignore)
+                'sicoob', segmento.get('finalidade_doc_ted'), '02', ignore),
+            'nome_concessionaria': (
+                '' if line.payment_information_id.payment_type == '10'
+                else segmento.get('nome_concessionaria'))
         })
         return segmento
 

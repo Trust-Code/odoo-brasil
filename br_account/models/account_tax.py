@@ -358,10 +358,13 @@ class AccountTax(models.Model):
 
         if not others:
             return []
-        vals = self._tax_vals(others)
-        vals['amount'] = others._compute_amount(price_base, 1.0)
-        vals['base'] = price_base
-        return [vals]
+        taxes = []
+        for tax in others:
+            vals = self._tax_vals(tax)
+            vals['amount'] = tax._compute_amount(price_base, 1.0)
+            vals['base'] = price_base
+            taxes += [vals]
+        return taxes
 
     def sum_taxes(self, price_base):
         ipi = self._compute_ipi(price_base)
