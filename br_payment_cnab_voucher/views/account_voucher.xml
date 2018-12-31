@@ -10,13 +10,15 @@
                 <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
                 <field name="payment_type" invisible="1" />
                 <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" domain="[('partner_id', '=', partner_id)]"/>
+                <field name="numero_parcela_icms" attrs="{'invisible': [('payment_type', '!=', '09')]}"/>
+                <field name="divida_ativa_etiqueta" attrs="{'invisible': [('payment_type', '!=', '09')]}"/>
             </field>
             <field name="tax_amount" position="before">
                 <field name="interest_value" widget="monetary"/>
                 <field name="fine_value" widget="monetary"/>
             </field>
             <group position="inside">
-                <h3 attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}">
+                <h3 attrs="{'invisible': [('payment_type', 'not in', ('03', '04', '08'))]}">
                     <strong><label string="Linha Digitável" /></strong>
                     <field name="linha_digitavel" />
                 </h3>
