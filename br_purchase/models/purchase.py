@@ -185,7 +185,7 @@ class PurchaseOrderLine(models.Model):
 
     @api.multi
     def _compute_tax_id(self):
-        for line in self:
+        for line in self.filtered(lambda x: x.l10n_br_localization):
             line._update_tax_from_ncm()
             fpos = line.order_id.fiscal_position_id or \
                 line.order_id.partner_id.property_account_position_id
