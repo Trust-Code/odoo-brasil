@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 try:
     from OpenSSL import crypto
 except ImportError:
-    _logger.debug('Cannot import OpenSSL.crypto', exc_info=True)
+    _logger.error('Cannot import OpenSSL.crypto', exc_info=True)
 
 
 class ResCompany(models.Model):

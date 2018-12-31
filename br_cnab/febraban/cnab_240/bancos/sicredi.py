@@ -27,14 +27,13 @@ class Sicredi240(Cnab240):
 
     def _prepare_segmento(self, line):
         vals = super(Sicredi240, self)._prepare_segmento(line)
-        if not line.payment_mode_id.bank_account_id.codigo_convenio or \
-           not line.payment_mode_id.bank_account_id.bra_number:
+        if not line.src_bank_account_id.codigo_convenio or \
+           not line.src_bank_account_id.bra_number:
             raise UserError(
                 u'Código do beneficiario ou número da agência em branco')
         digito = self.dv_nosso_numero(
-            line.payment_mode_id.bank_account_id.bra_number,
-            re.sub('[^0-9]', '',
-                   line.payment_mode_id.bank_account_id.codigo_convenio),
+            line.src_bank_account_id.bra_number,
+            re.sub('[^0-9]', '', line.src_bank_account_id.codigo_convenio),
             line.nosso_numero)
         vals['nosso_numero'] = self.format_nosso_numero(
             line.nosso_numero, digito)

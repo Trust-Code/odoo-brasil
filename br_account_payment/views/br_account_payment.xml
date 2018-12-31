@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <template id="assets_backend" name="br_account_payment.assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/br_account_payment/static/src/css/fixes.css"/>
+        </xpath>
+    </template>
+
     <menuitem sequence="3"
         id="menu_br_payments"
         name="Receber e Pagar"
@@ -20,55 +26,36 @@
                 <field name="date_maturity"/>
                 <field name="move_id" readonly="1"/>
                 <field name="reconciled" string="Pago" />
-                <button name="action_register_payment" type="object" string="Register Payment" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" icon="fa-usd"/>
+                <button name="action_register_payment" type="object" string="PAGAR" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" class="btn btn-success btn-xs"/>
             </tree>
         </field>
     </record>
 
-    <record id="view_payments_tree_a_pagar" model="ir.ui.view">
-        <field name="name">Payments</field>
+    <record id="view_payments_filter" model="ir.ui.view">
+        <field name="name">Payments Select</field>
         <field name="model">account.move.line</field>
-        <field name="field_parent">partner_id</field>
         <field name="priority" eval="20"/>
         <field name="arch" type="xml">
-            <tree default_order="date_maturity" string="Payments" colors="grey:reconciled==True;red:date_maturity&lt;current_date" create="false">
-                <field name="partner_id" readonly="1"/>
-                <field name="account_id" readonly="1"/>
-                <field name="payment_value" sum="Total das parcelas" />
-                <field name="amount_residual" readonly="1" sum="Total"/>
+            <search string="Search Payments">
+                <filter string="Contas em atraso" domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Contas em atraso" name="overdue"/>
+                <separator orientation="vertical"/>
+                <filter string="A pagar" domain="[('user_type_id.type', '=', 'payable'), ('debit', '=', 0)]" help="Registros pagos" name="payables"/>
+                <filter string="A receber" domain="[('user_type_id.type', '=', 'receivable'), ('credit', '=', 0)]" help="Pagamentos em aberto" name="receivables"/>
+                <separator orientation="vertical"/>
+                <filter string="Pagos" domain="[('reconciled','=', True)]" help="Registros pagos" name="paid"/>
+                <filter string="Abertos" domain="[('reconciled','=', False)]" help="Pagamentos em aberto" name="open"/>
+                <separator orientation="vertical"/>
+                <field name="account_id"/>
+                <field name="partner_id"/>
                 <field name="date_maturity"/>
-                <field name="move_id" readonly="1"/>
-                <field name="reconciled" string="Pago" />
-                <button name="action_register_payment" type="object" string="Register Payment" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" icon="fa-usd"/>
-            </tree>
+                <group expand="0" string="Agrupar por...">
+                    <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_date" string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity:day'}"/>
+                    <filter name="group_month" string="Mês" domain="[]" context="{'group_by':'date_maturity'}"/>
+               </group>
+           </search>
         </field>
     </record>
-
-        <record id="view_payments_filter" model="ir.ui.view">
-            <field name="name">Payments Select</field>
-            <field name="model">account.move.line</field>
-            <field name="priority" eval="20"/>
-            <field name="arch" type="xml">
-                <search string="Search Payments">
-                    <filter string="Contas em atraso" domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Contas em atraso" name="overdue"/>
-                    <separator orientation="vertical"/>
-                    <filter string="A pagar" domain="[('user_type_id.type', '=', 'payable'), ('debit', '=', 0)]" help="Registros pagos" name="payables"/>
-                    <filter string="A receber" domain="[('user_type_id.type', '=', 'receivable'), ('credit', '=', 0)]" help="Pagamentos em aberto" name="receivables"/>
-                    <separator orientation="vertical"/>
-                    <filter string="Pagos" domain="[('reconciled','=', True)]" help="Registros pagos" name="paid"/>
-                    <filter string="Abertos" domain="[('reconciled','=', False)]" help="Pagamentos em aberto" name="open"/>
-                    <separator orientation="vertical"/>
-                    <field name="account_id"/>
-                    <field name="partner_id"/>
-                    <field name="date_maturity"/>
-                    <group expand="0" string="Agrupar por...">
-                        <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
-                        <filter name="group_date" string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity:day'}"/>
-                        <filter name="group_month" string="Mês" domain="[]" context="{'group_by':'date_maturity'}"/>
-                   </group>
-               </search>
-            </field>
-        </record>
 
     <record id="action_receivable_move_line" model="ir.actions.act_window">
         <field name="name">Contas a Receber/Pagar</field>

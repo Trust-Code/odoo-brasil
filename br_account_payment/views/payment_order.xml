@@ -8,8 +8,9 @@
         <field name="arch" type="xml" >
             <tree string='Ordens de Pagamento'>
                 <field name="name" />
+                <field name="type" />
                 <field name="user_id" />
-                <field name="payment_mode_id" />
+                <field name="journal_id" />
                 <field name="amount_total" />
                 <field name="state" />
             </tree>
@@ -23,11 +24,15 @@
         <field name="type">tree</field>
         <field name="arch" type="xml" >
             <tree string='Ordens de Pagamento'>
+              <field name="type" invisible="1" />
+              <field name="identifier"/>
               <field name="move_id" />
+              <field name="payment_mode_id" />
               <field name="state" />
               <field name="name" />
+              <field name="emission_date" />
               <field name="date_maturity" />
-              <field name="value" />
+              <field name="amount_total" />
               <field name='partner_id' />
               <field name="nosso_numero" />
             </tree>
@@ -41,7 +46,7 @@
         <field name="arch" type="xml" >
             <form string='Ordem de Pagamento'>
                 <header>
-                     <field name="state" widget="statusbar" nolabel="1" />
+                     <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,open,done" />
                 </header>
                 <sheet>
                     <group name='payment_order'>
@@ -50,9 +55,11 @@
                             <field name="user_id" />
                             <field name="amount_total" />
                             <field name="type" />
+                            <field name="company_id" groups="base.group_multi_company" />
                         </group>
 
                         <group name='data'>
+                            <field name="src_bank_account_id" />
                             <field name="payment_mode_id" />
                         </group>
                     </group>
@@ -66,6 +73,58 @@
         </field>
     </record>
 
+    <record id="trustcode_payment_order_line_form" model="ir.ui.view">
+        <field name="name">trustcode_payment_order_line.form.view</field>
+        <field name="model">payment.order.line</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_cancel_line" type="object" string="Cancelar" groups="account.group_account_manager" />
+                    <field name="state" widget="statusbar" nolabel="1"/>
+                </header>
+                <sheet>
+                    <h1 class="mt0">
+                        <div>
+                            <label string="Identificador:"/><br/>
+                            <field name="identifier" class="oe_inline"/>
+                        </div>
+                    </h1>
+                    <group name="first">
+                        <group name='basic_info'>
+                            <field name="partner_id"/>
+                            <field name="payment_mode_id"/>
+                            <field name="type"/>
+                            <field name="journal_id" />
+                            <field name="src_bank_account_id" />
+                        </group>
+                        <group name="payment_info">
+                            <field name="emission_date"/>
+                            <field name="date_maturity"/>
+                            <field name="amount_total"/>
+                        </group>
+                    </group>
+                    <group name="second">
+                        <group name="cnab" string="Informações CNAB">
+                            <field name="nosso_numero" />
+                        </group>
+                        <group name="source" string="Origem">
+                            <field name="name" />
+                            <field name="payment_order_id" />
+                            <field name="move_id" />
+                            <field name="move_line_id" />
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
     <record id="action_payment_order_form" model="ir.actions.act_window">
         <field name="name">Ordens de Cobrança</field>
         <field name="res_model">payment.order</field>
@@ -74,8 +133,10 @@
         <field name="view_id" ref="trustcode_payment_order_tree_view"/>
     </record>
 
+    <menuitem id="menu_bank_payments" name="Automação de Pagamentos" parent="account.menu_finance_entries" sequence="2"/>
+
     <menuitem sequence="30" action="action_payment_order_form"
               id="menu_action_payment_order"
-              parent="br_account_payment.menu_br_payments"/>
+              parent="menu_bank_payments"/>
 
 </odoo>

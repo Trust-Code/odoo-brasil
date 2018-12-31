@@ -11,6 +11,8 @@ class AccountInvoice(models.Model):
 
     fiscal_position_type = fields.Selection(
         related='fiscal_position_id.fiscal_type', readonly=True)
+    picking_origin_id = fields.Many2one(
+        'stock.picking', string="Picking Origin")
 
     @api.multi
     def copy(self, default=None):

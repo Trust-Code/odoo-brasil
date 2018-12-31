@@ -13,6 +13,7 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Mackilem Van der Laan <mack.vdl@gmail.com>',
     ],
     'depends': [
         'document',

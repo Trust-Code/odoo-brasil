@@ -3,14 +3,18 @@
 
     <record id="view_br_boleto_account_payment_mode_form" model="ir.ui.view">
         <field name="name">view.br.boleto.payment.mode.form</field>
-        <field name="model">payment.mode</field>
+        <field name="model">l10n_br.payment.mode</field>
         <field name="inherit_id" ref="br_account_payment.account_payment_mode_form" />
         <field name="arch" type="xml">
+            <field name="type" position="after">
+                <field name="boleto" attrs="{'invisible': [('type', '!=', 'receivable')]}"/>
+            </field>
             <group name="main" position="after">
-                <notebook attrs="{'invisible': [('type', '!=', 'receivable')]}">
+                <notebook attrs="{'invisible': ['|', ('type', '!=', 'receivable'), ('boleto', '=', False)]}">
                     <page string="Informações de Boleto">
                         <group>
-                            <field name="boleto" />
+                        <group>
+                            <field name="l10n_br_environment"/>
                             <field name="boleto_type"/>
                             <field name="nosso_numero_sequence"/>
                             <field name="boleto_carteira"/>
@@ -24,6 +28,20 @@
                             <field name="late_payment_fee"/>
                             <field name="late_payment_interest"/>
                             <field name="instrucoes" />
+                        </group>
+                        <div>
+                            <h4>Manuais de configuração</h4>
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/ativacao-de-boletos-bancarios-60" target="_blank">Configurações Gerais</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-bradesco-180" target="_blank">Boleto Bradesco</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-sicoob-182" target="_blank">Boleto Sicoob</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-itau-208" target="_blank">Boleto Itaú</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-santander-209" target="_blank">Boleto Santander</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-cecred-210" target="_blank">Boleto Cecred</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-banco-do-brasil-211" target="_blank">Boleto Banco do Brasil</a></li>
+                                <li class="list-group-item"><a href="https://www.trustcode.com.br/my/document/configuracao-de-boletos-caixa-economica-212" target="_blank">Boleto Caixa Econômica</a></li>
+                            </ul>
+                        </div>
                         </group>
                     </page>
                 </notebook>

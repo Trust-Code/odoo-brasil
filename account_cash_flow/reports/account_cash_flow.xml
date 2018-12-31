@@ -44,13 +44,13 @@
                         <table class="table table-condensed table-bordered table-striped">
                             <thead class="bg-primary">
                                 <tr>
-                                    <th style="font-size:12px;">Description</th>
-                                    <th style="font-size:12px;">Partner</th>
-                                    <th style="font-size:12px;" class="text-right">Date</th>
-                                    <th style="font-size:12px;" class="text-right">A Receber</th>
-                                    <th style="font-size:12px;" class="text-right">A pagar</th>
-                                    <th style="font-size:12px;" class="text-right">Saldo da linha</th>
-                                    <th style="font-size:12px;" class="text-right">Accumulated balance</th>
+                                    <th style="color:white;">Description</th>
+                                    <th style="color:white;">Partner</th>
+                                    <th style="color:white;" class="text-right">Date</th>
+                                    <th style="color:white;" class="text-right">A Receber</th>
+                                    <th style="color:white;" class="text-right">A pagar</th>
+                                    <th style="color:white;" class="text-right">Saldo da linha</th>
+                                    <th style="color:white;" class="text-right">Accumulated balance</th>
                                 </tr>
                             </thead>
                             <tbody>
