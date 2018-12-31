@@ -10,7 +10,7 @@ class PaymentMode(models.Model):
     tipo_pagamento = fields.Selection(
         [('01', 'Dinheiro'),
          ('02', 'Cheque'),
-         ('03', 'Catão de Crédito'),
+         ('03', 'Cartão de Crédito'),
          ('04', 'Cartão de Débito'),
          ('05', 'Crédito Loja'),
          ('10', 'Vale Alimentação'),

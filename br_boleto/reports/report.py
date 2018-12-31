@@ -39,10 +39,8 @@ class IrActionsReport(models.Model):
             move_line_ids)
         boleto_list = order_line_ids.generate_boleto_list()
         if not boleto_list:
-            raise UserError(
-                u"""Error
-Não é possível gerar os boletos
-Certifique-se que a fatura esteja confirmada e o
-forma de pagamento seja duplicatas""")
+            if self.env.context.get('ignore_empty_boleto'):
+                return None, 'pdf'
+            raise UserError('Nenhum boleto a ser emitido!')
         pdf_string = Boleto.get_pdfs(boleto_list)
         return pdf_string, 'pdf'
