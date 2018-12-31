@@ -95,6 +95,7 @@ class TestBaseCnab(TestBrCnabPayment):
         self.titulos_payment = self.env['l10n_br.payment.mode']
         self.tributo_payment = self.env['l10n_br.payment.mode']
         self.gps_payment = self.env['l10n_br.payment.mode']
+        self.fgts_payment = self.env['l10n_br.payment.mode']
         self.darf_payment = self.env['l10n_br.payment.mode']
         self.icms_gare_payment = self.env['l10n_br.payment.mode']
 
@@ -143,6 +144,16 @@ class TestBaseCnab(TestBrCnabPayment):
                 'payment_type': '06',
                 'service_type': '22',
                 'codigo_receita': '0561',  # IRRF - Retido na fonte
+                'journal_id': journal.id,
+            })
+            self.fgts_payment |= self.env['l10n_br.payment.mode'].create({
+                'name': 'FGTS com Código de barras',
+                'type': 'payable',
+                'payment_type': '08',
+                'service_type': '22',
+                'codigo_receita': '0181',
+                'identificacao_fgts': '123456',
+                'cod_recolhimento': '0181',
                 'journal_id': journal.id,
             })
             self.icms_gare_payment |= self.env['l10n_br.payment.mode'].create({

@@ -292,7 +292,7 @@
                                     <field domain="[('company_id', '=', parent.company_id)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
                                     <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                     <field name="company_id" groups="base.group_multi_company" readonly="1"/>
-                                    <field name="invoice_line_tax_ids" invisible="1" />
+                                    <field name="invoice_line_tax_ids" widget="many2many_tags" attrs="{'invisible': [('l10n_br_localization', '=', False)]}" />
                                     <field name="l10n_br_tributos_estimados_federais" />
                                     <field name="l10n_br_tributos_estimados_estaduais" />
                                     <field name="l10n_br_tributos_estimados_municipais" />

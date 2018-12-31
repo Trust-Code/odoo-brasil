@@ -78,9 +78,17 @@ class Cnab_240(object):
         }
         return headerArq
 
-    def _get_segmento(self, line, lot_sequency, num_lot):
+    def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         information_id = line.payment_information_id
         segmento = {
+            'numero_parcela': str(information_id.numero_parcela_icms),
+            'divida_ativa_etiqueta': str(information_id.divida_ativa_etiqueta),
+            "cedente_inscricao_numero": self._string_to_num(
+                self._order.company_id.l10n_br_cnpj_cpf),
+            "identificador_fgts": information_id.identificacao_fgts,
+            "lacre_conectividade_social": information_id.conec_social_fgts,
+            "lacre_conectividade_social_dv":
+                information_id.conec_social_dv_fgts,
             "controle_lote": num_lot,
             "sequencial_registro_lote": lot_sequency,
             "tipo_movimento": information_id.mov_type,
@@ -192,7 +200,7 @@ class Cnab_240(object):
         information_id = line.payment_information_id
         bank = self._order.src_bank_account_id
         header_lot = {
-            'forma_lancamento': lot,
+            "forma_lancamento": lot,
             "controle_lote": num_lot,
             "tipo_servico": int(information_id.service_type),
             "cedente_inscricao_tipo": 2,
@@ -267,10 +275,11 @@ class Cnab_240(object):
         if not segments:
             raise Exception(
                 'Pelo menos um segmento por tipo deve ser implementado!')
-        for segment in segments:
-            self._cnab_file.add_segment(
-                segment, self._get_segmento(
-                    event, lot_sequency, num_lot))
+        for nome_segmento in segments:
+            vals = self._get_segmento(
+                event, lot_sequency, num_lot, nome_segmento)
+            if vals is not None:
+                self._cnab_file.add_segment(nome_segmento, vals)
             lot_sequency += 1
         self._cnab_file.get_active_lot().get_active_event(None).close_event()
         return lot_sequency

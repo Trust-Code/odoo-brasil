@@ -3,6 +3,7 @@
 
 import os
 import base64
+from datetime import date
 from odoo.exceptions import UserError
 from odoo.addons.br_payment_cnab.tests.test_cnab import TestBaseCnab
 
@@ -175,7 +176,7 @@ class TestVoucher(TestBaseCnab):
                 'linha': '858700000049 800001791819 107622050820 415823300017',
             },
             '237': {
-                'valor': '2546.06',
+                'valor': '2546.05',
                 'linha': '858000000259 460503281831 240720183202 339122710600'
             },
             '341': {
@@ -215,7 +216,93 @@ class TestVoucher(TestBaseCnab):
             self.assertNotEqual(order.cnab_file, None)
 
         # Testa se estão processados
-        statement_id = None
+        statement_id = self.env['l10n_br.payment.statement'].sudo().create({
+            'journal_id': lines[0].journal_id.id,
+            'date': date.today(),
+            'company_id': lines[0].journal_id.company_id.id,
+            'name':
+            lines[0].journal_id.l10n_br_sequence_statements.next_by_id(),
+            'type': 'payable',
+        })
+        for line in lines:
+            statement_id = line.mark_order_line_processed(
+                'BD', 'Recebido', statement_id=statement_id)
+            self.assertEqual(line.state, 'processed')
+
+        lines.mark_order_line_paid('00', 'Liquidação', statement_id)
+
+        for voucher in vouchers:
+            self.assertEqual(
+                voucher.l10n_br_residual, 0.0, 'Voucher deve estar pago')
+
+        for line in lines:
+            self.assertEqual(line.state, 'paid')
+            line.mark_order_line_processed('BD', 'Recebido', statement_id)
+            self.assertEqual(line.state, 'paid')
+            with self.assertRaises(UserError):
+                line.action_aprove_payment_line()
+            self.assertEqual(line.state, 'paid')
+
+
+def test_fgts(self):
+        boletos = {
+            '756': {
+                'valor': '1424.68',
+                'linha': '85810000014-524680270200-832415823300-601852018107-0'
+            },
+            '033': {
+                'valor': '480.00',
+                'linha': '858700000049 800001791819 107622050820 415823300017',
+            },
+            '237': {
+                'valor': '2546.06',
+                'linha': '858000000259 460503281831 240720183202 339122710600'
+            },
+            '341': {
+                'valor': '836.73',
+                'linha': '858700000081 367301791813 018620053820 415823300017'
+            }
+        }
+
+        vouchers = self.env['account.voucher']
+        for mode in self.fgts_payment:
+            voucher = self.env['account.voucher'].create(dict(
+                self.voucher_vals.items(),
+                partner_id=self.partner_juridica.id,
+                account_id=self.partner_juridica.
+                property_account_payable_id.id,
+                payment_mode_id=mode.id,
+                linha_digitavel=boletos[mode.journal_id.code]['linha'],
+            ))
+            voucher._onchange_linha_digitavel()
+            voucher.proforma_voucher()
+            vouchers |= voucher
+
+        lines = self.env['payment.order.line'].search([])
+        # 4 bancos x 1 boleto
+        self.assertEqual(len(lines),  4)
+
+        # Aprova todas as linhas
+        lines.action_aprove_payment_line()
+
+        orders = self.env['payment.order'].search([])
+        # Uma ordem por banco de origem = 4
+        self.assertEqual(len(orders), 4)
+
+        for order in orders:
+            self.assertEqual(order.cnab_file, None)
+            order.action_generate_payable_cnab()
+            self.assertNotEqual(order.cnab_file, None)
+
+        # Testa se estão processados
+        statement_id = self.env['l10n_br.payment.statement'].sudo().create({
+            'journal_id': lines[0].journal_id.id,
+            'date': date.today(),
+            'company_id': lines[0].journal_id.company_id.id,
+            'name':
+            lines[0].journal_id.l10n_br_sequence_statements.next_by_id(),
+            'type': 'payable',
+        })
         for line in lines:
             statement_id = line.mark_order_line_processed(
                 'BD', 'Recebido', statement_id=statement_id)
@@ -229,7 +316,7 @@ class TestVoucher(TestBaseCnab):
 
         for line in lines:
             self.assertEqual(line.state, 'paid')
-            line.mark_order_line_processed('BD', 'Recebido')
+            line.mark_order_line_processed('BD', 'Recebido', statement_id)
             self.assertEqual(line.state, 'paid')
             with self.assertRaises(UserError):
                 line.action_aprove_payment_line()

@@ -6,5 +6,5 @@ from . import payment_information
 from . import payment_order
 from . import account_move
 from . import account_journal
-from . import res_config_settings
 from . import res_partner_bank
+from . import scheduled_transfer
