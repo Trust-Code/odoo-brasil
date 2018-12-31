@@ -10,6 +10,7 @@
                     <group>
                         <field name="end_date"/>
                         <field name="start_amount"/>
+                        <field name="ignore_outstanding"/>
                         <field name="print_report"/>
                     </group>
                     <footer>

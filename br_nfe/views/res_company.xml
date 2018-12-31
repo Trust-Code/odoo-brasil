@@ -6,7 +6,10 @@
         <field name="inherit_id" ref="br_base.view_company_form_inherited"/>
         <field name="arch" type="xml">
             <field name="nfe_a1_password" position="after" >
+                <field name="id_token_csc" />
+                <field name="csc" />
                 <field name="tipo_ambiente" />
+                <field name="nfe_sinc"/>
                 <field name="cabecalho_danfe" />
             </field>
         </field>

@@ -23,20 +23,29 @@ class TestCnabSicoob(TestCnab):
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
         })
-        mode = self.env['payment.mode'].create({
+        journal = self.env['account.journal'].create({
+            'name': 'Banco Sicoob',
+            'code': 'SIC',
+            'type': 'bank',
+            'bank_account_id': conta.id,
+            'company_id': self.main_company.id,
+        })
+        mode = self.env['l10n_br.payment.mode'].create({
             'name': 'Sicoob',
+            'boleto': True,
             'boleto_type': '9',
             'boleto_carteira': '1',
             'boleto_modalidade': '01',
             'nosso_numero_sequence': sequencia.id,
-            'bank_account_id': conta.id
+            'journal_id': journal.id,
         })
         return mode.id
 
     def test_gen_account_move_line(self):
         self.invoices.action_invoice_open()
-        move = self.invoices.receivable_move_line_ids[0]
-        move.action_register_boleto()
+
+        self.env['payment.order.line'].action_register_boleto(
+            self.invoices.receivable_move_line_ids)
 
         ordem_cobranca = self.env['payment.order'].search([
             ('state', '=', 'draft')

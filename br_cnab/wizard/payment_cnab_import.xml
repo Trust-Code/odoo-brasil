@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_import_bank_receivables_cnab" model="ir.actions.act_window">
+        <field name="name">Importar CNAB de Boletos</field>
+        <field name="res_model">l10n_br.payment.cnab.import</field>
+        <field name="view_mode">form,tree</field>
+        <field name="target">new</field>
+        <field name="context">{'default_cnab_type': 'receivable'}</field>
+    </record>
+
+    <record id="journal_dashboard_view_cnab_import" model="ir.ui.view">
+        <field name="name">account.journal.dashboard.import.cnab</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//div[@name="bank_journal_cta"]' position='after'>
+                <a context="{'default_journal_id': active_id}" name="br_cnab.action_import_bank_receivables_cnab" type="action" class="oe_inline">Importar CNAB de Boletos</a>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem sequence="40" action="action_import_bank_receivables_cnab"
+              id="menu_import_bank_receivables_cnab"
+              parent="br_account_payment.menu_bank_payments"/>
+</odoo>

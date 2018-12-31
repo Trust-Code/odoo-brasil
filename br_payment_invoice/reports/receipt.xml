@@ -1,0 +1,20 @@
+<odoo>
+    <report
+        id="payment_receipt_invoice"
+        model="account.invoice"
+        report_type="qweb-pdf"
+        string="Recibo de Pagamento"
+        name="br_payment_invoice.report_cnab_payment_invoice"
+        file="br_payment_invoice.report_cnab_payment_invoice" />
+
+        <template id="report_cnab_payment_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="lines" t-as="line">
+                <t t-call="web.internal_layout">
+                    <t t-call="br_payment_cnab.cnab_payment_receipt_document" t-lang="line.partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

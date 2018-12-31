@@ -14,11 +14,18 @@ try:
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.nfe.danfce import danfce
 except ImportError:
-    _logger.warning('Cannot import pytrustnfe', exc_info=True)
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
+
+    def render_qweb_html(self, res_ids, data=None):
+        if self.report_name == 'br_nfe.main_template_br_nfe_danfe':
+            return
+
+        return super(IrActionsReport, self).render_qweb_html(
+            res_ids, data=data)
 
     def render_qweb_pdf(self, res_ids, data=None):
         if self.report_name != 'br_nfe.main_template_br_nfe_danfe':
@@ -27,7 +34,7 @@ class IrActionsReport(models.Model):
 
         nfe = self.env['invoice.eletronic'].search([('id', 'in', res_ids)])
 
-        nfe_xml = base64.decodestring(nfe.nfe_processada)
+        nfe_xml = base64.decodestring(nfe.nfe_processada or nfe.xml_to_send)
 
         cce_xml_element = []
         cce_list = self.env['ir.attachment'].search([
@@ -57,10 +64,11 @@ class IrActionsReport(models.Model):
         timezone = pytz.timezone(self.env.context.get('tz')) or pytz.utc
 
         xml_element = etree.fromstring(nfe_xml)
-        obj_danfe = danfe
         if nfe.model == '65':
-            obj_danfe = danfce
-        oDanfe = obj_danfe(list_xml=[xml_element], logo=tmpLogo,
+            oDanfe = danfce(
+                list_xml=[xml_element], logo=tmpLogo, timezone=timezone)
+        else:
+            oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo,
                            cce_xml=cce_xml_element, timezone=timezone)
 
         tmpDanfe = BytesIO()
