@@ -7,7 +7,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Séries Inutilizadas">
-                <field name="state" invisible="1" />
+                <field name="state" />
                 <field name="name" />
                 <field name="numeration_start" />
                 <field name="numeration_end" />
@@ -47,8 +47,13 @@
                     <field name="code"/>
                     <field name="motive"/>
                 </group>
-                <group name="erro">
-                    <field name="erro"  attrs="{'invisible': [('state', '!=', 'error')]}"/>
+                <group name="erro" states="error">
+                    <field name="code" />
+                    <field name="motive" />
+                    <field name="sent_xml_name" invisible="1"/>
+                    <field name="sent_xml" filename="sent_xml_name"/>
+                    <field name="received_xml_name" invisible="1"/>
+                    <field name="received_xml" filename="received_xml_name"/>
                 </group>
             </form>
         </field>

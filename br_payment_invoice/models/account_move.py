@@ -11,7 +11,7 @@ class AccountMoveLine(models.Model):
             ('move_line_id', '=', self.id)
         ])
         return({
-            'name': 'Alterar Dados Pagamento',
+            'name': 'Agendar Pagamento',
             'type': 'ir.actions.act_window',
             'res_model': 'wizard.change.payment',
             'view_type': 'form',
@@ -19,6 +19,7 @@ class AccountMoveLine(models.Model):
             'target': 'new',
             'context': {
                 'default_move_line_id': self.id,
+                'default_partner_id': self.partner_id.id,
                 'default_payment_mode_id': self.payment_mode_id.id,
                 'default_bank_account_id':
                 self.invoice_id.l10n_br_bank_account_id.id,

@@ -1,8 +1,10 @@
-# © 2017 Mackilem Van der Laan, Trustcode
+# © 2018 Mackilem Van der Laan, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import api, models, _
 from itertools import product
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 class AccountInvoice(models.Model):
@@ -16,30 +18,50 @@ class AccountInvoice(models.Model):
                       ]
         """
         vals = self._prepare_invoice_dict(group_dict)
-        if vals:
-            for inv in vals:
-                self._create_invoices_grouped(inv)
+        for inv in vals:
+            self._create_invoices_grouped(inv)
 
     @api.multi
     def _prepare_invoice_dict(self, group_dict):
+        """
+        Primeiro pega todas as notas possíveis de agrupar e depois
+        separa conforme regras específicadas
+        """
         vals = []
         if self.ids:
             inv = self.filtered(lambda l: l.state == "draft")
         else:
-            inv = self.search([('state', '=', 'draft')])
+            today = datetime.today()
+            inv = self.search(
+                [('state', '=', 'draft'),
+                 '|', '&',
+                 ('date_invoice', '>=', today + relativedelta(day=1)),
+                 ('date_invoice', '<=', today + relativedelta(day=31)),
+                 ('date_invoice', '=', False)])
         lines = inv.mapped('invoice_line_ids')
+        inv_grouped = []
 
         for group in group_dict:
-            if 'domain' not in group and not group['domain']:
+            if 'domain' not in group:
                 continue
             group['domain'].append(('id', 'in', lines.ids))
-            f_lines = lines.search(group['domain'])
-            for v in self._prepare_vals(f_lines):
+            group_lines = lines.search(group['domain'])
+            for v in self._prepare_vals(group_lines):
+                if len(v['inv_ids']) <= 1:
+                    continue
                 v['rule'] = group['rule_name']
-                v['fpos'] = group['fpos'] or False
+                v['fpos'] = group['fpos'] if 'fpos' in group else False
                 vals.append(v)
-            lines -= f_lines
-
+                [inv_grouped.append(id) for id in v['inv_ids'].ids]
+            lines -= group_lines
+        # Remainig lines
+        for inv in lines.mapped('invoice_id'):
+            if inv.id in inv_grouped:
+                ln_remainig = lines.filtered(lambda x: x.invoice_id == inv)
+                rv = self._prepare_vals(ln_remainig)
+                rv[0]['rule'] = _('Reallocated by the grouping rule')
+                rv[0]['fpos'] = inv.fiscal_position_id.id or False
+                vals.append(rv[0])
         return vals
 
     def _prepare_vals(self, lines):
@@ -49,8 +71,12 @@ class AccountInvoice(models.Model):
         for (c, p) in product(comp_ids, part_ids):
             ln = lines.filtered(lambda l: l.company_id == c
                                 and l.partner_id == p)
+            inv_ids = ln.mapped('invoice_id')
             if ln:
-                inv_vals.append({'company': c, 'partner': p, 'lines': ln})
+                inv_vals.append({'company': c,
+                                 'partner': p,
+                                 'lines': ln,
+                                 'inv_ids': inv_ids})
                 lines -= ln
             if not lines:
                 break
@@ -60,8 +86,10 @@ class AccountInvoice(models.Model):
         fpos_id, journal_id = self._get_fpos_journal(inv)
         partner_id = inv['partner']
         company = inv['company']
-        inv_ids = inv['lines'].mapped('invoice_id')
-        origin = [org for org in inv_ids.mapped('origin') if org]
+        inv_ids = inv['inv_ids']
+        origin = ''
+        for org in inv_ids.filtered('origin').mapped('origin'):
+            origin += "%s, " % org
         pgto_ids = inv_ids.mapped('payment_term_id')
         user_ids = inv_ids.mapped('user_id')
         team_ids = inv_ids.mapped('team_id')

@@ -15,6 +15,7 @@ class PaymentMode(models.Model):
          ('04', 'Tributos com código de barras'),
          ('05', 'GPS - Guia de previdencia Social'),
          ('06', 'DARF Normal'),
+         ('08', 'FGTS com Código de Barras'),
          ('09', 'ICMS')],
         string="Tipo de Operação")
 
@@ -57,6 +58,14 @@ class PaymentMode(models.Model):
     codigo_receita = fields.Char('Código da Receita')
 
     numero_referencia = fields.Char('Número de Referência')
+
+    identificacao_fgts = fields.Char('Número de Identificação do FGTS')
+
+    cod_recolhimento = fields.Integer('Código de Recolhimento do FGTS')
+
+    conec_social_dv_fgts = fields.Integer("DV do conectividade Social")
+
+    conec_social_fgts = fields.Integer("Lacre do conectividade social")
 
     percentual_receita_bruta_acumulada = fields.Char(
         string='Percentual de Receita Bruta Acumulada',

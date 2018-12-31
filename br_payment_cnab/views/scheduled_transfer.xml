@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_payment_cnab_scheduled_transfer_form" model="ir.ui.view">
+        <field name="name">view_payment_cnab_scheduled_transfer_form</field>
+        <field name="model">l10n_br.scheduled.transfer</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml" >
+            <form string="Transferência">
+                <header>
+                    <button name="action_schedule_transfer" type="object" string="Confirmar" class="oe_highlight" states="draft" />
+                    <button name="action_cancel" type="object" string="Cancelar" states="scheduled"/>
+                    <button name="action_set_draft" type="object" string="Voltar a provisório" states="cancelled" />
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,scheduled,done" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" placeholder="ID" readonly="1" />
+                        <group>
+                            <field name="payment_mode_id" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False), ('type', '=', 'payable')]" />
+                            <field name="destiny_journal_id" domain="[('company_id', '=', company_id), ('type', '=', 'bank')]" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="currency_id" />
+                        </group>
+                        <group>
+                            <field name="transfer_date" required="1"/>
+                            <field name="amount" />
+                            <field name="payment_line_id" />
+                        </group>
+                        <field name="notes" placeholder="Notas" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_payment_cnab_scheduled_transfer_tree" model="ir.ui.view">
+        <field name="name">view_payment_cnab_scheduled_transfer_tree</field>
+        <field name="model">l10n_br.scheduled.transfer</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="payment_mode_id" />
+                <field name="destiny_journal_id" />
+                <field name="amount" sum="Total"/>
+                <field name="transfer_date" />
+                <field name="state"  />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_scheduled_transfer" model="ir.actions.act_window">
+        <field name="name">Agendar Transferência</field>
+        <field name="res_model">l10n_br.scheduled.transfer</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem sequence="10" action="action_scheduled_transfer"
+              id="menu_schedule_transfer"
+              parent="br_account_payment.menu_br_payments"/>
+
+</odoo>
