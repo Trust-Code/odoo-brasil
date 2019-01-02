@@ -11,10 +11,9 @@ class AccountChartTemplate(models.Model):
 
     @api.multi
     def _load_template(self, company, code_digits=None,
-                       transfer_account_id=None, account_ref=None,
-                       taxes_ref=None):
+                       account_ref=None, taxes_ref=None):
         acc_ref, tax_ref = super(AccountChartTemplate, self)._load_template(
-            company, code_digits, transfer_account_id, account_ref, taxes_ref)
+            company, code_digits, account_ref, taxes_ref)
 
         tax_tmpl_obj = self.env['account.tax.template']
         tax_obj = self.env['account.tax']
@@ -259,7 +258,7 @@ class AccountTax(models.Model):
         if 'icms_aliquota_inter_part' in self.env.context:
             icms_inter_part = self.env.context["icms_aliquota_inter_part"]
         else:
-            icms_inter_part = 80.0
+            icms_inter_part = 100.0
         vals_inter['amount'] = round((interno - interestadual) *
                                      (100 - icms_inter_part) / 100, 2)
         vals_intra['amount'] = round((interno - interestadual) *

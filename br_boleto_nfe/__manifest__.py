@@ -7,7 +7,7 @@
     'summary': """Vinculo entre boleto e NFe, permite enviar os dois
         via e-mail juntamente - Mantido por Trustcode""",
     'description': """Vinculo entre boleto e NFe - Mantido por Trustcode""",
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',

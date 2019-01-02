@@ -12,8 +12,6 @@ from lxml import etree
 from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -328,15 +326,12 @@ class InvoiceEletronic(models.Model):
                     'nDraw': adi.drawback_number or '',
                 })
 
-            dt_registration = datetime.strptime(
-                di.date_registration, DATE_FORMAT)
-            dt_release = datetime.strptime(di.date_release, DATE_FORMAT)
             di_vals.append({
                 'nDI': di.name,
-                'dDI': dt_registration.strftime('%Y-%m-%d'),
+                'dDI': di.date_registration.strftime('%Y-%m-%d'),
                 'xLocDesemb': di.location,
                 'UFDesemb': di.state_id.code,
-                'dDesemb': dt_release.strftime('%Y-%m-%d'),
+                'dDesemb': di.date_release.strftime('%Y-%m-%d'),
                 'tpViaTransp': di.type_transportation,
                 'vAFRMM': "%.02f" % di.afrmm_value if di.afrmm_value else '',
                 'tpIntermedio': di.type_import,
@@ -439,8 +434,6 @@ class InvoiceEletronic(models.Model):
         if self.model not in ('55', '65'):
             return res
 
-        dt_emissao = datetime.strptime(self.data_emissao, DTFT)
-
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
@@ -448,8 +441,8 @@ class InvoiceEletronic(models.Model):
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
-            'dhSaiEnt': dt_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhEmi': self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhSaiEnt': self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -632,7 +625,7 @@ class InvoiceEletronic(models.Model):
                 if self.valor_pis_servicos else "",
                 'vCOFINS': "%.02f" % self.valor_cofins_servicos
                 if self.valor_cofins_servicos else "",
-                'dCompet': dt_emissao.strftime('%Y-%m-%d'),
+                'dCompet': self.data_emissao.strftime('%Y-%m-%d'),
                 'vDeducao': "",
                 'vOutro': "",
                 'vISSRet': "%.02f" % self.valor_retencao_issqn
@@ -854,7 +847,7 @@ class InvoiceEletronic(models.Model):
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'estado': self.company_id.state_id.ibge_code,
-            'emissao': self.data_emissao[2:4] + self.data_emissao[5:7],
+            'emissao': self.data_emissao.strftime("%y%M"),
             'modelo': self.model,
             'numero': self.numero,
             'serie': self.serie.code.zfill(3),
