@@ -11,7 +11,7 @@ import logging
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.addons.base.ir_actions_report import _get_wkhtmltopdf_bin
+from odoo.addons.base.models.ir_actions_report import _get_wkhtmltopdf_bin
 
 _logger = logging.getLogger(__name__)
 

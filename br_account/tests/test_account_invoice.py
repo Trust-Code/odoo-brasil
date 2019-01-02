@@ -91,7 +91,6 @@ class TestAccountInvoice(TestBaseBr):
             self.assertEquals(first_item.cofins_valor, 22.5)
             self.assertEquals(first_item.cofins_aliquota, 15.0)
 
-            import ipdb; ipdb.set_trace()
             for item in invoice.invoice_line_ids:
                 item.tax_pis_id = self.pis_500
                 item._onchange_tax_pis_id()

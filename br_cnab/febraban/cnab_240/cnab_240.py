@@ -94,8 +94,7 @@ class Cnab240(Cnab):
         return numero
 
     def format_date(self, srt_date):
-        return int(datetime.datetime.strptime(
-            srt_date, '%Y-%m-%d').strftime('%d%m%Y'))
+        return int(srt_date.strftime('%d%m%Y'))
 
     def nosso_numero(self, format):
         pass
