@@ -7,7 +7,7 @@
     'summary': """Permite o envio de NFS-e Ginfes através das faturas do Odoo
     Mantido por Trustcode""",
     'description': 'Envio de NFS-e - GINFES',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',

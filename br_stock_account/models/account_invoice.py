@@ -24,7 +24,6 @@ class AccountInvoice(models.Model):
 
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
-                 'invoice_line_ids.price_total',
                  'tax_line_ids.amount',
                  'currency_id', 'company_id')
     def _compute_amount(self):
@@ -152,4 +151,4 @@ class AccountInvoiceLine(models.Model):
         super(AccountInvoiceLine, self)._compute_price()
         total = self.valor_bruto - self.valor_desconto + self.valor_frete + \
             self.valor_seguro + self.outras_despesas
-        self.update({'price_total': total})
+        self.update({'valor_liquido': total})

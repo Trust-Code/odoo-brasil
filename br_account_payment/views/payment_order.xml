@@ -86,7 +86,7 @@
                 <sheet>
                     <h1 class="mt0">
                         <div>
-                            <label string="Identificador:"/><br/>
+                            <label for="identifier" string="Identificador:"/><br/>
                             <field name="identifier" class="oe_inline"/>
                         </div>
                     </h1>

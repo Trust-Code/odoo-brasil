@@ -16,7 +16,6 @@
         <field name="cash_account_code_prefix">102</field>
         <field name="transfer_account_code_prefix">109</field>
         <field name="currency_id" ref="base.USD"/>
-        <field name="transfer_account_id" ref="transfer_account_id"/>
     </record>
 
     <record id="transfer_account_id" model="account.account.template">

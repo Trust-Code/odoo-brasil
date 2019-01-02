@@ -7,7 +7,7 @@
     'summary': """Permite o envio de NF-e através das faturas do Odoo
     Mantido por Trustcode""",
     'description': 'Envio de NF-e',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',

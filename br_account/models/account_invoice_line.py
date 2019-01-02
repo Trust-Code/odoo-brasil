@@ -132,8 +132,9 @@ class AccountInvoiceLine(models.Model):
             base_icms_credito = 0.0
 
         price_subtotal_signed = price_subtotal_signed * sign
+
         self.update({
-            'price_total': taxes['total_included'] if taxes else subtotal,
+            'valor_liquido': taxes['total_included'] if taxes else subtotal,
             'price_tax': taxes['total_included'] - taxes['total_excluded']
             if taxes else 0,
             'price_subtotal': taxes['total_excluded'] if taxes else subtotal,
@@ -179,8 +180,8 @@ class AccountInvoiceLine(models.Model):
     price_tax = fields.Float(
         compute='_compute_price', string='Impostos', store=True,
         digits=dp.get_precision('Account'))
-    price_total = fields.Float(
-        u'Valor Líquido', digits=dp.get_precision('Account'), store=True,
+    valor_liquido = fields.Float(
+        'Valor Líquido', digits=dp.get_precision('Account'), store=True,
         default=0.00, compute='_compute_price')
     valor_desconto = fields.Float(
         string='Vlr. desconto', store=True, compute='_compute_price',
@@ -296,7 +297,7 @@ class AccountInvoiceLine(models.Model):
     tax_icms_fcp_id = fields.Many2one(
         'account.tax', string="% FCP", domain=[('domain', '=', 'fcp')])
     icms_aliquota_inter_part = fields.Float(
-        u'% Partilha', default=80.0, digits=dp.get_precision('Discount'))
+        u'% Partilha', default=100.0, digits=dp.get_precision('Discount'))
     icms_fcp_uf_dest = fields.Float(
         string=u'Valor FCP', compute='_compute_price',
         digits=dp.get_precision('Discount'), )

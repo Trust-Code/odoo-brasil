@@ -21,6 +21,7 @@ class TestBoletoSicoob(TestBoleto):
             'bra_number_dig': '0',
             'codigo_convenio': '123456-7',  # 7 digitos
             'bank_id': sicoob.id,
+            'partner_id': self.main_company.partner_id.id,
         })
         journal = self.env['account.journal'].create({
             'name': 'Banco Sicoob',
