@@ -78,7 +78,7 @@ class TestAccountInvoice(TestBaseBr):
             # PIS
             first_item.tax_pis_id = self.pis_500
             first_item._onchange_tax_pis_id()
-            self.assertEquals(first_item.price_total, 150.0)
+            self.assertEquals(first_item.valor_liquido, 150.0)
             self.assertEquals(first_item.pis_base_calculo, 150.0)
             self.assertEquals(first_item.pis_valor, 7.5)
             self.assertEquals(first_item.pis_aliquota, 5.0)
@@ -86,25 +86,26 @@ class TestAccountInvoice(TestBaseBr):
             # COFINS
             first_item.tax_cofins_id = self.cofins_1500
             first_item._onchange_tax_cofins_id()
-            self.assertEquals(first_item.price_total, 150.0)
+            self.assertEquals(first_item.valor_liquido, 150.0)
             self.assertEquals(first_item.cofins_base_calculo, 150.0)
             self.assertEquals(first_item.cofins_valor, 22.5)
             self.assertEquals(first_item.cofins_aliquota, 15.0)
 
+            import ipdb; ipdb.set_trace()
             for item in invoice.invoice_line_ids:
                 item.tax_pis_id = self.pis_500
                 item._onchange_tax_pis_id()
                 item._onchange_product_id()
-                self.assertEquals(item.pis_base_calculo, item.price_total)
+                self.assertEquals(item.pis_base_calculo, item.valor_liquido)
                 self.assertEquals(item.pis_aliquota, 5.0)
-                self.assertEquals(item.pis_valor, item.price_total * 0.05)
+                self.assertEquals(item.pis_valor, item.valor_liquido * 0.05)
 
                 item.tax_cofins_id = self.cofins_1500
                 item._onchange_tax_cofins_id()
                 item._onchange_product_id()
-                self.assertEquals(item.cofins_base_calculo, item.price_total)
+                self.assertEquals(item.cofins_base_calculo, item.valor_liquido)
                 self.assertEquals(item.cofins_aliquota, 15.0)
-                self.assertEquals(item.cofins_valor, item.price_total * 0.15)
+                self.assertEquals(item.cofins_valor, item.valor_liquido * 0.15)
 
                 self.assertEquals(len(item.invoice_line_tax_ids), 2)
 
@@ -131,7 +132,7 @@ class TestAccountInvoice(TestBaseBr):
             # II
             prod_item.tax_ii_id = self.ii_6000
             prod_item._onchange_tax_ii_id()
-            self.assertEquals(prod_item.price_total, 150.0)
+            self.assertEquals(prod_item.valor_liquido, 150.0)
             self.assertEquals(prod_item.ii_base_calculo, 150.0)
             self.assertEquals(prod_item.ii_valor, 90.0)
             self.assertEquals(prod_item.ii_aliquota, 60.0)
@@ -139,7 +140,7 @@ class TestAccountInvoice(TestBaseBr):
             # ISSQN
             serv_item.tax_issqn_id = self.issqn_500
             serv_item._onchange_tax_issqn_id()
-            self.assertEquals(serv_item.price_total, 500.0)
+            self.assertEquals(serv_item.valor_liquido, 500.0)
             self.assertEquals(serv_item.issqn_base_calculo, 500.0)
             self.assertEquals(serv_item.issqn_valor, 25.0)
             self.assertEquals(serv_item.issqn_aliquota, 5.0)
@@ -165,7 +166,7 @@ class TestAccountInvoice(TestBaseBr):
             # ICMS
             first_item.tax_icms_id = self.icms_1700
             first_item._onchange_tax_icms_id()
-            self.assertEquals(first_item.price_total, 150.0)
+            self.assertEquals(first_item.valor_liquido, 150.0)
             self.assertEquals(first_item.icms_base_calculo, 150.0)
             self.assertEquals(first_item.icms_valor, 25.5)
             self.assertEquals(first_item.icms_aliquota, 17.0)
@@ -174,9 +175,9 @@ class TestAccountInvoice(TestBaseBr):
                 item.tax_icms_id = self.icms_1700
                 item._onchange_tax_icms_id()
                 item._onchange_product_id()
-                self.assertEquals(item.icms_base_calculo, item.price_total)
+                self.assertEquals(item.icms_base_calculo, item.valor_liquido)
                 self.assertEquals(
-                    item.icms_valor, round(item.price_total * 0.17, 2))
+                    item.icms_valor, round(item.valor_liquido * 0.17, 2))
                 self.assertEquals(item.icms_aliquota, 17.0)
 
                 self.assertEquals(len(item.invoice_line_tax_ids), 1)
@@ -200,7 +201,7 @@ class TestAccountInvoice(TestBaseBr):
             first_item.tax_icms_id = self.icms_1700
             first_item.icms_aliquota_reducao_base = 10.0
             first_item._onchange_tax_icms_id()
-            self.assertEquals(first_item.price_total, 150.0)
+            self.assertEquals(first_item.valor_liquido, 150.0)
             self.assertEquals(first_item.icms_base_calculo, 135.0)
             self.assertEquals(first_item.icms_valor, 22.95)
             self.assertEquals(first_item.icms_aliquota, 17.0)
@@ -211,9 +212,9 @@ class TestAccountInvoice(TestBaseBr):
                 item._onchange_tax_icms_id()
                 item._onchange_product_id()
                 self.assertEquals(
-                    item.icms_base_calculo, round(item.price_total * 0.9, 2))
+                    item.icms_base_calculo, round(item.valor_liquido * 0.9, 2))
                 self.assertEquals(
-                    item.icms_valor, round(item.price_total * 0.9 * 0.17, 2))
+                    item.icms_valor, round(item.valor_liquido * 0.9 * 0.17, 2))
                 self.assertEquals(item.icms_aliquota, 17.0)
 
                 self.assertEquals(len(item.invoice_line_tax_ids), 1)

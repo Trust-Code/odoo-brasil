@@ -13,7 +13,6 @@ class AccountInvoice(models.Model):
 
     @api.one
     @api.depends('invoice_line_ids.price_subtotal',
-                 'invoice_line_ids.price_total',
                  'tax_line_ids.amount',
                  'currency_id', 'company_id')
     def _compute_amount(self):
@@ -290,7 +289,7 @@ class AccountInvoice(models.Model):
         for line in self.invoice_line_ids:
             if line.quantity == 0:
                 continue
-            res[contador]['price'] = line.price_total
+            res[contador]['price'] = line.valor_liquido
 
             price = line.price_unit * (1 - (
                 line.discount or 0.0) / 100.0)
