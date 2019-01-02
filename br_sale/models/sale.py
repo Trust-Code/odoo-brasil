@@ -77,7 +77,8 @@ class SaleOrder(models.Model):
 
 
 class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
+    _name = 'sale.order.line'
+    _inherit = ['sale.order.line', 'br.localization.filtering']
 
     def _prepare_tax_context(self):
         return {
