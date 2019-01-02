@@ -7,7 +7,7 @@
 import re
 import io
 import logging
-from datetime import datetime, date
+from datetime import date
 
 _logger = logging.getLogger(__name__)
 

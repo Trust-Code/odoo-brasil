@@ -7,7 +7,6 @@
 
 from ..cnab import Cnab
 from decimal import Decimal
-import datetime
 import re
 import string
 import time
