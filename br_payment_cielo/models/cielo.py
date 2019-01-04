@@ -51,13 +51,16 @@ class AcquirerCielo(models.Model):
             address['Complement'] = tx_values['partner'].street2
         payment = {"BoletoDiscount": 0, "DebitDiscount": 0}
         customer = {
-            "Identity": re.sub(
-                '[^0-9]', '', tx_values['partner'].cnpj_cpf or ''),
             "FullName": tx_values['partner'].name,
             "Email": tx_values['partner'].email,
-            "Phone": re.sub('[^0-9]', '',
-                            tx_values['partner'].phone or '')[:11],
         }
+        cnpj_cpf = re.sub('[^0-9]', '', tx_values['partner'].cnpj_cpf or '')
+        phone = re.sub('[^0-9]', '', tx_values['partner'].phone or '')
+        if len(cnpj_cpf) in (11, 14):
+            customer['Identity'] = cnpj_cpf
+        if len(phone) == 11:
+            customer['Phone'] = phone
+
         shipping = {
             "Type": "WithoutShipping",
             "TargetZipCode": re.sub(
