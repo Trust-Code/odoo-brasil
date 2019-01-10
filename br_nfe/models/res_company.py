@@ -20,3 +20,7 @@ class ResCompany(models.Model):
     id_token_csc = fields.Char(string="Identificador do CSC")
     csc = fields.Char(string=u'Código de Segurança do Contribuinte')
     nfe_sinc = fields.Boolean(string="Aceita envio síncrono")
+
+    # Responsavel Técnico
+    id_token_csrt = fields.Char(string="Identificador do Responsavel Técnico")
+    csrt = fields.Char(string=u'Código de Segurança do Responsavel Técnico')

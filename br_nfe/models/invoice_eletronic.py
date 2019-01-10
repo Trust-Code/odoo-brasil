@@ -28,7 +28,7 @@ try:
         gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
-    from pytrustnfe.urls import url_qrcode
+    from pytrustnfe.urls import url_qrcode, url_qrcode_exibicao
 except ImportError:
     _logger.error('Cannot import pytrustnfe', exc_info=True)
 
@@ -789,7 +789,7 @@ class InvoiceEletronic(models.Model):
                 chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
             qr_code_server = url_qrcode(estado, str(ambiente))
             vals['qrCode'] = qr_code_server + QR_code_url
-            vals['urlChave'] = qr_code_server.replace('?', '')
+            vals['urlChave'] = url_qrcode_exibicao(estado, str(ambiente))
         return vals
 
     @api.multi
