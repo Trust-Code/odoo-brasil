@@ -47,13 +47,16 @@ class AccountInvoice(models.Model):
             group['domain'].append(('id', 'in', lines.ids))
             group_lines = lines.search(group['domain'])
             for v in self._prepare_vals(group_lines):
+                # Split when there is one invoice and more then one rule
                 if len(v['inv_ids']) <= 1:
-                    continue
+                    inv_lines = v['inv_ids'].invoice_line_ids.ids
+                    if len(inv_lines) == len(v['lines']):
+                        continue
                 v['rule'] = group['rule_name']
                 v['fpos'] = group['fpos'] if 'fpos' in group else False
                 vals.append(v)
                 [inv_grouped.append(id) for id in v['inv_ids'].ids]
-            lines -= group_lines
+                lines -= group_lines
         # Remainig lines
         for inv in lines.mapped('invoice_id'):
             if inv.id in inv_grouped:
