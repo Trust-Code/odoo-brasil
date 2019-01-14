@@ -11,6 +11,8 @@
                 <field name="tipo_ambiente" />
                 <field name="nfe_sinc"/>
                 <field name="cabecalho_danfe" />
+                <field name="id_token_csrt" />
+                <field name="csrt" />
             </field>
         </field>
     </record>
