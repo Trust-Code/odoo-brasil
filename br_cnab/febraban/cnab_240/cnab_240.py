@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 try:
     from cnab240.tipos import Arquivo
 except ImportError:
-    _logger.debug('Cannot import cnab240')
+    _logger.error('Cannot import cnab240', exc_info=True)
 
 
 class Cnab240(Cnab):
@@ -57,42 +57,34 @@ class Cnab240(Cnab):
 
     @property
     def inscricao_tipo(self):
-        if self.order.payment_mode_id.company_id.partner_id.is_company:
+        if self.order.company_id.partner_id.is_company:
             return 2
         else:
             return 1
 
     def _prepare_header(self):
-        cnpj_cpf = re.sub('[^0-9]', '',
-                          self.order.payment_mode_id.company_id.cnpj_cpf)
-        cedente_conta_dv = self.order.payment_mode_id.bank_account_id.\
-            acc_number_dig
+        cnpj_cpf = re.sub('[^0-9]', '', self.order.company_id.cnpj_cpf)
+        cedente_conta_dv = self.order.src_bank_account_id.acc_number_dig
         cedente_conta_dv = str(cedente_conta_dv)
         return {
-            'controle_banco': int(self.order.payment_mode_id.
-                                  bank_account_id.bank_bic),
+            'controle_banco': int(self.order.src_bank_account_id.bank_bic),
             'arquivo_data_de_geracao': self.data_hoje(),
             'arquivo_hora_de_geracao': self.hora_agora(),
             'arquivo_sequencia': self.order.file_number,
             'cedente_inscricao_tipo': self.inscricao_tipo,
             'cedente_inscricao_numero': int(cnpj_cpf),
-            'cedente_agencia': int(
-                self.order.payment_mode_id.bank_account_id.bra_number),
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
+            'cedente_agencia': int(self.order.src_bank_account_id.bra_number),
+            'cedente_conta': int(self.order.src_bank_account_id.acc_number),
             'cedente_conta_dv': cedente_conta_dv,
-            'cedente_convenio': self.order.payment_mode_id.bank_account_id.
-            codigo_convenio,
-            'cedente_agencia_dv': self.order.payment_mode_id.
-            bank_account_id.bra_number_dig,
-            'cedente_nome': self.order.user_id.company_id.legal_name,
+            'cedente_convenio': self.order.src_bank_account_id.codigo_convenio,
+            'cedente_agencia_dv':
+            self.order.src_bank_account_id.bra_number_dig,
+            'cedente_nome': self.order.company_id.legal_name,
             # DV ag e conta
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.
-                                 bank_account_id.bra_number_dig),
+            'cedente_dv_ag_cc': self.order.src_bank_account_id.bra_number_dig,
             'arquivo_codigo': 1,  # Remessa/Retorno
             'servico_operacao': u'R',
-            'nome_banco': str(self.order.payment_mode_id.bank_account_id
-                              .bank_name)
+            'nome_banco': self.order.src_bank_account_id.bank_name
         }
 
     def get_file_numeration(self):
@@ -146,37 +138,30 @@ class Cnab240(Cnab):
         # Era cedente_agencia_conta_dv agora é cedente_dv_ag_cc
 
         return {
-            'controle_banco': int(self.order.payment_mode_id.bank_account_id.
-                                  bank_bic),
-            'cedente_agencia': int(self.order.payment_mode_id.bank_account_id.
-                                   bra_number),
-            'cedente_conta': int(self.order.payment_mode_id.bank_account_id.
-                                 acc_number),
-            'cedente_conta_dv': self.order.payment_mode_id.bank_account_id.
-            acc_number_dig,
-            'cedente_convenio': self.order.payment_mode_id.bank_account_id.
-            codigo_convenio,
-            'cedente_agencia_dv': self.order.payment_mode_id.bank_account_id.
-            bra_number_dig,
-            'cedente_nome':
-            self.order.payment_mode_id.bank_account_id.partner_id.legal_name,
+            'controle_banco': int(self.order.src_bank_account_id.bank_bic),
+            'cedente_agencia': int(self.order.src_bank_account_id.bra_number),
+            'cedente_conta': int(self.order.src_bank_account_id.acc_number),
+            'cedente_conta_dv': self.order.src_bank_account_id.acc_number_dig,
+            'cedente_convenio': self.order.src_bank_account_id.codigo_convenio,
+            'cedente_agencia_dv':
+            self.order.src_bank_account_id.bra_number_dig,
+            'cedente_nome': self.order.company_id.legal_name,
             # DV ag e cc
-            'cedente_dv_ag_cc': (self.order.payment_mode_id.bank_account_id.
-                                 bra_number_dig),
+            'cedente_dv_ag_cc': self.order.src_bank_account_id.bra_number_dig,
             'identificacao_titulo': u'0000000',  # TODO
             'identificacao_titulo_banco': u'0000000',  # TODO
             'identificacao_titulo_empresa': (' ' * 25),
-            'numero_documento': "%s/%s" % (line.move_id.name, line.name),
+            'numero_documento': line.identifier,
             'vencimento_titulo': self.format_date(
                 line.date_maturity),
-            'valor_titulo': Decimal(str(line.debit)).quantize(
+            'valor_titulo': Decimal(str(line.amount_total)).quantize(
                 Decimal('1.00')),
             # TODO: Código adotado para identificar o título de cobrança.
             # 8 é Nota de cŕedito comercial
             'especie_titulo': int(self.order.payment_mode_id.boleto_especie),
             'aceite_titulo': self.order.payment_mode_id.boleto_aceite,
             'data_emissao_titulo': self.format_date(
-                line.date),
+                line.emission_date),
             # Taxa de juros do Odoo padrão mensal: 2. Campo 27.3P
             # CEF/FEBRABAN e Itaú não tem.
             'codigo_juros': 2,
@@ -192,8 +177,6 @@ class Cnab240(Cnab):
             'juros_multa': Decimal(
                 str(self.order.payment_mode_id.late_payment_fee)).quantize(
                     Decimal('1.00')),
-            # TODO Remover taxa dia - deixar apenas taxa normal
-            'juros_mora_taxa_dia': Decimal('0.00'),
             'valor_abatimento': Decimal('0.00'),
             'sacado_inscricao_tipo': int(
                 self.sacado_inscricao_tipo(line.partner_id)),
@@ -226,11 +209,11 @@ class Cnab240(Cnab):
         header = self._prepare_header()
         self.arquivo = Arquivo(self.bank, **header)
         for line in order.line_ids:
-            seg = self._prepare_segmento(line.move_line_id)
+            seg = self._prepare_segmento(line)
             self.arquivo.incluir_cobranca(header, **seg)
             self.arquivo.lotes[0].header.servico_servico = 1
             # TODO: tratar soma de tipos de cobranca
-            cobrancasimples_valor_titulos += line.move_line_id.amount_currency
+            cobrancasimples_valor_titulos += line.amount_total
             self.arquivo.lotes[0].trailer.cobrancasimples_valor_titulos = \
                 Decimal(cobrancasimples_valor_titulos).quantize(
                     Decimal('1.00'))

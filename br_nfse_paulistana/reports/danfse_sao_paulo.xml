@@ -86,7 +86,7 @@
             </div>
             <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
                 <div class="col-xs-2">
-                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                    <img style="max-height:65px;margin-top:15px; max-width:150px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
                 </div>
                 <div class="col-xs-10">
                     <div class="col-xs-12" style="text-align:center;">
@@ -177,7 +177,7 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
                 </div>
-                <div class="col-xs-12">
+                <div name="discriminacao" class="col-xs-12">
                     <br />
                     <span t-raw="doc.discriminacao_servicos"></span>
                 </div>
@@ -265,7 +265,7 @@
                     Base de Cálculo (R$):
                     <br />
                     <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_bruto"
+                        <strong t-field="doc.valor_bc_issqn"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.fiscal_type != '3'">
@@ -329,8 +329,6 @@
                 <div style="float:left; width:50%;">
                     (3) Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
                 </div>
-                <br />
-                <span t-field="doc.informacoes_legais"></span>
             </div>
         </div>
     </template>

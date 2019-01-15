@@ -1,0 +1,43 @@
+<odoo>
+
+    <template id="cnab_payment_receipt_document">
+        <div class="page" style="font-family:Arial">
+            <div class="row" name="bank_infos">
+                <div class="col-xs-12" style="font-size:25;font-weight:bold;text-align:justify;margin-bottom:15px;margin-left:30px;margin-right:110px">
+                    <span t-field="line.journal_id.bank_id.name"/> 
+                    <span> Comprovante de pagamento de </span> <span t-field="line.payment_mode_id.payment_type"/>
+                </div>
+            </div>
+            <div class="row" name="account_infos" style="margin-bottom:20px;margin-left:30px;margin-right:30px">
+                <t t-set="acc" t-value="line.src_bank_account_id"/>
+                <div class="col-xs-6" style="font-size:20">
+                    <span>Conta: </span> <span t-field="acc.acc_number"/> - 
+                    <span t-field="acc.acc_number_dig"/>
+                    <span>Titular: </span> <span t-field="acc.partner_id"/> <br/>
+                    <span>Agência:</span> <span t-field="acc.bra_number"/><span t-field="acc.bra_number_dig"/> <br/>
+                </div>
+            </div>
+            <div class="row" name="pay_infos">
+                <div class="col-xs-12" style="font-size:20;width:100%">
+                    <span> <b> Data de emissão do CNAB: </b></span>
+                    <span t-field="line.emission_date"/> <br/>
+                    <span> <b> Situação: </b> </span> 
+                    <span t-field="line.state"/><br/>
+                    <span> <b> Mensagem de Retorno: </b> </span>
+                    <span t-field="line.cnab_message" /> <br/>
+                    <span> <b> Chave de Autenticação: </b> </span>
+                    <span t-field="line.autenticacao_pagamento"/> <br/>
+                    <span> <b> Protocolo: </b> </span>
+                    <span t-field="line.protocolo_pagamento" /> <br/>
+                    <span> <b> Valor: </b> </span>
+                    <span t-field="line.amount_total" /> <br/>
+                    <t t-if="line.payment_mode_id.payment_type == '04'">
+                        <span> <b> Código de Barras: </b> </span> 
+                        <span t-field="line.barcode"/> <br/>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</odoo>

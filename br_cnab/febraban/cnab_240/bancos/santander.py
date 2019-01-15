@@ -51,7 +51,7 @@ class Santander240(Cnab240):
 
     def codigo_transmissao(self):
         return int("%s%s" % (
-            self.order.payment_mode_id.bank_account_id.bra_number,
+            self.order.src_bank_account_id.bra_number,
             self.order.payment_mode_id.boleto_cnab_code.zfill(11)))
 
     def nosso_numero(self, nosso_numero_sem_dv):

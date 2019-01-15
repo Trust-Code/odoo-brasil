@@ -118,15 +118,14 @@ class AccountTax(models.Model):
         if not ipi_tax:
             return []
         vals = self._tax_vals(ipi_tax)
-
         base_tax = self.calc_ipi_base(price_base)
 
-        vals['amount'] = ipi_tax._compute_amount(base_tax, 1.0)
         if 'ipi_base_calculo_manual' in self.env.context and\
                 self.env.context['ipi_base_calculo_manual'] > 0:
             vals['base'] = self.env.context['ipi_base_calculo_manual']
         else:
             vals['base'] = base_tax
+        vals['amount'] = ipi_tax._compute_amount(vals['base'], 1.0)
         return [vals]
 
     def calc_ipi_base(self, price_base):
@@ -260,7 +259,7 @@ class AccountTax(models.Model):
         if 'icms_aliquota_inter_part' in self.env.context:
             icms_inter_part = self.env.context["icms_aliquota_inter_part"]
         else:
-            icms_inter_part = 80.0
+            icms_inter_part = 100.0
         vals_inter['amount'] = round((interno - interestadual) *
                                      (100 - icms_inter_part) / 100, 2)
         vals_intra['amount'] = round((interno - interestadual) *
@@ -339,6 +338,15 @@ class AccountTax(models.Model):
             taxes.append(vals)
         return taxes
 
+    def _compute_others(self, price_base):
+        others = self.filtered(lambda x: x.domain == 'outros' or not x.domain)
+        if not others:
+            return []
+        vals = self._tax_vals(others)
+        vals['amount'] = others._compute_amount(price_base, 1.0)
+        vals['base'] = price_base
+        return [vals]
+
     def sum_taxes(self, price_base):
         ipi = self._compute_ipi(price_base)
         icms = self._compute_icms(
@@ -356,6 +364,7 @@ class AccountTax(models.Model):
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)
+        taxes += self._compute_others(price_base)
         return taxes
 
     @api.multi
