@@ -9,13 +9,14 @@
                 <group>
                     <field name="partner_id" />
                     <field name="move_line_id" string='Movimentação' attrs="{'invisible': [('move_line_id', '=', False)]}" />
-                    <field name="amount_total"/>
                     <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
                     <field name="payment_type" invisible="1" />
                     <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
                     <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" />
                     <field name="date_maturity" />
-                    <field name="amount" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
+                    <field name="amount_total"/>
+                    <field name="discount" />
+                    <field name="amount" />
                 </group>
                 <footer>
                     <button name="action_update_info" type="object" string="Atualizar informações" class="oe_highlight"/>

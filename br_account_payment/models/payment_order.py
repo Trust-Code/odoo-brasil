@@ -43,7 +43,7 @@ class PaymentOrderLine(models.Model):
     emission_date = fields.Date(string="Data de Emissão")
     currency_id = fields.Many2one('res.currency', string="Currency")
     amount_total = fields.Monetary(
-        string="Valor", digits=(18, 2), oldname='value')
+        string="Valor", digits=(18, 2), oldname='value', store=True)
     state = fields.Selection([("draft", "Rascunho"),
                               ("approved", "Aprovado"),
                               ("sent", "Enviado"),

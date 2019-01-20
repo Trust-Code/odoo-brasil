@@ -16,7 +16,7 @@ class WizardChangePayment(models.TransientModel):
     _name = 'wizard.change.payment'
 
     move_line_id = fields.Many2one('account.move.line', readonly=True)
-    amount_total = fields.Float(string="Valor Total", readonly=True)
+    amount_total = fields.Float(string="Valor Original", readonly=True)
     payment_mode_id = fields.Many2one(
         'l10n_br.payment.mode', string="Modo de Pagamento")
     payment_type = fields.Selection(
@@ -28,7 +28,8 @@ class WizardChangePayment(models.TransientModel):
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]")
     date_maturity = fields.Date(string="Data de Vencimento")
-    amount = fields.Float(string="Valor no boleto", readonly=True)
+    discount = fields.Float(string="Desconto")
+    amount = fields.Float(string="Valor a pagar")
 
     @api.model
     def default_get(self, fields):
@@ -42,7 +43,7 @@ class WizardChangePayment(models.TransientModel):
         elif len(partner_ids) == 1:
             res['partner_id'] = partner_ids[0].id
             res['amount_total'] = sum(
-                [x.amount_residual for x in move_line_ids])
+                [abs(x.amount_residual) for x in move_line_ids])
         return res
 
     @api.onchange('linha_digitavel')
@@ -60,7 +61,13 @@ class WizardChangePayment(models.TransientModel):
         except DvNotValidError:
             raise UserError("DV do código de Barras não confere!")
 
+    def _validate_information(self):
+        if (self.amount_total - self.discount) != self.amount:
+            raise UserError(
+                'O valor a pagar deve ser: Valor original - Desconto')
+
     def action_update_info(self):
+        self._validate_information()
         linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
         if len(linha) not in (47, 48):
             raise UserError(
@@ -77,6 +84,7 @@ class WizardChangePayment(models.TransientModel):
                 'payment_mode_id': self.payment_mode_id.id,
                 'linha_digitavel': linha_digitavel,
                 'bank_account_id': self.bank_account_id.id,
+                'discount_value': self.discount,
                 'date_maturity': self.date_maturity or order_line.date_maturity
             })
             self.move_line_id.write({
@@ -95,6 +103,7 @@ class WizardChangePayment(models.TransientModel):
             vals['linha_digitavel'] = linha_digitavel
             vals['barcode'] = barcode
             vals['bank_account_id'] = self.bank_account_id.id
+            vals['discount_value'] = self.discount
             self.env['payment.order.line'].action_generate_payment_order_line(
                 self.payment_mode_id, vals)
             if self.date_maturity:
