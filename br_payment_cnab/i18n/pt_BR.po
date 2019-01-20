@@ -273,11 +273,6 @@ msgid "FGTS"
 msgstr "FGTS"
 
 #. module: br_payment_cnab
-#: model:ir.model.fields,field_description:br_payment_cnab.field_payment_order_line_value_final
-msgid "Final Value"
-msgstr "Final Value"
-
-#. module: br_payment_cnab
 #: code:addons/br_payment_cnab/models/account_voucher.py:81
 #, python-format
 msgid "Fine Line"

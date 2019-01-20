@@ -17,6 +17,13 @@ except ImportError:
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
+    def _compute_amount_total(self):
+        for item in self:
+            amount_total = 0
+            for line in item.line_ids:
+                amount_total += line.value_final
+            item.amount_total = amount_total
+
     def select_bank_cnab(self, code):
         banks = {
             '756': sicoob.Sicoob240(self),
@@ -63,9 +70,16 @@ class PaymentOrderLine(models.Model):
     linha_digitavel = fields.Char(string="Linha Digitável")
     barcode = fields.Char('Código de Barras')
     invoice_date = fields.Date('Data da Fatura')
+    payment_date = fields.Date('Data efetiva pagamento')
+
+    fine_value = fields.Float('Valor Multa')
+    interest_value = fields.Float('Valor Juros')
+    rebate_value = fields.Float('Abatimentos')
+    discount_value = fields.Float('Descontos')
+
     value_final = fields.Float(
-        string="Final Value", compute="_compute_final_value",
-        digits=(18, 2), readonly=True)
+        string="Valor Final", compute="_compute_final_value",
+        digits=(18, 2), readonly=True, store=True)
 
     autenticacao_pagamento = fields.Char(
         string="Chave de Autenticação do pagamento")
@@ -84,10 +98,18 @@ class PaymentOrderLine(models.Model):
         string="Agência do Favorecido",
         readonly=True)
 
-    _sql_constraints = [
-        ('payment_order_line_barcode_uniq', 'unique (barcode)',
-         _('O código de barras deve ser único!'))
-    ]
+    @api.one
+    @api.constrains('barcode')
+    def _constrains_unique_barcode(self):
+        if not self.barcode:
+            return True
+        total = self.search_count(
+            [('barcode', '=', self.barcode), ('id', '!=', self.id),
+             ('state', 'not in', ('rejected', 'cancelled'))])
+
+        if total > 0:
+            raise UserError('O código de barras deve ser único!')
+        return True
 
     def validate_partner_data(self, vals):
         errors = []
@@ -194,12 +216,12 @@ class PaymentOrderLine(models.Model):
                 ["Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
 
-    @api.depends('payment_information_id')
+    @api.depends('amount_total', 'rebate_value',
+                 'discount_value', 'interest_value')
     def _compute_final_value(self):
         for item in self:
-            payment = item.payment_information_id
-            desconto = payment.rebate_value + payment.discount_value
-            acrescimo = payment.fine_value + payment.interest_value
+            desconto = item.rebate_value + item.discount_value
+            acrescimo = item.fine_value + item.interest_value
             item.value_final = (item.amount_total - desconto + acrescimo)
 
     def get_operation_code(self, payment_mode):
@@ -241,8 +263,6 @@ class PaymentOrderLine(models.Model):
             'operation_code': self.get_operation_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
-            'fine_value': vals.get('fine_value'),
-            'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
             'cod_recolhimento_fgts': payment_mode_id.cod_recolhimento,
             'identificacao_fgts': payment_mode_id.identificacao_fgts,
