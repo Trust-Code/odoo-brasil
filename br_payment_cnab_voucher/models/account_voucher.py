@@ -43,10 +43,10 @@ class AccountVoucher(models.Model):
     barcode = fields.Char(
         'Barcode', compute="_compute_barcode", store=True, readonly=True)
     interest_value = fields.Float(
-        'Interest Value', readonly=True,
+        'Valor Juros', readonly=True,
         states={'draft': [('readonly', False)]})
     fine_value = fields.Float(
-        'Fine Value', readonly=True, states={'draft': [('readonly', False)]})
+        'Valor Multa', readonly=True, states={'draft': [('readonly', False)]})
 
     numero_parcela_icms = fields.Integer(
         'Número da parcela/notificação', readonly=True,
@@ -136,9 +136,8 @@ class AccountVoucher(models.Model):
             'invoice_date': self.date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
-            # TODO Ajustar o valor de multa e de juros
-            # 'fine_value': self.fine_value,
-            # 'interest_value': self.interest_value,
+            'fine_value': self.fine_value,
+            'interest_value': self.interest_value,
         }
 
     @api.multi
@@ -158,40 +157,3 @@ class AccountVoucher(models.Model):
     def validate_cnab_fields(self):
         if not self.date_due:
             raise UserError(_("Please select a Due Date for the payment"))
-
-    def create_interest_fine_line(self, line_type, vals):
-        account_id = self.env['ir.config_parameter'].sudo().get_param(
-            'br_payment_cnab.{}_account_id'.format(line_type))
-        if not account_id:
-            raise UserError(_(
-                "Please configure the interest and fine accounts"))
-        line_vals = (0, 0, {
-            'name': _('Fine Line') if line_type == 'fine' else _(
-                'Interest Line'),
-            'quantity': 1,
-            'price_unit': vals.get('{}_value'.format(line_type)),
-            'account_id': account_id
-        })
-        if vals.get('line_ids'):
-            vals['line_ids'].append(line_vals)
-        else:
-            vals.update(line_ids=[line_vals])
-        return vals
-
-    @api.multi
-    def write(self, vals):
-        if vals.get('interest_value'):
-            vals = self.create_interest_fine_line('interest', vals)
-        if vals.get('fine_value'):
-            vals = self.create_interest_fine_line('fine', vals)
-        res = super(AccountVoucher, self).write(vals)
-        return res
-
-    @api.model
-    def create(self, vals):
-        if vals.get('interest_value', 0) > 0:
-            vals = self.create_interest_fine_line('interest', vals)
-        if vals.get('fine_value', 0) > 0:
-            vals = self.create_interest_fine_line('fine', vals)
-        res = super(AccountVoucher, self).create(vals)
-        return res
