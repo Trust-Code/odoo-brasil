@@ -86,6 +86,7 @@ class WizardChangePayment(models.TransientModel):
     def action_update_info(self):
         active_ids = self.env.context.get('active_ids', [])
         move_lines = self.env['account.move.line'].browse(active_ids)
+        linha_digitavel, barcode = self.get_barcode_information()
 
         if len(move_lines) > 1:
             if not all([not x.l10n_br_order_line_id for x in move_lines]):
@@ -113,13 +114,12 @@ class WizardChangePayment(models.TransientModel):
                 'Algum pagamento já foi processado! \
                 Não é possível processa-lo novamente!')
         else:
-            vals = self._prepare_vals(move_lines)
+            vals = self._prepare_vals(move_lines, linha_digitavel, barcode)
             order_line = self.env['payment.order.line'].\
                 action_generate_payment_order_line(self.payment_mode_id, vals)
             move_lines.write({'l10n_br_order_line_id': order_line.id})
 
-    def _prepare_vals(self, move_line_ids):
-        linha_digitavel, barcode = self.get_barcode_information()
+    def _prepare_vals(self, move_line_ids, linha_digitavel, barcode):
         vals = {
             'partner_id': self.partner_id.id,
             'amount_total': self.amount,
