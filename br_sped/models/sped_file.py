@@ -35,9 +35,8 @@ from sped.efd.icms_ipi.registros import RegistroE520
 from sped.efd.icms_ipi.registros import Registro1001
 from sped.efd.icms_ipi.registros import Registro1010
 
-#from sped.efd.icms_ipi.registros import Registro9900
 
-g_intervalo = [ None, None ]
+g_intervalo = [None, None]
 
 
 class SpedFile(models.Model):
@@ -45,8 +44,8 @@ class SpedFile(models.Model):
     _description = "Cria o arquivo para o Sped ICMS / IPI"
     _order = "date_start desc"
 
-    date_start = fields.Datetime(string='Inicio de')
-    date_end = fields.Datetime(string='até')
+    date_start = fields.Date(string='Inicio de')
+    date_end = fields.Date(string='até')
     data_vencimento_e316 = fields.Date(string='Vencimento E-316')
     cod_obrigacao = fields.Char(
         string=u"Código Obrigação", dafault='090')
@@ -56,33 +55,30 @@ class SpedFile(models.Model):
     tipo_arquivo = fields.Selection([
         ('0', 'Remessa do arquivo original'),
         ('1', 'Remessa do arquivo substituto'),
-        ], string='Finalidade do Arquivo', default='original')
+        ], string='Finalidade do Arquivo', default='0')
     log_faturamento = fields.Html('Log de Faturamento')
-    company_id = fields.Many2one('res.company', string='Company', required=True,
-        default=lambda self: self.env['res.company']._company_default_get('account.account'))
-    sped_file = fields.Binary(string=u"Sped")
+    company_id = fields.Many2one(
+        'res.company', string='Company', required=True,
+        default=lambda self: self.env['res.company']._company_default_get(
+            'account.account'))
+    sped_file = fields.Binary(string="Sped", readonly=True)
     sped_file_name = fields.Char(
         string=u"Arquivo Sped")
-    vl_sld_cred_ant_difal = fields.Float('Saldo Credor per. ant. Difal', default=0.0)
-    vl_sld_cred_transp_difal = fields.Float('Saldo Credor per. seguinte Difal', default=0.0)
-    vl_sld_cred_ant_fcp = fields.Float('Saldo Credor per. ant. FCP', default=0.0)
-    vl_sld_cred_transp_fcp = fields.Float('Saldo Credor per. seguinte FCP', default=0.0)
+    vl_sld_cred_ant_difal = fields.Float(
+        'Saldo Credor per. ant. Difal', default=0.0)
+    vl_sld_cred_transp_difal = fields.Float(
+        'Saldo Credor per. seguinte Difal', default=0.0)
+    vl_sld_cred_ant_fcp = fields.Float(
+        'Saldo Credor per. ant. FCP', default=0.0)
+    vl_sld_cred_transp_fcp = fields.Float(
+        'Saldo Credor per. seguinte FCP', default=0.0)
 
-
-    #arq = ArquivoDigital()
-    fatura = 0
     def data_atual(self):
         global g_intervalo
-        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
-        dt_final = datetime.strptime(self.date_end, '%Y-%m-%d %H:%M:%S')
-        dt_final = pytz.utc.localize(dt_final).astimezone(tz)
-        dt_final = datetime.strftime(dt_final, '%Y-%m-%d %H:%M:%S')
-        dt_ini = datetime.strptime(self.date_start, '%Y-%m-%d %H:%M:%S')
-        dt_ini = pytz.utc.localize(dt_ini).astimezone(tz)
-        dt_ini = datetime.strftime(dt_ini, '%Y-%m-%d %H:%M:%S')
-        g_intervalo = [ dt_ini, dt_final ]
+        dt_final = fields.Date.from_string(self.date_end)
+        dt_ini = fields.Date.from_string(self.date_start)
+        g_intervalo = [dt_ini, dt_final]
         return g_intervalo[1:2]
-
 
     def normalize_str(self, string):
         """
@@ -94,29 +90,21 @@ class SpedFile(models.Model):
 
             string = string.encode('utf-8')
             return normalize(
-                'NFKD', string.decode('utf-8')).encode('ASCII', 'ignore').decode()
+                'NFKD', string.decode('utf-8')).encode(
+                    'ASCII', 'ignore').decode()
         return ''
 
     @api.multi
     def create_file(self):
-        #global arq
-
-        if self.date_start > self.date_end:
-            raise UserError('Erro, a data de início é maior que a data de encerramento!')
-        num_mes = 1
         self.log_faturamento = 'Gerando arquivo .. <br />'
         if self.date_start and self.date_end:
-            #d1 = datetime.strptime(g_intervalo[0], "%Y-%m-%d %H:%M:%S")
-            #d2 = datetime.strptime(g_intervalo[1], "%Y-%m-%d %H:%M:%S")
             self.data_atual()
-            d1 = g_intervalo[0]
-            d2 = g_intervalo[1]
             # TODO estou pegando somente NFe emissao propria aqui,
             # o correto e pegar Emissao Terceiros tbem
             inv = self.env['account.invoice'].search([
-                ('date_invoice','>=',g_intervalo[0]),
-                ('date_invoice','<=',g_intervalo[1]),
-                ('state','in',['open','paid', 'cancel']),
+                ('date_invoice', '>=', self.date_start),
+                ('date_invoice', '<=', self.date_end),
+                ('state', 'in', ['open', 'paid', 'cancel']),
                 ('product_document_id.code', '=', '55'),
                 ])
             self.registro0000(inv)
@@ -126,22 +114,10 @@ class SpedFile(models.Model):
         }
 
     def versao(self):
-        #if fields.Datetime.from_string(self.dt_ini) >= datetime.datetime(2018, 1, 1):
-        #    return '012'
         return '012'
 
-    def transforma_data(self, data):  # aaaammdd
-        dt = data
-        if len(data) > 10:
-            data = datetime.strptime(data, '%Y-%m-%d %H:%M:%S')
-            dt = data + timedelta(hours=-3)
-            dt = datetime.strftime(dt, '%Y-%m-%d %H:%M:%S')
-        data = self.limpa_formatacao(dt)
-        return data[6:8] + data[4:6] + data[:4]
-
-    def transforma_data2(self, data):  # aaaammdd
-        data = self.limpa_formatacao(data)
-        return data[6:8] + data[4:6] + data[:4]
+    def format_aaaammdd(self, orig_date):
+        return orig_date.strftime('%y%m%d')
 
     def limpa_caracteres(self, data):
         if data:
@@ -168,14 +144,11 @@ class SpedFile(models.Model):
 
     def registro0000(self, inv):
         arq = ArquivoDigital()
-        dta_e = g_intervalo[1]
         cod_mun = '%s%s' %(self.company_id.state_id.ibge_code, self.company_id.city_id.ibge_code)
-        dta_s = '%s%s%s' %(g_intervalo[0][8:10],g_intervalo[0][5:7],g_intervalo[0][:4])
-        dta_e = '%s%s%s' %(dta_e[8:10],dta_e[5:7],dta_e[:4])
         arq._registro_abertura.COD_VER = self.versao()
         arq._registro_abertura.COD_FIN = self.tipo_arquivo
-        arq._registro_abertura.DT_INI = dta_s # self.transforma_data(g_intervalo[0])
-        arq._registro_abertura.DT_FIN = dta_e # self.transforma_data(g_intervalo[1])
+        arq._registro_abertura.DT_INI = g_intervalo[0].strftime('%d%m%Y')
+        arq._registro_abertura.DT_FIN = g_intervalo[1].strftime('%d%m%Y')
         arq._registro_abertura.NOME = self.company_id.legal_name
         arq._registro_abertura.CNPJ = self.limpa_formatacao(self.company_id.cnpj_cpf)
         arq._registro_abertura.UF = self.company_id.state_id.code
@@ -311,8 +284,6 @@ class SpedFile(models.Model):
                 """ % (g_intervalo[0], g_intervalo[1])
         self._cr.execute(query)
         query_resposta = self._cr.fetchall()
-        lista = []
-        cont = 1
 
         registro_D001 = RegistroD001()
         if query_resposta:
@@ -322,10 +293,10 @@ class SpedFile(models.Model):
         arq._blocos['D'].add(registro_D001)
 
         resposta_cte = self.env['invoice.eletronic'].search([
-            ('model','in',('57','67')),
-            ('state', '=','done'),
-            ('data_emissao','>=',g_intervalo[0]),
-            ('data_emissao','<=',g_intervalo[1]),
+            ('model', 'in', ('57', '67')),
+            ('state', '=', 'done'),
+            ('data_emissao','>=', self.date_start),
+            ('data_emissao','<=', self.date_end),
             ])
         for cte in resposta_cte:
             # TODO D100 - Documentos Transporte
@@ -340,8 +311,8 @@ class SpedFile(models.Model):
         # TODO BLOCO E - Apuracao ICMS
         # TODO E100 - Periodo Apuracao
         registro_E100 = RegistroE100()
-        registro_E100.DT_INI = self.transforma_data2(g_intervalo[0])
-        registro_E100.DT_FIN = self.transforma_data2(g_intervalo[1])
+        registro_E100.DT_INI = self.format_aaaammdd(g_intervalo[0])
+        registro_E100.DT_FIN = self.format_aaaammdd(g_intervalo[1])
         arq._blocos['E'].add(registro_E100)
 
         # TODO E110 - Apuracao do ICMS
@@ -370,8 +341,8 @@ class SpedFile(models.Model):
         # TODO E500 - Apuracao IPI
         registro_E500 = RegistroE500()
         registro_E500.IND_APUR = '0' # 0 - MENSAL 1 - DECENDIAL
-        registro_E500.DT_INI = self.transforma_data2(g_intervalo[0])
-        registro_E500.DT_FIN = self.transforma_data2(g_intervalo[1])
+        registro_E500.DT_INI = self.format_aaaammdd(g_intervalo[0])
+        registro_E500.DT_FIN = self.format_aaaammdd(g_intervalo[1])
         arq._blocos['E'].add(registro_E500)
 
 
@@ -410,7 +381,7 @@ class SpedFile(models.Model):
         # arq.prepare()
         #self.assertEqual(txt, )
         #sped_f = codecs.open(os.path.abspath(), mode='r', encoding='utf-8')
-        self.sped_file_name =  "Sped-%s_%s.txt" % (g_intervalo[0][5:7],g_intervalo[0][:4])
+        self.sped_file_name = g_intervalo[0].strftime('Sped-%m-%Y.txt')
         self.sped_file = base64.encodestring(bytes(arq.getstring(), 'utf-8'))
         #self.sped_file = arq.getstring()
 
@@ -577,13 +548,13 @@ class SpedFile(models.Model):
             registro_0205 = registros.Registro0205()
             if alterado.name == 'Descrição':
                 registro_0205.DESCR_ANT_ITEM = self.normalize_str(alterado.valor_anterior.strip())
-                registro_0205.DT_INI = self.transforma_data(data_inicio)
-                registro_0205.DT_FIM = self.transforma_data(alterado.date_change)
+                registro_0205.DT_INI = self.format_aaaammdd(data_inicio)
+                registro_0205.DT_FIM = self.format_aaaammdd(alterado.date_change)
                 registro_0205.COD_ANT_ITEM = ''
             if alterado.name == 'Código':
                 registro_0205.DESCR_ANT_ITEM = ''
-                registro_0205.DT_INI = self.transforma_data(data_inicio)
-                registro_0205.DT_FIM = self.transforma_data(alterado.date_change)
+                registro_0205.DT_INI = self.format_aaaammdd(data_inicio)
+                registro_0205.DT_FIM = self.format_aaaammdd(alterado.date_change)
                 registro_0205.COD_ANT_ITEM = alterado.valor_anterior
             ultima_alteracao = alterado.date_change
             lista.append(registro_0205)
@@ -727,13 +698,13 @@ class SpedFile(models.Model):
                 #print (str(resposta_nfe.numero))
                 if not cancel:
                     try:
-                        registro_c100.DT_DOC  = self.transforma_data(
+                        registro_c100.DT_DOC  = self.format_aaaammdd(
                             resposta_nfe.data_emissao)
                         if resposta_nfe.data_fatura:
-                            registro_c100.DT_E_S  = self.transforma_data(
+                            registro_c100.DT_E_S  = self.format_aaaammdd(
                                 resposta_nfe.data_fatura)
                         else:
-                            registro_c100.DT_E_S  = self.transforma_data(
+                            registro_c100.DT_E_S  = self.format_aaaammdd(
                                 resposta_nfe.data_emissao)
                     except:
                         msg_err = 'Data Emissao Fatura %s , invalida. <br />' %(str(resposta.number or resposta.id))
@@ -1030,8 +1001,8 @@ class SpedFile(models.Model):
                     self.log_faturamento += msg_err
             registro_d100.CHV_CTE = str(resposta.nfe_chave) # or resposta_nfe.chave_nfe
             registro_d100.NUM_DOC = self.limpa_formatacao(str(cte.numero)) # or resposta_nfe.numero))
-            registro_d100.DT_A_P = self.transforma_data(cte.data_fatura or resposta.date_invoice)
-            registro_d100.DT_DOC = self.transforma_data(cte.data_emissao or resposta.date_invoice)
+            registro_d100.DT_A_P = self.format_aaaammdd(cte.data_fatura or resposta.date_invoice)
+            registro_d100.DT_DOC = self.format_aaaammdd(cte.data_emissao or resposta.date_invoice)
             #registro_d100.TP_CT-e = '0' # NORMAL
             registro_d100.VL_DOC = self.transforma_valor(resposta.amount_total)
             registro_d100.VL_DESC = self.transforma_valor(resposta.total_desconto)
@@ -1292,11 +1263,10 @@ class SpedFile(models.Model):
         self._cr.execute(query)
         query_resposta = self._cr.fetchall()
         lista = []
-        cont = 1
         for id in query_resposta:
             registro_e200 = registros.RegistroE200()
-            registro_e200.DT_INI = self.transforma_data2(g_intervalo[0])
-            registro_e200.DT_FIN = self.transforma_data2(g_intervalo[1])
+            registro_e200.DT_INI = self.format_aaaammdd(g_intervalo[0])
+            registro_e200.DT_FIN = self.format_aaaammdd(g_intervalo[1])
             registro_e200.UF = str(id[0])
 
             lista.append(registro_e200)
@@ -1399,14 +1369,14 @@ class SpedFile(models.Model):
                 uf_emitente = self.company_id.state_id.code
             registro_e300 = registros.RegistroE300()
             registro_e300.UF = self.limpa_formatacao(id[0])
-            registro_e300.DT_INI = self.transforma_data2(g_intervalo[0])
-            registro_e300.DT_FIM = self.transforma_data2(g_intervalo[1])
+            registro_e300.DT_INI = self.format_aaaammdd(g_intervalo[0])
+            registro_e300.DT_FIM = self.format_aaaammdd(g_intervalo[1])
             lista.append(registro_e300)
         if not uf_emitente and query_resposta:
             registro_e300 = registros.RegistroE300()
             registro_e300.UF = self.limpa_formatacao(self.company_id.state_id.code)
-            registro_e300.DT_INI = self.transforma_data2(g_intervalo[0])
-            registro_e300.DT_FIM = self.transforma_data2(g_intervalo[1])
+            registro_e300.DT_INI = self.format_aaaammdd(g_intervalo[0])
+            registro_e300.DT_FIM = self.format_aaaammdd(g_intervalo[1])
             lista.append(registro_e300)
 
         return lista
@@ -1578,13 +1548,13 @@ class SpedFile(models.Model):
         query_resposta = self._cr.fetchall()
         registro_e316 = registros.RegistroE316()
         lista = []
-        data = self.transforma_data(self.data_vencimento_e316)
+        data = self.format_aaaammdd(self.data_vencimento_e316)
         data = data[2:4] + data[4:8]
 
         for id in query_resposta:
             registro_e316.COD_OR = self.cod_obrigacao
             registro_e316.VL_OR = self.transforma_valor(id[0]+id[2])
-            registro_e316.DT_VCTO = self.transforma_data(self.data_vencimento_e316)
+            registro_e316.DT_VCTO = self.format_aaaammdd(self.data_vencimento_e316)
             registro_e316.COD_REC = self.cod_receita
             registro_e316.NUM_PROC = ''
             registro_e316.IND_PROC = ''

@@ -18,6 +18,7 @@
         'product',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/product_view.xml',
         'views/sped_view.xml',
         'views/sped_efd_view.xml',

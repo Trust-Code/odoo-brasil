@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
         <form string="Gerar arquivo SPED">
             <group>
-                <field name="company_id" options='{"no_create" : 1, "no_create_edit" : 1}'/>    
+                <field name="company_id" options='{"no_create" : 1, "no_create_edit" : 1}'/>
                 <field name="tipo_arquivo" widget="radio" />
             </group>
             <group col="4">
@@ -17,7 +17,7 @@
                 <field name="data_vencimento_e316"/>
                 <field name="cod_obrigacao"/>
                 <field name="cod_receita"/>
-            </group>    
+            </group>
             <group col="4">
                 <field name="vl_sld_cred_ant_difal"/>
                 <field name="vl_sld_cred_transp_difal"/>
@@ -26,7 +26,7 @@
             </group>
             <group>
                 <field name="sped_file_name" invisible="1"/>
-                <field widget="binary" height="64" name="sped_file" filename="sped_file_name" />
+                <field widget="binary" name="sped_file" filename="sped_file_name" attrs="{'invisible': [('sped_file', '=', False)]}" />
             </group>
             <field name="log_faturamento" readonly="1"/>
             <footer>
@@ -39,20 +39,20 @@
     </record>
 
     <record id="action_sped_create" model="ir.actions.act_window">
-        <field name="name">Sped ICMS/IPI</field>
+        <field name="name">Novo SPED ICMS/IPI</field>
         <field name="res_model">sped.file</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="sped_view"/>
         <field name="target">new</field>
     </record>
-    
+
     <record id="view_sped_file_tree" model="ir.ui.view">
         <field name="name">view_sped_file_tree</field>
         <field name="model">sped.file</field>
         <field name="arch" type="xml">
             <tree string="Gerar arquivo SPED">
-                <field name="company_id"/>    
+                <field name="company_id"/>
                 <field name="tipo_arquivo"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
@@ -63,11 +63,16 @@
 
 
     <record id="action_sped_tree_menu" model="ir.actions.act_window">
-        <field name="name">Sped ICMS/IPI</field>
+        <field name="name">Speds Gerados</field>
         <field name="res_model">sped.file</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_general_sped_icmsipi" action="action_sped_tree_menu" parent="account.menu_finance_receivables" sequence="99" groups="account.group_account_invoice"/>
+    <menuitem id="menu_general_sped" string="SPED" parent="account.menu_finance_entries" sequence="200" groups="account.group_account_manager"/>
+
+    <menuitem id="menu_general_sped_all" action="action_sped_tree_menu" parent="menu_general_sped" sequence="5"/>
+
+    <menuitem id="menu_general_sped_icmsipi" action="action_sped_create" parent="menu_general_sped" sequence="10"/>
+
 </odoo>
