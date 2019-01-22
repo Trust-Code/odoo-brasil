@@ -324,23 +324,20 @@ class PaymentOrderLine(models.Model):
         move_lines = self.env['account.move.line'].search(
             [('l10n_br_order_line_id', '=', order_line.id)])
         account_id = None
-        counterparts = []
-
         if not move_lines:   # Transferência
             account_id = order_line.destiny_journal_id.default_debit_account_id
         else:
             account_id = move_lines[0].account_id
-        for move_line in move_lines:
-            counterpart_aml_dict = {
-                'name': order_line.name,
-                'move_id': move.id,
-                'partner_id': order_line.partner_id.id,
-                'debit': order_line.amount_total,
-                'credit': 0.0,
-                'currency_id': order_line.currency_id.id,
-                'account_id': account_id.id,
-            }
-            counterparts.append(counterpart_aml_dict)
+        counterpart_aml_dict = {
+            'name': order_line.name,
+            'move_id': move.id,
+            'partner_id': order_line.partner_id.id,
+            'debit': order_line.amount_total,
+            'credit': 0.0,
+            'currency_id': order_line.currency_id.id,
+            'account_id': account_id.id,
+            'journal_id': move.journal_id.id
+        }
         liquidity_aml_dict = {
             'name': order_line.name,
             'move_id': move.id,
@@ -349,13 +346,12 @@ class PaymentOrderLine(models.Model):
             'credit': order_line.amount_total,
             'currency_id': order_line.currency_id.id,
             'account_id': order_line.journal_id.default_credit_account_id.id,
+            'journal_id': move.journal_id.id,
         }
-        import ipdb; ipdb.set_trace()
+        counterpart_aml = aml_obj.create(counterpart_aml_dict)
         aml_obj.create(liquidity_aml_dict)
-        for i in range(len(move_lines)):
-            counterpart_aml = aml_obj.create(counterparts[i])
-            move.post()
-            (counterpart_aml + move_lines[i]).reconcile()
+        move.post()
+        (counterpart_aml + move_lines).reconcile()
         return move
 
     def mark_order_line_processed(self, cnab_code, cnab_message, statement_id,
@@ -402,6 +398,10 @@ class PaymentOrderLine(models.Model):
                 'cnab_code': cnab_code,
                 'cnab_message': cnab_message,
             })
+            move_lines = self.env['account.move.line'].search(
+                [('l10n_br_order_line_id', '=', line.id)])
+            for move in move_lines:
+                move.reconciled = True
         self.write({'state': 'paid'})
         return statement_id
 
