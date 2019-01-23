@@ -25,7 +25,7 @@ STATE = {'edit': [('readonly', False)]}
 
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
     code = fields.Char(
