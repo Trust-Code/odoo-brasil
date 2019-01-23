@@ -7,7 +7,7 @@ class ResCompany(models.Model):
     l10n_br_payment_interest_account_id = fields.Many2one(
         'account.account', string="Conta para pagamento de juros")
     l10n_br_payment_discount_account_id = fields.Many2one(
-        'account.account', string="Conta para pagamento de multa")
+        'account.account', string="Conta para desconto de pagamentos")
 
     l10n_br_interest_account_id = fields.Many2one(
         'account.account', string="Conta para recebimento de juros/multa")
