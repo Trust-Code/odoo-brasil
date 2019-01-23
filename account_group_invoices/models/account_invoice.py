@@ -71,13 +71,13 @@ class AccountInvoice(models.Model):
         inv_vals = []
         comp_ids = lines.mapped('company_id')
         part_ids = lines.mapped('partner_id')
-        for (c, p) in product(comp_ids, part_ids):
-            ln = lines.filtered(lambda l: l.company_id == c
-                                and l.partner_id == p)
+        for (company, partner) in product(comp_ids, part_ids):
+            ln = lines.filtered(lambda l: l.company_id == company
+                                and l.partner_id == partner)
             inv_ids = ln.mapped('invoice_id')
             if ln:
-                inv_vals.append({'company': c,
-                                 'partner': p,
+                inv_vals.append({'company': company,
+                                 'partner': partner,
                                  'lines': ln,
                                  'inv_ids': inv_ids})
                 lines -= ln
@@ -136,6 +136,7 @@ class AccountInvoice(models.Model):
                 grouped this invoices: %s
             </p>""" % (inv['rule'], msg_ids))
         gr_invoice_id.message_post(new_msg)
+        return gr_invoice_id
 
     def _get_fpos_journal(self, inv):
         aj = self.env['account.journal']
