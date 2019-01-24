@@ -332,7 +332,7 @@ class PaymentOrderLine(models.Model):
             'name': order_line.name,
             'move_id': move.id,
             'partner_id': order_line.partner_id.id,
-            'debit': order_line.value_final,
+            'debit': order_line.amount_total,
             'credit': 0.0,
             'currency_id': order_line.currency_id.id,
             'account_id': account_id.id,
@@ -348,7 +348,7 @@ class PaymentOrderLine(models.Model):
             'account_id': order_line.journal_id.default_credit_account_id.id,
             'journal_id': move.journal_id.id,
         }
-        counterpart_aml = aml_obj.create(counterpart_aml_dict)
+        counterpart = aml_obj.create(counterpart_aml_dict)
         aml_obj.create(liquidity_aml_dict)
         if order_line.discount_value or order_line.rebate_value:
             account_id = (
@@ -356,7 +356,7 @@ class PaymentOrderLine(models.Model):
             credit_value = (
                 order_line.discount_value or 0.00 +
                 order_line.rebate_value or 0.00)
-            counterpart_disct_aml_dict = {
+            discount_aml_dict = {
                 'name': 'Desconto Obtido',
                 'move_id': move.id,
                 'partner_id': order_line.partner_id.id,
@@ -366,7 +366,7 @@ class PaymentOrderLine(models.Model):
                 'account_id': account_id,
                 'journal_id': move.journal_id.id
             }
-            aml_obj.create(counterpart_disct_aml_dict)
+            aml_obj.create(discount_aml_dict)
         if order_line.fine_value or order_line.interest_value:
             account_id = (
                 order_line.company_id.l10n_br_payment_interest_account_id.id)
@@ -374,7 +374,7 @@ class PaymentOrderLine(models.Model):
                 order_line.fine_value or 0.00 +
                 order_line.interest_value or 0.00)
             credit_aml_dict = {
-                'name': 'Desconto Obtido',
+                'name': 'Juros',
                 'move_id': move.id,
                 'partner_id': order_line.partner_id.id,
                 'debit': debit_value,
@@ -385,7 +385,7 @@ class PaymentOrderLine(models.Model):
             }
             aml_obj.create(credit_aml_dict)
         move.post()
-        (counterpart_aml + move_lines).reconcile()
+        (counterpart + move_lines).reconcile()
         return move
 
     def mark_order_line_processed(self, cnab_code, cnab_message, statement_id,
