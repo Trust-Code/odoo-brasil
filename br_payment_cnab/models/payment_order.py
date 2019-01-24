@@ -432,10 +432,6 @@ class PaymentOrderLine(models.Model):
                 'cnab_code': cnab_code,
                 'cnab_message': cnab_message,
             })
-            move_lines = self.env['account.move.line'].search(
-                [('l10n_br_order_line_id', '=', line.id)])
-            for move in move_lines:
-                move.reconciled = True
         self.write({'state': 'paid'})
         return statement_id
 
