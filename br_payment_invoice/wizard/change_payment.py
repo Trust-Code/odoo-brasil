@@ -122,7 +122,7 @@ class WizardChangePayment(models.TransientModel):
     def _prepare_vals(self, move_line_ids, linha_digitavel, barcode):
         vals = {
             'partner_id': self.partner_id.id,
-            'amount_total': self.amount,
+            'amount_total': self.amount_total,
             'name': ', '.join([x.name for x in move_line_ids]),
             'partner_ref': ','.join([x.move_id.name for x in move_line_ids]),
             'bank_account_id': self.bank_account_id.id,
