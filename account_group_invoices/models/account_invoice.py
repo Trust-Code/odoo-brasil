@@ -144,7 +144,7 @@ class AccountInvoice(models.Model):
         company = inv['company']
         fpos_id = journal_id = False
 
-        if 'fpos' in inv:
+        if 'fpos' in inv and inv['fpos']:
             fpos_id = afp.browse(inv['fpos'])
         else:
             fpos_id = inv['partner'].with_context(
