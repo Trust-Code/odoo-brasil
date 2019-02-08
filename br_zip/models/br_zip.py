@@ -154,6 +154,13 @@ class BrZip(models.Model):
         zip_ids = self.zip_search_multi(zip_code=zip_code)
         if len(zip_ids) == 1:
             return self.set_result(zip_ids[0])
+        elif len(zip_ids) > 1:
+            general_zip = self.new()
+            general_zip.zip = zip_ids[0].zip
+            general_zip.city_id = zip_ids[0].city_id
+            general_zip.country_id = zip_ids[0].country_id
+            general_zip.state_id = zip_ids[0].state_id
+            return self.set_result(zip_obj=general_zip)
         else:
             raise UserError(_(u'Nenhum CEP encontrado'))
 
