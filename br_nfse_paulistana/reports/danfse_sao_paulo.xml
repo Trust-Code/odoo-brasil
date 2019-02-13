@@ -48,7 +48,7 @@
             }
         </style>
         <div class="page">
-            <div class="watermark">
+            <div t-if="doc.state == 'cancel'" class="watermark">
                 <p>NOTA CANCELADA</p>
             </div>
             <div class="row" style="border: 1px solid black;">
