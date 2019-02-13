@@ -36,8 +36,21 @@
                 padding:0px;
             }
             td, th { padding: 0 4px; }
+            .watermark {
+                position:fixed;
+                top:500px;
+                right:-190px;
+                opacity:0.50;
+                z-index:1000;
+                -webkit-transform:rotate(300deg);
+                font-size:150px;
+                white-space:nowrap;
+            }
         </style>
         <div class="page">
+            <div t-if="doc.state == 'cancel'" class="watermark">
+                <p>NOTA CANCELADA</p>
+            </div>
             <div class="row" style="border: 1px solid black;">
                 <div class="col-xs-2">
                     <img src="/br_nfse/static/src/img/prefeitura-sp.gif" alt="Logo Prefeitura Campinas"
@@ -337,6 +350,7 @@
                 </div>
             </div>
         </div>
+        
     </template>
 
     <template id="main_template_br_nfse_danfe">
