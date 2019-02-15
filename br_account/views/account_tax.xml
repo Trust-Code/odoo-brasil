@@ -16,7 +16,7 @@
             <field name="name" position="after">
                 <field name="domain" />
                 <field name="difal_por_dentro" />
-                <field name="frete_base" attrs="{'invisible':[('domain', 'in', ('imcs', 'icmsst', 'icms_inter', 'icms_intra'))]}"/>
+                <field name="frete_base" attrs="{'invisible':[('domain', '!=', ('ipi'))]}"/>
             </field>
         </field>
     </record>
