@@ -84,7 +84,8 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
-    frete_base = fields.Boolean(string="Incluir o frete na base de cálculo?")
+    frete_base = fields.Boolean(string="Incluir o frete na base de cálculo?",
+                                default=True)
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
