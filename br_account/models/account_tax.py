@@ -84,6 +84,8 @@ class AccountTax(models.Model):
                                ('outros', 'Outros')], string="Tipo")
     amount_type = fields.Selection(selection_add=[('icmsst', 'ICMS ST')])
     difal_por_dentro = fields.Boolean(string="Calcular Difal por Dentro?")
+    frete_base = fields.Boolean(string="Incluir o frete na base de cálculo?",
+                                default=True)
 
     @api.onchange('domain')
     def _onchange_domain_tax(self):
@@ -122,7 +124,7 @@ class AccountTax(models.Model):
             reducao_ipi = self.env.context['ipi_reducao_bc']
 
         base_ipi = price_base
-        if "valor_frete" in self.env.context:
+        if "valor_frete" in self.env.context and ipi_tax.frete_base:
             base_ipi += self.env.context["valor_frete"]
         if "valor_seguro" in self.env.context:
             base_ipi += self.env.context["valor_seguro"]
