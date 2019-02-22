@@ -16,9 +16,9 @@
                 <group attrs="{'invisible': [('l10n_br_localization', '=', False)]}">
                     <field name="l10n_br_fiscal_category_id" />
                     <field name="l10n_br_fiscal_type" />
-                    <field name="l10n_br_origin" attrs="{'required': [('l10n_br_fiscal_type', '=', 'product')], 'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
-                    <field name="l10n_br_fiscal_classification_id" attrs="{'required': [('l10n_br_fiscal_type', '=', 'product')], 'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
-                    <field name="l10n_br_service_type_id" attrs="{'required': [('l10n_br_fiscal_type', '=', 'service')], 'invisible': [('l10n_br_fiscal_type', '=', 'product')]}" domain="[('internal_type', '=', 'normal')]"/>
+                    <field name="l10n_br_origin" attrs="{'required': [('l10n_br_fiscal_type', '=', 'product'),('l10n_br_localization', '=', True)], 'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
+                    <field name="l10n_br_fiscal_classification_id" attrs="{'required': [('l10n_br_fiscal_type', '=', 'product'),('l10n_br_localization', '=', True)], 'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
+                    <field name="l10n_br_service_type_id" attrs="{'required': [('l10n_br_fiscal_type', '=', 'service'),('l10n_br_localization', '=', True)], 'invisible': [('l10n_br_fiscal_type', '=', 'product')]}" domain="[('internal_type', '=', 'normal')]"/>
                     <field name="l10n_br_cest" attrs="{'invisible': [('l10n_br_fiscal_type', '=', 'service')]}" />
                     <field name="l10n_br_localization" invisible="1"/>
                 </group>
