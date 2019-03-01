@@ -37,6 +37,7 @@
         'views/inutilized_nfe.xml',
         'views/br_nfe.xml',
         'views/payment_mode.xml',
+        'views/stock_picking.xml',
         'reports/danfe_report.xml',
         'wizard/cancel_nfe.xml',
         'wizard/carta_correcao_eletronica.xml',
