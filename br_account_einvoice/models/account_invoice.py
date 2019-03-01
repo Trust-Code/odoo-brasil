@@ -62,7 +62,7 @@ class AccountInvoice(models.Model):
             return vals
 
     def _return_pdf_invoice(self, doc):
-        return None
+        return False
 
     def action_preview_danfe(self):
 
