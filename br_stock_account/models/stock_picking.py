@@ -22,6 +22,11 @@ class StockPicking(models.Model):
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string="Posição Fiscal")
 
+    def action_preview_danfe(self):
+        invoices = self.env['account.invoice'].search(
+            [('picking_origin_id', '=', self.id)])
+        return invoices.action_preview_danfe()
+
     def _prepare_inv_line_vals(self, move_line_id):
         linevals = {
             'product_id': move_line_id.product_id.id,
