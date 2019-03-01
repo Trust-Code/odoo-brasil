@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2014 KMEE (http://www.kmee.com.br)
 # @author Rafael da Silva Lima <rafael.lima@kmee.com.br>
 # @author Matheus Felix <matheus.felix@kmee.com.br>
