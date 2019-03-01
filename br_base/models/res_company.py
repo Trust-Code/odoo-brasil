@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2004-2010 Tiny SPRL (<http://tiny.be>)
 # © Thinkopen Solutions (<http://www.thinkopensolutions.com.br>)
 # © Akretion (<http://www.akretion.com>)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
