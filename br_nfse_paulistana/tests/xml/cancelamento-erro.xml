@@ -1,17 +1,17 @@
 <RetornoCancelamentoNFe
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns="http://www.prefeitura.sp.gov.br/nfe">
-	<Cabecalho Versao="1" xmlns="">
-		<Sucesso>false</Sucesso>
-	</Cabecalho>
-	<Erro xmlns="">
-		<Codigo>1305</Codigo>
-		<Descricao>Assinatura de cancelamento da NFS-e incorreta.</Descricao>
-		<ChaveNFe>
-			<InscricaoPrestador>512382</InscricaoPrestador>
-			<NumeroNFe>446</NumeroNFe>
-			<CodigoVerificacao>APR9QMJR</CodigoVerificacao>
-		</ChaveNFe>
-	</Erro>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.prefeitura.sp.gov.br/nfe">
+    <Cabecalho Versao="1" xmlns="">
+        <Sucesso>false</Sucesso>
+    </Cabecalho>
+    <Erro xmlns="">
+        <Codigo>1305</Codigo>
+        <Descricao>Assinatura de cancelamento da NFS-e incorreta.</Descricao>
+        <ChaveNFe>
+            <InscricaoPrestador>512382</InscricaoPrestador>
+            <NumeroNFe>446</NumeroNFe>
+            <CodigoVerificacao>APR9QMJR</CodigoVerificacao>
+        </ChaveNFe>
+    </Erro>
 </RetornoCancelamentoNFe>
