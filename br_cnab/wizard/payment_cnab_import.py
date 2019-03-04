@@ -17,12 +17,12 @@ except ImportError:
     _logger.error('Cannot import cnab240 cobranca', exc_info=True)
 
 
-class l10nBrPaymentCnabImport(models.TransientModel):
+class L10nBrPaymentCnabImport(models.TransientModel):
     _inherit = 'l10n_br.payment.cnab.import'
 
     def _get_account(self, cnab_file):
         if self.cnab_type != 'receivable':
-            return super(l10nBrPaymentCnabImport, self)._get_account(cnab_file)
+            return super(L10nBrPaymentCnabImport, self)._get_account(cnab_file)
 
         stream = StringIO(cnab_file.decode('ascii'))
         bank = get_bank(self.journal_id.bank_id.bic)
@@ -54,7 +54,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
 
     def do_import(self, cnab_file):
         if self.cnab_type != 'receivable':
-            return super(l10nBrPaymentCnabImport, self).do_import(cnab_file)
+            return super(L10nBrPaymentCnabImport, self).do_import(cnab_file)
 
         stream = StringIO(cnab_file.decode('ascii'))
         bank = get_bank(self.journal_id.bank_id.bic)

@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 
-class l10nBrPaymentCnabImport(models.TransientModel):
+class L10nBrPaymentCnabImport(models.TransientModel):
     _name = 'l10n_br.payment.cnab.import'
 
     cnab_type = fields.Selection(

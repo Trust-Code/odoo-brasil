@@ -15,6 +15,7 @@
         'sale_stock', 'br_sale', 'br_stock_account'
     ],
     'data': [
+        'security/ir.model.access.csv',
         'reports/sale_order.xml',
         'views/sale_stock_view.xml',
     ],

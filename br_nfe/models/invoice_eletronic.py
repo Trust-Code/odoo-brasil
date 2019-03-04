@@ -39,7 +39,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     @api.depends('chave_nfe')
-    def _format_danfe_key(self):
+    def _compute_format_danfe_key(self):
         for item in self:
             item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
                                           item.chave_nfe, 10, re.DOTALL)
@@ -168,7 +168,7 @@ class InvoiceEletronic(models.Model):
     chave_nfe = fields.Char(
         string=u"Chave NFe", size=50, readonly=True, states=STATE)
     chave_nfe_danfe = fields.Char(
-        string=u"Chave Formatado", compute="_format_danfe_key")
+        string=u"Chave Formatado", compute="_compute_format_danfe_key")
     protocolo_nfe = fields.Char(
         string=u"Protocolo", size=50, readonly=True, states=STATE,
         help=u"Protocolo de autorização da NFe")

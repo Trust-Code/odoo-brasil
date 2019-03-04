@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.exceptions import UserError
-from odoo.addons.br_boleto.tests.test_common import TestBoleto
+from .test_common import TestBoleto
 
 
 class TestBoletoSicoob(TestBoleto):
