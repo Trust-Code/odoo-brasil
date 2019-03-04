@@ -5,7 +5,7 @@ import logging
 from io import StringIO
 from datetime import date, datetime
 
-from odoo import models
+from odoo import models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -123,7 +123,7 @@ class l10nBrPaymentCnabImport(models.TransientModel):
                 payment_line.process_receivable_line(statement, vals)
 
         if not statement:
-            raise UserError('Nenhum registro localizado nesse extrato!')
+            raise UserError(_('Nenhum registro localizado nesse extrato!'))
         action = self.env.ref(
             'br_account_payment.action_payment_statement_tree')
         return action.read()[0]
