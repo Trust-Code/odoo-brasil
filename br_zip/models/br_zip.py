@@ -40,7 +40,7 @@ class BrZip(models.Model):
             if not state_id or not city_id or \
                     len(street or '') == 0:
                 raise UserError(
-                    u'Necessário informar Estado, município e logradouro')
+                    _('Necessário informar Estado, município e logradouro'))
 
             if country_id:
                 domain.append(('country_id', '=', country_id))
@@ -90,7 +90,7 @@ class BrZip(models.Model):
             if zip_code and len(zip_code) == 8:
                 self._search_by_cep(zip_code)
             elif zip_code:
-                raise UserError(u'Digite o cep corretamente')
+                raise UserError(_('Digite o cep corretamente'))
             else:
                 self._search_by_address(city_id, street)
 
@@ -154,7 +154,7 @@ class BrZip(models.Model):
         if len(zip_ids) == 1:
             return self.set_result(zip_ids[0])
         else:
-            raise UserError(_(u'Nenhum CEP encontrado'))
+            raise UserError(_('Nenhum CEP encontrado'))
 
     @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
@@ -192,7 +192,7 @@ class BrZip(models.Model):
             )
 
         elif error and len(zip_ids) == 0:
-            raise UserError(_(u'Nenhum registro encontrado'))
+            raise UserError(_('Nenhum registro encontrado'))
         else:
             return False
 

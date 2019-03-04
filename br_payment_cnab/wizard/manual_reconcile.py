@@ -2,11 +2,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import fields, models
+from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 
-class l10nBrPaymentManualReconcile(models.TransientModel):
+class L10nBrPaymentManualReconcile(models.TransientModel):
     _name = 'l10n_br_payment.manual.reconcile'
 
     name = fields.Char(string="Nome")
@@ -22,7 +22,7 @@ class l10nBrPaymentManualReconcile(models.TransientModel):
 
         if line_ids.filtered(lambda x: x.state not in ('processed', 'sent')):
             raise UserError(
-                'Apenas itens enviados podem ser baixados manualmente')
+                _('Apenas itens enviados podem ser baixados manualmente'))
 
         if self.confirmation == 'processed':
             line_ids.mark_order_line_processed('AA', 'Processado manualmente')
@@ -32,4 +32,4 @@ class l10nBrPaymentManualReconcile(models.TransientModel):
         elif self.confirmation == 'paid':
             line_ids.mark_order_line_paid('00', 'Confirmação manual')
         else:
-            raise UserError('Confirmação inválida!')
+            raise UserError(_('Confirmação inválida!'))
