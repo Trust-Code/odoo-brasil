@@ -1,7 +1,7 @@
 
 import re
 import logging
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ class WizardChangePayment(models.TransientModel):
         partner_ids = line_ids.mapped('partner_id')
         if len(partner_ids) > 1:
             raise UserError(
-                'É possível agendar apenas pagamentos para o mesmo cliente')
+                _('É possível agendar apenas pagamentos para o mesmo cliente'))
         elif len(partner_ids) == 1:
             res['partner_id'] = partner_ids[0].id
             res['amount_total'] = sum(
@@ -59,7 +59,7 @@ class WizardChangePayment(models.TransientModel):
         try:
             return decode_digitable_line(digitable_line)
         except DvNotValidError:
-            raise UserError("DV do código de Barras não confere!")
+            raise UserError(_("DV do código de Barras não confere!"))
 
     def _validate_information(self):
         errors = []
@@ -90,7 +90,7 @@ class WizardChangePayment(models.TransientModel):
 
         if len(move_lines) > 1:
             if not all([not x.l10n_br_order_line_id for x in move_lines]):
-                raise UserError('Esta linha já possui pagamento agendado!')
+                raise UserError(_('Esta linha já possui pagamento agendado!'))
 
         order_line = False
         if len(move_lines) == 1 and move_lines[0].l10n_br_order_line_id:
@@ -111,8 +111,8 @@ class WizardChangePayment(models.TransientModel):
             })
         elif order_line:
             raise UserError(
-                'Algum pagamento já foi processado! \
-                Não é possível processa-lo novamente!')
+                _('Algum pagamento já foi processado! \
+                  Não é possível processa-lo novamente!'))
         else:
             vals = self._prepare_vals(move_lines, linha_digitavel, barcode)
             order_line = self.env['payment.order.line'].\

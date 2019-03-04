@@ -3,7 +3,7 @@
 
 import re
 import logging
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class AccountInvoice(models.Model):
             linha = re.sub('[^0-9]', '', item.l10n_br_linha_digitavel)
             if len(linha) not in (47, 48):
                 raise UserError(
-                    'Tamanho da linha digitável inválido %s' % len(linha))
+                    _('Tamanho da linha digitável inválido %s') % len(linha))
             vals = self._get_digitable_line_vals(linha)
             item.l10n_br_barcode = vals['barcode']
 
@@ -61,7 +61,7 @@ class AccountInvoice(models.Model):
         try:
             return decode_digitable_line(digitable_line)
         except DvNotValidError:
-            raise UserError("DV do código de Barras não confere!")
+            raise UserError(_("DV do código de Barras não confere!"))
 
     def prepare_payment_line_vals(self, move_line_id):
         return {
@@ -90,9 +90,10 @@ class AccountInvoice(models.Model):
             return
         elif self.l10n_br_payment_type in ('01', '02'):  # Depósitos
             if not self.l10n_br_bank_account_id:
-                raise UserError('A conta bancária para depósito é obrigatório')
+                raise UserError(
+                    _('A conta bancária para depósito é obrigatório'))
         else:
-            raise UserError('Para tributos utilize os recibos de compra')
+            raise UserError(_('Para tributos utilize os recibos de compra'))
 
         for item in self.payable_move_line_ids:
             if not item.payment_mode_id:

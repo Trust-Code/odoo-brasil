@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import models
+from odoo import models, _
 from odoo.exceptions import UserError
 from ..boleto.document import Boleto
 
@@ -31,7 +31,7 @@ class IrActionsReport(models.Model):
         elif self.model == 'account.move.line':
             move_line_ids = self.env['account.move.line'].browse(res_ids)
         else:
-            raise UserError(u'Parâmetros inválidos')
+            raise UserError(_('Parâmetros inválidos'))
         move_line_ids = move_line_ids.filtered(
             lambda x: x.payment_mode_id.boleto)
         order_line_ids = self.env['payment.order.line'].action_register_boleto(
@@ -40,6 +40,6 @@ class IrActionsReport(models.Model):
         if not boleto_list:
             if self.env.context.get('ignore_empty_boleto'):
                 return None, 'pdf'
-            raise UserError('Nenhum boleto a ser emitido!')
+            raise UserError(_('Nenhum boleto a ser emitido!'))
         pdf_string = Boleto.get_pdfs(boleto_list)
         return pdf_string, 'pdf'

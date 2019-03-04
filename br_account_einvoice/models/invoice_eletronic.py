@@ -8,7 +8,7 @@ import logging
 from datetime import datetime, timedelta
 import dateutil.relativedelta as relativedelta
 from odoo.exceptions import UserError
-from odoo import api, fields, models, tools
+from odoo import api, fields, models, tools, _
 from odoo.addons import decimal_precision as dp
 from odoo.addons.br_account.models.cst import CST_ICMS
 from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
@@ -436,7 +436,7 @@ class InvoiceEletronic(models.Model):
         for item in self:
             if not item.can_unlink():
                 raise UserError(
-                    u'Documento Eletrônico enviado - Proibido excluir')
+                    _('Documento Eletrônico enviado - Proibido excluir'))
         super(InvoiceEletronic, self).unlink()
 
     def log_exception(self, exc):
@@ -451,8 +451,8 @@ class InvoiceEletronic(models.Model):
             'domain': [['id', '=', self.invoice_id.id]],
             'context': {}
         }
-        msg = 'Verifique a %s, ocorreu um problema com o envio de \
-        documento eletrônico!' % self.name
+        msg = _('Verifique a %s, ocorreu um problema com o envio de \
+                documento eletrônico!') % self.name
         self.create_uid.notify(msg, sticky=True, title="Ação necessária!",
                                warning=True, redirect=redirect)
 
@@ -483,7 +483,7 @@ class InvoiceEletronic(models.Model):
     def send_email_nfe(self):
         mail = self.env.user.company_id.nfe_email_template
         if not mail:
-            raise UserError('Modelo de email padrão não configurado')
+            raise UserError(_('Modelo de email padrão não configurado'))
         atts = self._find_attachment_ids_email()
         self.invoice_id.message_post_with_template(
             mail.id, attachment_ids=[(6, 0, atts + mail.attachment_ids.ids)])
@@ -501,7 +501,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        raise UserError('Não é possível duplicar uma Nota Fiscal.')
+        raise UserError(_('Não é possível duplicar uma Nota Fiscal.'))
 
 
 class InvoiceEletronicEvent(models.Model):

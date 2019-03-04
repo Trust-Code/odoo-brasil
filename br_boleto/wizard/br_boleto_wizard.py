@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from datetime import date
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -25,8 +25,8 @@ class BrBoletoWizard(models.TransientModel):
                 })
             elif line_id.state != 'cancelled':
                 raise UserError(
-                    'O boleto está na situação %s, cancele o item de \
-                    cobrança antes de reemitir outro boleto' %
+                    _('O boleto está na situação %s, cancele o item de \
+                      cobrança antes de reemitir outro boleto') %
                     dict(line_id._fields['state'].selection).get(
                         line_id.state))
 
