@@ -80,7 +80,7 @@ class AccountVoucher(models.Model):
             linha = re.sub('[^0-9]', '', item.linha_digitavel)
             if len(linha) not in (47, 48):
                 raise UserError(
-                    'Tamanho da linha digitável inválido %s' % len(linha))
+                    _('Tamanho da linha digitável inválido %s') % len(linha))
             vals = self._get_digitable_line_vals(linha)
             item.barcode = vals['barcode']
 
@@ -104,7 +104,7 @@ class AccountVoucher(models.Model):
         try:
             return decode_digitable_line(digitable_line)
         except DvNotValidError:
-            raise UserError("DV do código de Barras não confere!")
+            raise UserError(_("DV do código de Barras não confere!"))
 
     @api.onchange('payment_mode_id')
     def _onchange_payment_mode_id(self):

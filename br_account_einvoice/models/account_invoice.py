@@ -4,7 +4,7 @@
 from datetime import datetime
 from random import SystemRandom
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -69,13 +69,13 @@ class AccountInvoice(models.Model):
             [('invoice_id', '=', self.id)])
 
         if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à esta fatura')
+            raise UserError(_('Não existe um E-Doc relacionado à esta fatura'))
 
         if len(docs) > 1:
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'invoice.eletronic.selection.wizard',
-                'name': "Escolha a nota a ser impressa",
+                'name': _("Escolha a nota a ser impressa"),
                 'view_mode': 'form',
                 'context': self.env.context,
                 'target': 'new',
@@ -88,7 +88,8 @@ class AccountInvoice(models.Model):
         report = self._return_pdf_invoice(doc)
         if not report:
             raise UserError(
-                'Nenhum relatório implementado para este modelo de documento')
+                _('Nenhum relatório implementado para este modelo \
+                  de documento'))
         if not isinstance(report, str):
             return report
         action = self.env.ref(report).report_action(doc)
@@ -274,8 +275,9 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for edoc in edocs:
                 if edoc.state == 'done':
-                    raise UserError(u'Documento eletrônico emitido - Cancele o \
-                                    documento para poder cancelar a fatura')
+                    raise UserError(
+                        _('Documento eletrônico emitido - Cancele o \
+                          documento para poder cancelar a fatura'))
                 if edoc.can_unlink():
                     edoc.sudo().unlink()
         return res
