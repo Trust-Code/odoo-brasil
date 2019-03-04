@@ -1,5 +1,5 @@
 import logging
-from ..serialize.cnab240 import Cnab_240
+from ..serialize.cnab240 import Cnab240
 
 _logger = logging.getLogger(__name__)
 
@@ -10,7 +10,7 @@ except ImportError:
     _logger.error('Cannot import pycnab240 dependencies.', exc_info=True)
 
 
-class Bradesco240(Cnab_240):
+class Bradesco240(Cnab240):
 
     def __init__(self, payment_order):
         self._bank = bradesco

@@ -1,4 +1,4 @@
-from ..serialize.cnab240 import Cnab_240
+from ..serialize.cnab240 import Cnab240
 import time
 import logging
 _logger = logging.getLogger(__name__)
@@ -11,7 +11,7 @@ except ImportError:
     _logger.error('Cannot import from pycnab240', exc_info=True)
 
 
-class Itau240(Cnab_240):
+class Itau240(Cnab240):
     def __init__(self, pay_order):
         self._bank = itau
         self._order = pay_order
