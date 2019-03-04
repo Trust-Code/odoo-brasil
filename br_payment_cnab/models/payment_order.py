@@ -48,7 +48,7 @@ class PaymentOrder(models.Model):
         lines = self.line_ids.filtered(
             lambda x: x.state in ('approved', 'sent'))
         if not lines:
-            raise UserError('Nenhum pagamento aprovado!')
+            raise UserError(_('Nenhum pagamento aprovado!'))
 
         self.file_number = self.get_file_number()
         self.data_emissao_cnab = datetime.now()
@@ -108,7 +108,7 @@ class PaymentOrderLine(models.Model):
              ('state', 'not in', ('rejected', 'cancelled'))])
 
         if total > 0:
-            raise UserError('O código de barras deve ser único!')
+            raise UserError(_('O código de barras deve ser único!'))
         return True
 
     def validate_partner_data(self, vals):
@@ -300,10 +300,10 @@ class PaymentOrderLine(models.Model):
         for item in self:
             if item.state != 'draft':
                 raise UserError(
-                    'Apenas pagamentos em provisório podem ser aprovados!')
+                    _('Apenas pagamentos em provisório podem ser aprovados!'))
             if item.type != 'payable':
                 raise UserError(
-                    'Apenas pagamentos a fornecedor podem ser aprovados')
+                    _('Apenas pagamentos a fornecedor podem ser aprovados'))
             payment_order = self.get_payment_order(item.payment_mode_id)
             item.write({
                 'payment_order_id': payment_order.id,
