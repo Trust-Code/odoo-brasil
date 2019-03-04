@@ -87,7 +87,7 @@
                 <div class='client-detail'>
                     <span class='label'>Cep</span>
                     <input class='detail client-address-zip' name='zip' t-att-value='partner.zip || ""' placeholder='ZIP'></input>
-                    <span class="button back">
+                    <span class="button searchzip">
                         <i class="fa fa-search"></i>
                     </span>
                 </div>
