@@ -4,7 +4,7 @@
 from odoo import api, fields, models
 
 
-class l10nBrPaymentStatement(models.Model):
+class L10nBrPaymentStatement(models.Model):
     _name = 'l10n_br.payment.statement'
 
     _description = "Payment Statement"
@@ -46,7 +46,7 @@ class l10nBrPaymentStatement(models.Model):
         string='Statement lines', readonly=True, copy=True)
 
 
-class l10nBrPaymentStatementLine(models.Model):
+class L10nBrPaymentStatementLine(models.Model):
     _name = 'l10n_br.payment.statement.line'
     _description = "Bank Statement Line"
     _order = "statement_id desc, date desc, id desc"
