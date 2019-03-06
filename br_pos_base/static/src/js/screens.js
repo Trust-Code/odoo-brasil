@@ -31,13 +31,14 @@ odoo.define('br_pos_base.screens', function(require){
         },
         search_zip_code: function(partner) {
             var self = this;
-            var inputZip = this.$('input[name="zip"]');
+            var zipcode = this.$('input[name="zip"]').val();
+            var regex = /[^0-9]/g;
+            zipcode = zipcode.replace(regex, '');
 
             ajax.jsonRpc('/contact/zip_search', 'call', {
-                  zip: inputZip.val(),
+                  zip: zipcode,
               }).then(function(result){
                   if(result.sucesso){
-                      let zipcode = inputZip.val();
                       self.$('input[name="zip"]').val(zipcode.slice(0, 5) + '-' + zipcode.slice(5, 8));
                       self.$('input[name="street"]').val(result.street);
                       self.$('input[name="district"]').val(result.district);
@@ -57,12 +58,12 @@ odoo.define('br_pos_base.screens', function(require){
         search_states: function (partner, force) {
             var country = $('select[name=country_id]').val();
             if (force) {
-                country = partner.country_id[0];
+                country = partner.country_id && partner.country_id[0] || 0;
             };
             var vals = {country_id: parseInt(country)};
             ajax.jsonRpc("/contact/get_states", 'call', vals).then(
                 function (data) {
-                    var selected = partner.state_id[0];
+                    var selected = partner.state_id && partner.state_id[0] || 0;
                     $('select[name=state_id]').find('option').remove().end();
                     $('select[name=state_id]').append(
                         '<option value="">Estado...</option>');
@@ -79,12 +80,12 @@ odoo.define('br_pos_base.screens', function(require){
         search_cities: function (partner, force) {
             var state = $('select[name=state_id]').val();
             if (force) {
-                state = partner.state_id[0];
+                state = partner.state_id && partner.state_id[0] || 0;
             };
             var vals = {state_id: parseInt(state)};
             ajax.jsonRpc("/contact/get_cities", 'call', vals).then(
                 function (data) {
-                    var selected = partner.city_id[0];
+                    var selected = partner.city_id && partner.city_id[0] || 0;
                     $('select[name=city_id]').find('option').remove().end();
                     $('select[name=city_id]').append(
                         '<option value="">Cidade...</option>');
