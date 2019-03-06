@@ -11,18 +11,18 @@ class BrPosBaseController(Controller):
     @http.route(['/contact/get_cities'], type='json', auth="public",
                 methods=['POST'], website=True)
     def get_cities_json(self, state_id):
-        if state_id and state_id.isdigit():
+        if state_id and isinstance(state_id, int):
             cities = request.env['res.state.city'].sudo().search(
-                [('state_id', '=', int(state_id))])
+                [('state_id', '=', state_id)])
             return [(city.id, city.name) for city in cities]
         return []
 
     @http.route(['/contact/get_states'], type='json', auth="public",
                 methods=['POST'], website=True)
     def get_states_json(self, country_id):
-        if country_id and country_id.isdigit():
+        if country_id and isinstance(country_id, int):
             states = request.env['res.country.state'].sudo().search(
-                [('country_id', '=', int(country_id))])
+                [('country_id', '=', country_id)])
             return [(state.id, state.name) for state in states]
         return []
 

@@ -11,8 +11,22 @@ odoo.define('br_pos_base.screens', function(require){
 
             var contents = this.$('.client-details-contents');
 
-            contents.off('click','.button.searchzip');
-            contents.on('click','.button.searchzip',function(){ self.search_zip_code(partner); });
+            contents.off('click', '.button.searchzip');
+            contents.off('change', 'select[name=country_id]');
+            contents.off('change', 'select[name=state_id]');
+            contents.on('click', '.button.searchzip', function () {
+                self.search_zip_code(partner);
+            });
+            contents.on('change', 'select[name=country_id]', function () {
+                self.search_states(partner);
+            });
+            contents.on('change', 'select[name=state_id]', function () {
+                self.search_cities(partner);
+            });
+            if (visibility === "edit") {
+                self.search_states(partner, true);
+                self.search_cities(partner, true);
+            }
             return result;
         },
         search_zip_code: function(partner) {
@@ -30,12 +44,59 @@ odoo.define('br_pos_base.screens', function(require){
                       self.$('select[name="city_id"]').val(result.city_id);
                       self.$('select[name="state_id"]').val(result.state_id);
                       self.$('select[name="country_id"]').val(result.country_id);
+                      partner.state_id = [result.state_id, "temp"];
+                      partner.city_id = [result.city_id, "temp"];
+                      self.search_states(partner);
                   }else {
                       alert('Nenhum CEP encontrado!');
                   }
               }, function(err,ev){
                   alert('Erro ao pesquisar CEP');
               });
+        },
+        search_states: function (partner, force) {
+            var country = $('select[name=country_id]').val();
+            if (force) {
+                country = partner.country_id[0];
+            };
+            var vals = {country_id: parseInt(country)};
+            ajax.jsonRpc("/contact/get_states", 'call', vals).then(
+                function (data) {
+                    var selected = partner.state_id[0];
+                    $('select[name=state_id]').find('option').remove().end();
+                    $('select[name=state_id]').append(
+                        '<option value="">Estado...</option>');
+                    $.each(data, function (i, item) {
+                        $('select[name=state_id]').append($('<option>', {
+                            value: item[0],
+                            text: item[1],
+                            selected: item[0]===selected?true:false,
+                        }));
+                    });
+                  $('select[name=state_id]').trigger('change');
+              });
+        },
+        search_cities: function (partner, force) {
+            var state = $('select[name=state_id]').val();
+            if (force) {
+                state = partner.state_id[0];
+            };
+            var vals = {state_id: parseInt(state)};
+            ajax.jsonRpc("/contact/get_cities", 'call', vals).then(
+                function (data) {
+                    var selected = partner.city_id[0];
+                    $('select[name=city_id]').find('option').remove().end();
+                    $('select[name=city_id]').append(
+                        '<option value="">Cidade...</option>');
+                    $.each(data, function (i, item) {
+                        $('select[name=city_id]').append($('<option>', {
+                            value: item[0],
+                            text: item[1],
+                            selected: item[0]===selected?true:false,
+                        }));
+                    });
+                }
+            );
         },
     });
 
