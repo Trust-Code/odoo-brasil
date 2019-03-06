@@ -110,15 +110,15 @@ class ResPartner(models.Model):
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,
         this method call others methods because this validation is State wise
-
         :Return: True or False."""
-        if not self.inscr_est or self.inscr_est == 'ISENTO' \
-                or not self.is_company:
-            return True
-        uf = self.state_id and self.state_id.code.lower() or ''
-        res = self._validate_ie_param(uf, self.inscr_est)
-        if not res:
-            raise ValidationError(_(u'Invalid State Inscription!'))
+        for partner in self:
+            if not partner.inscr_est or partner.inscr_est == 'ISENTO' \
+                    or not partner.is_company:
+                return True
+            uf = partner.state_id and partner.state_id.code.lower() or ''
+            res = partner._validate_ie_param(uf, partner.inscr_est)
+            if not res:
+                raise ValidationError(_(u'Invalid State Inscription!'))
         return True
 
     @api.one
