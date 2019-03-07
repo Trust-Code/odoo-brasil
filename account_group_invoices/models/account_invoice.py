@@ -96,7 +96,7 @@ class AccountInvoice(models.Model):
         pgto_ids = inv_ids.mapped('payment_term_id')
         user_ids = inv_ids.mapped('user_id')
         team_ids = inv_ids.mapped('team_id')
-
+        obs_ids = fpos_id.fiscal_observation_ids.ids
         gr_invoice_id = self.create({
             'origin': origin or '',
             'type': 'out_invoice',
@@ -108,6 +108,9 @@ class AccountInvoice(models.Model):
             'currency_id': company.currency_id.id,
             'payment_term_id': pgto_ids[0].id if pgto_ids else False,
             'fiscal_position_id': fpos_id.id,
+            'service_document_id': fpos_id.service_document_id.id,
+            'service_serie_id': fpos_id.service_serie_id.id,
+            'fiscal_observation_ids': [(6, 0, obs_ids)],
             'company_id': company.id,
             'user_id': user_ids[0].id if user_ids else False,
             'team_id': team_ids[0].id if team_ids else False
