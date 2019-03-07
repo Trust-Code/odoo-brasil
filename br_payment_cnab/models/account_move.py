@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, models
+from odoo import api, models, _
 from odoo.exceptions import UserError
 
 
@@ -26,6 +26,6 @@ class AccountMoveLine(models.Model):
                  ('type', '=', 'payable'),
                  ('state', 'not in', ('draft', 'cancelled', 'rejected'))])
             if total > 0:
-                raise UserError('Existe uma ordem de pagamento relacionada!\
-                                Cancele o item da ordem primeiro')
+                raise UserError(_('Existe uma ordem de pagamento relacionada!\
+                                  Cancele o item da ordem primeiro'))
         return super(AccountMoveLine, self)._update_check()

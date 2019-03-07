@@ -15,6 +15,7 @@
     ],
     'depends': [
         'point_of_sale',
+        'br_zip',
     ],
     'data': [
         'views/pos_templates.xml',

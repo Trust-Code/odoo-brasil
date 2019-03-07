@@ -2,8 +2,9 @@
 
     <template id="br_point_sale_assets_backend" inherit_id="point_of_sale.assets">
         <xpath expr="." position="inside">
-            <script type="text/javascript" src="/br_pos_base/static/src/js/jquery.mask.min.js"></script>
+            <script type="text/javascript" src="/br_pos_base/static/src/lib/jquery.mask.min.js"></script>
             <script type="text/javascript" src="/br_pos_base/static/src/js/models.js"></script>
+            <script type="text/javascript" src="/br_pos_base/static/src/js/screens.js"></script>
         </xpath>
     </template>
 

@@ -6,7 +6,7 @@ import tempfile
 
 from decimal import Decimal
 from datetime import datetime
-from odoo import fields, models
+from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ class AccountBankStatementImport(models.TransientModel):
             return True
         except Exception as e:
             if raise_error:
-                raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
+                raise UserError(_("Arquivo formato inválido:\n%s") % str(e))
             return False
 
     def _get_nosso_numero(self, journal_id, nosso_numero):
@@ -93,7 +93,7 @@ class AccountBankStatementImport(models.TransientModel):
             from cnab240.bancos import sicredi
             return sicredi
         else:
-            raise UserError(u'Banco ainda não implementado: %s' % bank)
+            raise UserError(_('Banco ainda não implementado: %s') % bank)
 
     def _parse_cnab(self, data_file, raise_error=False):
         cnab240_file = tempfile.NamedTemporaryFile()

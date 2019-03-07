@@ -1,7 +1,7 @@
 # © 2017 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -17,4 +17,4 @@ class CancelNFSe(models.TransientModel):
             self.edoc_id.action_cancel_document(
                 justificativa=self.justificativa)
         else:
-            raise UserError(u"Justificativa deve ter mais de 15 caracteres")
+            raise UserError(_("Justificativa deve ter mais de 15 caracteres"))

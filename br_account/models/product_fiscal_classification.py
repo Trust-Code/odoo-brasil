@@ -3,7 +3,7 @@
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
-from odoo.addons.br_account.models.cst import CST_IPI
+from .cst import CST_IPI
 
 
 class ProductFiscalClassification(models.Model):

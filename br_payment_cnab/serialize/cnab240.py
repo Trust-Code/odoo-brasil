@@ -16,7 +16,7 @@ except ImportError:
     _logger.error('Cannot import pycnab240', exc_info=True)
 
 
-class Cnab_240(object):
+class Cnab240(object):
 
     def _hour_now(self):
         return (int(datetime.now().strftime("%H%M%S")[0:4]))

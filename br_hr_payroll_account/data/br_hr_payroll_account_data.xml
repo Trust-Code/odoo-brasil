@@ -3,105 +3,66 @@
 <!-- HR SALARY RULES-->
     <record id="br_hr_payroll.hr_salary_rule_inss" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.4.03.007')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_inss" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_imp_renda" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.4.03.003')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_imp_renda" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_fgts" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.3.01.006')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_fgts" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_plano_saude" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '4.1.1.03.004')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_plano_saude" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_plano_saude_dependente" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '4.1.1.03.004')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_plano_saude_dependente" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_csd" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.4.03.008')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_csd" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_vt" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '4.1.1.03.001')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_vt" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_payroll_rules_vr" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '4.1.1.03.003')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_payroll_rules_vr" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_va" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '4.1.1.03.002')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_va" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_pension" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.3.01.007')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_pension" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_falta" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '4.1.1.01.001')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_falta" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_pension" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.3.01.007')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_pension" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 
     <record id="br_hr_payroll.hr_salary_rule_13_prov" model="hr.salary.rule">
         <field name="account_credit" search="[('code', '=', '2.1.3.02')]"/>
-    </record>
-
-    <record id="br_hr_payroll.hr_salary_rule_13_prov" model="hr.salary.rule">
         <field name="account_debit" search="[('code', '=', '2.1.3.01.001')]"/>
     </record>
 

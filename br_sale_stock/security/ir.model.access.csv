@@ -1,2 +1,2 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"br_account_cfop","br_account.cfop","br_account.model_br_account_cfop","base.group_sale_salesman",1,0,0,0
+"br_account_cfop","br_account.cfop","br_account.model_br_account_cfop","sales_team.group_sale_salesman",1,0,0,0
