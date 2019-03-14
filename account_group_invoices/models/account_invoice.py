@@ -126,7 +126,7 @@ class AccountInvoice(models.Model):
                 'origin': line.origin,
                 'account_id': line.account_id.id,
                 'invoice_line_tax_ids': [
-                     (6, 0, [tax.id for tax in line.invoice_line_tax_ids])]
+                    (6, 0, [tax.id for tax in line.invoice_line_tax_ids])]
                 }
             new_line = self.env['account.invoice.line'].create(vals)
             new_line._br_account_onchange_product_id()
