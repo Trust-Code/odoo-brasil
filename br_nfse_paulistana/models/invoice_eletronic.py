@@ -273,38 +273,43 @@ class InvoiceEletronic(models.Model):
                 resposta = teste_envio_lote_rps(
                     certificado, nfse=nfse_values)
             retorno = resposta['object']
-            if retorno.Cabecalho.Sucesso:
-                self.state = 'done'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = \
-                    'Nota Fiscal Paulistana emitida com sucesso'
+            self._create_attachment(
+                'nfse-envio', self, resposta['sent_xml'])
 
-                # Apenas producão tem essa tag
-                if self.ambiente == 'producao':
-                    self.verify_code = \
-                        retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao
-                    self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe \
-                        .NumeroNFe
-
-                for inv_line in self.invoice_id.invoice_line_ids:
-                    if inv_line.product_id.l10n_br_fiscal_type == 'service':
-                        inv_line.write(
-                            {'l10n_br_state': 'transmitido',
-                             'l10n_br_numero_nfse': self.numero_nfse})
-
+            if (retorno is None):
+                self.codigo_retorno = "-1"
+                self.mensagem_retorno = resposta['received_xml']
             else:
-                self.codigo_retorno = retorno.Erro.Codigo
-                self.mensagem_retorno = retorno.Erro.Descricao
+                self._create_attachment(
+                    'nfse-ret', self, resposta['received_xml'])
+                if retorno.Cabecalho.Sucesso:
+                    self.state = 'done'
+                    self.codigo_retorno = '100'
+                    self.mensagem_retorno = \
+                        'Nota Fiscal Paulistana emitida com sucesso'
+
+                    # Apenas producão tem essa tag
+                    if self.ambiente == 'producao':
+                        self.verify_code = \
+                            retorno.ChaveNFeRPS.ChaveNFe.CodigoVerificacao
+                        self.numero_nfse = retorno.ChaveNFeRPS.ChaveNFe \
+                            .NumeroNFe
+
+                    for inv_line in self.invoice_id.invoice_line_ids:
+                        if inv_line.product_id.l10n_br_fiscal_type == 'service':
+                            inv_line.write(
+                                {'l10n_br_state': 'transmitido',
+                                 'l10n_br_numero_nfse': self.numero_nfse})
+
+                else:
+                    self.codigo_retorno = retorno.Erro.Codigo
+                    self.mensagem_retorno = retorno.Erro.Descricao
 
             self.env['invoice.eletronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
                 'invoice_eletronic_id': self.id,
             })
-            self._create_attachment(
-                'nfse-envio', self, resposta['sent_xml'])
-            self._create_attachment(
-                'nfse-ret', self, resposta['received_xml'])
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
