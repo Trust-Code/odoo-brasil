@@ -168,12 +168,6 @@ msgid "Modo de Pagamento"
 msgstr ""
 
 #. module: br_account_payment
-#: model:ir.model.fields,field_description:br_account_payment.field_account_invoice_payment_mode_id
-#: model:ir.model.fields,field_description:br_account_payment.field_account_move_line_payment_mode_id
-msgid "Modo de pagamento"
-msgstr ""
-
-#. module: br_account_payment
 #: model:ir.ui.view,arch_db:br_account_payment.view_payments_filter
 msgid "Mês"
 msgstr ""

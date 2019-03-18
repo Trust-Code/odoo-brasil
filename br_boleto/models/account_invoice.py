@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    boleto = fields.Boolean(related="payment_mode_id.boleto")
+    # boleto = fields.Boolean(related="payment_mode_id.boleto")
 
     def _get_email_template_invoice(self):
         return self.env.user.company_id.boleto_email_tmpl
