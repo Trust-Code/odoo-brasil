@@ -22,8 +22,8 @@ class AccountInvoice(models.Model):
         states={'draft': [('readonly', False)]})
     l10n_br_barcode = fields.Char(
         'Barcode', compute="_compute_barcode", store=True, readonly=True)
-    l10n_br_payment_type = fields.Selection(
-        related="payment_mode_id.payment_type", readonly=True)
+    # l10n_br_payment_type = fields.Selection(
+    #     related="payment_mode_id.payment_type", readonly=True)
     l10n_br_bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]", readonly=True,
@@ -84,24 +84,26 @@ class AccountInvoice(models.Model):
                 return line.l10n_br_order_line_id
 
     def check_create_payment_line(self):
-        if self.payment_mode_id.type != 'payable':
-            return
-        if self.l10n_br_payment_type in ('03'):  # Boletos
-            return
-        elif self.l10n_br_payment_type in ('01', '02'):  # Depósitos
-            if not self.l10n_br_bank_account_id:
-                raise UserError(
-                    _('A conta bancária para depósito é obrigatório'))
-        else:
-            raise UserError(_('Para tributos utilize os recibos de compra'))
-
-        for item in self.payable_move_line_ids:
-            if not item.payment_mode_id:
+        payment_modes = self.preview_payment_ids.mapped('payment_mode_id')
+        for pMode in payment_modes:
+            if pMode.type != 'payable':
                 return
-            vals = self.prepare_payment_line_vals(item)
+            if pMode.payment_type in ('03'):  # Boletos
+                return
+            elif pMode.payment_type in ('01', '02'):  # Depósitos
+                if not self.l10n_br_bank_account_id:
+                    raise UserError(
+                        _('A conta bancária para depósito é obrigatório'))
+            else:
+                raise UserError(_('Para tributos utilize recibos de compra'))
+
+        for move, pMode in zip(self.payable_move_line_ids, payment_modes):
+            if not pMode:
+                raise UserError(_('Para pagamentos automaticos é necessário\
+                                  preencher o modo de pagamento'))
+            vals = self.prepare_payment_line_vals(move)
             line_obj = self.env['payment.order.line'].with_context({})
-            line_obj.action_generate_payment_order_line(
-                item.payment_mode_id, vals)
+            line_obj.action_generate_payment_order_line(pMode, vals)
 
     @api.multi
     def action_move_create(self):
