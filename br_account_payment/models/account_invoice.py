@@ -50,35 +50,35 @@ class AccountInvoice(models.Model):
             line.amount = mnt
             balance -= mnt
 
-    def prepare_preview_payment(self, amount=0, with_payment_mode=True):
+    def prepare_preview_payment(self, payment_term_id=False):
         pLine_env = self.env['invoice.payment.lines']
         pMode_env = self.env['l10n_br.payment.mode']
         pMode_default = pMode_env.search([('is_default', '=', True)], limit=1)
-        amount = amount if amount > 0 else self.amount_total
         result = []
-        if self.payment_term_id:
-            for n, line in enumerate(self.payment_term_id.line_ids, 1):
+        pTerm = payment_term_id if payment_term_id else self.payment_term_id
+        if pTerm:
+            for n, line in enumerate(pTerm.line_ids, 1):
                 days = 0
                 if line.option == 'day_after_invoice_date':
                     days = line.days
                 dPreviews = pLine_env.get_date_previews(days)
-                name = "%02d/%02d" % (n, len(self.payment_term_id.line_ids))
+                name = "%02d/%02d" % (n, len(pTerm.line_ids))
                 vals = {'name': name,
                         'days': days,
                         'date_previews': dPreviews,
                         'payment_term_line_id': line.id}
-                if with_payment_mode and line.default_payment_mode_id:
-                    vals['payment_mode_id'] = line.default_payment_mode_id
+                if line.default_payment_mode_id:
+                    vals['payment_mode_id'] = line.default_payment_mode_id.id
                 else:
-                    vals['payment_mode_id'] = pMode_default
-                result.append((0, 0, vals))
+                    vals['payment_mode_id'] = pMode_default.id
+                result.append([0, 0, vals])
         else:
             dPreviews = pLine_env.get_date_previews()
             vals = {'name': '01/01',
                     'days': 0,
                     'date_previews': dPreviews,
                     'payment_mode_id': pMode_default.id}
-            result.append((0, 0, vals))
+            result.append([0, 0, vals])
         return result
 
     @api.multi
@@ -95,3 +95,13 @@ class AccountInvoice(models.Model):
             move[2][debit_credit] = payment.amount
             move[2]['payment_mode_id'] = payment.payment_mode_id.id
         return aml
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    @api.model
+    def create(self, vals):
+        res = super(AccountInvoiceLine, self).create(vals)
+        res.invoice_id._onchange_preview_payment_amount()
+        return res

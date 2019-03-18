@@ -11,6 +11,7 @@
     'version': '11.0.1.0.0',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Mackilem Van der Laan <mack.vdl@gmail.com',
     ],
     'depends': [
         'sale', 'br_account_payment',

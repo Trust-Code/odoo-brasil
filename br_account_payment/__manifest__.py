@@ -14,6 +14,7 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Mackilem <mack.vdl@gmail.com>',
         'Carlos Alberto Cipriano Korovsky <carlos.korovsky@uktech.com.br',
     ],
     'depends': [
