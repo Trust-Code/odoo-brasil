@@ -60,11 +60,12 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_validate()
         error = ''
         for item in self:
-            if not item.payment_mode_id:
+            pay_modes = item.preview_payment_ids.mapped('payment_mode_id')
+            if not pay_modes:
                 continue
-            if item.payment_mode_id.type != 'receivable':
+            if not all([True for p in pay_modes if p.type == 'receivable']):
                 continue
-            if not item.payment_mode_id.boleto:
+            if not all([True for p in pay_modes if p.boleto]):
                 continue
             if not item.company_id.partner_id.legal_name:
                 error += u'Empresa - Razão Social\n'
