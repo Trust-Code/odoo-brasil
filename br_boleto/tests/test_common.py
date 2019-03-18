@@ -93,7 +93,10 @@ class TestBoleto(TransactionCase):
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
             'invoice_line_ids': invoice_line_data,
-            'payment_mode_id': self._return_payment_mode(),
+            'preview_payment_ids': [(0, 0, {
+                'name': '01/01',
+                'days': 5,
+                'payment_mode_id': self._return_payment_mode()})]
         }
         self.invoices = self.env['account.invoice'].create(dict(
             default_invoice.items(),
