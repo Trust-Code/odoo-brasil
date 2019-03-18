@@ -109,8 +109,9 @@ class Cnab240(Cnab):
         pass
 
     def cep(self, format):
-        sulfixo = format[-3:]
-        prefixo = format[:5]
+        cep = re.sub('[^0-9]', '', format or '')
+        sulfixo = cep[-3:]
+        prefixo = cep[:5]
         return prefixo, sulfixo
 
     def sacado_inscricao_tipo(self, partner_id):
