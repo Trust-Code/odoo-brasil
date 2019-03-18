@@ -1,7 +1,8 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError
 
 
 class PaymentMode(models.Model):
@@ -28,3 +29,11 @@ class PaymentMode(models.Model):
         string='Ambiente',
         default='production'
     )
+    is_default = fields.Boolean(string="Padrão em Faturas?")
+
+    @api.multi
+    @api.constrains("is_default")
+    def _check_is_default(self):
+        search_defaults = self.search([('is_default', '=', True)])
+        if len(search_defaults) > 1:
+            raise ValidationError(_("Only one payment mode can be default"))

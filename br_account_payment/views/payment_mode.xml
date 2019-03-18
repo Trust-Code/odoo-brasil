@@ -12,6 +12,7 @@
                             <field name="name"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="type" />
+                            <field name="is_default"/>
                         </group>
                         <group>
                             <field name="journal_id" />

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="default_payment_mode" model="l10n_br.payment.mode">
+      <field name="name">Dinheiro</field>
+      <field name="tipo_pagamento">01</field>
+      <field name="active">True</field>
+  </record>
+</odoo>
