@@ -39,7 +39,7 @@ class TestBase(TransactionCase):
         self.assertTrue(partner)
 
     def test_cpf_invalido(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(UserError):
             self.env['res.partner'].create({
                 'name': 'Parceiro Ok',
                 'cnpj_cpf': '99644045490',
@@ -56,7 +56,7 @@ class TestBase(TransactionCase):
         self.assertTrue(partner)
 
     def test_cnpj_invalido(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(UserError):
             self.env['res.partner'].create({
                 'name': 'Empresa',
                 'cnpj_cpf': '99644045490',
@@ -76,7 +76,7 @@ class TestBase(TransactionCase):
         self.assertTrue(partner)
 
     def test_ie_invalido(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(UserError):
             self.env['res.partner'].create({
                 'name': 'Empresa',
                 'cnpj_cpf': '22814429000155',
