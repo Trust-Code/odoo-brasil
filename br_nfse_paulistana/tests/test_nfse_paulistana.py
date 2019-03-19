@@ -148,7 +148,8 @@ class TestNFeBrasil(TransactionCase):
             'journal_id': self.journalrec.id,
             'account_id': self.receivable_account.id,
             'fiscal_position_id': self.fpos.id,
-            'invoice_line_ids': invoice_line_data
+            'invoice_line_ids': invoice_line_data,
+            'preview_payment_ids': self.prepare_preview_payment()
         }
 
         self.invoices = self.env['account.invoice'].create(dict(
