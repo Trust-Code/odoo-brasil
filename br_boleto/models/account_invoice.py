@@ -9,13 +9,16 @@ from odoo.exceptions import UserError
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    boleto = fields.Boolean(compute="_compute_has_boleto")
+    boleto = fields.Boolean(
+        store=True,
+        compute="_compute_has_boleto")
 
     def _compute_has_boleto(self):
-        for pMode in self.preview_payment_ids.mapped('payment_mode_id'):
-            if pMode.boleto:
-                self.boleto = True
-                return
+        for s in self:
+            for pMode in s.preview_payment_ids.mapped('payment_mode_id'):
+                if pMode.boleto:
+                    self.boleto = True
+                    return
 
     def _get_email_template_invoice(self):
         return self.env.user.company_id.boleto_email_tmpl
