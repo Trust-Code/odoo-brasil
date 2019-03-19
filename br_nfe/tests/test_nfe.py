@@ -367,6 +367,7 @@ class TestNFeBrasil(TransactionCase):
         prepare.side_effect = _prepare_lote
         for invoice in self.invoices:
             # Confirmando a fatura deve gerar um documento eletrônico
+            invoice._onchange_preview_payment_amount()
             invoice.action_invoice_open()
 
             inv_eletr = self.env['invoice.eletronic'].search(
