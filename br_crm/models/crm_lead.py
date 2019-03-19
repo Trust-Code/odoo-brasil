@@ -6,7 +6,7 @@
 import re
 from odoo import models, fields, api, _
 from odoo.addons.br_base.tools import fiscal
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class CrmLead(models.Model):
@@ -32,7 +32,7 @@ class CrmLead(models.Model):
     def _check_cnpj(self):
         if self.cnpj:
             if not fiscal.validate_cnpj(self.cnpj):
-                raise UserError(_(u'CNPJ inválido!'))
+                raise ValidationError(_(u'CNPJ inválido!'))
         return True
 
     @api.one
@@ -40,7 +40,7 @@ class CrmLead(models.Model):
     def _check_cpf(self):
         if self.cpf:
             if not fiscal.validate_cpf(self.cpf):
-                raise UserError(_(u'CPF inválido!'))
+                raise ValidationError(_(u'CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
@@ -69,7 +69,7 @@ class CrmLead(models.Model):
         uf = self.state_id and self.state_id.code.lower() or ''
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
-            raise Warning(_(u'Inscrição Estadual inválida!'))
+            raise ValidationError(_(u'Inscrição Estadual inválida!'))
         return True
 
     @api.onchange('cnpj')
@@ -81,7 +81,7 @@ class CrmLead(models.Model):
                     % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
                 self.cnpj = cnpj_cpf
             else:
-                raise Warning(_(u'Verifique o CNPJ'))
+                raise ValidationError(_(u'Verifique o CNPJ'))
 
     @api.onchange('cpf')
     def onchange_mask_cpf(self):
@@ -92,7 +92,7 @@ class CrmLead(models.Model):
                     % (val[0:3], val[3:6], val[6:9], val[9:11])
                 self.cpf = cnpj_cpf
             else:
-                raise Warning(_(u'Verifique o CPF'))
+                raise ValidationError(_(u'Verifique o CPF'))
 
     @api.onchange('city_id')
     def onchange_city_id(self):
