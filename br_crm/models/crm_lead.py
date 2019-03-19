@@ -6,7 +6,7 @@
 import re
 from odoo import models, fields, api, _
 from odoo.addons.br_base.tools import fiscal
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class CrmLead(models.Model):
