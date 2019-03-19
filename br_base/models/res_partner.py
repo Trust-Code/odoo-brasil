@@ -134,7 +134,7 @@ class ResPartner(models.Model):
 
         if len(partner_ids) > 0:
             raise ValidationError(_(u'Já existe um parceiro cadastrado com'
-                            u'esta Inscrição Estadual/RG!'))
+                                    u'esta Inscrição Estadual/RG!'))
         return True
 
     @api.onchange('cnpj_cpf')
