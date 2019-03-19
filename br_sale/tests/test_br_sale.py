@@ -171,6 +171,9 @@ class TestSaleOrder(TransactionCase):
         self.fpos = self.env['account.fiscal.position'].create({
             'name': 'Venda'
         })
+        self.payment_mode_id = self.env['l10n_br.payment.mode'].create({
+            'name': 'Dinheiro',
+        })
         order_line_data = [
             (0, 0,
                 {
