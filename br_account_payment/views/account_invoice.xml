@@ -16,7 +16,7 @@
                     <field name="days"/>
                     <field name="date_previews"/>
                     <field name="name" string="Rótulo" readonly="1" force_save="1"/>
-                    <field name="payment_mode_id"/>
+                    <field name="payment_mode_id" required="1"/>
                     <field name="payment_term_line_id" invisible="1"/>
                     <field name="amount" string="Debit" />
                   </tree>

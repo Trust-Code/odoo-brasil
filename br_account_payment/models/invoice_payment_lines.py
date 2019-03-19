@@ -28,7 +28,6 @@ class InvoicePaymentLines(models.Model):
         comodel_name="account.payment.term.line")
     payment_mode_id = fields.Many2one(
         string="Payment Mode",
-        required="1",
         comodel_name="l10n_br.payment.mode",
         ondelete="set null",
         help="Payment mode related with this quote")
