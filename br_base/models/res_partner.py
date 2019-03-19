@@ -13,7 +13,7 @@ import logging
 
 from odoo import models, fields, api, _
 from odoo.addons.br_base.tools import fiscal
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -87,9 +87,9 @@ class ResPartner(models.Model):
         if self.cnpj_cpf and country_code.upper() == 'BR':
             if self.is_company:
                 if not fiscal.validate_cnpj(self.cnpj_cpf):
-                    raise UserError(_(u'CNPJ inválido!'))
+                    raise ValidationError(_(u'CNPJ inválido!'))
             elif not fiscal.validate_cpf(self.cnpj_cpf):
-                raise UserError(_(u'CPF inválido!'))
+                raise ValidationError(_(u'CPF inválido!'))
         return True
 
     def _validate_ie_param(self, uf, inscr_est):
@@ -119,7 +119,7 @@ class ResPartner(models.Model):
         uf = self.state_id and self.state_id.code.lower() or ''
         res = self._validate_ie_param(uf, self.inscr_est)
         if not res:
-            raise UserError(_(u'Inscrição Estadual inválida!'))
+            raise ValidationError(_(u'Inscrição Estadual inválida!'))
         return True
 
     @api.one
@@ -133,7 +133,7 @@ class ResPartner(models.Model):
             ['&', ('inscr_est', '=', self.inscr_est), ('id', '!=', self.id)])
 
         if len(partner_ids) > 0:
-            raise UserError(_(u'Já existe um parceiro cadastrado com'
+            raise ValidationError(_(u'Já existe um parceiro cadastrado com'
                             u'esta Inscrição Estadual/RG!'))
         return True
 
@@ -151,7 +151,7 @@ class ResPartner(models.Model):
                     % (val[0:3], val[3:6], val[6:9], val[9:11])
                 self.cnpj_cpf = cnpj_cpf
             else:
-                raise UserError(_(u'Verifique o CNPJ/CPF'))
+                raise ValidationError(_(u'Verifique o CNPJ/CPF'))
 
     @api.onchange('city_id')
     def _onchange_city_id(self):
