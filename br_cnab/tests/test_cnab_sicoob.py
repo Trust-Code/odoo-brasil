@@ -41,7 +41,6 @@ class TestCnabSicoob(TestCnab):
         return mode.id
 
     def test_gen_account_move_line(self):
-        self.invoices._onchange_preview_payment_amount()
         self.invoices.action_invoice_open()
 
         self.env['payment.order.line'].action_register_boleto(

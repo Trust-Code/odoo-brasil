@@ -707,6 +707,7 @@ class InvoiceEletronic(models.Model):
             })
         transp['vol'] = volumes
 
+        pag = []
         duplicatas = []
         for dup in self.duplicata_ids:
             vencimento = fields.Datetime.from_string(dup.data_vencimento)
@@ -715,21 +716,40 @@ class InvoiceEletronic(models.Model):
                 'dVenc':  vencimento.strftime('%Y-%m-%d'),
                 'vDup': "%.02f" % dup.valor
             })
-        cobr = {
-            'fat': {
-                'nFat': self.numero_fatura or '',
-                'vOrig': "%.02f" % (
-                    self.fatura_liquido + self.fatura_desconto),
-                'vDesc': "%.02f" % self.fatura_desconto,
-                'vLiq': "%.02f" % self.fatura_liquido,
-            },
-            'dup': duplicatas
-        }
-        pag = {
-            'indPag': self.payment_term_id.indPag or '0',
-            'tPag': self.payment_mode_id.tipo_pagamento or '90',
-            'vPag': '0.00',
-        }
+            pag_val = {
+                'indPag': self.payment_term_id.indPag or '0',
+                'tPag': dup.payment_mode_id.tipo_pagamento or '90',
+                'vPag': "%.02f" % dup.valor,
+            }
+            if self.model == '65':
+                pag_val['vTroco'] = "%.02f" % self.troco or '0.00'
+
+            pag.append(pag_val)
+
+        cobr = {}
+        if self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
+            cobr = {
+                'fat': {
+                    'nFat': self.numero_fatura or '',
+                    'vOrig': "%.02f" % (
+                        self.fatura_liquido + self.fatura_desconto),
+                    'vDesc': "%.02f" % self.fatura_desconto,
+                    'vLiq': "%.02f" % self.fatura_liquido,
+                },
+                'dup': duplicatas
+            }
+
+        # if len(duplicatas) > 0 and\
+        #         self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
+        #     vals['cobr'] = cobr
+        #     pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
+        #     pag['vPag'] = "%.02f" % self.valor_final
+        #
+        # pag = {
+        #     'indPag': self.payment_term_id.indPag or '0',
+        #     'tPag': self.payment_mode_id.tipo_pagamento or '90',
+        #     'vPag': '0.00',
+        # }
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
         self.informacoes_legais = self.informacoes_legais.replace(
@@ -751,7 +771,9 @@ class InvoiceEletronic(models.Model):
             'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
+            'cobr': cobr, # conferir se pode passar uma chave vazia???
             'pag': [pag],
+            # 'pag': [pag],
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
@@ -762,16 +784,16 @@ class InvoiceEletronic(models.Model):
                 'ISSQNtot': issqn_total,
                 'retTrib': tributos_retidos,
             })
-        if len(duplicatas) > 0 and\
-                self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
-            vals['cobr'] = cobr
-            pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
-            pag['vPag'] = "%.02f" % self.valor_final
+        # if len(duplicatas) > 0 and\
+        #         self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
+        #     vals['cobr'] = cobr
+        #     pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
+        #     pag['vPag'] = "%.02f" % self.valor_final
 
         if self.model == '65':
-            vals['pag'][0]['tPag'] = self.metodo_pagamento
-            vals['pag'][0]['vPag'] = "%.02f" % self.valor_pago
-            vals['pag'][0]['vTroco'] = "%.02f" % self.troco or '0.00'
+            # vals['pag'][0]['tPag'] = self.metodo_pagamento
+            # vals['pag'][0]['vPag'] = "%.02f" % self.valor_pago
+            # vals['pag'][0]['vTroco'] = "%.02f" % self.troco or '0.00'
 
             chave_nfe = self.chave_nfe
             ambiente = 1 if self.ambiente == 'producao' else 2

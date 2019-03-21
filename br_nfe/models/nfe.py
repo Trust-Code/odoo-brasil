@@ -60,3 +60,8 @@ class NFeCobrancaDuplicata(models.Model):
     numero_duplicata = fields.Char(string=u"Número Duplicata", size=60)
     data_vencimento = fields.Date(string="Data Vencimento")
     valor = fields.Monetary(string="Valor Duplicata")
+    payment_mode_id = fields.Many2one(
+        string="Payment Mode",
+        comodel_name="l10n_br.payment.mode",
+        ondelete="set null",
+        help="Payment mode related with this quote")

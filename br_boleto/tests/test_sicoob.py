@@ -45,7 +45,6 @@ class TestBoletoSicoob(TestBoleto):
     # Não precisa fazer essa validação em outras classes
     def test_basic_validation(self):
         with self.assertRaises(UserError):
-            self.invoices._onchange_preview_payment_amount()
             self.invoices.action_invoice_open()
 
     def _update_main_company(self):
@@ -77,7 +76,6 @@ class TestBoletoSicoob(TestBoleto):
     def test_raise_error_if_not_payment(self):
         self._update_main_company()
         self._update_partner_fisica()
-        self.invoices._onchange_preview_payment_amount()
         self.invoices.action_invoice_open()
 
         self.assertEquals(len(self.invoices.receivable_move_line_ids), 1)

@@ -208,7 +208,6 @@ class TestInutilizacao(TransactionCase):
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
         ))
-        invoice._onchange_preview_payment_amount()
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -249,7 +248,6 @@ class TestInutilizacao(TransactionCase):
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
         ))
-        invoice._onchange_preview_payment_amount()
         invoice.action_invoice_open()
         inv_eletr = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', invoice.id)])
@@ -269,7 +267,6 @@ class TestInutilizacao(TransactionCase):
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
         ))
-        invoice._onchange_preview_payment_amount()
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()
@@ -344,7 +341,6 @@ class TestInutilizacao(TransactionCase):
             self.default_invoice.items(),
             partner_id=self.partner_fisica.id,
         ))
-        invoice._onchange_preview_payment_amount()
         invoice.action_invoice_open()
         with self.assertRaises(UserError):
             wizard.action_inutilize_nfe()

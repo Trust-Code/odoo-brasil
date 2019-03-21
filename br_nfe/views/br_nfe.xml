@@ -37,6 +37,7 @@
             <tree>
                 <field name="numero_duplicata" />
                 <field name="data_vencimento"/>
+                <field name="payment_mode_id"/>
                 <field name="valor"/>
             </tree>
         </field>

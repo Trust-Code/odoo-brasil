@@ -72,9 +72,9 @@ class AccountInvoice(models.Model):
             pay_modes = item.preview_payment_ids.mapped('payment_mode_id')
             if not pay_modes:
                 continue
-            if not all([True for p in pay_modes if p.type == 'receivable']):
+            if not any([True for p in pay_modes if p.type == 'receivable']):
                 continue
-            if not all([True for p in pay_modes if p.boleto]):
+            if not any([True for p in pay_modes if p.boleto]):
                 continue
             if not item.company_id.partner_id.legal_name:
                 error += u'Empresa - Razão Social\n'

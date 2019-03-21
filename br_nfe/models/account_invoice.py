@@ -149,6 +149,7 @@ class AccountInvoice(models.Model):
                 'numero_duplicata': "%03d" % count,
                 'data_vencimento': parcela.date_maturity,
                 'valor': parcela.credit or parcela.debit,
+                'payment_mode_id': parcela.payment_mode_id.id,
             }))
             count += 1
         res['duplicata_ids'] = duplicatas
