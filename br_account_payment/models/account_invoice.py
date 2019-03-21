@@ -82,16 +82,10 @@ class AccountInvoice(models.Model):
         return result
 
     @api.multi
-    def action_invoice_open(self):
-        for s in self:
-            if not s.preview_payment_ids:
-                s._onchange_payment_term()
-        return super(AccountInvoice, self).action_invoice_open()
-
-    @api.multi
     def finalize_invoice_move_lines(self, aml):
         aml = super(AccountInvoice, self).finalize_invoice_move_lines(aml)
-        if self.account_id.user_type_id.type not in ['receivable', 'payable']:
+        if self.account_id.user_type_id.type not in ['receivable', 'payable']\
+                or not self.preview_payment_ids:
             return aml
         # Filtra as contas para selecionar somente as de pagamento
         moves = [x for x in aml if x[2]['account_id'] == self.account_id.id]

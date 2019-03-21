@@ -88,7 +88,6 @@ class AccountInvoice(models.Model):
         else:
             numero_nfe = res['numero']
 
-        # res['payment_mode_id'] = inv.payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
