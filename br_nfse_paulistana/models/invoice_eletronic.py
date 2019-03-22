@@ -31,6 +31,8 @@ class InvoiceEletronicItem(models.Model):
 
     codigo_servico_paulistana = fields.Char(
         string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
+    codigo_servico_paulistana_nome = fields.Char(
+        string='Descrição código NFSe Paulistana', readonly=True, states=STATE)
 
 
 class InvoiceEletronic(models.Model):
