@@ -38,6 +38,10 @@ class AccountInvoice(models.Model):
 
     @api.onchange('invoice_line_ids')
     def _onchange_preview_payment_amount(self):
+        self.preview_payment_ids = self.upd_preview_amount()
+
+    def upd_preview_amount(self):
+        vals = []
         balance = amount = self._get_amount()
         for line in self.preview_payment_ids:
             ptLine = line.payment_term_line_id or False
@@ -47,8 +51,9 @@ class AccountInvoice(models.Model):
                 mnt = ptLine.value_amount
             elif not ptLine or ptLine.value == 'balance':
                 mnt = balance
-            line.amount = mnt
+            vals.append([1, line.id, {'amount': mnt}])
             balance -= mnt
+        return vals
 
     def prepare_preview_payment(self, payment_term_id=False):
         pLine_env = self.env['invoice.payment.lines']
@@ -104,5 +109,7 @@ class AccountInvoiceLine(models.Model):
     @api.model
     def create(self, vals):
         res = super(AccountInvoiceLine, self).create(vals)
-        res.invoice_id._onchange_preview_payment_amount()
+        invoice = res.invoice_id
+        if invoice.preview_payment_ids:
+            invoice.write({'preview_payment_ids': self.upd_preview_amount()})
         return res
