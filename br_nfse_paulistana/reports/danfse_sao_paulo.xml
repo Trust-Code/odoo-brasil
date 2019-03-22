@@ -265,7 +265,7 @@
                     Código do serviço:
                     <br />
                     <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana"></strong> -
-                    <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
+                    <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana_nome"></strong>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;">
