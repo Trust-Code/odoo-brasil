@@ -174,7 +174,9 @@ class AccountInvoice(models.Model):
 
         # NFC-e
         res['troco'] = 0.0
-        res['metodo_pagamento'] = inv.payment_mode_id.tipo_pagamento or '01'
+        # TODO: SUBSTITUIR O METODO DE PAGAMENTO PARA O PAYMENT MODE
+        #  DAS LINHAS DA DUPLICATA
+        res['metodo_pagamento'] = '01'
         res['valor_pago'] = inv.amount_total
         return res
 
