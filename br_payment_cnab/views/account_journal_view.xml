@@ -11,10 +11,6 @@
                 <div>
                     <field name="l10n_br_sequence_nosso_numero" />
                 </div>
-                <label for="l10n_br_sequence_statements" string="Seq. Retorno"/>
-                <div>
-                    <field name="l10n_br_sequence_statements" />
-                </div>
             </field>
         </field>
     </record>
