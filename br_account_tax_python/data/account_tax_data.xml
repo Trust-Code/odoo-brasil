@@ -10,12 +10,9 @@
       <field name="amount">0</field>
       <field eval="0" name="price_include"/>
       <field name="python_compute">
-indice = base_amount / invoice_amount
-if invoice_amount >= 215.15:
-    amount = invoice_amount * -0.0065
-else:
-    amount = 0.0
-result = round(amount * indice, 3)
+result = 0.0
+if invoice_amount and invoice_amount > 215.15:
+  result = round(base_amount * -0.0065, 3)
       </field>
       <field name="python_applicable">result = True</field>
   </record>
@@ -29,12 +26,9 @@ result = round(amount * indice, 3)
       <field name="amount">0</field>
       <field eval="0" name="price_include"/>
       <field name="python_compute">
-indice = base_amount / invoice_amount
-if invoice_amount >= 215.15:
-    amount = invoice_amount * -0.03
-else:
-    amount = 0.0
-result = round(amount * indice, 3)
+result = 0.0
+if invoice_amount and invoice_amount > 215.15:
+  result = round(base_amount * -0.03, 3)
       </field>
       <field name="python_applicable">result = True</field>
   </record>
@@ -48,12 +42,9 @@ result = round(amount * indice, 3)
       <field name="amount">0</field>
       <field eval="0" name="price_include"/>
       <field name="python_compute">
-indice = base_amount / invoice_amount
-if invoice_amount >= 215.15:
-    amount = invoice_amount * -0.01
-else:
-    amount = 0.0
-result = round(amount * indice, 3)
+result = 0.0
+if invoice_amount and invoice_amount > 215.15:
+  result = round(base_amount * -0.01, 3)
       </field>
       <field name="python_applicable">result = True</field>
   </record>
@@ -67,12 +58,9 @@ result = round(amount * indice, 3)
       <field name="amount">0</field>
       <field eval="0" name="price_include"/>
       <field name="python_compute">
-indice = base_amount / invoice_amount
-if invoice_amount >= 666.66:
-    amount = invoice_amount * -0.015
-else:
-    amount = 0.0
-result = round(amount * indice, 3)
+result = 0.0
+if invoice_amount and invoice_amount > 666.66:
+  result = round(base_amount * -0.015, 3)
       </field>
       <field name="python_applicable">result = True</field>
   </record>
