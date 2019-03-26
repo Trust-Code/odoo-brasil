@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -29,15 +28,15 @@ class AccountMoveLine(models.Model):
                  ('type', '=', 'receivable'),
                  ('state', 'not in', ('draft', 'cancelled', 'rejected'))])
             if total > 0:
-                raise UserError('Existem boletos emitidos para esta fatura!\
-                                Cancele estes boletos primeiro')
+                raise UserError(_('Existem boletos emitidos para esta fatura!\
+                                  Cancele estes boletos primeiro'))
         return super(AccountMoveLine, self)._update_check()
 
     @api.multi
     def action_print_boleto(self):
         if self.move_id.state in ('draft', 'cancel'):
             raise UserError(
-                u'Fatura provisória ou cancelada não permite emitir boleto')
+                _('Fatura provisória ou cancelada não permite emitir boleto'))
         self = self.with_context({'origin_model': 'account.invoice'})
         return self.env.ref(
             'br_boleto.action_boleto_account_invoice').report_action(self)

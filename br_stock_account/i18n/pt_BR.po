@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-19 01:23+0000\n"
-"PO-Revision-Date: 2018-04-19 01:23+0000\n"
+"POT-Creation-Date: 2019-03-01 13:48+0000\n"
+"PO-Revision-Date: 2019-03-01 13:48+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,23 +32,38 @@ msgstr "(+) Seguro"
 
 #. module: br_stock_account
 #: selection:account.invoice,freight_responsibility:0
-msgid "0 - Emitente"
-msgstr "0 - Emitente"
+msgid "0 - Contratação do Frete por conta do Remetente (CIF)"
+msgstr "0 - Contratação do Frete por conta do Remetente (CIF)"
 
 #. module: br_stock_account
 #: selection:account.invoice,freight_responsibility:0
-msgid "1 - Destinatário"
-msgstr "1 - Destinatário"
+msgid "1 - Contratação do Frete por conta do Destinatário (FOB)"
+msgstr "1 - Contratação do Frete por conta do Destinatário (FOB)"
 
 #. module: br_stock_account
 #: selection:account.invoice,freight_responsibility:0
-msgid "2 - Terceiros"
-msgstr "2 - Terceiros"
+msgid "2 - Contratação do Frete por conta de Terceiros"
+msgstr "2 - Contratação do Frete por conta de Terceiros"
 
 #. module: br_stock_account
 #: selection:account.invoice,freight_responsibility:0
-msgid "9 - Sem Frete"
-msgstr "9 - Sem Frete"
+msgid "3 - Transporte Próprio por conta do Remetente"
+msgstr "3 - Transporte Próprio por conta do Remetente"
+
+#. module: br_stock_account
+#: selection:account.invoice,freight_responsibility:0
+msgid "4 - Transporte Próprio por conta do Destinatário"
+msgstr "4 - Transporte Próprio por conta do Destinatário"
+
+#. module: br_stock_account
+#: selection:account.invoice,freight_responsibility:0
+msgid "9 - Sem Ocorrência de Transporte"
+msgstr "9 - Sem Ocorrência de Transporte"
+
+#. module: br_stock_account
+#: model:ir.ui.view,arch_db:br_stock_account.view_br_stock_account_picking_form
+msgid "<span> Invoices</span>"
+msgstr "<span> Faturas</span>"
 
 #. module: br_stock_account
 #: model:ir.ui.view,arch_db:br_stock_account.br_sale_stock_report_sale_order
@@ -81,6 +96,12 @@ msgid "Despesas ( + )"
 msgstr "Despesas ( + )"
 
 #. module: br_stock_account
+#: model:ir.model.fields,field_description:br_stock_account.field_stock_picking_enable_invoicing
+#: model:ir.model.fields,field_description:br_stock_account.field_stock_picking_type_enable_invoicing
+msgid "Enable Invoicing"
+msgstr "Habilitar Faturamento"
+
+#. module: br_stock_account
 #: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_kind_of_packages
 msgid "Espécie"
 msgstr "Espécie"
@@ -104,6 +125,11 @@ msgstr "Fatura"
 #: model:ir.model,name:br_stock_account.model_account_invoice_line
 msgid "Invoice Line"
 msgstr "Linha da Fatura"
+
+#. module: br_stock_account
+#: model:ir.model.fields,field_description:br_stock_account.field_stock_picking_invoice_count
+msgid "Invoices"
+msgstr "Faturas"
 
 #. module: br_stock_account
 #: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_local_despacho
@@ -156,6 +182,11 @@ msgid "Peso Líquido"
 msgstr "Peso Líquido"
 
 #. module: br_stock_account
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_picking_origin_id
+msgid "Picking Origin"
+msgstr "Transferência Origem"
+
+#. module: br_stock_account
 #: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_tow_plate
 msgid "Placa do Reboque"
 msgstr "Placa do Reboque"
@@ -164,6 +195,12 @@ msgstr "Placa do Reboque"
 #: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_vehicle_plate
 msgid "Placa do Veículo"
 msgstr "Placa do Veículo"
+
+#. module: br_stock_account
+#: model:ir.model.fields,field_description:br_stock_account.field_stock_picking_fiscal_position_id
+#: model:ir.model.fields,field_description:br_stock_account.field_stock_picking_type_fiscal_position_id
+msgid "Posição Fiscal"
+msgstr "Posição Fiscal"
 
 #. module: br_stock_account
 #: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_vehicle_rntc
@@ -181,7 +218,27 @@ msgid "Seguro ( + )"
 msgstr "Seguro ( + )"
 
 #. module: br_stock_account
-#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_carrier_id
+#: model:ir.model,name:br_stock_account.model_account_tax
+msgid "Tax"
+msgstr "Imposto"
+
+#. module: br_stock_account
+#: model:ir.model,name:br_stock_account.model_stock_picking_type
+msgid "The operation type determines the picking view"
+msgstr "O tipo de operação determina a vista de picking"
+
+#. module: br_stock_account
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_fiscal_position_type
+msgid "Tipo da posição"
+msgstr "Tipo da posição"
+
+#. module: br_stock_account
+#: model:ir.model,name:br_stock_account.model_stock_picking
+msgid "Transfer"
+msgstr "Transferir"
+
+#. module: br_stock_account
+#: model:ir.model.fields,field_description:br_stock_account.field_account_invoice_shipping_supplier_id
 msgid "Transportadora"
 msgstr "Transportadora"
 
@@ -211,4 +268,3 @@ msgstr "UF da Placa do Reboque"
 #: model:ir.ui.view,arch_db:br_stock_account.br_account_product_invoice_supplier_form
 msgid "Volume"
 msgstr "Volume"
-

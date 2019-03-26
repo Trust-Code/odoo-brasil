@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -10,7 +9,7 @@ import pytz
 import hashlib
 from lxml import etree
 from datetime import datetime
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ try:
         gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
     from pytrustnfe.xml.validate import valida_nfe
-    from pytrustnfe.urls import url_qrcode
+    from pytrustnfe.urls import url_qrcode, url_qrcode_exibicao
 except ImportError:
     _logger.error('Cannot import pytrustnfe', exc_info=True)
 
@@ -38,7 +37,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     @api.depends('chave_nfe')
-    def _format_danfe_key(self):
+    def _compute_format_danfe_key(self):
         for item in self:
             item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
                                           item.chave_nfe, 10, re.DOTALL)
@@ -49,7 +48,7 @@ class InvoiceEletronic(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "wizard.carta.correcao.eletronica",
             "views": [[False, "form"]],
-            "name": "Carta de Correção",
+            "name": _("Carta de Correção"),
             "target": "new",
             "context": {'default_eletronic_doc_id': self.id},
         }
@@ -132,11 +131,11 @@ class InvoiceEletronic(models.Model):
     # Exportação
     uf_saida_pais_id = fields.Many2one(
         'res.country.state', domain=[('country_id.code', '=', 'BR')],
-        string=u"UF Saída do País", readonly=True, states=STATE)
+        string="UF Saída do País", readonly=True, states=STATE)
     local_embarque = fields.Char(
-        string=u'Local de Embarque', size=60, readonly=True, states=STATE)
+        string='Local de Embarque', size=60, readonly=True, states=STATE)
     local_despacho = fields.Char(
-        string=u'Local de Despacho', size=60, readonly=True, states=STATE)
+        string='Local de Despacho', size=60, readonly=True, states=STATE)
 
     # Cobrança
     numero_fatura = fields.Char(
@@ -167,7 +166,7 @@ class InvoiceEletronic(models.Model):
     chave_nfe = fields.Char(
         string=u"Chave NFe", size=50, readonly=True, states=STATE)
     chave_nfe_danfe = fields.Char(
-        string=u"Chave Formatado", compute="_format_danfe_key")
+        string=u"Chave Formatado", compute="_compute_format_danfe_key")
     protocolo_nfe = fields.Char(
         string=u"Protocolo", size=50, readonly=True, states=STATE,
         help=u"Protocolo de autorização da NFe")
@@ -209,7 +208,7 @@ class InvoiceEletronic(models.Model):
     # Documentos Relacionados
     fiscal_document_related_ids = fields.One2many(
         'br_account.document.related', 'invoice_eletronic_id',
-        u'Documentos Fiscais Relacionados', readonly=True, states=STATE)
+        'Documentos Fiscais Relacionados', readonly=True, states=STATE)
 
     # CARTA DE CORRECAO
     cartas_correcao_ids = fields.One2many(
@@ -227,7 +226,7 @@ class InvoiceEletronic(models.Model):
         for item in self:
             if item.state in ('denied'):
                 raise UserError(
-                    u'Documento Eletrônico Denegado - Proibido excluir')
+                    _('Documento Eletrônico Denegado - Proibido excluir'))
         super(InvoiceEletronic, self).unlink()
 
     @api.multi
@@ -782,7 +781,7 @@ class InvoiceEletronic(models.Model):
                 chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
             qr_code_server = url_qrcode(estado, str(ambiente))
             vals['qrCode'] = qr_code_server + QR_code_url
-            vals['urlChave'] = qr_code_server.replace('?', '')
+            vals['urlChave'] = url_qrcode_exibicao(estado, str(ambiente))
         return vals
 
     @api.multi
@@ -985,7 +984,7 @@ class InvoiceEletronic(models.Model):
                 self.nfe_processada = base64.encodestring(nfe_proc)
                 self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:
-            raise UserError('A NFe não está validada')
+            raise UserError(_('A NFe não está validada'))
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
@@ -995,7 +994,7 @@ class InvoiceEletronic(models.Model):
 
         if not justificativa:
             return {
-                'name': 'Cancelamento NFe',
+                'name': _('Cancelamento NFe'),
                 'type': 'ir.actions.act_window',
                 'res_model': 'wizard.cancel.nfe',
                 'view_type': 'form',
@@ -1128,7 +1127,7 @@ class InvoiceEletronic(models.Model):
             'received_xml_name': 'cancelamento-retorno.xml',
         })
         return {
-            'name': 'Cancelamento NFe',
+            'name': _('Cancelamento NFe'),
             'type': 'ir.actions.act_window',
             'res_model': 'wizard.cancel.nfe',
             'res_id': wiz.id,

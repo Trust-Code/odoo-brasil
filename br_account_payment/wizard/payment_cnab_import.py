@@ -3,13 +3,13 @@
 
 import base64
 import logging
-from odoo import fields, models
+from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
 
-class l10nBrPaymentCnabImport(models.TransientModel):
+class L10nBrPaymentCnabImport(models.TransientModel):
     _name = 'l10n_br.payment.cnab.import'
 
     cnab_type = fields.Selection(
@@ -26,12 +26,11 @@ class l10nBrPaymentCnabImport(models.TransientModel):
         account = self.journal_id.bank_account_id
         if acc_number != int(account.acc_number):
             raise UserError(
-                'A conta não é a mesma do extrato.\nDiário: %s\nExtrato: %s' %
-                (int(account.acc_number), acc_number))
+                _('A conta não é a mesma do extrato.\nDiário: %s\nExtrato: %s')
+                % (int(account.acc_number), acc_number))
         if bra_number != int(account.bra_number):
             raise UserError(
-                'A agência não é a mesma do extrato: %s' %
-                bra_number)
+                _('A agência não é a mesma do extrato: %s') % bra_number)
 
     def _get_account(self, cnab_file):
         return 0, 0
@@ -50,5 +49,6 @@ class l10nBrPaymentCnabImport(models.TransientModel):
             raise
         except Exception as e:
             _logger.error(str(e), exc_info=True)
-            msg = 'O arquivo importado não parece ser o correto:\n%s' % str(e)
+            msg = _('O arquivo importado não parece ser o \
+                    correto:\n%s') % str(e)
             raise UserError(msg)

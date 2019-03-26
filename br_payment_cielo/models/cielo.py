@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -29,62 +28,49 @@ class AcquirerCielo(models.Model):
                              default=_default_return_url, size=300)
 
     @api.multi
-    def cielo_form_generate_values(self, values):
+    def cielo_form_generate_values(self, tx_values):
         """ Função para gerar HTML POST da Cielo """
-        order = odoo_request.website.sale_get_order()
-        if not order or not order.payment_tx_id:
-            return {
-                'checkout_url': '/shop/payment',
-            }
-
         total_desconto = 0
-        items = []
-        for line in order.order_line:
-            if line.product_id.fiscal_type == 'service':
-                tipo = 'Service'
-            elif line.product_id.fiscal_type == 'product':
-                tipo = 'Asset'
-            else:
-                tipo = 'Payment'
-            total_desconto += line.discount
-            item = {
-                "Name": line.product_id.name,
-                "Description": line.name,
-                "UnitPrice": "%d" % round(line.price_unit * 100),
-                "Quantity": "%d" % line.product_uom_qty,
-                "Type": tipo,
-            }
-            if line.product_id.default_code:
-                item["Sku"] = line.product_id.default_code
-            if line.product_id.weight:
-                item['Weight'] = "%d" % (line.product_id.weight * 1000)
-            items.append(item)
-        shipping = {
-            "Type": "WithoutShipping",
-            "TargetZipCode": re.sub('[^0-9]', '', order.partner_id.zip),
-        }
+        items = [{
+            "Name": "Pagamento pedido: %s" % tx_values['reference'],
+            "Description": "Pagamento pedido: %s" % tx_values['reference'],
+            "UnitPrice": "%d" % round(tx_values['amount'] * 100),
+            "Quantity": '1',
+            "Type": 'Service',
+        }]
         address = {
-            "Street": order.partner_id.street,
-            "Number": order.partner_id.number,
-            "Complement": order.partner_id.street2,
-            "District": order.partner_id.district,
-            "City": order.partner_id.city_id.name,
-            "State": order.partner_id.state_id.code,
+            "Street": tx_values['partner'].street,
+            "Number": tx_values['partner'].number,
+            "Complement": tx_values['partner'].street2,
+            "District": tx_values['partner'].district,
+            "City": tx_values['partner'].city_id.name,
+            "State": tx_values['partner'].state_id.code,
         }
-        if len(order.partner_id.street2) > 0:
-            address['Complement'] = order.partner_id.street2
+        if len(tx_values['partner'].street2 or '') > 0:
+            address['Complement'] = tx_values['partner'].street2
         payment = {"BoletoDiscount": 0, "DebitDiscount": 0}
         customer = {
-            "Identity": re.sub('[^0-9]', '', order.partner_id.cnpj_cpf or ''),
-            "FullName": order.partner_id.name,
-            "Email": order.partner_id.email,
-            "Phone": re.sub('[^0-9]', '', order.partner_id.phone or ''),
+            "FullName": tx_values['partner'].name,
+            "Email": tx_values['partner'].email,
+        }
+        cnpj_cpf = re.sub('[^0-9]', '', tx_values['partner'].cnpj_cpf or '')
+        phone = re.sub('[^0-9]', '', tx_values['partner'].phone or '')
+        if len(cnpj_cpf) in (11, 14):
+            customer['Identity'] = cnpj_cpf
+        if len(phone) == 11:
+            customer['Phone'] = phone
+
+        shipping = {
+            "Type": "WithoutShipping",
+            "TargetZipCode": re.sub(
+                '[^0-9]', '', tx_values['partner'].zip or ''),
+            "Address": address,
         }
         total_desconto *= 100
         discount = {'Type': 'Amount', 'Value': int(total_desconto)}
         options = {"AntifraudEnabled": False, "ReturnUrl": self.return_url}
         order_json = {
-            "OrderNumber": values['reference'],
+            "OrderNumber": tx_values['reference'],
             "SoftDescriptor": "FOOBARBAZ",
             "Cart": {
                 "Discount": discount,

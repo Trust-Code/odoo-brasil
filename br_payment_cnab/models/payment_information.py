@@ -74,14 +74,6 @@ class PaymentInformation(models.Model):
 
     reg_type = fields.Integer('Register Type')
 
-    interest_value = fields.Float('Interest Value')
-
-    fine_value = fields.Float('Duty Value')
-
-    rebate_value = fields.Float('Rebate Value')
-
-    discount_value = fields.Float('Discount Value')
-
     mov_type = fields.Selection(
         [('0', 'Inclusion'),
          ('5', 'Modification'),
@@ -112,7 +104,6 @@ class PaymentInformation(models.Model):
     ], string="Tipo de Serviço")
 
     message2 = fields.Char(string='Note Detail', size=40, default='')
-
     agency_name = fields.Char(string='Agency Name', size=30, default='')
 
     currency_code = fields.Selection(

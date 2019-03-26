@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import io
 import logging
 
-from odoo import fields, models
+from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -43,7 +42,7 @@ class AccountBankStatementImport(models.TransientModel):
             return True
         except Exception as e:
             if raise_error:
-                raise UserError(u"Arquivo formato inválido:\n%s" % str(e))
+                raise UserError(_("Arquivo formato inválido:\n%s") % str(e))
             return False
 
     def _parse_ofx(self, data_file):

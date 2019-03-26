@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -6,12 +5,12 @@
 
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
-from odoo.addons.br_account.models.cst import CST_ICMS
-from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
-from odoo.addons.br_account.models.cst import CST_IPI
-from odoo.addons.br_account.models.cst import CST_PIS_COFINS
-from odoo.addons.br_account.models.cst import ORIGEM_PROD
-from odoo.addons.br_account.models.res_company import COMPANY_FISCAL_TYPE
+from .cst import CST_ICMS
+from .cst import CSOSN_SIMPLES
+from .cst import CST_IPI
+from .cst import CST_PIS_COFINS
+from .cst import ORIGEM_PROD
+from .res_company import COMPANY_FISCAL_TYPE
 
 
 class AccountInvoiceLine(models.Model):

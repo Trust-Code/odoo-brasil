@@ -1,7 +1,7 @@
 # © 2018 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models
+from odoo import models, _
 from odoo.exceptions import UserError
 from ..boleto.document import Boleto
 
@@ -55,9 +55,9 @@ class PaymentOrderLine(models.Model):
     def action_register_boleto(self, move_lines):
         for item in move_lines:
             if item.payment_mode_id.type != 'receivable':
-                raise UserError('Modo de pagamento não é boleto!')
+                raise UserError(_('Modo de pagamento não é boleto!'))
             if not item.payment_mode_id.boleto:
-                raise UserError('Modo de pagamento não é boleto!')
+                raise UserError(_('Modo de pagamento não é boleto!'))
         for move_line in move_lines:
             order_line = self.generate_payment_order_line(move_line)
             move_line.write({'l10n_br_order_line_id': order_line.id})
@@ -68,7 +68,7 @@ class PaymentOrderLine(models.Model):
     def generate_boleto_list(self):
         if self.filtered(lambda x: x.state in ('cancelled', 'rejected')):
             raise UserError(
-                'Boletos cancelados ou rejeitados não permitem a impressão')
+                _('Boletos cancelados ou rejeitados não permitem a impressão'))
         boleto_list = []
         for line in self:
             boleto = Boleto.getBoleto(line, line.nosso_numero)
@@ -78,8 +78,8 @@ class PaymentOrderLine(models.Model):
     def action_print_boleto(self):
         for item in self:
             if item.payment_mode_id.type != 'receivable':
-                raise UserError('Modo de pagamento não é boleto!')
+                raise UserError(_('Modo de pagamento não é boleto!'))
             if not item.payment_mode_id.boleto:
-                raise UserError('Modo de pagamento não é boleto!')
+                raise UserError(_('Modo de pagamento não é boleto!'))
         return self.env.ref(
             'br_boleto.action_boleto_payment_order_line').report_action(self)

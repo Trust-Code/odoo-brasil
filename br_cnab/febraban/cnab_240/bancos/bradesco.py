@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2015 Luis Felipe Mileo
 #        Fernando Marcato Rodrigues
 #        Daniel Sadamo Hirayama
@@ -10,6 +9,7 @@ from ..cnab_240 import Cnab240
 import re
 import string
 from decimal import Decimal
+from odoo import _
 from odoo.exceptions import UserError
 
 
@@ -105,4 +105,4 @@ class Bradesco240(Cnab240):
     def _hook_validation(self):
         if not self.order.src_bank_account_id.codigo_convenio:
             raise UserError(
-                'Código de convênio não pode estar vazio!')
+                _('Código de convênio não pode estar vazio!'))

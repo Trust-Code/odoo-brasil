@@ -1,0 +1,17 @@
+<odoo>
+
+    <record id="view_br_nfe_stock_picking_form" model="ir.ui.view" >
+        <field name="name">view_br_nfe_stock_picking_form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="br_stock_account.view_br_stock_account_picking_form" />
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                  <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
+                     string="Imprimir Danfe"
+                     attrs="{'invisible': [('enable_invoicing', '=', False)]}">
+                 </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2013  Renato Lima - Akretion
 # © 2013  Raphaël Valyi - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
@@ -16,6 +15,7 @@
         'sale_stock', 'br_sale', 'br_stock_account'
     ],
     'data': [
+        'security/ir.model.access.csv',
         'reports/sale_order.xml',
         'views/sale_stock_view.xml',
     ],

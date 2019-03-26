@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -6,7 +5,7 @@ import re
 from ..cnab_240 import Cnab240
 from decimal import Decimal
 from odoo.exceptions import UserError
-from odoo import fields
+from odoo import fields, _
 
 
 class Sicredi240(Cnab240):
@@ -30,7 +29,7 @@ class Sicredi240(Cnab240):
         if not line.src_bank_account_id.codigo_convenio or \
            not line.src_bank_account_id.bra_number:
             raise UserError(
-                u'Código do beneficiario ou número da agência em branco')
+                _('Código do beneficiario ou número da agência em branco'))
         digito = self.dv_nosso_numero(
             line.src_bank_account_id.bra_number,
             re.sub('[^0-9]', '', line.src_bank_account_id.codigo_convenio),

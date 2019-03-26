@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2014  KMEE - www.kmee.com.br
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError
 
@@ -266,7 +265,7 @@ class AccountDocumentRelated(models.Model):
             elif not fiscal.validate_cpf(self.cnpj_cpf):
                 check_cnpj_cpf = False
         if not check_cnpj_cpf:
-            raise UserError(u'CNPJ/CPF do documento relacionado é invalido!')
+            raise UserError(_('CNPJ/CPF do documento relacionado é invalido!'))
 
     @api.one
     @api.constrains('inscr_est')
@@ -286,7 +285,7 @@ class AccountDocumentRelated(models.Model):
                     check_ie = False
         if not check_ie:
             raise UserError(
-                u'Inscrição Estadual do documento fiscal inválida!')
+                _('Inscrição Estadual do documento fiscal inválida!'))
 
     @api.onchange('invoice_related_id')
     def onchange_invoice_related_id(self):

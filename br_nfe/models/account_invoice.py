@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -43,8 +42,9 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for doc in docs:
                 if doc.state in ('done', 'denied', 'cancel'):
-                    raise UserError('Nota fiscal já emitida para esta fatura - \
-                                    Duplique a fatura para continuar')
+                    raise UserError(
+                        _('Nota fiscal já emitida para esta fatura - \
+                          Duplique a fatura para continuar'))
         return super(AccountInvoice, self).action_invoice_draft()
 
     def invoice_print(self):
