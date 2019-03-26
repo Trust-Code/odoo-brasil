@@ -109,7 +109,7 @@ class AccountInvoiceLine(models.Model):
     @api.model
     def create(self, vals):
         res = super(AccountInvoiceLine, self).create(vals)
-        invoice = res.invoice_id
-        if invoice.preview_payment_ids:
-            invoice.write({'preview_payment_ids': self.upd_preview_amount()})
+        inv = res.invoice_id
+        if inv.preview_payment_ids:
+            inv.write({'preview_payment_ids': inv.upd_preview_amount()})
         return res
