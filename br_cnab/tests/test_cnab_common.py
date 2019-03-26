@@ -112,6 +112,7 @@ class TestCnab(TransactionCase):
             'preview_payment_ids': [(0, 0, {
                 'name': '01/01',
                 'days': 5,
+                'amount': 1000,
                 'payment_mode_id': self._return_payment_mode()})]
         }
         self.invoices = self.env['account.invoice'].create(dict(
