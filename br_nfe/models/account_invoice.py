@@ -34,6 +34,8 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
+    import_declaration_ids = fields.One2many(
+        'br_account.import.declaration', 'invoice_id')
 
     @api.multi
     def action_invoice_draft(self):
@@ -231,3 +233,11 @@ class AccountInvoice(models.Model):
         vals['import_declaration_ids'] = di_importacao
         vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    declaration_line_ids = fields.One2many(
+        'br_account.import.declaration.line',
+        'invoice_line_id', string='Adições da DI')

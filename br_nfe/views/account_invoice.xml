@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record id="view_br_account_einvoice_invoice_form" model="ir.ui.view">
+     <record id="view_br_account_einvoice_invoice_form" model="ir.ui.view">
         <field name="name">br_account_einvoice_invoice_form</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_form"/>
@@ -37,12 +37,34 @@
         </field>
     </record>
 
+    <record id="view_br_account_invoice_line_form_di" model="ir.ui.view">
+        <field name="name">br_nfe_invoice_line_form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='import_declaration']" position="replace">
+                <group string="Declaração de Imporação">
+                    <field name='invoice_id' invisible="1"/>
+                    <field name="import_declaration_ids" domain="[('invoice_id', '=', invoice_id)]" options="{'no_create': True, 'no_create_edit': True}" widget="many2many_tags"/>
+                </group>
+                <group string="Adições" colspan="4">
+                    <field name="declaration_line_ids" nolabel="1"></field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
 
     <record id="view_br_nfe_supplier_invoice_form" model="ir.ui.view">
         <field name="name">br_nfe_supplier_invoice_form</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
         <field name="arch" type="xml">
+            <page name="other_info" position="after">
+                <div t-if="fiscal_position_id.fiscal_type == 'import'" string="Informações de Importação" name="import_info">
+                        <field nolabel="1" name="import_declaration_ids"/>
+                </div>
+            </page>
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfe" invisible="1" />
                 <field name="invoice_model" invisible="1" />
