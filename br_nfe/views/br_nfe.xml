@@ -35,12 +35,36 @@
         <field name="model">nfe.duplicata</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="numero_duplicata" />
+                <field name="numero_duplicata"/>
                 <field name="data_vencimento"/>
                 <field name="valor"/>
             </tree>
         </field>
     </record>
 
+  <record id="view_br_account_import_declaration_form" model="ir.ui.view">
+        <field name="name">br_account.import.declaration.form</field>
+        <field name="model">br_account.import.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Declaração de Importação">
+                    <group>
+                        <field name="name"/>
+                        <field name="date_registration"/>
+                        <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="location"/>
+                        <field name="date_release"/>
+                        <field name="type_transportation" />
+                        <field name="invoice_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="afrmm_value" />
+                        <field name="type_import" />
+                        <field name="thirdparty_cnpj" />
+                        <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="exporting_code"/>
+                    </group>
+            </form>
+        </field>
+    </record>
 
 </odoo>
