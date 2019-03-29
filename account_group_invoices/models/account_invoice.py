@@ -97,6 +97,7 @@ class AccountInvoice(models.Model):
         user_ids = inv_ids.mapped('user_id')
         team_ids = inv_ids.mapped('team_id')
         obs_ids = fpos_id.fiscal_observation_ids.ids
+        [i.action_invoice_cancel_paid() for i in inv_ids if i.state == "draft"]
         gr_invoice_id = self.create({
             'origin': origin or '',
             'type': 'out_invoice',
@@ -142,7 +143,6 @@ class AccountInvoice(models.Model):
             </p>""" % (inv['rule'], gr_invoice_id.id, partner_id.name))
 
         [i.message_post(cancel_msg) for i in inv_ids]
-        [i.action_invoice_cancel_paid() for i in inv_ids if i.state == "draft"]
         msg_ids = ''
         for id in inv_ids.ids:
             msg_ids += """<a href='#' data-oe-model='account.invoice'
