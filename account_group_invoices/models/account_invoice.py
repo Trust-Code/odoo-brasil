@@ -94,6 +94,7 @@ class AccountInvoice(models.Model):
         for org in inv_ids.filtered('origin').mapped('origin'):
             origin += "%s, " % org
         pgto_ids = inv_ids.mapped('payment_term_id')
+        mode_ids = inv_ids.mapped('payment_mode_id')
         user_ids = inv_ids.mapped('user_id')
         team_ids = inv_ids.mapped('team_id')
         obs_ids = fpos_id.fiscal_observation_ids.ids
@@ -108,6 +109,7 @@ class AccountInvoice(models.Model):
             'journal_id': journal_id.id,
             'currency_id': company.currency_id.id,
             'payment_term_id': pgto_ids[0].id if pgto_ids else False,
+            'payment_mode_id': mode_ids[0].id if mode_ids else False,
             'fiscal_position_id': fpos_id.id,
             'service_document_id': fpos_id.service_document_id.id,
             'service_serie_id': fpos_id.service_serie_id.id,
