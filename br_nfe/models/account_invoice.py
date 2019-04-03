@@ -205,15 +205,19 @@ class AccountInvoice(models.Model):
             invoice_line.icms_aliquota_inter_part or 0.0
 
         di_importacao = []
-        for di in invoice_line.import_declaration_ids:
+        for di in invoice_line.invoice_id.import_declaration_ids:
             adicoes = []
-            for di_line in di.line_ids:
+            adicoes_linhas = invoice_line.declaration_line_ids.filter(
+                lambda adicao: adicao.import_declaration_id == di)
+            if not adicoes_linhas:
+                continue
+            for adicao in adicoes_linhas:
                 adicoes.append((0, None, {
-                    'sequence': di_line.sequence,
-                    'name': di_line.name,
-                    'manufacturer_code': di_line.manufacturer_code,
-                    'amount_discount': di_line.amount_discount,
-                    'drawback_number': di_line.drawback_number,
+                    'sequence': adicao.sequence,
+                    'name': adicao.name,
+                    'manufacturer_code': adicao.manufacturer_code,
+                    'amount_discount': adicao.amount_discount,
+                    'drawback_number': adicao.drawback_number,
                 }))
 
             di_importacao.append((0, None, {
