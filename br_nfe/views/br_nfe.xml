@@ -42,7 +42,7 @@
         </field>
     </record>
 
-  <record id="view_br_account_import_declaration_form" model="ir.ui.view">
+    <record id="view_br_account_import_declaration_form" model="ir.ui.view">
         <field name="name">br_account.import.declaration.form</field>
         <field name="model">br_account.import.declaration</field>
         <field name="arch" type="xml">
@@ -64,6 +64,17 @@
                         <field name="exporting_code"/>
                     </group>
             </form>
+        </field>
+    </record>
+
+     <record id="br_nfe_import_declaration_line_form" model="ir.ui.view">
+        <field name="name">br_nfe.import.declaration.line</field>
+        <field name="model">br_account.import.declaration.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_import_declaration_line_form"/>
+        <field name="arch" type="xml">
+            <field name="sequence" position="before">
+                <field name="import_declaration_id" domain="[('invoice_id', '=', parent.invoice_id)]"/>
+            </field>
         </field>
     </record>
 
