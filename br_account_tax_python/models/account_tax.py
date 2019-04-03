@@ -21,7 +21,8 @@ class AccountTax(models.Model):
                 'quantity': quantity,
                 'product': product,
                 'partner': partner,
-                'company': company
+                'company': company,
+                'context': self._context,
             }
             safe_eval(self.python_compute, localdict, mode="exec", nocopy=True)
             return localdict['result']
