@@ -33,4 +33,18 @@ class AccountInvoiceRefund(models.TransientModel):
                 item.write({'price_unit': price_unit})
                 item._set_extimated_taxes(price_unit)
 
+            invoice_id.product_serie_id = \
+                self.fiscal_position_id.product_serie_id.id
+            invoice_id.product_document_id = \
+                self.fiscal_position_id.product_document_id.id
+
+            invoice_id.service_serie_id = \
+                self.fiscal_position_id.service_serie_id.id
+            invoice_id.service_document_id = \
+                self.fiscal_position_id.service_document_id.id
+
+            ob_ids = [
+                x.id for x in self.fiscal_position_id.fiscal_observation_ids]
+            invoice_id.fiscal_observation_ids = [(6, False, ob_ids)]
+
         return res
