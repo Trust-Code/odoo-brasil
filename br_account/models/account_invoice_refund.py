@@ -22,8 +22,17 @@ class AccountInvoiceRefund(models.TransientModel):
         invoice_id = self.env['account.invoice'].search([
             ('id', '=', invoice_id)
         ])
-
-        invoice_id.write({'fiscal_position_id': self.fiscal_position_id.id})
+        fiscal_pos = self.fiscal_position_id
+        invoice_id.write({
+            'fiscal_position_id': fiscal_pos.id,
+            'product_serie_id': fiscal_pos.product_serie_id.id,
+            'product_document_id': fiscal_pos.product_document_id.id,
+            'service_serie_id': fiscal_pos.service_serie_id.id,
+            'service_document_id': fiscal_pos.service_document_id.id,
+            'fiscal_observation_ids': [(
+                6, False, [x.id for x in fiscal_pos.fiscal_observation_ids]
+            )]
+        })
 
         if self.fiscal_position_id:
             for item in invoice_id.invoice_line_ids:
@@ -32,19 +41,5 @@ class AccountInvoiceRefund(models.TransientModel):
                 item._br_account_onchange_product_id()
                 item.write({'price_unit': price_unit})
                 item._set_extimated_taxes(price_unit)
-
-            invoice_id.product_serie_id = \
-                self.fiscal_position_id.product_serie_id.id
-            invoice_id.product_document_id = \
-                self.fiscal_position_id.product_document_id.id
-
-            invoice_id.service_serie_id = \
-                self.fiscal_position_id.service_serie_id.id
-            invoice_id.service_document_id = \
-                self.fiscal_position_id.service_document_id.id
-
-            ob_ids = [
-                x.id for x in self.fiscal_position_id.fiscal_observation_ids]
-            invoice_id.fiscal_observation_ids = [(6, False, ob_ids)]
 
         return res
