@@ -10,18 +10,18 @@
                 <button name="action_register_payment" type="object" string="PAGAR" groups="account.group_account_invoice" class="btn btn-success btn-xs" />
             </tree>
             <page name="vencimentos" position="inside">
-              <div states="draft">
-                <field name="preview_payment_ids" nolabel="1">
-                  <tree create="0" delete="0" editable="botton">
-                    <field name="days"/>
-                    <field name="date_previews"/>
-                    <field name="name" string="Rótulo" readonly="1" force_save="1"/>
-                    <field name="payment_mode_id" required="1"/>
-                    <field name="payment_term_line_id" invisible="1"/>
-                    <field name="amount" string="Debit" />
-                  </tree>
-                </field>
-              </div>
+                <div states="draft">
+                    <field name="preview_payment_ids" nolabel="1">
+                        <tree create="0" delete="0" editable="botton">
+                            <field name="days"/>
+                            <field name="date_previews"/>
+                            <field name="name" string="Rótulo" readonly="1" force_save="1"/>
+                            <field name="payment_mode_id" required="1"/>
+                            <field name="payment_term_line_id" invisible="1"/>
+                            <field name="amount" string="Debit" />
+                        </tree>
+                    </field>
+                </div>
             </page>
         </field>
     </record>
@@ -35,18 +35,18 @@
                 <button name="action_register_payment" type="object" string="PAGAR" groups="account.group_account_invoice" class="btn btn-success btn-xs" />
             </tree>
             <page name="vencimentos" position="inside">
-              <div states="draft">
-                <field name="preview_payment_ids" nolabel="1">
-                  <tree create="0" delete="0" editable="botton">
-                    <field name="days"/>
-                    <field name="date_previews"/>
-                    <field name="name" string="Rótulo" readonly="1" force_save="1"/>
-                    <field name="payment_mode_id" required="1"/>
-                    <field name="payment_term_line_id" invisible="1"/>
-                    <field name="amount" string="Debit" />
-                  </tree>
-                </field>
-              </div>
+                <div states="draft">
+                    <field name="preview_payment_ids" nolabel="1">
+                        <tree create="0" delete="0" editable="botton">
+                            <field name="days"/>
+                            <field name="date_previews"/>
+                            <field name="name" string="Rótulo" readonly="1" force_save="1"/>
+                            <field name="payment_mode_id" required="1"/>
+                            <field name="payment_term_line_id" invisible="1"/>
+                            <field name="amount" string="Debit" />
+                        </tree>
+                    </field>
+                </div>
             </page>
         </field>
     </record>
