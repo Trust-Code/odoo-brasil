@@ -15,6 +15,9 @@
                 <field name="acc_number_dig" />
                 <field name="bank_agency_dig" />
             </field>
+            <field name="currency_id" position="after">
+                    <field name="l10n_br_sequence_statements" />
+            </field>
         </field>
     </record>
 
