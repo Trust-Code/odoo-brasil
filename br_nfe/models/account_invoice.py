@@ -207,7 +207,7 @@ class AccountInvoice(models.Model):
         di_importacao = []
         for di in invoice_line.invoice_id.import_declaration_ids:
             adicoes = []
-            adicoes_linhas = invoice_line.declaration_line_ids.filter(
+            adicoes_linhas = invoice_line.declaration_line_ids.filtered(
                 lambda adicao: adicao.import_declaration_id == di)
             if not adicoes_linhas:
                 continue
