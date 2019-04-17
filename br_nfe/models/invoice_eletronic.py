@@ -736,6 +736,28 @@ class InvoiceEletronic(models.Model):
             'xPed': self.pedido_compra or '',
             'xCont': self.contrato_compra or '',
         }
+
+        responsavel_tecnico = self.company_id.responsavel_tecnico_id
+        infRespTec = {}
+
+        if responsavel_tecnico:
+            if len(responsavel_tecnico.child_ids) == 0:
+                raise UserError(
+                    "Adicione um contato para o responsável técnico!")
+
+            cnpj = re.sub(
+                '[^0-9]', '', responsavel_tecnico.cnpj_cpf)
+            fone = re.sub(
+                '[^0-9]', '', responsavel_tecnico.phone)
+            infRespTec = {
+                'CNPJ': cnpj or '',
+                'xContato': responsavel_tecnico.child_ids[0].name or '',
+                'email': responsavel_tecnico.email or '',
+                'fone': fone or '',
+                'idCSRT': self.company_id.id_token_csrt or '',
+                'hashCSRT': self._get_hash_csrt() or '',
+            }
+
         vals = {
             'Id': '',
             'ide': ide,
@@ -749,6 +771,7 @@ class InvoiceEletronic(models.Model):
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
+            'infRespTec': infRespTec,
         }
         if self.valor_servicos > 0.0:
             vals.update({
@@ -1135,3 +1158,16 @@ class InvoiceEletronic(models.Model):
             'view_mode': 'form',
             'target': 'new',
         }
+
+    def _get_hash_csrt(self):
+        chave_nfe = self.chave_nfe
+        csrt = self.company_id.csrt
+
+        if not csrt:
+            return
+
+        hash_csrt = "{0}{1}".format(csrt, chave_nfe)
+        hash_csrt = base64.b64encode(
+            hashlib.sha1(hash_csrt.encode()).digest())
+
+        return hash_csrt.decode("utf-8")
