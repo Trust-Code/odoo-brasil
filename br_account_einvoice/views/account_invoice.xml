@@ -65,7 +65,7 @@
         </field>
     </record>
 
-    <record id="account.action_invoice_tree2" model="ir.actions.act_window">
+    <!-- <record id="account.action_invoice_tree2" model="ir.actions.act_window">
         <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'issuer': 0}</field>
-    </record>
+    </record> -->
 </odoo>
