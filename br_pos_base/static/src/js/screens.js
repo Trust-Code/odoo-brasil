@@ -5,6 +5,13 @@ odoo.define('br_pos_base.screens', function(require){
     let clientScreen = require('point_of_sale.screens');
 
     let ClientListScreenWidget = clientScreen.ClientListScreenWidget.include({
+        save_client_details: function(partner) {
+            let self = this;
+            let pessoa = this.$('.client-company:checked').val();
+            this.$('input[name=is_company]').val(pessoa);
+            return this._super(partner);
+        },
+
         display_client_details: function(visibility, partner, clickpos){
             var self = this;
             let result = this._super(visibility, partner, clickpos);
