@@ -44,45 +44,45 @@ class AccountInvoice(models.Model):
         vals = []
         balance = amount = self._get_amount()
         for line in self.preview_payment_ids:
-            ptLine = line.payment_term_line_id or False
-            if ptLine and ptLine.value == 'percent':
-                mnt = round(amount * (ptLine.value_amount / 100), 2)
-            elif ptLine and ptLine.value == 'fixed':
-                mnt = ptLine.value_amount
-            elif not ptLine or ptLine.value == 'balance':
+            pt_line = line.payment_term_line_id or False
+            if pt_line and pt_line.value == 'percent':
+                mnt = round(amount * (pt_line.value_amount / 100), 2)
+            elif pt_line and pt_line.value == 'fixed':
+                mnt = pt_line.value_amount
+            elif not pt_line or pt_line.value == 'balance':
                 mnt = balance
             vals.append([1, line.id, {'amount': mnt}])
             balance -= mnt
         return vals
 
     def prepare_preview_payment(self, payment_term_id=False):
-        pLine_env = self.env['invoice.payment.lines']
-        pMode_env = self.env['l10n_br.payment.mode']
-        pMode_default = pMode_env.search([('is_default', '=', True)], limit=1)
+        p_line_env = self.env['invoice.payment.lines']
+        p_mode_env = self.env['l10n_br.payment.mode']
+        p_mode_def = p_mode_env.search([('is_default', '=', True)], limit=1)
         result = []
-        pTerm = payment_term_id if payment_term_id else self.payment_term_id
-        if pTerm:
-            for n, line in enumerate(pTerm.line_ids, 1):
+        p_term = payment_term_id if payment_term_id else self.payment_term_id
+        if p_term:
+            for n, line in enumerate(p_term.line_ids, 1):
                 days = 0
                 if line.option == 'day_after_invoice_date':
                     days = line.days
-                dPreviews = pLine_env.get_date_previews(days)
-                name = "%02d/%02d" % (n, len(pTerm.line_ids))
+                d_previews = p_line_env.get_date_previews(days)
+                name = "%02d/%02d" % (n, len(p_term.line_ids))
                 vals = {'name': name,
                         'days': days,
-                        'date_previews': dPreviews,
+                        'date_previews': d_previews,
                         'payment_term_line_id': line.id}
                 if line.default_payment_mode_id:
                     vals['payment_mode_id'] = line.default_payment_mode_id.id
                 else:
-                    vals['payment_mode_id'] = pMode_default.id
+                    vals['payment_mode_id'] = p_mode_def.id
                 result.append([0, 0, vals])
         else:
-            dPreviews = pLine_env.get_date_previews()
+            d_previews = p_line_env.get_date_previews()
             vals = {'name': '01/01',
                     'days': 0,
-                    'date_previews': dPreviews,
-                    'payment_mode_id': pMode_default.id}
+                    'date_previews': d_previews,
+                    'payment_mode_id': p_mode_def.id}
             result.append([0, 0, vals])
         return result
 
