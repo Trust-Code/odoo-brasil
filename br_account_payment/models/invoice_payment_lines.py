@@ -11,6 +11,10 @@ class InvoicePaymentLines(models.Model):
     _name = 'invoice.payment.lines'
     _description = 'Invoice Payment Note Lines'
 
+    payment_mode_id = fields.Many2one(
+        string=u"Modo de pagamento",
+        comodel_name='l10n_br.payment.mode',
+        readonly=True)
     name = fields.Char(string="Name")
     invoice_id = fields.Many2one(
         string="Invoice",
