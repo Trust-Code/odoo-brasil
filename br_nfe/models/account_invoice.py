@@ -80,6 +80,13 @@ class AccountInvoice(models.Model):
                 {'number_next_actual': inv_inutilized.numeration_end + 1})
         return serie_id.internal_sequence_id.next_by_id()
 
+    def apply_di_to_items(self):
+        for invoice in self:
+            invoice.invoice_line_ids.write({
+                'import_declaration_ids': [
+                    (6, None, invoice.import_declaration_ids.ids)]
+            })
+
     def _prepare_edoc_vals(self, inv, inv_lines, serie_id):
         res = super(AccountInvoice, self)._prepare_edoc_vals(
             inv, inv_lines, serie_id)
@@ -134,6 +141,8 @@ class AccountInvoice(models.Model):
                                                              'GO', 'MG', 'MS',
                                                              'MT', 'PE', 'RN',
                                                              'SP'):
+                ind_ie_dest = '9'
+            elif inv.commercial_partner_id.country_id.code != 'BR':
                 ind_ie_dest = '9'
             else:
                 ind_ie_dest = '2'
@@ -205,19 +214,15 @@ class AccountInvoice(models.Model):
             invoice_line.icms_aliquota_inter_part or 0.0
 
         di_importacao = []
-        for di in invoice_line.invoice_id.import_declaration_ids:
+        for di in invoice_line.import_declaration_ids:
             adicoes = []
-            adicoes_linhas = invoice_line.declaration_line_ids.filtered(
-                lambda adicao: adicao.import_declaration_id == di)
-            if not adicoes_linhas:
-                continue
-            for adicao in adicoes_linhas:
+            for di_line in di.line_ids:
                 adicoes.append((0, None, {
-                    'sequence': adicao.sequence,
-                    'name': adicao.name,
-                    'manufacturer_code': adicao.manufacturer_code,
-                    'amount_discount': adicao.amount_discount,
-                    'drawback_number': adicao.drawback_number,
+                    'sequence': di_line.sequence,
+                    'name': di_line.name,
+                    'manufacturer_code': di_line.manufacturer_code,
+                    'amount_discount': di_line.amount_discount,
+                    'drawback_number': di_line.drawback_number,
                 }))
 
             di_importacao.append((0, None, {
