@@ -11,10 +11,6 @@ class ImportDeclaration(models.Model):
         'invoice.eletronic.item', u'Linha de Documento Eletrônico',
         ondelete='cascade', index=True)
 
-    invoice_id = fields.Many2one(
-        'account.invoice', 'Fatura',
-        ondelete='cascade', index=True)
-
 
 class ImportDeclarationLine(models.Model):
     _inherit = 'br_account.import.declaration.line'
