@@ -31,7 +31,7 @@ class SaleOrder(models.Model):
         for line in order_lines:
             # Desconta a retenção se houver
             ret_perc = sum([tx.amount for tx in line.tax_id if tx.amount < 0])
-            amount += line.price_subtotal * (1 - (ret_perc / 100))
+            amount += line.price_subtotal * (1 - (abs(ret_perc) / 100))
         return amount
 
     def _preview_payment_amount(self, payment_vals):
