@@ -35,10 +35,14 @@ class SaleOrder(models.Model):
         return amount
 
     def _preview_payment_amount(self, payment_vals):
-        pt_line_env = self.env['account.payment.term.line']
         balance = amount = self._get_amount()
         for line_vals in payment_vals:
-            pt_line = pt_line_env.browse(line_vals[2]['payment_term_line_id'])
+            if 'payment_term_line_id' in line_vals[2]:
+                pt_line = self.env['account.payment.term.line'].browse(
+                    line_vals[2]['payment_term_line_id'])
+            else:
+                pt_line = False
+
             if pt_line and pt_line.value == 'percent':
                 mnt = round(amount * (pt_line.value_amount / 100), 2)
             elif pt_line and pt_line.value == 'fixed':
