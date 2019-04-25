@@ -101,15 +101,3 @@ class AccountInvoice(models.Model):
             move[2][debit_credit] = payment.amount
             move[2]['payment_mode_id'] = payment.payment_mode_id.id
         return aml
-
-
-class AccountInvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
-
-    @api.model
-    def create(self, vals):
-        res = super(AccountInvoiceLine, self).create(vals)
-        inv = res.invoice_id
-        if inv.preview_payment_ids:
-            inv.write({'preview_payment_ids': inv.upd_preview_amount()})
-        return res
