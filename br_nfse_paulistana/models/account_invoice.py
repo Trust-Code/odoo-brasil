@@ -16,4 +16,5 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_edoc_item_vals(line)
         res['codigo_servico_paulistana'] = \
             line.service_type_id.codigo_servico_paulistana
+        res['codigo_servico_paulistana_nome'] = line.service_type_id.name
         return res

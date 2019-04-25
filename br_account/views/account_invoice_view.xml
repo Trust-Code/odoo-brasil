@@ -399,39 +399,9 @@
                                 <field name="ii_aliquota" invisible="1"/>
                                 <field name="ii_valor"/>
                             </group>
-                            <group string="Declaração de Importação">
-                                <field name="import_declaration_ids" colspan="4" nolabel="1">
-                                    <tree>
-                                        <field name="name"/>
-                                        <field name="date_registration"/>
-                                        <field name="location"/>
-                                        <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                                        <field name="date_release"/>
-                                        <field name="type_transportation"/>
-                                    </tree>
-                                    <form string="Declaração de Importação">
-                                        <group>
-                                            <group>
-                                                <field name="name"/>
-                                                <field name="date_registration"/>
-                                                <field name="state_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                                                <field name="location"/>
-                                                <field name="date_release"/>
-                                                <field name="type_transportation" />
-                                            </group>
-                                            <group>
-                                                <field name="afrmm_value" />
-                                                <field name="type_import" />
-                                                <field name="thirdparty_cnpj" />
-                                                <field name="thirdparty_state_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                                                <field name="exporting_code"/>
-                                            </group>
-                                            <group string="Adições" colspan="4">
-                                                <field name="line_ids" nolabel="1"></field>
-                                            </group>
-                                        </group>
-                                    </form>
-                                </field>
+                            <group name="import_declaration" string="Declaração de Importação">
+                                <field name="import_declaration_ids" colspan="4" nolabel="1" widget="many2many"
+                                    domain="[('invoice_id', '=', parent)]" context="{'search_default_invoice_id': parent.id}" />
                             </group>
                         </page>
                         <page name="retencoes" string="Retenções" attrs="{'invisible': [('product_type','!=', 'service')]}">

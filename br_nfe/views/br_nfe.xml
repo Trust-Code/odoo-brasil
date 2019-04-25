@@ -35,13 +35,12 @@
         <field name="model">nfe.duplicata</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="numero_duplicata" />
+                <field name="numero_duplicata"/>
                 <field name="data_vencimento"/>
                 <field name="payment_mode_id"/>
                 <field name="valor"/>
             </tree>
         </field>
     </record>
-
 
 </odoo>
