@@ -437,9 +437,8 @@ class AccountInvoiceLine(models.Model):
     ii_valor_despesas = fields.Float(
         'Desp. Aduaneiras', required=True,
         digits=dp.get_precision('Account'), default=0.00)
-    import_declaration_ids = fields.One2many(
-        'br_account.import.declaration',
-        'invoice_line_id', u'Declaração de Importação')
+    import_declaration_ids = fields.Many2many(
+        'br_account.import.declaration', string='Declaração de Importação')
 
     # =========================================================================
     # Impostos de serviço - CSLL

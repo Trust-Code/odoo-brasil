@@ -9,7 +9,6 @@
                  <field name="ii_valor_despesas" invisible="1" />
             </xpath>
             <field name="total_frete" position="after">
-                <field name="fiscal_position_type" invisible="1"/>
                 <field name="total_despesas_aduana" widget='monetary' options="{'currency_field': 'currency_id'}" />
             </field>
         </field>
