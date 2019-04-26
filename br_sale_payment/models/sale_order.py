@@ -10,7 +10,16 @@ class SaleOrder(models.Model):
 
     payment_mode_id = fields.Many2one(
         string="Modo de pagamento",
-        comodel_name = 'l10n_br.payment.mode')
+        comodel_name='l10n_br.payment.mode')
+
+    @api.multi
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if self.partner_id:
+            self.payment_mode_id = self.partner_id.property_payment_mode_id.id
+        else:
+            self.payment_mode_id = False
+        return super(SaleOrder, self).onchange_partner_id()
 
     @api.multi
     def _prepare_invoice(self):
