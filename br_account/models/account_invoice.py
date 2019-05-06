@@ -303,15 +303,12 @@ class AccountInvoice(models.Model):
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(
                     x for x in taxes_dict['taxes'] if x['id'] == tax.id)
-                if not tax.price_include and tax.account_id:
-                    res[contador]['price'] += tax_dict['amount']
                 if tax.price_include and (not tax.account_id or
                                           not tax.deduced_account_id):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
             contador += 1
-
         return res
 
     @api.multi
