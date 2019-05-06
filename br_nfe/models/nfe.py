@@ -12,6 +12,14 @@ class ImportDeclaration(models.Model):
         ondelete='cascade', index=True)
 
 
+class ImportDeclarationLine(models.Model):
+    _inherit = 'br_account.import.declaration.line'
+
+    invoice_line_id = fields.Many2one(
+        'account.invoice.line',
+        string="Linhas da fatura")
+
+
 class AccountDocumentRelated(models.Model):
     _inherit = 'br_account.document.related'
 

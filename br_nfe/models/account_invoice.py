@@ -34,6 +34,8 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
+    import_declaration_ids = fields.One2many(
+        'br_account.import.declaration', 'invoice_id')
 
     @api.multi
     def action_invoice_draft(self):
@@ -77,6 +79,13 @@ class AccountInvoice(models.Model):
             serie_id.internal_sequence_id.sudo().write(
                 {'number_next_actual': inv_inutilized.numeration_end + 1})
         return serie_id.internal_sequence_id.next_by_id()
+
+    def apply_di_to_items(self):
+        for invoice in self:
+            invoice.invoice_line_ids.write({
+                'import_declaration_ids': [
+                    (6, None, invoice.import_declaration_ids.ids)]
+            })
 
     def _prepare_edoc_vals(self, inv, inv_lines, serie_id):
         res = super(AccountInvoice, self)._prepare_edoc_vals(
@@ -132,6 +141,8 @@ class AccountInvoice(models.Model):
                                                              'GO', 'MG', 'MS',
                                                              'MT', 'PE', 'RN',
                                                              'SP'):
+                ind_ie_dest = '9'
+            elif inv.commercial_partner_id.country_id.code != 'BR':
                 ind_ie_dest = '9'
             else:
                 ind_ie_dest = '2'
@@ -231,3 +242,11 @@ class AccountInvoice(models.Model):
         vals['import_declaration_ids'] = di_importacao
         vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    declaration_line_ids = fields.One2many(
+        'br_account.import.declaration.line',
+        'invoice_line_id', string='Adições da DI')
