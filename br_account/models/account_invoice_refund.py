@@ -12,16 +12,15 @@ class AccountInvoiceRefund(models.TransientModel):
 
     @api.multi
     def invoice_refund(self):
+        context = dict(self._context or {})
+        for inv in self.env['account.invoice'].browse(
+                context.get('active_ids')):
+            self.atualiza_fiscal_pos(inv)
         res = super(AccountInvoiceRefund, self).invoice_refund()
-        if type(res) is bool:
-            return res
-        if "domain" not in res:
-            return res
 
-        invoice_id = res['domain'][1][2][0]
-        invoice_id = self.env['account.invoice'].search([
-            ('id', '=', invoice_id)
-        ])
+        return res
+
+    def atualiza_fiscal_pos(self, invoice_id):
         fiscal_pos = self.fiscal_position_id
         invoice_id.write({
             'fiscal_position_id': fiscal_pos.id,
@@ -41,5 +40,3 @@ class AccountInvoiceRefund(models.TransientModel):
                 item._br_account_onchange_product_id()
                 item.write({'price_unit': price_unit})
                 item._set_extimated_taxes(price_unit)
-
-        return res
