@@ -390,9 +390,24 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_refund(
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
-
+        docs_related = self._prepare_related_documents(invoice)
+        res['fiscal_document_related_ids'] = docs_related
         res['product_document_id'] = invoice.product_document_id.id
         res['product_serie_id'] = invoice.product_serie_id.id
         res['service_document_id'] = invoice.service_document_id.id
         res['service_serie_id'] = invoice.service_serie_id.id
         return res
+
+    def _prepare_related_documents(self, invoice):
+        doc_related = self.env['br_account.document.related']
+        related_vals = []
+        for doc in invoice.invoice_eletronic_ids:
+            vals = {'invoice_related_id': invoice.id,
+                    'document_type':
+                        doc_related.translate_document_type(
+                            invoice.product_document_id.code),
+                    'access_key': doc.chave_nfe,
+                    'numero': doc.numero}
+            related = (0, False, vals)
+            related_vals.append(related)
+        return related_vals
