@@ -15,6 +15,10 @@ class AccountInvoice(models.Model):
         return res
 
     def _return_pdf_invoice(self, doc):
-        if doc.model == '010':
-            return 'br_nfse_imperial.report_br_nfse_danfe_imperial'  # Imperial
+        if doc.model == '010':  # Imperial
+            return {
+                "type": "ir.actions.act_url",
+                "url": doc.url_danfe,
+                "target": "_blank",
+            }
         return super(AccountInvoice, self)._return_pdf_invoice(doc)

@@ -2,11 +2,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import re
+import requests
 import base64
 import logging
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -23,6 +23,9 @@ STATE = {'edit': [('readonly', False)]}
 
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
+
+    url_danfe = fields.Char(
+        string='Url de Impressão Danfe', size=500, readonly=True)
 
     @api.multi
     def _hook_validation(self):
@@ -67,6 +70,7 @@ class InvoiceEletronic(models.Model):
                 'senha': company.senha_nfse_imperial,
                 'aliquota_simples': company.iss_simples_nacional,
 
+                'situacao': 'tp',  # Tributada no prestador
                 'servico': int(re.sub('[^0-9]', '', codigo_servico)),
                 'descricaoNF': descricao,
 
@@ -83,7 +87,8 @@ class InvoiceEletronic(models.Model):
                 'tomador_numero': partner.number or '',
                 'tomador_complemento': partner.street2 or '',
                 'tomador_bairro': partner.district or 'Sem Bairro',
-                'tomador_cod_cidade': partner.state_id.code,
+                'tomador_cod_cidade': '%s%s' % (partner.state_id.ibge_code,
+                                                partner.city_id.ibge_code),
                 'tomador_CEP': re.sub('[^0-9]', '', partner.zip),
                 'tomador_fone': re.sub('[^0-9]', '', partner.phone or ''),
 
@@ -99,29 +104,22 @@ class InvoiceEletronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
+        attachment_obj = self.env['ir.attachment']
         if self.model not in ('010'):
             return atts
-        attachment_obj = self.env['ir.attachment']
 
-        danfe_report = self.env['ir.actions.report'].search(
-            [('report_name', '=',
-              'br_nfse_imperial.main_template_br_nfse_danfe_imperial')])
-        report_service = danfe_report.xml_id
-        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
-        report_name = safe_eval(danfe_report.print_report_name,
-                                {'object': self, 'time': time})
-        filename = "%s.%s" % (report_name, "pdf")
-        if danfse:
+        response = requests.get(self.url_danfe)
+
+        if response.ok:
             danfe_id = attachment_obj.create(dict(
-                name=filename,
-                datas_fname=filename,
-                datas=base64.b64encode(danfse),
+                name="Danfe-%08d.pdf" % self.numero,
+                datas_fname="Danfe-%08d.pdf" % self.numero,
+                datas=base64.b64encode(response.content),
                 mimetype='application/pdf',
                 res_model='account.invoice',
                 res_id=self.invoice_id.id,
             ))
             atts.append(danfe_id.id)
-
         return atts
 
     @api.multi
@@ -149,12 +147,13 @@ class InvoiceEletronic(models.Model):
 
         obj = dic_retorno['object'].GerarNotaResponse
         if obj.RetornoNota.Resultado == 1:
-            obj = {
-                'protocolo': obj.Protocolo,
-                'codigo_usuario': self.company_id.codigo_nfse_usuario,
-                'codigo_contribuinte': self.company_id.codigo_nfse_empresa,
-            }
-            self.recibo_nfe = obj.Protocolo
+            self.state = 'done'
+            self.codigo_retorno = '1'
+            self.mensagem_retorno = \
+                'Nota Fiscal Digital emitida com sucesso'
+            self.recibo_nfe = obj.RetornoNota.autenticidade
+            self.numero_nfse = obj.RetornoNota.Nota
+            self.url_danfe = obj.RetornoNota.LinkImpressao
 
         else:
             self.codigo_retorno = 0
@@ -186,34 +185,30 @@ class InvoiceEletronic(models.Model):
                 }
             }
 
+        partner = self.commercial_partner_id
         canc = {
-            'serie_nota': 'NFE',
-            'numero_nota': self.numero_nfse,
-            'serie_rps': self.serie_documento,
-            'numero_rps': self.numero,
-            'valor': self.valor_final,
+            'ccm': re.sub('[^0-9]', '',  self.company_id.inscr_mun),
+            'cnpj': re.sub('[^0-9]', '',  self.company_id.cnpj_cpf),
+            'senha':  self.company_id.senha_nfse_imperial,
+            'nota': self.numero_nfse,
+            'tomador_email': self.partner_id.email or partner.email or '',
             'motivo': justificativa,
-            'cancelar_guia': 'S',
-            'codigo_usuario': self.company_id.codigo_nfse_usuario,
-            'codigo_contribuinte': self.company_id.codigo_nfse_empresa,
         }
-        cancel = cancelar_nota(
+        dic_retorno = cancelar_nota(
             None, cancelamento=canc, ambiente=self.ambiente)
 
-        print(cancel)
-        retorno = cancel['object'].Body['ws_nfe.CANCELANOTAELETRONICAResponse']
-        retorno = retorno['Sdt_retornocancelanfe']
-        if retorno.Retorno:
+        obj = dic_retorno['object'].CancelarNotaResponse
+        if obj.RetornoNota.Resultado == 1:
             self.state = 'cancel'
             self.codigo_retorno = '100'
-            self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+            self.mensagem_retorno = 'Nota Fiscal de Serviço Cancelada'
         else:
-            raise UserError(retorno.Messages.Message.Description)
+            raise UserError(obj.DescricaoErros.item[0].DescricaoErro)
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
             'invoice_eletronic_id': self.id,
         })
-        self._create_attachment('canc', self, cancel['sent_xml'])
-        self._create_attachment('canc-ret', self, cancel['received_xml'])
+        self._create_attachment('canc', self, dic_retorno['sent_xml'])
+        self._create_attachment('canc-ret', self, dic_retorno['received_xml'])
