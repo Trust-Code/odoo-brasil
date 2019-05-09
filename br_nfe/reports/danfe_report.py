@@ -61,7 +61,7 @@ class IrActionsReport(models.Model):
         else:
             tmpLogo = False
 
-        timezone = pytz.timezone(self.env.context.get('tz')) or pytz.utc
+        timezone = pytz.timezone(self.env.context.get('tz') or 'UTC')
 
         xml_element = etree.fromstring(nfe_xml)
         if nfe.model == '65':
