@@ -198,15 +198,17 @@ class PurchaseOrderLine(models.Model):
     @api.multi
     def _get_stock_move_price_unit(self):
         price = self.price_unit
+        order = self.order_id
         ctx = self._prepare_tax_context()
         tax_ids = self.taxes_id.with_context(**ctx)
         taxes = tax_ids.compute_all(
-            price, self.order_id.currency_id,
-            self.product_qty, product=self.product_id,
+            price,
+            currency=self.order_id.currency_id,
+            quantity=1.0,
+            product=self.product_id,
             partner=self.order_id.partner_id)
 
         price = taxes['total_included']
-
         for tax in taxes['taxes']:
             # Quando o imposto não tem conta contábil, deduzimos que ele não é
             # recuperável e portanto somamos ao custo, como partimos do valor
@@ -214,5 +216,10 @@ class PurchaseOrderLine(models.Model):
             if tax['account_id']:
                 price -= tax['amount']
 
-        price = price / self.product_qty
+        if self.product_uom.id != self.product_id.uom_id.id:
+            price *= self.product_uom.factor / self.product_id.uom_id.factor
+        if order.currency_id != order.company_id.currency_id:
+            price = order.currency_id.compute(price,
+                                              order.company_id.currency_id,
+                                              round=False)
         return price

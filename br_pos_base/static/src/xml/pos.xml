@@ -42,8 +42,16 @@
         <t t-jquery="div.client-details-left" t-operation="replace">
             <div class='client-details-left'>
                 <div class='client-detail'>
-                    <span class='label'>Empresa?:</span>
-                    <input type="checkbox" class='detail client-company' name='is_company' t-att-value='partner.is_company'></input>
+                    <span class='label'>Pessoa:</span>
+                    <t t-if="partner.is_company">
+                      <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' value='fisica'>Física</input>
+                      <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' checked='checked' value='juridica'>Jurídica</input>
+                    </t>
+                    <t t-else="">
+                        <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' checked='checked' value='fisica'>Física</input>
+                        <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' value='juridica'>Jurídica</input>
+                    </t>
+                    <input type="hidden" class="detail" value='fisica' name='is_company' />
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Razão:</span>
@@ -51,7 +59,7 @@
                 </div>
                 <div class='client-detail'>
                     <span class='label'>CNPJ/CPF:</span>
-                    <input class='detail client-cnpj' name='cnpj_cpf' t-att-value='partner.cnpj_cpf || ""' placeholder="CPF"></input>
+                    <input class='detail client-cnpj' name='cnpj_cpf' t-att-value='partner.cnpj_cpf || ""' placeholder="CNPJ/CPF"></input>
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Email</span>
