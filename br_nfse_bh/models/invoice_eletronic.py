@@ -109,8 +109,7 @@ class InvoiceEletronic(models.Model):
             'uf': partner.state_id.code,
             'cep': re.sub('[^0-9]', '', partner.zip),
             'telefone': re.sub('[^0-9]', '', partner.phone or ''),
-            'inscricao_municipal': re.sub(
-                '[^0-9]', '', partner.inscr_mun or ''),
+            'inscricao_municipal': partner.inscr_mun or '',
             'email': self.partner_id.email or partner.email or '',
         }
         city_prestador = self.company_id.partner_id.city_id
