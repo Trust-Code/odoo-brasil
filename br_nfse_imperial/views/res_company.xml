@@ -7,11 +7,8 @@
         <field name="arch" type="xml">
             <page name="integracao_nfse" position="inside">
                 <group string="Nota Imperial">
-                  <field name="codigo_nfse_empresa" />
-                  <field name="codigo_nfse_usuario" />
-                  <field name="tipo_tributacao_imperial" />
+                  <field name="senha_nfse_imperial" password="True" />
                   <field name="iss_simples_nacional" />
-                  <field name="adesao_simples_nacional" />
                 </group>
             </page>
         </field>
