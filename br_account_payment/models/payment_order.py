@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -43,7 +42,7 @@ class PaymentOrderLine(models.Model):
     emission_date = fields.Date(string="Data de Emissão")
     currency_id = fields.Many2one('res.currency', string="Currency")
     amount_total = fields.Monetary(
-        string="Valor", digits=(18, 2), oldname='value')
+        string="Valor", digits=(18, 2), oldname='value', store=True)
     state = fields.Selection([("draft", "Rascunho"),
                               ("approved", "Aprovado"),
                               ("sent", "Enviado"),
@@ -61,7 +60,7 @@ class PaymentOrderLine(models.Model):
         lines = self.filtered(lambda x: x.state != 'draft')
         if lines:
             raise UserError(
-                'Apenas pagamentos no estado provisório podem ser excluídos')
+                _('Apenas registros no estado provisório podem ser excluídos'))
         return super(PaymentOrderLine, self).unlink()
 
     @api.multi

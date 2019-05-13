@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -16,10 +15,12 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def copy(self, default=None):
+        self.ensure_one()
         new_acc_inv = super(AccountInvoice, self).copy(default)
+        new_acc_inv.import_declaration_ids = self.import_declaration_ids
         for i in range(len(new_acc_inv.invoice_line_ids)):
-            new_acc_inv.invoice_line_ids[i].import_declaration_ids = \
-                self.invoice_line_ids[i].import_declaration_ids
+            new_acc_inv.invoice_line_ids[i].declaration_line_ids = \
+                self.invoice_line_ids[i].declaration_line_ids
         return new_acc_inv
 
     @api.one

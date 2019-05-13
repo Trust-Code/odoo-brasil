@@ -17,6 +17,13 @@ except ImportError:
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
+    def _compute_amount_total(self):
+        for item in self:
+            amount_total = 0
+            for line in item.line_ids:
+                amount_total += line.value_final
+            item.amount_total = amount_total
+
     def select_bank_cnab(self, code):
         banks = {
             '756': sicoob.Sicoob240(self),
@@ -41,7 +48,7 @@ class PaymentOrder(models.Model):
         lines = self.line_ids.filtered(
             lambda x: x.state in ('approved', 'sent'))
         if not lines:
-            raise UserError('Nenhum pagamento aprovado!')
+            raise UserError(_('Nenhum pagamento aprovado!'))
 
         self.file_number = self.get_file_number()
         self.data_emissao_cnab = datetime.now()
@@ -63,9 +70,16 @@ class PaymentOrderLine(models.Model):
     linha_digitavel = fields.Char(string="Linha Digitável")
     barcode = fields.Char('Código de Barras')
     invoice_date = fields.Date('Data da Fatura')
+    payment_date = fields.Date('Data efetiva pagamento')
+
+    fine_value = fields.Float('Valor Multa')
+    interest_value = fields.Float('Valor Juros')
+    rebate_value = fields.Float('Abatimentos')
+    discount_value = fields.Float('Descontos')
+
     value_final = fields.Float(
-        string="Final Value", compute="_compute_final_value",
-        digits=(18, 2), readonly=True)
+        string="Valor Final", compute="_compute_final_value",
+        digits=(18, 2), readonly=True, store=True)
 
     autenticacao_pagamento = fields.Char(
         string="Chave de Autenticação do pagamento")
@@ -84,10 +98,18 @@ class PaymentOrderLine(models.Model):
         string="Agência do Favorecido",
         readonly=True)
 
-    _sql_constraints = [
-        ('payment_order_line_barcode_uniq', 'unique (barcode)',
-         _('O código de barras deve ser único!'))
-    ]
+    @api.one
+    @api.constrains('barcode')
+    def _constrains_unique_barcode(self):
+        if not self.barcode:
+            return True
+        total = self.search_count(
+            [('barcode', '=', self.barcode), ('id', '!=', self.id),
+             ('state', 'not in', ('rejected', 'cancelled'))])
+
+        if total > 0:
+            raise UserError(_('O código de barras deve ser único!'))
+        return True
 
     def validate_partner_data(self, vals):
         errors = []
@@ -194,12 +216,12 @@ class PaymentOrderLine(models.Model):
                 ["Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
 
-    @api.depends('payment_information_id')
+    @api.depends('amount_total', 'rebate_value',
+                 'discount_value', 'interest_value')
     def _compute_final_value(self):
         for item in self:
-            payment = item.payment_information_id
-            desconto = payment.rebate_value + payment.discount_value
-            acrescimo = payment.fine_value + payment.interest_value
+            desconto = item.rebate_value + item.discount_value
+            acrescimo = item.fine_value + item.interest_value
             item.value_final = (item.amount_total - desconto + acrescimo)
 
     def get_operation_code(self, payment_mode):
@@ -241,8 +263,6 @@ class PaymentOrderLine(models.Model):
             'operation_code': self.get_operation_code(payment_mode_id),
             'codigo_receita': payment_mode_id.codigo_receita,
             'service_type': self.get_service_type(payment_mode_id),
-            'fine_value': vals.get('fine_value'),
-            'interest_value': vals.get('interest_value'),
             'numero_referencia': payment_mode_id.numero_referencia,
             'cod_recolhimento_fgts': payment_mode_id.cod_recolhimento,
             'identificacao_fgts': payment_mode_id.identificacao_fgts,
@@ -280,10 +300,10 @@ class PaymentOrderLine(models.Model):
         for item in self:
             if item.state != 'draft':
                 raise UserError(
-                    'Apenas pagamentos em provisório podem ser aprovados!')
+                    _('Apenas pagamentos em provisório podem ser aprovados!'))
             if item.type != 'payable':
                 raise UserError(
-                    'Apenas pagamentos a fornecedor podem ser aprovados')
+                    _('Apenas pagamentos a fornecedor podem ser aprovados'))
             payment_order = self.get_payment_order(item.payment_mode_id)
             item.write({
                 'payment_order_id': payment_order.id,
@@ -298,15 +318,16 @@ class PaymentOrderLine(models.Model):
             'date': date.today(),
             'ref': order_line.name,
         })
+
         aml_obj = self.env['account.move.line'].with_context(
             check_move_validity=False)
-
+        move_lines = self.env['account.move.line'].search(
+            [('l10n_br_order_line_id', '=', order_line.id)])
         account_id = None
-        if not order_line.move_line_id:   # Transferência
+        if not move_lines:   # Transferência
             account_id = order_line.destiny_journal_id.default_debit_account_id
         else:
-            account_id = order_line.move_line_id.account_id
-
+            account_id = move_lines[0].account_id
         counterpart_aml_dict = {
             'name': order_line.name,
             'move_id': move.id,
@@ -315,20 +336,56 @@ class PaymentOrderLine(models.Model):
             'credit': 0.0,
             'currency_id': order_line.currency_id.id,
             'account_id': account_id.id,
+            'journal_id': move.journal_id.id
         }
         liquidity_aml_dict = {
             'name': order_line.name,
             'move_id': move.id,
             'partner_id': order_line.partner_id.id,
             'debit': 0.0,
-            'credit': order_line.amount_total,
+            'credit': order_line.value_final,
             'currency_id': order_line.currency_id.id,
             'account_id': order_line.journal_id.default_credit_account_id.id,
+            'journal_id': move.journal_id.id,
         }
-        counterpart_aml = aml_obj.create(counterpart_aml_dict)
+        counterpart = aml_obj.create(counterpart_aml_dict)
         aml_obj.create(liquidity_aml_dict)
+        if order_line.discount_value or order_line.rebate_value:
+            account_id = (
+                order_line.company_id.l10n_br_payment_discount_account_id.id)
+            credit_value = (
+                order_line.discount_value or 0.00 +
+                order_line.rebate_value or 0.00)
+            discount_aml_dict = {
+                'name': 'Desconto Obtido',
+                'move_id': move.id,
+                'partner_id': order_line.partner_id.id,
+                'debit': 0.0,
+                'credit': credit_value,
+                'currency_id': order_line.currency_id.id,
+                'account_id': account_id,
+                'journal_id': move.journal_id.id
+            }
+            aml_obj.create(discount_aml_dict)
+        if order_line.fine_value or order_line.interest_value:
+            account_id = (
+                order_line.company_id.l10n_br_payment_interest_account_id.id)
+            debit_value = (
+                order_line.fine_value or 0.00 +
+                order_line.interest_value or 0.00)
+            credit_aml_dict = {
+                'name': 'Juros',
+                'move_id': move.id,
+                'partner_id': order_line.partner_id.id,
+                'debit': debit_value,
+                'credit': 0.0,
+                'currency_id': order_line.currency_id.id,
+                'account_id': account_id,
+                'journal_id': move.journal_id.id
+            }
+            aml_obj.create(credit_aml_dict)
         move.post()
-        (counterpart_aml + order_line.move_line_id).reconcile()
+        (counterpart + move_lines).reconcile()
         return move
 
     def mark_order_line_processed(self, cnab_code, cnab_message, statement_id,

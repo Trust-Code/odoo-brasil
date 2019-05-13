@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2014 KMEE (http://www.kmee.com.br)
 # @author Rafael da Silva Lima <rafael.lima@kmee.com.br>
 # @author Matheus Felix <matheus.felix@kmee.com.br>
@@ -8,7 +7,7 @@
 
 from datetime import datetime
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo.exceptions import ValidationError
 
@@ -38,16 +37,16 @@ class HrEmployee(models.Model):
 
             if c == '-':
                 if len(digits) != 10:
-                    raise ValidationError(u"PIS/PASEP Inválido")
+                    raise ValidationError(_("PIS/PASEP Inválido"))
                 continue
 
             if c.isdigit():
                 digits.append(int(c))
                 continue
 
-            raise ValidationError(u"PIS/PASEP Inválido")
+            raise ValidationError(_("PIS/PASEP Inválido"))
         if len(digits) != 11:
-            raise ValidationError(u"PIS/PASEP Inválido")
+            raise ValidationError(_("PIS/PASEP Inválido"))
 
         height = [int(x) for x in "3298765432"]
 
@@ -60,7 +59,7 @@ class HrEmployee(models.Model):
         if rest != 0:
             rest = 11 - rest
         if rest != digits[10]:
-            raise ValidationError(u"PIS/PASEP Inválido")
+            raise ValidationError(_("PIS/PASEP Inválido"))
 
     pis_pasep = fields.Char(u'PIS/PASEP', size=15)
     ctps = fields.Char('CTPS', help=u'Número da CTPS')
@@ -117,7 +116,7 @@ class HrEmployeeDependent(models.Model):
         dep_age = datetime.strptime(
             self.dependent_age, DEFAULT_SERVER_DATE_FORMAT)
         if dep_age.date() > datetime.now().date():
-            raise ValidationError(u'Data de aniversário inválida')
+            raise ValidationError(_('Data de aniversário inválida'))
         return True
 
     employee_id = fields.Many2one('hr.employee', u'Funcionário')

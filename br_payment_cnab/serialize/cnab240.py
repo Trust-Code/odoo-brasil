@@ -16,7 +16,7 @@ except ImportError:
     _logger.error('Cannot import pycnab240', exc_info=True)
 
 
-class Cnab_240(object):
+class Cnab240(object):
 
     def _hour_now(self):
         return (int(datetime.now().strftime("%H%M%S")[0:4]))
@@ -129,22 +129,19 @@ class Cnab_240(object):
             "cep_complemento": self._just_numbers(line.partner_id.zip[5:]),
             "favorecido_uf": line.partner_id.state_id.code or '',
             "valor_documento": self._float_to_monetary(line.amount_total),
-            "valor_abatimento": self._float_to_monetary(
-                information_id.rebate_value),
-            "valor_desconto": self._float_to_monetary(
-                information_id.discount_value),
-            "valor_mora": self._float_to_monetary(
-                information_id.interest_value),
-            "valor_multa": self._float_to_monetary(information_id.fine_value),
+            "valor_abatimento": self._float_to_monetary(line.rebate_value),
+            "valor_desconto": self._float_to_monetary(line.discount_value),
+            "valor_mora": self._float_to_monetary(line.interest_value),
+            "valor_multa": self._float_to_monetary(line.fine_value),
             "hora_envio_ted": self._hour_now(),
             "codigo_historico_credito": information_id.credit_hist_code,
             "cedente_nome": self._order.company_id.legal_name[:30],
             "valor_nominal_titulo":  self._float_to_monetary(
                 line.amount_total),
             "valor_desconto_abatimento": self._float_to_monetary(
-                information_id.rebate_value + information_id.discount_value),
+                line.rebate_value + line.discount_value),
             "valor_multa_juros": self._float_to_monetary(
-                information_id.interest_value + information_id.fine_value),
+                line.interest_value + line.fine_value),
             "codigo_moeda": int(information_id.currency_code),
             "codigo_de_barras": self._string_to_num(line.barcode),
             "codigo_de_barras_alfa": line.barcode or '',
@@ -153,7 +150,7 @@ class Cnab_240(object):
             (line.partner_id.legal_name or line.partner_id.name)[:30],
             "data_vencimento": int(self.format_date(line.date_maturity)),
             "valor_juros_encargos": self._string_to_monetary(
-                information_id.interest_value),
+                line.interest_value),
             # GPS
             "contribuinte_nome": self._order.company_id.legal_name[:30],
             "codigo_receita_tributo": information_id.codigo_receita or '',

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2012  Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -41,7 +40,7 @@ class BrZip(models.Model):
             if not state_id or not city_id or \
                     len(street or '') == 0:
                 raise UserError(
-                    u'Necessário informar Estado, município e logradouro')
+                    _('Necessário informar Estado, município e logradouro'))
 
             if country_id:
                 domain.append(('country_id', '=', country_id))
@@ -91,7 +90,7 @@ class BrZip(models.Model):
             if zip_code and len(zip_code) == 8:
                 self._search_by_cep(zip_code)
             elif zip_code:
-                raise UserError(u'Digite o cep corretamente')
+                raise UserError(_('Digite o cep corretamente'))
             else:
                 self._search_by_address(city_id, street)
 
@@ -133,13 +132,18 @@ class BrZip(models.Model):
                     city = self.env['res.state.city'].search(
                         [('ibge_code', '=', res['ibge'][2:]),
                          ('state_id.code', '=', res['uf'])])
-                    self.env['br.zip'].create(
-                        {'zip': re.sub('[^0-9]', '', res['cep']),
-                         'street': res['logradouro'],
-                         'district': res['bairro'],
-                         'country_id': city.state_id.country_id.id,
-                         'state_id': city.state_id.id,
-                         'city_id': city.id})
+
+                    zip_code = re.sub('[^0-9]', '', res['cep'])
+                    zip_ids = self.zip_search_multi(zip_code=zip_code)
+                    if len(zip_ids) == 0:
+                        self.env['br.zip'].create({
+                            'zip': zip_code,
+                            'street': res['logradouro'],
+                            'district': res['bairro'],
+                            'country_id': city.state_id.country_id.id,
+                            'state_id': city.state_id.id,
+                            'city_id': city.id
+                        })
 
         except Exception as e:
             _logger.error(e.message, exc_info=True)
@@ -150,13 +154,12 @@ class BrZip(models.Model):
         if len(zip_ids) == 1:
             return self.set_result(zip_ids[0])
         else:
-            raise UserError(_(u'Nenhum CEP encontrado'))
+            raise UserError(_('Nenhum CEP encontrado'))
 
     @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
                           city_id=False, district=False, street=False,
                           error=True):
-
         zip_ids = self.zip_search_multi(
             country_id=country_id,
             state_id=state_id,
@@ -189,7 +192,7 @@ class BrZip(models.Model):
             )
 
         elif error and len(zip_ids) == 0:
-            raise UserError(_(u'Nenhum registro encontrado'))
+            raise UserError(_('Nenhum registro encontrado'))
         else:
             return False
 

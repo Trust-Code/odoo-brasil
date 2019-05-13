@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009 Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -303,15 +302,12 @@ class AccountInvoice(models.Model):
             for tax in line.invoice_line_tax_ids:
                 tax_dict = next(
                     x for x in taxes_dict['taxes'] if x['id'] == tax.id)
-                if not tax.price_include and tax.account_id:
-                    res[contador]['price'] += tax_dict['amount']
                 if tax.price_include and (not tax.account_id or
                                           not tax.deduced_account_id):
                     if tax_dict['amount'] > 0.0:  # Negativo é retido
                         res[contador]['price'] -= tax_dict['amount']
 
             contador += 1
-
         return res
 
     @api.multi
@@ -390,9 +386,24 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_refund(
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
-
+        docs_related = self._prepare_related_documents(invoice)
+        res['fiscal_document_related_ids'] = docs_related
         res['product_document_id'] = invoice.product_document_id.id
         res['product_serie_id'] = invoice.product_serie_id.id
         res['service_document_id'] = invoice.service_document_id.id
         res['service_serie_id'] = invoice.service_serie_id.id
         return res
+
+    def _prepare_related_documents(self, invoice):
+        doc_related = self.env['br_account.document.related']
+        related_vals = []
+        for doc in invoice.invoice_eletronic_ids:
+            vals = {'invoice_related_id': invoice.id,
+                    'document_type':
+                        doc_related.translate_document_type(
+                            invoice.product_document_id.code),
+                    'access_key': doc.chave_nfe,
+                    'numero': doc.numero}
+            related = (0, False, vals)
+            related_vals.append(related)
+        return related_vals

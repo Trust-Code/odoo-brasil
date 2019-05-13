@@ -26,8 +26,6 @@
                                 <field name="lote_serv"/>
                                 <field name="reg_type"/>
                                 <field name="message2"/>
-                                <field name="rebate_value" widget="monetary"/>
-                                <field name="discount_value" widget="monetary"/>
                                 <field name="credit_hist_code"/>
                                 <field name="l10n_br_environment" />
                             </group>
@@ -36,8 +34,6 @@
                                 <field name="agency_name"/>
                                 <field name="operation_code"/>
                                 <field name="message1"/>
-                                <field name="fine_value" widget="monetary"/>
-                                <field name="interest_value" widget="monetary"/>
                                 <field name="mov_type"/>
                                 <field name="mov_instruc"/>
                                 <field name="service_type"/>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2010-2012  Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -25,7 +24,7 @@ class ResPartner(models.Model):
 
     @api.onchange('street', 'city_id', 'district')
     def _search_street(self):
-        if self.street and self.city_id:
+        if self.street and self.city_id and not self.zip:
             res = self.env['br.zip'].search_by_address(
                 country_id=self.city_id.state_id.country_id.id,
                 state_id=self.city_id.state_id.id,
