@@ -847,7 +847,7 @@ class InvoiceEletronic(models.Model):
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'estado': self.company_id.state_id.ibge_code,
-            'emissao': self.data_emissao.strftime("%y%M"),
+            'emissao': self.data_emissao.strftime("%y%m"),
             'modelo': self.model,
             'numero': self.numero,
             'serie': self.serie.code.zfill(3),
