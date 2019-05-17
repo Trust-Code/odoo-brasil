@@ -26,6 +26,7 @@
                             <field name="boleto_protesto"/>
                             <field name="boleto_protesto_prazo"/>
                             <field name="late_payment_fee"/>
+                            <field name="late_payment_interest_type"/>
                             <field name="late_payment_interest"/>
                             <field name="instrucoes" />
                         </group>
