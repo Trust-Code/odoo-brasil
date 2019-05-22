@@ -288,7 +288,7 @@ class InvoiceEletronic(models.Model):
         else:
             xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
-
+ 
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or 'SEM GTIN',
@@ -297,12 +297,12 @@ class InvoiceEletronic(models.Model):
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': item.quantidade,
-            'vUnCom': "%.02f" % item.preco_unitario,
+            'vUnCom': '{:.9}'.format(item.preco_unitario),
             'vProd':  "%.02f" % item.valor_bruto,
             'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': item.quantidade,
-            'vUnTrib': "%.02f" % item.preco_unitario,
+            'vUnTrib': '{:.9}'.format(item.preco_unitario),
             'vFrete': "%.02f" % item.frete if item.frete else '',
             'vSeg': "%.02f" % item.seguro if item.seguro else '',
             'vDesc': "%.02f" % item.desconto if item.desconto else '',
