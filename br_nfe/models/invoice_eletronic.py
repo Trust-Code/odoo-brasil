@@ -288,7 +288,7 @@ class InvoiceEletronic(models.Model):
         else:
             xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
- 
+
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or 'SEM GTIN',
