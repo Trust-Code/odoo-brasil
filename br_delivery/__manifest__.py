@@ -28,5 +28,8 @@
         'views/account_invoice.xml',
         'security/ir.model.access.csv',
     ],
+    'demo': [
+        'data/delivery_demo.xml',
+    ],
     'application': True,
 }
