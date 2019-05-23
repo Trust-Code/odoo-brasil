@@ -2,7 +2,6 @@ odoo.define('web_notify.WebClient', function (require) {
     "use strict";
 
     var base_bus = require('bus.bus');
-    var core = require('web.core');
     var WebClient = require('web.WebClient');
     var session = require('web.session');
     var Notification = require('web.notification').Notification;
@@ -15,7 +14,6 @@ odoo.define('web_notify.WebClient', function (require) {
             this.redirect = redirect;
             this.events = _.extend(this.events || {}, {
                 'click .go_to_activity': function () {
-                    var self = this;
                     this.do_action({
                         name: this.redirect.name,
                         type: 'ir.actions.act_window',
@@ -23,7 +21,7 @@ odoo.define('web_notify.WebClient', function (require) {
                         target: 'current',
                         views: [[false, this.redirect.view], [false, 'form']],
                         domain: this.redirect.domain,
-                        context: this.redirect.context
+                        context: this.redirect.context,
                     });
                 },
             });
@@ -39,7 +37,6 @@ odoo.define('web_notify.WebClient', function (require) {
             return this._super.apply(this, arguments);
         },
         on_logout: function () {
-            var self = this;
             base_bus.bus.off('notification', this, this.bus_notification);
             this._super();
         },
@@ -57,29 +54,33 @@ odoo.define('web_notify.WebClient', function (require) {
                 var channel = notification[0];
                 var message = notification[1];
                 if (message.redirect) {
-                    self.on_message_redirect(message)
+                    self.on_message_redirect(message);
                 } else if (channel === self.channel_warning) {
                     self.on_message_warning(message);
-                } else if (channel == self.channel_info) {
+                } else if (channel === self.channel_info) {
                     self.on_message_info(message);
                 }
             });
         },
         on_message_redirect: function (message) {
             if (this.notification_manager) {
-                var notification = new UsersNotification(this.notification_manager, message.title, message.message, message.sticky, message.redirect);
+                var notification = new UsersNotification(
+                    this.notification_manager, message.title, message.message,
+                    message.sticky, message.redirect);
                 this.notification_manager.display(notification);
             }
         },
         on_message_warning: function (message) {
             if (this.notification_manager) {
-                this.notification_manager.do_warn(message.title, message.message, message.sticky);
+                this.notification_manager.do_warn(
+                    message.title, message.message, message.sticky);
             }
         },
         on_message_info: function (message) {
             if (this.notification_manager) {
-                this.notification_manager.do_notify(message.title, message.message, message.sticky);
+                this.notification_manager.do_notify(
+                    message.title, message.message, message.sticky);
             }
-        }
+        },
     });
 });

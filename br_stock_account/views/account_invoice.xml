@@ -57,6 +57,9 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
+            <field name="fiscal_position_id" position="after">
+                <field name="fiscal_position_type" invisible="1"/>
+            </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="valor_frete" invisible="1" />
                 <field name="valor_seguro" invisible="1" />

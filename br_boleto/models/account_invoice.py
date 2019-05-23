@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -19,7 +18,7 @@ class AccountInvoice(models.Model):
     def send_email_boleto_queue(self):
         mail = self._get_email_template_invoice()
         if not mail:
-            raise UserError('Modelo de email padrão não configurado')
+            raise UserError(_('Modelo de email padrão não configurado'))
 
         attachment_obj = self.env['ir.attachment']
         for item in self:
@@ -109,15 +108,15 @@ class AccountInvoice(models.Model):
                     'caracteres quando usado boleto\n'
 
             if len(error) > 0:
-                raise UserError(u"""Ação Bloqueada!
-Para prosseguir é necessário preencher os seguintes campos:\n""" + error)
+                raise UserError(_("""Ação Bloqueada!
+Para prosseguir é necessário preencher os seguintes campos:\n""") + error)
         return res
 
     @api.multi
     def action_print_boleto(self):
         if self.state in ('draft', 'cancel'):
             raise UserError(
-                u'Fatura provisória ou cancelada não permite emitir boleto')
+                _('Fatura provisória ou cancelada não permite emitir boleto'))
         self = self.with_context({'origin_model': 'account.invoice'})
         return self.env.ref(
             'br_boleto.action_boleto_account_invoice').report_action(self)

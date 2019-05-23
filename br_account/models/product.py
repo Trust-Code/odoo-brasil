@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2009  Gabriel C. Stabel
 # © 2009  Renato Lima - Akretion
 # © 2016 Danimar Ribeiro, Trustcode

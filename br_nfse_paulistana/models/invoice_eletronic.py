@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -31,6 +30,8 @@ class InvoiceEletronicItem(models.Model):
 
     codigo_servico_paulistana = fields.Char(
         string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
+    codigo_servico_paulistana_nome = fields.Char(
+        string='Descrição código NFSe Paulistana', readonly=True, states=STATE)
 
 
 class InvoiceEletronic(models.Model):

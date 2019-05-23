@@ -4,7 +4,7 @@
 from odoo import fields, models
 
 
-class l10nBrTaxationSimples(models.Model):
+class L10nBrTaxationSimples(models.Model):
     _name = 'l10n_br.taxation.simples'
     _order = 'start_revenue'
 

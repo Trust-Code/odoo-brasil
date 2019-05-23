@@ -1,4 +1,4 @@
-from openerp import api, models
+from openerp import api, models, _
 from odoo.exceptions import UserError
 
 
@@ -23,5 +23,6 @@ class PaymentCnabReport(models.AbstractModel):
         }
         if not lines:
             raise UserError(
-                "Este documento ainda não possui um comprovante de pagamento.")
+                _("Este documento ainda não possui um comprovante \
+                  de pagamento."))
         return docargs

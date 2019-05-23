@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-extend="ClientLine">
+        <t t-jquery="tr.client-line > td:first-child" t-operation="before">
+            <td>
+                <t t-esc='partner.cnpj_cpf or ""'/>
+            </td>
+        </t>
+    </t>
+    <t t-extend="ClientListScreenWidget">
+        <t t-jquery="table.client-list > thead > tr > th:first-child" t-operation="before">
+            <th style="min-width:150px;">CNPJ/CPF</th>
+        </t>
+    </t>
+    <t t-extend="ClientDetails">
+        <t t-jquery="div.client-details-left" t-operation="prepend">
+            <div class='client-detail'>
+                <span class='label'>Razão: </span>
+                <t t-if='partner.legal_name'>
+                    <span class='detail'>
+                        <t t-esc='partner.legal_name' />
+                    </span>
+                </t>
+                <t t-else="">
+                    <span class='detail empty'>N/A</span>
+                </t>
+            </div>
+            <div class='client-detail'>
+                <span class='label'>CNPJ:</span>
+                <t t-if='partner.cnpj_cpf'>
+                    <span class='detail client-cnpj'>
+                        <t t-esc='partner.cnpj_cpf' />
+                    </span>
+                </t>
+                <t t-else="">
+                    <span class='detail empty'>N/A</span>
+                </t>
+            </div>
+        </t>
+    </t>
+    <t t-extend="ClientDetailsEdit">
+        <t t-jquery="div.client-details-left" t-operation="replace">
+            <div class='client-details-left'>
+                <div class='client-detail'>
+                    <span class='label'>Pessoa:</span>
+                    <t t-if="partner.is_company">
+                      <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' value='fisica'>Física</input>
+                      <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' checked='checked' value='juridica'>Jurídica</input>
+                    </t>
+                    <t t-else="">
+                        <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' checked='checked' value='fisica'>Física</input>
+                        <input style="width: 20%;" type="radio" class='client-company' name='tipo_pessoa' value='juridica'>Jurídica</input>
+                    </t>
+                    <input type="hidden" class="detail" value='fisica' name='is_company' />
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Razão:</span>
+                    <input class='detail client-legal-name' name='legal_name' t-att-value='partner.legal_name || ""' placeholder="Razão Social"></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>CNPJ/CPF:</span>
+                    <input class='detail client-cnpj' name='cnpj_cpf' t-att-value='partner.cnpj_cpf || ""' placeholder="CNPJ/CPF"></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Email</span>
+                    <input class='detail client-email'  name='email'    type='email'    t-att-value='partner.email || ""'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Phone</span>
+                    <input class='detail client-phone'  name='phone'    type='tel'      t-att-value='partner.phone || ""'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Barcode</span>
+                    <input class='detail barcode'       name='barcode'    t-att-value='partner.barcode || ""'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Tax ID</span>
+                    <input class='detail vat'           name='vat'     t-att-value='partner.vat || ""'></input>
+                </div>
+                <div t-attf-class='client-detail #{widget.pos.pricelists.length &lt;= 1 ? "oe_hidden" : ""}'>
+                    <span class='label'>Pricelist</span>
+                    <select class='detail needsclick' name='property_product_pricelist'>
+                        <t t-foreach='widget.pos.pricelists' t-as='pricelist'>
+                            <option t-att-value='pricelist.id'
+                                    t-att-selected="partner.property_product_pricelist ? (pricelist.id === partner.property_product_pricelist[0] ? true : undefined) : undefined">
+                                <t t-esc='pricelist.display_name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+        </t>
+        <t t-jquery="div.client-details-right" t-operation="replace">
+            <div class='client-details-right'>
+                <div class='client-detail'>
+                    <span class='label'>Cep</span>
+                    <input class='detail client-address-zip' name='zip' t-att-value='partner.zip || ""' placeholder='ZIP'></input>
+                    <span class="button searchzip">
+                        <i class="fa fa-search"></i>
+                    </span>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Street</span>
+                    <input class='detail client-address-street' name='street' t-att-value='partner.street || ""' placeholder='Street'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Número</span>
+                    <input class='detail client-address-number' name='number' t-att-value='partner.number || ""' placeholder='Número'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Bairro</span>
+                    <input class='detail client-address-district' name='district' t-att-value='partner.district || ""' placeholder='Bairro'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Compl.</span>
+                    <input class='detail client-address-street2' name='street2' t-att-value='partner.street2 || ""' placeholder='Complemento'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Country</span>
+                    <select class='detail client-address-country needsclick' name='country_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.countries' t-as='country'>
+                            <option t-att-value='country.id' t-att-selected="partner.country_id ? ((country.id === partner.country_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='country.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Estado</span>
+                    <select class='detail client-address-state needsclick' name='state_id'>
+                        <option value=''>None</option>
+                    </select>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Cidade</span>
+                    <select class='detail client-address-city needsclick' name='city_id'>
+                        <option value=''>None</option>
+                    </select>
+                </div>
+            </div>
+        </t>
+    </t>
+
+</templates>

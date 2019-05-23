@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -28,7 +27,7 @@ class InvoiceEletronicItem(models.Model):
 
     import_declaration_ids = fields.One2many(
         'br_account.import.declaration',
-        'invoice_eletronic_line_id', u'Declaração de Importação')
+        'invoice_eletronic_line_id', string=u'Declaração de Importação')
 
     # ----------- ICMS INTERESTADUAL -----------
     tem_difal = fields.Boolean(string=u'Difal?', readonly=True, states=STATE)

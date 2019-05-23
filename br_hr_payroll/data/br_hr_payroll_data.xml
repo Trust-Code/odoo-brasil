@@ -220,16 +220,16 @@ for dependent in employee.dependent_ids:
             <field name="sequence" eval="105"/>
             <field name="register_id" ref="hr_vt_contribution_register"/>
             <field name="note"> Empregado terá um desconto de 6% do seu salário mediante ao Vale Transporte.</field>
-        </record>
+      </record>
 
-    	<record id="hr_payroll_rules_vr" model="hr.salary.rule">
-	        <field name="name">Vale Refeição</field>
-	        <field name="sequence">70</field>
-	        <field name="code">VR</field>
+      <record id="hr_payroll_rules_vr" model="hr.salary.rule">
+          <field name="name">Vale Refeição</field>
+          <field name="sequence">70</field>
+          <field name="code">VR</field>
             <field name="category_id" ref="hr_payroll.DED"/>
             <field name="condition_select">python</field>
             <field name="condition_python">result = (contract.value_vr > 0.0)</field>
-	        <field name="amount_select">code</field>
+            <field name="amount_select">code</field>
         <field name="amount_python_compute">result = 0
 work_days = 22
 if worked_days and worked_days.WORK100:
@@ -237,8 +237,8 @@ if worked_days and worked_days.WORK100:
 result = -(contract.value_vr * work_days * contract.percent_vr / 100.0)
 if result > contract.wage * 0.2: result = contract.wage * -0.2</field>
             <field name="register_id" ref="hr_vr_contribution_register"/>
-	        <field name="note">Vale Refeição</field>
-    	</record>
+            <field name="note">Vale Refeição</field>
+        </record>
 
         <record id="hr_salary_rule_va" model="hr.salary.rule">
             <field name="name">Vale Alimentação</field>

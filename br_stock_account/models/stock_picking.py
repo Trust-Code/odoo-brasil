@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -21,6 +21,11 @@ class StockPicking(models.Model):
         related='picking_type_id.enable_invoicing', readonly=True)
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string="Posição Fiscal")
+
+    def action_preview_danfe(self):
+        invoices = self.env['account.invoice'].search(
+            [('picking_origin_id', '=', self.id)])
+        return invoices.action_preview_danfe()
 
     def _prepare_inv_line_vals(self, move_line_id):
         linevals = {
@@ -88,7 +93,7 @@ class StockPicking(models.Model):
     def action_invoice_picking(self):
         partner_ids = self.mapped('partner_id')
         if not partner_ids:
-            raise UserError('No partner to invoice, please choose one!')
+            raise UserError(_('No partner to invoice, please choose one!'))
         invoice_ids = self.env['account.invoice']
         for partner_id in partner_ids:
             picking_ids = self.filtered(lambda x: x.partner_id == partner_id)

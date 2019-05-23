@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2018 Marina Domingues, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -105,6 +104,10 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'state': 'sent',
             'value_final': 150.00,
             'payment_information_id': info_id.id,
+            'rebate_value': 1.00,
+            'discount_value': 2.00,
+            'fine_value': 3.00,
+            'interest_value': 1.00,
             'voucher_id': self.get_voucher_line().id,
             'bank_account_id': self.receivable_account.id,
         }))
@@ -121,6 +124,10 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'state': 'sent',
             'value_final': 120.00,
             'payment_information_id': info_id.id,
+            'rebate_value': 1.00,
+            'discount_value': 2.00,
+            'fine_value': 3.00,
+            'interest_value': 1.00,
             'voucher_id': self.get_voucher_line().id,
             'bank_account_id': self.receivable_account.id,
         }))
@@ -135,10 +142,6 @@ class TestBrCnabSicoob(TestBrCnabPayment):
                 'mov_finality': '01',
                 'warning_code': '0',
                 'mov_instruc': '00',
-                'rebate_value': 1.00,
-                'discount_value': 2.00,
-                'fine_value': 3.00,
-                'interest_value': 1.00,
                 'credit_hist_code': '2644',
                 'operation_code': '018',
                 'percentual_receita_bruta_acumulada': Decimal('12.00')

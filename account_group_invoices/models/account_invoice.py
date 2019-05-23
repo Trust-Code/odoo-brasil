@@ -47,13 +47,16 @@ class AccountInvoice(models.Model):
             group['domain'].append(('id', 'in', lines.ids))
             group_lines = lines.search(group['domain'])
             for v in self._prepare_vals(group_lines):
+                # Split when there is one invoice and more then one rule
                 if len(v['inv_ids']) <= 1:
-                    continue
+                    inv_lines = v['inv_ids'].invoice_line_ids.ids
+                    if len(inv_lines) == len(v['lines']):
+                        continue
                 v['rule'] = group['rule_name']
                 v['fpos'] = group['fpos'] if 'fpos' in group else False
                 vals.append(v)
                 [inv_grouped.append(id) for id in v['inv_ids'].ids]
-            lines -= group_lines
+                lines -= group_lines
         # Remainig lines
         for inv in lines.mapped('invoice_id'):
             if inv.id in inv_grouped:
@@ -68,13 +71,13 @@ class AccountInvoice(models.Model):
         inv_vals = []
         comp_ids = lines.mapped('company_id')
         part_ids = lines.mapped('partner_id')
-        for (c, p) in product(comp_ids, part_ids):
-            ln = lines.filtered(lambda l: l.company_id == c
-                                and l.partner_id == p)
+        for (company, partner) in product(comp_ids, part_ids):
+            ln = lines.filtered(lambda l: l.company_id == company
+                                and l.partner_id == partner)
             inv_ids = ln.mapped('invoice_id')
             if ln:
-                inv_vals.append({'company': c,
-                                 'partner': p,
+                inv_vals.append({'company': company,
+                                 'partner': partner,
                                  'lines': ln,
                                  'inv_ids': inv_ids})
                 lines -= ln
@@ -91,9 +94,11 @@ class AccountInvoice(models.Model):
         for org in inv_ids.filtered('origin').mapped('origin'):
             origin += "%s, " % org
         pgto_ids = inv_ids.mapped('payment_term_id')
+        mode_ids = inv_ids.mapped('payment_mode_id')
         user_ids = inv_ids.mapped('user_id')
         team_ids = inv_ids.mapped('team_id')
-
+        obs_ids = fpos_id.fiscal_observation_ids.ids
+        [i.action_invoice_cancel_paid() for i in inv_ids if i.state == "draft"]
         gr_invoice_id = self.create({
             'origin': origin or '',
             'type': 'out_invoice',
@@ -104,13 +109,32 @@ class AccountInvoice(models.Model):
             'journal_id': journal_id.id,
             'currency_id': company.currency_id.id,
             'payment_term_id': pgto_ids[0].id if pgto_ids else False,
+            'payment_mode_id': mode_ids[0].id if mode_ids else False,
             'fiscal_position_id': fpos_id.id,
+            'service_document_id': fpos_id.service_document_id.id,
+            'service_serie_id': fpos_id.service_serie_id.id,
+            'fiscal_observation_ids': [(6, 0, obs_ids)],
             'company_id': company.id,
             'user_id': user_ids[0].id if user_ids else False,
             'team_id': team_ids[0].id if team_ids else False
         })
         for line in inv['lines']:
-            line.copy({'invoice_id': gr_invoice_id.id})
+            vals = {
+                'invoice_id': gr_invoice_id.id,
+                'product_id': line.product_id.id,
+                'quantity': line.quantity,
+                'price_unit': line.price_unit,
+                'name': line.name,
+                'sequence': line.sequence,
+                'origin': line.origin,
+                'account_id': line.account_id.id,
+                'invoice_line_tax_ids': [
+                    (6, 0, [tax.id for tax in line.invoice_line_tax_ids])]
+                }
+            new_line = self.env['account.invoice.line'].create(vals)
+            new_line._br_account_onchange_product_id()
+            new_line._set_taxes_from_fiscal_pos()
+        gr_invoice_id._onchange_invoice_line_ids()
 
         cancel_msg = ("""
             <p>This invoice was canceled by group rule named %s and
@@ -121,7 +145,6 @@ class AccountInvoice(models.Model):
             </p>""" % (inv['rule'], gr_invoice_id.id, partner_id.name))
 
         [i.message_post(cancel_msg) for i in inv_ids]
-        [i.action_invoice_cancel_paid() for i in inv_ids if i.state == "draft"]
         msg_ids = ''
         for id in inv_ids.ids:
             msg_ids += """<a href='#' data-oe-model='account.invoice'
@@ -133,6 +156,7 @@ class AccountInvoice(models.Model):
                 grouped this invoices: %s
             </p>""" % (inv['rule'], msg_ids))
         gr_invoice_id.message_post(new_msg)
+        return gr_invoice_id
 
     def _get_fpos_journal(self, inv):
         aj = self.env['account.journal']
@@ -140,7 +164,7 @@ class AccountInvoice(models.Model):
         company = inv['company']
         fpos_id = journal_id = False
 
-        if 'fpos' in inv:
+        if 'fpos' in inv and inv['fpos']:
             fpos_id = afp.browse(inv['fpos'])
         else:
             fpos_id = inv['partner'].with_context(

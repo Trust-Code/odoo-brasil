@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini <alessandrofmartini@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -8,7 +7,7 @@ import base64
 import logging
 
 from datetime import datetime
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 try:
@@ -50,11 +49,11 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
 
     def valida_carta_correcao_eletronica(self):
         if len(self.correcao) < 15:
-            raise UserError(u'Motivo de Correção deve ter mais de ' +
-                            '15 caracteres')
+            raise UserError(
+                _('Motivo de Correção deve ter mais de 15 caracteres'))
         if len(self.correcao) > 1000:
-            raise UserError(u'Motivo de Correção deve ter menos de ' +
-                            '1000 caracteres')
+            raise UserError(
+                _('Motivo de Correção deve ter menos de 1000 caracteres'))
 
     @api.multi
     def send_letter(self):
@@ -132,7 +131,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
                 "type": "ir.actions.act_window",
                 "res_model": "wizard.carta.correcao.eletronica",
                 "views": [[False, "form"]],
-                "name": u"Carta de Correção",
+                "name": _("Carta de Correção"),
                 "target": "new",
                 "res_id": self.id,
             }

@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -35,6 +34,8 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number")
+    import_declaration_ids = fields.One2many(
+        'br_account.import.declaration', 'invoice_id')
 
     @api.multi
     def action_invoice_draft(self):
@@ -43,8 +44,9 @@ class AccountInvoice(models.Model):
                 [('invoice_id', '=', item.id)])
             for doc in docs:
                 if doc.state in ('done', 'denied', 'cancel'):
-                    raise UserError('Nota fiscal já emitida para esta fatura - \
-                                    Duplique a fatura para continuar')
+                    raise UserError(
+                        _('Nota fiscal já emitida para esta fatura - \
+                          Duplique a fatura para continuar'))
         return super(AccountInvoice, self).action_invoice_draft()
 
     def invoice_print(self):
@@ -77,6 +79,13 @@ class AccountInvoice(models.Model):
             serie_id.internal_sequence_id.sudo().write(
                 {'number_next_actual': inv_inutilized.numeration_end + 1})
         return serie_id.internal_sequence_id.next_by_id()
+
+    def apply_di_to_items(self):
+        for invoice in self:
+            invoice.invoice_line_ids.write({
+                'import_declaration_ids': [
+                    (6, None, invoice.import_declaration_ids.ids)]
+            })
 
     def _prepare_edoc_vals(self, inv, inv_lines, serie_id):
         res = super(AccountInvoice, self)._prepare_edoc_vals(
@@ -132,6 +141,8 @@ class AccountInvoice(models.Model):
                                                              'GO', 'MG', 'MS',
                                                              'MT', 'PE', 'RN',
                                                              'SP'):
+                ind_ie_dest = '9'
+            elif inv.commercial_partner_id.country_id.code != 'BR':
                 ind_ie_dest = '9'
             else:
                 ind_ie_dest = '2'
@@ -231,3 +242,11 @@ class AccountInvoice(models.Model):
         vals['import_declaration_ids'] = di_importacao
         vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    declaration_line_ids = fields.One2many(
+        'br_account.import.declaration.line',
+        'invoice_line_id', string='Adições da DI')
