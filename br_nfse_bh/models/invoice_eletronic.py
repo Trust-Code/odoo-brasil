@@ -49,10 +49,20 @@ class InvoiceEletronic(models.Model):
                 item.valor_retencao_csll
             item.retencoes_federais = total
 
+    @api.depends('retencoes_federais', 'valor_final')
+    def _compute_total_com_retencoes(self):
+        for item in self:
+            item.total_com_retencoes = \
+                item.valor_final - (item.retencoes_federais or 0) - \
+                (item.valor_retencao_issqn or 0) - (item.valor_desconto or 0)
+
     model = fields.Selection(
         selection_add=[('014', 'Nota Belo Horizonte')])
 
     retencoes_federais = fields.Monetary(compute="_compute_total_retencoes")
+
+    total_com_retencoes = fields.Monetary(
+        compute="_compute_total_com_retencoes")
 
     @api.multi
     def _hook_validation(self):
@@ -99,8 +109,7 @@ class InvoiceEletronic(models.Model):
             'uf': partner.state_id.code,
             'cep': re.sub('[^0-9]', '', partner.zip),
             'telefone': re.sub('[^0-9]', '', partner.phone or ''),
-            'inscricao_municipal': re.sub(
-                '[^0-9]', '', partner.inscr_mun or ''),
+            'inscricao_municipal': partner.inscr_mun or '',
             'email': self.partner_id.email or partner.email or '',
         }
         city_prestador = self.company_id.partner_id.city_id
