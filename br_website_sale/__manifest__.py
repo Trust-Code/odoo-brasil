@@ -20,5 +20,5 @@
         'views/website_sale_view.xml',
         'views/website_portal.xml',
     ],
-    'installable': False,
+    'installable': True,
 }
