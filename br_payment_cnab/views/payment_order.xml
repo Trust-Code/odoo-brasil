@@ -6,6 +6,9 @@
         <field name="inherit_id" ref="br_account_payment.trustcode_payment_order_line_tree_view"/>
         <field name="type">tree</field>
         <field name="arch" type="xml" >
+            <field name="amount_total" position="after">
+                <field name="value_final" />
+            </field>
             <field name="nosso_numero" position="after">
                 <button name="action_aprove_payment_line" type="object" string="APROVAR" class="btn btn-success btn-xs" groups="account.group_account_user" states="draft" />
                 <button name="action_view_more_info" type="object" string="VER" class="btn btn-success btn-xs"/>
@@ -47,6 +50,14 @@
             </field>
             <field name="emission_date" position="after">
                 <field name="invoice_date"/>
+                <field name="payment_date"/>
+            </field>
+            <field name="amount_total" position="after">
+                <field name="fine_value"/>
+                <field name="interest_value"/>
+                <field name="rebate_value"/>
+                <field name="discount_value"/>
+                <field name="value_final"/>
             </field>
         </field>
     </record>

@@ -36,8 +36,21 @@
                 padding:0px;
             }
             td, th { padding: 0 4px; }
+            .watermark {
+                position:fixed;
+                top:500px;
+                right:-190px;
+                opacity:0.50;
+                z-index:1000;
+                -webkit-transform:rotate(300deg);
+                font-size:150px;
+                white-space:nowrap;
+            }
         </style>
         <div class="page">
+            <div t-if="doc.state == 'cancel'" class="watermark">
+                <p>NOTA CANCELADA</p>
+            </div>
             <div class="row" style="border: 1px solid black;">
                 <div class="col-xs-2">
                     <img src="/br_nfse/static/src/img/prefeitura-sp.gif" alt="Logo Prefeitura Campinas"
@@ -54,7 +67,7 @@
                     </t>
                     <t t-if="doc.state == 'done'">
                         <strong style="font-size:20px;">NOTA FISCAL ELETRÔNICA DE SERVIÇOS - NFSe</strong><br />
-                        RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" />
+                        RPS Nº <span t-field="doc.numero" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'/>
                     </t>
                 </div>
                 <div class="col-xs-2" style="padding:0px;">
@@ -73,7 +86,7 @@
                     <div style="border: 1px solid black; padding: 2px;">
                         <span style="font-size:9px;">Data de Emissão</span>
                         <br />
-                        <strong t-field="doc.data_emissao"></strong>
+                        <strong t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'></strong>
                     </div>
                     <t t-if="doc.state == 'done'">
                         <div style="border: 1px solid black; padding: 2px;">
@@ -177,7 +190,7 @@
                 <div class="col-xs-12" style="text-align:center;">
                     <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
                 </div>
-                <div class="col-xs-12">
+                <div name="discriminacao" class="col-xs-12">
                     <br />
                     <span t-raw="doc.discriminacao_servicos"></span>
                 </div>
@@ -252,7 +265,7 @@
                     Código do serviço:
                     <br />
                     <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana"></strong> -
-                    <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
+                    <strong t-field="doc.eletronic_item_ids[0].codigo_servico_paulistana_nome"></strong>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;">
@@ -331,6 +344,7 @@
                 </div>
             </div>
         </div>
+        
     </template>
 
     <template id="main_template_br_nfse_danfe">

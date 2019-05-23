@@ -1,7 +1,7 @@
 # © 2018 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
@@ -78,16 +78,18 @@ class PaymentMode(models.Model):
             if rec.type != 'payable':
                 continue
             if not rec.journal_id:
-                raise ValidationError('Para pagamentos o diário é obrigatório')
+                raise ValidationError(
+                    _('Para pagamentos o diário é obrigatório'))
             if not rec.journal_id.bank_account_id:
                 raise ValidationError(
-                    'Não existe conta bancária cadastrada no diário escolhido')
+                    _('Não existe conta bancária cadastrada no diário \
+                      escolhido'))
             if not rec.journal_id.bank_account_id.l10n_br_convenio_pagamento:
                 raise ValidationError(
-                    'Configure o código de convênio na conta bancária!')
+                    _('Configure o código de convênio na conta bancária!'))
             if not rec.journal_id.l10n_br_sequence_nosso_numero:
                 raise ValidationError(
-                    'Não existe sequência para o Nosso Número no \
-                    diário escolhido')
+                    _('Não existe sequência para o Nosso Número no \
+                    diário escolhido'))
             if not rec.payment_type:
-                raise ValidationError('Escolha o tipo de operação!')
+                raise ValidationError(_('Escolha o tipo de operação!'))

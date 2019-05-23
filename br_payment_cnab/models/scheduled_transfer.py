@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from datetime import date
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 STATE = {'draft': [('readonly', False)]}
@@ -47,14 +47,14 @@ class L10nBrScheduledTransfer(models.Model):
         for item in self:
             if item.payment_mode_id.journal_id == item.destiny_journal_id:
                 raise UserError(
-                    'As conta de destino não pode ser a mesma do modo \
-                    de pagamento!')
+                    _('As conta de destino não pode ser a mesma do modo \
+                      de pagamento!'))
             if item.amount <= 0.0:
-                raise UserError('O valor a transferir deve ser positivo!')
+                raise UserError(_('O valor a transferir deve ser positivo!'))
             transfer_date = fields.Date.from_string(item.transfer_date)
             if transfer_date < date.today():
                 raise UserError(
-                    'Data de transferência deve ser maior ou igual a hoje!')
+                    _('Data de transferência deve ser maior ou igual a hoje!'))
 
     def _prepare_values(self):
         bank_account = self.destiny_journal_id.bank_account_id
@@ -106,7 +106,7 @@ class L10nBrScheduledTransfer(models.Model):
             elif item.payment_line_id.state in ('rejected', 'cancelled'):
                 item.payment_line_id = False
             else:
-                raise UserError('Existe uma ordem de pagamento vinculada!')
+                raise UserError(_('Existe uma ordem de pagamento vinculada!'))
         self.write({'state': 'cancelled'})
 
     @api.multi
@@ -121,6 +121,6 @@ class L10nBrScheduledTransfer(models.Model):
     def unlink(self):
         for item in self:
             if item.state != 'draft':
-                raise UserError('Apenas transferências no estado provisório \
-                                podem ser excluidas')
+                raise UserError(_('Apenas transferências no estado provisório \
+                                  podem ser excluidas'))
         return super(L10nBrScheduledTransfer, self).unlink()

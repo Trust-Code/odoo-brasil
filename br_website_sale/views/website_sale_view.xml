@@ -3,7 +3,7 @@
     <data>
         <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop BR">
             <xpath expr="." position="inside">
-                <script type="text/javascript" src="/br_website_sale/static/src/js/jquery.mask.min.js"></script>
+                <script type="text/javascript" src="/br_website_sale/static/src/lib/jquery.mask.min.js"></script>
                 <script type="text/javascript" src="/br_website_sale/static/src/js/website_sale.js"></script>
             </xpath>
         </template>

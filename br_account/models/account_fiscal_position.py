@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
 from odoo import api, fields, models
-from odoo.addons.br_account.models.cst import CST_ICMS
-from odoo.addons.br_account.models.cst import CSOSN_SIMPLES
-from odoo.addons.br_account.models.cst import CST_IPI
-from odoo.addons.br_account.models.cst import CST_PIS_COFINS
+from .cst import CST_ICMS
+from .cst import CSOSN_SIMPLES
+from .cst import CST_IPI
+from .cst import CST_PIS_COFINS
 
 
 class AccountFiscalPositionTaxRule(models.Model):

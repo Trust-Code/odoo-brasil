@@ -5,6 +5,9 @@
         <field name="model">account.invoice.refund</field>
         <field name="inherit_id" ref="account.view_account_invoice_refund"/>
         <field name="arch" type="xml">
+            <field name="filter_refund" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="description" position="after">
                 <field name="fiscal_position_id" />
             </field>

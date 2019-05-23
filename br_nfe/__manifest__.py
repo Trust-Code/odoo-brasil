@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -37,6 +36,7 @@
         'views/inutilized_nfe.xml',
         'views/br_nfe.xml',
         'views/payment_mode.xml',
+        'views/stock_picking.xml',
         'reports/danfe_report.xml',
         'wizard/cancel_nfe.xml',
         'wizard/carta_correcao_eletronica.xml',
