@@ -15,6 +15,7 @@
     'data': [
         'views/purchase_view.xml',
         'views/account_invoice.xml',
+        'views/res_partner.xml',
     ],
     'installable': True,
     'auto_install': True
