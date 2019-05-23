@@ -22,6 +22,29 @@ _logger = logging.getLogger(__name__)
 STATE = {'edit': [('readonly', False)]}
 
 
+# format_amount function for fiscal observation
+# This way we can format numbers in currency template on fiscal observation msg
+# We'll call this function when setting the variables env below
+def format_amount(env, amount, currency):
+    fmt = "%.{0}f".format(currency.decimal_places)
+    lang = env['res.lang']._lang_get(env.context.get('lang') or 'en_US')
+
+    formatted_amount = lang.format(
+        fmt, currency.round(amount), grouping=True, monetary=True).replace(
+            r' ', u'\N{NO-BREAK SPACE}').replace(
+                r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
+
+    pre = post = u''
+    if currency.position == 'before':
+        pre = u'{symbol}\N{NO-BREAK SPACE}'.format(
+            symbol=currency.symbol or '')
+    else:
+        post = u'\N{NO-BREAK SPACE}{symbol}'.format(
+            symbol=currency.symbol or '')
+
+    return u'{pre}{0}{post}'.format(formatted_amount, pre=pre, post=post)
+
+
 class InvoiceEletronic(models.Model):
     _name = 'invoice.eletronic'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -367,6 +390,10 @@ class InvoiceEletronic(models.Model):
             # is needed, apparently.
             'relativedelta': lambda *a, **kw: relativedelta.relativedelta(
                 *a, **kw),
+            # adding format amount
+            # now we can format values like currency on fiscal observation
+            'format_amount': lambda amount, currency,
+            context=self._context: format_amount(self.env, amount, currency),
         })
         mako_safe_env = copy.copy(mako_template_env)
         mako_safe_env.autoescape = False
