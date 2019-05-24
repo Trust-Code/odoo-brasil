@@ -12,6 +12,7 @@ from pytz import timezone
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from odoo.addons import decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -288,6 +289,10 @@ class InvoiceEletronic(models.Model):
             xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
 
+        price_precis = dp.get_precision('Product Price')(self.env.cr)
+        qty_precis = dp.get_precision('Product Unit of Measure')(self.env.cr)
+        qty_frmt = '{:.%sf}' % qty_precis[1]
+        price_frmt = '{:.%sf}' % price_precis[1]
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or 'SEM GTIN',
@@ -295,13 +300,13 @@ class InvoiceEletronic(models.Model):
             'NCM': re.sub('[^0-9]', '', item.ncm or '00')[:8],
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
-            'qCom': item.quantidade,
-            'vUnCom': "%.02f" % item.preco_unitario,
+            'qCom': qty_frmt.format(item.quantidade),
+            'vUnCom': price_frmt.format(item.preco_unitario),
             'vProd':  "%.02f" % item.valor_bruto,
             'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
-            'qTrib': item.quantidade,
-            'vUnTrib': "%.02f" % item.preco_unitario,
+            'qTrib': qty_frmt.format(item.quantidade),
+            'vUnTrib': price_frmt.format(item.preco_unitario),
             'vFrete': "%.02f" % item.frete if item.frete else '',
             'vSeg': "%.02f" % item.seguro if item.seguro else '',
             'vDesc': "%.02f" % item.desconto if item.desconto else '',

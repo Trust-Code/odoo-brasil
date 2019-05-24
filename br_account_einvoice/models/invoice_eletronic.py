@@ -570,9 +570,10 @@ class InvoiceEletronicItem(models.Model):
     uom_id = fields.Many2one(
         'product.uom', string=u'Unidade Medida', readonly=True, states=STATE)
     quantidade = fields.Float(
-        string=u'Quantidade', readonly=True, states=STATE)
+        string=u'Quantidade', readonly=True, states=STATE,
+        digits=dp.get_precision('Product Unit of Measure'))
     preco_unitario = fields.Monetary(
-        string=u'Preço Unitário', digits=dp.get_precision('Account'),
+        string=u'Preço Unitário', digits=dp.get_precision('Product Price'),
         readonly=True, states=STATE)
 
     item_pedido_compra = fields.Char(
