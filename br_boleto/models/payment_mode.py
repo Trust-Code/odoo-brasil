@@ -24,7 +24,7 @@ class PaymentMode(models.Model):
         ('01', u'JUROS DIA'),
         ('02', u'JUROS MENSAL'),
         ('03', u'ISENTO'),
-    ], string=u'Código de Juros', default='03') 
+    ], string=u'Código de Juros', default='03')
     instrucoes = fields.Text(string=u'Instruções')
     boleto_carteira = fields.Char('Carteira', size=3)
     boleto_modalidade = fields.Char('Modalidade', size=2)
