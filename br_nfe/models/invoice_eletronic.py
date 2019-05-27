@@ -443,7 +443,8 @@ class InvoiceEletronic(models.Model):
             return res
 
         tz = timezone(self.env.user.tz)
-        dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
+        dt_emissao_datetime = datetime.now(tz).replace(microsecond=0)
+        dt_emissao = dt_emissao_datetime.isoformat()
 
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
@@ -636,7 +637,7 @@ class InvoiceEletronic(models.Model):
                 if self.valor_pis_servicos else "",
                 'vCOFINS': "%.02f" % self.valor_cofins_servicos
                 if self.valor_cofins_servicos else "",
-                'dCompet': dt_emissao.strftime('%Y-%m-%d'),
+                'dCompet': dt_emissao_datetime.strftime('%Y-%m-%d'),
                 'vDeducao': "",
                 'vOutro': "",
                 'vISSRet': "%.02f" % self.valor_retencao_issqn
