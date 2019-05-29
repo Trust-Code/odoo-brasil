@@ -5,12 +5,13 @@ import re
 import io
 import base64
 import logging
-import pytz
 import hashlib
 from lxml import etree
 from datetime import datetime
+from pytz import timezone
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.addons import decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -287,6 +288,10 @@ class InvoiceEletronic(models.Model):
             xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
 
+        price_precis = dp.get_precision('Product Price')(self.env.cr)
+        qty_precis = dp.get_precision('Product Unit of Measure')(self.env.cr)
+        qty_frmt = '{:.%sf}' % qty_precis[1]
+        price_frmt = '{:.%sf}' % price_precis[1]
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or 'SEM GTIN',
@@ -294,13 +299,13 @@ class InvoiceEletronic(models.Model):
             'NCM': re.sub('[^0-9]', '', item.ncm or '00')[:8],
             'CFOP': item.cfop,
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
-            'qCom': item.quantidade,
-            'vUnCom': "%.02f" % item.preco_unitario,
+            'qCom': qty_frmt.format(item.quantidade),
+            'vUnCom': price_frmt.format(item.preco_unitario),
             'vProd':  "%.02f" % item.valor_bruto,
             'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
-            'qTrib': item.quantidade,
-            'vUnTrib': "%.02f" % item.preco_unitario,
+            'qTrib': qty_frmt.format(item.quantidade),
+            'vUnTrib': price_frmt.format(item.preco_unitario),
             'vFrete': "%.02f" % item.frete if item.frete else '',
             'vSeg': "%.02f" % item.seguro if item.seguro else '',
             'vDesc': "%.02f" % item.desconto if item.desconto else '',
@@ -433,6 +438,9 @@ class InvoiceEletronic(models.Model):
         if self.model not in ('55', '65'):
             return res
 
+        tz = timezone(self.env.user.tz)
+        dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
+
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
             'cNF': "%08d" % self.numero_controle,
@@ -440,8 +448,8 @@ class InvoiceEletronic(models.Model):
             'mod': self.model,
             'serie': self.serie.code,
             'nNF': self.numero,
-            'dhEmi': self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
-            'dhSaiEnt': self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S-00:00'),
+            'dhEmi': dt_emissao,
+            'dhSaiEnt': dt_emissao,
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -624,7 +632,7 @@ class InvoiceEletronic(models.Model):
                 if self.valor_pis_servicos else "",
                 'vCOFINS': "%.02f" % self.valor_cofins_servicos
                 if self.valor_cofins_servicos else "",
-                'dCompet': self.data_emissao.strftime('%Y-%m-%d'),
+                'dCompet': dt_emissao[:10],
                 'vDeducao': "",
                 'vOutro': "",
                 'vISSRet': "%.02f" % self.valor_retencao_issqn
@@ -1035,9 +1043,8 @@ class InvoiceEletronic(models.Model):
         id_canc = "ID110111%s%02d" % (
             self.chave_nfe, self.sequencial_evento)
 
-        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
-        dt_evento = datetime.utcnow()
-        dt_evento = pytz.utc.localize(dt_evento).astimezone(tz)
+        tz = timezone(self.env.user.tz)
+        dt_evento = datetime.now(tz).replace(microsecond=0).isoformat()
 
         cancelamento = {
             'idLote': self.id,
@@ -1049,7 +1056,7 @@ class InvoiceEletronic(models.Model):
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
                 'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
                 'chNFe': self.chave_nfe,
-                'dhEvento': dt_evento.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+                'dhEvento': dt_evento,
                 'nSeqEvento': self.sequencial_evento,
                 'nProt': self.protocolo_nfe,
                 'xJust': justificativa,
