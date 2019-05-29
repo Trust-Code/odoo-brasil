@@ -11,8 +11,8 @@
         <template id="br_website_sale_address" inherit_id="website_sale.address"
             name="Website Sale Address">
 
-            <form name="/shop/checkout" position="replace">
-                <form name="/shop/checkout" method="post" class="checkout_autoformat">
+            <form action="/shop/address" position="replace">
+                <form action="/shop/address" method="post" class="checkout_autoformat">
                     <div class="form-group col-lg-12" style="margin-bottom: 0px;">
                         <label class="control-label" for="person_type">Tipo de Pessoa</label>
                     </div>
