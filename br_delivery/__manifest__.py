@@ -19,6 +19,7 @@
         'br_sale_stock',
         'delivery',
         'br_stock_account',
+        'uom',
     ],
     'data': [
         'views/delivery_view.xml',
@@ -27,6 +28,9 @@
         'views/stock.xml',
         'views/account_invoice.xml',
         'security/ir.model.access.csv',
+    ],
+    'demo': [
+        'data/delivery_demo.xml',
     ],
     'application': True,
 }
