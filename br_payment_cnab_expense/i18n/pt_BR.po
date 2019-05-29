@@ -1,0 +1,56 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_payment_cnab_voucher
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-23 13:22+0000\n"
+"PO-Revision-Date: 2018-10-23 13:22+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_payment_cnab_voucher
+#: model:ir.model,name:br_payment_cnab_voucher.model_account_voucher
+msgid "Accounting Voucher"
+msgstr ""
+
+#. module: br_payment_cnab_voucher
+#: code:addons/br_payment_cnab_voucher/models/account_voucher.py:75
+#, python-format
+msgid "Due Date must be a future date"
+msgstr "Data de Vencimento deve ser uma fatura"
+
+#. module: br_payment_cnab_voucher
+#: code:addons/br_payment_cnab_voucher/models/account_voucher.py:84
+#, python-format
+msgid "Fine Line"
+msgstr "Linha de Multa"
+
+#. module: br_payment_cnab_voucher
+#: code:addons/br_payment_cnab_voucher/models/account_voucher.py:84
+#, python-format
+msgid "Interest Line"
+msgstr ""
+
+#. module: br_payment_cnab_voucher
+#: code:addons/br_payment_cnab_voucher/models/account_voucher.py:81
+#, python-format
+msgid "Please configure the interest and fine accounts"
+msgstr "Por favor configure as contas de juros e multa"
+
+#. module: br_payment_cnab_voucher
+#: code:addons/br_payment_cnab_voucher/models/account_voucher.py:73
+#, python-format
+msgid "Please select a Due Date for the payment"
+msgstr "Por favor selecione uma data de vencimento para o pagamento"
+
+#. module: br_payment_cnab_voucher
+#: model:ir.model,name:br_payment_cnab_voucher.model_payment_order_line
+msgid "payment.order.line"
+msgstr ""
