@@ -267,7 +267,7 @@ class InvoiceEletronic(models.Model):
                 self.mensagem_retorno = mensagem_retorno.Mensagem
                 self._create_attachment(
                     'nfse-ret', self,
-                    recebe_lote['received_xml'].decode('utf-8'))
+                    recebe_lote['received_xml'])
                 return
         # Monta a consulta de situação do lote
         # 1 - Não Recebido
