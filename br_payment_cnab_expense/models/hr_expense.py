@@ -12,16 +12,7 @@ class HrExpenseSheet(models.Model):
         'l10n_br.payment.mode', "Modo de Pagamento",
         attrs="{'readonly': [('state', 'in', ['done', 'cancel'])]}")
     payment_type = fields.Selection(
-        [('01', 'TED - Transferência Bancária'),
-         ('02', 'DOC - Transferência Bancária'),
-         ('03', 'Pagamento de Títulos'),
-         ('04', 'Tributos com código de barras'),
-         ('05', 'GPS - Guia de previdencia Social'),
-         ('06', 'DARF Normal'),
-         ('07', 'DARF Simples'),
-         ('08', 'FGTS com Código de Barras'),
-         ('09', 'ICMS')],
-        string="Tipo de Operação", readonly=True)
+        related='payment_mode_id.payment_type', readonly=True)
     bank_account_id = fields.Many2one(
         'res.partner.bank', string="Conta p/ Transferência",
         readonly=True)
@@ -60,14 +51,14 @@ class HrExpenseSheet(models.Model):
         }
 
     @api.multi
-    def approve_expense_sheets(self):
+    def action_sheet_move_create(self):
         if self.payment_mode != 'own_account':
-            return super(HrExpenseSheet, self).approve_expense_sheets()
+            return super(HrExpenseSheet, self).action_sheet_move_create()
 
         for item in self:
             if item.payment_mode_id and item.payment_mode_id.type == 'payable':
                 item.validate_cnab_fields()
-        res = super(HrExpenseSheet, self).approve_expense_sheets()
+        res = super(HrExpenseSheet, self).action_sheet_move_create()
         for item in self:
             order_line_obj = self.env['payment.order.line']
             if item.payment_mode_id:
