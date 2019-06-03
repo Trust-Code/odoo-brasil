@@ -17,10 +17,11 @@ class AccountInvoice(models.Model):
     def copy(self, default=None):
         self.ensure_one()
         new_acc_inv = super(AccountInvoice, self).copy(default)
-        new_acc_inv.import_declaration_ids = self.import_declaration_ids
-        for i in range(len(new_acc_inv.invoice_line_ids)):
-            new_acc_inv.invoice_line_ids[i].declaration_line_ids = \
-                self.invoice_line_ids[i].declaration_line_ids
+        if self.import_declaration_ids:
+            new_acc_inv.import_declaration_ids = self.import_declaration_ids
+            for i in range(len(new_acc_inv.invoice_line_ids)):
+                new_acc_inv.invoice_line_ids[i].declaration_line_ids = \
+                    self.invoice_line_ids[i].declaration_line_ids
         return new_acc_inv
 
     @api.one
