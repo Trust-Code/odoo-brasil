@@ -1,10 +1,6 @@
 # © 2018 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import os
-import base64
-from datetime import date
-from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -40,7 +36,7 @@ class TestHrExpense(TransactionCase):
 
         # Create Sales Journal
         company = self.env.ref('base.main_company')
-        self.env['account.journal'].create({
+        self.journal_id = self.env['account.journal'].create({
             'name': 'Purchase Journal - Test',
             'code': 'HRTPJ',
             'type': 'purchase',
