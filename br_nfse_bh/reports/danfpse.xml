@@ -69,7 +69,7 @@
                     <div style="border: 1px solid black; padding: 2px;text-align:center;">
                         <span style="font-size:9px;">Data e Hora de Emissão</span>
                         <br />
-                        <strong t-field="doc.data_emissao"></strong>
+                        <strong t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'></strong>
                     </div>
                 </div>
                 <div class="col-xs-4">
