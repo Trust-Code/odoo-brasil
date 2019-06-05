@@ -43,7 +43,7 @@ class AccountInvoice(models.Model):
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', item.id)])
             for doc in docs:
-                if doc.state in ('done', 'denied', 'cancel'):
+                if doc.state in ('done', 'denied'):
                     raise UserError(
                         _('Nota fiscal já emitida para esta fatura - \
                           Duplique a fatura para continuar'))
