@@ -637,7 +637,7 @@ class InvoiceEletronic(models.Model):
                 if self.valor_pis_servicos else "",
                 'vCOFINS': "%.02f" % self.valor_cofins_servicos
                 if self.valor_cofins_servicos else "",
-                'dCompet': dt_emissao.strftime('%Y-%m-%d'),
+                'dCompet': dt_emissao[:10],
                 'vDeducao': "",
                 'vOutro': "",
                 'vISSRet': "%.02f" % self.valor_retencao_issqn
