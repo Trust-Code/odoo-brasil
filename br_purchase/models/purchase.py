@@ -53,6 +53,12 @@ class PurchaseOrder(models.Model):
         for order in self:
             order.order_line._compute_tax_id()
 
+    @api.onchange('partner_id')
+    def onchange_partner_fpos(self):
+        if not self.fiscal_position_id:
+            fpos = self.partner_id.property_purchase_fiscal_position_id
+            self.fiscal_position_id = fpos.id
+
 
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'

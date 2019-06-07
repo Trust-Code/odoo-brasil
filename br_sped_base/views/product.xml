@@ -1,0 +1,15 @@
+<odoo>
+
+  <record id="view_sped_base_product_uom_form" model="ir.ui.view">
+      <field name="name">view_sped_base_product_uom_form</field>
+      <field name="model">uom.uom</field>
+      <field name="inherit_id" ref="uom.product_uom_form_view" />
+      <field name="arch" type="xml">
+          <field name="name" position="after">
+              <field name="l10n_br_description" required="1" />
+          </field>
+      </field>
+  </record>
+
+
+</odoo>

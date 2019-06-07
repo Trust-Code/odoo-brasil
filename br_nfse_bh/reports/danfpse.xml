@@ -221,7 +221,7 @@
                         <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;">
                             <td>Valor dos serviços:</td>
                             <td style="text-align:right;">
-                                <span t-field="doc.valor_bruto"
+                                <span t-field="doc.valor_final"
                                     t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
                             </td>
                         </tr>
@@ -249,7 +249,7 @@
                         <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;color:red;">
                             <td>Valor Líquido:</td>
                             <td style="text-align:right;">
-                                <span t-field="doc.valor_final"
+                                <span t-field="doc.total_com_retencoes"
                                     t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
                             </td>
                         </tr>
@@ -260,7 +260,7 @@
                       <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;">
                           <td>Valor dos serviços:</td>
                           <td style="text-align:right;">
-                              <span t-field="doc.valor_bruto"
+                              <span t-field="doc.valor_final"
                                   t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></span>
                           </td>
                       </tr>

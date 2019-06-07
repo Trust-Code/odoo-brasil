@@ -152,7 +152,7 @@ class InvoiceEletronic(models.Model):
             '2' if self.company_id.fiscal_type == '3' else '1',
             'incentivador_cultural': '2',  # 2 - Não
             'status': '1',  # 1 - Normal
-            'valor_servico': str("%.2f" % self.valor_final),
+            'valor_servico': str("%.2f" % self.valor_servicos),
             'valor_deducao': '0',
             'valor_pis': str("%.2f" % self.valor_retencao_pis),
             'valor_cofins': str("%.2f" % self.valor_retencao_cofins),
@@ -162,7 +162,7 @@ class InvoiceEletronic(models.Model):
             'iss_retido': '1' if self.valor_retencao_issqn > 0 else '2',
             'valor_iss':  str("%.2f" % self.valor_issqn),
             'valor_iss_retido': str("%.2f" % self.valor_retencao_issqn),
-            'base_calculo': str("%.2f" % self.valor_final),
+            'base_calculo': str("%.2f" % self.valor_bc_issqn),
             'aliquota_issqn': str("%.4f" % (
                 self.eletronic_item_ids[0].issqn_aliquota / 100)),
             'valor_liquido_nfse': str("%.2f" % self.valor_final),
@@ -267,7 +267,7 @@ class InvoiceEletronic(models.Model):
                 self.mensagem_retorno = mensagem_retorno.Mensagem
                 self._create_attachment(
                     'nfse-ret', self,
-                    recebe_lote['received_xml'].decode('utf-8'))
+                    recebe_lote['received_xml'])
                 return
         # Monta a consulta de situação do lote
         # 1 - Não Recebido
