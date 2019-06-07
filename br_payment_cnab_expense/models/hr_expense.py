@@ -27,11 +27,10 @@ class HrExpenseSheet(models.Model):
     def _onchange_payment_mode_id(self):
         self.payment_type = self.payment_mode_id.payment_type
 
-    @api.onchange('address_id')
+    @api.onchange('employee_id')
     def _onchange_payment_cnab_employee_id(self):
-        bnk_account_id = self.env['res.partner.bank'].search(
-            [('partner_id', '=', self.address_id.id)], limit=1)
-        self.bank_account_id = bnk_account_id.id
+        if self.employee_id:
+            self.bank_account_id = self.employee_id.bank_account_id.id
 
     def _prepare_payment_order_vals(self):
         address_account_id = self.address_id.property_account_payable_id
