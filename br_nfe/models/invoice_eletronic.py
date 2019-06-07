@@ -26,9 +26,8 @@ try:
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
         gerar_nfeproc_cancel
     from pytrustnfe.nfe.danfe import danfe
-    from pytrustnfe.xml.validate import ValidarXml
+    from pytrustnfe.xml.validate import valida_nfe
     from pytrustnfe.urls import url_qrcode, url_qrcode_exibicao
-
 except ImportError:
     _logger.error('Cannot import pytrustnfe', exc_info=True)
 
@@ -637,7 +636,7 @@ class InvoiceEletronic(models.Model):
                 if self.valor_pis_servicos else "",
                 'vCOFINS': "%.02f" % self.valor_cofins_servicos
                 if self.valor_cofins_servicos else "",
-                'dCompet': dt_emissao[:10],
+                'dCompet': dt_emissao.strftime('%Y-%m-%d'),
                 'vDeducao': "",
                 'vOutro': "",
                 'vISSRet': "%.02f" % self.valor_retencao_issqn
@@ -904,11 +903,9 @@ class InvoiceEletronic(models.Model):
 
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
 
-        # Xml schema validation class
-        validar_xml = ValidarXml()
-        erros_esquemas = validar_xml.valida_nfe(xml_enviar)
-        if erros_esquemas is not False:
-            raise UserError(erros_esquemas)
+        mensagens_erro = valida_nfe(xml_enviar)
+        if mensagens_erro:
+            raise UserError(mensagens_erro)
 
         self.xml_to_send = base64.encodestring(
             xml_enviar.encode('utf-8'))
@@ -939,11 +936,6 @@ class InvoiceEletronic(models.Model):
             estado=self.company_id.state_id.ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
             modelo=self.model)
-
-        # Verificando se não houve nem uma falha de esquema
-        if 'ErrosEsquemas' in resposta:
-            raise UserError(resposta['ErrosEsquemas'])
-
         retorno = resposta['object'].getchildren()[0]
         if retorno.cStat == 103:
             obj = {
