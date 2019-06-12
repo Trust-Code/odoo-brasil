@@ -243,6 +243,16 @@ class AccountInvoice(models.Model):
         vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
 
+    @api.multi
+    def copy(self, default=None):
+        self.ensure_one()
+        new_acc_inv = super(AccountInvoice, self).copy(default)
+        if self.import_declaration_ids:
+            new_acc_inv.import_declaration_ids = self.import_declaration_ids
+            for i in range(len(new_acc_inv.invoice_line_ids)):
+                new_acc_inv.invoice_line_ids[i].declaration_line_ids = \
+                    self.invoice_line_ids[i].declaration_line_ids
+        return new_acc_inv
 
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
