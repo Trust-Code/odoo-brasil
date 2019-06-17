@@ -253,6 +253,14 @@ class AccountInvoice(models.Model):
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
+    finalidade_emissao = fields.Selection(
+        [('1', u'1 - Normal'),
+         ('2', u'2 - Complementar'),
+         ('3', u'3 - Ajuste'),
+         ('4', u'4 - Devolução')],
+        string=u'Finalidade',
+        help=u"Finalidade da emissão de NFe",
+        default='1')
 
     @api.onchange('fiscal_position_id')
     def _onchange_br_account_fiscal_position_id(self):
