@@ -191,7 +191,7 @@ class AccountInvoice(models.Model):
             'data_emissao': datetime.now(),
             'data_agendada': invoice.date_invoice,
             'data_fatura': datetime.now(),
-            'finalidade_emissao': invoice.finalidade_emissao,
+            'finalidade_emissao': '1',
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
