@@ -11,7 +11,7 @@
                   <field name="payment_mode_id" domain="[('type', '=', 'payable')]" />
                   <field name="payment_type" invisible="1" />
                   <field name="date_payment"/>
-                  <field name="bank_account_id" force_save="1" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" />
+                  <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" />
             </group>
           </xpath>
         </field>
