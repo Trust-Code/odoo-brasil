@@ -112,7 +112,7 @@ class Itau240(Cnab240):
 
     # NOTA 11 do manual: se houverem dois digitos no dac da agencia/conta
     # o campo 42 (inicialmente vazio) deve ser utilizado
-    def get_dac_agencia_e_conta(segmento):
+    def get_dac_agencia_e_conta(self, segmento):
         dac_agencia = segmento.get('favorecido_agencia_dv')
         dac_conta = segmento.get('favorecido_conta_dv')
         dac_agencia = False if dac_agencia is '' else dac_agencia
