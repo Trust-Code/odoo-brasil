@@ -124,6 +124,8 @@ class Itau240(Cnab240):
             return '', dac_agencia
         if not dac_agencia and dac_conta:
             return '', dac_conta
+        else 
+            return '', ''
 
     def _sum_lot_values(self, lot):
         if self._operation not in ['16', '17', '18', '35']:
