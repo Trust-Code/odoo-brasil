@@ -77,14 +77,14 @@ class AccountInvoice(models.Model):
     @api.depends('move_id.line_ids')
     def _compute_receivables(self):
         self.receivable_move_line_ids = self.move_id.line_ids.filtered(
-            lambda m: m.account_id.user_type_id.type = 'receivable'
+            lambda m: m.account_id.user_type_id.type == 'receivable'
         ).sorted(key=lambda m: m.date_maturity)
 
     @api.one
     @api.depends('move_id.line_ids')
     def _compute_payables(self):
         self.receivable_move_line_ids = self.move_id.line_ids.filtered(
-            lambda m: m.account_id.user_type_id.type = 'payable')
+            lambda m: m.account_id.user_type_id.type == 'payable')
 
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
