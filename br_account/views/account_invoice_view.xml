@@ -38,7 +38,7 @@
             <page name="other_info" position="before">
                 <page name="vencimentos" string="Vencimentos">
                     <field nolabel="1" name="receivable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
+                        <tree default_order="date_maturity" name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>
