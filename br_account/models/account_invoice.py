@@ -81,7 +81,7 @@ class AccountInvoice(models.Model):
             if line.account_id.user_type_id.type == "receivable":
                 receivable_lines.append(line.id)
         self.receivable_move_line_ids = self.env['account.move.line'].browse(
-            list(set(receivable_lines)))
+            list(set(receivable_lines))).sorted(key=lambda m: m.date_maturity)
 
     @api.one
     @api.depends('move_id.line_ids')
