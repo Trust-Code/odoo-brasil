@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="transfer_account_id" model="account.account.template">
+        <field name="name">Transferência de Contas</field>
+        <field name="code">1.1.5.01</field>
+        <field name="reconcile" eval="True"/>
+        <field ref="account.data_account_type_current_assets" name="user_type_id"/>
+    </record>
+
+    <record id="br_coa_me_epp_chart_template" model="account.chart.template">
+        <field name="name">Plano de Contas para Microempresa e Empresa de Pequeno Porte</field>
+        <field name="code_digits">1</field>
+        <field name="bank_account_code_prefix">1.1.1.</field>
+        <field name="cash_account_code_prefix">1.1.1.</field>
+        <field name="currency_id" ref="base.BRL"/>
+        <field name="transfer_account_id" ref="transfer_account_id"/>
+    </record>
+
+    <record id="transfer_account_id" model="account.account.template">
+        <field name="chart_template_id" ref="br_coa_me_epp_chart_template"/>
+    </record>
+</odoo>
