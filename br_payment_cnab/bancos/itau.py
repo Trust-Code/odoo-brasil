@@ -71,7 +71,7 @@ class Itau240(Cnab240):
     def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Itau240, self)._get_segmento(
             line, lot_sequency, num_lot, nome_segmento)
-        vazio, dac = get_dac_agencia_e_conta(segmento)
+        vazio, dac = self.get_dac_agencia_e_conta(segmento)
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
@@ -120,7 +120,7 @@ class Itau240(Cnab240):
 
         if dac_agencia and dac_conta:
             return dac_agencia, dac_conta
-        if dac_agencia and not dac_conta: 
+        if dac_agencia and not dac_conta:
             return '', dac_agencia
         if not dac_agencia and dac_conta:
             return '', dac_conta
