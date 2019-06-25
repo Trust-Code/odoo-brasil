@@ -18,6 +18,7 @@
         'account', 'br_account'
     ],
     'data': [
+        'data/account_group.xml',
         'data/br_chart_data.xml',
         'data/account.account.template.csv',
         'data/account_tax_template_data.xml',
