@@ -5,7 +5,7 @@
     'name': 'Integração NFS-e - Florianópolis',
     'description': "Efetua a integração com a prefeitura de Florianópolis",
     'summary': "Realiza a exportação em xml das notas fiscais de serviço",
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': "Accounting & Finance",
     'author': 'Trustcode',
     'license': 'AGPL-3',
