@@ -15,18 +15,18 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     l10n_br_sped_type = fields.Selection(
-        [(0, '00 - Mercadoria para Revenda'),
-         (1, '01 - Matéria Prima'),
-         (2, '02 - Embalagem'),
-         (3, '03 - Produto em Processo'),
-         (4, '04 - Produto Acabado'),
-         (5, '05 - Subproduto'),
-         (6, '06 - Produto Intermediário'),
-         (7, '07 - Material de uso e consumo'),
-         (8, '08 - Ativo Imobilizado'),
-         (9, '09 - Serviços'),
-         (10, '10 - Outros insumos'),
-         (99, '99 - Outras')], string="SPED Type", default=0)
+        [('00', '00 - Mercadoria para Revenda'),
+         ('01', '01 - Matéria Prima'),
+         ('02', '02 - Embalagem'),
+         ('03', '03 - Produto em Processo'),
+         ('04', '04 - Produto Acabado'),
+         ('05', '05 - Subproduto'),
+         ('06', '06 - Produto Intermediário'),
+         ('07', '07 - Material de uso e consumo'),
+         ('08', '08 - Ativo Imobilizado'),
+         ('09', '09 - Serviços'),
+         ('10', '10 - Outros insumos'),
+         ('99', '99 - Outras')], string="SPED Type", default=0)
 
 
 class ProductProduct(models.Model):
