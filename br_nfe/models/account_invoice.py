@@ -43,7 +43,7 @@ class AccountInvoice(models.Model):
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', item.id)])
             for doc in docs:
-                if doc.state in ('done', 'denied', 'cancel'):
+                if doc.state in ('done', 'denied'):
                     raise UserError(
                         _('Nota fiscal já emitida para esta fatura - \
                           Duplique a fatura para continuar'))
@@ -242,6 +242,17 @@ class AccountInvoice(models.Model):
         vals['import_declaration_ids'] = di_importacao
         vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
+
+    @api.multi
+    def copy(self, default=None):
+        self.ensure_one()
+        new_acc_inv = super(AccountInvoice, self).copy(default)
+        if self.import_declaration_ids:
+            new_acc_inv.import_declaration_ids = self.import_declaration_ids
+            for i in range(len(new_acc_inv.invoice_line_ids)):
+                new_acc_inv.invoice_line_ids[i].declaration_line_ids = \
+                    self.invoice_line_ids[i].declaration_line_ids
+        return new_acc_inv
 
 
 class AccountInvoiceLine(models.Model):

@@ -9,6 +9,7 @@ import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ try:
     from pytrustnfe.nfse.paulistana import envio_lote_rps
     from pytrustnfe.nfse.paulistana import teste_envio_lote_rps
     from pytrustnfe.nfse.paulistana import cancelamento_nfe
+    from pytrustnfe.nfse.paulistana import consulta_nfe
     from pytrustnfe.certificado import Certificado
 except ImportError:
     _logger.error('Cannot import pytrustnfe', exc_info=True)
@@ -349,3 +351,32 @@ class InvoiceEletronic(models.Model):
         })
         self._create_attachment('canc', self, resposta['sent_xml'])
         self._create_attachment('canc-ret', self, resposta['received_xml'])
+
+    def action_check_nfse_status(self):
+        if self.model != '001':
+            raise UserError(
+                'A consulta de situação serve apenas para São Paulo')
+
+        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+
+        company = self.company_id
+        consulta = {
+            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'numero_rps': self.numero,
+            'serie_rps': self.serie.code or '',
+        }
+        resposta = consulta_nfe(certificado, consulta=consulta)
+        retorno = resposta['object']
+        if retorno.Cabecalho.Sucesso and "NFe" in dir(retorno):
+            self.state = 'done'
+            self.codigo_retorno = '100'
+            self.mensagem_retorno = \
+                'Nota Fiscal Paulistana emitida com sucesso'
+            self.verify_code = retorno.NFe.ChaveNFe.CodigoVerificacao
+            self.numero_nfse = retorno.NFe.ChaveNFe.NumeroNFe
+        else:
+            msg = '%s - %s' % (retorno.Alerta.Codigo, retorno.Alerta.Descricao)
+            raise UserError(msg)

@@ -10,4 +10,15 @@
             </field>
         </field>
     </record>
+
+    <record id="view_nfse_paulistana_invoice_eletronic_form" model="ir.ui.view">
+        <field name="name">view_nfse_paulistana_invoice_eletronic_form</field>
+        <field name="model">invoice.eletronic</field>
+        <field name="inherit_id" ref="br_account_einvoice.br_account_invoice_eletronic_form" />
+        <field name="arch" type="xml">
+            <button name="action_edit_edoc" position="after">
+                <button name="action_check_nfse_status" states="error,done" string="Consultar Situação" type="object" groups="br_account_einvoice.group_edit_edoc"/>
+            </button>
+        </field>
+    </record>
 </odoo>

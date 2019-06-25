@@ -63,20 +63,23 @@ class InvoiceEletronic(models.Model):
                 descricao += item.name + '\n'
                 codigo_servico = item.issqn_codigo
 
+            def fmt_number(x):
+                return str("%.2f" % x).replace('.', ',')
+
             partner = self.commercial_partner_id
             company = self.company_id
             nota_fiscal = {
                 'ccm': re.sub('[^0-9]', '', company.inscr_mun),
                 'cnpj': re.sub('[^0-9]', '', company.cnpj_cpf),
                 'senha': company.senha_nfse_imperial,
-                'aliquota_simples': company.iss_simples_nacional,
+                'aliquota_simples': fmt_number(company.iss_simples_nacional),
 
                 'situacao': 'tp',  # Tributada no prestador
                 'servico': int(re.sub('[^0-9]', '', codigo_servico)),
                 'descricaoNF': descricao,
 
-                'base': self.valor_final,
-                'valor': self.valor_final,
+                'base': fmt_number(self.valor_final),
+                'valor': fmt_number(self.valor_final),
 
                 'tomador_tipo': 2 if not partner.is_company else 4,
                 'tomador_cnpj': re.sub('[^0-9]', '', partner.cnpj_cpf or ''),
@@ -93,12 +96,12 @@ class InvoiceEletronic(models.Model):
                 'tomador_CEP': re.sub('[^0-9]', '', partner.zip),
                 'tomador_fone': re.sub('[^0-9]', '', partner.phone or ''),
 
-                'retencao_iss': self.valor_retencao_issqn,
-                'pis': self.valor_retencao_pis,
-                'cofins': self.valor_retencao_cofins,
-                'inss': self.valor_retencao_inss,
-                'irrf': self.valor_retencao_irrf,
-                'csll': self.valor_retencao_pis,
+                'retencao_iss': fmt_number(self.valor_retencao_issqn),
+                'pis': fmt_number(self.valor_retencao_pis),
+                'cofins': fmt_number(self.valor_retencao_cofins),
+                'inss': fmt_number(self.valor_retencao_inss),
+                'irrf': fmt_number(self.valor_retencao_irrf),
+                'csll': fmt_number(self.valor_retencao_pis),
             }
             res.update(nota_fiscal)
         return res
