@@ -919,9 +919,13 @@ class InvoiceEletronic(models.Model):
            'done', 'denied', 'cancel'):
             return
 
-        self.state = 'error'
+        _logger.info('Sending NF-e (%s) (%.2f) - %s' % (
+            self.numero, self.valor_final, self.partner_id.name))
         tz = timezone(self.env.user.tz)
-        self.data_emissao = datetime.now(tz)
+        self.write({
+            'state': 'error',
+            'data_emissao': datetime.now(tz)
+        })
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
@@ -957,21 +961,31 @@ class InvoiceEletronic(models.Model):
                     break
 
         if retorno.cStat != 104:
-            self.codigo_retorno = retorno.cStat
-            self.mensagem_retorno = retorno.xMotivo
+            self.write({
+                'codigo_retorno': retorno.cStat,
+                'mensagem_retorno': retorno.xMotivo,
+            })
+            self.notify_user()
         else:
-            self.codigo_retorno = retorno.protNFe.infProt.cStat
-            self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
+            self.write({
+                'codigo_retorno': retorno.protNFe.infProt.cStat,
+                'mensagem_retorno': retorno.protNFe.infProt.xMotivo,
+            })
             if self.codigo_retorno == '100':
                 self.write({
                     'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
-                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
+                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto
+                })
+            else:
+                self.notify_user()
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
-                self.write({'state': 'done', 'codigo_retorno': '100',
-                            'mensagem_retorno': 'Autorizado o uso da NF-e'})
+                self.write({
+                    'state': 'done', 'codigo_retorno': '100',
+                    'mensagem_retorno': 'Autorizado o uso da NF-e'
+                })
 
             # Denegada e nota já está denegada
             if self.codigo_retorno in ('302', '205'):
@@ -993,8 +1007,12 @@ class InvoiceEletronic(models.Model):
 
         if self.codigo_retorno == '100':
             nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
-            self.nfe_processada = base64.encodestring(nfe_proc)
-            self.nfe_processada_name = "NFe%08d.xml" % self.numero
+            self.write({
+                'nfe_processada': base64.encodestring(nfe_proc),
+                'nfe_processada_name': "NFe%08d.xml" % self.numero,
+            })
+        _logger.info('NF-e (%s) was finished with status %s' % (
+            self.numero, self.codigo_retorno))
 
     @api.multi
     def generate_nfe_proc(self):
