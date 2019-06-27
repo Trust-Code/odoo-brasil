@@ -1,11 +1,14 @@
 # © 2016 Danimar Ribeiro <danimaribeiro@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import logging
 from datetime import datetime
 from random import SystemRandom
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 TYPE2EDOC = {
@@ -64,7 +67,6 @@ class AccountInvoice(models.Model):
         return False
 
     def action_preview_danfe(self):
-
         docs = self.env['invoice.eletronic'].search(
             [('invoice_id', '=', self.id)])
 
@@ -84,7 +86,6 @@ class AccountInvoice(models.Model):
             return self._action_preview_danfe(docs[0])
 
     def _action_preview_danfe(self, doc):
-
         report = self._return_pdf_invoice(doc)
         if not report:
             raise UserError(
@@ -185,6 +186,7 @@ class AccountInvoice(models.Model):
             'invoice_id': invoice.id,
             'code': invoice.number,
             'company_id': invoice.company_id.id,
+            'schedule_user_id': self.env.user.id,
             'state': 'draft',
             'tipo_operacao': TYPE2EDOC[invoice.type],
             'numero_controle': num_controle,
@@ -279,6 +281,9 @@ class AccountInvoice(models.Model):
                         _('Documento eletrônico emitido - Cancele o \
                           documento para poder cancelar a fatura'))
                 if edoc.can_unlink():
+                    _logger.info(
+                        'deleting edoc %s by user %s in action_cancel (%s)' %
+                        (edoc.id, self.env.user.id, item.move_name))
                     edoc.sudo().unlink()
         return res
 
