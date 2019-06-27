@@ -1059,6 +1059,7 @@ class InvoiceEletronic(models.Model):
                 }
             }
 
+        _logger.info('Cancelling NF-e (%s)' % self.numero)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
@@ -1093,10 +1094,12 @@ class InvoiceEletronic(models.Model):
         resposta = resp['object'].getchildren()[0]
         if resposta.cStat == 128 and \
                 resposta.retEvento.infEvento.cStat in (135, 136, 155):
-            self.state = 'cancel'
-            self.codigo_retorno = resposta.retEvento.infEvento.cStat
-            self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
-            self.sequencial_evento += 1
+            self.write({
+                'state': 'cancel',
+                'codigo_retorno': resposta.retEvento.infEvento.cStat,
+                'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
+                'sequencial_evento': self.sequencial_evento + 1,
+            })
         else:
             code, motive = None, None
             if resposta.cStat == 128:
@@ -1124,6 +1127,8 @@ class InvoiceEletronic(models.Model):
             nfe_processada, resp['received_xml'].encode())
         if nfe_proc_cancel:
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+        _logger.info('Cancelling NF-e (%s) was finished with status %s' % (
+            self.numero, self.codigo_retorno))
 
     def action_get_status(self):
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
