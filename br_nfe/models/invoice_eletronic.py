@@ -11,7 +11,6 @@ from datetime import datetime
 from pytz import timezone
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from odoo.addons import decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
@@ -331,15 +330,12 @@ class InvoiceEletronic(models.Model):
                     'nDraw': adi.drawback_number or '',
                 })
 
-            dt_registration = datetime.strptime(
-                di.date_registration, DATE_FORMAT)
-            dt_release = datetime.strptime(di.date_release, DATE_FORMAT)
             di_vals.append({
                 'nDI': di.name,
-                'dDI': dt_registration.strftime('%Y-%m-%d'),
+                'dDI': di.date_registration.strftime('%Y-%m-%d'),
                 'xLocDesemb': di.location,
                 'UFDesemb': di.state_id.code,
-                'dDesemb': dt_release.strftime('%Y-%m-%d'),
+                'dDesemb': di.date_release.strftime('%Y-%m-%d'),
                 'tpViaTransp': di.type_transportation,
                 'vAFRMM': "%.02f" % di.afrmm_value if di.afrmm_value else '',
                 'tpIntermedio': di.type_import,
@@ -881,7 +877,7 @@ class InvoiceEletronic(models.Model):
         chave_dict = {
             'cnpj': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
             'estado': self.company_id.state_id.ibge_code,
-            'emissao': self.data_emissao[2:4] + self.data_emissao[5:7],
+            'emissao': self.data_emissao.strftime("%y%m"),
             'modelo': self.model,
             'numero': self.numero,
             'serie': self.serie.code.zfill(3),
@@ -921,10 +917,9 @@ class InvoiceEletronic(models.Model):
 
         _logger.info('Sending NF-e (%s) (%.2f) - %s' % (
             self.numero, self.valor_final, self.partner_id.name))
-        tz = timezone(self.env.user.tz)
         self.write({
             'state': 'error',
-            'data_emissao': datetime.now(tz)
+            'data_emissao': datetime.now()
         })
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file

@@ -7,7 +7,7 @@
     'description': 'Brazilian Localisation ZIP Codes',
     'license': 'AGPL-3',
     'author': 'Akretion, Odoo Brasil',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'depends': [
         'br_base',
     ],
@@ -18,7 +18,6 @@
         'wizard/br_zip_search_view.xml',
         'security/ir.model.access.csv',
     ],
-    'test': ['test/zip_demo.yml'],
     'category': 'Localization',
     'installable': True,
 }

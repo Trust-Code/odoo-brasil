@@ -200,6 +200,7 @@ class TestBaseCnab(TestBrCnabPayment):
             })
         journal.bank_account_id = self.env['res.partner.bank'].create({
             'acc_number': '123456',
+            'partner_id': self.main_company.partner_id.id,
         })
         with self.assertRaises(ValidationError):
             self.env['l10n_br.payment.mode'].create({
@@ -213,7 +214,8 @@ class TestBaseCnab(TestBrCnabPayment):
 
         journal.bank_account_id = self.env['res.partner.bank'].create({
             'acc_number': '658984',
-            'l10n_br_convenio_pagamento': '545'
+            'l10n_br_convenio_pagamento': '545',
+            'partner_id': self.main_company.partner_id.id,
         })
         with self.assertRaises(ValidationError):
             self.env['l10n_br.payment.mode'].create({

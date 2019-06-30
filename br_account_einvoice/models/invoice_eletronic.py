@@ -592,7 +592,7 @@ class InvoiceEletronicItem(models.Model):
     ncm = fields.Char(u'NCM', size=10, readonly=True, states=STATE)
 
     uom_id = fields.Many2one(
-        'product.uom', string=u'Unidade Medida', readonly=True, states=STATE)
+        'uom.uom', string=u'Unidade Medida', readonly=True, states=STATE)
     quantidade = fields.Float(
         string=u'Quantidade', readonly=True, states=STATE,
         digits=dp.get_precision('Product Unit of Measure'))

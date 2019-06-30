@@ -12,8 +12,8 @@
         <field name="code_digits">1</field>
         <field name="bank_account_code_prefix">1.1.1.</field>
         <field name="cash_account_code_prefix">1.1.1.</field>
+        <field name="transfer_account_code_prefix">1.1.5.</field>
         <field name="currency_id" ref="base.BRL"/>
-        <field name="transfer_account_id" ref="transfer_account_id"/>
     </record>
 
     <record id="transfer_account_id" model="account.account.template">
