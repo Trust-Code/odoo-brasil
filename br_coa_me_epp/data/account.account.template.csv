@@ -43,7 +43,7 @@
 "account_account_2_3_2_01","2.3.2.01","Reservas de Capital","False",,"account.data_account_type_current_liabilities","br_coa_me_epp_chart_template"
 "account_account_2_3_2_02","2.3.2.02","Reservas de Lucro","False",,"account.data_account_type_current_liabilities","br_coa_me_epp_chart_template"
 "account_account_2_3_3_01","2.3.3.01","Lucros Acumulados","False",,"account.data_unaffected_earnings","br_coa_me_epp_chart_template"
-"account_account_2_3_3_02","2.3.3.02","(-) Prejuízos Acumulados","False",,"account.data_unaffected_earnings","br_coa_me_epp_chart_template"
+"account_account_2_3_3_02","2.3.3.02","(-) Prejuízos Acumulados","False",,"account.data_account_type_current_liabilities","br_coa_me_epp_chart_template"
 "account_account_3_1_1_01","3.1.1.01","Venda de Produtos","False",,"account.data_account_type_revenue","br_coa_me_epp_chart_template"
 "account_account_3_1_1_02","3.1.1.02","Venda de Mercadorias","False",,"account.data_account_type_revenue","br_coa_me_epp_chart_template"
 "account_account_3_1_1_03","3.1.1.03","Venda de Serviços","False",,"account.data_account_type_revenue","br_coa_me_epp_chart_template"
