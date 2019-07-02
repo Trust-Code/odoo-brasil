@@ -476,6 +476,10 @@ class InvoiceEletronic(models.Model):
             'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
+        if int(self.tipo_emissao) != 1:
+            ide['dhCont'] = dt_emissao
+            ide['xJust'] = 'Falha na transmissão devido a conexão do provedor de internet ou comunicação com a sefaz'
+
         # Documentos Relacionados
         documentos = []
         for doc in self.fiscal_document_related_ids:
