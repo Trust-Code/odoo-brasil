@@ -158,8 +158,8 @@
             <field name="arch" type="xml">
                 <form string="Documento Eletrônico">
                     <header>
-                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar Agora" type="object" class="oe_highlight"/>
-                        <button name="action_back_to_draft" states="edit,error" string="Repetir" type="object"/>
+                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar" type="object" class="oe_highlight"/>
+                        <button name="action_back_to_draft" states="edit,error" string="Rascunho" type="object"/>
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
                         <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
@@ -181,7 +181,6 @@
                                 <field name="partner_id"/>
                                 <field name="partner_shipping_id"/>
                                 <field name="data_agendada"/>
-                                <field name="schedule_user_id" />
                             </group>
                             <group>
                                 <field name="tipo_operacao" />
@@ -308,14 +307,11 @@
             <field name="model">invoice.eletronic</field>
             <field name="arch" type="xml">
                 <tree string="Documentos Eletrônicos">
-                    <field name="partner_id"/>
-                    <field name="invoice_id"/>
-                    <field name="numero"/>
-                    <field name="data_emissao" />
-                    <field name="valor_final" sum="Total"/>
-                    <field name="data_agendada" />
-                    <field name="schedule_user_id" />
                     <field name="state" />
+                    <field name="model"/>
+                    <field name="numero"/>
+                    <field name="partner_id"/>
+                    <field name="valor_final"/>
                 </tree>
             </field>
         </record>
@@ -325,16 +321,7 @@
             <field name="model">invoice.eletronic</field>
             <field name="arch" type="xml">
                 <search>
-                    <filter string="Notas com problemas" domain="[('state','=', 'error')]" name="error"/>
-                    <separator orientation="vertical"/>
                     <field name="invoice_id"/>
-                    <field name="partner_id"/>
-                    <field name="numero" />
-                    <group expand="0" string="Agrupar por...">
-                        <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
-                        <filter name="group_date" string="Data de Emissão" domain="[]" context="{'group_by':'data_emissao'}"/>
-                        <filter name="group_state" string="Situação" domain="[]" context="{'group_by':'state'}"/>
-                   </group>
                 </search>
             </field>
         </record>

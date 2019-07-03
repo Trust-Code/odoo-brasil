@@ -14,7 +14,8 @@ class HrExpenseSheet(models.Model):
     payment_type = fields.Selection(
         related='payment_mode_id.payment_type', readonly=True)
     bank_account_id = fields.Many2one(
-        'res.partner.bank', string="Conta p/ Transferência")
+        'res.partner.bank', string="Conta p/ Transferência",
+        readonly=True)
     date_payment = fields.Date(string="Payment Date", )
 
     def get_order_line(self):

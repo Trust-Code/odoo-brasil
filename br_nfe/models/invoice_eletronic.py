@@ -6,7 +6,7 @@ import io
 import base64
 import logging
 import hashlib
-from lxml import etree, objectify
+from lxml import etree
 from datetime import datetime
 from pytz import timezone
 from odoo import api, fields, models, _
@@ -206,15 +206,6 @@ class InvoiceEletronic(models.Model):
         string="Forma de Pagamento", default="01")
     valor_pago = fields.Monetary(string='Valor pago')
     troco = fields.Monetary(string='Troco')
-    digest_value = fields.Char(
-        string="Digest Value da NF-e", size=40, readonly=True, states=STATE,
-        help=u"Corresponde ao algoritmo SHA1 sobre o arquivo XML"
-             u"da NFC-e, convertido para formato hexadecimal. Ao"
-             u"se efetuar a assinatura digital da NFC-e emitida em"
-             u"contingência off-line, o campo digestvalue constante"
-             u"da XML Signature deve obrigatoriamente ser idêntico"
-             u"ao encontrado quando da geração do digestvalue"
-             u"para a montagem QR Code.")
 
     # Documentos Relacionados
     fiscal_document_related_ids = fields.One2many(
@@ -269,7 +260,7 @@ class InvoiceEletronic(models.Model):
             if not self.fiscal_position_id:
                 errors.append(u'Configure a posição fiscal')
             if self.company_id.accountant_id and not \
-                    self.company_id.accountant_id.cnpj_cpf:
+               self.company_id.accountant_id.cnpj_cpf:
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
         # NFC-e
         if self.model == '65':
@@ -311,7 +302,7 @@ class InvoiceEletronic(models.Model):
             'uCom': '{:.6}'.format(item.uom_id.name or ''),
             'qCom': qty_frmt.format(item.quantidade),
             'vUnCom': price_frmt.format(item.preco_unitario),
-            'vProd': "%.02f" % item.valor_bruto,
+            'vProd':  "%.02f" % item.valor_bruto,
             'cEANTrib': item.product_id.barcode or 'SEM GTIN',
             'uTrib': '{:.6}'.format(item.uom_id.name or ''),
             'qTrib': qty_frmt.format(item.quantidade),
@@ -383,8 +374,8 @@ class InvoiceEletronic(models.Model):
         }
         if item.tipo_produto == 'service':
             retencoes = item.pis_valor_retencao + \
-                        item.cofins_valor_retencao + item.inss_valor_retencao + \
-                        item.irrf_valor_retencao + item.csll_valor_retencao
+                item.cofins_valor_retencao + item.inss_valor_retencao + \
+                item.irrf_valor_retencao + item.csll_valor_retencao
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
@@ -407,7 +398,7 @@ class InvoiceEletronic(models.Model):
         else:
             imposto.update({
                 'ICMS': {
-                    'orig': item.origem,
+                    'orig':  item.origem,
                     'CST': item.icms_cst,
                     'modBC': item.icms_tipo_base,
                     'vBC': "%.02f" % item.icms_base_calculo,
@@ -476,10 +467,6 @@ class InvoiceEletronic(models.Model):
             'indPres': self.ind_pres or '1',
             'procEmi': 0
         }
-        if int(self.tipo_emissao) != 1:
-            ide['dhCont'] = dt_emissao
-            ide['xJust'] = 'Falha na transmissão devido a conexão do provedor de internet ou comunicação com a sefaz'
-
         # Documentos Relacionados
         documentos = []
         for doc in self.fiscal_document_related_ids:
@@ -578,7 +565,7 @@ class InvoiceEletronic(models.Model):
                     'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
                 'indIEDest': self.ind_ie_dest,
-                'IE': re.sub('[^0-9]', '', partner.inscr_est or ''),
+                'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
             }
             if self.model == '65':
                 dest.update(
@@ -682,7 +669,7 @@ class InvoiceEletronic(models.Model):
             'modFrete': self.modalidade_frete,
             'transporta': {
                 'xNome': self.transportadora_id.legal_name or
-                         self.transportadora_id.name or '',
+                self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
                              self.transportadora_id.inscr_est or ''),
                 'xEnder': end_transp
@@ -730,14 +717,14 @@ class InvoiceEletronic(models.Model):
             vencimento = fields.Datetime.from_string(dup.data_vencimento)
             duplicatas.append({
                 'nDup': dup.numero_duplicata,
-                'dVenc': vencimento.strftime('%Y-%m-%d'),
+                'dVenc':  vencimento.strftime('%Y-%m-%d'),
                 'vDup': "%.02f" % dup.valor
             })
         cobr = {
             'fat': {
                 'nFat': self.numero_fatura or '',
                 'vOrig': "%.02f" % (
-                        self.fatura_liquido + self.fatura_desconto),
+                    self.fatura_liquido + self.fatura_desconto),
                 'vDesc': "%.02f" % self.fatura_desconto,
                 'vLiq': "%.02f" % self.fatura_liquido,
             },
@@ -748,7 +735,7 @@ class InvoiceEletronic(models.Model):
             'tPag': self.payment_mode_id.tipo_pagamento or '90',
             'vPag': '0.00',
         }
-        self.informacoes_complementares = self.informacoes_complementares. \
+        self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
         self.informacoes_legais = self.informacoes_legais.replace(
             '\n', '<br />')
@@ -803,7 +790,7 @@ class InvoiceEletronic(models.Model):
                 'ISSQNtot': issqn_total,
                 'retTrib': tributos_retidos,
             })
-        if len(duplicatas) > 0 and \
+        if len(duplicatas) > 0 and\
                 self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
             vals['cobr'] = cobr
             pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
@@ -820,43 +807,15 @@ class InvoiceEletronic(models.Model):
 
             cid_token = int(self.company_id.id_token_csc)
             csc = self.company_id.csc
-            if self.tipo_emissao == 1:
-                c_hash_qr_code = "{0}|2|{1}|{2}{3}".format(
-                    chave_nfe, ambiente, int(cid_token), csc)
 
-                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).hexdigest()
+            c_hash_QR_code = "{0}|2|{1}|{2}{3}".format(
+                chave_nfe, ambiente, int(cid_token), csc)
+            c_hash_QR_code = hashlib.sha1(c_hash_QR_code.encode()).hexdigest()
 
-                qr_code_url = "p={0}|2|{1}|{2}|{3}".format(
-                    chave_nfe, ambiente, int(cid_token), c_hash_qr_code)
-                qr_code_server = url_qrcode(estado, str(ambiente))
-                vals['qrCode'] = qr_code_server + qr_code_url
-            else:
-                c_hash_qr_code = \
-                    "{ch_acesso}|{versao}|{tp_amb}|{dh_emi}|" \
-                    "{v_nf}|{dig_val}|{c_id_token}|{csc}".format(
-                        ch_acesso=chave_nfe,
-                        versao=2,
-                        tp_amb=ambiente,
-                        dh_emi=str(datetime.now().day).zfill(2),
-                        v_nf=self.valor_final,
-                        dig_val=self.digest_value,
-                        c_id_token=int(cid_token),
-                        csc=csc
-                    )
-                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).hexdigest()
-                qr_code_url = 'p={ch_acesso}|{versao}|{tp_amb}|{dh_emi}|" \
-                    "{v_nf}|{dig_val}|{c_id_token}|{c_hash_qr_code}'.format(
-                    ch_acesso=chave_nfe,
-                    versao=2,
-                    tp_amb=ambiente,
-                    dh_emi=str(datetime.now().day).zfill(2),
-                    v_nf=self.valor_final,
-                    dig_val=self.digest_value,
-                    c_id_token=int(cid_token),
-                    c_hash_qr_code=c_hash_qr_code
-                )
-                qr_code_server = url_qrcode(estado, str(ambiente))
-                vals['qrCode'] = qr_code_server + qr_code_url
+            QR_code_url = "p={0}|2|{1}|{2}|{3}".format(
+                chave_nfe, ambiente, int(cid_token), c_hash_QR_code)
+            qr_code_server = url_qrcode(estado, str(ambiente))
+            vals['qrCode'] = qr_code_server + QR_code_url
             vals['urlChave'] = url_qrcode_exibicao(estado, str(ambiente))
         return vals
 
@@ -947,9 +906,7 @@ class InvoiceEletronic(models.Model):
         mensagens_erro = valida_nfe(xml_enviar)
         if mensagens_erro:
             raise UserError(mensagens_erro)
-        nfe = objectify.fromstring(xml_enviar)
-        self.digest_value = nfe.NFe['{http://www.w3.org/2000/09/xmldsig#}Signature'].\
-            SignedInfo.Reference.DigestValue
+
         self.xml_to_send = base64.encodestring(
             xml_enviar.encode('utf-8'))
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
@@ -959,16 +916,12 @@ class InvoiceEletronic(models.Model):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
         if self.model not in ('55', '65') or self.state in (
-                'done', 'denied', 'cancel'):
+           'done', 'denied', 'cancel'):
             return
 
-        _logger.info('Sending NF-e (%s) (%.2f) - %s' % (
-            self.numero, self.valor_final, self.partner_id.name))
+        self.state = 'error'
         tz = timezone(self.env.user.tz)
-        self.write({
-            'state': 'error',
-            'data_emissao': datetime.now(tz)
-        })
+        self.data_emissao = datetime.now(tz)
 
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
@@ -1004,31 +957,21 @@ class InvoiceEletronic(models.Model):
                     break
 
         if retorno.cStat != 104:
-            self.write({
-                'codigo_retorno': retorno.cStat,
-                'mensagem_retorno': retorno.xMotivo,
-            })
-            self.notify_user()
+            self.codigo_retorno = retorno.cStat
+            self.mensagem_retorno = retorno.xMotivo
         else:
-            self.write({
-                'codigo_retorno': retorno.protNFe.infProt.cStat,
-                'mensagem_retorno': retorno.protNFe.infProt.xMotivo,
-            })
+            self.codigo_retorno = retorno.protNFe.infProt.cStat
+            self.mensagem_retorno = retorno.protNFe.infProt.xMotivo
             if self.codigo_retorno == '100':
                 self.write({
                     'state': 'done',
                     'protocolo_nfe': retorno.protNFe.infProt.nProt,
-                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto
-                })
-            else:
-                self.notify_user()
+                    'data_autorizacao': retorno.protNFe.infProt.dhRecbto})
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
-                self.write({
-                    'state': 'done', 'codigo_retorno': '100',
-                    'mensagem_retorno': 'Autorizado o uso da NF-e'
-                })
+                self.write({'state': 'done', 'codigo_retorno': '100',
+                            'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
             # Denegada e nota já está denegada
             if self.codigo_retorno in ('302', '205'):
@@ -1050,12 +993,8 @@ class InvoiceEletronic(models.Model):
 
         if self.codigo_retorno == '100':
             nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
-            self.write({
-                'nfe_processada': base64.encodestring(nfe_proc),
-                'nfe_processada_name': "NFe%08d.xml" % self.numero,
-            })
-        _logger.info('NF-e (%s) was finished with status %s' % (
-            self.numero, self.codigo_retorno))
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
 
     @api.multi
     def generate_nfe_proc(self):
@@ -1102,7 +1041,6 @@ class InvoiceEletronic(models.Model):
                 }
             }
 
-        _logger.info('Cancelling NF-e (%s)' % self.numero)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
@@ -1137,12 +1075,10 @@ class InvoiceEletronic(models.Model):
         resposta = resp['object'].getchildren()[0]
         if resposta.cStat == 128 and \
                 resposta.retEvento.infEvento.cStat in (135, 136, 155):
-            self.write({
-                'state': 'cancel',
-                'codigo_retorno': resposta.retEvento.infEvento.cStat,
-                'mensagem_retorno': resposta.retEvento.infEvento.xMotivo,
-                'sequencial_evento': self.sequencial_evento + 1,
-            })
+            self.state = 'cancel'
+            self.codigo_retorno = resposta.retEvento.infEvento.cStat
+            self.mensagem_retorno = resposta.retEvento.infEvento.xMotivo
+            self.sequencial_evento += 1
         else:
             code, motive = None, None
             if resposta.cStat == 128:
@@ -1170,8 +1106,6 @@ class InvoiceEletronic(models.Model):
             nfe_processada, resp['received_xml'].encode())
         if nfe_proc_cancel:
             self.nfe_processada = base64.encodestring(nfe_proc_cancel)
-        _logger.info('Cancelling NF-e (%s) was finished with status %s' % (
-            self.numero, self.codigo_retorno))
 
     def action_get_status(self):
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
