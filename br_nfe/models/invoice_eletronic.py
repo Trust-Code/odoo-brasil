@@ -382,12 +382,12 @@ class InvoiceEletronic(models.Model):
             },
         }
         if item.tipo_produto == 'service':
-            retencoes = item.pis_valor_retencao + \
-                        item.cofins_valor_retencao + \
-                        item.inss_valor_retencao + \
-                        item.irrf_valor_retencao + \
-                        item.csll_valor_retencao
-            
+            retencoes = (
+                    item.pis_valor_retencao +
+                    item.cofins_valor_retencao +
+                    item.inss_valor_retencao +
+                    item.irrf_valor_retencao +
+                    item.csll_valor_retencao)
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
@@ -836,7 +836,8 @@ class InvoiceEletronic(models.Model):
                 c_hash_qr_code = "{0}|2|{1}|{2}{3}".format(
                     chave_nfe, ambiente, int(cid_token), csc)
 
-                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).hexdigest()
+                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).\
+                    hexdigest()
 
                 qr_code_url = "p={0}|2|{1}|{2}|{3}".format(
                     chave_nfe, ambiente, int(cid_token), c_hash_qr_code)
@@ -855,7 +856,8 @@ class InvoiceEletronic(models.Model):
                         c_id_token=int(cid_token),
                         csc=csc
                     )
-                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).hexdigest()
+                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).\
+                    hexdigest()
                 qr_code_url = 'p={ch_acesso}|{versao}|{tp_amb}|{dh_emi}|" \
                     "{v_nf}|{dig_val}|{c_id_token}|{c_hash_qr_code}'.format(
                     ch_acesso=chave_nfe,
@@ -887,28 +889,28 @@ class InvoiceEletronic(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super(InvoiceEletronic, self)._find_attachment_ids_email()
-        if self.model not in ('55'):
+        if self.model not in '55':
             return atts
 
         attachment_obj = self.env['ir.attachment']
         nfe_xml = base64.decodestring(self.nfe_processada)
         logo = base64.decodestring(self.invoice_id.company_id.logo)
 
-        tmpLogo = io.BytesIO()
-        tmpLogo.write(logo)
-        tmpLogo.seek(0)
+        tmp_logo = io.BytesIO()
+        tmp_logo.write(logo)
+        tmp_logo.seek(0)
 
         xml_element = etree.fromstring(nfe_xml)
-        oDanfe = danfe(list_xml=[xml_element], logo=tmpLogo)
+        o_danfe = danfe(list_xml=[xml_element], logo=tmp_logo)
 
-        tmpDanfe = io.BytesIO()
-        oDanfe.writeto_pdf(tmpDanfe)
+        tmp_danfe = io.BytesIO()
+        o_danfe.writeto_pdf(tmp_danfe)
 
         if danfe:
             danfe_id = attachment_obj.create(dict(
                 name="Danfe-%08d.pdf" % self.numero,
                 datas_fname="Danfe-%08d.pdf" % self.numero,
-                datas=base64.b64encode(tmpDanfe.getvalue()),
+                datas=base64.b64encode(tmp_danfe.getvalue()),
                 mimetype='application/pdf',
                 res_model='account.invoice',
                 res_id=self.invoice_id.id,
@@ -960,13 +962,13 @@ class InvoiceEletronic(models.Model):
         if mensagens_erro:
             raise UserError(mensagens_erro)
         nfe = objectify.fromstring(xml_enviar)
+        digest_value = nfe.\
+            NFe['{http://www.w3.org/2000/09/xmldsig#}Signature'].\
+            SignedInfo.Reference.DigestValue
         self.write({
-            'digest_value': nfe.
-                NFe['{http://www.w3.org/2000/09/xmldsig#}Signature'].
-                SignedInfo.Reference.DigestValue,
+            'digest_value': digest_value,
             'xml_to_send': base64.encodestring(
-                xml_enviar.encode('utf-8')
-            ),
+                xml_enviar.encode('utf-8')),
             'xml_to_send_name': 'nfse-enviar-%s.xml' % self.numero
         })
 
