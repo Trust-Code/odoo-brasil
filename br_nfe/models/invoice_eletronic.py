@@ -383,15 +383,20 @@ class InvoiceEletronic(models.Model):
         }
         if item.tipo_produto == 'service':
             retencoes = item.pis_valor_retencao + \
-                        item.cofins_valor_retencao + item.inss_valor_retencao + \
-                        item.irrf_valor_retencao + item.csll_valor_retencao
+                        item.cofins_valor_retencao + \
+                        item.inss_valor_retencao + \
+                        item.irrf_valor_retencao + \
+                        item.csll_valor_retencao
+            
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
                     'vAliq': "%.02f" % item.issqn_aliquota,
                     'vISSQN': "%.02f" % item.issqn_valor,
-                    'cMunFG': "%s%s" % (invoice.company_id.state_id.ibge_code,
-                                        invoice.company_id.city_id.ibge_code),
+                    'cMunFG': "%s%s" % (
+                        invoice.company_id.state_id.ibge_code,
+                        invoice.company_id.city_id.ibge_code
+                    ),
                     'cListServ': item.issqn_codigo,
                     'vDeducao': '',
                     'vOutro': "%.02f" % retencoes if retencoes else '',
@@ -478,7 +483,9 @@ class InvoiceEletronic(models.Model):
         }
         if int(self.tipo_emissao) != 1:
             ide['dhCont'] = dt_emissao
-            ide['xJust'] = 'Falha na transmissão devido a conexão do provedor de internet ou comunicação com a sefaz'
+            ide['xJust'] = u'Falha na transmissão devido a ' \
+                           u'conexão do provedor de internet ou ' \
+                           u'comunicação com a sefaz'
 
         # Documentos Relacionados
         documentos = []
@@ -681,10 +688,13 @@ class InvoiceEletronic(models.Model):
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'xNome': self.transportadora_id.legal_name or
-                         self.transportadora_id.name or '',
-                'IE': re.sub('[^0-9]', '',
-                             self.transportadora_id.inscr_est or ''),
+                'xNome':
+                    self.transportadora_id.legal_name or
+                    self.transportadora_id.name or '',
+                'IE': re.sub(
+                    '[^0-9]', '',
+                    self.transportadora_id.inscr_est or ''
+                ),
                 'xEnder': end_transp
                 if self.transportadora_id else '',
                 'xMun': self.transportadora_id.city_id.name or '',
@@ -737,7 +747,9 @@ class InvoiceEletronic(models.Model):
             'fat': {
                 'nFat': self.numero_fatura or '',
                 'vOrig': "%.02f" % (
-                        self.fatura_liquido + self.fatura_desconto),
+                    self.fatura_liquido +
+                    self.fatura_desconto
+                ),
                 'vDesc': "%.02f" % self.fatura_desconto,
                 'vLiq': "%.02f" % self.fatura_liquido,
             },
@@ -948,11 +960,15 @@ class InvoiceEletronic(models.Model):
         if mensagens_erro:
             raise UserError(mensagens_erro)
         nfe = objectify.fromstring(xml_enviar)
-        self.digest_value = nfe.NFe['{http://www.w3.org/2000/09/xmldsig#}Signature'].\
-            SignedInfo.Reference.DigestValue
-        self.xml_to_send = base64.encodestring(
-            xml_enviar.encode('utf-8'))
-        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+        self.write({
+            'digest_value': nfe.
+                NFe['{http://www.w3.org/2000/09/xmldsig#}Signature'].
+                SignedInfo.Reference.DigestValue,
+            'xml_to_send': base64.encodestring(
+                xml_enviar.encode('utf-8')
+            ),
+            'xml_to_send_name': 'nfse-enviar-%s.xml' % self.numero
+        })
 
     @api.multi
     def action_send_eletronic_invoice(self):
