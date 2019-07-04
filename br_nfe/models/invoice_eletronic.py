@@ -382,12 +382,9 @@ class InvoiceEletronic(models.Model):
             },
         }
         if item.tipo_produto == 'service':
-            retencoes = (
-                    item.pis_valor_retencao +
-                    item.cofins_valor_retencao +
-                    item.inss_valor_retencao +
-                    item.irrf_valor_retencao +
-                    item.csll_valor_retencao)
+            retencoes = item.pis_valor_retencao + item.csll_valor_retencao + \
+                        item.inss_valor_retencao + item.irrf_valor_retencao + \
+                        item.cofins_valor_retencao
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
@@ -780,7 +777,8 @@ class InvoiceEletronic(models.Model):
         if responsavel_tecnico:
             if len(responsavel_tecnico.child_ids) == 0:
                 raise UserError(
-                    "Adicione um contato para o responsável técnico!")
+                    _('Adicione um contato para o responsável técnico!')
+                )
 
             cnpj = re.sub(
                 '[^0-9]', '', responsavel_tecnico.cnpj_cpf)
