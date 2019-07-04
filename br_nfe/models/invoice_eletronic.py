@@ -383,8 +383,8 @@ class InvoiceEletronic(models.Model):
         }
         if item.tipo_produto == 'service':
             retencoes = item.pis_valor_retencao + item.csll_valor_retencao + \
-                        item.inss_valor_retencao + item.irrf_valor_retencao + \
-                        item.cofins_valor_retencao
+                    item.inss_valor_retencao + item.irrf_valor_retencao + \
+                    item.cofins_valor_retencao
             imposto.update({
                 'ISSQN': {
                     'vBC': "%.02f" % item.issqn_base_calculo,
