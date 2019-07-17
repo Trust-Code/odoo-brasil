@@ -315,7 +315,7 @@ class PaymentOrderLine(models.Model):
             'name': '/',
             'journal_id': order_line.journal_id.id,
             'company_id': order_line.journal_id.company_id.id,
-            'date': line.date_maturity,
+            'date': order_line.date_maturity,
             'ref': order_line.name,
         })
 
