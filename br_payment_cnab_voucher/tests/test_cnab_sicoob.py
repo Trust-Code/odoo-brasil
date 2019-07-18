@@ -55,6 +55,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'bra_number_dig': '0',
             'l10n_br_convenio_pagamento': '123458-8',  # 7 digitos
             'bank_id': sicoob.id,
+            'partner_id': self.main_company.partner_id.id,
         })
         journal = self.env['account.journal'].create({
             'name': 'Banco Sicoob',
