@@ -627,7 +627,8 @@ class InvoiceEletronicItem(models.Model):
         readonly=True, states=STATE)
 
     icms_pst = fields.Float(
-        string=u'% Aliquota ICMS consumidor final', digits=dp.get_precision('Account'),
+        string=u'% Aliquota ICMS consumidor final', 
+        digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
 
     icms_substituto = fields.Monetary(
