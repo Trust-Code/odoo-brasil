@@ -141,6 +141,10 @@ class AccountInvoice(models.Model):
             icms_st_aliquota_reducao_base,
             'icms_st_base_calculo': line.icms_st_base_calculo,
             'icms_st_valor': line.icms_st_valor,
+            'icms_pst': line.icms_pst,
+            'icms_substituto': line.icms_substituto,
+            'icms_st_retido': line.icms_st_retido,
+            'icms_st_base_retido': line.icms_st_base_retido,
             # - Simples Nacional -
             'icms_aliquota_credito': line.icms_aliquota_credito,
             'icms_valor_credito': line.icms_valor_credito,

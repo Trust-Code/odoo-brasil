@@ -266,7 +266,18 @@ class AccountInvoiceLine(models.Model):
     icms_st_base_calculo_manual = fields.Float(
         'Base ICMS ST Manual', digits=dp.get_precision('Account'),
         default=0.00)
-
+    icms_pst = fields.Float(
+        'ICMS alíquota consumidor', digits=dp.get_precision('Account'),
+        default=0.00)
+    icms_substituto = fields.Float(
+        'Valor ICMS substituto', digits=dp.get_precision('Account'),
+        default=0.00)
+    icms_st_retido = fields.Float(
+        'Valor ICMSST retido', digits=dp.get_precision('Account'),
+        default=0.00)
+    icms_st_base_retido = fields.Float(
+        'Valor base do ICMSST retido', digits=dp.get_precision('Account'),
+        default=0.00)
     # =========================================================================
     # ICMS Difal
     # =========================================================================

@@ -626,6 +626,23 @@ class InvoiceEletronicItem(models.Model):
         string=u'Valor Desonerado', digits=dp.get_precision('Account'),
         readonly=True, states=STATE)
 
+    icms_pst = fields.Float(
+        string=u'% Aliquota ICMS consumidor final',
+        digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+
+    icms_substituto = fields.Monetary(
+        string=u'Valor ICMS substituto', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+
+    icms_st_retido = fields.Monetary(
+        string=u'Valor ICMS retido', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+
+    icms_st_base_retido = fields.Monetary(
+        string=u'Valor ICMS base retido', digits=dp.get_precision('Account'),
+        readonly=True, states=STATE)
+
     # ----------- IPI -------------------
     ipi_cst = fields.Selection(CST_IPI, string=u'Situação tributária')
     ipi_aliquota = fields.Float(
