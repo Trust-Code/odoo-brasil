@@ -61,6 +61,7 @@ class InvoiceEletronic(models.Model):
         [('draft', u'Provisório'),
          ('edit', 'Editar'),
          ('error', 'Erro'),
+         ('contingencia', 'Contingência'),
          ('done', 'Enviado'),
          ('cancel', 'Cancelado')],
         string=u'State', default='draft', readonly=True, states=STATE,

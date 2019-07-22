@@ -823,53 +823,8 @@ class InvoiceEletronic(models.Model):
             vals['pag'][0]['tPag'] = self.metodo_pagamento
             vals['pag'][0]['vPag'] = "%.02f" % self.valor_pago
             vals['pag'][0]['vTroco'] = "%.02f" % self.troco or '0.00'
-
-            chave_nfe = self.chave_nfe
-            ambiente = 1 if self.ambiente == 'producao' else 2
-            estado = self.company_id.state_id.ibge_code
-
-            cid_token = int(self.company_id.id_token_csc)
-            csc = self.company_id.csc
-            if self.tipo_emissao == 1:
-                c_hash_qr_code = "{0}|2|{1}|{2}{3}".format(
-                    chave_nfe, ambiente, int(cid_token), csc)
-
-                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).\
-                    hexdigest()
-
-                qr_code_url = "p={0}|2|{1}|{2}|{3}".format(
-                    chave_nfe, ambiente, int(cid_token), c_hash_qr_code)
-                qr_code_server = url_qrcode(estado, str(ambiente))
-                vals['qrCode'] = qr_code_server + qr_code_url
-            else:
-                c_hash_qr_code = \
-                    "{ch_acesso}|{versao}|{tp_amb}|{dh_emi}|" \
-                    "{v_nf}|{dig_val}|{c_id_token}|{csc}".format(
-                        ch_acesso=chave_nfe,
-                        versao=2,
-                        tp_amb=ambiente,
-                        dh_emi=str(datetime.now().day).zfill(2),
-                        v_nf=self.valor_final,
-                        dig_val=self.digest_value,
-                        c_id_token=int(cid_token),
-                        csc=csc
-                    )
-                c_hash_qr_code = hashlib.sha1(c_hash_qr_code.encode()).\
-                    hexdigest()
-                qr_code_url = 'p={ch_acesso}|{versao}|{tp_amb}|{dh_emi}|" \
-                    "{v_nf}|{dig_val}|{c_id_token}|{c_hash_qr_code}'.format(
-                    ch_acesso=chave_nfe,
-                    versao=2,
-                    tp_amb=ambiente,
-                    dh_emi=str(datetime.now().day).zfill(2),
-                    v_nf=self.valor_final,
-                    dig_val=self.digest_value,
-                    c_id_token=int(cid_token),
-                    c_hash_qr_code=c_hash_qr_code
-                )
-                qr_code_server = url_qrcode(estado, str(ambiente))
-                vals['qrCode'] = qr_code_server + qr_code_url
-            vals['urlChave'] = url_qrcode_exibicao(estado, str(ambiente))
+            vals['id_csc'] = int(self.company_id.id_token_csc)
+            vals['csc'] = self.company_id.csc
         return vals
 
     @api.multi
@@ -951,24 +906,23 @@ class InvoiceEletronic(models.Model):
             cert_pfx, self.company_id.nfe_a1_password)
 
         nfe_values = self._prepare_eletronic_invoice_values()
-
         lote = self._prepare_lote(self.id, nfe_values)
-
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
-
-        mensagens_erro = valida_nfe(xml_enviar)
-        if mensagens_erro:
-            raise UserError(mensagens_erro)
         nfe = objectify.fromstring(xml_enviar)
-        digest_value = nfe.\
-            NFe['{http://www.w3.org/2000/09/xmldsig#}Signature'].\
-            SignedInfo.Reference.DigestValue
-        self.write({
-            'digest_value': digest_value,
+        data_write = {
             'xml_to_send': base64.encodestring(
                 xml_enviar.encode('utf-8')),
             'xml_to_send_name': 'nfse-enviar-%s.xml' % self.numero
-        })
+        }
+        if self.model == '65':
+            data_write['qrcode_hash'] = nfe.find(
+                './/{http://www.portalfiscal.inf.br/nfe}qrCode').text
+            data_write['qrcode_url'] = nfe.find(
+                './/{http://www.portalfiscal.inf.br/nfe}urlChave').text
+        mensagens_erro = valida_nfe(xml_enviar)
+        if mensagens_erro:
+            raise UserError(mensagens_erro)
+        self.write(data_write)
 
     @api.multi
     def action_send_eletronic_invoice(self):
