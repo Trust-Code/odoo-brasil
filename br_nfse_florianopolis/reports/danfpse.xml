@@ -28,12 +28,12 @@
     </record>
 
     <template id="danfpse_report_template">
-        <div class="page" style="font-size:12px;padding:5px;">
+        <div class="page" style="font-size:12px;padding:5px; min-width:1000px;">
             <style type="text/css">
-                .col-xs-1, .col-xs-2,
-                .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
-                .col-xs-8,
-                .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+                .col-1, .col-2,
+                .col-3,.col-4,.col-5, .col-6, .col-7,
+                .col-8,
+                .col-9, .col-10, .col-11, .col-12 {
                     padding:0px;
                 }
                 td, th { padding: 0 4px; }
@@ -51,7 +51,7 @@
                 span { margin: 6px 0px; }
             </style>
             <div class="row completa">
-                <div class="col-xs-6 br" style="padding:0px;text-align:center;">
+                <div class="col-sm-6 br" style="padding:0px;text-align:center;">
                     <div style="font-size:18px;">
                         <strong t-field="doc.company_id.legal_name" />
                         <br />
@@ -70,33 +70,33 @@
                         CMC: <span t-field="doc.company_id.inscr_mun"/>
                     </div>
                 </div>
-                <div class="col-xs-6" style="padding:0px;">
-                    <div class="col-xs-12" style="padding: 3px; text-align:center;font-size:16px">
+                <div class="col-sm-6" style="padding:0px;">
+                    <div class="col-12" style="padding: 3px; text-align:center;font-size:16px">
                         <strong>DANFPS-E</strong><br />
                     </div>
-                    <div class="col-xs-9">
+                    <div class="col-9">
                         <strong style="padding:5px">Documento Auxiliar de Prestação de Serviço Eletrônica</strong> <br />
                         <strong style="padding:5px">Número:</strong> <span t-field="doc.numero_nfse"/> <br />
                         <strong style="padding:5px">Autorização:</strong> <span t-field="doc.company_id.aedf"/> <br />
                         <strong style="padding:5px">Emissão:</strong> <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' /> <br />
                         <strong style="padding:5px">Código de Verificação:</strong> <span t-field="doc.verify_code"/> <br />
                     </div>
-                    <div class="col-xs-3 ">
+                    <div class="col-3 ">
                         <t t-raw="doc.qrcode_floripa_url()" />
                     </div>
                 </div>
             </div>
             <div class="row" style="margin-top: 10px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <span class="mini-titulo">Dados do Tomador</span>
                 </div>
             </div>
             <div class="row completa">
-                <div class="col-xs-9 br">
+                <div class="col-9 br">
                     <span class="mini-rotulo" style="padding:5px">Razão Social/Nome</span><br />
                     <span style="padding:5px" t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name" />
                 </div>
-                <div class="col-xs-3">
+                <div class="col-3">
                     <span class="mini-rotulo">CFPS</span><br />
                     <t t-set="cfps" t-value="9201" />
                     <t t-if="doc.company_id.city_id.id != doc.partner_id.city_id.id">
@@ -108,40 +108,40 @@
                     <span style="padding:5px" t-esc="cfps" />
                 </div>
             </div>
-            <div class="row compelta">
-                <div class="col-xs-6 br bl">
+            <div class="row">
+                <div class="col-6 br bl">
                     <span class="mini-rotulo">Endereço</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.street" />
                     <span t-field="doc.commercial_partner_id.number" />
                     <span t-field="doc.commercial_partner_id.street2" />
                 </div>
-                <div class="col-xs-3 br">
+                <div class="col-3 br">
                     <span class="mini-rotulo">Bairro/Distrito</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.district" />
                 </div>
-                <div class="col-xs-3 br">
+                <div class="col-3 br">
                     <span class="mini-rotulo">CEP</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.zip" />
                 </div>
             </div>
             <div class="row completa">
-                <div class="col-xs-3">
+                <div class="col-3">
                     <span class="mini-rotulo">Município</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.city_id" />
                 </div>
-                <div class="col-xs-1 bl">
+                <div class="col-1 bl">
                     <span class="mini-rotulo">UF</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.state_id.code" />
                 </div>
-                <div class="col-xs-3 row bl">
+                <div class="col-3 row bl">
                     <span class="mini-rotulo">País</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.country_id" />
                 </div>
-                <div class="col-xs-3 row bl">
+                <div class="col-3 row bl">
                     <span class="mini-rotulo">CNPJ/CPF</span><br />
                     <span style="padding:5px" t-field="doc.commercial_partner_id.cnpj_cpf" />
                 </div>
-                <div class="col-xs-2 row bl">
+                <div class="col-2 row bl">
                     <span class="mini-rotulo">CMC</span><br />
                     <t t-set="cmc" t-value="'000000000'" />
                     <t t-if="doc.commercial_partner_id.inscr_mun">
@@ -151,11 +151,11 @@
                 </div>
             </div>
             <div class="row" style="margin-top: 10px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <span class="mini-titulo">Dados do(s) serviço(s)</span>
                 </div>
             </div>
-            <div class="row completa" style="min-height:700px;">
+            <div class="row completa" style="min-height:550px;">
                 <table class="table table-bordered table-condensed">
                     <thead>
                         <tr>
@@ -201,33 +201,33 @@
             </div>
 
             <div class="row" style="margin-top: 10px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <span class="mini-titulo">Cálculo do Imposto</span>
                 </div>
             </div>
 
              <div class="row" style="border: 1px solid black; padding: 0px;">
-                <div class="col-xs-3" style="text-align:center;border-right: 1px solid black;">
+                <div class="col-3" style="text-align:center;border-right: 1px solid black;">
                     Base de Cálculo de ISSQN:
                     <br />
                     <strong>R$ 0,00</strong>
                 </div>
-                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                <div class="col-2" style="text-align:center;border-right: 1px solid black;">
                     Valor do ISSQN:
                     <br />
                     <strong>R$ 0,00</strong>
                 </div>
-                <div class="col-xs-3" style="text-align:center;border-right: 1px solid black;">
+                <div class="col-3" style="text-align:center;border-right: 1px solid black;">
                     Base de Cálculo de ISSQN Subst.:
                     <br />
                     <strong>R$ 0,00</strong>
                 </div>
-                <div class="col-xs-2" style="text-align:center;border-right: 1px solid black;">
+                <div class="col-2" style="text-align:center;border-right: 1px solid black;">
                     Valor do ISSQN Subst.:
                     <br />
                     <strong>R$ 0,00</strong>
                 </div>
-                <div class="col-xs-2" style="text-align:center;">
+                <div class="col-2" style="text-align:center;">
                     Valor total dos Serviços:
                     <br />
                     <strong t-field="doc.valor_final"
@@ -236,11 +236,11 @@
             </div>
 
             <div class="row" style="margin-top: 10px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <span class="mini-titulo">Dados adicionais</span>
                 </div>
             </div>
-            <div class="row completa" style="min-height:50px;">
+            <div class="row completa" style="min-height:100px;">
                 <span style="padding:2px;font-size:10px" t-field="doc.informacoes_legais"></span>
                 <t t-if="doc.informacoes_legais">
                     <br />
@@ -248,7 +248,7 @@
                 <span style="padding:5px" t-field="doc.informacoes_complementares"></span>
             </div>
             <div class="row completa" style="margin-top: 10px;">
-                <div class="col-xs-6" style="font-size:9px;padding: 5px;">
+                <div class="col-6" style="font-size:9px;padding: 5px;">
                     <p>
                         DANFPS-E: DOCUMENTO AUXILIAR DA NOTA FISCAL DE PRESTAÇÃO DE SERVIÇOES ELETRÔNICA <br />
                         SIGNITÁRIO: MUNICÍPIO DE FLORIANÓPOLIS <br />
@@ -256,7 +256,7 @@
                         DATA DO CARIMBO: <span t-field="doc.data_emissao" />
                     </p>
                 </div>
-                <div class="col-xs-6 bl" style="font-size:7px;padding:5px;">
+                <div class="col-6 bl" style="font-size:7px;padding:5px;">
                     <p>
                         A VALIDADE E AUTENTICIDADE DESTE DOCUMENTO AUXILIAR DA NOTA FISCAL DE PRESTAÇÃO DE SERVIÇO ELETRÔNICA <br />
                         PODERÃO SER COMPROVADAS MEDIANTE CONSULTA À PÁGINA DA SECRETARIA MUNICIPAL DA FAZENDA -SMF NA <br />
@@ -270,11 +270,11 @@
     </template>
 
     <template id="main_template_br_nfse_danfpse">
-        <div class="article">
+        <t t-call="web.basic_layout">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="br_nfse_florianopolis.danfpse_report_template" t-lang="doc.partner_id.lang"/>
             </t>
-        </div>
+        </t>
     </template>
 
 
