@@ -5,6 +5,7 @@
 import re
 import pytz
 import base64
+import hashlib
 import logging
 from lxml import etree
 from StringIO import StringIO
@@ -655,6 +656,24 @@ class InvoiceEletronic(models.Model):
             'xPed': self.pedido_compra or '',
             'xCont': self.contrato_compra or '',
         }
+        responsavel_tecnico = self.company_id.responsavel_tecnico_id
+        infRespTec = {}
+
+        if responsavel_tecnico:
+            if len(responsavel_tecnico.child_ids) == 0:
+                raise UserError(
+                    "Adicione um contato para o responsável técnico!")
+
+            cnpj = re.sub('[^0-9]', '', responsavel_tecnico.cnpj_cpf)
+            fone = re.sub('[^0-9]', '', responsavel_tecnico.phone)
+            infRespTec = {
+                'CNPJ': cnpj or '',
+                'xContato': responsavel_tecnico.child_ids[0].name or '',
+                'email': responsavel_tecnico.email or '',
+                'fone': fone or '',
+                'idCSRT': self.company_id.id_token_csrt or '',
+                'hashCSRT': self._get_hash_csrt() or '',
+            }
         vals = {
             'Id': '',
             'ide': ide,
@@ -668,6 +687,7 @@ class InvoiceEletronic(models.Model):
             'infAdic': infAdic,
             'exporta': exporta,
             'compra': compras,
+            'infRespTec': infRespTec,
         }
         if len(duplicatas) > 0 and\
                 self.fiscal_position_id.finalidade_emissao != u'4':
@@ -675,6 +695,19 @@ class InvoiceEletronic(models.Model):
             pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final
         return vals
+
+    def _get_hash_csrt(self):
+        chave_nfe = self.chave_nfe
+        csrt = self.company_id.csrt
+
+        if not csrt:
+            return
+
+        hash_csrt = "{0}{1}".format(csrt, chave_nfe)
+        hash_csrt = base64.b64encode(
+            hashlib.sha1(hash_csrt.encode()).digest())
+
+        return hash_csrt.decode("utf-8")
 
     @api.multi
     def _prepare_lote(self, lote, nfe_values):
