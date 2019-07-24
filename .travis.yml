@@ -5,6 +5,9 @@ python:
 
 cache: pip
 
+services:
+  - postgresql
+
 addons:
   apt:
     packages:

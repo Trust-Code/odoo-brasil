@@ -5,10 +5,29 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="br_base.view_company_form_inherited"/>
         <field name="arch" type="xml">
-            <field name="nfe_a1_password" position="after" >
-                <field name="tipo_ambiente" />
-                <field name="cabecalho_danfe" />
-            </field>
+            <notebook position="inside">
+                <page name="nfe_nfce" string="NF-e/NFC-e">
+                    <group>
+                        <group name="nfce" string="NFC-e">
+                            <field name="id_token_csc" />
+                            <field name="csc" />
+                        </group>
+                        <group name="nfe" string="NF-e">
+                            <field name="cabecalho_danfe" />
+                        </group>
+                    </group>
+                    <group name="general" string="Geral">
+                        <group name="envio" string="Envio">
+                            <field name="tipo_ambiente" />
+                        </group>
+                        <group name="csrt" string="Responsável Técnico">
+                            <field name="responsavel_tecnico_id"/>
+                            <field name="id_token_csrt" string="Identificador do CRST"/>
+                            <field name="csrt" string="CRST"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
         </field>
     </record>
 </odoo>
