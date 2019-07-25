@@ -149,7 +149,7 @@ class PaymentOrderLine(models.Model):
                 raise UserError(
                     _('Configure a conta de tarifas bancárias'))
             aml_tarifa = {
-                'name': 'Tarifas bancárias (boleto)',
+                'name': 'Tarifas bancárias',
                 'move_id': move.id,
                 'partner_id': self.partner_id.id,
                 'debit': 0.0,
@@ -157,6 +157,7 @@ class PaymentOrderLine(models.Model):
                 'currency_id': self.currency_id.id,
                 'account_id': self.journal_id.default_debit_account_id.id,
             }
+            aml_obj.create(aml_tarifa)
             ext_line = {
                 'name': 'Tarifas bancárias (boleto)',
                 'move_id': move.id,
