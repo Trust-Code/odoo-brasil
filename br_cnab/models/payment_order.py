@@ -122,7 +122,7 @@ class PaymentOrderLine(models.Model):
             'partner_id': self.partner_id.id,
             'debit': float(
                 cnab_vals['valor_titulo'] + cnab_vals['titulo_acrescimos'] -
-                cnab_vals['titulo_desconto'] - cnab_vals['valor_tarifas']
+                cnab_vals['titulo_desconto']
                 ),
             'credit': 0.0,
             'currency_id': self.currency_id.id,
@@ -148,6 +148,15 @@ class PaymentOrderLine(models.Model):
             if not account_id:
                 raise UserError(
                     _('Configure a conta de tarifas bancárias'))
+            aml_tarifa = {
+                'name': 'Tarifas bancárias (boleto)',
+                'move_id': move.id,
+                'partner_id': self.partner_id.id,
+                'debit': 0.0,
+                'credit': float(cnab_vals['valor_tarifas']),
+                'currency_id': self.currency_id.id,
+                'account_id': self.journal_id.default_debit_account_id.id,
+            }
             ext_line = {
                 'name': 'Tarifas bancárias (boleto)',
                 'move_id': move.id,
