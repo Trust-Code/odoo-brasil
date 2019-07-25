@@ -10,7 +10,8 @@ class AccountInvoiceLine(models.Model):
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
         lines = self.invoice_id.invoice_line_ids
-        amount_total = sum((l.quantity * l.price_unit) + l.price_tax - l.valor_desconto
+        amount_total = sum((l.quantity * l.price_unit) +
+                           l.price_tax - l.valor_desconto
                            for l in lines)
         amount = (amount_total
                   + self.quantity * self.price_unit)
