@@ -11,7 +11,8 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pycnab240.file import File
-    from pycnab240.utils import get_operation
+    from pycnab240.utils import decode_digitable_line, get_operation
+    from pycnab240.errors import DvNotValidError
 except ImportError:
     _logger.error('Cannot import pycnab240', exc_info=True)
 
@@ -223,6 +224,13 @@ class Cnab240(object):
             "cedente_uf": self._order.company_id.state_id.code,
         }
         return header_lot
+
+    def _get_barcode_from_digitable_line(self, digitable_line):
+        try:
+            return decode_digitable_line(digitable_line).get('barcode')
+        except DvNotValidError:
+            raise UserError(_("DV do código de Barras não confere!"))
+
 
     def get_operation(self, line):
         bank_origin = line.src_bank_account_id.bank_id.bic
