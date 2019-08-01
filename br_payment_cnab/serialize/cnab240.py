@@ -12,7 +12,6 @@ _logger = logging.getLogger(__name__)
 try:
     from pycnab240.file import File
     from pycnab240.utils import decode_digitable_line, get_operation
-    from pycnab240.errors import DvNotValidError
 except ImportError:
     _logger.error('Cannot import pycnab240', exc_info=True)
 
@@ -144,7 +143,7 @@ class Cnab240(object):
             "valor_multa_juros": self._float_to_monetary(
                 line.interest_value + line.fine_value),
             "codigo_moeda": int(information_id.currency_code),
-            "codigo_de_barras": line.invoice_id.l10n_br_barcode,
+            "codigo_de_barras": self._string_to_num(line.barcode),
             "codigo_de_barras_alfa": line.barcode or '',
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
@@ -226,10 +225,7 @@ class Cnab240(object):
         return header_lot
 
     def _get_barcode_from_digitable_line(self, digitable_line):
-        try:
-            return decode_digitable_line(digitable_line).get('barcode')
-        except DvNotValidError:
-            raise UserError(_("DV do código de Barras não confere!"))
+        return decode_digitable_line(digitable_line).get('barcode')
 
 
     def get_operation(self, line):

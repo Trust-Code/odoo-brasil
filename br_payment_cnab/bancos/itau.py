@@ -75,6 +75,11 @@ class Itau240(Cnab240):
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
+        if line.barcode:
+            segmento.update({
+                "codigo_de_barras": self._get_barcode_from_digitable_line(
+                    line.barcode)
+            )}
         segmento.update({
             'numero_parcela': int(segmento.get('numero_parcela')[:13]),
             'divida_ativa_etiqueta': int(
