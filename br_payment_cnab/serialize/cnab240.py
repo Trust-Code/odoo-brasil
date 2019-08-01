@@ -143,7 +143,7 @@ class Cnab240(object):
             "valor_multa_juros": self._float_to_monetary(
                 line.interest_value + line.fine_value),
             "codigo_moeda": int(information_id.currency_code),
-            "codigo_de_barras": self._string_to_num(line.barcode),
+            "codigo_de_barras": line.l10n_br_barcode,
             "codigo_de_barras_alfa": line.barcode or '',
             # TODO Esse campo deve ser obtido a partir do payment_mode_id
             "nome_concessionaria":
