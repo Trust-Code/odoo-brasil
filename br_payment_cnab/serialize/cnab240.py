@@ -227,7 +227,6 @@ class Cnab240(object):
     def _get_barcode_from_digitable_line(self, digitable_line):
         return decode_digitable_line(digitable_line).get('barcode')
 
-
     def get_operation(self, line):
         bank_origin = line.src_bank_account_id.bank_id.bic
         bank_dest = line.bank_account_id.bank_id.bic
