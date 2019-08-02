@@ -51,38 +51,40 @@
                 span { margin: 6px 0px; }
             </style>
             <div class="row completa">
-                <div class="col-sm-6 br" style="padding:0px;text-align:center;">
+                <div class="col-6 br" style="padding:0px;text-align:center;">
                     <div style="font-size:18px;">
-                        <strong t-field="doc.company_id.legal_name" />
-                        <br />
-                    <br />
+                        <strong t-field="doc.company_id.legal_name"/>
+                        <br/>
+                    <br/>
                     </div>
                     <div style="font-size:12px;">
-                        <span t-field="doc.company_id.street" />
-                        <span t-field="doc.company_id.number" />
-                        <span t-field="doc.company_id.district" />
-                        CEP: <span t-field="doc.company_id.zip" />
-                        <br />
-                        Telefone: <span t-field="doc.company_id.phone" />
-                        <br />
-                        CNPJ: <span t-field="doc.company_id.cnpj_cpf" />
-                        <br />
+                        <span t-field="doc.company_id.street"/>
+                        <span t-field="doc.company_id.number"/>
+                        <span t-field="doc.company_id.district"/>
+                        CEP: <span t-field="doc.company_id.zip"/>
+                        <br/>
+                        Telefone: <span t-field="doc.company_id.phone"/>
+                        <br/>
+                        CNPJ: <span t-field="doc.company_id.cnpj_cpf"/>
+                        <br/>
                         CMC: <span t-field="doc.company_id.inscr_mun"/>
                     </div>
                 </div>
-                <div class="col-sm-6" style="padding:0px;">
+                <div class="col-6" style="padding:0px;">
                     <div class="col-12" style="padding: 3px; text-align:center;font-size:16px">
-                        <strong>DANFPS-E</strong><br />
+                        <strong>DANFPS-E</strong><br/>
                     </div>
-                    <div class="col-9">
-                        <strong style="padding:5px">Documento Auxiliar de Prestação de Serviço Eletrônica</strong> <br />
-                        <strong style="padding:5px">Número:</strong> <span t-field="doc.numero_nfse"/> <br />
-                        <strong style="padding:5px">Autorização:</strong> <span t-field="doc.company_id.aedf"/> <br />
-                        <strong style="padding:5px">Emissão:</strong> <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' /> <br />
-                        <strong style="padding:5px">Código de Verificação:</strong> <span t-field="doc.verify_code"/> <br />
-                    </div>
-                    <div class="col-3 ">
-                        <t t-raw="doc.qrcode_floripa_url()" />
+                    <div class="row" style="margin: 0px;">
+                        <div class="col-10">
+                            <strong style="padding:5px">Documento Auxiliar de Prestação de Serviço Eletrônica</strong> <br/>
+                            <strong style="padding:5px">Número:</strong> <span t-field="doc.numero_nfse"/> <br/>
+                            <strong style="padding:5px">Autorização:</strong> <span t-field="doc.company_id.aedf"/> <br/>
+                            <strong style="padding:5px">Emissão:</strong> <span t-field="doc.data_emissao" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/> <br/>
+                            <strong style="padding:5px">Código de Verificação:</strong> <span t-field="doc.verify_code"/> <br/>
+                        </div>
+                        <div class="col-2 ">
+                            <t t-raw="doc.qrcode_floripa_url()"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -240,7 +242,7 @@
                     <span class="mini-titulo">Dados adicionais</span>
                 </div>
             </div>
-            <div class="row completa" style="min-height:100px;">
+            <div class="row completa" style="min-height:200px;">
                 <span style="padding:2px;font-size:10px" t-field="doc.informacoes_legais"></span>
                 <t t-if="doc.informacoes_legais">
                     <br />
