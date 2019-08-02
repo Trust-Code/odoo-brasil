@@ -536,8 +536,15 @@ class InvoiceEletronic(models.Model):
         atts = self._find_attachment_ids_email()
         _logger.info('Sending e-mail for e-doc %s (number: %s)' % (
             self.id, self.numero))
-        self.invoice_id.message_post_with_template(
-            mail.id, attachment_ids=[(6, 0, atts + mail.attachment_ids.ids)])
+
+        values = mail.generate_email([self.invoice_id.id])[self.invoice_id.id]
+        subject = values.pop('subject')
+        values.pop('body')
+        values.pop('attachment_ids')
+        self.invoice_id.message_post(
+            body=values['body_html'], subject=subject,
+            message_type='email', subtype='mt_comment',
+            attachment_ids=atts + mail.attachment_ids.ids, **values)
 
     @api.multi
     def send_email_nfe_queue(self):
