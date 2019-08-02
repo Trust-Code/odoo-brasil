@@ -74,15 +74,15 @@
                     <div class="col-12" style="padding: 3px; text-align:center;font-size:16px">
                         <strong>DANFPS-E</strong><br/>
                     </div>
-                    <div class="row" style="margin: 0px;">
-                        <div class="col-10">
+                    <div class="row" style="margin: 2px;">
+                        <div class="col-9">
                             <strong style="padding:5px">Documento Auxiliar de Prestação de Serviço Eletrônica</strong> <br/>
                             <strong style="padding:5px">Número:</strong> <span t-field="doc.numero_nfse"/> <br/>
                             <strong style="padding:5px">Autorização:</strong> <span t-field="doc.company_id.aedf"/> <br/>
                             <strong style="padding:5px">Emissão:</strong> <span t-field="doc.data_emissao" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/> <br/>
                             <strong style="padding:5px">Código de Verificação:</strong> <span t-field="doc.verify_code"/> <br/>
                         </div>
-                        <div class="col-2 ">
+                        <div class="col-3 ">
                             <t t-raw="doc.qrcode_floripa_url()"/>
                         </div>
                     </div>
@@ -253,8 +253,8 @@
                 <div class="col-6" style="font-size:9px;padding: 5px;">
                     <p>
                         DANFPS-E: DOCUMENTO AUXILIAR DA NOTA FISCAL DE PRESTAÇÃO DE SERVIÇOES ELETRÔNICA <br />
-                        SIGNITÁRIO: MUNICÍPIO DE FLORIANÓPOLIS <br />
-                        CAARIMBO DO TEMPO: PREFEITURA MUNICIPAL DE FLORIANÓPOLIS <br />
+                        SIGNATÁRIO: MUNICÍPIO DE FLORIANÓPOLIS <br />
+                        CARIMBO DO TEMPO: PREFEITURA MUNICIPAL DE FLORIANÓPOLIS <br />
                         DATA DO CARIMBO: <span t-field="doc.data_emissao" />
                     </p>
                 </div>
