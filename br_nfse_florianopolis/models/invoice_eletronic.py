@@ -184,8 +184,11 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_processar_nota(certificado, rps=nfse_values)
 
-        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
-        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+        # SUDO Because Odoo added a strange condition (possible bug)
+        self.sudo().write({
+            'xml_to_send': base64.encodestring(xml_enviar.encode('utf-8')),
+            'xml_to_send_name': 'nfse-enviar-%s.xml' % self.numero,
+        })
 
     @api.multi
     def action_send_eletronic_invoice(self):

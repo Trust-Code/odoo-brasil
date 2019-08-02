@@ -903,9 +903,10 @@ class InvoiceEletronic(models.Model):
         if mensagens_erro:
             raise UserError(mensagens_erro)
 
-        self.xml_to_send = base64.encodestring(
-            xml_enviar.encode('utf-8'))
-        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+        self.sudo().write({
+            'xml_to_send': base64.encodestring(xml_enviar.encode('utf-8')),
+            'xml_to_send_name': 'nfe-enviar-%s.xml' % self.numero,
+        })
 
     @api.multi
     def action_send_eletronic_invoice(self):
@@ -1002,7 +1003,7 @@ class InvoiceEletronic(models.Model):
 
         if self.codigo_retorno == '100':
             nfe_proc = gerar_nfeproc(resposta['sent_xml'], recibo_xml)
-            self.write({
+            self.sudo().write({
                 'nfe_processada': base64.encodestring(nfe_proc),
                 'nfe_processada_name': "NFe%08d.xml" % self.numero,
             })
@@ -1030,8 +1031,10 @@ class InvoiceEletronic(models.Model):
                     base64.decodestring(nfe_envio.datas).decode('utf-8'),
                     base64.decodestring(recibo.datas).decode('utf-8'),
                 )
-                self.nfe_processada = base64.encodestring(nfe_proc)
-                self.nfe_processada_name = "NFe%08d.xml" % self.numero
+                self.sudo().write({
+                    'nfe_processada': base64.encodestring(nfe_proc),
+                    'nfe_processada_name': "NFe%08d.xml" % self.numero,
+                })
         else:
             raise UserError(_('A NFe não está validada'))
 
@@ -1159,7 +1162,9 @@ class InvoiceEletronic(models.Model):
             nfe_proc_cancel = gerar_nfeproc_cancel(
                 nfe_processada, resp['received_xml'].encode())
             if nfe_proc_cancel:
-                self.nfe_processada = base64.encodestring(nfe_proc_cancel)
+                self.sudo().write({
+                    'nfe_processada': base64.encodestring(nfe_proc_cancel),
+                })
         else:
             message = "%s - %s" % (retorno_consulta.cStat,
                                    retorno_consulta.xMotivo)
