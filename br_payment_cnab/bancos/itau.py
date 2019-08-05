@@ -98,7 +98,8 @@ class Itau240(Cnab240):
                 segmento.get('favorecido_agencia'), 0),
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
-            'favorecido_banco': int(line.bank_account_id.bank_id.bic),
+            'favorecido_banco': int(line.bank_account_id.bank_id.bic) or
+                line.barcode[:3],
             'finalidade_ted': get_ted_doc_finality(
                 'itau', segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
@@ -106,9 +107,17 @@ class Itau240(Cnab240):
             'codigo_receita_tributo': int(
                 segmento.get('codigo_receita_tributo') or 0),
             'vazio_dac': vazio,
-            'dac': dac
+            'dac': dac,
+            'codigo_de_barras_dv': self.get_dv_digitable_line(
+                line.linha_digitavel)
         })
         return segmento
+
+    def get_dv_digitable_line(self, linha_digitavel):
+        if len(digitable_line) == 47:
+            return linha_digitavel[4]
+        elif len(digitable_line) == 48:
+            return linha_digitavel[3] # confirmar info
 
     # NOTA 11 do manual: se houverem dois digitos no dac da agencia/conta
     # o campo 42 (inicialmente vazio) deve ser utilizado
