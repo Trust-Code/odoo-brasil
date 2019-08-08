@@ -155,7 +155,7 @@ class AccountInvoice(models.Model):
             <p>This invoice was created by group rule named %s and
                 grouped this invoices: %s
             </p>""" % (inv['rule'], msg_ids))
-        gr_invoice_id.message_post(new_msg)
+        gr_invoice_id.message_post(body=new_msg)
         return gr_invoice_id
 
     def _get_fpos_journal(self, inv):
