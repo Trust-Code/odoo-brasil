@@ -757,15 +757,13 @@ class InvoiceEletronic(models.Model):
                 raise UserError(
                     "Adicione um contato para o responsável técnico!")
 
-            cnpj = re.sub(
-                '[^0-9]', '', responsavel_tecnico.cnpj_cpf)
-            fone = re.sub(
-                '[^0-9]', '', responsavel_tecnico.phone)
+            cnpj = re.sub('[^0-9]', '', responsavel_tecnico.cnpj_cpf)
+            fone = re.sub('[^0-9]', '', responsavel_tecnico.phone or '')
             infRespTec = {
                 'CNPJ': cnpj or '',
                 'xContato': responsavel_tecnico.child_ids[0].name or '',
                 'email': responsavel_tecnico.email or '',
-                'fone': fone or '',
+                'fone': fone,
                 'idCSRT': self.company_id.id_token_csrt or '',
                 'hashCSRT': self._get_hash_csrt() or '',
             }

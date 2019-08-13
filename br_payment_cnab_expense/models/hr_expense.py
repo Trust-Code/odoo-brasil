@@ -29,7 +29,7 @@ class HrExpenseSheet(models.Model):
     @api.onchange('employee_id')
     def _onchange_payment_cnab_employee_id(self):
         if self.employee_id:
-            self.bank_account_id = self.employee_id.bank_account_id.id
+            self.bank_account_id = self.sudo().employee_id.bank_account_id.id
 
     def _prepare_payment_order_vals(self):
         address_account_id = self.address_id.property_account_payable_id
