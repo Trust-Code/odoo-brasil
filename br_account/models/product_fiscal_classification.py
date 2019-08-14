@@ -46,6 +46,9 @@ class ProductFiscalClassification(models.Model):
     icms_st_aliquota_mva = fields.Float(
         'MVA Ajustado ST',
         digits=dp.get_precision('Discount'), default=0.00)
+    ativo = fields.Boolean(
+        string="NCM Ativo",
+        default=True)
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
