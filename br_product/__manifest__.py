@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'product', 'br_base',
+        'product', 'br_base', 'account',
     ],
     'data': [
         'views/product_pricelist.xml',

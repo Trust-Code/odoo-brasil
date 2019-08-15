@@ -32,7 +32,7 @@ odoo.define('br_website_sale.address', function (require) {
             var vals = {country_id: $(this).val()};
             ajax.jsonRpc("/shop/get_states", 'call', vals)
                 .then(function (data) {
-                    var selected = $('#input_state_id').val();
+                    var selected = parseInt($('#input_state_id').val());
                     $('#select_state_id').find('option').remove().end();
                     $('#select_state_id').append(
                         '<option value="">Estado...</option>');
@@ -53,7 +53,7 @@ odoo.define('br_website_sale.address', function (require) {
             var vals = { state_id: $(this).val() };
             ajax.jsonRpc("/shop/get_cities", 'call', vals)
                 .then(function (data) {
-                    var selected = $('#input_city_id').val();
+                    var selected = parseInt($('#input_city_id').val());
                     $('#select_city_id').find('option').remove().end();
                     $('#select_city_id').append(
                         '<option value="">Cidade...</option>');
@@ -72,13 +72,13 @@ odoo.define('br_website_sale.address', function (require) {
             ajax.jsonRpc("/shop/zip_search", 'call', vals)
                 .then(function(data) {
                     if (data.sucesso) {
+                        $('#input_state_id').val(data.state_id);
+                        $('#input_city_id').val(data.city_id);
                         $('input[name="district"]').val(data.district);
                         $('input[name="street"]').val(data.street);
                         $('select[name="country_id"]').val(data.country_id);
                         $('select[name="country_id"]').change();
                         $('select[name="state_id"]').val(data.state_id);
-                        $('#input_state_id').val(data.state_id);
-                        $('#input_city_id').val(data.city_id);
                     } else {
                         alert('Nenhum cep encontrado');
                     }
