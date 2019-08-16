@@ -105,7 +105,7 @@ class Itau240(Cnab240):
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
             'favorecido_banco': int(line.bank_account_id.bank_id.bic) or
-                line.barcode[:3],
+                int(line.barcode[:3]),
             'finalidade_ted': get_ted_doc_finality(
                 'itau', segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
