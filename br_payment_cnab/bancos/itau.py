@@ -79,7 +79,7 @@ class Itau240(Cnab240):
             segmento.update({
                 'codigo_de_barras': int(line.barcode[20:]),
                 'codigo_de_barras_dv': self.get_dv_digitable_line(
-                    line.linha_digitavel)
+                    self._just_numbers(line.linha_digitavel))
             })
         segmento.update({
             'numero_parcela': int(segmento.get('numero_parcela')[:13]),
