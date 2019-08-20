@@ -119,9 +119,9 @@ class Itau240(Cnab240):
 
     def get_dv_digitable_line(self, linha_digitavel):
         if len(linha_digitavel) == 47:
-            return linha_digitavel[4]
+            return int(linha_digitavel[4])
         elif len(linha_digitavel) == 48:
-            return linha_digitavel[3]  # confirmar info
+            return int(linha_digitavel[3])  # confirmar info
 
     # NOTA 11 do manual: se houverem dois digitos no dac da agencia/conta
     # o campo 42 (inicialmente vazio) deve ser utilizado
