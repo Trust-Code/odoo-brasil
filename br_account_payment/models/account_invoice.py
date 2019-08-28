@@ -23,3 +23,14 @@ class AccountInvoice(models.Model):
             line = invoice_line[2]
             line['payment_mode_id'] = self.payment_mode_id.id
         return res
+
+    @api.multi
+    def register_payment(self, payment_line, writeoff_acc_id=False, writeoff_journal_id=False):
+        if self._context.get('move_line_to_reconcile'):
+            line_to_reconcile = self._context.get('move_line_to_reconcile')
+            return (line_to_reconcile + payment_line).reconcile(
+                writeoff_acc_id, writeoff_journal_id)
+        else:
+            return super(AccountInvoice, self).register_payment(
+                self, payment_line, writeoff_acc_id=writeoff_acc_id,
+                writeoff_journal_id=writeoff_journal_id)
