@@ -155,7 +155,7 @@ class InvoiceEletronic(models.Model):
                 'inscricao_municipal': prestador['inscricao_municipal'],
                 'cnpj_prestador': prestador['cnpj'],
                 'lista_rps': [rps],
-                'senha': self.company_id.senha_ambiente_nfse
+                'senha': self.company_id.senha_nfse_simpliss
             }
 
             res.update(nfse_vals)
