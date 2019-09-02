@@ -66,9 +66,8 @@ to process a single invoice's payment."))
             invoices=invoices, currency=currency)
         return self.move_line_id.debit or self.move_line_id.credit
 
-
     def _create_payment_entry(self, amount):
-        """ Create a journal entry corresponding to a 
+        """ Create a journal entry corresponding to a
             payment, if the payment references invoice(s)
             they are reconciled.
             Return the journal entry.
@@ -97,7 +96,7 @@ to process a single invoice's payment."))
             debit_wo, credit_wo, amount_currency_wo, currency_id = \
                 aml_obj.with_context(
                     date=self.payment_date)._compute_amount_fields(
-                    self.payment_difference, 
+                    self.payment_difference,
                     self.currency_id,
                     self.company_id.currency_id)
             writeoff_line['name'] = self.writeoff_label
@@ -108,7 +107,7 @@ to process a single invoice's payment."))
             writeoff_line['currency_id'] = currency_id
             writeoff_line = aml_obj.create(writeoff_line)
             if counterpart_aml['debit'] or (
-                    writeoff_line['credit'] and not \
+                    writeoff_line['credit'] and not
                     counterpart_aml['credit']):
                 counterpart_aml['debit'] += credit_wo - debit_wo
             if counterpart_aml['credit'] or (
@@ -135,7 +134,7 @@ to process a single invoice's payment."))
             if self.move_line_id:
                 self.invoice_ids.with_context(
                     move_line_to_reconcile=self.move_line_id).\
-                        register_payment(counterpart_aml)
+                    register_payment(counterpart_aml)
             else:
                 self.invoice_ids.register_payment(counterpart_aml)
         return move

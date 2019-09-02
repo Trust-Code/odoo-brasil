@@ -25,7 +25,8 @@ class AccountInvoice(models.Model):
         return res
 
     @api.multi
-    def register_payment(self, payment_line, writeoff_acc_id=False, writeoff_journal_id=False):
+    def register_payment(self, payment_line, 
+                         writeoff_acc_id=False, writeoff_journal_id=False):
         if self._context.get('move_line_to_reconcile'):
             line_to_reconcile = self._context.get('move_line_to_reconcile')
             return (line_to_reconcile + payment_line).reconcile(
