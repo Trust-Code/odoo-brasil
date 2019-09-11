@@ -44,24 +44,24 @@
                         <table class="table table-condensed table-bordered table-striped">
                             <thead class="bg-primary">
                                 <tr>
-                                    <th style="color:white;">Description</th>
-                                    <th style="color:white;">Partner</th>
-                                    <th style="color:white;" class="text-right">Date</th>
-                                    <th style="color:white;" class="text-right">A Receber</th>
-                                    <th style="color:white;" class="text-right">A pagar</th>
-                                    <th style="color:white;" class="text-right">Saldo da linha</th>
-                                    <th style="color:white;" class="text-right">Accumulated balance</th>
+                                    <th style="color:white;width: 150px;" class="text-center">Description</th>
+                                    <th style="color:white;" class="text-center">Partner</th>
+                                    <th style="color:white;width: 100px;" class="text-center">Date</th>
+                                    <th style="color:white;width: 100px;" class="text-center">A Receber</th>
+                                    <th style="color:white;width: 100px;" class="text-center">A pagar</th>
+                                    <th style="color:white;width: 100px;" class="text-center">Saldo da linha</th>
+                                    <th style="color:white;width: 130px;" class="th_accumulated text-center">Accumulated balance</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="docs[0].line_ids.filtered(lambda x: not x.liquidity)" t-as="o">
                                     <td><span t-field="o.name" /></td>
                                     <td><span t-field="o.partner_id" /></td>
-                                    <td><span t-field="o.date" /></td>
-                                    <td><span t-field="o.credit" /></td>
-                                    <td><span t-field="o.debit" /></td>
-                                    <td><span t-field="o.amount" /></td>
-                                    <td><span t-field="o.balance" /></td>
+                                    <td class="text-center"><span t-field="o.date" /></td>
+                                    <td class="text-right"><span t-field="o.credit" /></td>
+                                    <td class="text-right"><span t-field="o.debit" /></td>
+                                    <td class="text-right"><span t-field="o.amount" /></td>
+                                    <td class="td_accumulated text-right"><span t-field="o.balance" /></td>
                                 </tr>
                             </tbody>
                         </table>

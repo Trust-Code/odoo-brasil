@@ -37,6 +37,7 @@ class CashFlowReport(models.TransientModel):
             item.final_amount = balance
 
     ignore_outstanding = fields.Boolean(string="Ignorar Vencidos?")
+    account_ids = fields.Many2many('account.account', string="Filtrar Contas")
     end_date = fields.Date(
         string=u"End Date", required=True,
         default=fields.date.today()+datetime.timedelta(6*365/12))
@@ -146,8 +147,10 @@ class CashFlowReport(models.TransientModel):
 
     @api.multi
     def calculate_liquidity(self):
-        accs = self.env['account.account'].search(
-            [('user_type_id.type', '=', 'liquidity')])
+        domain = [('user_type_id.type', '=', 'liquidity')]
+        if self.account_ids:
+            domain += [('id', 'in', self.account_ids.ids)]
+        accs = self.env['account.account'].search(domain)
         liquidity_lines = []
         for acc in accs:
             self.env.cr.execute(
