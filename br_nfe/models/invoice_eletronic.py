@@ -315,8 +315,8 @@ class InvoiceEletronic(models.Model):
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
-            'nItemPed': item.item_pedido_compra if item.item_pedido_compra
-            else '',
+            'xPed': item.pedido_compra or invoice.pedido_compra or '',
+            'nItemPed': item.item_pedido_compra or '',
         }
         di_vals = []
         for di in item.import_declaration_ids:
@@ -465,7 +465,8 @@ class InvoiceEletronic(models.Model):
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
-            'procEmi': 0
+            'procEmi': 0,
+            'verProc': 'Odoo 11 - Trustcode',
         }
         # Documentos Relacionados
         documentos = []

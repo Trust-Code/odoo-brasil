@@ -600,8 +600,12 @@ class InvoiceEletronicItem(models.Model):
         string=u'Preço Unitário', digits=dp.get_precision('Product Price'),
         readonly=True, states=STATE)
 
+    pedido_compra = fields.Char(
+        string="Pedido Compra", size=60,
+        help="Se setado aqui sobrescreve o pedido de compra da fatura")
     item_pedido_compra = fields.Char(
-        string=u'Item do pedido de compra do cliente')
+        string="Item de compra", size=20,
+        help=u'Item do pedido de compra do cliente')
 
     frete = fields.Monetary(
         string=u'Frete', digits=dp.get_precision('Account'),
