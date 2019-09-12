@@ -109,12 +109,12 @@ class CashFlowReport(models.TransientModel):
         trace3 = go.Bar(
             x=moves['date_maturity'],
             y=moves['receitas'],
-            name='Receitas'
+            name='Receitas',
         )
         trace4 = go.Bar(
             x=moves['date_maturity'],
             y=moves['despesas'],
-            name='Despesas'
+            name='Despesas',
         )
         moves.drop_duplicates(
             subset='date_maturity', keep='last', inplace=True)
@@ -128,7 +128,7 @@ class CashFlowReport(models.TransientModel):
             name="Saldo",
             line=dict(
                 shape='spline'
-            )
+            ),
         )
 
         data = [trace3, trace4, trace5]
