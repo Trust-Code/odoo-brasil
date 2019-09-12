@@ -29,6 +29,7 @@
                                     <field name="ncm" />
                                     <field name="tributos_estimados" />
                                     <field name="indicador_total" />
+                                    <field name="pedido_compra" />
                                     <field name="item_pedido_compra" />
                                 </group>
                             </group>
