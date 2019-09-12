@@ -11,6 +11,11 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
+try:
+    from zeep import Client
+except ImportError:
+    _logger.error("Cannot import zeep library", exc_info=True)
+
 
 class BrZip(models.Model):
     _name = 'br.zip'
@@ -100,25 +105,27 @@ class BrZip(models.Model):
 
     def _search_by_cep(self, zip_code):
         try:
-            url_viacep = 'http://viacep.com.br/ws/' + \
-                         zip_code + '/json/unicode/'
-            obj_viacep = requests.get(url_viacep)
-            res = obj_viacep.json()
-            if not res.get('erro', False):
-                city = self.env['res.state.city'].search(
-                    [('ibge_code', '=', res['ibge'][2:]),
-                     ('state_id.code', '=', res['uf'])])
+            client = Client('https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl') # noqa
+            res = client.service.consultaCEP(zip_code)
+            state = self.env['res.country.state'].search(
+                [('country_id.code', '=', 'BR'),
+                 ('code', '=', res['uf'])])
 
-                self.env['br.zip'].create(
-                    {'zip': re.sub('[^0-9]', '', res['cep']),
-                     'street': res['logradouro'],
-                     'district': res['bairro'],
-                     'country_id': city.state_id.country_id.id,
-                     'state_id': city.state_id.id,
-                     'city_id': city.id})
+            city = self.env['res.state.city'].search([
+                ('name', '=ilike', res['cidade']),
+                ('state_id', '=', state.id)])
+
+            self.env['br.zip'].create({
+                'zip': zip_code,
+                'street': res['end'],
+                'district': res['bairro'],
+                'country_id': state.country_id.id,
+                'state_id': state.id,
+                'city_id': city.id
+            })
 
         except Exception as e:
-            _logger.error(e.message, exc_info=True)
+            _logger.error(str(e), exc_info=True)
 
     def _search_by_address(self, city_id, street):
         try:
@@ -146,7 +153,7 @@ class BrZip(models.Model):
                         })
 
         except Exception as e:
-            _logger.error(e.message, exc_info=True)
+            _logger.error(str(e), exc_info=True)
 
     @api.multi
     def search_by_zip(self, zip_code):
@@ -154,7 +161,7 @@ class BrZip(models.Model):
         if len(zip_ids) == 1:
             return self.set_result(zip_ids[0])
         else:
-            raise UserError(_('Nenhum CEP encontrado'))
+            return False
 
     @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
