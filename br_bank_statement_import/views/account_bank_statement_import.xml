@@ -4,14 +4,20 @@
         <field name="model">account.bank.statement.import</field>
         <field name="inherit_id" ref="account_bank_statement_import.account_bank_statement_import_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//ul[@id='statement_format']" position="inside">
-                <li>Extrato Bancário CNAB 240</li>
-            </xpath>
             <field name="data_file" position="before">
                 <group>
-                    <field name="force_format" />
-                    <field name="file_format" attrs="{'invisible': [('force_format', '=', False)]}" />
-                    <field name="force_journal_account" />
+                    <field name="unique_transaction" />
+                    <p attrs="{'invisible': [('unique_transaction', '=', False)]}">
+                      Apenas marque esta opção em caso do arquivo OFX conter
+                      registros duplicados (campo FITID), alguns bancos exportam
+                      o arquivo OFX com dois registros diferentes com mesmo número
+                      de transação (o que não deveria). O comportamento padrão do Odoo
+                      caso exista duplicados é ignorar os duplicados (mesmo FITID)
+                      e se forem todos duplicados dizer que o arquivo já foi importado.
+                      Se alguma dessas situações estiver ocorrendo ao importar o arquivo
+                      talvez você precise marcar esta opção.
+                    </p>
+                    <field name="force_journal_account" invisible="1" />
                     <field name="journal_id" attrs="{'invisible': [('force_journal_account', '=', False)]}" />
                 </group>
             </field>
