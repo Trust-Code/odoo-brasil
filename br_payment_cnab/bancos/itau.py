@@ -75,6 +75,12 @@ class Itau240(Cnab240):
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
+        if line.barcode:
+            segmento.update({
+                'codigo_de_barras': int(line.barcode[20:]),
+                'codigo_de_barras_dv': self.get_dv_digitable_line(
+                    self._just_numbers(line.linha_digitavel))
+            })
         segmento.update({
             'numero_parcela': int(segmento.get('numero_parcela')[:13]),
             'divida_ativa_etiqueta': int(
@@ -98,7 +104,8 @@ class Itau240(Cnab240):
                 segmento.get('favorecido_agencia'), 0),
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
-            'favorecido_banco': int(line.bank_account_id.bank_id.bic),
+            'favorecido_banco': int(line.bank_account_id.bank_id.bic) or
+                int(line.barcode[:3]),
             'finalidade_ted': get_ted_doc_finality(
                 'itau', segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
@@ -109,6 +116,12 @@ class Itau240(Cnab240):
             'dac': dac
         })
         return segmento
+
+    def get_dv_digitable_line(self, linha_digitavel):
+        if len(linha_digitavel) == 47:
+            return int(linha_digitavel[4])
+        elif len(linha_digitavel) == 48:
+            return int(linha_digitavel[3])  # confirmar info
 
     # NOTA 11 do manual: se houverem dois digitos no dac da agencia/conta
     # o campo 42 (inicialmente vazio) deve ser utilizado

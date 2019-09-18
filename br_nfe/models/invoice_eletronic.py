@@ -315,8 +315,8 @@ class InvoiceEletronic(models.Model):
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
-            'nItemPed': item.item_pedido_compra if item.item_pedido_compra
-            else '',
+            'xPed': item.pedido_compra or invoice.pedido_compra or '',
+            'nItemPed': item.item_pedido_compra or '',
         }
         di_vals = []
         for di in item.import_declaration_ids:
@@ -465,7 +465,8 @@ class InvoiceEletronic(models.Model):
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
-            'procEmi': 0
+            'procEmi': 0,
+            'verProc': 'Odoo 11 - Trustcode',
         }
         # Documentos Relacionados
         documentos = []
@@ -757,15 +758,13 @@ class InvoiceEletronic(models.Model):
                 raise UserError(
                     "Adicione um contato para o responsável técnico!")
 
-            cnpj = re.sub(
-                '[^0-9]', '', responsavel_tecnico.cnpj_cpf)
-            fone = re.sub(
-                '[^0-9]', '', responsavel_tecnico.phone)
+            cnpj = re.sub('[^0-9]', '', responsavel_tecnico.cnpj_cpf)
+            fone = re.sub('[^0-9]', '', responsavel_tecnico.phone or '')
             infRespTec = {
                 'CNPJ': cnpj or '',
                 'xContato': responsavel_tecnico.child_ids[0].name or '',
                 'email': responsavel_tecnico.email or '',
-                'fone': fone or '',
+                'fone': fone,
                 'idCSRT': self.company_id.id_token_csrt or '',
                 'hashCSRT': self._get_hash_csrt() or '',
             }

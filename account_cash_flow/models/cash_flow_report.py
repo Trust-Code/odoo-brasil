@@ -37,6 +37,7 @@ class CashFlowReport(models.TransientModel):
             item.final_amount = balance
 
     ignore_outstanding = fields.Boolean(string="Ignorar Vencidos?")
+    account_ids = fields.Many2many('account.account', string="Filtrar Contas")
     end_date = fields.Date(
         string=u"End Date", required=True,
         default=fields.date.today()+datetime.timedelta(6*365/12))
@@ -108,12 +109,12 @@ class CashFlowReport(models.TransientModel):
         trace3 = go.Bar(
             x=moves['date_maturity'],
             y=moves['receitas'],
-            name='Receitas'
+            name='Receitas',
         )
         trace4 = go.Bar(
             x=moves['date_maturity'],
             y=moves['despesas'],
-            name='Despesas'
+            name='Despesas',
         )
         moves.drop_duplicates(
             subset='date_maturity', keep='last', inplace=True)
@@ -127,7 +128,7 @@ class CashFlowReport(models.TransientModel):
             name="Saldo",
             line=dict(
                 shape='spline'
-            )
+            ),
         )
 
         data = [trace3, trace4, trace5]
@@ -146,8 +147,10 @@ class CashFlowReport(models.TransientModel):
 
     @api.multi
     def calculate_liquidity(self):
-        accs = self.env['account.account'].search(
-            [('user_type_id.type', '=', 'liquidity')])
+        domain = [('user_type_id.type', '=', 'liquidity')]
+        if self.account_ids:
+            domain += [('id', 'in', self.account_ids.ids)]
+        accs = self.env['account.account'].search(domain)
         liquidity_lines = []
         for acc in accs:
             self.env.cr.execute(
