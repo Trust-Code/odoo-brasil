@@ -454,6 +454,7 @@ class InvoiceEletronic(models.Model):
 
     @api.multi
     def action_back_to_draft(self):
+        self.action_post_validate()
         self.state = 'draft'
 
     @api.multi
