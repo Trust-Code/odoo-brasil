@@ -30,8 +30,8 @@ class StockMove(models.Model):
                 for tax in taxes['taxes']:
                     if tax['account_id']:
                         price -= tax['amount']
-            if self.product_uom.id != self.product_id.uom_id.id:
-                price *= self.product_uom.factor/self.product_id.uom_id.factor
+            if line.product_uom.id != line.product_id.uom_id.id:
+                price *= line.product_uom.factor/line.product_id.uom_id.factor
             if order.currency_id != order.company_id.currency_id:
                 price = order.currency_id.compute(price,
                                                   order.company_id.currency_id,
