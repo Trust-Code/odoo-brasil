@@ -27,28 +27,34 @@ class ProductFiscalClassification(models.Model):
     classe_enquadramento = fields.Char(string="Classe Enquadr.", size=5)
     codigo_enquadramento = fields.Char(
         string=u"Cód. Enquadramento", size=3, default='999')
-    tax_ipi_id = fields.Many2one('account.tax', string=u"Alíquota IPI",
-                                 domain=[('domain', '=', 'ipi')])
+    tax_ipi_id = fields.Many2one(
+        comodel_name='account.tax',
+        string=u"Alíquota IPI",
+        domain=[('domain', '=', 'ipi')])
     ipi_tipo = fields.Selection(
         [('percent', 'Percentual')],
-        'Tipo do IPI', required=True, default='percent')
+        string='Tipo do IPI',
+        required=True,
+        default='percent')
     ipi_reducao_bc = fields.Float(
-        u'% Redução Base', required=True, digits=dp.get_precision('Account'),
+        string=u'% Redução Base',
+        required=True,
+        digits=dp.get_precision('Account'),
         default=0.00)
     ipi_cst = fields.Selection(CST_IPI, string='CST IPI')
 
     # ICMS ST
-    tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
-                                     domain=[('domain', '=', 'icmsst')])
+    tax_icms_st_id = fields.Many2one(
+        comodel_name='account.tax',
+        string=u"Alíquota ICMS ST",
+        domain=[('domain', '=', 'icmsst')])
     icms_st_aliquota_reducao_base = fields.Float(
-        '% Red. Base ST',
+        string='% Red. Base ST',
         digits=dp.get_precision('Discount'))
     icms_st_aliquota_mva = fields.Float(
-        'MVA Ajustado ST',
+        string='MVA Ajustado ST',
         digits=dp.get_precision('Discount'), default=0.00)
-    ativo = fields.Boolean(
-        string="NCM Ativo",
-        default=True)
+    active = fields.Boolean(default=True, string='Ativo')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

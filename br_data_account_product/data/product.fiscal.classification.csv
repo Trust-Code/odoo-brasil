@@ -1,4 +1,4 @@
-id,code,category,name,unidade_tributacao,descricao_unidade,ativo
+id,code,category,name,unidade_tributacao,descricao_unidade,active
 01012100,01012100,ANIMAIS VIVOS,01012100 - CAVALOS REPRODUTORES DE RAÇA PURA,UN,Unidade,True
 01012900,01012900,ANIMAIS VIVOS,01012900 - OUTROS CAVALOS VIVOS,UN,Unidade,True
 01013000,01013000,ANIMAIS VIVOS,01013000 - ASININOS VIVOS,UN,Unidade,True
