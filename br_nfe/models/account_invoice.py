@@ -118,7 +118,8 @@ class AccountInvoice(models.Model):
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
-
+        if inv.goods_delivery_date:
+            res['data_entrada_saida'] = inv.goods_delivery_date
         # Indicador Consumidor Final
         if inv.commercial_partner_id.is_company:
             res['ind_final'] = '0'

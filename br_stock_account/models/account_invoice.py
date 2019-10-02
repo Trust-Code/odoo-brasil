@@ -43,6 +43,8 @@ class AccountInvoice(models.Model):
         compute="_compute_amount")
 
     # Transporte
+    goods_delivery_date = fields.Datetime(
+        string="Data Entrega", help="Data para saída/entrada das mercadorias")
     freight_responsibility = fields.Selection(
         [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
          ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),

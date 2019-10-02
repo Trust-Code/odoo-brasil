@@ -19,6 +19,7 @@
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
+                            <field name="goods_delivery_date"/>
                             <field name="freight_responsibility"/>
                             <field name="shipping_supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="vehicle_plate"/>
@@ -74,6 +75,7 @@
                 <page name="transporte" string="Transporte">
                     <group>
                         <group name="delivery_info">
+                            <field name="goods_delivery_date" />
                             <field name="freight_responsibility"/>
                             <field name="shipping_supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="vehicle_plate"/>

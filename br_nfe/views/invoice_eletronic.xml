@@ -95,6 +95,9 @@
                     <b>Protocolo Autorização:</b><field name="protocolo_nfe" class="oe_inline" readonly="1"/>
                 </span>
             </field>
+            <field name="data_emissao" position="after">
+                <field name="data_entrada_saida" />
+            </field>
             <field name="numero_controle" position="after">
                 <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('65'))]}" />
