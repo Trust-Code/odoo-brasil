@@ -446,7 +446,7 @@ class InvoiceEletronic(models.Model):
             return res
 
         tz = timezone(self.env.user.tz)
-        dt_emissao = datetime.now(tz).isoformat(timespec='seconds')
+        dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
         dt_saida = fields.Datetime.from_string(self.data_entrada_saida)
         if dt_saida:
             dt_saida = tz.localize(dt_saida).replace(microsecond=0).isoformat()
