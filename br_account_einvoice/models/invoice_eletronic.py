@@ -97,8 +97,6 @@ class InvoiceEletronic(models.Model):
         states=STATE)
     data_emissao = fields.Datetime(
         string=u'Data emissão', readonly=True, states=STATE)
-    data_fatura = fields.Datetime(
-        string=u'Data Entrada/Saída', readonly=True, states=STATE)
     data_autorizacao = fields.Char(
         string=u'Data de autorização', size=30, readonly=True, states=STATE)
     ambiente = fields.Selection(
