@@ -59,6 +59,7 @@ class InvoiceEletronic(models.Model):
         'l10n_br.payment.mode', string='Modo de Pagamento',
         readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
+    iest = fields.Char(string="IE Subst. Tributário")
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.tipo_ambiente",
         readonly=True)
@@ -537,6 +538,7 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
             'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
+            'IEST': re.sub('[^0-9]', '', self.iest or ''),
             'CRT': self.company_id.fiscal_type,
         }
         if self.company_id.cnae_main_id and self.company_id.inscr_mun:

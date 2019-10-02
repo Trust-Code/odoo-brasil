@@ -108,6 +108,7 @@
                 <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
                 <field name="ind_ie_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
+                <field name="iest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
             </field>
             <field name="valor_cofins" position="after">
                 <field name="valor_icms_fcp_uf_dest" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}" />
