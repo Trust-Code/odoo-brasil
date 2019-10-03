@@ -118,7 +118,8 @@ class AccountInvoice(models.Model):
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
-
+        if inv.goods_delivery_date:
+            res['data_entrada_saida'] = inv.goods_delivery_date
         # Indicador Consumidor Final
         if inv.commercial_partner_id.is_company:
             res['ind_final'] = '0'
@@ -151,6 +152,10 @@ class AccountInvoice(models.Model):
         if inv.commercial_partner_id.indicador_ie_dest:
             ind_ie_dest = inv.commercial_partner_id.indicador_ie_dest
         res['ind_ie_dest'] = ind_ie_dest
+        iest_id = inv.company_id.iest_ids.filtered(
+            lambda x: x.state_id == inv.commercial_partner_id.state_id)
+        if iest_id:
+            res['iest'] = iest_id.name
 
         # Duplicatas
         duplicatas = []
