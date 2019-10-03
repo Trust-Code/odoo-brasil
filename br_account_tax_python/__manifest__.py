@@ -19,6 +19,7 @@
         'account_tax_python'
     ],
     'data': [
-        'data/account_tax_data.xml'
+        'data/account_tax_data.xml',
+        'views/account_tax_view.xml'
     ],
 }

@@ -58,6 +58,7 @@ class InvoiceEletronic(models.Model):
         'l10n_br.payment.mode', string='Modo de Pagamento',
         readonly=True, states=STATE)
     state = fields.Selection(selection_add=[('denied', 'Denegado')])
+    iest = fields.Char(string="IE Subst. Tributário")
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.tipo_ambiente",
         readonly=True)
@@ -103,6 +104,8 @@ class InvoiceEletronic(models.Model):
         string=u"Tipo de Emissão", readonly=True, states=STATE, default='1')
 
     # Transporte
+    data_entrada_saida = fields.Datetime(
+        string="Data Entrega", help="Data para saída/entrada das mercadorias")
     modalidade_frete = fields.Selection(
         [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
          ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
@@ -314,8 +317,8 @@ class InvoiceEletronic(models.Model):
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
-            'nItemPed': item.item_pedido_compra if item.item_pedido_compra
-            else '',
+            'xPed': item.pedido_compra or invoice.pedido_compra or '',
+            'nItemPed': item.item_pedido_compra or '',
         }
         di_vals = []
         for di in item.import_declaration_ids:
@@ -440,6 +443,11 @@ class InvoiceEletronic(models.Model):
 
         tz = timezone(self.env.user.tz)
         dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
+        dt_saida = fields.Datetime.from_string(self.data_entrada_saida)
+        if dt_saida:
+            dt_saida = tz.localize(dt_saida).replace(microsecond=0).isoformat()
+        else:
+            dt_saida = dt_emissao
 
         ide = {
             'cUF': self.company_id.state_id.ibge_code,
@@ -449,7 +457,7 @@ class InvoiceEletronic(models.Model):
             'serie': self.serie.code,
             'nNF': self.numero,
             'dhEmi': dt_emissao,
-            'dhSaiEnt': dt_emissao,
+            'dhSaiEnt': dt_saida,
             'tpNF': '0' if self.tipo_operacao == 'entrada' else '1',
             'idDest': self.ind_dest or 1,
             'cMunFG': "%s%s" % (self.company_id.state_id.ibge_code,
@@ -461,7 +469,8 @@ class InvoiceEletronic(models.Model):
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
-            'procEmi': 0
+            'procEmi': 0,
+            'verProc': 'Odoo 11 - Trustcode',
         }
         # Documentos Relacionados
         documentos = []
@@ -532,6 +541,7 @@ class InvoiceEletronic(models.Model):
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
             'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
+            'IEST': re.sub('[^0-9]', '', self.iest or ''),
             'CRT': self.company_id.fiscal_type,
         }
         if self.company_id.cnae_main_id and self.company_id.inscr_mun:
@@ -753,15 +763,13 @@ class InvoiceEletronic(models.Model):
                 raise UserError(
                     "Adicione um contato para o responsável técnico!")
 
-            cnpj = re.sub(
-                '[^0-9]', '', responsavel_tecnico.cnpj_cpf)
-            fone = re.sub(
-                '[^0-9]', '', responsavel_tecnico.phone)
+            cnpj = re.sub('[^0-9]', '', responsavel_tecnico.cnpj_cpf)
+            fone = re.sub('[^0-9]', '', responsavel_tecnico.phone or '')
             infRespTec = {
                 'CNPJ': cnpj or '',
                 'xContato': responsavel_tecnico.child_ids[0].name or '',
                 'email': responsavel_tecnico.email or '',
-                'fone': fone or '',
+                'fone': fone,
                 'idCSRT': self.company_id.id_token_csrt or '',
                 'hashCSRT': self._get_hash_csrt() or '',
             }

@@ -29,6 +29,7 @@
                                     <field name="ncm" />
                                     <field name="tributos_estimados" />
                                     <field name="indicador_total" />
+                                    <field name="pedido_compra" />
                                     <field name="item_pedido_compra" />
                                 </group>
                             </group>
@@ -207,7 +208,6 @@
                                     </group>
                                     <group>
                                         <field name="data_emissao"/>
-                                        <field name="data_fatura"/>
                                         <field name="data_autorizacao"/>
                                         <field name="ambiente"/>
                                         <field name="finalidade_emissao"/>

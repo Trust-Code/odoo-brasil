@@ -76,6 +76,8 @@ class AccountInvoice(models.Model):
             'date_maturity': move_line_id.date_maturity,
             'invoice_date': move_line_id.date,
             'invoice_id': self.id,
+            'linha_digitavel': self.l10n_br_linha_digitavel,
+            'barcode': self.l10n_br_barcode,
         }
 
     def get_order_line(self):
@@ -87,7 +89,11 @@ class AccountInvoice(models.Model):
         if self.payment_mode_id.type != 'payable':
             return
         if self.l10n_br_payment_type in ('03'):  # Boletos
-            return
+            if len(self.payable_move_line_ids) > 1 and self.l10n_br_barcode:
+                raise UserError(
+                    'A fatura possui mais de uma parcela, preencha a \
+                    linha digitável diretamente nos vencimentos após \
+                    a validação')
         elif self.l10n_br_payment_type in ('01', '02'):  # Depósitos
             if not self.l10n_br_bank_account_id:
                 raise UserError(

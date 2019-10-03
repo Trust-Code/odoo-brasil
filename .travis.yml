@@ -5,6 +5,9 @@ python:
 
 cache: pip
 
+services:
+  - postgresql
+
 addons:
   postgresql: "9.5"
   apt:

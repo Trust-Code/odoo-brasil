@@ -13,7 +13,7 @@ class ResPartner(models.Model):
     def _onchange_zip(self):
         cep = re.sub('[^0-9]', '', self.zip or '')
         if len(cep) == 8:
-            self.zip_search(cep)
+            return self.zip_search(cep)
 
     @api.multi
     def zip_search(self, cep):
@@ -21,6 +21,13 @@ class ResPartner(models.Model):
         res = self.env['br.zip'].search_by_zip(zip_code=self.zip)
         if res:
             self.update(res)
+        else:
+            return {
+                'warning': {
+                    'title': 'Pesquisa de CEP',
+                    'message': 'Nenhum CEP encontrado!',
+                }
+            }
 
     @api.onchange('street', 'city_id', 'district')
     def _search_street(self):

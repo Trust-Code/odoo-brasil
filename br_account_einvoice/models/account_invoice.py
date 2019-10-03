@@ -112,6 +112,7 @@ class AccountInvoice(models.Model):
             'origem': line.icms_origem,
             'tributos_estimados': line.tributos_estimados,
             'ncm': line.fiscal_classification_id.code,
+            'pedido_compra': line.pedido_compra,
             'item_pedido_compra': line.item_pedido_compra,
             # - ICMS -
             'icms_cst': line.icms_cst,
@@ -192,7 +193,6 @@ class AccountInvoice(models.Model):
             'numero_controle': num_controle,
             'data_emissao': datetime.now(),
             'data_agendada': invoice.date_invoice,
-            'data_fatura': datetime.now(),
             'finalidade_emissao': '1',
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.payment_term_id.id,
@@ -303,5 +303,9 @@ class AccountInvoiceLine(models.Model):
                 Transmitido: Já foi transmitido eletronicamente."""
     )
 
+    pedido_compra = fields.Char(
+        string="Pedido Compra", size=60,
+        help="Se setado aqui sobrescreve o pedido de compra da fatura")
     item_pedido_compra = fields.Char(
-        string=u'Item do pedido de compra do cliente')
+        string="Item de compra", size=20,
+        help=u'Item do pedido de compra do cliente')
