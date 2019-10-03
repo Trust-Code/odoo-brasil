@@ -3,6 +3,7 @@ from odoo import models, fields
 
 class InvoiceEletronicSelectionWizard(models.TransientModel):
     _name = 'invoice.eletronic.selection.wizard'
+    _description = "Seleção de nota fiscal eletrônica"
 
     def _default_invoice_id(self):
         return self.env.context.get('active_id')

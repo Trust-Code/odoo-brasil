@@ -10,6 +10,7 @@ from odoo import api, fields, models
 
 class L10nBR(models.AbstractModel):
     _name = 'l10n.br'
+    _description = "Localização BR"
 
     def _get_user_localization(self):
         user_id = self.env.context.get('uid')

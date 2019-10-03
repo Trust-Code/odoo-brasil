@@ -38,6 +38,7 @@ class ResCompany(models.Model):
 
 class ResCompanyIest(models.Model):
     _name = 'res.company.iest'
+    _description = "Inscrição Estadual do substituto tributário"
 
     name = fields.Char(string="Inscrição Estadual", required=True)
     state_id = fields.Many2one(

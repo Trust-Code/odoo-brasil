@@ -8,6 +8,7 @@ from openerp import api, fields, models
 
 class CashFlowWizard(models.TransientModel):
     _name = 'account.cash.flow.wizard'
+    _description = "Fluxo de Caixa"
 
     end_date = fields.Date(
         string="End Date", required=True,
