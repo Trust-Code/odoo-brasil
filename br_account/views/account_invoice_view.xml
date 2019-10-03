@@ -13,9 +13,6 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet/label" position="before">
-                <div class="oe_button_box" name="button_box"></div>
-            </xpath>
             <field name="fiscal_position_id" position="replace"></field>
             <field name="payment_term_id" position="after">
                 <field name="fiscal_position_id" domain="['|', ('fiscal_type', '=', None), ('fiscal_type', '=', 'saida')]" />
@@ -41,7 +38,7 @@
             <page name="other_info" position="before">
                 <page name="vencimentos" string="Vencimentos">
                     <field nolabel="1" name="receivable_move_line_ids">
-                        <tree name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
+                        <tree default_order="date_maturity" name="vencimentos" string="Vencimentos" colors="grey:reconciled==True;red:date_maturity&lt;current_date">
                             <field name="date_maturity"/>
                             <field name="name"/>
                             <field name="ref"/>

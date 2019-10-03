@@ -6,7 +6,7 @@
     'name': 'Brazilian Localization for Product',
     'summary': """Brazilian Localization for Product""",
     'description': """Brazilian Localization for Product""",
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'product', 'br_base',
+        'product', 'br_base', 'account',
     ],
     'data': [
         'views/product_pricelist.xml',

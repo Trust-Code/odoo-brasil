@@ -5,7 +5,7 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='module_account_batch_deposit']/parent::div/parent::div" position="after">
+            <xpath expr="//field[@name='qr_code']/parent::div/parent::div" position="after">
                 <div class="col-xs-12 col-md-6 o_setting_box" title="Define accounts to use for fine and interest.">
                     <div class="o_setting_right_pane">
                         <label for="l10n_br_interest_account_id" />
@@ -14,7 +14,7 @@
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
-                                <label string="Conta" class="col-md-3 o_light_label" />
+                                <label for="l10n_br_interest_account_id" string="Conta" class="col-md-3 o_light_label" />
                                 <field name="l10n_br_interest_account_id" domain="[('company_id', '=', company_id)]"/>
                             </div>
                         </div>
@@ -26,7 +26,7 @@
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
-                                <label string="Conta" class="col-md-3 o_light_label" />
+                                <label for="l10n_br_bankfee_account_id" string="Conta" class="col-md-3 o_light_label" />
                                 <field name="l10n_br_bankfee_account_id" domain="[('company_id', '=', company_id)]"/>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
-                                <label string="Conta" class="col-md-3 o_light_label" />
+                                <label for="l10n_br_payment_interest_account_id" string="Conta" class="col-md-3 o_light_label" />
                                 <field name="l10n_br_payment_interest_account_id" domain="[('company_id', '=', company_id)]"/>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
-                                <label string="Conta" class="col-md-3 o_light_label" />
+                                <label for="l10n_br_payment_discount_account_id" string="Conta" class="col-md-3 o_light_label" />
                                 <field name="l10n_br_payment_discount_account_id" domain="[('company_id', '=', company_id)]"/>
                             </div>
                         </div>

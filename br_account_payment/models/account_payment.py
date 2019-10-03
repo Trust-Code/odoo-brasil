@@ -59,3 +59,9 @@ to process a single invoice's payment."))
         action['context'] = {'search_default_partner_id': self.partner_id.id}
 
         return action
+
+    @api.multi
+    def _compute_payment_amount(self, invoices=None, currency=None):
+        super(AccountPayment, self)._compute_payment_amount(
+            invoices=invoices, currency=currency)
+        return self.move_line_id.debit or self.move_line_id.credit

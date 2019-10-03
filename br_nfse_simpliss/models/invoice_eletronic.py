@@ -5,10 +5,9 @@ import re
 import pytz
 import base64
 import logging
-from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
+
 
 _logger = logging.getLogger(__name__)
 
@@ -69,8 +68,7 @@ class InvoiceEletronic(models.Model):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
         if self.model == '008':
             tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
-            dt_emissao = datetime.strptime(self.data_emissao, DTFT)
-            dt_emissao = pytz.utc.localize(dt_emissao).astimezone(tz)
+            dt_emissao = pytz.utc.localize(self.data_emissao).astimezone(tz)
             dt_emissao = dt_emissao.strftime('%Y-%m-%dT%H:%M:%S')
 
             partner = self.commercial_partner_id
@@ -157,7 +155,7 @@ class InvoiceEletronic(models.Model):
                 'inscricao_municipal': prestador['inscricao_municipal'],
                 'cnpj_prestador': prestador['cnpj'],
                 'lista_rps': [rps],
-                'senha': self.company_id.senha_ambiente_nfse
+                'senha': self.company_id.senha_nfse_simpliss
             }
 
             res.update(nfse_vals)
