@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 
 class BrBoletoWizard(models.TransientModel):
     _name = 'br.boleto.wizard'
+    _description = "Boleto"
 
     payment_due = fields.Boolean(string="Pagamento Atrasado?")
     date_change = fields.Date(string='Alterar Vencimento')

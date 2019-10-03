@@ -16,6 +16,7 @@ from odoo.exceptions import UserError
 
 class NfseExportInvoice(models.TransientModel):
     _name = 'nfse.export.invoice'
+    _description = "Exporta NFS-e"
 
     name = fields.Char(u'Nome', size=255)
     file = fields.Binary(u'Arquivo', readonly=True)

@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class L10nBrPaymentCnabImport(models.TransientModel):
     _name = 'l10n_br.payment.cnab.import'
+    _description = "Importação de CNAB"
 
     cnab_type = fields.Selection(
         [('receivable', 'Recebíveis'), ('payable', 'Pagáveis')])

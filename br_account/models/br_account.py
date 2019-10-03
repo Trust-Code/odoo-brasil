@@ -174,6 +174,7 @@ class BrAccountCNAE(models.Model):
 
 class ImportDeclaration(models.Model):
     _name = 'br_account.import.declaration'
+    _description = "Declaração de Importação"
 
     invoice_id = fields.Many2one(
         'account.invoice', 'Fatura',
@@ -218,6 +219,7 @@ class ImportDeclaration(models.Model):
 
 class ImportDeclarationLine(models.Model):
     _name = 'br_account.import.declaration.line'
+    _description = "Linha da declaração de importação"
 
     import_declaration_id = fields.Many2one(
         'br_account.import.declaration', u'DI', ondelete='cascade')
@@ -232,6 +234,7 @@ class ImportDeclarationLine(models.Model):
 
 class AccountDocumentRelated(models.Model):
     _name = 'br_account.document.related'
+    _description = "Documentos Relacionados"
 
     invoice_id = fields.Many2one('account.invoice', 'Documento Fiscal',
                                  ondelete='cascade')
