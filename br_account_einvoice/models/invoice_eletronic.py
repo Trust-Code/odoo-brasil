@@ -556,6 +556,7 @@ class InvoiceEletronic(models.Model):
 
 class InvoiceEletronicEvent(models.Model):
     _name = 'invoice.eletronic.event'
+    _description = "Eventos de nota fiscal eletrônica"
     _order = 'id desc'
 
     code = fields.Char(string=u'Código', readonly=True, states=STATE)
@@ -569,6 +570,7 @@ class InvoiceEletronicEvent(models.Model):
 
 class InvoiceEletronicItem(models.Model):
     _name = 'invoice.eletronic.item'
+    _description = "Item da nota fiscal eletrônica"
 
     name = fields.Text(u'Nome', readonly=True, states=STATE)
     company_id = fields.Many2one(

@@ -24,6 +24,7 @@ class ResStateCity(models.Model):
 
 class ResRegion(models.Model):
     _name = 'res.region'
+    _description = "Região"
 
     name = fields.Char(string="Name", size=100)
     city_ids = fields.Many2many('res.state.city', string="Cities")

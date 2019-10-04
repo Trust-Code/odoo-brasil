@@ -70,6 +70,7 @@ class PaymentOrderLine(models.Model):
 
 class PaymentOrder(models.Model):
     _name = 'payment.order'
+    _description = "Ordem de pagamento"
     _order = 'id desc'
 
     @api.depends('line_ids')

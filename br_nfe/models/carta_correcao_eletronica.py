@@ -6,6 +6,7 @@ from odoo import fields, models
 
 class CartaCorrecaoEletronicaEvento(models.Model):
     _name = 'carta.correcao.eletronica.evento'
+    _description = "Carta de correção eletrônica"
 
     eletronic_doc_id = fields.Many2one(
         'invoice.eletronic', string=u"Documento Eletrônico")
