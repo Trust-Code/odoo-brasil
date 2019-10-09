@@ -22,6 +22,7 @@ try:
     from pytrustnfe.nfe import retorno_autorizar_nfe
     from pytrustnfe.nfe import recepcao_evento_cancelamento
     from pytrustnfe.nfe import consultar_protocolo_nfe
+    from pytrustnfe.nfe import gerar_qrcode
     from pytrustnfe.certificado import Certificado
     from pytrustnfe.utils import ChaveNFe, gerar_chave, gerar_nfeproc, \
         gerar_nfeproc_cancel
@@ -831,8 +832,6 @@ class InvoiceEletronic(models.Model):
             vals['pag'][0]['tPag'] = self.metodo_pagamento
             vals['pag'][0]['vPag'] = "%.02f" % self.valor_pago
             vals['pag'][0]['vTroco'] = "%.02f" % self.troco or '0.00'
-            vals['id_csc'] = int(self.company_id.id_token_csc)
-            vals['csc'] = self.company_id.csc
         return vals
 
     @api.multi
@@ -916,6 +915,11 @@ class InvoiceEletronic(models.Model):
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(self.id, nfe_values)
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
+        if self.model == '65':
+            xml_enviar = gerar_qrcode(
+                id_csc=self.company_id.id_token_csc,
+                csc=self.company_id.csc,
+                xml_send=xml_enviar)
         nfe = objectify.fromstring(xml_enviar)
         data_write = {
             'xml_to_send': base64.encodestring(
