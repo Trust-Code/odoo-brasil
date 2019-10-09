@@ -917,7 +917,7 @@ class InvoiceEletronic(models.Model):
         xml_enviar = xml_autorizar_nfe(certificado, **lote)
         if self.model == '65':
             xml_enviar = gerar_qrcode(
-                id_csc=self.company_id.id_token_csc,
+                id_csc=int(self.company_id.id_token_csc),
                 csc=self.company_id.csc,
                 xml_send=xml_enviar)
         nfe = objectify.fromstring(xml_enviar)
