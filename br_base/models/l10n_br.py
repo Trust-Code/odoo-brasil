@@ -54,7 +54,6 @@ class L10nBR(models.AbstractModel):
         ret_val['arch'] = etree.tostring(doc, encoding='unicode')
         return ret_val
 
-    @api.multi
     @api.depends('company_id')
     def _compute_is_br_localization(self):
         user_template_id = self._get_user_localization()

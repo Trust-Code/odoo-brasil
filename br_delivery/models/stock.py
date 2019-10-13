@@ -42,7 +42,6 @@ class StockPicking(models.Model):
             self.incoterm = self.carrier_id.incoterm
             self.freight_responsibility = self.incoterm.freight_responsibility
 
-    @api.multi
     def _add_delivery_cost_to_so(self):
         return
 

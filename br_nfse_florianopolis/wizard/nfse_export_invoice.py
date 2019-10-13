@@ -102,7 +102,6 @@ class NfseExportInvoice(models.TransientModel):
         zip_base64.seek(0)
         return base64.b64encode(zip_base64.getvalue())
 
-    @api.multi
     def nfse_export(self):
         self.state = 'done'
         active_ids = self.env.context.get('active_ids', [])

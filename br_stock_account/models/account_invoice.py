@@ -13,7 +13,6 @@ class AccountInvoice(models.Model):
     picking_origin_id = fields.Many2one(
         'stock.picking', string="Picking Origin")
 
-    @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'tax_line_ids.amount',
                  'currency_id', 'company_id')
@@ -138,7 +137,6 @@ class AccountInvoiceLine(models.Model):
         })
         return res
 
-    @api.one
     @api.depends('valor_frete', 'valor_seguro', 'outras_despesas')
     def _compute_price(self):
         super(AccountInvoiceLine, self)._compute_price()

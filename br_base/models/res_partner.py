@@ -79,7 +79,6 @@ class ResPartner(models.Model):
                 address_format = '%(company_name)s\n' + address_format
             return address_format % args
 
-    @api.multi
     @api.constrains('cnpj_cpf', 'country_id', 'is_company')
     def _check_cnpj_cpf(self):
         for item in self:
@@ -121,7 +120,6 @@ class ResPartner(models.Model):
                 raise ValidationError(_(u'Invalid State Inscription!'))
         return True
 
-    @api.one
     @api.constrains('inscr_est')
     def _check_ie_duplicated(self):
         """ Check if the field inscr_est has duplicated value
@@ -179,7 +177,6 @@ class ResPartner(models.Model):
         address_fields = super(ResPartner, self)._address_fields()
         return list(address_fields + ['city_id', 'number', 'district'])
 
-    @api.one
     def action_check_sefaz(self):
         if self.cnpj_cpf and self.state_id:
             if self.state_id.code == 'AL':

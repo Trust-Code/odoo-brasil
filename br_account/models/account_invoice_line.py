@@ -47,7 +47,6 @@ class AccountInvoiceLine(models.Model):
             'l10n_br_issqn_deduction': self.l10n_br_issqn_deduction,
         }
 
-    @api.one
     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
                  'product_id', 'invoice_id.partner_id',
                  'invoice_id.currency_id', 'invoice_id.company_id',
@@ -168,7 +167,6 @@ class AccountInvoiceLine(models.Model):
             'irrf_valor': sum([x['amount'] for x in irrf]),
         })
 
-    @api.multi
     @api.depends('icms_cst_normal', 'icms_csosn_simples',
                  'company_fiscal_type')
     def _compute_cst_icms(self):

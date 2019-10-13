@@ -12,7 +12,6 @@ class CancelNFSe(models.TransientModel):
     edoc_id = fields.Many2one('invoice.eletronic', string="Documento")
     justificativa = fields.Text('Justificativa', size=255, required=True)
 
-    @api.multi
     def action_cancel_nfse(self):
         if self.edoc_id and len(self.justificativa) > 15:
             self.edoc_id.action_cancel_document(

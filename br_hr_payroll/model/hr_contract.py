@@ -29,13 +29,11 @@ from odoo import api, fields, models
 class HrContract(models.Model):
     _inherit = 'hr.contract'
 
-    @api.multi
     def _get_worked_days(self):  # TODO Fazer validação se este número de
                                 # dias está certo
         for item in self:
             item.workeddays = 22
 
-    @api.multi
     def _check_date(self):
         for item in self:
             comp_date_from = time.strftime('%Y-04-01')

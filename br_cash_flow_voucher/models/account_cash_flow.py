@@ -9,7 +9,6 @@ from odoo import api, fields, models
 class AccountCashFlow(models.TransientModel):
     _inherit = 'account.cash.flow'
 
-    @api.multi
     def calculate_moves(self):
         moves = super(AccountCashFlow, self).calculate_moves()
 

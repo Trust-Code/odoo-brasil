@@ -56,7 +56,6 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
             raise UserError(
                 _('Motivo de Correção deve ter menos de 1000 caracteres'))
 
-    @api.multi
     def send_letter(self):
         self.valida_carta_correcao_eletronica()
 

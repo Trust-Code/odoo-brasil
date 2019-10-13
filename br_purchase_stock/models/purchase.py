@@ -121,7 +121,6 @@ class PuchaseOrderLine(models.Model):
         })
         return res
 
-    @api.multi
     def _get_stock_move_price_unit(self):
         price = super(PuchaseOrderLine, self)._get_stock_move_price_unit()
         price = price + \

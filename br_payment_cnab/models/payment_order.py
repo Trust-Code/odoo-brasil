@@ -98,7 +98,6 @@ class PaymentOrderLine(models.Model):
         string="Agência do Favorecido",
         readonly=True)
 
-    @api.one
     @api.constrains('barcode')
     def _constrains_unique_barcode(self):
         if not self.barcode:

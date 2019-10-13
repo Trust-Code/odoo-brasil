@@ -8,7 +8,6 @@ from odoo import api, models
 class StockMove(models.Model):
     _inherit = 'stock.move'
 
-    @api.multi
     def _get_price_unit(self):
         self.ensure_one()
         if self.purchase_line_id \

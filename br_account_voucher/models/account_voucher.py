@@ -17,7 +17,6 @@ class AccountVoucher(models.Model):
         store=True, help="Saldo restante.")
     l10n_br_paid = fields.Boolean(string="Pago?", compute='_compute_residual')
 
-    @api.one
     @api.depends('move_id.line_ids.amount_residual')
     def _compute_residual(self):
         residual = 0.0
@@ -33,11 +32,9 @@ class AccountVoucher(models.Model):
             self.update({'l10n_br_residual': abs(residual),
                          'l10n_br_paid': False})
 
-    @api.multi
     def action_mark_done(self):
         self.write({'state': 'posted'})
 
-    @api.multi
     def action_cancel_voucher(self):
         self.write({'state': 'cancel'})
 
@@ -86,7 +83,6 @@ class AccountVoucher(models.Model):
             except:
                 pass
 
-    @api.multi
     def voucher_move_line_create(self, line_total, move_id, company_currency,
                                  current_currency):
         line_total = super(AccountVoucher, self).voucher_move_line_create(
@@ -101,7 +97,6 @@ class AccountVoucher(models.Model):
 
         return line_total
 
-    @api.multi
     def first_move_line_get(self, move_id, company_currency, current_currency):
         vals = super(AccountVoucher, self).first_move_line_get(
             move_id, company_currency, current_currency)

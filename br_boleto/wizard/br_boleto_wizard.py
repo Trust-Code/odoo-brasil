@@ -14,7 +14,6 @@ class BrBoletoWizard(models.TransientModel):
     date_change = fields.Date(string='Alterar Vencimento')
     move_line_id = fields.Many2one('account.move.line', readonly=1)
 
-    @api.multi
     def imprimir_boleto(self):
         line_id = self.move_line_id.l10n_br_order_line_id
         if self.date_change:

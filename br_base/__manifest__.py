@@ -35,5 +35,5 @@
     'qweb': ['static/src/xml/*.xml'],
     'post_init_hook': 'post_init',
     'installable': True,
-    'auto_install': True,
+    'auto_install': False,
 }

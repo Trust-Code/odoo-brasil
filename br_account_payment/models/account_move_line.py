@@ -11,7 +11,6 @@ class AccountMoveLine(models.Model):
     l10n_br_order_line_id = fields.Many2one(
         'payment.order.line', string='Linha de Pagamento')
 
-    @api.multi
     @api.depends('debit', 'credit', 'user_type_id', 'amount_residual')
     def _compute_payment_value(self):
         for item in self:
@@ -21,7 +20,6 @@ class AccountMoveLine(models.Model):
         string="Valor", compute=_compute_payment_value, store=True,
         currency_field='company_currency_id')
 
-    @api.multi
     def action_register_payment(self):
         dummy, act_id = self.env['ir.model.data'].get_object_reference(
             'account', 'action_account_invoice_payment')

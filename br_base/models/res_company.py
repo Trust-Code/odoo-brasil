@@ -24,13 +24,11 @@ class ResCompany(models.Model):
 
     _inherit = 'res.company'
 
-    @api.one
     def _get_address_data(self):
         self.city_id = self.partner_id.city_id
         self.district = self.partner_id.district
         self.number = self.partner_id.number
 
-    @api.one
     def _get_br_data(self):
         """ Read the l10n_br specific functional fields. """
         self.legal_name = self.partner_id.legal_name
@@ -39,47 +37,38 @@ class ResCompany(models.Model):
         self.inscr_mun = self.partner_id.inscr_mun
         self.suframa = self.partner_id.suframa
 
-    @api.one
     def _set_br_suframa(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.suframa = self.suframa
 
-    @api.one
     def _set_br_legal_name(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.legal_name = self.legal_name
 
-    @api.one
     def _set_br_cnpj_cpf(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.cnpj_cpf = self.cnpj_cpf
 
-    @api.one
     def _set_br_inscr_est(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.inscr_est = self.inscr_est
 
-    @api.one
     def _set_br_inscr_mun(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.inscr_mun = self.inscr_mun
 
-    @api.one
     def _set_br_number(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.number = self.number
 
-    @api.one
     def _set_br_district(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.district = self.district
 
-    @api.one
     def _set_city_id(self):
         """ Write the l10n_br specific functional fields. """
         self.partner_id.city_id = self.city_id
 
-    @api.one
     def _compute_expiry_date(self):
         try:
             pfx = base64.decodestring(

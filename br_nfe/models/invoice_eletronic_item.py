@@ -9,7 +9,6 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceEletronicItem(models.Model):
     _inherit = "invoice.eletronic.item"
 
-    @api.multi
     @api.depends('icms_cst', 'origem')
     def _compute_cst_danfe(self):
         for item in self:

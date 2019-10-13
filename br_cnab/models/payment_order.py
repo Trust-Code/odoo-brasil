@@ -12,7 +12,6 @@ from odoo.exceptions import UserError
 class PaymentOrder(models.Model):
     _inherit = 'payment.order'
 
-    @api.multi
     def gerar_cnab(self):
         if len(self.line_ids) < 1:
             raise UserError(

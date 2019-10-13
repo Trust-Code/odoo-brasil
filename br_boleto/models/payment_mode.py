@@ -169,7 +169,6 @@ class PaymentMode(models.Model):
             if not rec.boleto_type:
                 raise ValidationError(_('Escolha o banco do boleto!'))
 
-    @api.multi
     def write(self, vals):
         res = super(PaymentMode, self).write(vals)
         self._check_boleto_protesto()

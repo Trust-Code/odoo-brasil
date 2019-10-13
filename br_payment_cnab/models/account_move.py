@@ -9,7 +9,6 @@ from odoo.exceptions import UserError
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    @api.multi
     def unlink(self):
         for item in self:
             line_ids = self.env['payment.order.line'].search(
@@ -18,7 +17,6 @@ class AccountMoveLine(models.Model):
             line_ids.sudo().unlink()
         return super(AccountMoveLine, self).unlink()
 
-    @api.multi
     def _update_check(self):
         for item in self:
             total = self.env['payment.order.line'].search_count(

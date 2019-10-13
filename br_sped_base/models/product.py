@@ -37,7 +37,6 @@ class ProductProduct(models.Model):
          _('Product Reference must be unique!'))
     ]
 
-    @api.multi
     def write(self, vals):
         for product in self:
             values = {}

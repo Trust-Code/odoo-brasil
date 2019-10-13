@@ -15,7 +15,6 @@ TAX_IDENTIFICATION = {
 class PaymentInformation(models.Model):
     _name = 'l10n_br.payment_information'
 
-    @api.multi
     def name_get(self):
         result = []
         for rec in self:

@@ -48,7 +48,6 @@ to process a single invoice's payment."))
                  (column, '=', 0),
                  ('reconciled', '=', False)])
 
-    @api.multi
     def action_view_receivable_payable(self):
         if self.partner_type == 'supplier':
             action_ref = 'br_account_payment.action_payable_move_lines'
@@ -60,7 +59,6 @@ to process a single invoice's payment."))
 
         return action
 
-    @api.multi
     def _compute_payment_amount(self, invoices=None, currency=None):
         super(AccountPayment, self)._compute_payment_amount(
             invoices=invoices, currency=currency)

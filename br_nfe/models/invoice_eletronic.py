@@ -36,14 +36,12 @@ STATE = {'edit': [('readonly', False)]}
 class InvoiceEletronic(models.Model):
     _inherit = 'invoice.eletronic'
 
-    @api.multi
     @api.depends('chave_nfe')
     def _compute_format_danfe_key(self):
         for item in self:
             item.chave_nfe_danfe = re.sub("(.{4})", "\\1.",
                                           item.chave_nfe, 10, re.DOTALL)
 
-    @api.multi
     def generate_correction_letter(self):
         return {
             "type": "ir.actions.act_window",
@@ -225,7 +223,6 @@ class InvoiceEletronic(models.Model):
             return False
         return res
 
-    @api.multi
     def unlink(self):
         for item in self:
             if item.state in ('denied'):
@@ -233,7 +230,6 @@ class InvoiceEletronic(models.Model):
                     _('Documento Eletrônico Denegado - Proibido excluir'))
         super(InvoiceEletronic, self).unlink()
 
-    @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model in ('55', '65'):
@@ -277,7 +273,6 @@ class InvoiceEletronic(models.Model):
 
         return errors
 
-    @api.multi
     def _prepare_eletronic_invoice_item(self, item, invoice):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_item(
             item, invoice)
@@ -435,7 +430,6 @@ class InvoiceEletronic(models.Model):
         return {'prod': prod, 'imposto': imposto,
                 'infAdProd': item.informacao_adicional}
 
-    @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
         if self.model not in ('55', '65'):
@@ -823,7 +817,6 @@ class InvoiceEletronic(models.Model):
             vals['urlChave'] = url_qrcode_exibicao(estado, str(ambiente))
         return vals
 
-    @api.multi
     def _prepare_lote(self, lote, nfe_values):
         return {
             'idLote': lote,
@@ -877,7 +870,6 @@ class InvoiceEletronic(models.Model):
             atts.append(xml_id.id)
         return atts
 
-    @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
         if self.model not in ('55', '65'):
@@ -916,7 +908,6 @@ class InvoiceEletronic(models.Model):
             'xml_to_send_name': 'nfe-enviar-%s.xml' % self.numero,
         })
 
-    @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
 
@@ -1018,7 +1009,6 @@ class InvoiceEletronic(models.Model):
         _logger.info('NF-e (%s) was finished with status %s' % (
             self.numero, self.codigo_retorno))
 
-    @api.multi
     def generate_nfe_proc(self):
         if self.state in ['cancel', 'done', 'denied']:
             recibo = self.env['ir.attachment'].search([
@@ -1046,7 +1036,6 @@ class InvoiceEletronic(models.Model):
         else:
             raise UserError(_('A NFe não está validada'))
 
-    @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
         if self.model not in ('55', '65'):
             return super(InvoiceEletronic, self).action_cancel_document(

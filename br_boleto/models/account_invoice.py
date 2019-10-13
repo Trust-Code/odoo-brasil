@@ -14,7 +14,6 @@ class AccountInvoice(models.Model):
     def _get_email_template_invoice(self):
         return self.env.user.company_id.boleto_email_tmpl
 
-    @api.multi
     def send_email_boleto_queue(self):
         mail = self._get_email_template_invoice()
         if not mail:
@@ -55,7 +54,6 @@ class AccountInvoice(models.Model):
             }
             mail.send_mail(item.id, email_values=values)
 
-    @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
         error = ''
@@ -112,7 +110,6 @@ class AccountInvoice(models.Model):
 Para prosseguir é necessário preencher os seguintes campos:\n""") + error)
         return res
 
-    @api.multi
     def action_print_boleto(self):
         if self.state in ('draft', 'cancel'):
             raise UserError(

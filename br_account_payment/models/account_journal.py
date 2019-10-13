@@ -16,7 +16,6 @@ class AccountJournal(models.Model):
     acc_partner_id = fields.Many2one('res.partner',
                                      related='bank_account_id.partner_id')
 
-    @api.multi
     def write(self, vals):
         result = super(AccountJournal, self).write(vals)
         journal_ids = self.filtered(

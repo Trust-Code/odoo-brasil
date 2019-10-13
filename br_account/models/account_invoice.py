@@ -10,7 +10,6 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'tax_line_ids.amount',
                  'currency_id', 'company_id')
@@ -73,14 +72,12 @@ class AccountInvoice(models.Model):
         self.amount_total_company_signed = self.amount_total * sign
         self.amount_total_signed = self.amount_total * sign
 
-    @api.one
     @api.depends('move_id.line_ids')
     def _compute_receivables(self):
         self.receivable_move_line_ids = self.move_id.line_ids.filtered(
             lambda m: m.account_id.user_type_id.type == 'receivable'
         ).sorted(key=lambda m: m.date_maturity)
 
-    @api.one
     @api.depends('move_id.line_ids')
     def _compute_payables(self):
         self.payable_move_line_ids = self.move_id.line_ids.filtered(
@@ -264,7 +261,6 @@ class AccountInvoice(models.Model):
         ob_ids = [x.id for x in self.fiscal_position_id.fiscal_observation_ids]
         self.fiscal_observation_ids = [(6, False, ob_ids)]
 
-    @api.multi
     def action_invoice_cancel_paid(self):
         if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft',
                                                        'open', 'paid']):
@@ -303,7 +299,6 @@ class AccountInvoice(models.Model):
             contador += 1
         return res
 
-    @api.multi
     def finalize_invoice_move_lines(self, move_lines):
         res = super(AccountInvoice, self).\
             finalize_invoice_move_lines(move_lines)
@@ -317,7 +312,6 @@ class AccountInvoice(models.Model):
                 count += 1
         return res
 
-    @api.multi
     def get_taxes_values(self):
         tax_grouped = {}
         for line in self.invoice_line_ids:
