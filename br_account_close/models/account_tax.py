@@ -20,7 +20,6 @@ class AccountTax(models.Model):
     l10n_br_revenue_account_ids = fields.Many2many(
         'account.account', string="Revenue Accounts")
 
-    @api.multi
     def aggregate_tax_to_pay(self, period):
         if self.filtered(lambda x: x.domain == 'simples'):
             total = 0.0
@@ -29,7 +28,6 @@ class AccountTax(models.Model):
             return total
         return self._calulate_amount_tax_period(period)
 
-    @api.multi
     def _calulate_amount_tax_period(self, period):
         acc_ids = self.mapped('account_id').ids
         acc_ids += self.mapped('account_id.l10n_br_credit_account_id').ids

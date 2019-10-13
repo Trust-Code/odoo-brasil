@@ -25,7 +25,6 @@ class PurchaseOrder(models.Model):
                                    for l in order.order_line),
             })
 
-    @api.multi
     def _prepare_invoice(self):
         res = super(PurchaseOrder, self)._prepare_invoice()
         if self.fiscal_position_id and self.fiscal_position_id.account_id:
@@ -164,7 +163,6 @@ class PurchaseOrderLine(models.Model):
         self._compute_tax_id()
         return res
 
-    @api.multi
     def _compute_tax_id(self):
         for line in self:
             line._update_tax_from_ncm()
@@ -201,7 +199,6 @@ class PurchaseOrderLine(models.Model):
                 })
 
     # Calcula o custo da mercadoria comprada
-    @api.multi
     def _get_stock_move_price_unit(self):
         price = self.price_unit
         order = self.order_id

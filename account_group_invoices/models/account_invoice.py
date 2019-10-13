@@ -10,7 +10,6 @@ from dateutil.relativedelta import relativedelta
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.multi
     def group_invoices(self, group_dict):
         """
         group_dict = [{"rule_name": 'serv_01.05', "fpos": 1,
@@ -21,7 +20,6 @@ class AccountInvoice(models.Model):
         for inv in vals:
             self._create_invoices_grouped(inv)
 
-    @api.multi
     def _prepare_invoice_dict(self, group_dict):
         """
         Primeiro pega todas as notas possíveis de agrupar e depois

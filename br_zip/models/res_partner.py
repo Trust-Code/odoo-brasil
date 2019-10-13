@@ -15,7 +15,6 @@ class ResPartner(models.Model):
         if len(cep) == 8:
             return self.zip_search(cep)
 
-    @api.multi
     def zip_search(self, cep):
         self.zip = "%s-%s" % (cep[0:5], cep[5:8])
         res = self.env['br.zip'].search_by_zip(zip_code=self.zip)

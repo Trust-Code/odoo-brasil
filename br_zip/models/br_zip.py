@@ -155,7 +155,6 @@ class BrZip(models.Model):
         except Exception as e:
             _logger.error(str(e), exc_info=True)
 
-    @api.multi
     def search_by_zip(self, zip_code):
         zip_ids = self.zip_search_multi(zip_code=zip_code)
         if len(zip_ids) == 1:
@@ -163,7 +162,6 @@ class BrZip(models.Model):
         else:
             return False
 
-    @api.multi
     def search_by_address(self, obj, country_id=False, state_id=False,
                           city_id=False, district=False, street=False,
                           error=True):

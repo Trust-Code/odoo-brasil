@@ -53,7 +53,6 @@ class InvoiceEletronic(models.Model):
     model = fields.Selection(
         selection_add=[('015', 'NFS-e Maringá,PR')])
 
-    @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.model == '015':
@@ -71,7 +70,6 @@ class InvoiceEletronic(models.Model):
 
         return errors
 
-    @api.multi
     def _prepare_eletronic_invoice_values(self):
         res = super(InvoiceEletronic, self)._prepare_eletronic_invoice_values()
         if self.model != '015':
@@ -211,7 +209,6 @@ class InvoiceEletronic(models.Model):
 
         return atts
 
-    @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
         if self.model not in ('015'):
@@ -230,7 +227,6 @@ class InvoiceEletronic(models.Model):
         self.xml_to_send = base64.encodestring(xml_enviar)
         self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
 
-    @api.multi
     def action_send_eletronic_invoice(self):
         super(InvoiceEletronic, self).action_send_eletronic_invoice()
         if self.model != '015' or self.state in ('done', 'cancel'):
@@ -274,7 +270,6 @@ class InvoiceEletronic(models.Model):
         self._create_attachment(
             'nfse-ret', self, enviar_nfse['received_xml'])
 
-    @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
         if self.model not in ('015'):
             return super(InvoiceEletronic, self).action_cancel_document(

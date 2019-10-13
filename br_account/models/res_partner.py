@@ -10,7 +10,6 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
     _description = 'Partner'
 
-    @api.multi
     def _invoice_total(self):
         account_invoice_report = self.env['account.invoice.report']
         if not self.ids:

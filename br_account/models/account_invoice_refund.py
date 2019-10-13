@@ -10,7 +10,6 @@ class AccountInvoiceRefund(models.TransientModel):
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string="Posição Fiscal")
 
-    @api.multi
     def invoice_refund(self):
         res = super(AccountInvoiceRefund, self).invoice_refund()
         if type(res) is bool:

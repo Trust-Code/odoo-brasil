@@ -41,7 +41,6 @@ class ExportNfe(models.TransientModel):
         zip_base64.seek(0)
         return base64.b64encode(zip_base64.getvalue())
 
-    @api.multi
     def nfse_export(self):
         search_vals = []
         search_vals.append(('data_emissao', '>=', self.start_date))

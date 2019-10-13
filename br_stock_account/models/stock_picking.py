@@ -80,7 +80,6 @@ class StockPicking(models.Model):
                 (6, None, self.fiscal_position_id.fiscal_observation_ids.ids)]
         return vals
 
-    @api.multi
     def action_done(self):
         res = super(StockPicking, self).action_done()
         pickings_to_invoice = self.filtered(
@@ -89,7 +88,6 @@ class StockPicking(models.Model):
             pickings_to_invoice.action_invoice_picking()
         return res
 
-    @api.multi
     def action_invoice_picking(self):
         partner_ids = self.mapped('partner_id')
         if not partner_ids:

@@ -8,7 +8,6 @@ from odoo import api, fields, models
 class AccountChartTemplate(models.Model):
     _inherit = 'account.chart.template'
 
-    @api.multi
     def _load_template(self, company, code_digits=None,
                        account_ref=None, taxes_ref=None):
         acc_ref, tax_ref = super(AccountChartTemplate, self)._load_template(
@@ -365,7 +364,6 @@ class AccountTax(models.Model):
         taxes += self._compute_others(price_base)
         return taxes
 
-    @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0,
                     product=None, partner=None, fisc_pos=None):
 

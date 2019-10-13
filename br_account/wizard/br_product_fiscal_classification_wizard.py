@@ -21,7 +21,6 @@ class ProductFiscalClassificationWizard(models.TransientModel):
     has_quote_char = fields.Boolean(string=u'Possui caracter de citação?')
     ncm_quote_char = fields.Char(string=u'Caracter de Citação', size=3)
 
-    @api.multi
     def import_ncm(self):
         if not self.product_fiscal_class_csv:
             raise UserError(_('Nenhum Arquivo Selecionado!'))

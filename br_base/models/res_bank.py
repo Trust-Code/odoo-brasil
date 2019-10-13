@@ -59,7 +59,6 @@ class ResPartnerBank(models.Model):
     bra_number = fields.Char('Agency', size=8)
     bra_number_dig = fields.Char('Account Agency Digit', size=8)
 
-    @api.multi
     def name_get(self):
         result = []
         for rec in self:

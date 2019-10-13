@@ -20,7 +20,6 @@ class CancelNFe(models.TransientModel):
     received_xml_name = fields.Char(
         string=u"Xml Recebimento", size=30, readonly=True)
 
-    @api.multi
     def action_cancel_nfe(self):
         if self.edoc_id and len(self.justificativa) > 15:
             return self.edoc_id.action_cancel_document(

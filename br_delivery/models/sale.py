@@ -8,7 +8,6 @@ from odoo import api, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
     def _prepare_invoice(self):
         result = super(SaleOrder, self)._prepare_invoice()
         domain = [('sale_id', '=', self.id)]

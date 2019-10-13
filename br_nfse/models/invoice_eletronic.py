@@ -16,7 +16,6 @@ class InvoiceEletronic(models.Model):
     numero_nfse = fields.Char(
         string=u"Número NFSe", size=50, readonly=True, states=STATE)
 
-    @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
         if self.nfse_eletronic:

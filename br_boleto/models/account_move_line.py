@@ -11,7 +11,6 @@ class AccountMoveLine(models.Model):
     boleto_emitido = fields.Boolean(string=u"Emitido")
     nosso_numero = fields.Char(string=u"Nosso Número", size=30)
 
-    @api.multi
     def unlink(self):
         for item in self:
             line_ids = self.env['payment.order.line'].search(
@@ -20,7 +19,6 @@ class AccountMoveLine(models.Model):
             line_ids.sudo().unlink()
         return super(AccountMoveLine, self).unlink()
 
-    @api.multi
     def _update_check(self):
         for item in self:
             total = self.env['payment.order.line'].search_count(
@@ -32,7 +30,6 @@ class AccountMoveLine(models.Model):
                                   Cancele estes boletos primeiro'))
         return super(AccountMoveLine, self)._update_check()
 
-    @api.multi
     def action_print_boleto(self):
         if self.move_id.state in ('draft', 'cancel'):
             raise UserError(
@@ -41,7 +38,6 @@ class AccountMoveLine(models.Model):
         return self.env.ref(
             'br_boleto.action_boleto_account_invoice').report_action(self)
 
-    @api.multi
     def open_wizard_print_boleto(self):
         return({
             'name': 'Alterar / Reimprimir Boleto',

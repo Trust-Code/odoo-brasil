@@ -27,7 +27,6 @@ class CashFlowWizard(models.TransientModel):
             'account_ids': [(6, None, self.account_ids.ids)]
         }
 
-    @api.multi
     def button_calculate(self):
         vals = self._prepare_vals()
         cashflow_id = self.env['account.cash.flow'].create(vals)

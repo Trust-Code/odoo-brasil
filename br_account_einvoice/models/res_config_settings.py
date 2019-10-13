@@ -17,7 +17,6 @@ class ResConfigSettings(models.TransientModel):
             .nfe_email_template.id
         return res
 
-    @api.multi
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         self.env.user.company_id.nfe_email_template = self.nfe_email_template

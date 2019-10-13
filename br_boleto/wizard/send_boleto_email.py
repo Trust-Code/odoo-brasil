@@ -8,7 +8,6 @@ class BoletoSendEmail(models.TransientModel):
     _name = 'boleto.send.email'
     _description = "Envio de email de boleto"
 
-    @api.multi
     def send_boletos_by_email(self):
         context = dict(self._context or {})
         active_ids = context.get('active_ids', []) or []

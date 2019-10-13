@@ -42,7 +42,6 @@ class L10nBrScheduledTransfer(models.Model):
     payment_line_id = fields.Many2one(
         'payment.order.line', "Pagamento agendado", readonly=True)
 
-    @api.multi
     def _validate_transfer(self):
         for item in self:
             if item.payment_mode_id.journal_id == item.destiny_journal_id:
@@ -85,7 +84,6 @@ class L10nBrScheduledTransfer(models.Model):
 
         return sequence_id.next_by_id()
 
-    @api.multi
     def action_schedule_transfer(self):
         self._validate_transfer()
         line_obj = self.env['payment.order.line']
@@ -98,7 +96,6 @@ class L10nBrScheduledTransfer(models.Model):
 
         self.write({'state': 'scheduled'})
 
-    @api.multi
     def action_cancel(self):
         for item in self:
             if item.payment_line_id.state == 'draft':
@@ -109,15 +106,12 @@ class L10nBrScheduledTransfer(models.Model):
                 raise UserError(_('Existe uma ordem de pagamento vinculada!'))
         self.write({'state': 'cancelled'})
 
-    @api.multi
     def action_done(self):
         self.write({'state': 'done'})
 
-    @api.multi
     def action_set_draft(self):
         self.write({'state': 'draft'})
 
-    @api.multi
     def unlink(self):
         for item in self:
             if item.state != 'draft':

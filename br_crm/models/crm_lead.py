@@ -56,7 +56,6 @@ class CrmLead(models.Model):
                 return False
         return True
 
-    @api.one
     @api.constrains('inscr_est')
     def _check_ie(self):
         """Checks if company register number in field insc_est is valid,
@@ -118,7 +117,6 @@ class CrmLead(models.Model):
             })
         return res
 
-    @api.multi
     def _create_lead_partner_data(self, name, is_company, parent_id=False):
         partner = super(CrmLead, self)._create_lead_partner_data(
             name, is_company, parent_id)

@@ -22,7 +22,6 @@ TYPE2EDOC = {
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.multi
     def _compute_total_edocs(self):
         for item in self:
             item.total_edocs = self.env['invoice.eletronic'].search_count(
@@ -42,7 +41,6 @@ class AccountInvoice(models.Model):
         help=u"""Unique number of the invoice, computed
             automatically when the invoice is created.""")
 
-    @api.multi
     def action_view_edocs(self):
         if self.total_edocs == 1:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
@@ -240,7 +238,6 @@ class AccountInvoice(models.Model):
         })
         return vals
 
-    @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
         for item in self:
@@ -269,7 +266,6 @@ class AccountInvoice(models.Model):
                     eletronic.action_post_validate()
         return res
 
-    @api.multi
     def action_cancel(self):
         res = super(AccountInvoice, self).action_cancel()
         for item in self:

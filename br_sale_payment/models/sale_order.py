@@ -11,7 +11,6 @@ class SaleOrder(models.Model):
     payment_mode_id = fields.Many2one(
         'l10n_br.payment.mode', string=u"Modo de pagamento")
 
-    @api.multi
     def _prepare_invoice(self):
         vals = super(SaleOrder, self)._prepare_invoice()
         vals['payment_mode_id'] = self.payment_mode_id.id

@@ -48,7 +48,6 @@ class HrExpenseSheet(models.Model):
             'invoice_date': self.accounting_date,
         }
 
-    @api.multi
     def action_sheet_move_create(self):
         if self.payment_mode != 'own_account':
             return super(HrExpenseSheet, self).action_sheet_move_create()

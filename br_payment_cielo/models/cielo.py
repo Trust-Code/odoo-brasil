@@ -27,7 +27,6 @@ class AcquirerCielo(models.Model):
     return_url = fields.Char(string="Url de Retorno",
                              default=_default_return_url, size=300)
 
-    @api.multi
     def cielo_form_generate_values(self, tx_values):
         """ Função para gerar HTML POST da Cielo """
         total_desconto = 0
@@ -131,7 +130,6 @@ class TransactionCielo(models.Model):
             [('reference', '=', reference)])
         return txs[0]
 
-    @api.multi
     def _cielo_form_validate(self, data):
         reference = data.get('order_number')
         txn_id = data.get('checkout_cielo_order_number')

@@ -109,7 +109,6 @@ class AccountInvoice(models.Model):
             line_obj.action_generate_payment_order_line(
                 item.payment_mode_id, vals)
 
-    @api.multi
     def action_move_create(self):
         super(AccountInvoice, self).action_move_create()
         for item in self:

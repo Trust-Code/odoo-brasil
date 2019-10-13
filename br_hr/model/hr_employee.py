@@ -15,7 +15,6 @@ from odoo.exceptions import ValidationError
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
-    @api.multi
     @api.depends('dependent_ids')
     def _number_dependents(self):
         for item in self:
@@ -24,7 +23,6 @@ class HrEmployee(models.Model):
             item.no_of_dependent_health_plan = \
                 sum(1 if x.use_health_plan else 0 for x in item.dependent_ids)
 
-    @api.one
     @api.constrains('pis_pasep')
     def _validate_pis_pasep(self):
         if not self.pis_pasep:
@@ -110,7 +108,6 @@ class HrEmployeeDependent(models.Model):
     _name = 'hr.employee.dependent'
     _description = 'Employee\'s Dependents'
 
-    @api.one
     @api.constrains('dependent_age')
     def _check_birth(self):
         dep_age = datetime.strptime(

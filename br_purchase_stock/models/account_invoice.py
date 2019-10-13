@@ -21,7 +21,6 @@ class AccountInvoice(models.Model):
         string='Despesas Aduaneiras', digits=dp.get_precision('Account'),
         compute="_compute_amount")
 
-    @api.one
     @api.depends('invoice_line_ids.price_subtotal',
                  'tax_line_ids.amount',
                  'currency_id', 'company_id')
