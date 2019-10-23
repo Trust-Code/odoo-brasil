@@ -533,6 +533,12 @@ class InvoiceEletronic(models.Model):
         subject = values.pop('subject')
         values.pop('body')
         values.pop('attachment_ids')
+        # Hack - Those attachments are being encoded twice,
+        # so lets decode to message_post encode again
+        new_items = []
+        for item in values.get('attachments', []):
+            new_items.append((item[0], base64.b64decode(item[1])))
+        values['attachments'] = new_items
         self.invoice_id.message_post(
             body=values['body_html'], subject=subject,
             message_type='email', subtype='mt_comment',
