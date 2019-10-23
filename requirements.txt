@@ -1,4 +1,4 @@
-pillow==3.4.2
+pillow==6.2.0
 ofxparse==0.16
 suds-jurko-requests
 pytrustnfe3>=0.10.0
