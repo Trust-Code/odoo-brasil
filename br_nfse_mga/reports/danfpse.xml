@@ -36,6 +36,15 @@
                 padding:0px;
             }
             td, th { padding: 0 4px; }
+            .bt { border-top: 1px solid black; }
+            .bb { border-bottom: 1px solid black; }
+            .bl { border-left: 1px solid black; }
+            .br { border-right: 1px solid black; }
+            div.completa { border: 1px solid black; }
+            .rotulo { padding: 8px 0px; font-size: 10px; background-color: #d6d6d6; text-align:center; }
+            .linha {  min-height:30px; padding: 5px 2px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .direita {text-align: right; padding-right:5px;}
+            .centro {text-align:center;}
         </style>
         <div class="page">
             <div class="row" style="border: 1px solid black;">
@@ -46,7 +55,7 @@
                 <div class="col-7" style="padding:0px;text-align:center;font-size:18px;">
                     PREFEITURA DA CIDADE DE MARINGÁ
                     <br />
-                    Secretaria Municipal de Fazenda
+                    <br/>
                     <br />
                     <t t-if="doc.state != 'done'">
                         <strong style="font-size:20px;">RECIBO PROVISÓRIO DE SERVIÇOS - RPS
@@ -59,132 +68,181 @@
                 </div>
                 <div class="col-3" style="padding:0px;">
                     <div style="border: 1px solid black; padding: 2px;text-align:center;">
-                        <t t-if="doc.state == 'done'">
-                            <span style="font-size:9px;">Número da Nota</span>
-                            <br />
-                            <strong t-field="doc.numero_nfse"></strong>
-                        </t>
-                        <t t-if="doc.state != 'done'">
-                            <span style="font-size:9px;">Número RPS</span>
-                            <br />
-                            <strong t-field="doc.numero"></strong>
-                        </t>
+                        <span style="font-size:9px;">Número da Nota</span>
+                        <br />
+                        <strong t-esc="doc.numero_nfse or '0000000000'"></strong>                        
                     </div>
                     <div style="border: 1px solid black; padding: 2px;text-align:center;">
                         <span style="font-size:9px;">Data e Hora de Emissão</span>
                         <br />
                         <strong t-field="doc.data_emissao"></strong>
                     </div>
-                    <t t-if="doc.state == 'done'">
-                        <div style="border: 1px solid black; padding: 2px;text-align:center;">
-                            <span style="font-size:8px;">Código de verificação</span>
-                            <br />
-                            <strong t-field="doc.verify_code"></strong>
-                        </div>
-                    </t>
-                </div>
+                      <div style="border: 1px solid black; padding: 2px;text-align:center;">
+                        <span style="font-size:8px;">Número NFSe substituída</span>
+                        <br />
+                        <strong>--------------------</strong>
+                    </div>
+                 </div>
+            </div>
+            <div class="row" style="border: 1px solid black; padding 0 0 5px 5px;">
+              <div class="col-2 centro br">
+                  <strong>Competência</strong>
+                  <br />
+                  <strong t-esc="doc.data_emissao.strftime('%m/%Y')"></strong>
+              </div>
+              <div class="col-2 centro br">
+                  <strong>Número do RPS</strong>
+                  <br />
+                  <strong t-esc="doc.numero or '000000'"></strong>
+              </div>
+              <div class="col-4 centro br">
+                  <strong>Município de Prestação do Serviço</strong>
+                  <br />
+                  <strong t-field="doc.company_id.partner_id.city_id"></strong>/<strong t-field="doc.company_id.partner_id.state_id.code"></strong>
+              </div>
+              <div class="col-4 centro">
+                  <strong>Código de Verificação</strong>
+                  <br />
+                  <strong t-esc="doc.verify_code or '---------------------'"></strong>
+              </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 0 0 5px 5px;">
                 <div class="col-2">
-                    <img style="height:65px;margin-top:15px;margin-left:10px" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                    <img style="max-height:170px;max-width:170px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
                 </div>
                 <div class="col-10">
-                    <div class="col-12" style="text-align:center;">
-                        <strong>PRESTADOR DE SERVIÇOS</strong>
+                    <div class="row">
+                      <div class="col-12" style="text-align:center;">
+                          <strong>PRESTADOR DE SERVIÇOS</strong>
+                      </div>
                     </div>
+                    <div class="row">
+                      <div class="col-12">
+                          Nome/Razão Social:
+                          <strong t-field="doc.company_id.legal_name"></strong>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-8">
+                          CNPJ:
+                          <strong t-field="doc.company_id.cnpj_cpf"></strong>
+                      </div>
+                      <div class="col-4">
+                          Inscrição Municipal:
+                          <strong t-field="doc.company_id.inscr_mun"></strong>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                          Endereço:
+                          <strong t-field="doc.company_id.street"></strong>
+                          <strong t-field="doc.company_id.number"></strong>
+                          <strong t-field="doc.company_id.district"></strong>
+                          - CEP: <strong t-field="doc.company_id.zip"></strong>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                          Complemento:
+                          <strong t-field="doc.company_id.street2"></strong>
+                      </div>
+                      <div class="col-6">
+                          Telefone:
+                          <strong t-field="doc.company_id.phone"></strong>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-5">
+                          Município:
+                          <strong t-field="doc.company_id.city_id"></strong>
+                      </div>
+                      <div class="col-2">
+                          UF:
+                         <strong t-field="doc.company_id.partner_id.state_id.code"></strong>
+                      </div>
+                      <div class="col-5">
+                          e-mail:
+                          <strong t-field="doc.company_id.email"></strong>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-12" style="padding-left:25px;">
+                  <div class="row">
+                    <div class="col-12" style="text-align:center;">
+                        <strong>TOMADOR DE SERVIÇOS</strong>
+                    </div>
+                  </div>
+                  <div class="row">
                     <div class="col-12">
                         Nome/Razão Social:
-                        <strong t-field="doc.company_id.partner_id.legal_name"></strong>
+                        <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
                     </div>
+                  </div>
+                  <div class="row">
                     <div class="col-8">
                         CNPJ:
-                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"></strong>
-                    </div>
+                        <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
+                    </div>            
                     <div class="col-4">
-                        Inscrição Municipal:
-                        <strong t-field="doc.company_id.partner_id.inscr_mun"></strong>
+                      Inscrição Municipal:
+                      <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
                     </div>
+                  </div>
+                  <div class="row">
                     <div class="col-12">
                         Endereço:
-                        <strong t-field="doc.company_id.partner_id.street">
-                        </strong>
-                        <strong t-field="doc.company_id.partner_id.number">
-                        </strong>
-                        <strong t-field="doc.company_id.partner_id.district">
-                        </strong>
+                        <strong t-field="doc.commercial_partner_id.street"></strong>
+                        <strong t-field="doc.commercial_partner_id.number"></strong>
+                        <strong t-field="doc.commercial_partner_id.district"></strong>
+                        - CEP: <strong t-field="doc.commercial_partner_id.zip"></strong>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                        Complemento:
+                        <strong t-field="doc.commercial_partner_id.street2"></strong>
                     </div>
                     <div class="col-6">
+                        Telefone:
+                        <strong t-field="doc.commercial_partner_id.phone"></strong>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
                         Município:
-                        <strong t-field="doc.company_id.partner_id.city_id"></strong>
+                        <strong t-field="doc.commercial_partner_id.city_id"></strong>
+                    </div>
+                    <div class="col-2">
+                        UF:
+                        <strong t-field="doc.commercial_partner_id.state_id.code"></strong>
                     </div>
                     <div class="col-6">
-                        UF:
-                        <strong t-field="doc.company_id.partner_id.state_id"></strong>
+                        E-mail:
+                        <strong t-field="doc.partner_id.email"></strong>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:250px;">
+                <div class="col-12">
+                    <div class="row completa centro">
+                      <div class="col-12" style="padding:5px;">
+                        <strong>DISCRIMINAÇÃO DOS SERVIÇOS</strong>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12" style="padding: 15px;">
+                        <t t-foreach="doc.eletronic_item_ids" t-as="line">
+                            <p t-field="line.name"></p>
+                        </t>
+                        <span t-raw="doc.informacoes_complementares"></span>
+                      </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
-                <div class="col-12">
-                <div class="col-12" style="text-align:center;">
-                    <strong>TOMADOR DE SERVIÇOS</strong>
-                </div>
-                <div class="col-12">
-                    Nome/Razão Social:
-                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"></strong>
-                </div>
-                <div class="col-8">
-                    CNPJ:
-                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"></strong>
-                </div>
-                <div class="col-4">
-                    Inscrição Municipal:
-                    <strong t-field="doc.commercial_partner_id.inscr_mun"></strong>
-                </div>
-                <div class="col-12">
-                    Endereço:
-                    <strong t-field="doc.commercial_partner_id.street">
-                    </strong>
-                    <strong t-field="doc.commercial_partner_id.number">
-                    </strong>
-                    <strong t-field="doc.commercial_partner_id.district">
-                    </strong>
-                </div>
-                <div class="col-4">
-                    Município:
-                    <strong t-field="doc.commercial_partner_id.city_id"></strong>
-                </div>
-                <div class="col-2">
-                    UF:
-                    <strong t-field="doc.commercial_partner_id.state_id"></strong>
-                </div>
-                <div class="col-6">
-                    E-mail:
-                    <strong t-field="doc.partner_id.email"></strong>
-                </div>
-                </div>
-            </div>
-            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px; min-height:350px;">
-                <div class="col-12" style="text-align:center;">
-                    <strong >DISCRIMINAÇÃO DOS SERVIÇOS</strong>
-                </div>
-                <div class="col-12">
-                    <br />
-                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
-                        <p t-field="line.name"></p>
-                    </t>
-                    <span t-field="doc.informacoes_legais"></span>
-                    <span t-field="doc.informacoes_complementares"></span>
-                </div>
-            </div>
-            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
-                <div class="col-12" style="text-align:center; font-size: 16px;">
-                    <strong>VALOR TOTAL DA NOTA </strong>
-                    <strong t-field="doc.valor_final"
-                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    <br />
-                </div>
-            </div>
-            <div class="row" style="border: 1px solid black; padding:0 0 5px 5px;">
+            <div class="row" style="border: 1px solid black; padding:0 0 5px 5px; min-height:130px;">
                 <div class="col-12">
                     Código do serviço:
                     <br />
@@ -192,64 +250,198 @@
                     <strong t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name"></strong>
                 </div>
             </div>
-            <div class="row" style="border: 1px solid black;">
-                <div class="col-3" style="text-align:center;">
-                    VL. Total Deduções (R$):
-                    <br />
-                    <strong>R$0,00</strong>
-                </div>
-                <div class="col-3" style="text-align:center;">
-                    Base de Cálculo (R$):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_bruto"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>*</strong>
-                    </t>
-                </div>
-                <div class="col-2" style="text-align:center;">
-                    Alíquota (%):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong><span t-field="doc.eletronic_item_ids[0].issqn_aliquota" />%</strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>*</strong>
-                    </t>
-                </div>
-                <div class="col-2" style="text-align:center;">
-                    Valor do ISS (R$):
-                    <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_issqn"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>*</strong>
-                    </t>
-                </div>
-                <div class="col-2" style="text-align:center;">
-                    Crédito (R$):
-                    <br />
-                    <strong>0,00</strong>
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-12" style="text-align:center; font-size: 16px;">
+                    <strong>TRIBUTOS FEDERAIS</strong>
                 </div>
             </div>
-            <div class="row"
-                style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
-                <div style="text-align:center"><b>Outras informações</b></div>
-                <ul style="list-style-type: square;">
-                  <li>Esta NFS-e foi emitida com respaldo na Lei nº 5.098 de 15/10/2009 e no Decreto nº 32.250 de 11/05/2010</li>
-                  <li>PROCON-RJ: Av. Rio Branco nº 25, 5º andar, tel 151: www.procon.rj.gov.br</li>
-                  <li>ISS devido deve ser recolhido por meio de Documento de Arrecadação do Simples Nacional (DAS)</li>
-                  <t t-if="doc.company_id.fiscal_type != '3'">
-                    <li>Documento emitido por ME ou EPP optantee pelo Simples Nacional. Não gera direito a crédito fiscal de IPI.</li>
-                  </t>
-                  <li>Esta NFS-e não gera crédito</li>
-                </ul>
-                <br />
+
+           <div class="row completa">
+                <div class="col-3 linha br direita">
+                    PIS (R$)<br/>
+                    <span t-field="doc.valor_retencao_pis" />
+                </div>
+                <div class="col-2 linha br direita">
+                    COFINS (R$)<br/>
+                    <span t-field="doc.valor_retencao_cofins" />
+                </div>
+                <div class="col-2 linha br direita">
+                    IR (R$)<br/>
+                    <span t-field="doc.valor_retencao_irrf" />
+                </div>
+                <div class="col-2 linha br direita">
+                    INSS (R$)<br/>
+                    <span t-field="doc.valor_retencao_inss" />
+                </div>
+                <div class="col-3 linha br direita">
+                    CSLL (R$)<br/>
+                    <span t-field="doc.valor_retencao_csll" />
+                </div>
+            </div>
+
+
+            <div class="row bl bt br">
+                <div class="col-4 br centro">
+                    <strong>Detalhamento de Valores - Prestador dos Serviços</strong>
+                </div>
+                <div class="col-4 br centro">
+                    <strong>Outras Informações</strong>
+                </div>
+                <div class="col-4 centro">
+                    <strong>Cálculo do ISSQN devido no Município</strong>
+                </div>
+            </div>
+
+            <div class="row br bl">
+                <div class="col-3">
+                    Valor dos Serviços R$
+                </div>
+                <div class="col-1 linha br direita">
+                    <span t-field="doc.valor_servicos" />
+                </div>
+                <div class="col-4 br">
+                </div>
+                <div class="col-3">
+                    Valor dos Serviços R$
+                </div>
+                <div class="col-1 linha direita">
+                    <span t-field="doc.valor_servicos" />
+                </div>
+            </div>
+
+            <div class="row br bl">
+                <div class="col-3">
+                    (-) Desconto Incondicionado
+                </div>
+                <div class="col-1 linha br direita">
+                    R$ 0,00
+                </div>
+                <div class="col-4 linha br centro">
+                </div>
+                <div class="col-3">
+                    (-) Deduções permitidas em lei
+                </div>
+                <div class="col-1 linha direita">
+                    R$ 0,00
+                </div>
+            </div>
+
+            <div class="row br bl">
+                <div class="col-3">
+                    (-) Desconto Condicionado
+                </div>
+                <div class="col-1 linha br direita">
+                  R$ 0,00
+                </div>
+                <div class="col-4 centro br">
+                    Regime esp. Tributação:
+                </div>
+                <div class="col-3">
+                    (-) Desconto Incondicionado
+                </div>
+                <div class="col-1 linha direita">
+                    R$ 0,00
+                </div>
+            </div>
+
+            <div class="row br bl">
+                <div class="col-3">
+                    (-) Retenções Federais
+                </div>
+                <div class="col-1 linha br direita">
+                    <span t-field="doc.retencoes_federais" />
+                </div>
+                <div class="col-4 linha br centro">
+                    0 - Nenhum
+                </div>
+                <div class="col-3">
+                    (=) Base de Cálculo
+                </div>
+                <div class="col-1 linha direita">
+                    <span t-field="doc.valor_servicos" />
+                </div>
+            </div>
+
+            <div class="row br bl">
+                <div class="col-3">
+                    (-) Outras Retenções
+                </div>
+                <div class="col-1 linha br direita">
+                    R$ 0,00
+                </div>
+                <div class="col-4 centro br">
+                    Opção Simples Nacional:
+                </div>
+                <div class="col-3">
+                    (x) Alíquota %
+                </div>
+                <div class="col-1 linha direita">
+                    <span t-field="doc.eletronic_item_ids[0].issqn_aliquota" />
+                </div>
+            </div>
+
+            <div class="row br bl">
+                <div class="col-3">
+                    (-) ISS Retido
+                </div>
+                <div class="col-1 linha br direita">
+                    <span t-field="doc.valor_retencao_issqn" />
+                </div>
+                <div class="col-4 linha br centro">
+                    <t t-if="doc.company_id.fiscal_type != '3'">
+                        1 - Sim
+                    </t>
+                    <t t-if="doc.company_id.fiscal_type == '3'">
+                        2 - Não
+                    </t>
+                </div>
+                <div class="col-3">
+                    ISS a reter:
+                </div>
+                <div class="col-1 linha centro">
+                    <t t-if="not doc.valor_retencao_issqn">
+                        ( ) Sim (X) Não
+                    </t>
+                    <t t-if="doc.valor_retencao_issqn">
+                        (X) Sim ( ) Não
+                    </t>
+                </div>
+            </div>
+
+            <div class="row completa">
+                <div class="col-3" style="padding:10px;">
+                    <strong>(=) Valor Líquido R$</strong>
+                </div>
+                <div class="col-1 linha br direita" style="padding:10px;"> 
+                    <strong t-field="doc.valor_final" />
+                </div>
+                <div class="col-4 centro br">
+                    Incentivador Cultural: Não
+                </div>
+                <div class="col-3" style="padding:10px;">
+                    <strong>(=) Valor do ISS: R$</strong>
+                </div>
+                <div class="col-1 linha direita" style="padding:10px;">
+                    <strong t-field="doc.valor_issqn" />
+                </div>
+            </div>
+
+            <div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
+                <div class="col-12" style="text-align:center; font-size: 16px;padding:20px;">
+                    <strong>VALOR TOTAL DA NOTA = </strong>
+                    <strong t-field="doc.valor_final"
+                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                    <br />
+                </div>
+            </div>
+          
+            <div class="row" style="border: 1px solid black;min-height:170px; padding:0 0 5px 5px;">
+              <div class="col-12" style="text-align:center; font-size: 16px;">
+                <strong>OUTRAS INFORMAÇÕES</strong>
+              </div>
+              <div class="col-12">
                 <span t-field="doc.informacoes_legais"></span>
+              </div>
             </div>
         </div>
     </template>
