@@ -23,6 +23,14 @@ class SaleOrder(models.Model):
                 order.total_despesas,
             })
 
+    @api.multi
+    def _prepare_invoice(self):
+        res = super(SaleOrder, self)._prepare_invoice()
+        res['weight'] = sum(
+            [x.qty_to_invoice * x.product_id.weight for x in self.order_line])
+        res['weight_net'] = res['weight']
+        return res
+
     def _calc_ratio(self, qty, total):
         if total > 0:
             return qty / total
