@@ -18,7 +18,7 @@
         <field name="field_parent">partner_id</field>
         <field name="priority" eval="20"/>
         <field name="arch" type="xml">
-            <tree default_order="date_maturity" string="Payments" colors="grey:reconciled==True;red:date_maturity&lt;current_date" create="false">
+            <tree default_order="date_maturity" string="Payments" decoration-danger="date_maturity&lt;current_date" decoration-muted="reconciled==True" create="false">
                 <field name="partner_id" readonly="1"/>
                 <field name="account_id" readonly="1"/>
                 <field name="payment_value" sum="Total das parcelas" />

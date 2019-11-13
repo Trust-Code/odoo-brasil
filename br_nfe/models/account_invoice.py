@@ -43,7 +43,7 @@ class AccountInvoice(models.Model):
             docs = self.env['invoice.eletronic'].search(
                 [('invoice_id', '=', item.id)])
             for doc in docs:
-                if doc.state in ('done', 'denied', 'cancel'):
+                if doc.state in ('done', 'denied'):
                     raise UserError(
                         _('Nota fiscal já emitida para esta fatura - \
                           Duplique a fatura para continuar'))
@@ -118,7 +118,8 @@ class AccountInvoice(models.Model):
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe
         res['ambiente'] = 'homologacao' \
             if inv.company_id.tipo_ambiente == '2' else 'producao'
-
+        if inv.goods_delivery_date:
+            res['data_entrada_saida'] = inv.goods_delivery_date
         # Indicador Consumidor Final
         if inv.commercial_partner_id.is_company:
             res['ind_final'] = '0'
@@ -151,6 +152,10 @@ class AccountInvoice(models.Model):
         if inv.commercial_partner_id.indicador_ie_dest:
             ind_ie_dest = inv.commercial_partner_id.indicador_ie_dest
         res['ind_ie_dest'] = ind_ie_dest
+        iest_id = inv.company_id.iest_ids.filtered(
+            lambda x: x.state_id == inv.commercial_partner_id.state_id)
+        if iest_id:
+            res['iest'] = iest_id.name
 
         # Duplicatas
         duplicatas = []
@@ -242,6 +247,17 @@ class AccountInvoice(models.Model):
         vals['import_declaration_ids'] = di_importacao
         vals['informacao_adicional'] = invoice_line.informacao_adicional
         return vals
+
+    @api.multi
+    def copy(self, default=None):
+        self.ensure_one()
+        new_acc_inv = super(AccountInvoice, self).copy(default)
+        if self.import_declaration_ids:
+            new_acc_inv.import_declaration_ids = self.import_declaration_ids
+            for i in range(len(new_acc_inv.invoice_line_ids)):
+                new_acc_inv.invoice_line_ids[i].declaration_line_ids = \
+                    self.invoice_line_ids[i].declaration_line_ids
+        return new_acc_inv
 
 
 class AccountInvoiceLine(models.Model):

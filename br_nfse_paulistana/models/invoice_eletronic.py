@@ -9,6 +9,7 @@ import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFT
 
@@ -18,6 +19,7 @@ try:
     from pytrustnfe.nfse.paulistana import envio_lote_rps
     from pytrustnfe.nfse.paulistana import teste_envio_lote_rps
     from pytrustnfe.nfse.paulistana import cancelamento_nfe
+    from pytrustnfe.nfse.paulistana import consulta_nfe
     from pytrustnfe.certificado import Certificado
 except ImportError:
     _logger.error('Cannot import pytrustnfe', exc_info=True)
@@ -261,6 +263,8 @@ class InvoiceEletronic(models.Model):
         if self.model == '001' and self.state not in ('done', 'cancel'):
             self.state = 'error'
 
+            _logger.info('Sending NFS-e Paulistana (%s) %s' % (
+                self.numero, self.partner_id.name))
             nfse_values = self._prepare_eletronic_invoice_values()
             cert = self.company_id.with_context(
                 {'bin_size': False}).nfe_a1_file
@@ -276,10 +280,11 @@ class InvoiceEletronic(models.Model):
                     certificado, nfse=nfse_values)
             retorno = resposta['object']
             if retorno.Cabecalho.Sucesso:
-                self.state = 'done'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = \
-                    'Nota Fiscal Paulistana emitida com sucesso'
+                self.write({
+                    'state': 'done',
+                    'codigo_retorno': '100',
+                    'mensagem_retorno': 'Nota Paulistana emitida com sucesso',
+                })
 
                 # Apenas producão tem essa tag
                 if self.ambiente == 'producao':
@@ -295,8 +300,11 @@ class InvoiceEletronic(models.Model):
                              'numero_nfse': self.numero_nfse})
 
             else:
-                self.codigo_retorno = retorno.Erro.Codigo
-                self.mensagem_retorno = retorno.Erro.Descricao
+                self.write({
+                    'codigo_retorno': retorno.Erro.Codigo,
+                    'mensagem_retorno': retorno.Erro.Descricao,
+                })
+                self.notify_user()
 
             self.env['invoice.eletronic.event'].create({
                 'code': self.codigo_retorno,
@@ -307,6 +315,8 @@ class InvoiceEletronic(models.Model):
                 'nfse-envio', self, resposta['sent_xml'])
             self._create_attachment(
                 'nfse-ret', self, resposta['received_xml'])
+            _logger.info('NFS-e Paulistana (%s) finished with status %s' % (
+                self.numero, self.codigo_retorno))
 
     @api.multi
     def action_cancel_document(self, context=None, justificativa=None):
@@ -314,6 +324,7 @@ class InvoiceEletronic(models.Model):
             return super(InvoiceEletronic, self).action_cancel_document(
                 justificativa=justificativa)
 
+        _logger.info('Cancelling NFS-e Paulistana (%s)' % self.numero)
         cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
         cert_pfx = base64.decodestring(cert)
         certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
@@ -338,12 +349,16 @@ class InvoiceEletronic(models.Model):
         resposta = cancelamento_nfe(certificado, cancelamento=canc)
         retorno = resposta['object']
         if retorno.Cabecalho.Sucesso:
-            self.state = 'cancel'
-            self.codigo_retorno = '100'
-            self.mensagem_retorno = 'Nota Fiscal Paulistana Cancelada'
+            self.write({
+                'state': 'cancel',
+                'codigo_retorno': '100',
+                'mensagem_retorno': 'Nota Fiscal Paulistana Cancelada',
+            })
         else:
-            self.codigo_retorno = retorno.Erro.Codigo
-            self.mensagem_retorno = retorno.Erro.Descricao
+            self.write({
+                'codigo_retorno': retorno.Erro.Codigo,
+                'mensagem_retorno': retorno.Erro.Descricao,
+            })
 
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
@@ -352,3 +367,34 @@ class InvoiceEletronic(models.Model):
         })
         self._create_attachment('canc', self, resposta['sent_xml'])
         self._create_attachment('canc-ret', self, resposta['received_xml'])
+        _logger.info('Cancelling NFS-e (%s) was finished with status %s' % (
+            self.numero, self.codigo_retorno))
+
+    def action_check_nfse_status(self):
+        if self.model != '001':
+            raise UserError(
+                'A consulta de situação serve apenas para São Paulo')
+
+        cert = self.company_id.with_context({'bin_size': False}).nfe_a1_file
+        cert_pfx = base64.decodestring(cert)
+        certificado = Certificado(cert_pfx, self.company_id.nfe_a1_password)
+
+        company = self.company_id
+        consulta = {
+            'cnpj_remetente': re.sub('[^0-9]', '', company.cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
+            'numero_rps': self.numero,
+            'serie_rps': self.serie.code or '',
+        }
+        resposta = consulta_nfe(certificado, consulta=consulta)
+        retorno = resposta['object']
+        if retorno.Cabecalho.Sucesso and "NFe" in dir(retorno):
+            self.state = 'done'
+            self.codigo_retorno = '100'
+            self.mensagem_retorno = \
+                'Nota Fiscal Paulistana emitida com sucesso'
+            self.verify_code = retorno.NFe.ChaveNFe.CodigoVerificacao
+            self.numero_nfse = retorno.NFe.ChaveNFe.NumeroNFe
+        else:
+            msg = '%s - %s' % (retorno.Alerta.Codigo, retorno.Alerta.Descricao)
+            raise UserError(msg)

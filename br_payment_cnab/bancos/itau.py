@@ -71,9 +71,16 @@ class Itau240(Cnab240):
     def _get_segmento(self, line, lot_sequency, num_lot, nome_segmento):
         segmento = super(Itau240, self)._get_segmento(
             line, lot_sequency, num_lot, nome_segmento)
+        vazio, dac = self.get_dac_agencia_e_conta(segmento)
         ignore = not self.is_doc_or_ted(
             line.payment_information_id.payment_type)
         del(segmento['codigo_camara_compensacao'])
+        if line.barcode:
+            segmento.update({
+                'codigo_de_barras': int(line.barcode[20:]),
+                'codigo_de_barras_dv': self.get_dv_digitable_line(
+                    self._just_numbers(line.linha_digitavel))
+            })
         segmento.update({
             'numero_parcela': int(segmento.get('numero_parcela')[:13]),
             'divida_ativa_etiqueta': int(
@@ -97,15 +104,41 @@ class Itau240(Cnab240):
                 segmento.get('favorecido_agencia'), 0),
             'valor_real_pagamento': self._string_to_monetary(
                 segmento.get('valor_real_pagamento')),
-            'favorecido_banco': int(line.bank_account_id.bank_id.bic),
+            'favorecido_banco': int(line.bank_account_id.bank_id.bic) or
+                int(line.barcode[:3]),
             'finalidade_ted': get_ted_doc_finality(
                 'itau', segmento.get('finalidade_doc_ted'), '01', ignore),
             'finalidade_doc': get_ted_doc_finality(
                 'itau', segmento.get('finalidade_doc_ted'), '02', ignore),
             'codigo_receita_tributo': int(
-                segmento.get('codigo_receita_tributo') or 0)
+                segmento.get('codigo_receita_tributo') or 0),
+            'vazio_dac': vazio,
+            'dac': dac
         })
         return segmento
+
+    def get_dv_digitable_line(self, linha_digitavel):
+        if len(linha_digitavel) == 47:
+            return int(linha_digitavel[4])
+        elif len(linha_digitavel) == 48:
+            return int(linha_digitavel[3])  # confirmar info
+
+    # NOTA 11 do manual: se houverem dois digitos no dac da agencia/conta
+    # o campo 42 (inicialmente vazio) deve ser utilizado
+    def get_dac_agencia_e_conta(self, segmento):
+        dac_agencia = segmento.get('favorecido_agencia_dv')
+        dac_conta = segmento.get('favorecido_conta_dv')
+        dac_agencia = False if dac_agencia is '' else dac_agencia
+        dac_conta = False if dac_conta is '' else dac_conta
+
+        if dac_agencia and dac_conta:
+            return dac_agencia, dac_conta
+        if dac_agencia and not dac_conta:
+            return '', dac_agencia
+        if not dac_agencia and dac_conta:
+            return '', dac_conta
+        else:
+            return '', ''
 
     def _sum_lot_values(self, lot):
         if self._operation not in ['16', '17', '18', '35']:
