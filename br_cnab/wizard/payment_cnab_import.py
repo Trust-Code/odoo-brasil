@@ -78,8 +78,18 @@ class L10nBrPaymentCnabImport(models.TransientModel):
                     self.journal_id.bank_id.bic,
                     evento.servico_codigo_movimento)
 
+                if (self.journal_id.bank_id.bic == '001'):
+                    codigo_convenio_banco = int(
+                        lote.header.codigo_convenio_banco[:9])
+                    if (len(str(codigo_convenio_banco)) == 7):
+                        nosso_numero = evento.nosso_numero[7:]
+                    else:
+                        nosso_numero = evento.nosso_numero
+                else:
+                    nosso_numero = evento.nosso_numero
+
                 payment_line = self.env['payment.order.line'].search(
-                    [('nosso_numero', '=', int(evento.nosso_numero)),
+                    [('nosso_numero', '=', int(nosso_numero)),
                      ('src_bank_account_id', '=',
                       self.journal_id.bank_account_id.id)])
 
