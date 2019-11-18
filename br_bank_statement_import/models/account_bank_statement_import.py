@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import uuid
 import logging
 import StringIO
 
@@ -19,23 +20,25 @@ except ImportError:
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    force_format = fields.Boolean(string=u'Forçar formato', default=False)
-    file_format = fields.Selection([('ofx', 'Extrato OFX')],
-                                   string="Formato do Arquivo",
-                                   default='ofx')
+    unique_transaction = fields.Boolean(
+        string=u'Gerar ID Único', default=False,
+        help=u'Apenas marque esta opção em caso do arquivo OFX conter \
+        registros duplicados (campo FITID), alguns bancos exportam \
+        o arquivo OFX com dois registros diferentes com mesmo número \
+        de transação (o que não deveria). O comportamento padrão do Odoo \
+        caso exista duplicados é ignorar os duplicados (mesmo FITID) \
+        e se forem todos duplicados dizer que o arquivo já foi importado. \
+        Se alguma dessas situações estiver ocorrendo ao importar o arquivo \
+        talvez você precise marcar esta opção.'
+    )
     force_journal_account = fields.Boolean(string=u"Forçar conta bancária?")
     journal_id = fields.Many2one('account.journal', string=u"Conta Bancária",
                                  domain=[('type', '=', 'bank')])
 
     def _parse_file(self, data_file):
-        if self.force_format:
-            self._check_ofx(data_file, raise_error=True)
+        if self._check_ofx:
             return self._parse_ofx(data_file)
-        else:
-            if self._check_ofx(data_file):
-                return self._parse_ofx(data_file)
-            return super(AccountBankStatementImport, self)._parse_file(
-                data_file)
+        return super(AccountBankStatementImport, self)._parse_file(data_file)
 
     def _check_ofx(self, data_file, raise_error=False):
         try:
@@ -55,13 +58,16 @@ class AccountBankStatementImport(models.TransientModel):
         index = 1  # Some banks don't use a unique transaction id, we make one
         for account in ofx.accounts:
             for transacao in account.statement.transactions:
+                unique_id = transacao.id
+                if self.unique_transaction:
+                    unique_id = str(uuid.uuid4())
                 transacoes.append({
                     'date': transacao.date,
                     'name': transacao.payee + (
                         transacao.memo and ': ' + transacao.memo or ''),
                     'ref': transacao.id,
                     'amount': transacao.amount,
-                    'unique_import_id': "%s-%s" % (transacao.id, index)
+                    'unique_import_id': unique_id
                 })
                 total += float(transacao.amount)
                 index += 1
