@@ -5,7 +5,6 @@
 import os
 import base64
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import UserError
 
 
 class TestImportStatement(TransactionCase):
@@ -84,15 +83,18 @@ class TestImportStatement(TransactionCase):
         self.assertEquals(round(stmt.balance_end_real, 2), -10081.58)
         self.assertEquals(stmt.balance_end, -10081.58)
 
-    def test_import_ofx_without_force(self):
+    def test_import_ofx_without_unique_transaction(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato.ofx')
         self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.unique_transaction = False
         self.import_ofx.import_file()
 
         ofx = os.path.join(self.caminho, 'extratos/extrato-bb.ofx')
         self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.unique_transaction = False
         self.import_ofx.import_file()
 
         ofx = os.path.join(self.caminho, 'extratos/extrato-itau.ofx')
         self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
+        self.import_ofx.unique_transaction = False
         self.import_ofx.import_file()
