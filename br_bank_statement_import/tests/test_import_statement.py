@@ -23,16 +23,11 @@ class TestImportStatement(TransactionCase):
         })
 
         self.import_ofx = self.env['account.bank.statement.import'].create({
-            'force_format': True,
-            'file_format': 'ofx',
+            'unique_transaction': True,
             'force_journal_account': True,
             'journal_id': self.journal.id,
             'data_file': base64.b64encode('000'),
         })
-
-    def test_invalid_files(self):
-        with self.assertRaises(UserError):
-            self.import_ofx.import_file()
 
     def test_import_ofx_default(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato.ofx')
@@ -92,15 +87,12 @@ class TestImportStatement(TransactionCase):
     def test_import_ofx_without_force(self):
         ofx = os.path.join(self.caminho, 'extratos/extrato.ofx')
         self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
-        self.import_ofx.force_format = False
         self.import_ofx.import_file()
 
         ofx = os.path.join(self.caminho, 'extratos/extrato-bb.ofx')
         self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
-        self.import_ofx.force_format = False
         self.import_ofx.import_file()
 
         ofx = os.path.join(self.caminho, 'extratos/extrato-itau.ofx')
         self.import_ofx.data_file = base64.b64encode(open(ofx, 'r').read())
-        self.import_ofx.force_format = False
         self.import_ofx.import_file()
