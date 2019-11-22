@@ -41,14 +41,6 @@
                 <field name="journal_id" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
             </xpath>
 
-            <xpath expr="//label[@for='amount']" position="attributes">
-                <attribute name="string">Valor do Pagamento</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='payment_date']" position="attributes">
-                <attribute name="string">Data de Pagamento</attribute>
-            </xpath>
-
         </field>
     </record>
 
