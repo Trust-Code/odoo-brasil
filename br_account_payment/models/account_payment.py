@@ -21,10 +21,6 @@ class AccountPayment(models.Model):
                 'default_amount', rec.get('amount', 0.0))
         return rec
 
-    def _create_payment_entry(self, amount):
-        self = self.with_context(move_line_to_reconcile=self.move_line_id)
-        return super(AccountPayment, self)._create_payment_entry(amount)
-
     def action_validate_invoice_payment(self):
         if any(len(record.invoice_ids) > 1 for record in self):
             # For multiple invoices, there is account.register.payments wizard
