@@ -359,7 +359,6 @@ class AccountInvoice(models.Model):
                 done_taxes.append(tax.id)
                 res.append({
                     'invoice_tax_line_id': tax_line.id,
-                    'tax_line_id': tax_line.tax_id.id,
                     'type': 'tax',
                     'name': tax_line.name,
                     'price_unit': tax_line.amount * -1,
