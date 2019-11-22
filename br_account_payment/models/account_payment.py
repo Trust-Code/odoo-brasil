@@ -21,13 +21,6 @@ class AccountPayment(models.Model):
                 'default_amount', rec.get('amount', 0.0))
         return rec
 
-    def action_validate_invoice_payment(self):
-        if any(len(record.invoice_ids) > 1 for record in self):
-            # For multiple invoices, there is account.register.payments wizard
-            raise UserError(_("This method should only be called\
-to process a single invoice's payment."))
-        return self.post()
-
     @api.depends('partner_id', 'partner_type')
     def _compute_open_moves(self):
         for item in self:
