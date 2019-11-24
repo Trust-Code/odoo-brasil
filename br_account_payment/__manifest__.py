@@ -32,6 +32,7 @@
         'views/payment_statement.xml',
         'security/account_security.xml',
         'wizard/payment_cnab_import.xml',
+        'wizard/payment_move_line.xml'
     ],
     'installable': True,
     'application': True,
