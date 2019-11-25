@@ -85,6 +85,9 @@ class PaymentAccountMoveLine(models.TransientModel):
                                     ' a data da parcela.'))
 
     def _get_payment_vals(self):
+        """
+        Method responsible for generating payment record amounts
+        """
         payment_type = 'inbound' if self.move_line_id.debit else 'outbound'
         payment_methods = payment_type == 'inbound' and \
                           self.journal_id.inbound_payment_method_ids or \
@@ -104,6 +107,9 @@ class PaymentAccountMoveLine(models.TransientModel):
         }
 
     def action_confirm_payment(self):
+        """
+        Method responsible for creating the payment
+        """
         payment = self.env['account.payment']
         vals = self._get_payment_vals()
         pay = payment.create(vals)
