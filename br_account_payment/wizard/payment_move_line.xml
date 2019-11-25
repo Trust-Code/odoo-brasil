@@ -14,9 +14,11 @@
                                 <field name="partner_id"/>
                                 <field name="partner_type"/>
                                 <field name="move_line_id"/>
+                                <field name="invoice_id"/>
                                 <field name="journal_id"/>
                                 <field name="communication"/>
                                 <field name="amount"/>
+                                <field name="amount_residual"/>
                                 <field name="payment_date"/>
                             </group>
                         </group>

@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class PaymentAccountMoveLine(models.TransientModel):
@@ -14,6 +14,7 @@ class PaymentAccountMoveLine(models.TransientModel):
         string='Company', readonly=True
     )
     move_line_id = fields.Many2one('account.move.line', readonly=True)
+    invoice_id = fields.Many2one('account.invoice', readonly=True)
     partner_type = fields.Selection(
         [('customer', 'Customer'), ('supplier', 'Vendor')], readonly=True)
     partner_id = fields.Many2one('res.partner', readonly=True)
@@ -22,7 +23,6 @@ class PaymentAccountMoveLine(models.TransientModel):
         domain=[('type', 'in', ('bank', 'cash'))]
     )
     communication = fields.Char(string='Memo')
-    amount = fields.Monetary(string='Payment Amount', required=True)
     payment_date = fields.Date(
         string='Payment Date', default=fields.Date.context_today, required=True
     )
@@ -30,6 +30,34 @@ class PaymentAccountMoveLine(models.TransientModel):
         'res.currency', string='Currency', required=True,
         default=lambda self: self.env.user.company_id.currency_id
     )
+    amount_residual = fields.Monetary(
+        string='Residual Amount', readonly=True,
+        related='move_line_id.amount_residual'
+    )
+    amount = fields.Monetary(
+        string='Payment Amount', required=True,
+    )
+
+    @api.model
+    def default_get(self, fields):
+        rec = super(PaymentAccountMoveLine, self).default_get(fields)
+        move_line_id = rec.get('move_line_id', False)
+        amount = 0
+        if not move_line_id:
+            raise UserError(
+                _("You can only register payments for open invoices"))
+        move_line = self.env['account.move.line'].browse(move_line_id)
+        if move_line[0].amount_residual:
+            amount = move_line[0].amount_residual if \
+                rec['partner_type'] == 'customer' else \
+                move_line[0].amount_residual * -1
+        if move_line[0].invoice_id:
+            invoice = move_line[0].invoice_id
+        rec.update({
+            'amount': amount,
+            'invoice_id': invoice.id,
+        })
+        return rec
 
     @api.onchange('amount')
     def validate_amount_payment(self):
@@ -37,8 +65,10 @@ class PaymentAccountMoveLine(models.TransientModel):
         Method used to validate the payment amount to be recorded
         :return:
         """
-        move_line_amount = self.move_line_id.debit or self.move_line_id.credit
-        if self.amount > move_line_amount:
+        real_amount_residual = self.amount_residual if \
+            self.partner_type == 'customer' else \
+            self.amount_residual * -1
+        if self.amount > real_amount_residual:
             raise ValidationError(_(
                 'O valor do pagamento não pode ser maior '
                 'que o valor da parcela.'))
@@ -54,5 +84,27 @@ class PaymentAccountMoveLine(models.TransientModel):
             raise ValidationError(_('A data do pagamento não pode ser inferior'
                                     ' a data da parcela.'))
 
+    def _get_payment_vals(self):
+        payment_type = 'inbound' if self.move_line_id.debit else 'outbound'
+        payment_methods = payment_type == 'inbound' and \
+                          self.journal_id.inbound_payment_method_ids or \
+                          self.journal_id.outbound_payment_method_ids
+        payment_method_id = payment_methods and payment_methods[0] or False
+        return {
+            'partner_id': self.partner_id.id,
+            'move_line_id': self.move_line_id.id,
+            'invoice_ids': [(6, 0, [self.invoice_id.id])],
+            'journal_id': self.journal_id.id,
+            'communication': self.communication,
+            'amount': self.amount,
+            'payment_date': self.payment_date,
+            'payment_type': payment_type,
+            'payment_method_id': payment_method_id.id,
+            'currency_id': self.currency_id.id,
+        }
+
     def action_confirm_payment(self):
-        pass
+        payment = self.env['account.payment']
+        vals = self._get_payment_vals()
+        pay = payment.create(vals)
+        pay.post()
