@@ -21,7 +21,7 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form"/>
         <field name="arch" type="xml">
             <tree name="vencimentos" position="inside">
-                <button name="action_register_payment" type="object" string="PAGAR" groups="account.group_account_invoice" class="btn btn-success btn-xs" />
+                <button name="action_register_payment_move_line" type="object" string="PAGAR" groups="account.group_account_invoice" class="btn btn-success btn-xs" />
             </tree>
         </field>
     </record>
