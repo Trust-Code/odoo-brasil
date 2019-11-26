@@ -11,21 +11,21 @@
                             <group>
                                 <field name="company_id" invisible="1"/>
                                 <field name="currency_id" invisible="1"/>
+                                <field name="partner_type" invisible="1"/>
+                                <field name="amount_residual" invisible="1"/>
                                 <field name="partner_id"/>
-                                <field name="partner_type"/>
                                 <field name="move_line_id"/>
                                 <field name="invoice_id"/>
                                 <field name="journal_id"/>
-                                <field name="communication"/>
                                 <field name="amount"/>
-                                <field name="amount_residual"/>
                                 <field name="payment_date"/>
+                                <field name="communication"/>
                             </group>
                         </group>
                     </sheet>
                     <footer>
-                        <button string="Confirm Payment" name="action_confirm_payment" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        <button string="Confirmar Pagamento" name="action_confirm_payment" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
                     </footer>
                 </form>
             </field>
