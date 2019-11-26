@@ -50,7 +50,7 @@ class PaymentAccountMoveLine(models.TransientModel):
         amount = 0
         if not move_line_id:
             raise UserError(
-                _("You can only register payments for open invoices"))
+                _("Não foi selecionada nenhuma linha de cobrança."))
         move_line = self.env['account.move.line'].browse(move_line_id)
         if move_line[0].amount_residual:
             amount = move_line[0].amount_residual if \
@@ -58,6 +58,9 @@ class PaymentAccountMoveLine(models.TransientModel):
                 move_line[0].amount_residual * -1
         if move_line[0].invoice_id:
             invoice = move_line[0].invoice_id
+        else:
+            raise(_("A linha de cobrança selecionada não possui nenhuma"
+                    "fatura relacionada."))
         rec.update({
             'amount': amount,
             'invoice_id': invoice.id,
