@@ -59,8 +59,8 @@ class PaymentAccountMoveLine(models.TransientModel):
         if move_line[0].invoice_id:
             invoice = move_line[0].invoice_id
         else:
-            raise(_("A linha de cobrança selecionada não possui nenhuma"
-                    "fatura relacionada."))
+            raise (_("A linha de cobrança selecionada não possui nenhuma"
+                     "fatura relacionada."))
         rec.update({
             'amount': amount,
             'invoice_id': invoice.id,
@@ -97,9 +97,11 @@ class PaymentAccountMoveLine(models.TransientModel):
         Method responsible for generating payment record amounts
         """
         payment_type = 'inbound' if self.move_line_id.debit else 'outbound'
-        payment_methods = payment_type == 'inbound' and \
-                          self.journal_id.inbound_payment_method_ids or \
-                          self.journal_id.outbound_payment_method_ids
+        payment_methods = \
+            payment_type == 'inbound' and \
+            self.journal_id.inbound_payment_method_ids or \
+            self.journal_id.outbound_payment_method_ids
+        
         payment_method_id = payment_methods and payment_methods[0] or False
         return {
             'partner_id': self.partner_id.id,
@@ -119,6 +121,6 @@ class PaymentAccountMoveLine(models.TransientModel):
         Method responsible for creating the payment
         """
         payment = self.env['account.payment']
-        vals = self._get_payment_vals()
+        vals = self._get_payment_vals
         pay = payment.create(vals)
         pay.post()
