@@ -11,31 +11,36 @@ class PaymentAccountMoveLine(models.TransientModel):
 
     company_id = fields.Many2one(
         'res.company', related='journal_id.company_id',
-        string='Company', readonly=True
+        string='Exmpresa', readonly=True
     )
-    move_line_id = fields.Many2one('account.move.line', readonly=True)
-    invoice_id = fields.Many2one('account.invoice', readonly=True)
+    move_line_id = fields.Many2one(
+        'account.move.line', readonly=True, string='Conta à Pagar/Receber')
+    invoice_id = fields.Many2one(
+        'account.invoice', readonly=True, string='Fatura')
     partner_type = fields.Selection(
-        [('customer', 'Customer'), ('supplier', 'Vendor')], readonly=True)
-    partner_id = fields.Many2one('res.partner', readonly=True)
+        [('customer', 'Cliente'), ('supplier', 'Fornecedor')], readonly=True)
+    partner_id = fields.Many2one(
+        'res.partner', string='Cliente/Fornecedor', readonly=True
+    )
     journal_id = fields.Many2one(
-        'account.journal', string="Payment Journal", required=True,
+        'account.journal', string="Diário", required=True,
         domain=[('type', 'in', ('bank', 'cash'))]
     )
-    communication = fields.Char(string='Memo')
+    communication = fields.Char(string='Anotações')
     payment_date = fields.Date(
-        string='Payment Date', default=fields.Date.context_today, required=True
+        string='Data do Pagamento',
+        default=fields.Date.context_today, required=True
     )
     currency_id = fields.Many2one(
-        'res.currency', string='Currency', required=True,
+        'res.currency', string='Moeda', required=True,
         default=lambda self: self.env.user.company_id.currency_id
     )
     amount_residual = fields.Monetary(
-        string='Residual Amount', readonly=True,
+        string='Saldo', readonly=True,
         related='move_line_id.amount_residual'
     )
     amount = fields.Monetary(
-        string='Payment Amount', required=True,
+        string='Valor do Pagamento', required=True,
     )
 
     @api.model
