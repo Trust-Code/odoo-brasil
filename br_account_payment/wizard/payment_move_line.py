@@ -101,7 +101,6 @@ class PaymentAccountMoveLine(models.TransientModel):
             payment_type == 'inbound' and \
             self.journal_id.inbound_payment_method_ids or \
             self.journal_id.outbound_payment_method_ids
-        
         payment_method_id = payment_methods and payment_methods[0] or False
         return {
             'partner_id': self.partner_id.id,
