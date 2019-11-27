@@ -54,4 +54,3 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         return vals
-
