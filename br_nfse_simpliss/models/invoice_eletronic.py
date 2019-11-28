@@ -114,7 +114,10 @@ class InvoiceEletronic(models.Model):
                     'valor_unitario': str("%.2f" % item.preco_unitario)
                 })
                 codigo_servico = item.issqn_codigo
-
+            valor_liquido = self.valor_final - (
+                self.valor_pis + self.valor_cofins +
+                self.valor_retencao_inss + self.valor_retencao_irrf +
+                self.valor_retencao_csll + self.valor_retencao_issqn)
             rps = {
                 'numero': self.numero,
                 'serie': self.serie.code or '',
@@ -139,7 +142,7 @@ class InvoiceEletronic(models.Model):
                 'base_calculo': str("%.2f" % self.valor_final),
                 'aliquota_issqn': str(
                     "%.2f" % self.eletronic_item_ids[0].issqn_aliquota),
-                'valor_liquido_nfse': str("%.2f" % self.valor_final),
+                'valor_liquido_nfse': str("%.2f" % valor_liquido),
                 'codigo_servico': codigo_servico,
                 'cnae_servico': prestador['cnae'],
                 'codigo_tributacao_municipio': codigo_servico,
