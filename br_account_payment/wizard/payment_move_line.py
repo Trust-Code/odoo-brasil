@@ -120,6 +120,6 @@ class PaymentAccountMoveLine(models.TransientModel):
         Method responsible for creating the payment
         """
         payment = self.env['account.payment']
-        vals = self._get_payment_vals
+        vals = self._get_payment_vals()
         pay = payment.create(vals)
         pay.post()
