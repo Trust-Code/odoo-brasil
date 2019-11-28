@@ -118,7 +118,6 @@ class InvoiceEletronic(models.Model):
                     self.valor_pis + self.valor_cofins +
                     self.valor_retencao_inss + self.valor_retencao_irrf +
                     self.valor_retencao_csll + self.valor_retencao_issqn
-
             )
             rps = {
                 'numero': self.numero,
