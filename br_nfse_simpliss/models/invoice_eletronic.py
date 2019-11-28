@@ -115,9 +115,9 @@ class InvoiceEletronic(models.Model):
                 })
                 codigo_servico = item.issqn_codigo
             valor_liquido = self.valor_final - (
-                          self.valor_pis + self.valor_cofins +
-                          self.valor_retencao_inss + self.valor_retencao_irrf +
-                          self.valor_retencao_csll + self.valor_retencao_issqn)
+                self.valor_pis + self.valor_cofins +
+                self.valor_retencao_inss + self.valor_retencao_irrf +
+                self.valor_retencao_csll + self.valor_retencao_issqn)
             rps = {
                 'numero': self.numero,
                 'serie': self.serie.code or '',
