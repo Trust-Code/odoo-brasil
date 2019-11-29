@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <group name="accounting" position="inside">
                 <group>
+                    <field name="fiscal_category_id" />
                     <field name="fiscal_type" />
                     <field name="origin" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}" />
                     <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}" />

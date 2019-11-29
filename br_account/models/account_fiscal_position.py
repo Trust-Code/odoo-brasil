@@ -32,11 +32,16 @@ class AccountFiscalPositionTaxRule(models.Model):
 
     state_ids = fields.Many2many('res.country.state', string=u"Estado Destino",
                                  domain=[('country_id.code', '=', 'BR')])
+    fiscal_category_ids = fields.Many2many(
+        'br_account.fiscal.category', string=u"Categorias Fiscais")
     product_category_ids = fields.Many2many(
         'product.category', string=u"Categoria de Produtos")
     tipo_produto = fields.Selection([('product', u'Produto'),
                                      ('service', u'Serviço')],
                                     string=u"Tipo produto", default="product")
+    product_fiscal_classification_ids = fields.Many2many(
+        'product.fiscal.classification', string=u"Classificação Fiscal",
+        relation="account_fiscal_position_tax_rule_prod_fiscal_clas_relation")
 
     product_ids = fields.Many2many('product.product', string=u"Produtos")
     partner_ids = fields.Many2many('res.partner', string=u"Parceiros")
@@ -208,6 +213,21 @@ class AccountFiscalPosition(models.Model):
             if product.categ_id in rule.product_category_ids:
                 rule_points += 1
             elif len(rule.product_category_ids) > 0:
+                return -1
+
+            # Verifica a categoria fiscal. Se contido, adiciona 1 ponto
+            # Se não, retorna valor -1 (a regra será descartada)
+            if product.fiscal_category_id in rule.fiscal_category_ids:
+                rule_points += 1
+            elif len(rule.fiscal_category_ids) > 0:
+                return -1
+
+            # Verifica produtos. Se contido, adiciona 1 ponto
+            # Se não, retorna -1
+            if product.fiscal_classification_id in \
+                    rule.product_fiscal_classification_ids:
+                rule_points += 1
+            elif len(rule.product_fiscal_classification_ids) > 0:
                 return -1
 
             # Verifica produtos. Se contido, adiciona 1 ponto
