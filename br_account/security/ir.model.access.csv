@@ -32,3 +32,6 @@
 "access_br_account_import_declaration_invoice","access_br_account_import_declaration","model_br_account_import_declaration","account.group_account_invoice",1,0,0,0
 "access_br_account_document_related_user_invoice","access_br_account_document_related","model_br_account_document_related","account.group_account_invoice",1,0,0,0
 "access_br_account_fiscal_observation_invoice","access_br_account_fiscal_observation","model_br_account_fiscal_observation","account.group_account_invoice",1,0,0,0
+"access_br_account_fiscal_category","access_br_account_fiscal_category","model_br_account_fiscal_category","account.group_account_manager",1,1,1,1
+"access_br_account_fiscal_category_user","access_br_account_fiscal_category","model_br_account_fiscal_category","account.group_account_user",1,0,0,0
+"access_br_account_fiscal_category_invoice","access_br_account_fiscal_category","model_br_account_fiscal_category","account.group_account_invoice",1,0,0,0
