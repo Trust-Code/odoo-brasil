@@ -290,13 +290,9 @@
                 <div class="col-xs-2" style="text-align:center;">
                     Valor do ISS (R$):
                     <br />
-                    <t t-if="doc.company_id.fiscal_type == '3'">
-                        <strong t-field="doc.valor_issqn"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
-                    </t>
-                    <t t-if="doc.company_id.fiscal_type != '3'">
-                        <strong>*</strong>
-                    </t>
+                    <strong t-field="doc.valor_issqn"
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'>
+                    </strong>
                 </div>
                 <div class="col-xs-2" style="text-align:center;">
                     Crédito (R$):
