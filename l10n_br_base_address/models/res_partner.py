@@ -29,7 +29,7 @@ class ResPartner(models.Model):
         if self.zip and len(self.zip) == 8:
             vals = self.search_address_by_zip(self.zip)
             self.update(vals)
-        else:
+        elif self.zip:
             return {
                 'warning': {
                     'title': 'Tip',
