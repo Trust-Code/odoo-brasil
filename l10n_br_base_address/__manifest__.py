@@ -13,6 +13,8 @@
         'base_address_city',
     ],
     'data': [
+        'data/configuration.xml',
         'views/res_partner.xml',
+        'views/res_city.xml',
     ],
 }

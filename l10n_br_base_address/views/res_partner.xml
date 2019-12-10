@@ -38,7 +38,14 @@
       </xpath>
       <field name="zip" position="replace" />
       <field name="street" position="before">
-        <field name="zip" placeholder="Zip Code" class="o_address_zip oe_inline" />
+        <field name="zip" placeholder="ZIP" class="o_address_zip" />
+      </field>
+      <field name="street" position="after">
+        <field name="l10n_br_number" class="o_address_city" placeholder="Number"/>
+        <field name="l10n_br_district" class="o_address_city" placeholder="District"/>
+      </field>
+      <field name="state_id" position="before">
+        <field name="city_id" class="o_address_city" placeholder="City" />
       </field>
       <field name="city" position="attributes">
         <attribute name="invisible">1</attribute>
