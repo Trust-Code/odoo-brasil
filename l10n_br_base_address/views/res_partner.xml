@@ -1,0 +1,50 @@
+<odoo>
+
+    <!-- <record id="view_br_base_partner_filter" model="ir.ui.view">
+        <field name="name">br_base.partner.filter</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="legal_name"/>
+                <field name="cnpj_cpf" />
+            </field>
+        </field>
+    </record> -->
+
+    <!-- <record id="view_br_base_partner_tree" model="ir.ui.view">
+        <field name="name">br_base.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree" />
+        <field name="arch" type="xml">
+            <field name="display_name" position="after">
+                <field name="cnpj_cpf" />
+            </field>
+        </field>
+    </record> -->
+
+  <record id="view_partner_form" model="ir.ui.view">
+    <field name="name">br_base.partner.form</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//div[hasclass('o_row')]" position="before">
+        <h3 attrs="{'invisible': [('is_company', '=', False)]}">
+          <field name="l10n_br_legal_name" placeholder="Legal Name" nolabel="1" />
+        </h3>
+        <h3>
+          <field name="l10n_br_cnpj_cpf" placeholder="CNPJ/CPF" nolabel="1" />
+        </h3>
+      </xpath>
+      <field name="zip" position="replace" />
+      <field name="street" position="before">
+        <field name="zip" placeholder="Zip Code" class="o_address_zip oe_inline" />
+      </field>
+      <field name="city" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </field>
+
+    </field>
+  </record>
+
+</odoo>
