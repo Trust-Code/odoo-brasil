@@ -45,13 +45,13 @@ class L10nBrWebsiteSale(main.WebsiteSale):
         cnpj_cpf = data.get('l10n_br_cnpj_cpf', '0')
         email = data.get('email', False)
         if cnpj_cpf and len(cnpj_cpf) == 18:
-            if not validate_cnpj(cnpj_cpf):
-                errors["l10n_br_cnpj_cpf"] = u"invalid"
-                error_msg.append(('CNPJ Inválido!'))
+            # if not validate_cnpj(cnpj_cpf):
+            errors["l10n_br_cnpj_cpf"] = u"invalid"
+            error_msg.append(('CNPJ Inválido!'))
         elif cnpj_cpf and len(cnpj_cpf) == 14:
-            if not validate_cpf(cnpj_cpf):
-                errors["l10n_br_cnpj_cpf"] = u"invalid"
-                error_msg.append(('CPF Inválido!'))
+            # if not validate_cpf(cnpj_cpf):
+            errors["l10n_br_cnpj_cpf"] = u"invalid"
+            error_msg.append(('CPF Inválido!'))
         partner_id = data.get('partner_id', False)
         if cnpj_cpf:
             domain = [('l10n_br_cnpj_cpf', '=', cnpj_cpf)]
