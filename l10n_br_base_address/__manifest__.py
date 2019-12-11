@@ -3,8 +3,8 @@
     'description': 'Modifies address forms',
     'version': '13.0.1.0.0',
     'category': 'Localization',
-    'license': 'OEEL-1',
     'author': 'Trustcode',
+    'license': 'OEEL-1',
     'website': 'http://www.odoo-next.com,br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
