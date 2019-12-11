@@ -17,4 +17,5 @@
         'views/res_partner.xml',
         'views/res_city.xml',
     ],
+    'post_init_hook': 'post_init',
 }
