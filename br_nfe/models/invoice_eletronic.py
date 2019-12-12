@@ -623,8 +623,10 @@ class InvoiceEletronic(models.Model):
             'vII': "%.02f" % self.valor_ii,
             'vIPI': "%.02f" % self.valor_ipi,
             'vIPIDevol': '0.00',
-            'vPIS': "%.02f" % self.valor_pis,
-            'vCOFINS': "%.02f" % self.valor_cofins,
+            'vPIS': "%.02f" % self.valor_pis
+            if not self.valor_servicos > 0.0 else '0.00',
+            'vCOFINS': "%.02f" % self.valor_cofins
+            if not self.valor_servicos > 0.0 else '0.00',,
             'vOutro': "%.02f" % self.valor_despesas,
             'vNF': "%.02f" % self.valor_final,
             'vFCPUFDest': "%.02f" % self.valor_icms_fcp_uf_dest,
@@ -639,9 +641,9 @@ class InvoiceEletronic(models.Model):
                 'vBC': "%.02f" % self.valor_bc_issqn
                 if self.valor_bc_issqn else "",
                 'vISS': "%.02f" % self.valor_issqn if self.valor_issqn else "",
-                'vPIS': "%.02f" % self.valor_pis_servicos
+                'vPIS': "%.02f" % self.valor_pis
                 if self.valor_pis_servicos else "",
-                'vCOFINS': "%.02f" % self.valor_cofins_servicos
+                'vCOFINS': "%.02f" % self.valor_cofins
                 if self.valor_cofins_servicos else "",
                 'dCompet': dt_emissao[:10],
                 'vDeducao': "",
