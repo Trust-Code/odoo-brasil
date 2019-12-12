@@ -81,17 +81,6 @@ class PaymentAccountMoveLine(models.TransientModel):
                 'O valor do pagamento não pode ser maior '
                 'que o valor da parcela.'))
 
-    @api.constrains('payment_date')
-    def validate_payment_date(self):
-        """
-        Method used to validate payment date
-        :return:
-        """
-        move_line_date = self.move_line_id.date
-        if self.payment_date < move_line_date:
-            raise ValidationError(_('A data do pagamento não pode ser inferior'
-                                    ' a data da parcela.'))
-
     def _get_payment_vals(self):
         """
         Method responsible for generating payment record amounts
