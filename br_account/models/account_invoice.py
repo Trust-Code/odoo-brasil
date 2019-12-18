@@ -83,8 +83,9 @@ class AccountInvoice(models.Model):
     @api.one
     @api.depends('move_id.line_ids')
     def _compute_payables(self):
-        self.payable_move_line_ids = self.move_id.line_ids.filtered(
+        payable_lines = self.move_id.line_ids.filtered(
             lambda m: m.account_id.user_type_id.type == 'payable')
+        self.payable_move_line_ids = payable_lines
 
     total_tax = fields.Float(
         string='Impostos ( + )', readonly=True, compute='_compute_amount',
