@@ -58,13 +58,11 @@ class PaymentAccountMoveLine(models.TransientModel):
                 move_line[0].amount_residual * -1
         if move_line[0].invoice_id:
             invoice = move_line[0].invoice_id
-        else:
-            raise (_("A linha de cobrança selecionada não possui nenhuma"
-                     "fatura relacionada."))
+            rec.update({'invoice_id': invoice.id})
         rec.update({
             'amount': amount,
-            'invoice_id': invoice.id,
         })
+
         return rec
 
     @api.onchange('amount')
@@ -91,10 +89,9 @@ class PaymentAccountMoveLine(models.TransientModel):
             self.journal_id.inbound_payment_method_ids or \
             self.journal_id.outbound_payment_method_ids
         payment_method_id = payment_methods and payment_methods[0] or False
-        return {
+        vals = {
             'partner_id': self.partner_id.id,
             'move_line_id': self.move_line_id.id,
-            'invoice_ids': [(6, 0, [self.invoice_id.id])],
             'journal_id': self.journal_id.id,
             'communication': self.communication,
             'amount': self.amount,
@@ -103,6 +100,7 @@ class PaymentAccountMoveLine(models.TransientModel):
             'payment_method_id': payment_method_id.id,
             'currency_id': self.currency_id.id,
         }
+        return vals
 
     def action_confirm_payment(self):
         """
@@ -110,5 +108,11 @@ class PaymentAccountMoveLine(models.TransientModel):
         """
         payment = self.env['account.payment']
         vals = self._get_payment_vals()
-        pay = payment.create(vals)
+        pay = payment.with_context(
+            force_counterpart_account=self.move_line_id.account_id.id).\
+            create(vals)
         pay.post()
+        move_line = self.env['account.move.line'].browse(vals['move_line_id'])
+        lines_to_reconcile = (pay.move_line_ids + move_line).filtered(
+            lambda l: l.account_id == move_line.account_id)
+        lines_to_reconcile.reconcile()
