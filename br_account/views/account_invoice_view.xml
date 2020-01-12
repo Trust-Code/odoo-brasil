@@ -282,8 +282,8 @@
                         <page name="icms" string="ICMS" attrs="{'invisible': [('product_type', '=', 'service')]}">
                             <group name="detalhes_icms" string="Detalhes do ICMS">
                                 <group>
-                                    <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '!=', '3')] }" />
-                                    <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '==', '3')] }" />
+                                    <field name="icms_cst_normal" attrs="{'invisible': [('company_fiscal_type', '==', '1')] }" />
+                                    <field name="icms_csosn_simples" attrs="{'invisible': [('company_fiscal_type', '!=', '1')] }" />
                                     <field name="icms_origem"/>
                                     <field name="icms_tipo_base" invisible="1"/>
                                     <field name="incluir_ipi_base" />
