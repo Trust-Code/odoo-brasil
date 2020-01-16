@@ -1,0 +1,28 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* br_nfe
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-03 22:16+0000\n"
+"PO-Revision-Date: 2019-07-03 22:16+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: br_nfe
+#: code:br_nfe/models/invoice_eletronic.py:780
+#, python-format
+msgid "Adicione um contato para o responsável técnico!"
+msgstr "Adicione um contato para o responsável técnico!"
+
+#. module: br_nfe
+#: code:br_nfe/models/invoice_eletronic.py:1100
+#, python-format
+msgid "A NFe não está validada"
+msgstr "A NFe não está validada"
