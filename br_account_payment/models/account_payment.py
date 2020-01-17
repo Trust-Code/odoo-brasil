@@ -39,4 +39,3 @@ class AccountPayment(models.Model):
         action['context'] = {'search_default_partner_id': self.partner_id.id}
 
         return action
-
