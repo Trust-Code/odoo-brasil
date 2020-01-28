@@ -23,7 +23,7 @@ Odoo Brasil
 
 <br>
 
-This is a repository from Trustcode.
+Para dúvidas acesse: [Fórum de Ajuda](https://help.odoo-next.com.br/)
 
 [![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=11.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
 [![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=12.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=12.0)
