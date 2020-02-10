@@ -6,7 +6,7 @@
     'name': 'Plano de Contas para Microempresa e Empresa de Pequeno Porte',
     'summary': "Plano de Contas para Microempresa e Empresa de Pequeno Porte",
     'description': """Plano de Contas para Microempresa e EPP""",
-    'version': '12.0.1.0.0',
+    'version': '13.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account', 'br_account'
+        'account',
     ],
     'data': [
         'data/account_group.xml',
