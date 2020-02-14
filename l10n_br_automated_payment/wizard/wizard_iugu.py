@@ -13,7 +13,6 @@ class WizardChangeIuguInvoice(models.TransientModel):
     date_change = fields.Date(string='Alterar Vencimento')
     move_line_id = fields.Many2one('account.move.line', readonly=1)
 
-    @api.multi
     def action_change_invoice_iugu(self):
         if self.move_line_id.reconciled:
             raise UserError('O pagamento já está reconciliado')

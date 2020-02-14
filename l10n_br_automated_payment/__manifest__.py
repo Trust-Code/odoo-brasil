@@ -17,12 +17,13 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
+        'account',
         'l10n_br_base_address',
     ],
     'data': [
         'views/res_company.xml',
-        'views/account_invoice.xml',
-        'views/payment_mode.xml',
+        'views/account_move.xml',
+        'views/account_journal.xml',
         'views/portal_templates.xml',
         'wizard/wizard_iugu.xml',
     ],

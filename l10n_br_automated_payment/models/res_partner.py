@@ -12,7 +12,6 @@ class ResPartner(models.Model):
 
     iugu_id = fields.Char(string="ID Iugu", size=60)
 
-    @api.multi
     def action_synchronize_iugu(self):
         for partner in self:
             token = self.env.user.company_id.iugu_api_token
