@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- <template id="portal_invoice_page_inherit" inherit_id="account.portal_invoice_report" name="Invoice Portal">
+        <xpath expr="//div[@id='total']" position="after">
+            <h4><b>Vencimentos</b></h4>
+            <hr />
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Situação</th>
+                        <th>Data de Vencimento</th>
+                        <th class="text-right">Valor</th>
+                        <th class="text-right">Link para pagamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="invoice.receivable_move_line_ids" t-as="l">
+                        <td>
+                            <t t-if="l.reconciled">
+                                <span>Pago</span>
+                            </t>
+                            <t t-else="">
+                                <span>Aguardando pagamento</span>
+                            </t>
+                        </td>
+                        <td><span t-field="l.date_maturity" /></td>
+                        <td class="text-right"><span t-field="l.debit" /></td>
+                        <td class="text-right"><a t-att-href="l.iugu_secure_payment_url" t-field="l.iugu_secure_payment_url" target="_blank"></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template> -->
+
+</odoo>

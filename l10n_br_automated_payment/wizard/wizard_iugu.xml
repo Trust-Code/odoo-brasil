@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_wizard_change_iugu_form">
+        <field name="name">view.wizard.change.iugu.form</field>
+        <field name="model">wizard.change.iugu.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Alterar data de vencimento">
+                <group>
+                    <group>
+                        <field name="move_line_id" string='Vencimento'/>
+                        <field name="date_change" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_change_invoice_iugu" type="object" string="Alterar data de vencimento" class="oe_highlight"/>
+                        or
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,18 @@
+<odoo>
+
+    <record id="view_account_invoice_form" model="ir.ui.view" >
+        <field name="name">View Account Invoice Form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree[@name='vencimentos']/field[@name='name']" position="after">
+                <field name="iugu_status"/>
+                <field name="iugu_secure_payment_url" widget="url"/>
+                <button name="open_wizard_change_date" string="Alterar Iugu" type="object" class="btn btn-success btn-sm" />
+                <button name="action_verify_iugu_payment" string="Verificar Iugu" type="object" class="btn btn-success btn-sm" />
+                <button name="action_cancel_iugu" string="Cancelar" type="object" class="btn btn-danger btn-sm" confirm="Confirma o cancelamento?" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
