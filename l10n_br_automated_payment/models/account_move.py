@@ -10,6 +10,9 @@ from odoo.exceptions import UserError
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    payment_journal_id = fields.Many2one(
+        'account.journal', string='Forma de pagamento')
+
     def validate_data_iugu(self):
         errors = []
         for invoice in self:
@@ -82,9 +85,9 @@ class AccountMove(models.Model):
                     'iugu_barcode_url': data['bank_slip']['barcode'],
                 })
 
-    def action_invoice_open(self):
+    def action_post(self):
         self.validate_data_iugu()
-        result = super(AccountInvoice, self).action_invoice_open()
+        result = super(AccountMove, self).action_post()
         self.send_information_to_iugu()
         return result
 
