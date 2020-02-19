@@ -1,4 +1,4 @@
-
+import base64
 
 def send_api(certificate, password, vals):
     cert_pfx = base64.decodestring(certificate)

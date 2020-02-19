@@ -12,5 +12,7 @@
     'depends': [
     ],
     'data': [
+        'views/res_country.xml',
+        'views/res_company.xml',
     ],
 }

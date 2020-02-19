@@ -1,0 +1,47 @@
+<odoo>
+
+  <record id="view_company_form_inherited" model="ir.ui.view">
+      <field name="name">view_company_form_inherited</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//div[hasclass('oe_title')]/h1" position="after">
+              <label for="l10n_br_legal_name" class="oe_edit_only"/>
+              <h3>
+                  <field name="l10n_br_legal_name" placeholder="Legal Name"/>
+              </h3>
+          </xpath>
+          <field name="street2" position="replace"/>
+          <field name="zip" position="replace"/>
+          <field name="street" position="replace">
+              <field name="zip" placeholder="Zip Code" class="o_address_zip" />
+              <field name="street" placeholder="Street" class="o_address_street" />
+              <field name="l10n_br_number" placeholder="Number" class="o_address_city"/>
+              <field name="street2" placeholder="Complement" class="o_address_street" />
+              <field name="l10n_br_district" placeholder="District" class="o_address_state" />
+          </field>
+          <field name="state_id" position="attributes">
+              <attribute name="domain">[('country_id','=',country_id)]</attribute>
+              <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+          </field>
+          <field name="country_id" position="replace"/>
+          <field name="state_id" position="before">
+              <field name="country_id" placeholder="Country" class="o_address_country"
+                  options="{'no_create': True, 'no_create_edit': True}" />
+          </field>
+          <field name="state_id" position="after">
+              <field name="city_id" placeholder="City" options="{'no_create': True, 'no_create_edit': True}"/>
+          </field>
+          <field name="city" position="replace">
+              <field name="city" invisible="1"/>
+          </field>
+          <field name="company_registry" position="after">
+              <field name="l10n_br_cnpj_cpf" placeholder="CNPJ"/>
+              <field name="l10n_br_inscr_est" placeholder="Inscrição Estadual"/>
+              <field name="l10n_br_inscr_mun" placeholder="Inscrição Municipal"/>
+              <field name="l10n_br_suframa" placeholder="Suframa"/>
+          </field>
+      </field>
+  </record>
+
+</odoo>

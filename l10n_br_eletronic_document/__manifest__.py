@@ -16,5 +16,6 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'views/res_company.xml',
     ],
 }

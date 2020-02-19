@@ -1,3 +1,4 @@
+import base64
 from pytrustnfe.nfse.floripa import xml_processar_nota
 from pytrustnfe.nfse.floripa import processar_nota
 from pytrustnfe.nfse.floripa import cancelar_nota
@@ -13,24 +14,26 @@ def _convert_values(vals):
         cfps = '9203'
     vals['cfps'] = cfps
 
-
-    if vals['regime_fiscal'] != 'normal':
+    if vals['regime_tributario'] == 'simples':
         vals['base_calculo_iss'] = 0
         vals['valor_iss'] = 0
     return vals
 
 
-def send_api(certificate, password, vals):
+def send_api(certificate, password, list_rps):
     cert_pfx = base64.decodestring(certificate)
     certificado = Certificado(cert_pfx, password)
 
+    vals = list_rps[0]
+  
     vals = _convert_values(vals)
+
     recebe_lote = processar_nota(
-        certificado, rps=vals, ambiente=self.ambiente,
-        client_id=self.company_id.client_id,
-        secret_id=self.company_id.client_secret,
-        username=self.company_id.inscr_mun,
-        password=self.company_id.user_password)
+        certificado, rps=vals, ambiente=vals['ambiente'],
+        client_id=vals['client_id'],
+        secret_id=vals['client_secret'],
+        username=vals['emissor']['inscricao_municipal'],
+        password=vals['user_password'])
 
     retorno = recebe_lote['object']
     if "codigoVerificacao" in dir(retorno):
@@ -44,13 +47,11 @@ def send_api(certificate, password, vals):
     else:
         return { 
             'code': 400,
-            'entity': {
-                'codigo': recebe_lote['status_code'],
-                'mensagem': retorno.messagf,
-            }
+            'api_code': recebe_lote['status_code'],
+            'message': retorno.message,
         }
 
-def cancel_api(certificate, password, vals)
+def cancel_api(certificate, password, vals):
     cert_pfx = base64.decodestring(certificate)
     certificado = Certificado(cert_pfx, password)
 

@@ -13,6 +13,9 @@ class ResPartner(models.Model):
     l10n_br_cnpj_cpf = fields.Char('CNPJ/CPF', size=20)
     l10n_br_district = fields.Char('District', size=60)
     l10n_br_number = fields.Char('Number', size=10)
+    l10n_br_inscr_est = fields.Char('Inscr. Estadual', size=20)
+    l10n_br_inscr_mun = fields.Char('Inscr. Municipal', size=20)
+    l10n_br_suframa = fields.Char('Suframa', size=20)
 
     def _formatting_address_fields(self):
         fields = super(ResPartner, self)._formatting_address_fields()

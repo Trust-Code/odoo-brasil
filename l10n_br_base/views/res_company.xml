@@ -1,0 +1,20 @@
+<odoo>
+
+  <record id="view_company_form_inherited" model="ir.ui.view">
+    <field name="name">view_company_form_inherited</field>
+    <field name="model">res.company</field>
+    <field name="inherit_id" ref="base.view_company_form"/>
+    <field name="arch" type="xml">
+      <group position="inside">
+        <group string="Digital Certificate">
+          <field name="l10n_br_certificate" />
+          <field name="l10n_br_cert_password" password="True" />
+          <field name="l10n_br_cert_state" />
+          <field name="l10n_br_cert_expire_date" />
+          <field name="l10n_br_cert_information" />
+        </group>
+      </group>
+    </field>
+  </record>
+
+</odoo>
