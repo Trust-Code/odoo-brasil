@@ -22,15 +22,15 @@ class ResPartner(models.Model):
             # TODO Validar telefone e passar
             vals = {
                 'email': partner.email,
-                'name': commercial_part.legal_name or commercial_part.name,
+                'name': commercial_part.l10n_br_legal_name or commercial_part.name,
                 'notes': commercial_part.comment or '',
-                'cpf_cnpj': commercial_part.cnpj_cpf,
+                'cpf_cnpj': commercial_part.l10n_br_cnpj_cpf,
                 'zip_code': re.sub('[^0-9]', '', commercial_part.zip or ''),
-                'number': commercial_part.number,
+                'number': commercial_part.l10n_br_number,
                 'street': commercial_part.street,
                 'city': commercial_part.city_id.name,
                 'state': commercial_part.state_id.code,
-                'district': commercial_part.district or '',
+                'district': commercial_part.l10n_br_district or '',
                 'complement': commercial_part.street2 or '',
             }
             if not partner.iugu_id:

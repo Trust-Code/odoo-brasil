@@ -1,14 +1,34 @@
-# © 2018 Danimar Ribeiro, Trustcode
-# Part of Trustcode. See LICENSE file for full copyright and licensing details.
+# © 2019 Danimar Ribeiro
+# Part of OdooNext. See LICENSE file for full copyright and licensing details.
 
+import re
 import iugu
 from datetime import date
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
+    
+    @api.depends('line_ids')
+    def _compute_receivables(self):
+        self.receivable_move_line_ids = self.line_ids.filtered(
+            lambda m: m.account_id.user_type_id.type == 'receivable'
+        ).sorted(key=lambda m: m.date_maturity)
+
+    @api.depends('line_ids')
+    def _compute_payables(self):
+        self.payable_move_line_ids = self.line_ids.filtered(
+            lambda m: m.account_id.user_type_id.type == 'payable')
+        
+    receivable_move_line_ids = fields.Many2many(
+        'account.move.line', string='Receivable Move Lines',
+        compute='_compute_receivables')
+
+    payable_move_line_ids = fields.Many2many(
+        'account.move.line', string='Payable Move Lines',
+        compute='_compute_payables')
 
     payment_journal_id = fields.Many2one(
         'account.journal', string='Forma de pagamento')
@@ -16,14 +36,16 @@ class AccountMove(models.Model):
     def validate_data_iugu(self):
         errors = []
         for invoice in self:
+            if not invoice.payment_journal_id.receive_by_iugu:
+                continue
             partner = invoice.partner_id.commercial_partner_id
             if not self.env.user.company_id.iugu_api_token:
-                errors.append('Configure o token de API do Iugu')
+                errors.append('Configure o token de API')
             if partner.is_company and not partner.legal_name:
                 errors.append('Destinatário - Razão Social')
             if not partner.street:
                 errors.append('Destinatário / Endereço - Rua')
-            if not partner.number:
+            if not partner.l10n_br_number:
                 errors.append('Destinatário / Endereço - Número')
             if not partner.zip or len(re.sub(r"\D", "", partner.zip)) != 8:
                 errors.append('Destinatário / Endereço - CEP')
@@ -40,16 +62,15 @@ class AccountMove(models.Model):
 
     def send_information_to_iugu(self):
         for invoice in self:
-
+            if not invoice.payment_journal_id.receive_by_iugu:
+                continue
+                  
             token = self.env.user.company_id.iugu_api_token
             url_base = self.env.user.company_id.iugu_url_base
             iugu.config(token=token)
             iugu_invoice_api = iugu.Invoice()
 
             for moveline in invoice.receivable_move_line_ids:
-                if not moveline.payment_mode_id.receive_by_iugu:
-                    continue
-
                 invoice.partner_id.action_synchronize_iugu()
                 vals = {
                     'email': invoice.partner_id.email,

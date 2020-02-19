@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+eletronic_item_manager,eletronic_item,model_eletronic_document_line,account.group_account_manager,1,1,1,1
+eletronic_manager,eletronic,model_eletronic_document,account.group_account_manager,1,1,1,1
+eletronic_item_accountant,eletronic_item,model_eletronic_document_line,account.group_account_user,1,1,1,0
+eletronic_accountant,eletronic,model_eletronic_document,account.group_account_user,1,1,1,0
+eletronic_item_user,access_invoice_eletronic_item,model_eletronic_document_line,account.group_account_invoice,1,0,1,0
+eletronic_user,eletronic,model_eletronic_document,account.group_account_invoice,1,1,1,0
