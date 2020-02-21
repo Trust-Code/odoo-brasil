@@ -65,20 +65,6 @@ class PaymentAccountMoveLine(models.TransientModel):
 
         return rec
 
-    @api.onchange('amount')
-    def validate_amount_payment(self):
-        """
-        Method used to validate the payment amount to be recorded
-        :return:
-        """
-        real_amount_residual = self.amount_residual if \
-            self.partner_type == 'customer' else \
-            self.amount_residual * -1
-        if self.amount > real_amount_residual:
-            raise ValidationError(_(
-                'O valor do pagamento não pode ser maior '
-                'que o valor da parcela.'))
-
     def _get_payment_vals(self):
         """
         Method responsible for generating payment record amounts
