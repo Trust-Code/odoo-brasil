@@ -576,6 +576,7 @@ class InvoiceEletronic(models.Model):
                 },
                 'indIEDest': self.ind_ie_dest,
                 'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
+                'ISUF': partner.suframa or '',
             }
             if self.model == '65':
                 dest.update(
