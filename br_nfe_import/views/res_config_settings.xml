@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_product_sequence" model="ir.ui.view">
+        <field name="name">res_config_settings.product_sequence</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@data-key='sale_management']/div" position="inside">
+                <div id="mail_template_nfe" class="col-xs-12 col-md-6 o_setting_box">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <label for="product_sequence_id" string="Sequência para numeração de produto"/>
+                        <div class="text-muted">
+                            Esta sequência é utilizada apenas na importação de NFe via XML (ao criar o produto automaticamente)
+                        </div>
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label for="product_sequence_id" string="Modelo" class="col-md-3 o_light_label"/>
+                                <field name="product_sequence_id" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
