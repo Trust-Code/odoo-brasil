@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="br_point_sale_invoince_eletronic" model="ir.ui.view">
+        <field name="name">br_point_sale.invoice_eletronic</field>
+        <field name="model">invoice.eletronic</field>
+        <field name="inherit_id" ref="br_nfe.view_br_nfe_invoice_eletronic_form" />
+        <field name="arch" type="xml">
+            <field name="invoice_id" position="after">
+                <field name="pos_order_id" />
+            </field>
+        </field>
+    </record>
+</odoo>
