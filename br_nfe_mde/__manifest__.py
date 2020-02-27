@@ -6,10 +6,10 @@
     'name': 'Controle de Xml NFe',
     'summary': """Realiza o download e importação de xml
     Mantido por Trustcode""",
-    'version': '10.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'NFE',
     'author': 'Danimar Ribeiro',
-    'license': 'OPL-1',
+    'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',

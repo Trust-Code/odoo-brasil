@@ -1,10 +1,11 @@
-{
+{  # pylint: disable=C8101,C8103
     'name': "Método de Pagamento Iugu",
     'summary': "Payment Acquirer: Iugu Implementation",
     'description': """Iugu payment gateway for Odoo.""",
     'author': "Trustcode",
     'category': 'Accounting',
-    'version': '11.0.0',
+    'version': '12.0.1.0.0',
+    'license': 'AGPL-3',
     'depends': ['account', 'payment', 'sale'],
     'external_dependencies': {
         'python': ['iugu'],
