@@ -173,7 +173,7 @@ class AccountInvoiceLine(models.Model):
     def _compute_cst_icms(self):
         for item in self:
             item.icms_cst = item.icms_cst_normal \
-                if item.company_fiscal_type == '3' else item.icms_csosn_simples
+                if item.company_fiscal_type != '1' else item.icms_csosn_simples
 
     price_tax = fields.Float(
         compute='_compute_price', string='Impostos', store=True,
