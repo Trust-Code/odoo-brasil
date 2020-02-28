@@ -415,7 +415,11 @@ class InvoiceEletronic(models.Model):
                     'pICMSST': "%.02f" % item.icms_st_aliquota,
                     'vICMSST': "%.02f" % item.icms_st_valor,
                     'pCredSN': "%.02f" % item.icms_aliquota_credito,
-                    'vCredICMSSN': "%.02f" % item.icms_valor_credito
+                    'vCredICMSSN': "%.02f" % item.icms_valor_credito,
+                    'vICMSSubstituto': "%.02f" % item.icms_substituto,
+                    'vBCSTRet': "%.02f" % item.icms_bc_st_retido,
+                    'pST': "%.02f" % item.icms_aliquota_st_retido,
+                    'vICMSSTRet': "%.02f" % item.icms_st_retido,
                 },
                 'IPI': {
                     'clEnq': item.classe_enquadramento_ipi or '',

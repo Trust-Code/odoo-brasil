@@ -307,6 +307,18 @@ class AccountInvoiceLine(models.Model):
         digits=dp.get_precision('Discount'))
 
     # =========================================================================
+    # ICMS Retido anteriormente por ST
+    # =========================================================================
+    icms_substituto = fields.Monetary(
+        "ICMS Substituto", digits=dp.get_precision('Account'))
+    icms_bc_st_retido = fields.Monetary(
+        "Base Calc. ST Ret.", digits=dp.get_precision('Account'))
+    icms_aliquota_st_retido = fields.Float(
+        "% ST Retido", digits=dp.get_precision('Account'))
+    icms_st_retido = fields.Monetary(
+        "ICMS ST Ret.", digits=dp.get_precision('Account'))
+
+    # =========================================================================
     # ICMS Simples Nacional
     # =========================================================================
     icms_csosn_simples = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
