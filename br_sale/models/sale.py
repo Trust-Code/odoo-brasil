@@ -255,7 +255,6 @@ class SaleOrderLine(models.Model):
                     vals.get('tax_csll_id', empty) | \
                     vals.get('tax_irrf_id', empty) | \
                     vals.get('tax_inss_id', empty)
-
                 line.update({
                     'tax_id': [(6, None, [x.id for x in tax_ids if x])]
                 })
@@ -265,7 +264,6 @@ class SaleOrderLine(models.Model):
     @api.multi
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
-
         res['valor_desconto'] = self.valor_desconto
         res['valor_bruto'] = self.valor_bruto
 
@@ -274,7 +272,7 @@ class SaleOrderLine(models.Model):
         icmsst = self.tax_id.filtered(lambda x: x.domain == 'icmsst')
         icms_inter = self.tax_id.filtered(lambda x: x.domain == 'icms_inter')
         icms_intra = self.tax_id.filtered(lambda x: x.domain == 'icms_intra')
-        icms_fcp = self.tax_id.filtered(lambda x: x.domain == 'icms_fcp')
+        icms_fcp = self.tax_id.filtered(lambda x: x.domain == 'fcp')
         ipi = self.tax_id.filtered(lambda x: x.domain == 'ipi')
         pis = self.tax_id.filtered(lambda x: x.domain == 'pis')
         cofins = self.tax_id.filtered(lambda x: x.domain == 'cofins')

@@ -174,7 +174,7 @@ class AccountInvoiceLine(models.Model):
     def _compute_cst_icms(self):
         for item in self:
             item.icms_cst = item.icms_cst_normal \
-                if item.company_fiscal_type == '3' else item.icms_csosn_simples
+                if item.company_fiscal_type != '1' else item.icms_csosn_simples
 
     price_tax = fields.Float(
         compute='_compute_price', string='Impostos', store=True,
@@ -306,6 +306,18 @@ class AccountInvoiceLine(models.Model):
     icms_uf_remet = fields.Float(
         u'ICMS Remetente', compute='_compute_price',
         digits=dp.get_precision('Discount'))
+
+    # =========================================================================
+    # ICMS Retido anteriormente por ST
+    # =========================================================================
+    icms_substituto = fields.Monetary(
+        "ICMS Substituto", digits=dp.get_precision('Account'))
+    icms_bc_st_retido = fields.Monetary(
+        "Base Calc. ST Ret.", digits=dp.get_precision('Account'))
+    icms_aliquota_st_retido = fields.Float(
+        "% ST Retido", digits=dp.get_precision('Account'))
+    icms_st_retido = fields.Monetary(
+        "ICMS ST Ret.", digits=dp.get_precision('Account'))
 
     # =========================================================================
     # ICMS Simples Nacional
