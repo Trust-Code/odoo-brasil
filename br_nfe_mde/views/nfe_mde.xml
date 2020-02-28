@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="view_nfe_mde_form">
+        <field name="name">nfe_mde.form</field>
+        <field name="model">nfe.mde</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Manifestacao">
+                <header>
+                    <button name="action_known_emission" string="Ciência da Emissão" type="object" states="pending" />
+                    <button name="action_confirm_operation" string="Confirmar Operação" type="object" states="ciente" />
+                    <button name="action_unknown_operation" string="Desconhecer Operação" type="object" states="ciente" />
+                    <button name="action_not_operation" string="Operação não Realizada" type="object" states="ciente" />
+                    <button name="action_download_xml" string="Download do XML" type="object" states="ciente,confirmado,desconhecido,nao_realizado" />
+                    <button name="action_import_xml" string="Importar XML" type="object" states="ciente,confirmado,desconhecido,nao_realizado" />
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" >
+                        <button name="action_view_edocs" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                            attrs="{'invisible': [('total_edocs', '=', 0)]}">
+                            <field name="total_edocs" /> <span> E-Docs</span>
+                        </button>
+                    </div>
+                    <h4 class="mt0">
+                        <label for="chave_nfe" string="Chave NF-e:"/><br/>
+                        <field name="chave_nfe" class="oe_inline"/>
+                    </h4>
+                    <group>
+                        <group>
+                            <field name="numero_nfe" />
+                            <field name="numero_sequencial" />
+                            <field name="cnpj_fornecedor" />
+                            <field name="inscricao_estadual" />
+                            <field name="razao_social" />
+                            <field name="partner_id" />
+                            <field name="data_emissao" />
+                        </group>
+                        <group>
+                            <field name="currency_id" groups="base.group_multi_currency" />
+                            <field name="tipo_operacao" />
+                            <field name="valor_nfe" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                            <field name="situacao_nfe" />
+                            <field name="state" />
+                            <field name="forma_inclusao" />
+                            <field name="data_inclusao" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="nfe_processada_name" invisible="1"/>
+                            <field name="nfe_processada" filename="nfe_processada_name"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="eventos" string="Eventos">
+                            <group>
+                                <field name="eletronic_event_ids" nolabel="1">
+                                    <tree name="Eventos">
+                                        <field name="state" invisible="1" />
+                                        <field name="code" />
+                                        <field name="name" />
+                                        <field name="create_date" />
+                                        <field name="create_uid" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_nfe_mde_filter" model="ir.ui.view">
+        <field name="name">nfe.mde.select</field>
+        <field name="model">nfe.mde</field>
+        <field name="arch" type="xml">
+            <search string="Filtrar">
+                <field name="partner_id" string="Fornecedor" />
+                <field name="razao_social" string="Nome fornecedor" />
+                <field name="cnpj_fornecedor" string="Cnpj fornecedor" />
+                <field name="state" string="Situação" />
+                <filter name="situacao_pendente" string="Pendentes" domain="[('state','=','pending')]" />
+                <filter name="situacao_confirmado" string="Confirmados" domain="[('state','=','confirmado')]" />
+                <filter name="situacao_ciente" string="Ciente da operação" domain="[('state','=','ciente')]" />
+                <filter name="situacao_desconhecido" string="Desconhecidos" domain="[('state','=','desconhecido')]" />
+                <filter name="situacao_nao_realizado" string="Não realizados" domain="[('state','=','nao_realizado')]" />
+            </search>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_nfe_mde_tree">
+        <field name="name">nfe_mde.tree</field>
+        <field name="model">nfe.mde</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="NFe Destinadas" create="false">
+                <field name="numero_sequencial" />
+                <field name="partner_id" />
+                <field name="cnpj_fornecedor" />
+                <field name="razao_social" />
+                <field name="data_emissao" />
+                <field name="state" />
+                <field name="valor_nfe" />
+            </tree>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_nfe_mde">
+        <field name="name">Manifestação</field>
+        <field name="res_model">nfe.mde</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_nfe_mde_filter" />
+        <field name="context">{"search_default_situacao_pendente":1}</field>
+    </record>
+    <menuitem id="menu_nfe_mde_localizacao" name="NFEs Recebidas" action="action_nfe_mde" parent="br_account_einvoice.menu_eletronic_doc_base" />
+</odoo>

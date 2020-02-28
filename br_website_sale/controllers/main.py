@@ -72,12 +72,6 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             if existe > 0:
                 errors["email"] = u"invalid"
                 error_msg.append(('E-mail já cadastrado'))
-        if 'city_id' in data and not data['city_id']:
-            errors["city_id"] = u"missing"
-            error_msg.append('Selecione uma cidade')
-        if 'phone' in data and not data['phone']:
-            errors["phone"] = u"missing"
-            error_msg.append('Informe o seu número de telefone')
         return errors, error_msg
 
     def values_postprocess(self, order, mode, values, errors, error_msg):

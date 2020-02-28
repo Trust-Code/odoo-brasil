@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 
 class CancelNFSe(models.TransientModel):
     _name = 'wizard.cancel.nfse'
+    _description = "Cancela NFS-e"
 
     edoc_id = fields.Many2one('invoice.eletronic', string="Documento")
     justificativa = fields.Text('Justificativa', size=255, required=True)

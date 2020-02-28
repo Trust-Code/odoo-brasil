@@ -22,6 +22,7 @@ STATE = {'edit': [('readonly', False)], 'draft': [('readonly', False)]}
 
 class InutilizedNfe(models.Model):
     _name = 'invoice.eletronic.inutilized'
+    _description = "NF-e inutilizada"
 
     name = fields.Char(u'Nome', required=True, readonly=True, states=STATE)
     numeration_start = fields.Integer(u'Número Inicial', required=True,
@@ -61,6 +62,7 @@ class InutilizedNfe(models.Model):
             ('numero', '>=', self.numeration_start),
             ('numero', '<=', self.numeration_end),
             ('company_id', '=', self.env.user.company_id.id),
+            ('model', '=', self.modelo),
         ])
         if docs:
             errors.append('Não é possível invalidar essa série pois já existem'

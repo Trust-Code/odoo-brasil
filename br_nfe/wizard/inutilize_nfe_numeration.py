@@ -6,6 +6,7 @@ from odoo import api, fields, models
 
 class InutilizationNFeNumeration(models.TransientModel):
     _name = 'wizard.inutilization.nfe.numeration'
+    _description = "Inutilização numeração NF-e"
 
     numeration_start = fields.Integer(u'Começo da Numeração', required=True)
     numeration_end = fields.Integer(u'Fim da Numeração', required=True)

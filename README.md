@@ -2,7 +2,7 @@ Odoo Brasil
 ============================================
 
 <p align="center">
-<a name="top" href="http://trustcode.com.br/page/open-source-1"><img src="https://github.com/Trust-Code/odoo-brasil/raw/10.0/icon.png"></a>
+<a name="top" href="http://trustcode.com.br/page/open-source-1"><img src="https://github.com/Trust-Code/odoo-brasil/raw/12.0/icon.png" width="250"></a>
 </p>
 
 <p align="center">
@@ -23,10 +23,10 @@ Odoo Brasil
 
 <br>
 
-This is a repository from Trustcode.
+Para dúvidas acesse: [Fórum de Ajuda](https://help.odoo-next.com.br/)
 
 [![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=11.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
-[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=11.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=11.0)
+[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=12.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=12.0)
 [![Code Climate](https://codeclimate.com/github/Trust-Code/odoo-brasil/badges/gpa.svg)](https://codeclimate.com/github/Trust-Code/odoo-brasil)
 [![Licence](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
 
@@ -34,7 +34,7 @@ This is a repository from Trustcode.
 
 ## Introdução
 
-Este repositório adapta o Odoo 11 para ser usado no Brasil
+Este repositório adapta o Odoo 12 para ser usado no Brasil
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
