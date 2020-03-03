@@ -7,7 +7,7 @@ class AccountMove(models.Model):
 
     def action_post(self):
         res = super(AccountMove, self).action_post()
-        for move in self:
+        for move in self.filtered(lambda x: x.type == 'out_invoice'):
             doc = self.env['eletronic.document'].create({
                 'name': move.name,
                 'emission_date': datetime.now(),

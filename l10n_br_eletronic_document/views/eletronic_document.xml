@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="invoice_eletronic_item_form" model="ir.ui.view">
+            <field name="name">invoice.eletronic.item.form</field>
+            <field name="model">invoice.eletronic.item</field>
+            <field name="arch" type="xml">
+                <form string="Item Documento">
+                    <notebook>
+                        <page string="Dados do produto">
+                            <group>
+                                <group>
+                                    <field name="state" invisible="1" />
+                                    <field name="product_id" />
+                                    <field name="uom_id" />
+                                    <field name="quantidade" />
+                                    <field name="preco_unitario" />
+                                    <field name="valor_bruto" />
+                                    <field name="desconto" />
+                                    <field name="seguro" />
+                                    <field name="frete" />
+                                    <field name="outras_despesas" />
+                                    <field name="valor_liquido" />
+                                </group>
+                                <group>
+                                    <field name="tipo_produto" />
+                                    <field name="cfop" />
+                                    <field name="ncm" />
+                                    <field name="tributos_estimados" />
+                                    <field name="indicador_total" />
+                                    <field name="pedido_compra" />
+                                    <field name="item_pedido_compra" />
+                                </group>
+                            </group>
+                            <label for="name"/>
+                            <field name="name"/>
+                        </page>
+
+                        <page name="icms" string="ICMS" attrs="{'invisible': [('tipo_produto', '=', 'service')]}">
+                            <group name="detalhes_icms" string="Detalhes do ICMS">
+                                <group>
+                                    <field name="icms_cst" />
+                                    <field name="origem"/>
+                                    <field name="icms_tipo_base"/>
+                                    <field name="icms_aliquota_diferimento" />
+                                    <field name="icms_valor_diferido" />
+                                    <field name="icms_motivo_desoneracao" />
+                                    <field name="icms_valor_desonerado" />
+                                </group>
+                                <group>
+                                    <field name="icms_base_calculo"/>
+                                    <field name="icms_aliquota_reducao_base"/>
+                                    <field name="icms_aliquota" />
+                                    <field name="icms_valor"/>
+                                    <field name="icms_aliquota_credito" />
+                                    <field name="icms_valor_credito" />
+                                </group>
+                            </group>
+                            <group name="substituicao_icms" string="Substituição Tributária ICMS">
+                                <group name="icms_substituicao">
+                                    <field name="icms_st_tipo_base"/>
+                                    <field name="icms_st_aliquota_mva"/>
+                                    <field name="icms_st_base_calculo"/>
+                                    <field name="icms_st_aliquota_reducao_base"/>
+                                    <field name="icms_st_aliquota" />
+                                    <field name="icms_st_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="issqn" string="ISSQN" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
+                            <group>
+                                <field name="issqn_base_calculo"/>
+                                <field name="issqn_aliquota"/>
+                                <field name="issqn_codigo" />
+                                <field name="issqn_valor"/>
+                                <field name="issqn_valor_retencao"/>
+                            </group>
+                        </page>
+                        <page name="retencoes" string="Retenções" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
+                            <group>
+                                <group string="CSLL">
+                                    <field name="csll_base_calculo"/>
+                                    <field name="csll_aliquota"/>
+                                    <field name="csll_valor_retencao"/>
+                                </group>
+                                <group string="IRRF">
+                                    <field name="irrf_base_calculo"/>
+                                    <field name="irrf_aliquota"/>
+                                    <field name="irrf_valor_retencao"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="INSS">
+                                    <field name="inss_base_calculo"/>
+                                    <field name="inss_aliquota"/>
+                                    <field name="inss_valor_retencao"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ipi" string="IPI" attrs="{'invisible': [('tipo_produto','==', 'service')]}">
+                            <group string="Detalhes do IPI">
+                                <group>
+                                    <field name="ipi_cst" />
+                                </group>
+                                <group>
+                                    <field name="ipi_valor" />
+                                    <field name="ipi_base_calculo"/>
+                                    <field name="ipi_reducao_bc" />
+                                    <field name="ipi_aliquota" />
+                                    <field name="ipi_valor"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="pis" string="PIS">
+                            <group string="Detalhes do PIS">
+                                <group>
+                                    <field name="pis_cst" />
+                                </group>
+                                <group>
+                                    <field name="pis_base_calculo"/>
+                                    <field name="pis_aliquota"/>
+                                    <field name="pis_valor"/>
+                                    <field name="pis_valor_retencao" attrs="{'invisible': [('tipo_produto','!=', 'service')]}"/>
+                                </group>
+                            </group>
+
+                        </page>
+                        <page name="cofins" string="COFINS">
+                            <group string="Detalhes do COFINS">
+                                <group>
+                                    <field name="cofins_cst"/>
+                                </group>
+                                <group>
+                                    <field name="cofins_base_calculo"/>
+                                    <field name="cofins_aliquota"/>
+                                    <field name="cofins_valor"/>
+                                    <field name="cofins_valor_retencao" attrs="{'invisible': [('tipo_produto','!=', 'service')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ii" string="II" attrs="{'invisible': [('tipo_produto','==', 'service')]}">
+                            <group string="Detalhes do Imposto de Importação">
+                                <field name="ii_base_calculo"/>
+                                <field name="ii_aliquota"/>
+                                <field name="ii_valor_despesas"/>
+                                <field name="ii_valor_iof"/>
+                                <field name="ii_valor"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record id="br_account_invoice_eletronic_form" model="ir.ui.view">
+            <field name="name">br.account.invoice.eletronic.form</field>
+            <field name="model">invoice.eletronic</field>
+            <field name="arch" type="xml">
+                <form string="Documento Eletrônico">
+                    <header>
+                        <button name="action_send_eletronic_invoice" states="draft" string="Enviar Agora" type="object" class="oe_highlight"/>
+                        <button name="action_back_to_draft" states="edit,error" string="Repetir" type="object"/>
+                        <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" groups="br_account_einvoice.group_edit_edoc"/>
+                        <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
+                        <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
+                    </header>
+                    <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-1">
+                                <b>Situação: </b><field name="codigo_retorno" class="oe_inline" readonly="1"/><br />
+                                <b>Mensagem: </b><field name="mensagem_retorno"  class="oe_inline" readonly="1" />
+                            </div>
+                        </div>
+                    </div>
+                    <sheet string="Documento Eletronico">
+                        <group>
+                            <group>
+                                <field name="model"/>
+                                <field name="invoice_id"/>
+                                <field name="partner_id"/>
+                                <field name="partner_shipping_id"/>
+                                <field name="data_agendada"/>
+                                <field name="schedule_user_id" />
+                            </group>
+                            <group>
+                                <field name="tipo_operacao" />
+                                <field name="payment_term_id"/>
+                                <field name="fiscal_position_id"/>
+                                <field name="email_sent" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="identificacao" string="Identificação">
+                                <group>
+                                    <group>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="company_id"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="serie"/>
+                                        <field name="serie_documento"/>
+                                        <field name="numero"/>
+                                        <field name="numero_controle"/>
+                                        <field name="xml_to_send_name" invisible="1"/>
+                                        <field name="xml_to_send" filename="xml_to_send_name"/>
+                                    </group>
+                                    <group>
+                                        <field name="data_emissao"/>
+                                        <field name="data_autorizacao"/>
+                                        <field name="ambiente"/>
+                                        <field name="finalidade_emissao"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="itens" string="Itens">
+                                <group>
+                                    <field name="eletronic_item_ids" nolabel="1">
+                                        <tree name="eletronic_items">
+                                            <field name="state" invisible="1" />
+                                            <field name="product_id" />
+                                            <field name="uom_id" />
+                                            <field name="cfop" />
+                                            <field name="quantidade" />
+                                            <field name="preco_unitario" />
+                                            <field name="valor_liquido" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page name="totais" string="Totais">
+                                <group>
+                                    <group name="totais" string="Totais">
+                                        <field name="valor_bruto" />
+                                        <field name="valor_frete" />
+                                        <field name="valor_seguro" />
+                                        <field name="valor_desconto" />
+                                        <field name="valor_despesas" />
+                                        <field name="valor_final" />
+                                    </group>
+                                    <group name="impostos" string="Impostos">
+                                        <field name="valor_bc_icms" />
+                                        <field name="valor_icms" />
+                                        <field name="valor_icms_deson" />
+                                        <field name="valor_bc_icmsst" />
+                                        <field name="valor_icmsst" />
+                                        <field name="valor_ii" />
+                                        <field name="valor_ipi" />
+                                        <field name="valor_pis" />
+                                        <field name="valor_cofins" />
+                                        <field name="valor_estimado_tributos" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group name="servico" string="Totais de Serviço">
+                                        <field name="valor_servicos" />
+                                        <field name="valor_bc_issqn" />
+                                        <field name="valor_issqn" />
+                                        <field name="valor_pis_servicos" />
+                                        <field name="valor_cofins_servicos" />
+                                    </group>
+                                    <group name="retencoes" string="Retenções">
+                                        <field name="valor_retencao_issqn" />
+                                        <field name="valor_retencao_pis" />
+                                        <field name="valor_retencao_cofins" />
+                                        <field name="valor_bc_irrf" />
+                                        <field name="valor_retencao_irrf" />
+                                        <field name="valor_bc_csll" />
+                                        <field name="valor_retencao_csll" />
+                                        <field name="valor_bc_inss" />
+                                        <field name="valor_retencao_inss" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Observações">
+                                <group>
+                                    <field name="informacoes_legais" />
+                                    <field name="informacoes_complementares" />
+                                </group>
+                            </page>
+                            <page name="eventos" string="Eventos">
+                                <group>
+                                    <field name="eletronic_event_ids" nolabel="1">
+                                        <tree name="Eventos">
+                                            <field name="state" invisible="1" />
+                                            <field name="code" />
+                                            <field name="name" />
+                                            <field name="create_date" />
+                                           <field name="create_uid" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="sped_base_eletronic_doc_tree" model="ir.ui.view">
+            <field name="name">sped.eletronic.doc.form</field>
+            <field name="model">invoice.eletronic</field>
+            <field name="arch" type="xml">
+                <tree string="Documentos Eletrônicos">
+                    <field name="partner_id"/>
+                    <field name="invoice_id"/>
+                    <field name="numero"/>
+                    <field name="data_emissao" />
+                    <field name="valor_final" sum="Total"/>
+                    <field name="data_agendada" />
+                    <field name="schedule_user_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="sped_base_eletronic_doc_search" model="ir.ui.view">
+            <field name="name">sped.eletronic.doc.search</field>
+            <field name="model">invoice.eletronic</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Notas com problemas" domain="[('state','=', 'error')]" name="error"/>
+                    <separator orientation="vertical"/>
+                    <field name="invoice_id"/>
+                    <field name="partner_id"/>
+                    <field name="numero" />
+                    <group expand="0" string="Agrupar por...">
+                        <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter name="group_date" string="Data de Emissão" domain="[]" context="{'group_by':'data_emissao'}"/>
+                        <filter name="group_state" string="Situação" domain="[]" context="{'group_by':'state'}"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_sped_base_eletronic_doc" model="ir.actions.act_window">
+            <field name="name">Documentos Eletrônicos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.eletronic</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sped_base_eletronic_doc_tree"/>
+        </record>
+
+        <menuitem id="menu_eletronic_doc_base" name="Automação de NFe" parent="account.menu_finance_entries" sequence="20"/>
+        <menuitem id="menu_action_sped_base_eletronic_doc"  parent="menu_eletronic_doc_base"
+                  action="action_sped_base_eletronic_doc" sequence="5"/>
+
+    </data>
+</openerp>
