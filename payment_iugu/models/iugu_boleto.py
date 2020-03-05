@@ -35,7 +35,7 @@ class IuguBoleto(models.Model):
         base_url = (
             self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         )
-        # ngrok_url = 'http://b2a48696.ngrok.io'
+
         partner_id = values.get('billing_partner')
 
         items = [{
@@ -90,7 +90,10 @@ class IuguBoleto(models.Model):
         })
 
         url = result.get("secure_url")
-        return {"checkout_url": url}
+        return {
+            "checkout_url": urls.url_join(base_url, "/iugu/checkout/redirect"),
+            "secure_url": url
+        }
 
 
 class TransactionIugu(models.Model):
