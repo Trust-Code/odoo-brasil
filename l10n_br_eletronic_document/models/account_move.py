@@ -5,9 +5,13 @@ from odoo import api, fields, models
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    def action_post(self):
-        res = super(AccountMove, self).action_post()
-        for move in self.filtered(lambda x: x.type == 'out_invoice'):
+    l10n_br_edoc_policy = fields.Selection(
+        [('directly', 'Emitir agora'),
+         ('after_payment', 'Emitir após pagamento'),
+         ('manually', 'Manualmente')], string="Nota Eletrônica", default='directly')
+
+    def action_create_eletronic_document(self):
+        for move in self.filtered():
             doc = self.env['eletronic.document'].create({
                 'name': move.name,
                 'emission_date': datetime.now(),
@@ -16,4 +20,7 @@ class AccountMove(models.Model):
             })
             doc.generate()
 
-
+    def action_post(self):
+        res = super(AccountMove, self).action_post()
+        moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly')
+        moves.action_create_eletronic_document()

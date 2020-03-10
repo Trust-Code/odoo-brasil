@@ -17,5 +17,9 @@
     'data': [
         'security/ir.model.access.csv',
         'views/res_company.xml',
+        'views/account_move.xml',
+        'views/eletronic_document.xml',
+        'views/eletronic_document_line.xml',
+        'views/fiscal_position.xml',
     ],
 }

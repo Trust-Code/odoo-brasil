@@ -25,7 +25,7 @@ class ResCompany(models.Model):
     l10n_br_inscr_est = fields.Char(string="Inscr. Estadual", compute='_compute_address', inverse='_inverse_inscr_est')
     l10n_br_inscr_mun = fields.Char(string="Inscr. Municipal", compute='_compute_address', inverse='_inverse_inscr_mun')
     l10n_br_suframa = fields.Char(string="Suframa", compute='_compute_address', inverse='_inverse_cnpj_cpf')
-    city_id = fields.Many2one('res.city', compute='_compute_address', inverse='_inverse_cnpj_cpf')
+    city_id = fields.Many2one('res.city', compute='_compute_address', inverse='_inverse_cnpj_cpf', string="Cidade")
     
     def _inverse_cnpj_cpf(self):
         for company in self:

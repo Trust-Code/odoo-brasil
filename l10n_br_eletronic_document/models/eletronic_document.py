@@ -4,7 +4,7 @@ import requests
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-from .cst import CST_PIS_COFINS
+from .cst import CST_ICMS, CST_PIS_COFINS, CSOSN_SIMPLES, CST_IPI, ORIGEM_PROD
 
 
 STATE = {'edit': [('readonly', False)]}
@@ -13,28 +13,36 @@ STATE = {'edit': [('readonly', False)]}
 class EletronicDocument(models.Model):
     _name = 'eletronic.document'
     _description = 'Eletronic documents (NFE, NFSe)'
-    
-    name = fields.Char(string='Name', size=30)
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'id desc'
+
+    code = fields.Char('Código', size=100, readonly=True, states=STATE)
+    name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
     company_id = fields.Many2one('res.company')
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
-        string="Company Currency")
-    emission_date = fields.Datetime(string="Data de Emissão")
-    identifier = fields.Char(string="Identificador")
-    
+        string="Company Currency", readonly=True, states=STATE)
+    emission_date = fields.Datetime(
+        string="Data de Emissão", readonly=True, states=STATE)
+    identifier = fields.Char(
+        string="Identificador", readonly=True, states=STATE)
+
     partner_id = fields.Many2one('res.partner')
     partner_cpf_cnpj = fields.Char(string="CNPJ/CPF", size=20)
+
+    commercial_partner_id = fields.Many2one(
+        'res.partner', string='Commercial Entity',
+        related='partner_id.commercial_partner_id', store=True)
+    partner_shipping_id = fields.Many2one(
+        'res.partner', string=u'Entrega', readonly=True, states=STATE)
     
+    move_id = fields.Many2one(
+        'account.move', string='Fatura', readonly=True, states=STATE)
+
     document_line_ids = fields.One2many(
         'eletronic.document.line', 'eletronic_document_id', string="Linhas")
 
     # ------------ PIS ---------------------
-    pis_cst = fields.Selection(
-        CST_PIS_COFINS, string='Situação Tributária',
-        readonly=True, states=STATE)
-    pis_aliquota = fields.Float(
-        string=u'Alíquota', digits='Account',
-        readonly=True, states=STATE)
     pis_base_calculo = fields.Monetary(
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
@@ -46,12 +54,6 @@ class EletronicDocument(models.Model):
         readonly=True, states=STATE)
 
     # ------------ COFINS ------------
-    cofins_cst = fields.Selection(
-        CST_PIS_COFINS, string='Situação Tributária',
-        readonly=True, states=STATE)
-    cofins_aliquota = fields.Float(
-        string='Alíquota', digits='Account',
-        readonly=True, states=STATE)
     cofins_base_calculo = fields.Monetary(
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
@@ -63,11 +65,6 @@ class EletronicDocument(models.Model):
         readonly=True, states=STATE)
 
     # ----------- ISS -------------
-    iss_codigo = fields.Char(
-        string='Código', size=10, readonly=True, states=STATE)
-    iss_aliquota = fields.Float(
-        string='Alíquota', digits='Account',
-        readonly=True, states=STATE)
     iss_base_calculo = fields.Monetary(
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
@@ -82,17 +79,11 @@ class EletronicDocument(models.Model):
     csll_base_calculo = fields.Monetary(
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
-    csll_aliquota = fields.Float(
-        string='Alíquota', digits='Account',
-        readonly=True, states=STATE)
     csll_valor_retencao = fields.Monetary(
         string='Valor Retenção', digits='Account',
         readonly=True, states=STATE)
     irrf_base_calculo = fields.Monetary(
         string='Base de Cálculo', digits='Account',
-        readonly=True, states=STATE)
-    irrf_aliquota = fields.Float(
-        string='Alíquota', digits='Account',
         readonly=True, states=STATE)
     irrf_valor_retencao = fields.Monetary(
         string='Valor Retenção', digits='Account',
@@ -100,16 +91,139 @@ class EletronicDocument(models.Model):
     inss_base_calculo = fields.Monetary(
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
-    inss_aliquota = fields.Float(
-        string='Alíquota', digits='Account',
-        readonly=True, states=STATE)
     inss_valor_retencao = fields.Monetary(
         string='Valor Retenção', digits='Account',
         readonly=True, states=STATE)
 
     valor_final = fields.Monetary(
         string='Valor Final', readonly=True, states=STATE)
-    
+
+    state = fields.Selection(
+        [('draft', u'Provisório'),
+         ('edit', 'Editar'),
+         ('error', 'Erro'),
+         ('done', 'Enviado'),
+         ('cancel', 'Cancelado')],
+        string=u'State', default='draft', readonly=True, states=STATE,
+        track_visibility='always')
+    schedule_user_id = fields.Many2one(
+        'res.users', string="Agendado por", readonly=True,
+        track_visibility='always')
+    tipo_operacao = fields.Selection(
+        [('entrada', 'Entrada'),
+         ('saida', 'Saída')],
+        string=u'Tipo de Operação', readonly=True, states=STATE)
+    model = fields.Selection(
+        [('55', u'55 - NFe'),
+         ('65', u'65 - NFCe'),
+         ('001', u'NFS-e - Nota Fiscal Paulistana'),
+         ('002', u'NFS-e - Provedor GINFES'),
+         ('008', u'NFS-e - Provedor SIMPLISS'),
+         ('009', u'NFS-e - Provedor SUSESU'),
+         ('010', u'NFS-e Imperial - Petrópolis'),
+         ('012', u'NFS-e - Florianópolis')],
+        string=u'Modelo', readonly=True, states=STATE)
+    # serie = fields.Many2one(
+    #     'br_account.document.serie', string=u'Série',
+    #     readonly=True, states=STATE)
+    serie_documento = fields.Char(string=u'Série Documento', size=6)
+    numero = fields.Integer(
+        string=u'Número', readonly=True, states=STATE)
+    numero_controle = fields.Integer(
+        string=u'Número de Controle', readonly=True, states=STATE)
+    data_agendada = fields.Date(
+        string=u'Data agendada',
+        readonly=True,
+        default=fields.Date.today,
+        states=STATE)
+    data_emissao = fields.Datetime(
+        string=u'Data emissão', readonly=True, states=STATE)
+    data_autorizacao = fields.Char(
+        string=u'Data de autorização', size=30, readonly=True, states=STATE)
+    ambiente = fields.Selection(
+        [('homologacao', u'Homologação'),
+         ('producao', u'Produção')],
+        string=u'Ambiente', readonly=True, states=STATE)
+    finalidade_emissao = fields.Selection(
+        [('1', u'1 - Normal'),
+         ('2', u'2 - Complementar'),
+         ('3', u'3 - Ajuste'),
+         ('4', u'4 - Devolução')],
+        string=u'Finalidade', help=u"Finalidade da emissão de NFe",
+        readonly=True, states=STATE)
+    payment_term_id = fields.Many2one(
+        'account.payment.term', string='Condição pagamento',
+        readonly=True, states=STATE)
+    fiscal_position_id = fields.Many2one(
+        'account.fiscal.position', string=u'Posição Fiscal',
+        readonly=True, states=STATE)
+    # eletronic_event_ids = fields.One2many(
+    #     'invoice.eletronic.event', 'invoice_eletronic_id', string=u"Eventos",
+    #     readonly=True, states=STATE)
+    valor_bruto = fields.Monetary(
+        string=u'Total Produtos', readonly=True, states=STATE)
+    valor_frete = fields.Monetary(
+        string=u'Total Frete', readonly=True, states=STATE)
+    valor_seguro = fields.Monetary(
+        string=u'Total Seguro', readonly=True, states=STATE)
+    valor_desconto = fields.Monetary(
+        string=u'Total Desconto', readonly=True, states=STATE)
+    valor_despesas = fields.Monetary(
+        string=u'Total Despesas', readonly=True, states=STATE)
+    valor_bc_icms = fields.Monetary(
+        string=u"Base de Cálculo ICMS", readonly=True, states=STATE)
+    valor_icms = fields.Monetary(
+        string=u"Total do ICMS", readonly=True, states=STATE)
+    valor_icms_deson = fields.Monetary(
+        string=u'ICMS Desoneração', readonly=True, states=STATE)
+    valor_bc_icmsst = fields.Monetary(
+        string=u'Total Base ST', help=u"Total da base de cálculo do ICMS ST",
+        readonly=True, states=STATE)
+    valor_icmsst = fields.Monetary(
+        string=u'Total ST', readonly=True, states=STATE)
+    valor_ii = fields.Monetary(
+        string=u'Total II', readonly=True, states=STATE)
+    valor_ipi = fields.Monetary(
+        string=u"Total IPI", readonly=True, states=STATE)
+    valor_pis = fields.Monetary(
+        string=u"Total PIS", readonly=True, states=STATE)
+    valor_cofins = fields.Monetary(
+        string=u"Total COFINS", readonly=True, states=STATE)
+    valor_estimado_tributos = fields.Monetary(
+        string=u"Tributos Estimados", readonly=True, states=STATE)
+
+    valor_servicos = fields.Monetary(
+        string=u"Total Serviços", readonly=True, states=STATE)
+    valor_bc_issqn = fields.Monetary(
+        string=u"Base ISS", readonly=True, states=STATE)
+    valor_issqn = fields.Monetary(
+        string=u"Total ISS", readonly=True, states=STATE)
+    valor_pis_servicos = fields.Monetary(
+        string=u"Total PIS Serviços", readonly=True, states=STATE)
+    valor_cofins_servicos = fields.Monetary(
+        string=u"Total Cofins Serviço", readonly=True, states=STATE)
+
+    informacoes_legais = fields.Text(
+        string='Informações legais', readonly=True, states=STATE)
+    informacoes_complementares = fields.Text(
+        string='Informações complementares', readonly=True, states=STATE)
+
+    codigo_retorno = fields.Char(
+        string='Código Retorno', readonly=True, states=STATE,
+        track_visibility='onchange')
+    mensagem_retorno = fields.Char(
+        string='Mensagem Retorno', readonly=True, states=STATE,
+        track_visibility='onchange')
+    numero_nfe = fields.Char(
+        string="Numero Formatado NFe", readonly=True, states=STATE)
+
+    xml_to_send = fields.Binary(string="Xml a Enviar", readonly=True)
+    xml_to_send_name = fields.Char(
+        string="Nome xml a ser enviado", size=100, readonly=True)
+
+    email_sent = fields.Boolean(
+        string="Email enviado", default=False, readonly=True, states=STATE)
+
 
     def generate_dict_values(self):
         dict_docs = []
@@ -180,7 +294,7 @@ class EletronicDocument(models.Model):
                 'base_calculo': doc.iss_base_calculo,
                 'valor_iss': doc.iss_valor,
                 'valor_total': doc.valor_final,
-                
+
                 'aedf': doc.company_id.l10n_br_aedf,
                 'client_id': doc.company_id.l10n_br_client_id,
                 'client_secret': doc.company_id.l10n_br_client_secret,
@@ -189,11 +303,10 @@ class EletronicDocument(models.Model):
             }
             dict_docs.append(data)
         return dict_docs
-   
-    
+
     def generate(self):
         company = self.mapped('company_id').with_context({'bin_size': False})
-        
+
         certificate = company.l10n_br_certificate
         password = company.l10n_br_cert_password
         doc_values = self.generate_dict_values()
@@ -208,17 +321,18 @@ class EletronicDocument(models.Model):
         else:
             from .focus_nfse import send_api
             response = send_api(certificate, password, doc_values)
-        
+
         if response['code'] in (200, 201):
             print(response)
         else:
-            raise UserError('%s - %s' % (response['api_code'], response['message']))
+            raise UserError('%s - %s' %
+                            (response['api_code'], response['message']))
 
 
 class EletronicDocumentLine(models.Model):
     _name = 'eletronic.document.line'
     _description = 'Eletronic document line (NFE, NFSe)'
-      
+
     name = fields.Char(string='Name', size=30)
     company_id = fields.Many2one(
         'res.company', 'Empresa')
@@ -227,4 +341,237 @@ class EletronicDocumentLine(models.Model):
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency")
-    
+
+    state = fields.Selection(
+        related='eletronic_document_id.state', string="State")
+
+    product_id = fields.Many2one(
+        'product.product', string='Produto', readonly=True, states=STATE)
+    tipo_produto = fields.Selection(
+        [('product', 'Produto'),
+         ('service', 'Serviço')],
+        string="Tipo Produto", readonly=True, states=STATE)
+    cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
+    ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
+
+    uom_id = fields.Many2one(
+        'uom.uom', string='Unidade Medida', readonly=True, states=STATE)
+    quantidade = fields.Float(
+        string='Quantidade', readonly=True, states=STATE,
+        digits='Product Unit of Measure')
+    preco_unitario = fields.Monetary(
+        string='Preço Unitário', digits='Product Price',
+        readonly=True, states=STATE)
+
+    pedido_compra = fields.Char(
+        string="Pedido Compra", size=60,
+        help="Se setado aqui sobrescreve o pedido de compra da fatura")
+    item_pedido_compra = fields.Char(
+        string="Item de compra", size=20,
+        help='Item do pedido de compra do cliente')
+
+    frete = fields.Monetary(
+        string='Frete', digits='Account',
+        readonly=True, states=STATE)
+    seguro = fields.Monetary(
+        string='Seguro', digits='Account',
+        readonly=True, states=STATE)
+    desconto = fields.Monetary(
+        string='Desconto', digits='Account',
+        readonly=True, states=STATE)
+    outras_despesas = fields.Monetary(
+        string='Outras despesas', digits='Account',
+        readonly=True, states=STATE)
+
+    tributos_estimados = fields.Monetary(
+        string='Valor Estimado Tributos', digits='Account',
+        readonly=True, states=STATE)
+
+    valor_bruto = fields.Monetary(
+        string='Valor Bruto', digits='Account',
+        readonly=True, states=STATE)
+    valor_liquido = fields.Monetary(
+        string='Valor Líquido', digits='Account',
+        readonly=True, states=STATE)
+    indicador_total = fields.Selection(
+        [('0', '0 - Não'), ('1', '1 - Sim')],
+        string="Compõe Total da Nota?", default='1',
+        readonly=True, states=STATE)
+
+    origem = fields.Selection(
+        ORIGEM_PROD, string='Origem Mercadoria', readonly=True, states=STATE)
+    icms_cst = fields.Selection(
+        CST_ICMS + CSOSN_SIMPLES, string='Situação Tributária',
+        readonly=True, states=STATE)
+    icms_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    icms_tipo_base = fields.Selection(
+        [('0', '0 - Margem Valor Agregado (%)'),
+         ('1', '1 - Pauta (Valor)'),
+         ('2', '2 - Preço Tabelado Máx. (valor)'),
+         ('3', '3 - Valor da operação')],
+        string='Modalidade BC do ICMS', readonly=True, states=STATE)
+    icms_base_calculo = fields.Monetary(
+        string='Base de cálculo', digits='Account',
+        readonly=True, states=STATE)
+    icms_aliquota_reducao_base = fields.Float(
+        string='% Redução Base', digits='Account',
+        readonly=True, states=STATE)
+    icms_valor = fields.Monetary(
+        string='Valor Total', digits='Account',
+        readonly=True, states=STATE)
+    icms_valor_credito = fields.Monetary(
+        string="Valor de Cŕedito", digits='Account',
+        readonly=True, states=STATE)
+    icms_aliquota_credito = fields.Float(
+        string='% de Crédito', digits='Account',
+        readonly=True, states=STATE)
+
+    icms_st_tipo_base = fields.Selection(
+        [('0', '0- Preço tabelado ou máximo  sugerido'),
+         ('1', '1 - Lista Negativa (valor)'),
+         ('2', '2 - Lista Positiva (valor)'),
+         ('3', '3 - Lista Neutra (valor)'),
+         ('4', '4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
+        string='Tipo Base ICMS ST', required=True, default='4',
+        readonly=True, states=STATE)
+    icms_st_aliquota_mva = fields.Float(
+        string='% MVA', digits='Account',
+        readonly=True, states=STATE)
+    icms_st_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    icms_st_base_calculo = fields.Monetary(
+        string='Base de cálculo', digits='Account',
+        readonly=True, states=STATE)
+    icms_st_aliquota_reducao_base = fields.Float(
+        string='% Redução Base', digits='Account',
+        readonly=True, states=STATE)
+    icms_st_valor = fields.Monetary(
+        string='Valor Total', digits='Account',
+        readonly=True, states=STATE)
+
+    icms_aliquota_diferimento = fields.Float(
+        string='% Diferimento', digits='Account',
+        readonly=True, states=STATE)
+    icms_valor_diferido = fields.Monetary(
+        string='Valor Diferido', digits='Account',
+        readonly=True, states=STATE)
+
+    icms_motivo_desoneracao = fields.Char(
+        string='Motivo Desoneração', size=2, readonly=True, states=STATE)
+    icms_valor_desonerado = fields.Monetary(
+        string='Valor Desonerado', digits='Account',
+        readonly=True, states=STATE)
+
+    # ----------- IPI -------------------
+    ipi_cst = fields.Selection(CST_IPI, string='Situação tributária')
+    ipi_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    ipi_base_calculo = fields.Monetary(
+        string='Base de cálculo', digits='Account',
+        readonly=True, states=STATE)
+    ipi_reducao_bc = fields.Float(
+        string='% Redução Base', digits='Account',
+        readonly=True, states=STATE)
+    ipi_valor = fields.Monetary(
+        string='Valor Total', digits='Account',
+        readonly=True, states=STATE)
+
+    # ----------- II ----------------------
+    ii_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    ii_aliquota = fields.Float(
+        string='Alíquota II', digits='Account',
+        readonly=True, states=STATE)
+    ii_valor_despesas = fields.Monetary(
+        string='Despesas Aduaneiras', digits='Account',
+        readonly=True, states=STATE)
+    ii_valor = fields.Monetary(
+        string='Imposto de Importação', digits='Account',
+        readonly=True, states=STATE)
+    ii_valor_iof = fields.Monetary(
+        string='IOF', digits='Account',
+        readonly=True, states=STATE)
+
+    # ------------ PIS ---------------------
+    pis_cst = fields.Selection(
+        CST_PIS_COFINS, string='Situação Tributária',
+        readonly=True, states=STATE)
+    pis_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    pis_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    pis_valor = fields.Monetary(
+        string='Valor Total', digits='Account',
+        readonly=True, states=STATE)
+    pis_valor_retencao = fields.Monetary(
+        string='Valor Retido', digits='Account',
+        readonly=True, states=STATE)
+
+    # ------------ COFINS ------------
+    cofins_cst = fields.Selection(
+        CST_PIS_COFINS, string='Situação Tributária',
+        readonly=True, states=STATE)
+    cofins_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    cofins_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    cofins_valor = fields.Monetary(
+        string='Valor Total', digits='Account',
+        readonly=True, states=STATE)
+    cofins_valor_retencao = fields.Monetary(
+        string='Valor Retido', digits='Account',
+        readonly=True, states=STATE)
+
+    # ----------- ISSQN -------------
+    issqn_codigo = fields.Char(
+        string='Código', size=10, readonly=True, states=STATE)
+    issqn_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    issqn_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    issqn_valor = fields.Monetary(
+        string='Valor Total', digits='Account',
+        readonly=True, states=STATE)
+    issqn_valor_retencao = fields.Monetary(
+        string='Valor Retenção', digits='Account',
+        readonly=True, states=STATE)
+
+    # ------------ RETENÇÔES ------------
+    csll_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    csll_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    csll_valor_retencao = fields.Monetary(
+        string='Valor Retenção', digits='Account',
+        readonly=True, states=STATE)
+    irrf_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    irrf_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    irrf_valor_retencao = fields.Monetary(
+        string='Valor Retenção', digits='Account',
+        readonly=True, states=STATE)
+    inss_base_calculo = fields.Monetary(
+        string='Base de Cálculo', digits='Account',
+        readonly=True, states=STATE)
+    inss_aliquota = fields.Float(
+        string='Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    inss_valor_retencao = fields.Monetary(
+        string='Valor Retenção', digits='Account',
+        readonly=True, states=STATE)

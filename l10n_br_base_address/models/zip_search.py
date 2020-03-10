@@ -12,6 +12,7 @@ except ImportError:
 
 class ZipSearchMixin(models.AbstractModel):
     _name = 'zip.search.mixin'
+    _description = 'Pesquisa de CEP'
 
     def search_address_by_zip(self, zip_code):
         zip_code = re.sub('[^0-9]', '', zip_code or '')

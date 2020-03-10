@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 
 class WizardChangeIuguInvoice(models.TransientModel):
     _name = 'wizard.change.iugu.invoice'
+    _description = 'Modificar parcelamento boleto'
 
     payment_due = fields.Boolean(string="Pagamento Atrasado?")
     date_change = fields.Date(string='Alterar Vencimento')
