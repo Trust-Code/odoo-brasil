@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_br_nfe_mde_res_company_form" model="ir.ui.view">
+        <field name="name">br_nfe_mde.res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="l10n_br_base.view_company_form_inherited" />
+        <field name="arch" type="xml">
+            <group position="inside">
+                <group string="NFe">
+                    <field name="l10n_br_tipo_ambiente" />
+                    <field name="last_nsu_nfe" />
+                    <field name="manifest_automation" />
+                    <field name="partner_automation" />
+                    <field name="invoice_automation" />
+                    <field name="tax_automation" />
+                    <field name="supplierinfo_automation" />
+                </group>
+            </group>
+        </field>
+    </record>
+</odoo>

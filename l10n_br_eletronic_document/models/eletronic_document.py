@@ -102,6 +102,7 @@ class EletronicDocument(models.Model):
         [('draft', u'Provisório'),
          ('edit', 'Editar'),
          ('error', 'Erro'),
+         ('denied', 'Denegado'),
          ('done', 'Enviado'),
          ('cancel', 'Cancelado')],
         string=u'State', default='draft', readonly=True, states=STATE,
@@ -224,6 +225,160 @@ class EletronicDocument(models.Model):
     email_sent = fields.Boolean(
         string="Email enviado", default=False, readonly=True, states=STATE)
 
+
+    # payment_mode_id = fields.Many2one(
+    #     'l10n_br.payment.mode', string='Modo de Pagamento',
+    #     readonly=True, states=STATE)
+    iest = fields.Char(string="IE Subst. Tributário")
+    ambiente_nfe = fields.Selection(
+        string=u"Ambiente NFe", related="company_id.l10n_br_tipo_ambiente",
+        readonly=True)
+    ind_final = fields.Selection([
+        ('0', u'Não'),
+        ('1', u'Sim')
+    ], u'Consumidor Final', readonly=True, states=STATE, required=False,
+        help=u'Indica operação com Consumidor final.', default='0')
+    ind_pres = fields.Selection([
+        ('0', u'Não se aplica'),
+        ('1', u'Operação presencial'),
+        ('2', u'Operação não presencial, pela Internet'),
+        ('3', u'Operação não presencial, Teleatendimento'),
+        ('4', u'NFC-e em operação com entrega em domicílio'),
+        ('5', u'Operação presencial, fora do estabelecimento'),
+        ('9', u'Operação não presencial, outros'),
+    ], u'Indicador de Presença', readonly=True, states=STATE, required=False,
+        help=u'Indicador de presença do comprador no\n'
+             u'estabelecimento comercial no momento\n'
+             u'da operação.', default='0')
+    ind_dest = fields.Selection([
+        ('1', u'1 - Operação Interna'),
+        ('2', u'2 - Operação Interestadual'),
+        ('3', u'3 - Operação com exterior')],
+        string=u"Indicador Destinatário", readonly=True, states=STATE)
+    ind_ie_dest = fields.Selection([
+        ('1', u'1 - Contribuinte ICMS'),
+        ('2', u'2 - Contribuinte Isento de Cadastro'),
+        ('9', u'9 - Não Contribuinte')],
+        string=u"Indicador IE Dest.", help=u"Indicador da IE do desinatário",
+        readonly=True, states=STATE)
+    tipo_emissao = fields.Selection([
+        ('1', u'1 - Emissão normal'),
+        ('2', u'2 - Contingência FS-IA, com impressão do DANFE em formulário \
+         de segurança'),
+        ('3', u'3 - Contingência SCAN'),
+        ('4', u'4 - Contingência DPEC'),
+        ('5', u'5 - Contingência FS-DA, com impressão do DANFE em \
+         formulário de segurança'),
+        ('6', u'6 - Contingência SVC-AN'),
+        ('7', u'7 - Contingência SVC-RS'),
+        ('9', u'9 - Contingência off-line da NFC-e')],
+        string=u"Tipo de Emissão", readonly=True, states=STATE, default='1')
+
+    # Transporte
+    data_entrada_saida = fields.Datetime(
+        string="Data Entrega", help="Data para saída/entrada das mercadorias")
+    modalidade_frete = fields.Selection(
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
+        string=u'Modalidade do frete', default="9",
+        readonly=True, states=STATE)
+    transportadora_id = fields.Many2one(
+        'res.partner', string=u"Transportadora", readonly=True, states=STATE)
+    placa_veiculo = fields.Char(
+        string=u'Placa do Veículo', size=7, readonly=True, states=STATE)
+    uf_veiculo = fields.Char(
+        string=u'UF da Placa', size=2, readonly=True, states=STATE)
+    rntc = fields.Char(
+        string="RNTC", size=20, readonly=True, states=STATE,
+        help=u"Registro Nacional de Transportador de Carga")
+
+    # reboque_ids = fields.One2many(
+    #     'nfe.reboque', 'invoice_eletronic_id',
+    #     string=u"Reboques", readonly=True, states=STATE)
+    # volume_ids = fields.One2many(
+    #     'nfe.volume', 'invoice_eletronic_id',
+    #     string=u"Volumes", readonly=True, states=STATE)
+
+    # Exportação
+    uf_saida_pais_id = fields.Many2one(
+        'res.country.state', domain=[('country_id.code', '=', 'BR')],
+        string="UF Saída do País", readonly=True, states=STATE)
+    local_embarque = fields.Char(
+        string='Local de Embarque', size=60, readonly=True, states=STATE)
+    local_despacho = fields.Char(
+        string='Local de Despacho', size=60, readonly=True, states=STATE)
+
+    # Cobrança
+    numero_fatura = fields.Char(
+        string=u"Fatura", readonly=True, states=STATE)
+    fatura_bruto = fields.Monetary(
+        string=u"Valor Original", readonly=True, states=STATE)
+    fatura_desconto = fields.Monetary(
+        string=u"Desconto", readonly=True, states=STATE)
+    fatura_liquido = fields.Monetary(
+        string=u"Valor Líquido", readonly=True, states=STATE)
+
+    # duplicata_ids = fields.One2many(
+    #     'nfe.duplicata', 'invoice_eletronic_id',
+    #     string=u"Duplicatas", readonly=True, states=STATE)
+
+    # Compras
+    nota_empenho = fields.Char(
+        string="Nota de Empenho", size=22, readonly=True, states=STATE)
+    pedido_compra = fields.Char(
+        string="Pedido Compra", size=60, readonly=True, states=STATE)
+    contrato_compra = fields.Char(
+        string="Contrato Compra", size=60, readonly=True, states=STATE)
+
+    sequencial_evento = fields.Integer(
+        string=u"Sequêncial Evento", default=1, readonly=True, states=STATE)
+    recibo_nfe = fields.Char(
+        string=u"Recibo NFe", size=50, readonly=True, states=STATE)
+    chave_nfe = fields.Char(
+        string=u"Chave NFe", size=50, readonly=True, states=STATE)
+    chave_nfe_danfe = fields.Char(
+        string=u"Chave Formatado", compute="_compute_format_danfe_key")
+    protocolo_nfe = fields.Char(
+        string=u"Protocolo", size=50, readonly=True, states=STATE,
+        help=u"Protocolo de autorização da NFe")
+    nfe_processada = fields.Binary(string=u"Xml da NFe", readonly=True)
+    nfe_processada_name = fields.Char(
+        string=u"Xml da NFe", size=100, readonly=True)
+
+    valor_icms_uf_remet = fields.Monetary(
+        string=u"ICMS Remetente", readonly=True, states=STATE,
+        help=u'Valor total do ICMS Interestadual para a UF do Remetente')
+    valor_icms_uf_dest = fields.Monetary(
+        string=u"ICMS Destino", readonly=True, states=STATE,
+        help=u'Valor total do ICMS Interestadual para a UF de destino')
+    valor_icms_fcp_uf_dest = fields.Monetary(
+        string=u"Total ICMS FCP", readonly=True, states=STATE,
+        help=u'Total total do ICMS relativo Fundo de Combate à Pobreza (FCP) \
+        da UF de destino')
+
+    # NFC-e
+    qrcode_hash = fields.Char(string='QR-Code hash')
+    qrcode_url = fields.Char(string='QR-Code URL')
+    metodo_pagamento = fields.Selection(
+        [('01', 'Dinheiro'),
+         ('02', 'Cheque'),
+         ('03', 'Cartão de Crédito'),
+         ('04', 'Cartão de Débito'),
+         ('05', 'Crédito Loja'),
+         ('10', 'Vale Alimentação'),
+         ('11', 'Vale Refeição'),
+         ('12', 'Vale Presente'),
+         ('13', 'Vale Combustível'),
+         ('15', 'Boleto Bancário'),
+         ('90', 'Sem pagamento'),
+         ('99', 'Outros')],
+        string="Forma de Pagamento", default="01")
+    valor_pago = fields.Monetary(string='Valor pago')
+    troco = fields.Monetary(string='Troco')
 
     def generate_dict_values(self):
         dict_docs = []

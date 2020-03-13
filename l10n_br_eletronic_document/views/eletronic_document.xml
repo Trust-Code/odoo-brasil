@@ -191,7 +191,7 @@
             <field name="view_id" ref="view_eletronic_document_tree"/>
         </record>
 
-        <menuitem id="menu_eletronic_doc_base" name="Automação de Notas Eletrõnicas" parent="account.menu_finance_entries" sequence="20"/>
+        <menuitem id="menu_eletronic_doc_base" name="Automação de Notas Eletrônicas" parent="account.menu_finance_entries" sequence="0"/>
         <menuitem id="menu_action_view_eletronic_document"  parent="menu_eletronic_doc_base"
                   action="action_view_eletronic_document" sequence="5"/>
 

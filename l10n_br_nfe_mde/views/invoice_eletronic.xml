@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_eletronic_document_form" model="ir.ui.view">
+        <field name="model">eletronic.document</field>
+        <field name="inherit_id" ref="l10n_br_eletronic_document.view_eletronic_document_form" />
+        <field name="arch" type="xml">
+            <field name="partner_shipping_id" position="after">
+                <field name="nfe_mde_id" />
+            </field>
+        </field>
+    </record>
+</odoo>

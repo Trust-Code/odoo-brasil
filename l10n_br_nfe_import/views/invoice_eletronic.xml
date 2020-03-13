@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_br_nfe_import_invoice_eletronic_item_form" model="ir.ui.view">
+        <field name="name">br_nfe_import_invoice_eletronic_item_form</field>
+        <field name="model">eletronic.document.line</field>
+        <field name="inherit_id" ref="l10n_br_eletronic_document.view_eletronic_document_line_form"/>
+        <field name="arch" type="xml">
+            <field name="item_pedido_compra" position="after">
+                <field name="product_ean" />
+                <field name="product_cprod" />
+                <field name="product_xprod" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
