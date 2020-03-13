@@ -106,7 +106,10 @@ class AccountInvoice(models.Model):
         res['fatura_bruto'] = inv.total_bruto
         res['fatura_desconto'] = inv.total_desconto
         res['fatura_liquido'] = inv.amount_total
-        res['pedido_compra'] = inv.name
+
+        if inv.type != "out_refund":
+            res['pedido_compra'] = inv.name
+
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
