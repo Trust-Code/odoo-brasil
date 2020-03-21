@@ -1,9 +1,14 @@
-from odoo import fields, models
+import re
+from odoo import api, fields, models
 
 
 class ResCompany(models.Model):
-    _inherit = 'res.company'
-    
+    _inherit = [
+        'res.company',
+        'zip.search.mixin',
+    ]
+    _name = 'res.company'
+
     def _get_company_address_fields(self, partner):
         vals = super(ResCompany, self)._get_company_address_fields(partner)
         vals.update({
@@ -58,3 +63,18 @@ class ResCompany(models.Model):
     def _inverse_city_id(self):
         for company in self:
             company.partner_id.city_id = company.city_id
+
+    @api.onchange('zip')
+    def _onchange_zip(self):
+        cep = re.sub('[^0-9]', '', self.zip or '')
+        if cep and len(cep) == 8:
+            vals = self.search_address_by_zip(cep)
+            self.update(vals)
+        elif cep:
+            return {
+                'warning': {
+                    'title': 'Tip',
+                    'message': 'Please use a 8 number value to search ;)'
+                }
+            }
+

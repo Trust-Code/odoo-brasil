@@ -42,10 +42,11 @@ class ResPartner(models.Model):
 
     @api.onchange('zip')
     def _onchange_zip(self):
-        if self.zip and len(self.zip) == 8:
-            vals = self.search_address_by_zip(self.zip)
+        cep = re.sub('[^0-9]', '', self.zip or '')
+        if cep and len(cep) == 8:
+            vals = self.search_address_by_zip(cep)
             self.update(vals)
-        elif self.zip:
+        elif cep:
             return {
                 'warning': {
                     'title': 'Tip',

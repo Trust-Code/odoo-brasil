@@ -6,7 +6,7 @@
     <field name="inherit_id" ref="base.view_company_form"/>
     <field name="arch" type="xml">
       <group position="inside">
-        <group string="Digital Certificate">
+        <group string="Certificado Digital">
           <field name="l10n_br_certificate" />
           <field name="l10n_br_cert_password" password="True" />
           <field name="l10n_br_cert_state" />
