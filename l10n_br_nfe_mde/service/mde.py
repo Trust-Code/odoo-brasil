@@ -129,9 +129,9 @@ def exec_download_nfe(company, list_nfe):
     certificado = __certificado(company)
     cnpj_partner = re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf)
     result = download_nfe(
-        estado=company.partner_id.state_id.ibge_code,
+        estado=company.partner_id.state_id.l10n_br_ibge_code,
         certificado=certificado,
-        ambiente=int(company.tipo_ambiente),
+        ambiente=int(company.l10n_br_tipo_ambiente),
         cnpj_cpf=cnpj_partner,
         chave_nfe=list_nfe[0],
         modelo='55')

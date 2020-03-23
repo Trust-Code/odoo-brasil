@@ -11,8 +11,9 @@
                     <button name="action_confirm_operation" string="Confirmar Operação" type="object" states="ciente" />
                     <button name="action_unknown_operation" string="Desconhecer Operação" type="object" states="ciente" />
                     <button name="action_not_operation" string="Operação não Realizada" type="object" states="ciente" />
-                    <button name="action_download_xml" string="Download do XML" type="object" states="ciente,confirmado,desconhecido,nao_realizado" />
+                    <button name="action_download_xml" string="Download do XML" type="object" states="pending,ciente,confirmado,desconhecido,nao_realizado" />
                     <button name="action_import_xml" string="Importar XML" type="object" states="ciente,confirmado,desconhecido,nao_realizado" />
+                    <button name="action_test_bot" string="Testing the bot" type="object" />
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" >

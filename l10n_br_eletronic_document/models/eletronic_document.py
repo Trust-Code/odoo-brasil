@@ -1,13 +1,21 @@
 import re
 import json
 import requests
-from odoo import api, fields, models
+import base64
+import copy
+import logging
+from datetime import datetime, timedelta
+import dateutil.relativedelta as relativedelta
+
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 from .cst import CST_ICMS, CST_PIS_COFINS, CSOSN_SIMPLES, CST_IPI, ORIGEM_PROD
 
+_logger = logging.getLogger(__name__)
 
-STATE = {'edit': [('readonly', False)]}
+
+STATE = {'draft': [('readonly', False)]}
 
 
 class EletronicDocument(models.Model):
@@ -379,6 +387,202 @@ class EletronicDocument(models.Model):
         string="Forma de Pagamento", default="01")
     valor_pago = fields.Monetary(string='Valor pago')
     troco = fields.Monetary(string='Troco')
+
+    def _compute_legal_information(self):
+        fiscal_ids = self.move_id.fiscal_observation_ids.filtered(
+            lambda x: x.tipo == 'fiscal')
+        obs_ids = self.move_id.fiscal_observation_ids.filtered(
+            lambda x: x.tipo == 'observacao')
+
+        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
+        for item in self.move_id.invoice_line_ids:
+            prod_obs_ids |= item.product_id.fiscal_observation_ids
+
+        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
+        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
+
+        fiscal = self._compute_msg(fiscal_ids) + (
+            self.invoice_id.fiscal_comment or '')
+        observacao = self._compute_msg(obs_ids) + (
+            self.invoice_id.comment or '')
+
+        self.informacoes_legais = fiscal
+        self.informacoes_complementares = observacao
+
+    def _compute_msg(self, observation_ids):
+        from jinja2.sandbox import SandboxedEnvironment
+        mako_template_env = SandboxedEnvironment(
+            block_start_string="<%",
+            block_end_string="%>",
+            variable_start_string="${",
+            variable_end_string="}",
+            comment_start_string="<%doc>",
+            comment_end_string="</%doc>",
+            line_statement_prefix="%",
+            line_comment_prefix="##",
+            trim_blocks=True,               # do not output newline after
+            autoescape=True,                # XML/HTML automatic escaping
+        )
+        mako_template_env.globals.update({
+            'str': str,
+            'datetime': datetime,
+            'len': len,
+            'abs': abs,
+            'min': min,
+            'max': max,
+            'sum': sum,
+            'filter': filter,
+            'map': map,
+            'round': round,
+            # dateutil.relativedelta is an old-style class and cannot be
+            # instanciated wihtin a jinja2 expression, so a lambda "proxy" is
+            # is needed, apparently.
+            'relativedelta': lambda *a, **kw: relativedelta.relativedelta(
+                *a, **kw),
+            # adding format amount
+            # now we can format values like currency on fiscal observation
+            'format_amount': lambda amount, currency,
+            context=self._context: format_amount(self.env, amount, currency),
+        })
+        mako_safe_env = copy.copy(mako_template_env)
+        mako_safe_env.autoescape = False
+
+        result = ''
+        for item in observation_ids:
+            if item.document_id and item.document_id.code != self.model:
+                continue
+            template = mako_safe_env.from_string(tools.ustr(item.message))
+            variables = self._get_variables_msg()
+            render_result = template.render(variables)
+            result += render_result + '\n'
+        return result
+
+    def _get_variables_msg(self):
+        return {
+            'user': self.env.user,
+            'ctx': self._context,
+            'invoice': self.invoice_id
+            }
+
+    def validate_invoice(self):
+        self.ensure_one()
+        errors = self._hook_validation()
+        if len(errors) > 0:
+            msg = u"\n".join(
+                [u"Por favor corrija os erros antes de prosseguir"] + errors)
+            self.sudo().unlink()
+            raise UserError(msg)
+
+    def action_post_validate(self):
+        self._compute_legal_information()
+
+    def _prepare_eletronic_invoice_item(self, item, invoice):
+        return {}
+
+    def _prepare_eletronic_invoice_values(self):
+        return {}
+
+    def action_send_eletronic_invoice(self):
+        pass
+
+    def action_cancel_document(self, context=None, justificativa=None):
+        pass
+
+    def action_back_to_draft(self):
+        self.action_post_validate()
+        self.state = 'draft'
+
+    def action_edit_edoc(self):
+        self.state = 'edit'
+
+    def can_unlink(self):
+        if self.state not in ('done', 'cancel'):
+            return True
+        return False
+
+    def unlink(self):
+        for item in self:
+            if not item.can_unlink():
+                raise UserError(
+                    _('Documento Eletrônico enviado - Proibido excluir'))
+        super(EletronicDocument, self).unlink()
+
+    def log_exception(self, exc):
+        self.codigo_retorno = -1
+        self.mensagem_retorno = str(exc)
+
+    def notify_user(self):
+        msg = _('Verifique a %s, ocorreu um problema com o envio de \
+                documento eletrônico!') % self.name
+        self.create_uid.notify_warning(
+            msg, sticky=True, title="Ação necessária!")
+        try:
+            activity_type_id = self.env.ref('mail.mail_activity_data_todo').id
+        except ValueError:
+            activity_type_id = False
+        self.env['mail.activity'].create({
+            'activity_type_id': activity_type_id,
+            'note': _('Please verify the eletronic document'),
+            'user_id': self.schedule_user_id.id,
+            'res_id': self.id,
+            'res_model_id': self.env.ref(
+                'br_account_einvoice.model_invoice_eletronic').id,
+        })
+
+    def _get_state_to_send(self):
+        return ('draft',)
+
+    def cron_send_nfe(self, limit=50):
+        inv_obj = self.env['invoice.eletronic'].with_context({
+            'lang': self.env.user.lang, 'tz': self.env.user.tz})
+        states = self._get_state_to_send()
+        nfes = inv_obj.search([('state', 'in', states),
+                               ('data_agendada', '<=', fields.Date.today())],
+                              limit=limit)
+        for item in nfes:
+            try:
+                _logger.info('Sending edoc id: %s (number: %s) by cron' % (
+                    item.id, item.numero))
+                item.action_send_eletronic_invoice()
+                self.env.cr.commit()
+            except Exception as e:
+                item.log_exception(e)
+                item.notify_user()
+                _logger.error(
+                    'Erro no envio de documento eletrônico', exc_info=True)
+
+    def _find_attachment_ids_email(self):
+        return []
+
+    def send_email_nfe(self):
+        mail = self.env.user.company_id.nfe_email_template
+        if not mail:
+            raise UserError(_('Modelo de email padrão não configurado'))
+        atts = self._find_attachment_ids_email()
+        _logger.info('Sending e-mail for e-doc %s (number: %s)' % (
+            self.id, self.numero))
+
+        values = mail.generate_email([self.invoice_id.id])[self.invoice_id.id]
+        subject = values.pop('subject')
+        values.pop('body')
+        values.pop('attachment_ids')
+        self.invoice_id.message_post(
+            body=values['body_html'], subject=subject,
+            message_type='email', subtype='mt_comment',
+            attachment_ids=atts + mail.attachment_ids.ids, **values)
+
+    def send_email_nfe_queue(self):
+        after = datetime.now() + timedelta(days=-1)
+        nfe_queue = self.env['invoice.eletronic'].search(
+            [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
+             ('email_sent', '=', False),
+             ('state', '=', 'done')], limit=5)
+        for nfe in nfe_queue:
+            nfe.send_email_nfe()
+            nfe.email_sent = True
+
+    def copy(self, default=None):
+        raise UserError(_('Não é possível duplicar uma Nota Fiscal.'))
 
     def generate_dict_values(self):
         dict_docs = []

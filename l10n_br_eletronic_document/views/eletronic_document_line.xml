@@ -1,14 +1,15 @@
 <odoo>
 
-  <record id="view_eletronic_document_line_form" model="ir.ui.view">
-      <field name="model">eletronic.document.line</field>
-      <field name="arch" type="xml">
-          <form string="Item Documento">
-              <notebook>
+    <record id="view_eletronic_document_line_form" model="ir.ui.view">
+        <field name="model">eletronic.document.line</field>
+        <field name="arch" type="xml">
+            <form string="Item Documento">
+                <notebook>
                   <page string="Dados do produto">
                       <group>
                           <group>
-                              <field name="state" invisible="1" />
+                              <field name="eletronic_document_id" invisible="1" />
+                              <field name="state" invisible="1"/>
                               <field name="product_id" />
                               <field name="uom_id" />
                               <field name="quantidade" />

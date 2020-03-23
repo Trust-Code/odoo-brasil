@@ -48,8 +48,9 @@ def cnpj_cpf_format(cnpj_cpf):
 
 class NfeMde(models.Model):
     _name = 'nfe.mde'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'mail.bot']
     _rec_name = 'numero_sequencial'
+    _order = 'numero_sequencial desc'
 
     def name_get(self):
         return [(rec.id,
@@ -273,12 +274,11 @@ class NfeMde(models.Model):
 
     def action_download_xml(self):
         nfe_result = exec_download_nfe(self.company_id, [self.chave_nfe])
-        env_events = self.env['invoice.eletronic.event']
-
+        # env_events = self.env['invoice.eletronic.event']
         if nfe_result['code'] == 138:
-            event = self._create_event(
-                nfe_result['code'], nfe_result['message'], self.id)
-            env_events.create(event)
+            # event = self._create_event(
+            #     nfe_result['code'], nfe_result['message'], self.id)
+            # env_events.create(event)
             file_name = 'NFe%08d.xml' % int(self.chave_nfe[25:34])
 
             retorno = nfe_result['object']
@@ -322,3 +322,6 @@ class NfeMde(models.Model):
                 company.invoice_automation, company.tax_automation,
                 company.supplierinfo_automation, invoice_dict=vals)
             item.is_imported = True
+
+    def action_test_bot(self):
+        self.send_message_to_user(self.env.user, 'Olá usuário, chegou uma nova nova fiscal!')

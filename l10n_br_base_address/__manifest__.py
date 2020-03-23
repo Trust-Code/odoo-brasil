@@ -14,6 +14,8 @@
     ],
     'data': [
         'data/configuration.xml',
+        'data/res.country.csv',
+        'data/res.country.state.csv',
         'views/res_partner.xml',
         'views/res_city.xml',
         'views/res_company.xml',

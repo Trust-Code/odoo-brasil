@@ -21,13 +21,14 @@ class NfeSchedule(models.TransientModel):
     )
 
     @staticmethod
-    def _mask_cnpj(cnpj):
-        if cnpj:
-            val = re.sub('[^0-9]', '', cnpj)
-            if len(val) == 14:
-                cnpj = "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8],
-                                           val[8:12], val[12:14])
-        return cnpj
+    def _mask_cnpj_cpf(cnpj_cpf):
+        val = re.sub('[^0-9]', '', cnpj_cpf or '')
+        if len(val) == 11:
+            return "%s.%s.%s-%s"\
+                % (val[0:3], val[3:6], val[6:9], val[9:11])
+        else:
+            return "%s.%s.%s/%s-%s"\
+                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
 
     @api.model
     def schedule_download(self, raise_error=False):
@@ -49,10 +50,13 @@ class NfeSchedule(models.TransientModel):
 
                     env_mde = self.env['nfe.mde']
                     for nfe in nfe_result['list_nfe']:
-                        total += 1
                         if nfe['schema'] == 'resNFe_v1.01.xsd':
+                            total += 1
                             root = objectify.fromstring(nfe['xml'])
-                            cnpj_forn = self._mask_cnpj(('%014d' % root.CNPJ))
+                            cnpj_cpf = 'CNPJ' in dir(root) and root.CNPJ.text or False
+                            if not cnpj_cpf:
+                                cnpj_cpf = root.CPF.text
+                            cnpj_forn = self._mask_cnpj_cpf(cnpj_cpf)
 
                             partner = self.env['res.partner'].search(
                                 [('l10n_br_cnpj_cpf', '=', cnpj_forn)])
@@ -78,7 +82,7 @@ class NfeSchedule(models.TransientModel):
                                 'data_emissao': datetime.strptime(
                                     str(root.dhEmi)[:19], '%Y-%m-%dT%H:%M:%S'),
                                 'company_id': company.id,
-                                'forma_inclusao': u'Verificação agendada'
+                                'forma_inclusao': 'Verificação agendada'
                             }
 
                             obj_nfe = env_mde.create(manifesto)
@@ -88,13 +92,13 @@ class NfeSchedule(models.TransientModel):
                                 {
                                     'name': file_name,
                                     'datas': base64.b64encode(nfe['xml']),
-                                    'datas_fname': file_name,
                                     'description': u'NFe via manifesto',
                                     'res_model': 'nfe.mde',
                                     'res_id': obj_nfe.id
                                 })
                         elif nfe['schema'] in ('procNFe_v3.10.xsd',
                                                'procNFe_v4.00.xsd'):
+                            total += 1
                             root = objectify.fromstring(nfe['xml'])
                             infNfe = root.NFe.infNFe
                             protNFe = root.protNFe.infProt

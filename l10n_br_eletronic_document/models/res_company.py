@@ -5,8 +5,8 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     l10n_br_tipo_ambiente = fields.Selection(
-      [('1', 'Homologação'),
-       ('2', 'Produção')], string="Ambiente",
+      [('1', 'Produção'),
+       ('2', 'Homologação')], string="Ambiente", default="2"
     )
     l10n_br_tax_regime = fields.Selection(
         [('simples', 'Simples Nacional'),
