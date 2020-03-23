@@ -30,8 +30,6 @@ class EletronicDocument(models.Model):
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True, states=STATE)
-    emission_date = fields.Datetime(
-        string="Data de Emissão", readonly=True, states=STATE)
     identifier = fields.Char(
         string="Identificador", readonly=True, states=STATE)
 
@@ -55,7 +53,7 @@ class EletronicDocument(models.Model):
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
     pis_valor = fields.Monetary(
-        string='Valor Total', digits='Account',
+        string='Valor PIS', digits='Account',
         readonly=True, states=STATE)
     pis_valor_retencao = fields.Monetary(
         string='Valor Retido', digits='Account',
@@ -66,7 +64,7 @@ class EletronicDocument(models.Model):
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
     cofins_valor = fields.Monetary(
-        string='Valor Total', digits='Account',
+        string='Valor COFINS', digits='Account',
         readonly=True, states=STATE)
     cofins_valor_retencao = fields.Monetary(
         string='Valor Retido', digits='Account',
@@ -77,7 +75,7 @@ class EletronicDocument(models.Model):
         string='Base de Cálculo', digits='Account',
         readonly=True, states=STATE)
     iss_valor = fields.Monetary(
-        string='Valor Total', digits='Account',
+        string='Valor ISS', digits='Account',
         readonly=True, states=STATE)
     iss_valor_retencao = fields.Monetary(
         string='Valor Retenção', digits='Account',
@@ -482,9 +480,6 @@ class EletronicDocument(models.Model):
     def _prepare_eletronic_invoice_values(self):
         return {}
 
-    def action_send_eletronic_invoice(self):
-        pass
-
     def action_cancel_document(self, context=None, justificativa=None):
         pass
 
@@ -597,11 +592,12 @@ class EletronicDocument(models.Model):
                     doc.company_id.city_id.l10n_br_ibge_code),
             }
             tomador = {
-                'cpf': re.sub(
+                'cnpj_cpf': re.sub(
                     '[^0-9]', '', partner.l10n_br_cnpj_cpf or ''),
                 'inscricao_municipal': re.sub(
                     '[^0-9]', '', partner.l10n_br_inscr_mun or
                     '0000000'),
+                'nome_fantasia': partner.name,
                 'razao_social': partner.l10n_br_legal_name or partner.name,
                 'telefone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
                 'email': self.partner_id.email,
@@ -624,17 +620,14 @@ class EletronicDocument(models.Model):
                 unitario = round(line.valor_liquido / line.quantidade, 2)
                 items.append({
                     'name': line.product_id.name,
-                    'cnae': re.sub(
-                        '[^0-9]', '',
-                        line.product_id.service_type_id.id_cnae or ''),
-                    'cst_servico': '1',
+                    'cnae': re.sub('[^0-9]', '', line.id_cnae or ''),
+                    'cst_servico': '0',
                     'aliquota': aliquota,
                     'base_calculo': base,
                     'valor_unitario': unitario,
                     'quantidade': int(line.quantidade),
                     'valor_total': line.valor_liquido,
                 })
-            emissao = fields.Datetime.from_string(doc.emission_date)
             outra_cidade = doc.company_id.city_id.id != partner.city_id.id
             outro_estado = doc.company_id.state_id.id != partner.state_id.id
             outro_pais = doc.company_id.country_id.id != partner.country_id.id
@@ -649,7 +642,7 @@ class EletronicDocument(models.Model):
                 'outro_pais': outro_pais,
                 'regime_tributario': doc.company_id.l10n_br_tax_regime,
                 'itens_servico': items,
-                'data_emissao': emissao.strftime('%Y-%m-%d'),
+                'data_emissao': doc.data_emissao.strftime('%Y-%m-%d'),
                 'base_calculo': doc.iss_base_calculo,
                 'valor_iss': doc.iss_valor,
                 'valor_total': doc.valor_final,
@@ -663,7 +656,7 @@ class EletronicDocument(models.Model):
             dict_docs.append(data)
         return dict_docs
 
-    def generate(self):
+    def action_send_eletronic_invoice(self):
         company = self.mapped('company_id').with_context({'bin_size': False})
 
         certificate = company.l10n_br_certificate
@@ -682,7 +675,15 @@ class EletronicDocument(models.Model):
             response = send_api(certificate, password, doc_values)
 
         if response['code'] in (200, 201):
-            print(response)
+            self.write({
+                'protocolo_nfe': response['entity']['protocolo_nfe'],
+                'numero': response['entity']['numero_nfe'],
+                'state': 'done',
+                'codigo_retorno': '100',
+                'mensagem_retorno': 'Nota emitida com sucesso!',
+                'nfe_processada': base64.encodestring(response['xml']),
+                'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe']
+            })
         else:
             raise UserError('%s - %s' %
                             (response['api_code'], response['message']))
@@ -712,6 +713,9 @@ class EletronicDocumentLine(models.Model):
         string="Tipo Produto", readonly=True, states=STATE)
     cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
     ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
+
+    # Florianopolis
+    id_cnae = fields.Char(string="Id CNAE", size=10)
 
     uom_id = fields.Many2one(
         'uom.uom', string='Unidade Medida', readonly=True, states=STATE)

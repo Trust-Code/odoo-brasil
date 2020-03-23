@@ -15,8 +15,19 @@ def _convert_values(vals):
     vals['cfps'] = cfps
 
     if vals['regime_tributario'] == 'simples':
-        vals['base_calculo_iss'] = 0
-        vals['valor_iss'] = 0
+        vals['base_calculo'] = 0
+        vals['valor_issqn'] = 0
+        for item in vals['itens_servico']:
+            item['cst_servico'] = '1'
+    else:
+        vals['valor_issqn'] = vals['valor_iss']
+    vals['tomador']['logradouro'] = vals['tomador']['endereco']['logradouro']
+    vals['tomador']['numero'] = vals['tomador']['endereco']['numero']
+    vals['tomador']['bairro'] = vals['tomador']['endereco']['bairro']
+    vals['tomador']['complemento'] = vals['tomador']['endereco']['complemento']
+    vals['tomador']['cep'] = vals['tomador']['endereco']['cep']
+    vals['tomador']['uf'] = vals['tomador']['endereco']['uf']
+    vals['tomador']['cidade'] = vals['tomador']['endereco']['codigo_municipio']
     return vals
 
 
@@ -25,7 +36,6 @@ def send_api(certificate, password, list_rps):
     certificado = Certificado(cert_pfx, password)
 
     vals = list_rps[0]
-  
     vals = _convert_values(vals)
 
     recebe_lote = processar_nota(
@@ -40,9 +50,10 @@ def send_api(certificate, password, list_rps):
         return { 
             'code': 201,
             'entity': {
-                'codigo_verificacao': retorno.codigoVerificacao,
-                'numero_nfse': retorno.numero_nfse,
-            }
+                'protocolo_nfe': retorno.codigoVerificacao,
+                'numero_nfe': retorno.numeroSerie,
+            },
+            'xml': recebe_lote['received_xml'],
         }
     else:
         return { 

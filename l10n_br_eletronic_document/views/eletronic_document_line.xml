@@ -67,13 +67,18 @@
                       </group>
                   </page>
                   <page name="issqn" string="ISSQN" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
+                    <group>
                       <group>
                           <field name="issqn_base_calculo"/>
                           <field name="issqn_aliquota"/>
-                          <field name="issqn_codigo" />
                           <field name="issqn_valor"/>
                           <field name="issqn_valor_retencao"/>
                       </group>
+                      <group>
+                          <field name="issqn_codigo" />
+                          <field name="id_cnae" />
+                      </group>
+                    </group>
                   </page>
                   <page name="retencoes" string="Retenções" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
                       <group>
