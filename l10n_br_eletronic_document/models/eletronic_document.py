@@ -41,7 +41,7 @@ class EletronicDocument(models.Model):
         related='partner_id.commercial_partner_id', store=True)
     partner_shipping_id = fields.Many2one(
         'res.partner', string=u'Entrega', readonly=True, states=STATE)
-    
+
     move_id = fields.Many2one(
         'account.move', string='Fatura', readonly=True, states=STATE)
 
@@ -233,7 +233,6 @@ class EletronicDocument(models.Model):
     email_sent = fields.Boolean(
         string="Email enviado", default=False, readonly=True, states=STATE)
 
-
     # payment_mode_id = fields.Many2one(
     #     'l10n_br.payment.mode', string='Modo de Pagamento',
     #     readonly=True, states=STATE)
@@ -353,7 +352,8 @@ class EletronicDocument(models.Model):
     protocolo_nfe = fields.Char(
         string=u"Protocolo", size=50, readonly=True, states=STATE,
         help=u"Protocolo de autorização da NFe", copy=False)
-    nfe_processada = fields.Binary(string=u"Xml da NFe", readonly=True, copy=False)
+    nfe_processada = fields.Binary(
+        string=u"Xml da NFe", readonly=True, copy=False)
     nfe_processada_name = fields.Char(
         string=u"Xml da NFe", size=100, readonly=True, copy=False)
 
@@ -399,7 +399,8 @@ class EletronicDocument(models.Model):
             if item.informacoes_legais:
                 descricao += item.informacoes_legais.replace('\n', '<br/>')
             if item.informacoes_complementares:
-                descricao += item.informacoes_complementares.replace('\n', '<br/>')
+                descricao += item.informacoes_complementares.replace(
+                    '\n', '<br/>')
             item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
@@ -475,7 +476,7 @@ class EletronicDocument(models.Model):
             'user': self.env.user,
             'ctx': self._context,
             'invoice': self.invoice_id
-            }
+        }
 
     def validate_invoice(self):
         self.ensure_one()
@@ -494,9 +495,6 @@ class EletronicDocument(models.Model):
 
     def _prepare_eletronic_invoice_values(self):
         return {}
-
-    def action_cancel_document(self, context=None, justificativa=None):
-        pass
 
     def action_back_to_draft(self):
         self.action_post_validate()
@@ -645,7 +643,7 @@ class EletronicDocument(models.Model):
             outro_pais = doc.company_id.country_id.id != partner.country_id.id
 
             data = {
-                'ambiente': 'homologacao',
+                'ambiente': 'producao' if doc.company_id.l10n_br_tipo_ambiente == '1' else 'homologacao',
                 'emissor': emissor,
                 'tomador': tomador,
                 'numero': "%06d" % doc.identifier,
@@ -701,6 +699,33 @@ class EletronicDocument(models.Model):
                 'mensagem_retorno': 'Nota emitida com sucesso!',
                 'nfe_processada': base64.encodestring(response['xml']),
                 'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe']
+            })
+        else:
+            raise UserError('%s - %s' %
+                            (response['api_code'], response['message']))
+
+    def action_cancel_document(self, context=None, justificativa=None):
+        company = self.mapped('company_id').with_context({'bin_size': False})
+        certificate = company.l10n_br_certificate
+        password = company.l10n_br_cert_password
+        doc_values = {
+            'aedf': company.l10n_br_aedf,
+            'client_id': company.l10n_br_client_id,
+            'client_secret': company.l10n_br_client_secret,
+            'user_password': company.l10n_br_user_password,
+            'ambiente': 'producao' if company.l10n_br_tipo_ambiente == '1' else 'homologacao',
+            'inscricao_municipal': company.l10n_br_inscr_mun,
+            'justificativa': 'Emissao de nota fiscal errada',
+            'numero': self.numero,
+            'protocolo_nfe': self.protocolo_nfe
+        }
+        from .nfse_florianopolis import cancel_api
+        response = cancel_api(certificate, password, doc_values)
+        if response['code'] in (200, 201):
+            self.write({
+                'state': 'cancel',
+                'codigo_retorno': response['code'],
+                'mensagem_retorno': response['message']
             })
         else:
             raise UserError('%s - %s' %
