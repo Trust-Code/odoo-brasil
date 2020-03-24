@@ -1,0 +1,283 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="report_br_nfse_danfpse"
+        string="Nota de Prestação de Serviço"
+        model="eletronic.document"
+        report_type="qweb-pdf"
+        file="l10n_br_eletronic_document.main_template_br_nfse_danfpse"
+        name="l10n_br_eletronic_document.main_template_br_nfse_danfpse" />
+
+      <record id="paperformat_br_nfse_danfpse" model="report.paperformat">
+          <field name="name">Danfpse</field>
+          <field name="default" eval="True" />
+          <field name="orientation">Portrait</field>
+          <field name="margin_top">3</field>
+          <field name="margin_bottom">3</field>
+          <field name="margin_left">3</field>
+          <field name="margin_right">3</field>
+          <field name="header_line" eval="False" />
+          <field name="header_spacing">3</field>
+      </record>
+
+    <record id="report_br_nfse_danfpse" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_br_nfse_danfpse"/>
+        <field name="name">NFS-e Florianópolis</field>
+        <field name="print_report_name">'%s - NF - %s' % (object.numero, object.partner_id.name_get()[0][1])</field>
+    </record>
+
+    <template id="danfpse_report_template">
+        <div class="page" style="font-size:12px;padding:5px; min-width:1000px;">
+            <style type="text/css">
+                .col-1, .col-2,
+                .col-3,.col-4,.col-5, .col-6, .col-7,
+                .col-8,
+                .col-9, .col-10, .col-11, .col-12 {
+                    padding:0px;
+                }
+                td, th { padding: 0 4px; }
+                .bt { border-top: 1px solid black; }
+                .bb { border-bottom: 1px solid black; }
+                .bl { border-left: 1px solid black; }
+                .br { border-right: 1px solid black; }
+                div.completa { border: 1px solid black; }
+                .rotulo { padding: 8px 0px; font-size: 10px; background-color: #d6d6d6; text-align:center; }
+                .linha {  min-height:15px; padding: 5px 2px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+                .direita {text-align: right; padding-right:5px;}
+                .centro {text-align:center;}
+                .mini-titulo { font-size:8px; font-weight:bold; }
+                .mini-rotulo { padding: 8px 5px; font-size: 8px; }
+                span { margin: 6px 0px; }
+            </style>
+            <div class="row completa">
+                <div class="col-6 br" style="padding:0px;text-align:center;">
+                    <div style="font-size:18px;">
+                        <strong t-field="doc.company_id.l10n_br_legal_name"/>
+                        <br/>
+                    <br/>
+                    </div>
+                    <div style="font-size:12px;">
+                        <span t-field="doc.company_id.street"/>
+                        <span t-field="doc.company_id.l10n_br_number"/>
+                        <span t-field="doc.company_id.l10n_br_district"/>
+                        CEP: <span t-field="doc.company_id.zip"/>
+                        <br/>
+                        Telefone: <span t-field="doc.company_id.phone"/>
+                        <br/>
+                        CNPJ: <span t-field="doc.company_id.l10n_br_cnpj_cpf"/>
+                        <br/>
+                        CMC: <span t-field="doc.company_id.l10n_br_inscr_mun"/>
+                    </div>
+                </div>
+                <div class="col-6" style="padding:0px;">
+                    <div class="col-12" style="padding: 3px; text-align:center;font-size:16px">
+                        <strong>DANFPS-E</strong><br/>
+                    </div>
+                    <div class="row" style="margin: 2px;">
+                        <div class="col-9">
+                            <strong style="padding:5px">Documento Auxiliar de Prestação de Serviço Eletrônica</strong> <br/>
+                            <strong style="padding:5px">Número:</strong> <span t-field="doc.numero"/> <br/>
+                            <strong style="padding:5px">Autorização:</strong> <span t-field="doc.company_id.l10n_br_aedf"/> <br/>
+                            <strong style="padding:5px">Emissão:</strong> <span t-field="doc.data_emissao" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/> <br/>
+                            <strong style="padding:5px">Código de Verificação:</strong> <span t-field="doc.protocolo_nfe"/> <br/>
+                        </div>
+                        <div class="col-3 ">
+                            <t t-raw="doc.qrcode_floripa_url()"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-12">
+                    <span class="mini-titulo">Dados do Tomador</span>
+                </div>
+            </div>
+            <div class="row completa">
+                <div class="col-9 br">
+                    <span class="mini-rotulo" style="padding:5px">Razão Social/Nome</span><br />
+                    <span style="padding:5px" t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name" />
+                </div>
+                <div class="col-3">
+                    <span class="mini-rotulo">CFPS</span><br />
+                    <t t-set="cfps" t-value="9201" />
+                    <t t-if="doc.company_id.city_id.id != doc.partner_id.city_id.id">
+                        <t t-set="cfps" t-value="9202" />
+                    </t>
+                    <t t-if="doc.company_id.state_id.id != doc.partner_id.state_id.id">
+                        <t t-set="cfps" t-value="9203" />
+                    </t>
+                    <span style="padding:5px" t-esc="cfps" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 br bl">
+                    <span class="mini-rotulo">Endereço</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.street" />
+                    <span t-field="doc.commercial_partner_id.l10n_br_number" />
+                    <span t-field="doc.commercial_partner_id.street2" />
+                </div>
+                <div class="col-3 br">
+                    <span class="mini-rotulo">Bairro/Distrito</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.l10n_br_district" />
+                </div>
+                <div class="col-3 br">
+                    <span class="mini-rotulo">CEP</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.zip" />
+                </div>
+            </div>
+            <div class="row completa">
+                <div class="col-3">
+                    <span class="mini-rotulo">Município</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.city_id" />
+                </div>
+                <div class="col-1 bl">
+                    <span class="mini-rotulo">UF</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.state_id.code" />
+                </div>
+                <div class="col-3 row bl">
+                    <span class="mini-rotulo">País</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.country_id" />
+                </div>
+                <div class="col-3 row bl">
+                    <span class="mini-rotulo">CNPJ/CPF</span><br />
+                    <span style="padding:5px" t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf" />
+                </div>
+                <div class="col-2 row bl">
+                    <span class="mini-rotulo">CMC</span><br />
+                    <t t-set="cmc" t-value="'000000000'" />
+                    <t t-if="doc.commercial_partner_id.l10n_br_inscr_mun">
+                        <t t-set="cmc" t-value="doc.commercial_partner_id.l10n_br_inscr_mun" />
+                    </t>
+                    <span style="padding:5px" t-esc="cmc" />
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-12">
+                    <span class="mini-titulo">Dados do(s) serviço(s)</span>
+                </div>
+            </div>
+            <div class="row completa" style="min-height:550px;">
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Cód Atividade</th>
+                            <th>Descrição da Atividade</th>
+                            <th>CST</th>
+                            <th>Aliq.</th>
+                            <th>Valor Unitário</th>
+                            <th>Qtde</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.document_line_ids" t-as="line">
+                            <tr>
+                                <td>
+                                    <span t-field="line.cnae_code" />
+                                </td>
+                                <td>
+                                    <span t-field="line.product_id" />
+                                </td>
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td>
+                                    <span>0,00</span>
+                                </td>
+                                <td>
+                                    <span t-field="line.preco_unitario"
+                                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
+                                </td>
+                                <td>
+                                    <span t-field="line.quantidade" />
+                                </td>
+                                <td>
+                                    <span t-field="line.valor_liquido"
+                                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-12">
+                    <span class="mini-titulo">Cálculo do Imposto</span>
+                </div>
+            </div>
+
+             <div class="row" style="border: 1px solid black; padding: 0px;">
+                <div class="col-3" style="text-align:center;border-right: 1px solid black;">
+                    Base de Cálculo de ISSQN:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-2" style="text-align:center;border-right: 1px solid black;">
+                    Valor do ISSQN:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-3" style="text-align:center;border-right: 1px solid black;">
+                    Base de Cálculo de ISSQN Subst.:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-2" style="text-align:center;border-right: 1px solid black;">
+                    Valor do ISSQN Subst.:
+                    <br />
+                    <strong>R$ 0,00</strong>
+                </div>
+                <div class="col-2" style="text-align:center;">
+                    Valor total dos Serviços:
+                    <br />
+                    <strong t-field="doc.valor_final"
+                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-12">
+                    <span class="mini-titulo">Dados adicionais</span>
+                </div>
+            </div>
+            <div class="row completa" style="min-height:200px;">
+                <span style="padding:2px;font-size:10px" t-field="doc.informacoes_legais"></span>
+                <t t-if="doc.informacoes_legais">
+                    <br />
+                </t>
+                <span style="padding:5px" t-field="doc.informacoes_complementares"></span>
+            </div>
+            <div class="row completa" style="margin-top: 10px;">
+                <div class="col-6" style="font-size:9px;padding: 5px;">
+                    <p>
+                        DANFPS-E: DOCUMENTO AUXILIAR DA NOTA FISCAL DE PRESTAÇÃO DE SERVIÇOES ELETRÔNICA <br />
+                        SIGNATÁRIO: MUNICÍPIO DE FLORIANÓPOLIS <br />
+                        CARIMBO DO TEMPO: PREFEITURA MUNICIPAL DE FLORIANÓPOLIS <br />
+                        DATA DO CARIMBO: <span t-field="doc.data_emissao" />
+                    </p>
+                </div>
+                <div class="col-6 bl" style="font-size:7px;padding:5px;">
+                    <p>
+                        A VALIDADE E AUTENTICIDADE DESTE DOCUMENTO AUXILIAR DA NOTA FISCAL DE PRESTAÇÃO DE SERVIÇO ELETRÔNICA <br />
+                        PODERÃO SER COMPROVADAS MEDIANTE CONSULTA À PÁGINA DA SECRETARIA MUNICIPAL DA FAZENDA -SMF NA <br />
+                        INTERNET, NO ENDEREÇO portal.pmf.sc.gov.br/sites/notaeletronica, EM VERIFICAR AUTENTICIDADE >>> PRODUÇÃO, <br />
+                        INFORMANDO O CÓDIGO DE VERIFICAÇÃO: <span t-field="doc.protocolo_nfe" /> E O NÚMERO DE INSCRIÇÃO DO EMITENTE NO CADASTRO <br />
+                        MUNICIPAL DE CONTRIBUINTES - CMC: <span t-field="doc.company_id.l10n_br_inscr_mun" />
+                    </p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="main_template_br_nfse_danfpse">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="l10n_br_eletronic_document.danfpse_report_template" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

@@ -4,8 +4,8 @@ import requests
 import base64
 import copy
 import logging
-from datetime import datetime, timedelta
-import dateutil.relativedelta as relativedelta
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -46,7 +46,7 @@ class EletronicDocument(models.Model):
         'account.move', string='Fatura', readonly=True, states=STATE)
 
     document_line_ids = fields.One2many(
-        'eletronic.document.line', 'eletronic_document_id', string="Linhas")
+        'eletronic.document.line', 'eletronic_document_id', string="Linhas", copy=True)
 
     # ------------ PIS ---------------------
     pis_base_calculo = fields.Monetary(
@@ -112,7 +112,7 @@ class EletronicDocument(models.Model):
          ('done', 'Enviado'),
          ('cancel', 'Cancelado')],
         string=u'State', default='draft', readonly=True, states=STATE,
-        track_visibility='always')
+        track_visibility='always', copy=False)
     schedule_user_id = fields.Many2one(
         'res.users', string="Agendado por", readonly=True,
         track_visibility='always')
@@ -133,24 +133,26 @@ class EletronicDocument(models.Model):
     # serie = fields.Many2one(
     #     'br_account.document.serie', string=u'Série',
     #     readonly=True, states=STATE)
-    serie_documento = fields.Char(string=u'Série Documento', size=6)
+    serie_documento = fields.Char(string='Série Documento', size=6)
     numero = fields.Integer(
-        string=u'Número', readonly=True, states=STATE)
+        string='Número', readonly=True, states=STATE, copy=False)
+    numero_rps = fields.Integer(
+        string='Número RPS', readonly=True, states=STATE, copy=False)
     numero_controle = fields.Integer(
-        string=u'Número de Controle', readonly=True, states=STATE)
+        string='Número de Controle', readonly=True, states=STATE, copy=False)
     data_agendada = fields.Date(
-        string=u'Data agendada',
+        string='Data agendada',
         readonly=True,
         default=fields.Date.today,
         states=STATE)
     data_emissao = fields.Datetime(
-        string=u'Data emissão', readonly=True, states=STATE)
+        string='Data emissão', readonly=True, states=STATE, copy=False)
     data_autorizacao = fields.Char(
-        string=u'Data de autorização', size=30, readonly=True, states=STATE)
+        string='Data de autorização', size=30, readonly=True, states=STATE, copy=False)
     ambiente = fields.Selection(
-        [('homologacao', u'Homologação'),
-         ('producao', u'Produção')],
-        string=u'Ambiente', readonly=True, states=STATE)
+        [('homologacao', 'Homologação'),
+         ('producao', 'Produção')],
+        string='Ambiente', readonly=True, states=STATE)
     finalidade_emissao = fields.Selection(
         [('1', u'1 - Normal'),
          ('2', u'2 - Complementar'),
@@ -217,10 +219,10 @@ class EletronicDocument(models.Model):
 
     codigo_retorno = fields.Char(
         string='Código Retorno', readonly=True, states=STATE,
-        track_visibility='onchange')
+        track_visibility='onchange', copy=False)
     mensagem_retorno = fields.Char(
         string='Mensagem Retorno', readonly=True, states=STATE,
-        track_visibility='onchange')
+        track_visibility='onchange', copy=False)
     numero_nfe = fields.Char(
         string="Numero Formatado NFe", readonly=True, states=STATE)
 
@@ -341,19 +343,19 @@ class EletronicDocument(models.Model):
         string="Contrato Compra", size=60, readonly=True, states=STATE)
 
     sequencial_evento = fields.Integer(
-        string=u"Sequêncial Evento", default=1, readonly=True, states=STATE)
+        string=u"Sequêncial Evento", default=1, readonly=True, states=STATE, copy=False)
     recibo_nfe = fields.Char(
-        string=u"Recibo NFe", size=50, readonly=True, states=STATE)
+        string=u"Recibo NFe", size=50, readonly=True, states=STATE, copy=False)
     chave_nfe = fields.Char(
-        string=u"Chave NFe", size=50, readonly=True, states=STATE)
+        string=u"Chave NFe", size=50, readonly=True, states=STATE, copy=False)
     chave_nfe_danfe = fields.Char(
         string=u"Chave Formatado", compute="_compute_format_danfe_key")
     protocolo_nfe = fields.Char(
         string=u"Protocolo", size=50, readonly=True, states=STATE,
-        help=u"Protocolo de autorização da NFe")
-    nfe_processada = fields.Binary(string=u"Xml da NFe", readonly=True)
+        help=u"Protocolo de autorização da NFe", copy=False)
+    nfe_processada = fields.Binary(string=u"Xml da NFe", readonly=True, copy=False)
     nfe_processada_name = fields.Char(
-        string=u"Xml da NFe", size=100, readonly=True)
+        string=u"Xml da NFe", size=100, readonly=True, copy=False)
 
     valor_icms_uf_remet = fields.Monetary(
         string=u"ICMS Remetente", readonly=True, states=STATE,
@@ -385,6 +387,20 @@ class EletronicDocument(models.Model):
         string="Forma de Pagamento", default="01")
     valor_pago = fields.Monetary(string='Valor pago')
     troco = fields.Monetary(string='Troco')
+
+    discriminacao_servicos = fields.Char(compute='_compute_discriminacao')
+
+    def _compute_discriminacao(self):
+        for item in self:
+            descricao = ''
+            for line in item.document_line_ids:
+                if line.name:
+                    descricao += line.name.replace('\n', '<br/>') + '<br/>'
+            if item.informacoes_legais:
+                descricao += item.informacoes_legais.replace('\n', '<br/>')
+            if item.informacoes_complementares:
+                descricao += item.informacoes_complementares.replace('\n', '<br/>')
+            item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
         fiscal_ids = self.move_id.fiscal_observation_ids.filtered(
@@ -435,8 +451,7 @@ class EletronicDocument(models.Model):
             # dateutil.relativedelta is an old-style class and cannot be
             # instanciated wihtin a jinja2 expression, so a lambda "proxy" is
             # is needed, apparently.
-            'relativedelta': lambda *a, **kw: relativedelta.relativedelta(
-                *a, **kw),
+            'relativedelta': lambda *a, **kw: relativedelta(*a, **kw),
             # adding format amount
             # now we can format values like currency on fiscal observation
             'format_amount': lambda amount, currency,
@@ -576,9 +591,6 @@ class EletronicDocument(models.Model):
             nfe.send_email_nfe()
             nfe.email_sent = True
 
-    def copy(self, default=None):
-        raise UserError(_('Não é possível duplicar uma Nota Fiscal.'))
-
     def generate_dict_values(self):
         dict_docs = []
         for doc in self:
@@ -651,12 +663,18 @@ class EletronicDocument(models.Model):
                 'client_id': doc.company_id.l10n_br_client_id,
                 'client_secret': doc.company_id.l10n_br_client_secret,
                 'user_password': doc.company_id.l10n_br_user_password,
-                'observacoes': '',
+                'observacoes': doc.informacoes_complementares,
             }
             dict_docs.append(data)
         return dict_docs
 
+    def _update_document_values(self):
+        self.write({
+            'data_emissao': datetime.now(),
+        })
+
     def action_send_eletronic_invoice(self):
+        self._update_document_values()
         company = self.mapped('company_id').with_context({'bin_size': False})
 
         certificate = company.l10n_br_certificate
@@ -688,6 +706,26 @@ class EletronicDocument(models.Model):
             raise UserError('%s - %s' %
                             (response['api_code'], response['message']))
 
+    def qrcode_floripa_url(self):
+        import urllib
+        urlconsulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
+consulta?cod=%s&cmc=%s" % (self.protocolo_nfe, self.company_id.l10n_br_inscr_mun)
+
+        url = '<img class="center-block"\
+style="max-width:100px;height:100px;margin:0px 0px;"src="/report/barcode/\
+?type=QR&width=100&height=100&value=' + urllib.parse.quote(urlconsulta) + '"/>'
+        return url
+
+    def issqn_due_date(self):
+        next_month = self.data_emissao + relativedelta(months=1)
+        due_date = date(next_month.year, next_month.month, 10)
+        if due_date.weekday() >= 5:
+            while due_date.weekday() != 0:
+                due_date = due_date + timedelta(days=1)
+        format = "%d/%m/%Y"
+        due_date = datetime.strftime(due_date, format)
+        return due_date
+
 
 class EletronicDocumentLine(models.Model):
     _name = 'eletronic.document.line'
@@ -716,6 +754,12 @@ class EletronicDocumentLine(models.Model):
 
     # Florianopolis
     id_cnae = fields.Char(string="Id CNAE", size=10)
+    cnae_code = fields.Char(string="CNAE", size=10)
+    # Paulistana
+    codigo_servico_paulistana = fields.Char(
+        string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
+    codigo_servico_paulistana_nome = fields.Char(
+        string='Descrição código NFSe Paulistana', readonly=True, states=STATE)
 
     uom_id = fields.Many2one(
         'uom.uom', string='Unidade Medida', readonly=True, states=STATE)

@@ -48,6 +48,7 @@
                                         <!-- <field name="serie"/> -->
                                         <field name="serie_documento"/>
                                         <field name="numero"/>
+                                        <field name="numero_rps"/>
                                         <field name="numero_controle"/>
                                         <field name="nfe_processada_name" invisible="1"/>
                                         <field name="nfe_processada" filename="nfe_processada_name"/>
