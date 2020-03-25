@@ -80,6 +80,7 @@
                                 <group>
                                     <group name="totais" string="Totais">
                                         <field name="valor_bruto" />
+                                        <field name="valor_produtos" />
                                         <field name="valor_frete" />
                                         <field name="valor_seguro" />
                                         <field name="valor_desconto" />
@@ -101,7 +102,7 @@
                                 </group>
                                 <group>
                                     <group name="servico" string="Totais de Serviço">
-                                        <field name="valor_final" />
+                                        <field name="valor_servicos" />
                                         <field name="iss_base_calculo" />
                                         <field name="iss_valor" />
                                         <field name="pis_valor" />

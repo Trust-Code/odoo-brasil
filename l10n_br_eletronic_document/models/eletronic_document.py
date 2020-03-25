@@ -101,6 +101,11 @@ class EletronicDocument(models.Model):
         string='Valor Retenção', digits='Account',
         readonly=True, states=STATE)
 
+    valor_produtos = fields.Monetary(
+        string='Valor Produtos', readonly=True, states=STATE)
+    valor_servicos = fields.Monetary(
+        string='Valor Serviços', readonly=True, states=STATE)
+
     valor_final = fields.Monetary(
         string='Valor Final', readonly=True, states=STATE)
 
@@ -165,7 +170,7 @@ class EletronicDocument(models.Model):
     #     'invoice.eletronic.event', 'invoice_eletronic_id', string=u"Eventos",
     #     readonly=True, states=STATE)
     valor_bruto = fields.Monetary(
-        string=u'Total Produtos', readonly=True, states=STATE)
+        string='Valor Bruto', readonly=True, states=STATE)
     valor_frete = fields.Monetary(
         string=u'Total Frete', readonly=True, states=STATE)
     valor_seguro = fields.Monetary(
@@ -600,8 +605,8 @@ class EletronicDocument(models.Model):
                 'cnpj_cpf': re.sub(
                     '[^0-9]', '', partner.l10n_br_cnpj_cpf or ''),
                 'inscricao_municipal': re.sub(
-                    '[^0-9]', '', partner.l10n_br_inscr_mun or
-                    '0000000'),
+                    '[^0-9]', '', partner.l10n_br_inscr_mun or ''),
+                'empresa': partner.is_company,
                 'nome_fantasia': partner.name,
                 'razao_social': partner.l10n_br_legal_name or partner.name,
                 'telefone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
@@ -625,8 +630,8 @@ class EletronicDocument(models.Model):
                 unitario = round(line.valor_liquido / line.quantidade, 2)
                 items.append({
                     'name': line.product_id.name,
-                    'cnae': re.sub('[^0-9]', '', line.id_cnae or ''),
                     'cst_servico': '0',
+                    'codigo_servico': line.codigo_servico,
                     'aliquota': aliquota,
                     'base_calculo': base,
                     'valor_unitario': unitario,
@@ -648,9 +653,18 @@ class EletronicDocument(models.Model):
                 'regime_tributario': doc.company_id.l10n_br_tax_regime,
                 'itens_servico': items,
                 'data_emissao': doc.data_emissao.strftime('%Y-%m-%d'),
+                'serie': doc.serie_documento or '',
+                'numero_rps': doc.numero_rps,
+                'discriminacao': doc.discriminacao_servicos,
+                'valor_servico': doc.valor_servicos,
                 'base_calculo': doc.iss_base_calculo,
                 'valor_iss': doc.iss_valor,
                 'valor_total': doc.valor_final,
+                'iss_valor_retencao': doc.iss_valor_retencao,
+
+                'valor_carga_tributaria': "%.2f" % doc.valor_estimado_tributos,
+                'fonte_carga_tributaria': 'IBPT',
+                'iss_retido': True if doc.iss_valor_retencao > 0.0 else False,
 
                 'aedf': doc.company_id.l10n_br_aedf,
                 'client_id': doc.company_id.l10n_br_client_id,
@@ -752,13 +766,14 @@ class EletronicDocumentLine(models.Model):
     _description = 'Eletronic document line (NFE, NFSe)'
 
     name = fields.Char(string='Name', size=30)
-    company_id = fields.Many2one(
-        'res.company', 'Empresa')
     eletronic_document_id = fields.Many2one(
         'eletronic.document', string='Documento')
+    company_id = fields.Many2one(
+        'res.company', 'Empresa', related='eletronic_document_id.company_id',
+        readonly=True, store=True)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
-        string="Company Currency")
+        string="Company Currency", store=True)
 
     state = fields.Selection(
         related='eletronic_document_id.state', string="State")
@@ -772,12 +787,11 @@ class EletronicDocumentLine(models.Model):
     cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
     ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
 
+    codigo_servico = fields.Char(
+        string='Código NFSe', size=10, readonly=True, states=STATE)
     # Florianopolis
-    id_cnae = fields.Char(string="Id CNAE", size=10)
     cnae_code = fields.Char(string="CNAE", size=10)
     # Paulistana
-    codigo_servico_paulistana = fields.Char(
-        string='Código NFSe Paulistana', size=5, readonly=True, states=STATE)
     codigo_servico_paulistana_nome = fields.Char(
         string='Descrição código NFSe Paulistana', readonly=True, states=STATE)
 

@@ -1,0 +1,17 @@
+<odoo>
+
+    <record id="eletronic_document_company_rule" model="ir.rule">
+        <field name="name">Eletronic Document - Multi Company</field>
+        <field name="model_id" ref="model_eletronic_document"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="eletronic_document_line_company_rule" model="ir.rule">
+        <field name="name">Eletronic Document Line - Multi Company</field>
+        <field name="model_id" ref="model_eletronic_document_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>

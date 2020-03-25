@@ -1,3 +1,4 @@
+import re
 import base64
 from pytrustnfe.nfse.floripa import xml_processar_nota
 from pytrustnfe.nfse.floripa import processar_nota
@@ -19,8 +20,10 @@ def _convert_values(vals):
         vals['valor_issqn'] = 0
         for item in vals['itens_servico']:
             item['cst_servico'] = '1'
+            item['cnae'] = re.sub('[^0-9]', '', item['codigo_servico'] or '')
     else:
         vals['valor_issqn'] = vals['valor_iss']
+    vals['tomador']['inscricao_municipal'] = '0000000'
     vals['tomador']['logradouro'] = vals['tomador']['endereco']['logradouro']
     vals['tomador']['numero'] = vals['tomador']['endereco']['numero']
     vals['tomador']['bairro'] = vals['tomador']['endereco']['bairro']

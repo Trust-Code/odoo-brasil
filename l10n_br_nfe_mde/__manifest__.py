@@ -24,6 +24,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/mde_security.xml',
         'data/nfe_schedule.xml',
         'views/nfe_mde.xml',
         'views/res_company.xml',

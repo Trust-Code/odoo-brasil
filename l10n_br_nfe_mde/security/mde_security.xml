@@ -1,0 +1,10 @@
+<odoo>
+
+    <record id="nfe_mde_company_rule" model="ir.rule">
+        <field name="name">NFe MDE - Multi Company</field>
+        <field name="model_id" ref="model_nfe_mde"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>

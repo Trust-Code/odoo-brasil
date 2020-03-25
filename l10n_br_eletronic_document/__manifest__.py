@@ -16,6 +16,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/eletronic_security.xml',
         'views/res_company.xml',
         'views/account_move.xml',
         'views/eletronic_document.xml',
