@@ -723,13 +723,26 @@ class EletronicDocument(models.Model):
             'client_secret': company.l10n_br_client_secret,
             'user_password': company.l10n_br_user_password,
             'ambiente': 'producao' if company.l10n_br_tipo_ambiente == '1' else 'homologacao',
-            'inscricao_municipal': company.l10n_br_inscr_mun,
+            'cnpj_cpf': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
+            'inscricao_municipal': re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
             'justificativa': 'Emissao de nota fiscal errada',
             'numero': self.numero,
-            'protocolo_nfe': self.protocolo_nfe
+            'protocolo_nfe': self.protocolo_nfe,
+            'codigo_municipio': '%s%s' % (
+                    company.state_id.l10n_br_ibge_code,
+                    company.city_id.l10n_br_ibge_code),
         }
-        from .nfse_florianopolis import cancel_api
-        response = cancel_api(certificate, password, doc_values)
+
+        if doc_values['codigo_municipio'] == '4205407':
+            from .nfse_florianopolis import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+        elif doc_values['codigo_municipio'] == '3550308':
+            from .nfse_paulistana import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+        else:
+            from .focus_nfse import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+
         if response['code'] in (200, 201):
             self.write({
                 'state': 'cancel',

@@ -97,22 +97,25 @@ def cancel_api(certificate, password, vals):
     cert_pfx = base64.decodestring(certificate)
     certificado = Certificado(cert_pfx, password)
     canc = {
-        'motivo': vals['justificativa'],
-        'aedf': vals['aedf'],
-        'numero': vals['numero'],
+        'cnpj_remetente': vals['cnpj_cpf'],
+        'inscricao_municipal': vals['inscricao_municipal'],
+        'numero_nfse': vals['numero'],
         'codigo_verificacao': vals['protocolo_nfe'],
+        'assinatura': '%s%012d' % (
+            vals['inscricao_municipal'],
+            vals['numero'],
+        )
     }
-    resposta = cancelar_nota(
-        certificado, cancelamento=canc,
-        ambiente=vals['ambiente'],
-        client_id=vals['client_id'],
-        secret_id=vals['client_secret'],
-        username=vals['inscricao_municipal'],
-        password=vals['user_password']
-    )
+
+    if vals['ambiente'] == 'homologacao':
+        return {
+            'code': 200,
+            'message': 'Nota Fiscal Cancelada',
+        }
+
+    resposta = cancelamento_nfe(certificado, cancelamento=canc)
     retorno = resposta['object']
-    msg_cancelada = 'A Nota Fiscal já está com a situação cancelada.'
-    if resposta['status_code'] == 200 or retorno.message == msg_cancelada:
+    if retorno.Cabecalho.Sucesso:
         return {
             'code': 200,
             'message': 'Nota Fiscal Cancelada',
@@ -120,6 +123,8 @@ def cancel_api(certificate, password, vals):
     else:
         return {
             'code': 400,
-            'api_code': resposta['status_code'],
-            'message': retorno.message,
+            'api_code': retorno.Erro.Codigo,
+            'message': retorno.Erro.Descricao,
         }
+
+

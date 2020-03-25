@@ -813,8 +813,8 @@ class EletronicDocument(models.Model):
             raise UserError(_('A NFe não está validada'))
 
     def action_cancel_document(self, context=None, justificativa=None):
-        if self.model not in ('55', '65'):
-            return super(InvoiceEletronic, self).action_cancel_document(
+        if self.model not in ('nfe', 'nfce'):
+            return super(EletronicDocument, self).action_cancel_document(
                 justificativa=justificativa)
 
         if not justificativa:
