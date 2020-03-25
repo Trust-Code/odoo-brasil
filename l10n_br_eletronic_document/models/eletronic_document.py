@@ -504,7 +504,7 @@ class EletronicDocument(models.Model):
         self.state = 'edit'
 
     def can_unlink(self):
-        if self.state not in ('done', 'cancel'):
+        if self.state not in ('done', 'cancel', 'denied'):
             return True
         return False
 
