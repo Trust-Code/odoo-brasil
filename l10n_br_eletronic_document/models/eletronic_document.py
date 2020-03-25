@@ -632,6 +632,8 @@ class EletronicDocument(models.Model):
                     'name': line.product_id.name,
                     'cst_servico': '0',
                     'codigo_servico': line.codigo_servico,
+                    'cnae_servico': line.codigo_cnae,
+                    'codigo_servico_municipio': line.codigo_servico_municipio,
                     'aliquota': aliquota,
                     'base_calculo': base,
                     'valor_unitario': unitario,
@@ -643,6 +645,7 @@ class EletronicDocument(models.Model):
             outro_pais = doc.company_id.country_id.id != partner.country_id.id
 
             data = {
+                'nfe_reference': doc.id,
                 'ambiente': 'producao' if doc.company_id.l10n_br_tipo_ambiente == '1' else 'homologacao',
                 'emissor': emissor,
                 'tomador': tomador,
@@ -697,7 +700,9 @@ class EletronicDocument(models.Model):
             response = send_api(certificate, password, doc_values)
         else:
             from .focus_nfse import send_api
-            response = send_api(certificate, password, doc_values)
+            response = send_api(
+                certificate, password, 'sw9qPtcdFLAPD1XyAu84nEN4XEnfeg45',
+                doc_values[0]['ambiente'], doc_values)
 
         if response['code'] in (200, 201):
             self.write({
@@ -729,8 +734,8 @@ class EletronicDocument(models.Model):
             'numero': self.numero,
             'protocolo_nfe': self.protocolo_nfe,
             'codigo_municipio': '%s%s' % (
-                    company.state_id.l10n_br_ibge_code,
-                    company.city_id.l10n_br_ibge_code),
+                company.state_id.l10n_br_ibge_code,
+                company.city_id.l10n_br_ibge_code),
         }
 
         if doc_values['codigo_municipio'] == '4205407':
@@ -802,8 +807,11 @@ class EletronicDocumentLine(models.Model):
 
     codigo_servico = fields.Char(
         string='Código NFSe', size=10, readonly=True, states=STATE)
+    codigo_servico_municipio = fields.Char(
+        string='Código NFSe', size=10, readonly=True, states=STATE)
     # Florianopolis
-    cnae_code = fields.Char(string="CNAE", size=10)
+    codigo_cnae = fields.Char(string="CNAE", size=10,
+                              readonly=True, states=STATE)
     # Paulistana
     codigo_servico_paulistana_nome = fields.Char(
         string='Descrição código NFSe Paulistana', readonly=True, states=STATE)

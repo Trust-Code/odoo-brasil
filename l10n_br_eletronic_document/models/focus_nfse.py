@@ -1,79 +1,62 @@
+import json
 import base64
+import requests
 
-def send_api(certificate, password, vals):
+
+def _convert_values(vals):
+    vals['servico'] = {
+        'item_lista_servico': vals['itens_servico'][0]['codigo_servico'],
+        'codigo_tributario_municipio': vals['itens_servico'][0]['codigo_servico_municipio'],
+        "aliquota": vals['itens_servico'][0]['aliquota'],
+        "valor_servicos": vals['valor_servico'],
+        "discriminacao": vals['discriminacao'],
+    }
+    vals['prestador'] = vals['emissor']
+    vals['tomador']['cnpj'] = vals['tomador']['cnpj_cpf']
+    return vals
+
+
+def send_api(certificate, password, token, ambiente, edocs):
     cert_pfx = base64.decodestring(certificate)
-    certificado = Certificado(cert_pfx, password)
 
-    url = "https://homologacao.focusnfe.com.br/v2/nfse"
-    token="sw9qPtcdFLAPD1XyAu84nEN4XEnfeg45"
+    edocs = _convert_values(edocs[0])
 
-    partner = self.commercial_partner_id
+    if ambiente == 'producao':
+        url = 'https://api.focusnfe.com.br/v2/nfse'
+    else:
+        url = 'https://homologacao.focusnfe.com.br/v2/nfse'
 
-    tomador = {
-        'cnpj_cpf': re.sub(
-            '[^0-9]', '', partner.cnpj_cpf or ''),
-        'inscricao_municipal': re.sub(
-            '[^0-9]', '', partner.inscr_mun or
-            '0000000'),
-        'razao_social': partner.legal_name or partner.name,
-        'logradouro': partner.street,
-        'numero': partner.number,
-        'bairro': partner.district,
-        'cep': re.sub('[^0-9]', '', partner.zip or ''),
-        'cidade': '%s%s' % (
-            partner.state_id.ibge_code,
-            partner.city_id.ibge_code),
-        'uf': partner.state_id.code,
-        'email': self.partner_id.email,
-        'phone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
-    }
-    items = []
-    for line in self.document_line_ids:
-        aliquota = line.issqn_aliquota / 100
-        base = line.issqn_base_calculo
-        if self.company_id.fiscal_type != '3':
-            aliquota, base = 0.0, 0.0
-        unitario = round(line.valor_liquido / line.quantidade, 2)
-        items.append({
-            'name': line.product_id.name,
-            'cnae': re.sub(
-                '[^0-9]', '',
-                line.product_id.service_type_id.id_cnae or ''),
-            'cst_servico': '1',
-            'aliquota': aliquota,
-            'base_calculo': base,
-            'valor_unitario': unitario,
-            'quantidade': int(line.quantidade),
-            'valor_total': line.valor_liquido,
-        })
-    emissao = fields.Datetime.from_string(self.data_emissao)
-    cfps = '9201'
-    if self.company_id.city_id.id != partner.city_id.id:
-        cfps = '9202'
-    if self.company_id.state_id.id != partner.state_id.id:
-        cfps = '9203'
-    base, issqn = self.valor_bc_issqn, self.valor_issqn
-    if self.company_id.fiscal_type != '3':
-        base, issqn = 0.0, 0.0
-    data = {
-        'numero': "%06d" % self.numero,
-        'tomador': tomador,
-        'itens_servico': items,
-        'data_emissao': emissao.strftime('%Y-%m-%d'),
-        'base_calculo': base,
-        'valor_issqn': issqn,
-        'valor_total': self.valor_final,
-        'aedf': self.company_id.aedf,
-        'cfps': cfps,
-        'observacoes': '',
-    }
+    ref = {'ref': edocs['nfe_reference']}
+    response = requests.post(url, params=ref, data=json.dumps(
+        edocs), auth=(token, "")).json()
+    if response.get('status', False) == 'processando_autorizacao':
+        return {
+            'code': 200,
+            'message': 'Nota Fiscal em processamento',
+        }
+    else:
+        return {
+            'code': 400,
+            'api_code': response['codigo'],
+            'message': response['mensagem'],
+        }
 
 
-    ref = {"ref":"12345"}
-    
-    r = requests.post(url, params=ref, data=json.dumps(data), auth=(token,""))
+def cancel_api(token, ambiente, nfe_reference):
+    if ambiente == 'producao':
+        url = 'https://api.focusnfe.com.br/v2/nfse/' + nfe_reference
+    else:
+        url = 'https://homologacao.focusnfe.com.br/v2/nfse/' + nfe_reference
 
-    if r.status_code not in (200, 201):
-        raise UserError(r.json()['mensagem'])
-    # Mostra na tela o codigo HTTP da requisicao e a mensagem de retorno da API
-    print(r.status_code, r.text)
+    response = requests.delete(url, auth=(token, "")).json()
+    if response['status'] in ('cancelado', 'nfe_cancelada'):
+        return {
+            'code': 200,
+            'message': 'Nota Fiscal Cancelada',
+        }
+    else:
+        return {
+            'code': 400,
+            'api_code': response['erros'][0]['codigo'],
+            'message': response['erros'][0]['mensagem'],
+        }

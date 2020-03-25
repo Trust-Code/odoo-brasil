@@ -77,7 +77,8 @@
                       <group>
                           <field name="issqn_codigo" />
                           <field name="codigo_servico" />
-                          <field name="cnae_code" />
+                          <field name="codigo_cnae" />
+                          <field name="codigo_servico_municipio" />
                           <field name="codigo_servico_paulistana_nome" />
                       </group>
                     </group>

@@ -174,7 +174,7 @@
                         <t t-foreach="doc.document_line_ids" t-as="line">
                             <tr>
                                 <td>
-                                    <span t-field="line.cnae_code" />
+                                    <span t-field="line.codigo_cnae" />
                                 </td>
                                 <td>
                                     <span t-field="line.product_id" />
