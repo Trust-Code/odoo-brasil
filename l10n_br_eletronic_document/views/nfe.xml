@@ -1,0 +1,44 @@
+<odoo>
+
+    <record id="view_br_nfe_volume_tree" model="ir.ui.view">
+        <field name="name">br.nfe.nfe.volume</field>
+        <field name="model">nfe.volume</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="quantidade_volumes" />
+                <field name="especie"/>
+                <field name="marca"/>
+                <field name="numeracao"/>
+                <field name="peso_liquido"/>
+                <field name="peso_bruto"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_br_nfe_reboque_tree" model="ir.ui.view">
+        <field name="name">br.nfe.nfe.reboque</field>
+        <field name="model">nfe.reboque</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="placa_veiculo" />
+                <field name="uf_veiculo"/>
+                <field name="rntc"/>
+                <field name="vagao"/>
+                <field name="balsa"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_br_nfe_duplicata_tree" model="ir.ui.view">
+        <field name="name">br.nfe.nfe.duplicata</field>
+        <field name="model">nfe.duplicata</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="numero_duplicata"/>
+                <field name="data_vencimento"/>
+                <field name="valor"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

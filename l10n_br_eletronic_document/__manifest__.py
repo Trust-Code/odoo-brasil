@@ -15,6 +15,9 @@
         'l10n_br_base_address',
     ],
     'data': [
+        'data/nfe.cfop.csv',
+        'data/account.cnae.csv',
+        'data/account.service.type.csv',
         'security/ir.model.access.csv',
         'security/eletronic_security.xml',
         'views/res_company.xml',
@@ -22,6 +25,8 @@
         'views/eletronic_document.xml',
         'views/eletronic_document_line.xml',
         'views/fiscal_position.xml',
+        'views/nfe.xml',
+        'views/base_account.xml',
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_florianopolis.xml',
     ],

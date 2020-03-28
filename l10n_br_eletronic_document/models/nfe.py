@@ -689,6 +689,7 @@ class EletronicDocument(models.Model):
         if self.state in ('done', 'denied', 'cancel'):
             return
 
+        self._update_document_values()
         self.action_post_validate()
 
         _logger.info('Sending NF-e (%s) (%.2f) - %s' % (

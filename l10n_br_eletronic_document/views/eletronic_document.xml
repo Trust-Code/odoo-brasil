@@ -121,6 +121,72 @@
                                     </group>
                                 </group>
                             </page>
+                            <page name="transporte" string="Transportes" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}">
+                                <group>
+                                    <group>
+                                        <field name="modalidade_frete" />
+                                        <field name="transportadora_id" />
+                                        <field name="placa_veiculo" />
+                                    </group>
+                                    <group>
+                                        <field name="uf_veiculo" />
+                                        <field name="rntc" />
+                                    </group>
+                                </group>
+                                <group string="Reboques">
+                                    <field name="reboque_ids" nolabel="1" context="{'default_eletronic_document_id': id}" />
+                                </group>
+                                <group string="Volumes">
+                                    <field name="volume_ids" nolabel="1" context="{'default_eletronic_document_id': id}" />
+                                </group>
+                            </page>
+                            <page name="cobranca" string="Cobrança">
+                                <group>
+                                    <field name="numero_fatura" />
+                                    <field name="fatura_bruto" />
+                                    <field name="fatura_desconto" />
+                                    <field name="fatura_liquido" />
+                                </group>
+                                <group string="Duplicatas">
+                                    <field name="duplicata_ids" nolabel="1" context="{'default_eletronic_document_id': id}" />
+                                </group>
+                            </page>
+                            <page name="exportacao" string="Exportação/Compras" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}">
+                                <group>
+                                    <group string="Exportação">
+                                        <field name="uf_saida_pais_id" options="{'no_create': True, 'no_create_edit': True}" />
+                                        <field name="local_embarque" />
+                                        <field name="local_despacho" />
+                                    </group>
+                                    <group string="Compras">
+                                        <field name="nota_empenho" />
+                                        <field name="pedido_compra" />
+                                        <field name="contrato_compra" />
+                                    </group>
+                                </group>
+                            </page>
+                            <!-- <page name="documentos_relacionados" string="Doc. Relacionados" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
+                                <field name="fiscal_document_related_ids" >
+                                    <tree>
+                                        <field name="invoice_related_id" />
+                                        <field name="document_type" />
+                                        <field name="access_key" />
+                                        <field name="serie" />
+                                        <field name="internal_number" />
+                                    </tree>
+                                </field>
+                            </page> -->
+                            <!-- <page name="carta_correcao" string="Cartas de Correção" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
+                                <field name="cartas_correcao_ids" >
+                                    <tree>
+                                        <field name="sequencial_evento" />
+                                        <field name="message" />
+                                        <field name="protocolo" />
+                                        <field name="datahora_evento" />
+                                    </tree>
+                                </field>
+                            </page> -->
+
                             <page string="Observações">
                                 <group>
                                     <field name="informacoes_legais" />
