@@ -195,6 +195,11 @@ class AccountInvoice(models.Model):
         res['troco'] = 0.0
         res['metodo_pagamento'] = inv.payment_mode_id.tipo_pagamento or '01'
         res['valor_pago'] = inv.amount_total
+
+        # Endereço de Entrega
+        if inv.partner_shipping_id != inv.partner_id:
+            res['partner_shipping_id'] = inv.partner_shipping_id.id
+
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):

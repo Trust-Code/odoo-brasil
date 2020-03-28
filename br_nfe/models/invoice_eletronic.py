@@ -603,6 +603,33 @@ class InvoiceEletronic(models.Model):
                     'xLocDespacho': self.local_despacho or '',
                 }
 
+        entrega = None
+
+        if self.partner_shipping_id:
+            shipping_id = self.partner_shipping_id
+
+            entrega = {
+                'xNome': shipping_id.legal_name or shipping_id.name,
+                'xLgr': shipping_id.street,
+                'nro': shipping_id.number,
+                'xCpl': shipping_id.street2 or '',
+                'xBairro': shipping_id.district,
+                'cMun': '%s%s' % (shipping_id.state_id.ibge_code,
+                                  shipping_id.city_id.ibge_code),
+                'xMun': shipping_id.city_id.name,
+                'UF': shipping_id.state_id.code,
+                'CEP': re.sub('[^0-9]', '', shipping_id.zip or ''),
+                'cPais': (shipping_id.country_id.bc_code or '')[-4:],
+                'xPais': shipping_id.country_id.name,
+                'fone': re.sub('[^0-9]', '', shipping_id.phone or '')
+            }
+            cnpj_cpf = re.sub('[^0-9]', '', shipping_id.cnpj_cpf or '')
+
+            if len(cnpj_cpf) == 14:
+                entrega.update({'CNPJ': cnpj_cpf})
+            else:
+                entrega.update({'CPF': cnpj_cpf})
+
         autorizados = []
         if self.company_id.accountant_id:
             autorizados.append({
@@ -788,6 +815,7 @@ class InvoiceEletronic(models.Model):
             'ide': ide,
             'emit': emit,
             'dest': dest,
+            'entrega': entrega,
             'autXML': autorizados,
             'detalhes': eletronic_items,
             'total': total,
