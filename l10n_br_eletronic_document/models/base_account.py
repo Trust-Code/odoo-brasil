@@ -233,11 +233,11 @@ class NfeRelatedDocumento(models.Model):
             raise UserError(
                 _('Inscrição Estadual do documento fiscal inválida!'))
 
-    @api.onchange('invoice_related_id')
-    def onchange_invoice_related_id(self):
-        if not self.invoice_related_id:
+    @api.onchange('eletronic_document_id')
+    def onchange_related_document_id(self):
+        if not self.eletronic_document_id:
             return
-        inv_id = self.invoice_related_id
+        inv_id = self.eletronic_document_id
         if not inv_id.product_document_id:
             return
 

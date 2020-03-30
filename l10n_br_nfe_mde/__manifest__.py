@@ -28,7 +28,7 @@
         'data/nfe_schedule.xml',
         'views/nfe_mde.xml',
         'views/res_company.xml',
-        'views/invoice_eletronic.xml',
+        'views/eletronic_document.xml',
         'wizard/operation_not_performed.xml',
     ],
     'application': True

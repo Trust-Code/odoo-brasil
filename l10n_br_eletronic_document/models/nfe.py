@@ -11,7 +11,6 @@ from datetime import datetime
 from pytz import timezone
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.addons import decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -43,53 +42,147 @@ class EletronicDocument(models.Model):
                                           item.chave_nfe, 10, re.DOTALL)
 
     def _hook_validation(self):
-        errors = super(EletronicDocument, self)._hook_validation()
-        if self.model in ('55', '65'):
-            if not self.company_id.partner_id.inscr_est:
-                errors.append(u'Emitente / Inscrição Estadual')
+        errors = []
 
-            for eletr in self.eletronic_item_ids:
-                prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
-                                              eletr.product_id.name)
-                if not eletr.cfop:
-                    errors.append(u'%s - CFOP' % prod)
-                if eletr.tipo_produto == 'product':
-                    if not eletr.icms_cst:
-                        errors.append(u'%s - CST do ICMS' % prod)
-                    if not eletr.ipi_cst:
-                        errors.append(u'%s - CST do IPI' % prod)
-                if eletr.tipo_produto == 'service':
-                    if not eletr.issqn_codigo:
-                        errors.append(u'%s - Código de Serviço' % prod)
-                if not eletr.pis_cst:
-                    errors.append(u'%s - CST do PIS' % prod)
-                if not eletr.cofins_cst:
-                    errors.append(u'%s - CST do Cofins' % prod)
+        if not self.company_id.l10n_br_certificate:
+            errors.append('Cadastro da Empresa - Certificado Digital')
+        if not self.company_id.l10n_br_cert_password:
+            errors.append('Cadastro da Empresa - Senha do Certificado Digital')
+        if not self.company_id.partner_id.l10n_br_legal_name:
+            errors.append('Cadastro da Empresa - Razão Social')
+        if not self.company_id.partner_id.l10n_br_cnpj_cpf:
+            errors.append('Cadastro da Empresa - CNPJ/CPF')
+        if not self.company_id.partner_id.l10n_br_inscr_est:
+            errors.append('Cadastro da Empresa / Inscrição Estadual')
+        if not self.company_id.partner_id.street:
+            errors.append('Cadastro da Empresa / Endereço - Logradouro')
+        if not self.company_id.partner_id.l10n_br_number:
+            errors.append('Cadastro da Empresa / Endereço - Número')
+        if not self.company_id.partner_id.zip or len(
+                re.sub(r"\D", "", self.company_id.partner_id.zip)) != 8:
+            errors.append('Cadastro da Empresa / Endereço - CEP')
+        if not self.company_id.partner_id.state_id:
+            errors.append('Cadastro da Empresa / Endereço - Estado')
+        else:
+            if not self.company_id.partner_id.state_id.l10n_br_ibge_code:
+                errors.append('Cadastro da Empresa / Endereço - Cód. do IBGE do estado')
+            if not self.company_id.partner_id.state_id.name:
+                errors.append('Cadastro da Empresa / Endereço - Nome do estado')
+
+        if not self.company_id.partner_id.city_id:
+            errors.append('Cadastro da Empresa / Endereço - município')
+        else:
+            if not self.company_id.partner_id.city_id.name:
+                errors.append('Cadastro da Empresa / Endereço - Nome do município')
+            if not self.company_id.partner_id.city_id.l10n_br_ibge_code:
+                errors.append('Cadastro da Empresa/Endereço - Cód. do IBGE do município')
+
+        if not self.company_id.partner_id.country_id:
+            errors.append('Cadastro da Empresa / Endereço - país')
+        else:
+            if not self.company_id.partner_id.country_id.name:
+                errors.append('Cadastro da Empresa / Endereço - Nome do país')
+            if not self.company_id.partner_id.country_id.l10n_br_ibge_code:
+                errors.append('Cadastro da Empresa / Endereço - Código do BC do país')
+
+        # produtos
+        for eletr in self.document_line_ids:
+            prod = "Produto: %s - %s" % (eletr.product_id.default_code,
+                                         eletr.product_id.name)
+            if not eletr.cfop:
+                errors.append('%s - CFOP' % prod)
+            if eletr.tipo_produto == 'product':
+                if not eletr.icms_cst:
+                    errors.append('%s - CST do ICMS' % prod)
+                if not eletr.ipi_cst:
+                    errors.append('%s - CST do IPI' % prod)
+            if eletr.tipo_produto == 'service':
+                if not eletr.issqn_codigo:
+                    errors.append('%s - Código de Serviço' % prod)
+            if not eletr.pis_cst:
+                errors.append('%s - CST do PIS' % prod)
+            if not eletr.cofins_cst:
+                errors.append('%s - CST do Cofins' % prod)
+            if not eletr.product_id.default_code:
+                errors.append(
+                    'Prod: %s - Código do produto' % (
+                        eletr.product_id.name))
+
         # NF-e
-        if self.model == '55':
-            if not self.fiscal_position_id:
-                errors.append(u'Configure a posição fiscal')
-            if self.company_id.accountant_id and not \
-               self.company_id.accountant_id.cnpj_cpf:
-                errors.append(u'Emitente / CNPJ do escritório contabilidade')
+        if self.model == 'nfe':
+            if not self.natureza_operacao:
+                errors.append('Configure a natureza da operação')
+            if self.company_id.l10n_br_accountant_id and not \
+                self.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf:
+                errors.append('Cadastro da Empresa / CNPJ do escritório contabilidade')
         # NFC-e
-        if self.model == '65':
+        if self.model == 'nfce':
             if len(self.company_id.id_token_csc or '') != 6:
-                errors.append(u"Identificador do CSC inválido")
+                errors.append("Cadastro da Empresa - Identificador do CSC inválido")
             if not len(self.company_id.csc or ''):
-                errors.append(u"CSC Inválido")
-            if self.partner_id.cnpj_cpf is None:
-                errors.append(u"CNPJ/CPF do Parceiro inválido")
+                errors.append("Cadastro da Empresa - CSC Inválido")
+            if self.partner_id.l10n_br_cnpj_cpf is None:
+                errors.append("CNPJ/CPF do Parceiro inválido")
             if len(self.serie) == 0:
-                errors.append(u"Número de Série da NFe Inválido")
+                errors.append("Número de Série da NFe Inválido")
+
+        partner = self.partner_id.commercial_partner_id
+        if not partner:  # NFC-e pode não ter partner, mas se tiver valida
+            return errors
+        company = self.company_id
+        # Destinatário
+        if partner.is_company and not partner.l10n_br_legal_name:
+            errors.append('Cliente - Razão Social')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.l10n_br_cnpj_cpf:
+                errors.append('Cliente - CNPJ/CPF')
+
+        if not partner.street:
+            errors.append('Cliente / Endereço - Logradouro')
+
+        if not partner.l10n_br_number:
+            errors.append('Cliente / Endereço - Número')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.zip or len(
+                    re.sub(r"\D", "", partner.zip)) != 8:
+                errors.append('Cliente / Endereço - CEP')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.state_id:
+                errors.append('Cliente / Endereço - Estado')
+            else:
+                if not partner.state_id.l10n_br_ibge_code:
+                    errors.append('Cliente / Endereço - Código do IBGE \
+                                  do estado')
+                if not partner.state_id.name:
+                    errors.append('Cliente / Endereço - Nome do estado')
+
+        if partner.country_id.id == company.partner_id.country_id.id:
+            if not partner.city_id:
+                errors.append('Cliente / Endereço - Município')
+            else:
+                if not partner.city_id.name:
+                    errors.append('Cliente / Endereço - Nome do \
+                                  município')
+                if not partner.city_id.l10n_br_ibge_code:
+                    errors.append('Cliente / Endereço - Código do IBGE \
+                                  do município')
+
+        if not partner.country_id:
+            errors.append('Cliente / Endereço - País')
+        else:
+            if not partner.country_id.name:
+                errors.append('Cliente / Endereço - Nome do país')
+            if not partner.country_id.l10n_br_ibge_code:
+                errors.append('Cliente / Endereço - Cód. do BC do país')
 
         return errors
 
     def _prepare_eletronic_invoice_item(self, item, invoice):
-        res = super(EletronicDocument, self)._prepare_eletronic_invoice_item(
-            item, invoice)
-        if self.model not in ('55', '65'):
-            return res
+        if self.model not in ('nfe', 'nfce'):
+            return
 
         if self.ambiente != 'homologacao':
             xProd = item.product_id.with_context(
@@ -98,10 +191,10 @@ class EletronicDocument(models.Model):
             xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO -\
  SEM VALOR FISCAL'
 
-        price_precis = dp.get_precision('Product Price')(self.env.cr)
-        qty_precis = dp.get_precision('Product Unit of Measure')(self.env.cr)
-        qty_frmt = '{:.%sf}' % qty_precis[1]
-        price_frmt = '{:.%sf}' % price_precis[1]
+        price_precis = self.env['decimal.precision'].precision_get('Product Price')
+        qty_precis =  self.env['decimal.precision'].precision_get('Product Unit of Measure')
+        qty_frmt = '{:.%sf}' % qty_precis
+        price_frmt = '{:.%sf}' % price_precis
         prod = {
             'cProd': item.product_id.default_code,
             'cEAN': item.product_id.barcode or 'SEM GTIN',
@@ -248,9 +341,8 @@ class EletronicDocument(models.Model):
                 'infAdProd': item.informacao_adicional}
 
     def _prepare_eletronic_invoice_values(self):
-        res = super(EletronicDocument, self)._prepare_eletronic_invoice_values()
         if self.model not in ('nfe', 'nfce'):
-            return res
+            return
 
         tz = timezone(self.env.user.tz)
         dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
@@ -263,8 +355,8 @@ class EletronicDocument(models.Model):
         ide = {
             'cUF': self.company_id.state_id.l10n_br_ibge_code,
             'cNF': "%08d" % self.numero_controle,
-            'natOp': self.fiscal_position_id.name,
-            'mod': self.model,
+            'natOp': self.natureza_operacao,
+            'mod': '55' if self.model == 'nfe' else '65',
             'serie': self.serie_documento,
             'nNF': self.numero,
             'dhEmi': dt_emissao,
@@ -285,7 +377,7 @@ class EletronicDocument(models.Model):
         }
         # Documentos Relacionados
         documentos = []
-        for doc in self.fiscal_document_related_ids:
+        for doc in self.related_document_ids:
             data = fields.Datetime.from_string(doc.date)
             if doc.document_type == 'nfe':
                 documentos.append({
@@ -333,14 +425,14 @@ class EletronicDocument(models.Model):
         ide['NFref'] = documentos
         emit = {
             'tipo': self.company_id.partner_id.company_type,
-            'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
-            'xNome': self.company_id.legal_name,
+            'cnpj_cpf': re.sub('[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
+            'xNome': self.company_id.l10n_br_legal_name,
             'xFant': self.company_id.name,
             'enderEmit': {
                 'xLgr': self.company_id.street,
-                'nro': self.company_id.number,
+                'nro': self.company_id.l10n_br_number,
                 'xCpl': self.company_id.street2 or '',
-                'xBairro': self.company_id.district,
+                'xBairro': self.company_id.l10n_br_district,
                 'cMun': '%s%s' % (
                     self.company_id.partner_id.state_id.l10n_br_ibge_code,
                     self.company_id.partner_id.city_id.l10n_br_ibge_code),
@@ -351,43 +443,43 @@ class EletronicDocument(models.Model):
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
-            'IE': re.sub('[^0-9]', '', self.company_id.inscr_est),
+            'IE': re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est),
             'IEST': re.sub('[^0-9]', '', self.iest or ''),
-            'CRT': self.company_id.fiscal_type,
+            'CRT': self.company_id.l10n_br_tax_regime,
         }
-        if self.company_id.cnae_main_id and self.company_id.inscr_mun:
-            emit['IM'] = re.sub('[^0-9]', '', self.company_id.inscr_mun or '')
+        if self.company_id.l10n_br_cnae_main_id and self.company_id.l10n_br_inscr_mun:
+            emit['IM'] = re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_mun or '')
             emit['CNAE'] = re.sub(
-                '[^0-9]', '', self.company_id.cnae_main_id.code or '')
+                '[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code or '')
         dest = None
         exporta = None
         if self.commercial_partner_id:
             partner = self.commercial_partner_id
             dest = {
                 'tipo': partner.company_type,
-                'cnpj_cpf': re.sub('[^0-9]', '', partner.cnpj_cpf or ''),
-                'xNome': partner.legal_name or partner.name,
+                'cnpj_cpf': re.sub('[^0-9]', '', partner.l10n_br_cnpj_cpf or ''),
+                'xNome': partner.l10n_br_legal_name or partner.name,
                 'enderDest': {
                     'xLgr': partner.street,
-                    'nro': partner.number,
+                    'nro': partner.l10n_br_number,
                     'xCpl': partner.street2 or '',
-                    'xBairro': partner.district,
+                    'xBairro': partner.l10n_br_district,
                     'cMun': '%s%s' % (partner.state_id.l10n_br_ibge_code,
                                       partner.city_id.l10n_br_ibge_code),
                     'xMun': partner.city_id.name,
                     'UF': partner.state_id.code,
                     'CEP': re.sub('[^0-9]', '', partner.zip or ''),
-                    'cPais': (partner.country_id.bc_code or '')[-4:],
+                    'cPais': (partner.country_id.l10n_br_ibge_code or '')[-4:],
                     'xPais': partner.country_id.name,
                     'fone': re.sub('[^0-9]', '', partner.phone or '')
                 },
                 'indIEDest': self.ind_ie_dest,
-                'IE':  re.sub('[^0-9]', '', partner.inscr_est or ''),
-                'ISUF': partner.suframa or '',
+                'IE':  re.sub('[^0-9]', '', partner.l10n_br_inscr_est or ''),
+                'ISUF': partner.l10n_br_suframa or '',
             }
-            if self.model == '65':
+            if self.model == 'nfce':
                 dest.update(
-                    {'CPF': re.sub('[^0-9]', '', partner.cnpj_cpf or '')})
+                    {'CPF': re.sub('[^0-9]', '', partner.l10n_br_cnpj_cpf or '')})
 
             if self.ambiente == 'homologacao':
                 dest['xNome'] = \
@@ -395,7 +487,7 @@ class EletronicDocument(models.Model):
  SEM VALOR FISCAL'
             if partner.country_id.id != self.company_id.country_id.id:
                 dest['idEstrangeiro'] = re.sub(
-                    '[^0-9]', '', partner.cnpj_cpf or '')
+                    '[^0-9]', '', partner.l10n_br_cnpj_cpf or '')
                 dest['enderDest']['UF'] = 'EX'
                 dest['enderDest']['xMun'] = 'Exterior'
                 dest['enderDest']['cMun'] = '9999999'
@@ -407,14 +499,14 @@ class EletronicDocument(models.Model):
                 }
 
         autorizados = []
-        if self.company_id.accountant_id:
+        if self.company_id.l10n_br_accountant_id:
             autorizados.append({
                 'CNPJ': re.sub(
-                    '[^0-9]', '', self.company_id.accountant_id.cnpj_cpf)
+                    '[^0-9]', '', self.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf)
             })
 
         eletronic_items = []
-        for item in self.eletronic_item_ids:
+        for item in self.document_line_ids:
             eletronic_items.append(
                 self._prepare_eletronic_invoice_item(item, self))
         total = {
@@ -480,16 +572,16 @@ class EletronicDocument(models.Model):
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
                                           self.transportadora_id.number or '',
                                           self.
-                                          transportadora_id.district or '')
+                                          transportadora_id.l10n_br_district or '')
         else:
             end_transp = ''
         transp = {
             'modFrete': self.modalidade_frete,
             'transporta': {
-                'xNome': self.transportadora_id.legal_name or
+                'xNome': self.transportadora_id.l10n_br_legal_name or
                 self.transportadora_id.name or '',
                 'IE': re.sub('[^0-9]', '',
-                             self.transportadora_id.inscr_est or ''),
+                             self.transportadora_id.l10n_br_inscr_est or ''),
                 'xEnder': end_transp
                 if self.transportadora_id else '',
                 'xMun': self.transportadora_id.city_id.name or '',
@@ -501,7 +593,7 @@ class EletronicDocument(models.Model):
                 'RNTC': self.rntc or '',
             }
         }
-        cnpj_cpf = re.sub('[^0-9]', '', self.transportadora_id.cnpj_cpf or '')
+        cnpj_cpf = re.sub('[^0-9]', '', self.transportadora_id.l10n_br_cnpj_cpf or '')
         if self.transportadora_id.is_company:
             transp['transporta']['CNPJ'] = cnpj_cpf
         else:
@@ -549,14 +641,10 @@ class EletronicDocument(models.Model):
             'dup': duplicatas
         }
         pag = {
-            'indPag': self.payment_term_id.indPag or '0',
-            'tPag': self.payment_mode_id.tipo_pagamento or '90',
+            'indPag': '0',  # TODO colocar a prazo se tiver mais de uma parcela
+            'tPag': '90',  # TODO Verificar esse campo aqui
             'vPag': '0.00',
         }
-        self.informacoes_complementares = self.informacoes_complementares.\
-            replace('\n', '<br />')
-        self.informacoes_legais = self.informacoes_legais.replace(
-            '\n', '<br />')
         infAdic = {
             'infCpl': self.informacoes_complementares or '',
             'infAdFisco': self.informacoes_legais or '',
@@ -567,7 +655,7 @@ class EletronicDocument(models.Model):
             'xCont': self.contrato_compra or '',
         }
 
-        responsavel_tecnico = self.company_id.responsavel_tecnico_id
+        responsavel_tecnico = self.company_id.l10n_br_responsavel_tecnico_id
         infRespTec = {}
 
         if responsavel_tecnico:
@@ -575,7 +663,7 @@ class EletronicDocument(models.Model):
                 raise UserError(
                     "Adicione um contato para o responsável técnico!")
 
-            cnpj = re.sub('[^0-9]', '', responsavel_tecnico.cnpj_cpf)
+            cnpj = re.sub('[^0-9]', '', responsavel_tecnico.l10n_br_cnpj_cpf)
             fone = re.sub('[^0-9]', '', responsavel_tecnico.phone or '')
             infRespTec = {
                 'CNPJ': cnpj or '',
@@ -612,7 +700,7 @@ class EletronicDocument(models.Model):
             pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final
 
-        if self.model == '65':
+        if self.model == 'nfce':
             vals['pag'][0]['tPag'] = self.metodo_pagamento
             vals['pag'][0]['vPag'] = "%.02f" % self.valor_pago
             vals['pag'][0]['vTroco'] = "%.02f" % self.troco or '0.00'
@@ -644,7 +732,7 @@ class EletronicDocument(models.Model):
             'NFes': [{
                 'infNFe': nfe_values
             }],
-            'modelo': self.model,
+            'modelo': '55' if self.model == 'nfe' else '65',
         }
 
     def action_post_validate(self):
@@ -652,7 +740,7 @@ class EletronicDocument(models.Model):
             'cnpj': re.sub('[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
             'estado': self.company_id.state_id.l10n_br_ibge_code,
             'emissao': self.data_emissao.strftime("%y%m"),
-            'modelo': self.model,
+            'modelo': '55' if self.model == 'nfe' else '65',
             'numero': self.numero,
             'serie': self.serie_documento.zfill(3),
             'tipo': int(self.tipo_emissao),
@@ -689,6 +777,12 @@ class EletronicDocument(models.Model):
         if self.state in ('done', 'denied', 'cancel'):
             return
 
+        errors = self._hook_validation()
+        if len(errors) > 0:
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            raise UserError(msg)
+
         self._update_document_values()
         self.action_post_validate()
 
@@ -711,7 +805,7 @@ class EletronicDocument(models.Model):
             certificado, xml=xml_to_send,
             estado=self.company_id.state_id.l10n_br_ibge_code,
             ambiente=1 if self.ambiente == 'producao' else 2,
-            modelo=self.model)
+            modelo='55' if self.model == 'nfe' else '65')
         retorno = resposta['object'].getchildren()[0]
         if retorno.cStat == 103:
             obj = {
@@ -721,7 +815,7 @@ class EletronicDocument(models.Model):
                     'ambiente': 1 if self.ambiente == 'producao' else 2,
                     'numero_recibo': retorno.infRec.nRec
                 },
-                'modelo': self.model,
+                'modelo': '55' if self.model == 'nfe' else '65',
             }
             self.recibo_nfe = obj['obj']['numero_recibo']
             import time
@@ -766,7 +860,7 @@ class EletronicDocument(models.Model):
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
+            'eletronic_document_id': self.id,
         })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
@@ -850,7 +944,7 @@ class EletronicDocument(models.Model):
                 'Id': id_canc,
                 'cOrgao': self.company_id.state_id.l10n_br_ibge_code,
                 'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
-                'CNPJ': re.sub('[^0-9]', '', self.company_id.cnpj_cpf),
+                'CNPJ': re.sub('[^0-9]', '', self.company_id.l10n_br_cnpj_cpf),
                 'chNFe': self.chave_nfe,
                 'dhEvento': dt_evento,
                 'nSeqEvento': self.sequencial_evento,
@@ -859,7 +953,7 @@ class EletronicDocument(models.Model):
                 'tpEvento': '110111',
                 'descEvento': 'Cancelamento',
             }],
-            'modelo': self.model,
+            'modelo': '55' if self.model == 'nfe' else '65',
         }
 
         resp = recepcao_evento_cancelamento(certificado, **cancelamento)
@@ -889,7 +983,7 @@ class EletronicDocument(models.Model):
         self.env['invoice.eletronic.event'].create({
             'code': self.codigo_retorno,
             'name': self.mensagem_retorno,
-            'invoice_eletronic_id': self.id,
+            'eletronic_document_id': self.id,
         })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
@@ -909,7 +1003,7 @@ class EletronicDocument(models.Model):
         consulta = {
             'estado': self.company_id.state_id.l10n_br_ibge_code,
             'ambiente': 2 if self.ambiente == 'homologacao' else 1,
-            'modelo': self.model,
+            'modelo': '55' if self.model == 'nfe' else '65',
             'obj': {
                 'chave_nfe': self.chave_nfe,
                 'ambiente': 2 if self.ambiente == 'homologacao' else 1,
@@ -927,7 +1021,7 @@ class EletronicDocument(models.Model):
             self.env['invoice.eletronic.event'].create({
                 'code': self.codigo_retorno,
                 'name': self.mensagem_retorno,
-                'invoice_eletronic_id': self.id,
+                'eletronic_document_id': self.id,
             })
             self._create_attachment('canc', self, resp['sent_xml'])
             self._create_attachment('canc-ret', self, resp['received_xml'])

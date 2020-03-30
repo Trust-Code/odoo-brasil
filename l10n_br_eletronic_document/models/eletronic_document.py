@@ -166,6 +166,8 @@ class EletronicDocument(models.Model):
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string=u'Posição Fiscal',
         readonly=True, states=STATE)
+    natureza_operacao = fields.Char(
+        string='Natureza da Operação', size=60, readonly=True, states=STATE)
     # eletronic_event_ids = fields.One2many(
     #     'invoice.eletronic.event', 'invoice_eletronic_id', string=u"Eventos",
     #     readonly=True, states=STATE)
@@ -387,6 +389,16 @@ class EletronicDocument(models.Model):
         string="Forma de Pagamento", default="01")
     valor_pago = fields.Monetary(string='Valor pago')
     troco = fields.Monetary(string='Troco')
+
+    # Documentos Relacionados
+    related_document_ids = fields.One2many(
+        'nfe.related.document', 'eletronic_document_id',
+        'Documentos Fiscais Relacionados', readonly=True, states=STATE)
+
+    # CARTA DE CORRECAO
+    cartas_correcao_ids = fields.One2many(
+        'carta.correcao.eletronica.evento', 'eletronic_document_id',
+        string="Cartas de Correção", readonly=True, states=STATE)
 
     discriminacao_servicos = fields.Char(compute='_compute_discriminacao')
 

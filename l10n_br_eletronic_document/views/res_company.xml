@@ -1,18 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="view_br_nfse_floripa_res_company_form" model="ir.ui.view">
         <field name="name">br_nfse_floripa.res.company.form</field>
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
-            <page position="inside">
-                <group string="Florianópolis">
-                    <field name="l10n_br_aedf" />
-                    <field name="l10n_br_client_id" />
-                    <field name="l10n_br_client_secret" password="True" />
-                    <field name="l10n_br_user_password" password="True" />
-                </group>
-            </page>
+            <notebook position="inside">
+                <page name="account_information" string="Informações contábeis">
+                    <group name="group_account">
+                        <group>
+                            <field name="l10n_br_accountant_id" />
+                            <field name="l10n_br_cnae_main_id"/>
+                            <label for="l10n_br_cnae_secondary_ids" string="CNAE Secundários"/>
+                            <field nolabel="1" name="l10n_br_cnae_secondary_ids"/>
+                        </group>
+                    </group>
+                    <group name="group_nfse">
+                        <group string="Florianópolis">
+                            <field name="l10n_br_aedf" />
+                            <field name="l10n_br_client_id" />
+                            <field name="l10n_br_client_secret" password="True" />
+                            <field name="l10n_br_user_password" password="True" />
+                        </group>
+                    </group>
+                </page>
+            </notebook>
         </field>
     </record>
 </odoo>

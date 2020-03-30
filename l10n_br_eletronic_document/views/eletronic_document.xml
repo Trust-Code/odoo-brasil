@@ -27,14 +27,11 @@
                                 <field name="move_id"/>
                                 <field name="partner_id"/>
                                 <field name="partner_shipping_id"/>
-                                <field name="data_agendada"/>
-                                <field name="schedule_user_id" />
                             </group>
                             <group>
                                 <field name="tipo_operacao" />
-                                <field name="payment_term_id"/>
                                 <field name="fiscal_position_id"/>
-                                <field name="email_sent" />
+                                <field name="natureza_operacao"/>
                             </group>
                         </group>
                         <notebook>
@@ -142,6 +139,7 @@
                             </page>
                             <page name="cobranca" string="Cobrança">
                                 <group>
+                                    <field name="payment_term_id"/>
                                     <field name="numero_fatura" />
                                     <field name="fatura_bruto" />
                                     <field name="fatura_desconto" />
@@ -165,18 +163,18 @@
                                     </group>
                                 </group>
                             </page>
-                            <!-- <page name="documentos_relacionados" string="Doc. Relacionados" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
-                                <field name="fiscal_document_related_ids" >
+                            <page name="documentos_relacionados" string="Doc. Relacionados" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}">
+                                <field name="related_document_ids" >
                                     <tree>
-                                        <field name="invoice_related_id" />
+                                        <field name="eletronic_document_id" />
                                         <field name="document_type" />
                                         <field name="access_key" />
                                         <field name="serie" />
                                         <field name="internal_number" />
                                     </tree>
                                 </field>
-                            </page> -->
-                            <!-- <page name="carta_correcao" string="Cartas de Correção" attrs="{'invisible': [('model', 'not in', ('55', '65'))]}">
+                            </page> 
+                            <page name="carta_correcao" string="Cartas de Correção" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}">
                                 <field name="cartas_correcao_ids" >
                                     <tree>
                                         <field name="sequencial_evento" />
@@ -185,7 +183,7 @@
                                         <field name="datahora_evento" />
                                     </tree>
                                 </field>
-                            </page> -->
+                            </page>
 
                             <page string="Observações">
                                 <group>
@@ -193,8 +191,14 @@
                                     <field name="informacoes_complementares" />
                                 </group>
                             </page>
-                            <page name="eventos" string="Eventos">
+                            <page name="tecnico" string="Informações técnicas">
                                 <group>
+                                    <group>
+                                        <field name="data_agendada"/>
+                                        <field name="schedule_user_id" />
+                                        <field name="email_sent" />
+                                    </group>
+                                    
                                     <!-- <field name="eletronic_event_ids" nolabel="1">
                                         <tree name="Eventos">
                                             <field name="state" invisible="1" />
@@ -246,6 +250,7 @@
                         <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter name="group_date" string="Data de Emissão" domain="[]" context="{'group_by':'data_emissao'}"/>
                         <filter name="group_state" string="Situação" domain="[]" context="{'group_by':'state'}"/>
+                        <filter name="group_model" string="Tipo de Nota" domain="[]" context="{'group_by':'model'}"/>
                    </group>
                 </search>
             </field>

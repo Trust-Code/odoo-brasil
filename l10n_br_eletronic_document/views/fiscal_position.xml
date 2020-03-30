@@ -58,7 +58,7 @@
                     <field name="state_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Categorias Fiscais">
-                    <!-- <field name="fiscal_category_ids" widget="many2many_tags" nolabel="1"/> -->
+                    <field name="fiscal_category_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Classificação Fiscal">
                     <!-- <field name="product_fiscal_classification_ids" widget="many2many_tags" nolabel="1"/> -->
