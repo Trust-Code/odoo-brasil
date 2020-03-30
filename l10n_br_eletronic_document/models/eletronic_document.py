@@ -141,10 +141,8 @@ class EletronicDocument(models.Model):
     numero_controle = fields.Integer(
         string='Número de Controle', readonly=True, states=STATE, copy=False)
     data_agendada = fields.Date(
-        string='Data agendada',
-        readonly=True,
-        default=fields.Date.today,
-        states=STATE)
+        string='Data agendada', default=fields.Date.today,
+        readonly=True, states=STATE)
     data_emissao = fields.Datetime(
         string='Data emissão', readonly=True, states=STATE, copy=False)
     data_autorizacao = fields.Char(
@@ -234,11 +232,16 @@ class EletronicDocument(models.Model):
 
     email_sent = fields.Boolean(
         string="Email enviado", default=False, readonly=True, states=STATE)
-
+    salvar_xml_enviado = fields.Boolean(
+        string="Salvar Xml Enviado?", default=False, readonly=True, states=STATE)
     # payment_mode_id = fields.Many2one(
     #     'l10n_br.payment.mode', string='Modo de Pagamento',
     #     readonly=True, states=STATE)
     iest = fields.Char(string="IE Subst. Tributário")
+    cod_regime_tributario = fields.Selection(
+        [('1', 'Simples Nacional'),
+         ('2', 'Simples - Excesso de receita'),
+         ('3', 'Regime Normal')], string="Cód. Regime Trib.")
     ambiente_nfe = fields.Selection(
         string=u"Ambiente NFe", related="company_id.l10n_br_tipo_ambiente",
         readonly=True)
@@ -532,28 +535,28 @@ class EletronicDocument(models.Model):
         self.mensagem_retorno = str(exc)
 
     def notify_user(self):
-        msg = _('Verifique a %s, ocorreu um problema com o envio de \
-                documento eletrônico!') % self.name
-        self.create_uid.notify_warning(
-            msg, sticky=True, title="Ação necessária!")
+        # msg = _('Verifique a %s, ocorreu um problema com o envio de \
+        #         documento eletrônico!') % self.name
+        # self.create_uid.notify_warning(
+        #     msg, sticky=True, title="Ação necessária!")
         try:
             activity_type_id = self.env.ref('mail.mail_activity_data_todo').id
         except ValueError:
             activity_type_id = False
         self.env['mail.activity'].create({
             'activity_type_id': activity_type_id,
-            'note': _('Please verify the eletronic document'),
+            'note': _('Verifique a notas fiscal - emissão com problemas'),
             'user_id': self.schedule_user_id.id,
             'res_id': self.id,
             'res_model_id': self.env.ref(
-                'br_account_einvoice.model_invoice_eletronic').id,
+                'l10n_br_eletronic_document.model_eletronic_document').id,
         })
 
     def _get_state_to_send(self):
         return ('draft',)
 
     def cron_send_nfe(self, limit=50):
-        inv_obj = self.env['invoice.eletronic'].with_context({
+        inv_obj = self.env['eletronic.document'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
         nfes = inv_obj.search([('state', 'in', states),
@@ -593,13 +596,25 @@ class EletronicDocument(models.Model):
 
     def send_email_nfe_queue(self):
         after = datetime.now() + timedelta(days=-1)
-        nfe_queue = self.env['invoice.eletronic'].search(
+        nfe_queue = self.env['eletronic.document'].search(
             [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
              ('email_sent', '=', False),
              ('state', '=', 'done')], limit=5)
         for nfe in nfe_queue:
             nfe.send_email_nfe()
             nfe.email_sent = True
+
+    def _create_attachment(self, prefix, event, data):
+        file_name = '%s-%s.xml' % (
+            prefix, datetime.now().strftime('%Y-%m-%d-%H-%M'))
+        self.env['ir.attachment'].create(
+            {
+                'name': file_name,
+                'datas': base64.b64encode(data.encode()),
+                'description': '',
+                'res_model': 'eletronic.document',
+                'res_id': event.id
+            })
 
     def generate_dict_values(self):
         dict_docs = []
@@ -693,6 +708,7 @@ class EletronicDocument(models.Model):
     def _update_document_values(self):
         self.write({
             'data_emissao': datetime.now(),
+            'schedule_user_id': self.env.user.id,
         })
 
     def action_send_eletronic_invoice(self):

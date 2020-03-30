@@ -68,8 +68,8 @@ class IuguBoleto(models.Model):
 
         iugu.config(token=self.iugu_api_key)
         invoice = iugu.Invoice()
+        import ipdb; ipdb.set_trace()
         result = invoice.create(invoice_data)
-
         if "errors" in result:
             if isinstance(result["errors"], str):
                 msg = result['errors']

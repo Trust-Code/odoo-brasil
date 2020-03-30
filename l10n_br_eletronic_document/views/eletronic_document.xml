@@ -10,8 +10,16 @@
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" />
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
                         <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
+                        <button name="generate_correction_letter" type="object" class="oe_highlight" icon="fa-envelope"
+                            string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('nfe', 'nfce'))]}">
+                        </button>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
+                    <field name="ambiente_nfe" invisible="1" />
+                    <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|', ('ambiente_nfe', '==', 'producao')]}">
+                        A NFe está em ambiente de homologação
+                    </div>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
                         <div class="row">
                             <div class="col-md-6 col-md-offset-1">
@@ -47,14 +55,24 @@
                                         <field name="numero"/>
                                         <field name="numero_rps"/>
                                         <field name="numero_controle"/>
+                                        <field name="recibo_nfe"  attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('nfce'))]}" />
+                                        <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('nfce'))]}" />
                                         <field name="nfe_processada_name" invisible="1"/>
                                         <field name="nfe_processada" filename="nfe_processada_name"/>
                                     </group>
                                     <group>
                                         <field name="data_emissao"/>
                                         <field name="data_autorizacao"/>
+                                        <field name="data_entrada_saida" />
                                         <field name="ambiente"/>
+                                        <field name="cod_regime_tributario" />
                                         <field name="finalidade_emissao"/>
+                                        <field name="ind_final" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="ind_ie_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="iest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                     </group>
                                 </group>
                             </page>
@@ -94,6 +112,9 @@
                                         <field name="valor_ipi" />
                                         <field name="valor_pis" />
                                         <field name="valor_cofins" />
+                                        <field name="valor_icms_fcp_uf_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="valor_icms_uf_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="valor_icms_uf_remet" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="valor_estimado_tributos" />
                                     </group>
                                 </group>
@@ -197,6 +218,7 @@
                                         <field name="data_agendada"/>
                                         <field name="schedule_user_id" />
                                         <field name="email_sent" />
+                                        <field name="salvar_xml_enviado" />
                                     </group>
                                     
                                     <!-- <field name="eletronic_event_ids" nolabel="1">

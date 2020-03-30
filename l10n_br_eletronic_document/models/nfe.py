@@ -366,7 +366,7 @@ class EletronicDocument(models.Model):
             'cMunFG': "%s%s" % (self.company_id.state_id.l10n_br_ibge_code,
                                 self.company_id.city_id.l10n_br_ibge_code),
             # Formato de Impressão do DANFE - 1 - Danfe Retrato, 4 - Danfe NFCe
-            'tpImp': '1' if self.model == '55' else '4',
+            'tpImp': '1' if self.model == 'nfe' else '4',
             'tpEmis': int(self.tipo_emissao),
             'tpAmb': 2 if self.ambiente == 'homologacao' else 1,
             'finNFe': self.finalidade_emissao,
@@ -445,7 +445,7 @@ class EletronicDocument(models.Model):
             },
             'IE': re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est),
             'IEST': re.sub('[^0-9]', '', self.iest or ''),
-            'CRT': self.company_id.l10n_br_tax_regime,
+            'CRT': self.cod_regime_tributario,
         }
         if self.company_id.l10n_br_cnae_main_id and self.company_id.l10n_br_inscr_mun:
             emit['IM'] = re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_mun or '')
@@ -857,11 +857,11 @@ class EletronicDocument(models.Model):
             if self.codigo_retorno in ('302', '205'):
                 self.write({'state': 'denied'})
 
-        self.env['invoice.eletronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
-            'eletronic_document_id': self.id,
-        })
+        # self.env['invoice.eletronic.event'].create({
+        #     'code': self.codigo_retorno,
+        #     'name': self.mensagem_retorno,
+        #     'eletronic_document_id': self.id,
+        # })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
         recibo_xml = resposta['received_xml']
@@ -883,18 +883,18 @@ class EletronicDocument(models.Model):
     def generate_nfe_proc(self):
         if self.state in ['cancel', 'done', 'denied']:
             recibo = self.env['ir.attachment'].search([
-                ('res_model', '=', 'invoice.eletronic'),
+                ('res_model', '=', 'eletronic.document'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'rec-ret')], limit=1)
+                ('name', 'like', 'rec-ret')], limit=1)
             if not recibo:
                 recibo = self.env['ir.attachment'].search([
-                    ('res_model', '=', 'invoice.eletronic'),
+                    ('res_model', '=', 'eletronic.document'),
                     ('res_id', '=', self.id),
-                    ('datas_fname', 'like', 'nfe-ret')], limit=1)
+                    ('name', 'like', 'nfe-ret')], limit=1)
             nfe_envio = self.env['ir.attachment'].search([
-                ('res_model', '=', 'invoice.eletronic'),
+                ('res_model', '=', 'eletronic.document'),
                 ('res_id', '=', self.id),
-                ('datas_fname', 'like', 'nfe-envio')], limit=1)
+                ('name', 'like', 'nfe-envio')], limit=1)
             if nfe_envio.datas and recibo.datas:
                 nfe_proc = gerar_nfeproc(
                     base64.decodestring(nfe_envio.datas).decode('utf-8'),
@@ -980,11 +980,11 @@ class EletronicDocument(models.Model):
             return self._create_response_cancel(
                 code, motive, resp, justificativa)
 
-        self.env['invoice.eletronic.event'].create({
-            'code': self.codigo_retorno,
-            'name': self.mensagem_retorno,
-            'eletronic_document_id': self.id,
-        })
+        # self.env['invoice.eletronic.event'].create({
+        #     'code': self.codigo_retorno,
+        #     'name': self.mensagem_retorno,
+        #     'eletronic_document_id': self.id,
+        # })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
         nfe_processada = base64.decodestring(self.nfe_processada)
@@ -1018,11 +1018,11 @@ class EletronicDocument(models.Model):
             resp['received_xml'] = etree.tostring(
                 retorno_consulta, encoding=str)
 
-            self.env['invoice.eletronic.event'].create({
-                'code': self.codigo_retorno,
-                'name': self.mensagem_retorno,
-                'eletronic_document_id': self.id,
-            })
+            # self.env['invoice.eletronic.event'].create({
+            #     'code': self.codigo_retorno,
+            #     'name': self.mensagem_retorno,
+            #     'eletronic_document_id': self.id,
+            # })
             self._create_attachment('canc', self, resp['sent_xml'])
             self._create_attachment('canc-ret', self, resp['received_xml'])
             nfe_processada = base64.decodestring(self.nfe_processada)

@@ -8,6 +8,7 @@
                 <page name="account_information" string="Informações contábeis">
                     <group name="group_account">
                         <group>
+                            <field name="l10n_br_tax_regime" />
                             <field name="l10n_br_accountant_id" />
                             <field name="l10n_br_cnae_main_id"/>
                             <label for="l10n_br_cnae_secondary_ids" string="CNAE Secundários"/>

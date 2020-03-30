@@ -152,8 +152,7 @@ class NfeMde(models.Model):
             {
                 'name': file_name,
                 'datas': base64.b64encode(result['file_returned']),
-                'datas_fname': file_name,
-                'description': u'Evento Manifesto Destinatário',
+                'description': 'Evento Manifesto Destinatário',
                 'res_model': 'l10n_br_account.document_event',
                 'res_id': event.id
             })
