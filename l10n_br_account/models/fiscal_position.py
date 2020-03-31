@@ -27,8 +27,8 @@ class AccountFiscalPositionTaxRule(models.Model):
 
     state_ids = fields.Many2many('res.country.state', string="Estado Destino",
                                  domain=[('country_id.code', '=', 'BR')])
-    fiscal_category_ids = fields.Many2many(
-        'product.fiscal.category', string="Categorias Fiscais")
+    # fiscal_category_ids = fields.Many2many(
+    #     'product.fiscal.category', string="Categorias Fiscais")
     tipo_produto = fields.Selection([('product', 'Produto'),
                                      ('service', 'Serviço')],
                                     string="Tipo produto", default="product")
@@ -42,7 +42,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     cst_pis = fields.Selection(CST_PIS_COFINS, string=u"CST PIS")
     cst_cofins = fields.Selection(CST_PIS_COFINS, string=u"CST COFINS")
     cst_ipi = fields.Selection(CST_IPI, string=u"CST IPI")
-    cfop_id = fields.Many2one('nfe.cfop', string="CFOP")
+    # cfop_id = fields.Many2one('nfe.cfop', string="CFOP")
     tax_id = fields.Many2one('account.tax', string=u"Imposto")
     tax_icms_st_id = fields.Many2one('account.tax', string=u"ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
@@ -100,6 +100,14 @@ class AccountFiscalPosition(models.Model):
     #     copy=True)
     # service_document_id = fields.Many2one(
     #     'br_account.fiscal.document', string='Documento Serviço', copy=True)
+
+    apply_tax_ids = fields.Many2many('account.tax', string='Impostos a aplicar')
+    csosn_icms = fields.Selection(CSOSN_SIMPLES, string="CSOSN ICMS")
+    icms_aliquota_credito = fields.Float(string="% Crédito de ICMS")
+
+    tax_rule_ids = fields.One2many(
+        'account.fiscal.position.tax.rule', 'fiscal_position_id',
+        string="Regras Impostos")
 
     icms_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',

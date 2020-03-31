@@ -10,7 +10,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'account',
+        'l10n_br_account',
         'l10n_br_base',
         'l10n_br_base_address',
     ],
@@ -24,7 +24,6 @@
         'views/account_move.xml',
         'views/eletronic_document.xml',
         'views/eletronic_document_line.xml',
-        'views/fiscal_position.xml',
         'views/nfe.xml',
         'views/base_account.xml',
         'reports/danfse_sao_paulo.xml',

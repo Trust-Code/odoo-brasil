@@ -12,7 +12,7 @@
                 <group string="Usar a seguinte tributação">
                     <group>
                         <field name="tax_id" />
-                        <field name="cfop_id" domain="[('internal_type', '=', 'normal')]" attrs="{'invisible': [('domain', 'not in', ('icms', 'issqn'))]}"/>
+                        <!-- <field name="cfop_id" domain="[('internal_type', '=', 'normal')]" attrs="{'invisible': [('domain', 'not in', ('icms', 'issqn'))]}"/> -->
                     </group>
                     <group>
                         <field name="cst_icms" attrs="{'invisible': [('domain', '!=', 'icms')]}" />
@@ -58,7 +58,7 @@
                     <field name="state_ids" widget="many2many_tags" nolabel="1"/>
                 </group>
                 <group string="Categorias Fiscais">
-                    <field name="fiscal_category_ids" widget="many2many_tags" nolabel="1"/>
+                    <!-- <field name="fiscal_category_ids" widget="many2many_tags" nolabel="1"/> -->
                 </group>
                 <group string="Classificação Fiscal">
                     <!-- <field name="product_fiscal_classification_ids" widget="many2many_tags" nolabel="1"/> -->
@@ -96,6 +96,7 @@
                     </group>
                 </group>
             </group>
+
             <xpath expr="//page[@name='account_mapping']/group" position="before">
                 <group>
                     <field name="journal_id" placeholder="Este diário vai ser usado no faturamento" />
@@ -140,14 +141,23 @@
                 <attribute name="invisible">1</attribute>
             </page>
             <page name="tax_mapping" position="before">
-                <page string="Regras de Impostos">
+                <page name="impostos_simples" string="Impostos - Cadastro Simplicado">
+                    <p>Escolha os impostos que serão aplicados a todos os itens da fatura. <br />
+                    Em caso de empresa do simples pode ser configurado o CSOSN e a alíquota de crédito quando aplicável</p>
+                    <group>
+                        <field name="csosn_icms" />
+                        <field name="icms_aliquota_credito" />
+                    </group>
+                    <field name="apply_tax_ids" />
+                </page>
+                <page string="Regras de Impostos" invisible="1">
                     <group name="icms_rules" string="Regras de ICMS">
                         <field nolabel="1" name="icms_tax_rule_ids" context="{'default_fiscal_position_id': id, 'default_domain': 'icms'}">
                             <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="name" />
                                 <field name="tax_id" />
-                                <field name="cfop_id" />
+                                <!-- <field name="cfop_id" /> -->
                                 <field name="cst_icms" />
                                 <field name="reducao_icms" />
                                 <field name="tax_icms_st_id" />
