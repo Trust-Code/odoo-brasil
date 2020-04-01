@@ -9,4 +9,13 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     iugu_api_token = fields.Char(string="IUGU Api Token", size=60)
-    iugu_url_base = fields.Char(string="IUGU URL")
+
+    l10n_br_payment_interest_account_id = fields.Many2one(
+        'account.account', string="Conta para pagamento de juros")
+    l10n_br_payment_discount_account_id = fields.Many2one(
+        'account.account', string="Conta para desconto de pagamentos")
+
+    l10n_br_interest_account_id = fields.Many2one(
+        'account.account', string="Conta para recebimento de juros/multa")
+    l10n_br_bankfee_account_id = fields.Many2one(
+        'account.account', string="Conta para tarifas bancárias")

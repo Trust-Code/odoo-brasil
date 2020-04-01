@@ -8,7 +8,6 @@
             <group position="inside">
                 <group string="IUGU">
                     <field name="iugu_api_token"/>
-                    <field name="iugu_url_base"/>
                 </group>
             </group>
         </field>

@@ -64,9 +64,11 @@ class AccountMove(models.Model):
         for invoice in self:
             if not invoice.payment_journal_id.receive_by_iugu:
                 continue
-                  
+                
+            base_url = (
+                self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+            )
             token = self.env.user.company_id.iugu_api_token
-            url_base = self.env.user.company_id.iugu_url_base
             iugu.config(token=token)
             iugu_invoice_api = iugu.Invoice()
 
@@ -82,9 +84,9 @@ class AccountMove(models.Model):
                         'quantity': 1,
                         'price_cents': int(moveline.amount_residual * 100),
                     }],
-                    'return_url': '%s/my/invoices/%s' % (url_base, invoice.id),
+                    'return_url': '%s/my/invoices/%s' % (base_url, invoice.id),
                     'notification_url': '%s/iugu/webhook?id=%s' % (
-                        url_base, invoice.id),
+                        'http://19019bb1.ngrok.io', invoice.id),
                     'fines': True,
                     'late_payment_fine': 2,
                     'per_day_interest': True,
@@ -116,50 +118,74 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    iugu_status = fields.Char(string="Status Iugu", default='pending')
-    iugu_id = fields.Char(string="ID Iugu", size=60)
-    iugu_secure_payment_url = fields.Char(string="URL de Pagamento", size=500)
-    iugu_digitable_line = fields.Char(string="Linha Digitável", size=100)
-    iugu_barcode_url = fields.Char(string="Código de barras", size=100)
+    iugu_status = fields.Char(string="Status Iugu", default='pending', copy=False)
+    iugu_id = fields.Char(string="ID Iugu", size=60, copy=False)
+    iugu_secure_payment_url = fields.Char(string="URL de Pagamento", size=500, copy=False)
+    iugu_digitable_line = fields.Char(string="Linha Digitável", size=100, copy=False)
+    iugu_barcode_url = fields.Char(string="Código de barras", size=100, copy=False)
 
-    # TODO Ler a fatura no IUGU e verificar se teve juros.
-    def action_mark_paid_iugu(self):
-        self.ensure_one()
-        ref = 'Fatura Ref: %s - %s' % (self.move_id.name, self.name)
-        journal = self.payment_mode_id.journal_id
+    def _create_bank_tax_move(self, iugu_data):
+        bank_taxes = iugu_data.get('taxes_paid_cents') / 100
+
+        ref = 'Taxa: %s' % self.name
+        journal = self.move_id.payment_journal_id
+        currency = journal.currency_id or journal.company_id.currency_id
+
         move = self.env['account.move'].create({
             'name': '/',
             'journal_id': journal.id,
             'company_id': journal.company_id.id,
             'date': date.today(),
             'ref': ref,
+            'currency_id': currency.id,
+            'type': 'entry',
         })
         aml_obj = self.env['account.move.line'].with_context(
             check_move_validity=False)
-        counterpart_aml_dict = {
+        credit_aml_dict = {
             'name': ref,
             'move_id': move.id,
             'partner_id': self.partner_id.id,
             'debit': 0.0,
-            'credit': self.amount_residual,
-            'currency_id': self.currency_id.id,
-            'account_id': self.account_id.id,
+            'credit': bank_taxes,
+            'account_id': journal.default_debit_account_id.id,
         }
-        liquidity_aml_dict = {
+        debit_aml_dict = {
             'name': ref,
             'move_id': move.id,
             'partner_id': self.partner_id.id,
-            'debit': self.amount_residual,
+            'debit': bank_taxes,
             'credit': 0.0,
-            'currency_id': self.currency_id.id,
-            'account_id': journal.default_debit_account_id.id,
+            'account_id': journal.company_id.l10n_br_bankfee_account_id.id,
         }
-
-        counterpart_aml = aml_obj.create(counterpart_aml_dict)
-        aml_obj.create(liquidity_aml_dict)
+        aml_obj.create(credit_aml_dict)
+        aml_obj.create(debit_aml_dict)
         move.post()
-        (counterpart_aml + self).reconcile()
         return move
+
+    def action_mark_paid_iugu(self, iugu_data):
+        self.ensure_one()
+        ref = 'Fatura Ref: %s' % self.name
+
+        journal = self.move_id.payment_journal_id
+        currency = journal.currency_id or journal.company_id.currency_id
+
+        payment = self.env['account.payment'].sudo().create({
+            'bank_reference': self.iugu_id,
+            'communication': ref,
+            'journal_id': journal.id,
+            'company_id': journal.company_id.id,
+            'currency_id': currency.id,
+            'payment_type': 'inbound',
+            'partner_type': 'customer',
+            'amount': self.amount_residual,
+            'payment_date': date.today(),
+            'payment_method_id': journal.inbound_payment_method_ids[0].id,
+            'invoice_ids': [(4, self.move_id.id, None)]
+        })
+        payment.post()
+
+        self._create_bank_tax_move(iugu_data)
 
     def action_notify_due_payment(self):
         if self.invoice_id:
@@ -177,7 +203,7 @@ class AccountMoveLine(models.Model):
                 raise UserError(data['errors'])
             if data.get('status', '') == 'paid' and not self.reconciled:
                 self.iugu_status = data['status']
-                self.action_mark_paid_iugu()
+                self.action_mark_paid_iugu(data)
             else:
                 self.iugu_status = data['status']
         else:

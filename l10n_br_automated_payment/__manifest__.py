@@ -25,6 +25,7 @@
         'views/account_move.xml',
         'views/account_journal.xml',
         'views/portal_templates.xml',
+        'views/res_config_settings.xml',
         'wizard/wizard_iugu.xml',
     ],
 }

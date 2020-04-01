@@ -3,7 +3,7 @@
 
 import pprint
 import logging
-from odoo import http
+from odoo import http, SUPERUSER_ID
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -11,9 +11,6 @@ _logger = logging.getLogger(__name__)
 INVOICE_CREATED = 'invoice.created'
 INVOICE_CHANGED = 'invoice.status_changed'
 INVOICE_DUE = 'invoice.due'
-
-INVOICE_PAID = 'paid'
-INVOICE_PENDING = 'pending'
 
 
 class IuguController(http.Controller):
@@ -25,14 +22,13 @@ class IuguController(http.Controller):
         _logger.info('iugu post-data: %s' % pprint.pformat(post))
         iugu_id = post['data[id]']
         event = post['event']
-        status = post['data[status]']
 
-        if event == INVOICE_CHANGED and status == INVOICE_PAID:
-            move_line = request.env['account.move.line'].sudo().search(
+        if event == INVOICE_CHANGED:
+            move_line = request.env['account.move.line'].with_user(SUPERUSER_ID).search(
                 [('iugu_id', '=', iugu_id)])
-            move_line.action_mark_paid_iugu()
+            move_line.action_verify_iugu_payment()
         if event == INVOICE_DUE:
-            move_line = request.env['account.move.line'].sudo().search(
+            move_line = request.env['account.move.line'].with_user(SUPERUSER_ID).search(
                 [('iugu_id', '=', iugu_id)])
             move_line.action_notify_due_payment()
         return "ok"

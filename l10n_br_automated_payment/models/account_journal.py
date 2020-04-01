@@ -1,7 +1,7 @@
 # © 2018 Danimar Ribeiro, Trustcode
 # Part of Trustcode. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models
+from odoo import fields, models
 from odoo.exceptions import ValidationError
 
 

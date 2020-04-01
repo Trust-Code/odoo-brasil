@@ -4,6 +4,13 @@
     <field name="model">account.move</field>
     <field name="inherit_id" ref="account.view_move_form"/>
     <field name="arch" type="xml">
+      <div name="button_box" position="inside">
+        <button name="action_view_edocs" type="object" class="oe_stat_button" icon="fa-file-text-o"
+            context="{ 'search_default_mocw_id': id }"
+            attrs="{'invisible': [('total_edocs', '=', 0)]}">
+             <field name="total_edocs" /> <span> NFEs</span>
+        </button>
+      </div>
       <button name="action_invoice_register_payment" position="before">
         <button name="action_create_eletronic_document" type="object" string="Criar nota fiscal" attrs="{'invisible':['|', ('state', '!=', 'posted'), ('l10n_br_edoc_policy', '=', 'directly')]}" class="oe_highlight" groups="base.group_user"/>  
       </button>
