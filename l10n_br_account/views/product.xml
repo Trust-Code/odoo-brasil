@@ -1,0 +1,21 @@
+
+<odoo>
+
+    <record id="view_product_template_form" model="ir.ui.view">
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <group name="accounting" position="inside">
+                <group>
+                    <field name="fiscal_category_id" />
+                    <field name="origin" attrs="{'invisible': [('type', '=', 'service')]}" />
+                    <!-- <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')], 'invisible': [('fiscal_type', '=', 'service')]}" /> -->
+                    <field name="cest" attrs="{'invisible': [('type', '=', 'service')]}" />
+                    <field name="service_type_id" attrs="{'invisible': [('type', '!=', 'service')]}" domain="[('internal_type', '=', 'normal')]"/>
+                    <field name="service_code" attrs="{'invisible': [('type', '!=', 'service')]}" />
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

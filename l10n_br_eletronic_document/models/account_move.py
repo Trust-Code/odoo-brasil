@@ -95,19 +95,20 @@ class AccountMove(models.Model):
                 # 'cofins_valor_retencao':
                 # abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
                 # - ISS -
-                # 'iss_codigo': line.service_type_id.code,
+                'iss_codigo': line.product_id.service_type_id.code,
+                'codigo_servico': line.product_id.service_code,
                 'iss_aliquota': iss.tax_line_id.amount or 0,
                 'iss_base_calculo': iss.tax_base_amount or 0,
                 'iss_valor': iss.price_total or 0,
                 # 'iss_valor_retencao':
                 # abs(line.iss_valor) if line.iss_valor < 0 else 0,
                 # - RETENÇÔES -
-                'csll_base_calculo': csll.tax_line_id.amount or 0,
-                'csll_aliquota': csll.tax_base_amount or 0,
+                'csll_aliquota': csll.tax_line_id.amount or 0,
+                'csll_base_calculo': csll.tax_base_amount or 0,
                 'csll_valor': csll.price_total or 0,
                 # abs(line.csll_valor) if line.csll_valor < 0 else 0,
-                'irpj_base_calculo': irpj.tax_line_id.amount or 0,
-                'irpj_aliquota': irpj.tax_base_amount or 0,
+                'irpj_aliquota':  irpj.tax_line_id.amount or 0,
+                'irpj_base_calculo': irpj.tax_base_amount or 0,
                 'irpj_valor': irpj.price_total or 0,
                 # 'irrf_base_calculo': line.irrf_base_calculo,
                 # 'irrf_aliquota': abs(line.irrf_aliquota),

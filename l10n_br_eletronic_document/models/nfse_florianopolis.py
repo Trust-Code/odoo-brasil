@@ -22,6 +22,7 @@ def _convert_values(vals):
     else:
         vals['valor_issqn'] = vals['valor_iss']
     for item in vals['itens_servico']:
+        item['aliquota'] = round(item['aliquota'], 2)
         item['cnae'] = re.sub('[^0-9]', '', item['codigo_servico'] or '')
     vals['tomador']['inscricao_municipal'] = '0000000'
     vals['tomador']['logradouro'] = vals['tomador']['endereco']['logradouro']

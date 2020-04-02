@@ -16,5 +16,6 @@
         'security/ir.model.access.csv',
         'views/fiscal_position.xml',
         'views/account_tax.xml',
+        'views/product.xml',
     ],
 }

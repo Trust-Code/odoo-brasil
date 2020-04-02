@@ -10,6 +10,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
+        'account',
         'l10n_br_base',
         'base_address_city',
     ],

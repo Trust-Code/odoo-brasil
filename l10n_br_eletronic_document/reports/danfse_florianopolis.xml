@@ -174,7 +174,7 @@
                         <t t-foreach="doc.document_line_ids" t-as="line">
                             <tr>
                                 <td>
-                                    <span t-field="line.codigo_cnae" />
+                                    <span t-field="doc.company_id.l10n_br_cnae_main_id.code" />
                                 </td>
                                 <td>
                                     <span t-field="line.product_id" />
@@ -183,7 +183,7 @@
                                     <span>1</span>
                                 </td>
                                 <td>
-                                    <span>0,00</span>
+                                    <span t-field="line.iss_aliquota" />
                                 </td>
                                 <td>
                                     <span t-field="line.preco_unitario"
@@ -212,12 +212,14 @@
                 <div class="col-3" style="text-align:center;border-right: 1px solid black;">
                     Base de Cálculo de ISSQN:
                     <br />
-                    <strong>R$ 0,00</strong>
+                     <strong t-field="doc.iss_base_calculo"
+                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                 </div>
                 <div class="col-2" style="text-align:center;border-right: 1px solid black;">
                     Valor do ISSQN:
                     <br />
-                    <strong>R$ 0,00</strong>
+                    <strong t-field="doc.iss_valor"
+                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                 </div>
                 <div class="col-3" style="text-align:center;border-right: 1px solid black;">
                     Base de Cálculo de ISSQN Subst.:
@@ -233,7 +235,7 @@
                     Valor total dos Serviços:
                     <br />
                     <strong t-field="doc.valor_final"
-                    t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                 </div>
             </div>
 
