@@ -41,7 +41,7 @@ class AccountMove(models.Model):
             partner = invoice.partner_id.commercial_partner_id
             if not self.env.user.company_id.iugu_api_token:
                 errors.append('Configure o token de API')
-            if partner.is_company and not partner.legal_name:
+            if partner.is_company and not partner.l10n_br_legal_name:
                 errors.append('Destinatário - Razão Social')
             if not partner.street:
                 errors.append('Destinatário / Endereço - Rua')
