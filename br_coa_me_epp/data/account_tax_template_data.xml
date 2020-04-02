@@ -139,8 +139,8 @@
     </record>
 
     <record id="tax_template_in_issqn2" model="account.tax.template">
-        <field name="description">ISSQN Entrada 2%</field>
-        <field name="name">ISSQN Entrada 2%</field>
+        <field name="description">ISS Entrada 2%</field>
+        <field name="name">ISS Entrada 2%</field>
         <field name="amount">2</field>
         <field name="type_tax_use">purchase</field>
         <field eval="1" name="price_include"/>
@@ -149,8 +149,8 @@
     </record>
 
     <record id="tax_template_out_issqn3" model="account.tax.template">
-        <field name="description">ISSQN Entrada 3%</field>
-        <field name="name">ISSQN Saida 3%</field>
+        <field name="description">ISS Entrada 3%</field>
+        <field name="name">ISS Saida 3%</field>
         <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>

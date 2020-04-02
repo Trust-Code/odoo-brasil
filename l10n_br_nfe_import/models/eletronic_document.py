@@ -473,11 +473,11 @@ class EletronicDocument(models.Model):
     def _get_issqn(self, issqn):
 
         vals = {
-            'issqn_codigo': get(issqn, 'cListServ'),
-            'issqn_aliquota': get(issqn, 'vAliq'),
-            'issqn_base_calculo': get(issqn, 'vBC'),
-            'issqn_valor': get(issqn, 'vISSQN'),
-            'issqn_valor_retencao': get(issqn, 'vISSRet'),
+            'iss_codigo': get(issqn, 'cListServ'),
+            'iss_aliquota': get(issqn, 'vAliq'),
+            'iss_base_calculo': get(issqn, 'vBC'),
+            'iss_valor': get(issqn, 'vISSQN'),
+            'iss_valor_retencao': get(issqn, 'vISSRet'),
         }
 
         return remove_none_values(vals)
@@ -787,7 +787,7 @@ class EletronicDocument(models.Model):
             'icms_base': self.valor_bc_icms,
             'icms_st_base': self.valor_bc_icmsst,
             'total_tributos_estimados': self.valor_estimado_tributos,
-            'issqn_retention': self.valor_retencao_issqn,
+            'iss_retention': self.valor_retencao_issqn,
             'pis_retention': self.valor_retencao_pis,
             'cofins_retention': self.valor_retencao_cofins,
             'irrf_base': self.valor_bc_irrf,

@@ -31,7 +31,7 @@ class AccountMove(models.Model):
         for line in invoice_lines:
             pis = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'pis')
             cofins = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'cofins')
-            iss = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'issqn')
+            iss = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'iss')
             csll = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'csll')
             irpj = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'irpj')
 
@@ -99,8 +99,8 @@ class AccountMove(models.Model):
                 'iss_aliquota': iss.tax_line_id.amount or 0,
                 'iss_base_calculo': iss.tax_base_amount or 0,
                 'iss_valor': iss.price_total or 0,
-                # 'issqn_valor_retencao':
-                # abs(line.issqn_valor) if line.issqn_valor < 0 else 0,
+                # 'iss_valor_retencao':
+                # abs(line.iss_valor) if line.iss_valor < 0 else 0,
                 # - RETENÇÔES -
                 'csll_base_calculo': csll.tax_line_id.amount or 0,
                 'csll_aliquota': csll.tax_base_amount or 0,
@@ -151,10 +151,7 @@ class AccountMove(models.Model):
             'valor_final': invoice.amount_total,
             # 'valor_bc_icms': invoice.icms_base,
             # 'valor_bc_icmsst': invoice.icms_st_base,
-            # 'valor_bc_issqn': invoice.issqn_base,
-            # 'valor_issqn': invoice.issqn_value,
             # 'valor_estimado_tributos': invoice.total_tributos_estimados,
-            # 'valor_retencao_issqn': invoice.issqn_retention,
             # 'valor_retencao_pis': invoice.pis_retention,
             # 'valor_retencao_cofins': invoice.cofins_retention,
             # 'valor_bc_irrf': invoice.irrf_base,

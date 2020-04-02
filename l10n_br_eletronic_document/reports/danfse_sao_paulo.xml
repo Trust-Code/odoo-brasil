@@ -290,7 +290,7 @@
                     Base de Cálculo (R$):
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
-                        <strong t-field="doc.valor_bc_issqn"
+                        <strong t-field="doc.valor_bc_iss"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
@@ -301,7 +301,7 @@
                     Alíquota (%):
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
-                        <strong><span t-field="doc.document_line_ids[0].issqn_aliquota" />%</strong>
+                        <strong><span t-field="doc.document_line_ids[0].iss_aliquota" />%</strong>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>*</strong>
@@ -311,7 +311,7 @@
                     Valor do ISS (R$):
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
-                        <strong t-field="doc.valor_issqn"
+                        <strong t-field="doc.valor_iss"
                             t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
@@ -352,7 +352,7 @@
                         (2) Esta NFS-e substitui o RPS Nº <span t-field="doc.numero_rps" /> Série API, emitido em <span t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}' />
                     </div>
                     <div style="float:left; width:50%;">
-                        (3) Data de vencimento do ISS desta NFS-e: <span t-esc="doc.issqn_due_date()" />
+                        (3) Data de vencimento do ISS desta NFS-e: <span t-esc="doc.iss_due_date()" />
                     </div>
                 </div>
             </div>

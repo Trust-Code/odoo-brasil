@@ -97,7 +97,7 @@ class EletronicDocument(models.Model):
                 if not eletr.ipi_cst:
                     errors.append('%s - CST do IPI' % prod)
             if eletr.tipo_produto == 'service':
-                if not eletr.issqn_codigo:
+                if not eletr.iss_codigo:
                     errors.append('%s - Código de Serviço' % prod)
             if not eletr.pis_cst:
                 errors.append('%s - CST do PIS' % prod)
@@ -277,18 +277,18 @@ class EletronicDocument(models.Model):
                 item.irrf_valor_retencao + item.csll_valor_retencao
             imposto.update({
                 'ISSQN': {
-                    'vBC': "%.02f" % item.issqn_base_calculo,
-                    'vAliq': "%.02f" % item.issqn_aliquota,
-                    'vISSQN': "%.02f" % item.issqn_valor,
+                    'vBC': "%.02f" % item.iss_base_calculo,
+                    'vAliq': "%.02f" % item.iss_aliquota,
+                    'vISSQN': "%.02f" % item.iss_valor,
                     'cMunFG': "%s%s" % (invoice.company_id.state_id.l10n_br_ibge_code,
                                         invoice.company_id.city_id.l10n_br_ibge_code),
-                    'cListServ': item.issqn_codigo,
+                    'cListServ': item.iss_codigo,
                     'vDeducao': '',
                     'vOutro': "%.02f" % retencoes if retencoes else '',
-                    'vISSRet': "%.02f" % item.issqn_valor_retencao
-                    if item.issqn_valor_retencao else '',
+                    'vISSRet': "%.02f" % item.iss_valor_retencao
+                    if item.iss_valor_retencao else '',
                     'indISS': 1,  # Exigivel
-                    'cServico': item.issqn_codigo,
+                    'cServico': item.iss_codigo,
                     'cMun': "%s%s" % (invoice.company_id.state_id.l10n_br_ibge_code,
                                       invoice.company_id.city_id.l10n_br_ibge_code),
                     'indIncentivo': 2,  # Não
@@ -539,9 +539,9 @@ class EletronicDocument(models.Model):
             issqn_total = {
                 'vServ': "%.02f" % self.valor_servicos
                 if self.valor_servicos else "",
-                'vBC': "%.02f" % self.valor_bc_issqn
-                if self.valor_bc_issqn else "",
-                'vISS': "%.02f" % self.valor_issqn if self.valor_issqn else "",
+                'vBC': "%.02f" % self.valor_bc_iss
+                if self.valor_bc_iss else "",
+                'vISS': "%.02f" % self.valor_iss if self.valor_iss else "",
                 'vPIS': "%.02f" % self.valor_pis_servicos
                 if self.valor_pis_servicos else "",
                 'vCOFINS': "%.02f" % self.valor_cofins_servicos
@@ -549,8 +549,8 @@ class EletronicDocument(models.Model):
                 'dCompet': dt_emissao[:10],
                 'vDeducao': "",
                 'vOutro': "",
-                'vISSRet': "%.02f" % self.valor_retencao_issqn
-                if self.valor_retencao_issqn else '',
+                'vISSRet': "%.02f" % self.valor_retencao_iss
+                if self.valor_retencao_iss else '',
             }
             tributos_retidos = {
                 'vRetPIS': "%.02f" % self.valor_retencao_pis

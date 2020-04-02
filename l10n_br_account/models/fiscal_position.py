@@ -16,7 +16,7 @@ class AccountFiscalPositionTaxRule(models.Model):
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
-                               ('issqn', 'ISSQN'),
+                               ('iss', 'ISS'),
                                ('ii', 'II'),
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),
@@ -51,7 +51,7 @@ class AccountFiscalPositionTaxRule(models.Model):
     reducao_icms = fields.Float(string=u"Redução de base")
     reducao_icms_st = fields.Float(string=u"Redução de base ST")
     reducao_ipi = fields.Float(string=u"Redução de base IPI")
-    l10n_br_issqn_deduction = fields.Float(string="% Dedução de base ISSQN")
+    l10n_br_iss_deduction = fields.Float(string="% Dedução de base ISS")
     aliquota_mva = fields.Float(string=u"Alíquota MVA")
     icms_st_aliquota_deducao = fields.Float(
         string=u"% ICMS Próprio",
@@ -122,9 +122,9 @@ class AccountFiscalPosition(models.Model):
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras COFINS", domain=[('domain', '=', 'cofins')],
         copy=True)
-    issqn_tax_rule_ids = fields.One2many(
+    iss_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
-        string=u"Regras ISSQN", domain=[('domain', '=', 'issqn')], copy=True)
+        string=u"Regras ISS", domain=[('domain', '=', 'iss')], copy=True)
     ii_tax_rule_ids = fields.One2many(
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string=u"Regras II", domain=[('domain', '=', 'ii')], copy=True)

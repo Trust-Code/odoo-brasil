@@ -10,7 +10,7 @@ class AccountTax(models.Model):
                                ('pis', 'PIS'),
                                ('cofins', 'COFINS'),
                                ('ipi', 'IPI'),
-                               ('issqn', 'ISSQN'),
+                               ('iss', 'ISS'),
                                ('ii', 'II'),
                                ('icms_inter', 'Difal - Alíquota Inter'),
                                ('icms_intra', 'Difal - Alíquota Intra'),

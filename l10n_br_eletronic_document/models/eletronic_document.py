@@ -220,7 +220,7 @@ class EletronicDocument(models.Model):
     valor_despesas = fields.Monetary(
         string=u'Total Despesas', readonly=True, states=STATE)
     valor_bc_icms = fields.Monetary(
-        string=u"Base de Cálculo ICMS", readonly=True, states=STATE)
+        string=u"Base ICMS", readonly=True, states=STATE)
     valor_icms = fields.Monetary(
         string=u"Total do ICMS", readonly=True, states=STATE)
     valor_icms_deson = fields.Monetary(
@@ -680,8 +680,8 @@ class EletronicDocument(models.Model):
             }
             items = []
             for line in doc.document_line_ids:
-                aliquota = line.issqn_aliquota / 100
-                base = line.issqn_base_calculo
+                aliquota = line.iss_aliquota / 100
+                base = line.iss_base_calculo
                 unitario = round(line.valor_liquido / line.quantidade, 2)
                 items.append({
                     'name': line.product_id.name,
@@ -824,7 +824,7 @@ style="max-width:100px;height:100px;margin:0px 0px;"src="/report/barcode/\
 ?type=QR&width=100&height=100&value=' + urllib.parse.quote(urlconsulta) + '"/>'
         return url
 
-    def issqn_due_date(self):
+    def iss_due_date(self):
         next_month = self.data_emissao + relativedelta(months=1)
         due_date = date(next_month.year, next_month.month, 10)
         if due_date.weekday() >= 5:
