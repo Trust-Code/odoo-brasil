@@ -110,8 +110,10 @@
                                         <field name="valor_icmsst" />
                                         <field name="valor_ii" />
                                         <field name="valor_ipi" />
-                                        <field name="valor_pis" />
-                                        <field name="valor_cofins" />
+                                        <field name="pis_valor" />
+                                        <field name="cofins_valor" />
+                                        <field name="csll_valor" />
+                                        <field name="irpj_valor" />
                                         <field name="valor_icms_fcp_uf_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="valor_icms_uf_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="valor_icms_uf_remet" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
@@ -123,8 +125,6 @@
                                         <field name="valor_servicos" />
                                         <field name="iss_base_calculo" />
                                         <field name="iss_valor" />
-                                        <field name="pis_valor" />
-                                        <field name="cofins_valor" />
                                     </group>
                                     <group name="retencoes" string="Retenções">
                                         <field name="iss_valor_retencao" />

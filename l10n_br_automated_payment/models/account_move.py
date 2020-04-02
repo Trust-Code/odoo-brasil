@@ -96,6 +96,7 @@ class AccountMove(models.Model):
                 }
                 data = iugu_invoice_api.create(vals)
                 if "errors" in data:
+                    print(data)
                     msg = "\n".join(
                         ["A integração com IUGU retornou os seguintes erros"] +
                         ["Field: %s %s" % (x[0], x[1][0])

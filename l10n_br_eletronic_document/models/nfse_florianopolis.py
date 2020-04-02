@@ -14,15 +14,15 @@ def _convert_values(vals):
     if vals['outro_estado']:
         cfps = '9203'
     vals['cfps'] = cfps
-
     if vals['regime_tributario'] == 'simples':
         vals['base_calculo'] = 0
         vals['valor_issqn'] = 0
         for item in vals['itens_servico']:
             item['cst_servico'] = '1'
-            item['cnae'] = re.sub('[^0-9]', '', item['codigo_servico'] or '')
     else:
         vals['valor_issqn'] = vals['valor_iss']
+    for item in vals['itens_servico']:
+        item['cnae'] = re.sub('[^0-9]', '', item['codigo_servico'] or '')
     vals['tomador']['inscricao_municipal'] = '0000000'
     vals['tomador']['logradouro'] = vals['tomador']['endereco']['logradouro']
     vals['tomador']['numero'] = vals['tomador']['endereco']['numero']

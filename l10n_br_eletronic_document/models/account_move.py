@@ -29,6 +29,12 @@ class AccountMove(models.Model):
     def _prepare_eletronic_line_vals(self, invoice_lines):
         lines = []
         for line in invoice_lines:
+            pis = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'pis')
+            cofins = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'cofins')
+            iss = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'issqn')
+            csll = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'csll')
+            irpj = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'irpj')
+
             vals = {
                 'name': line.name,
                 'product_id': line.product_id.id,
@@ -76,30 +82,33 @@ class AccountMove(models.Model):
                 # 'ii_valor_iof': line.ii_valor_iof,
                 # - PIS -
                 # 'pis_cst': line.pis_cst,
-                # 'pis_aliquota': abs(line.pis_aliquota),
-                # 'pis_base_calculo': line.pis_base_calculo,
-                # 'pis_valor': abs(line.pis_valor),
+                'pis_aliquota': pis.tax_line_id.amount or 0,
+                'pis_base_calculo': pis.tax_base_amount or 0,
+                'pis_valor': pis.price_total or 0,
                 # 'pis_valor_retencao':
                 # abs(line.pis_valor) if line.pis_valor < 0 else 0,
                 # - COFINS -
                 # 'cofins_cst': line.cofins_cst,
-                # 'cofins_aliquota': abs(line.cofins_aliquota),
-                # 'cofins_base_calculo': line.cofins_base_calculo,
-                # 'cofins_valor': abs(line.cofins_valor),
+                'cofins_aliquota':  cofins.tax_line_id.amount or 0,
+                'cofins_base_calculo': cofins.tax_base_amount or 0,
+                'cofins_valor': cofins.price_total or 0,
                 # 'cofins_valor_retencao':
                 # abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
-                # - ISSQN -
-                # 'issqn_codigo': line.service_type_id.code,
-                # 'issqn_aliquota': abs(line.issqn_aliquota),
-                # 'issqn_base_calculo': line.issqn_base_calculo,
-                # 'issqn_valor': abs(line.issqn_valor),
+                # - ISS -
+                # 'iss_codigo': line.service_type_id.code,
+                'iss_aliquota': iss.tax_line_id.amount or 0,
+                'iss_base_calculo': iss.tax_base_amount or 0,
+                'iss_valor': iss.price_total or 0,
                 # 'issqn_valor_retencao':
                 # abs(line.issqn_valor) if line.issqn_valor < 0 else 0,
                 # - RETENÇÔES -
-                # 'csll_base_calculo': line.csll_base_calculo,
-                # 'csll_aliquota': abs(line.csll_aliquota),
-                # 'csll_valor_retencao':
+                'csll_base_calculo': csll.tax_line_id.amount or 0,
+                'csll_aliquota': csll.tax_base_amount or 0,
+                'csll_valor': csll.price_total or 0,
                 # abs(line.csll_valor) if line.csll_valor < 0 else 0,
+                'irpj_base_calculo': irpj.tax_line_id.amount or 0,
+                'irpj_aliquota': irpj.tax_base_amount or 0,
+                'irpj_valor': irpj.price_total or 0,
                 # 'irrf_base_calculo': line.irrf_base_calculo,
                 # 'irrf_aliquota': abs(line.irrf_aliquota),
                 # 'irrf_valor_retencao':

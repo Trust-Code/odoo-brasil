@@ -66,16 +66,16 @@
                           </group>
                       </group>
                   </page>
-                  <page name="issqn" string="ISSQN" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
+                  <page name="issqn" string="ISS" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
                     <group>
                       <group>
-                          <field name="issqn_base_calculo"/>
-                          <field name="issqn_aliquota"/>
-                          <field name="issqn_valor"/>
-                          <field name="issqn_valor_retencao"/>
+                          <field name="iss_base_calculo"/>
+                          <field name="iss_aliquota"/>
+                          <field name="iss_valor"/>
+                          <field name="iss_valor_retencao"/>
                       </group>
                       <group>
-                          <field name="issqn_codigo" />
+                          <field name="iss_codigo" />
                           <field name="codigo_servico" />
                           <field name="codigo_cnae" />
                           <field name="codigo_servico_municipio" />
@@ -88,18 +88,27 @@
                           <group string="CSLL">
                               <field name="csll_base_calculo"/>
                               <field name="csll_aliquota"/>
+                              <field name="csll_valor"/>
                               <field name="csll_valor_retencao"/>
                           </group>
-                          <group string="IRRF">
-                              <field name="irrf_base_calculo"/>
-                              <field name="irrf_aliquota"/>
-                              <field name="irrf_valor_retencao"/>
+                          <group string="IRPJ">
+                              <field name="irpj_base_calculo"/>
+                              <field name="irpj_aliquota"/>
+                              <field name="irpj_valor"/>
+                              <field name="irpj_valor_retencao"/>
                           </group>
                       </group>
                       <group>
+                          <group string="IRRF">
+                              <field name="irrf_base_calculo"/>
+                              <field name="irrf_aliquota"/>
+                              <field name="irrf_valor"/>
+                              <field name="irrf_valor_retencao"/>
+                          </group>
                           <group string="INSS">
                               <field name="inss_base_calculo"/>
                               <field name="inss_aliquota"/>
+                              <field name="inss_valor"/>
                               <field name="inss_valor_retencao"/>
                           </group>
                       </group>
