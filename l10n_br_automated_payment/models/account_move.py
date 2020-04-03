@@ -79,14 +79,12 @@ class AccountMove(models.Model):
                     'due_date': moveline.date_maturity.strftime('%Y-%m-%d'),
                     'ensure_workday_due_date': True,
                     'items': [{
-                        'description': 'Fatura Ref: %s - %s' % (
-                            moveline.move_id.name, moveline.name),
+                        'description': 'Fatura Ref: %s' % moveline.name,
                         'quantity': 1,
                         'price_cents': int(moveline.amount_residual * 100),
                     }],
                     'return_url': '%s/my/invoices/%s' % (base_url, invoice.id),
-                    'notification_url': '%s/iugu/webhook?id=%s' % (
-                        'http://19019bb1.ngrok.io', invoice.id),
+                    'notification_url': '%s/iugu/webhook?id=%s' % (base_url, invoice.id),
                     'fines': True,
                     'late_payment_fine': 2,
                     'per_day_interest': True,
