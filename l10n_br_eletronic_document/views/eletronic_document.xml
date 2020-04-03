@@ -15,9 +15,9 @@
                         </button>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done" />
                     </header>
-                    <field name="ambiente_nfe" invisible="1" />
+                    <field name="ambiente" invisible="1" />
                     <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
-                        attrs="{'invisible': ['|', ('ambiente_nfe', '==', 'producao')]}">
+                        attrs="{'invisible': ['|', ('ambiente', '==', 'producao')]}">
                         A NFe está em ambiente de homologação
                     </div>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">

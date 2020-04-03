@@ -270,9 +270,6 @@ class EletronicDocument(models.Model):
         [('1', 'Simples Nacional'),
          ('2', 'Simples - Excesso de receita'),
          ('3', 'Regime Normal')], string="Cód. Regime Trib.")
-    ambiente_nfe = fields.Selection(
-        string=u"Ambiente NFe", related="company_id.l10n_br_tipo_ambiente",
-        readonly=True)
     ind_final = fields.Selection([
         ('0', u'Não'),
         ('1', u'Sim')
@@ -701,7 +698,7 @@ class EletronicDocument(models.Model):
 
             data = {
                 'nfe_reference': doc.id,
-                'ambiente': 'producao' if doc.company_id.l10n_br_tipo_ambiente == '1' else 'homologacao',
+                'ambiente': doc.ambiente,
                 'emissor': emissor,
                 'tomador': tomador,
                 'numero': "%06d" % doc.identifier,
@@ -783,7 +780,7 @@ class EletronicDocument(models.Model):
             'client_id': company.l10n_br_client_id,
             'client_secret': company.l10n_br_client_secret,
             'user_password': company.l10n_br_user_password,
-            'ambiente': 'producao' if company.l10n_br_tipo_ambiente == '1' else 'homologacao',
+            'ambiente': self.ambiente,
             'cnpj_cpf': re.sub('[^0-9]', '', company.l10n_br_cnpj_cpf),
             'inscricao_municipal': re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
             'justificativa': 'Emissao de nota fiscal errada',

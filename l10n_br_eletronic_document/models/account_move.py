@@ -138,6 +138,7 @@ class AccountMove(models.Model):
             'data_emissao': datetime.now(),
             'data_agendada': invoice.invoice_date,
             'finalidade_emissao': '1',
+            'ambiente': invoice.company_id.l10n_br_tipo_ambiente,
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.invoice_payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
