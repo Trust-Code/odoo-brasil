@@ -647,7 +647,7 @@ class EletronicDocument(models.Model):
     def generate_dict_values(self):
         dict_docs = []
         for doc in self:
-            partner = doc.partner_id
+            partner = doc.commercial_partner_id
 
             emissor = {
                 'cnpj': re.sub('[^0-9]', '', doc.company_id.l10n_br_cnpj_cpf or ''),
@@ -664,8 +664,8 @@ class EletronicDocument(models.Model):
                 'empresa': partner.is_company,
                 'nome_fantasia': partner.name,
                 'razao_social': partner.l10n_br_legal_name or partner.name,
-                'telefone': re.sub('[^0-9]', '', self.partner_id.phone or ''),
-                'email': self.partner_id.email,
+                'telefone': re.sub('[^0-9]', '', doc.partner_id.phone or ''),
+                'email': doc.partner_id.email,
                 'endereco': {
                     'logradouro': partner.street,
                     'numero': partner.l10n_br_number,
