@@ -690,7 +690,7 @@ class EletronicDocument(models.Model):
                     'base_calculo': base,
                     'valor_unitario': unitario,
                     'quantidade': int(line.quantidade),
-                    'valor_total': line.valor_liquido,
+                    'valor_total': round(line.valor_liquido, 2),
                 })
             outra_cidade = doc.company_id.city_id.id != partner.city_id.id
             outro_estado = doc.company_id.state_id.id != partner.state_id.id
@@ -711,13 +711,13 @@ class EletronicDocument(models.Model):
                 'serie': doc.serie_documento or '',
                 'numero_rps': doc.numero_rps,
                 'discriminacao': doc.discriminacao_servicos,
-                'valor_servico': doc.valor_servicos,
-                'base_calculo': doc.iss_base_calculo,
-                'valor_iss': doc.iss_valor,
-                'valor_total': doc.valor_final,
-                'iss_valor_retencao': doc.iss_valor_retencao,
+                'valor_servico': round(doc.valor_servicos, 2),
+                'base_calculo': round(doc.iss_base_calculo, 2),
+                'valor_iss': round(doc.iss_valor, 2),
+                'valor_total': round(doc.valor_final, 2),
+                'iss_valor_retencao': round(doc.iss_valor_retencao, 2),
 
-                'valor_carga_tributaria': "%.2f" % doc.valor_estimado_tributos,
+                'valor_carga_tributaria': round(doc.valor_estimado_tributos, 2),
                 'fonte_carga_tributaria': 'IBPT',
                 'iss_retido': True if doc.iss_valor_retencao > 0.0 else False,
 
