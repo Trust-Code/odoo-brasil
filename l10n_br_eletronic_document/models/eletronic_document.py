@@ -678,7 +678,6 @@ class EletronicDocument(models.Model):
             items = []
             for line in doc.document_line_ids:
                 aliquota = line.iss_aliquota / 100
-                base = line.iss_base_calculo
                 unitario = round(line.valor_liquido / line.quantidade, 2)
                 items.append({
                     'name': line.product_id.name,
@@ -687,7 +686,7 @@ class EletronicDocument(models.Model):
                     'cnae_servico': line.codigo_cnae,
                     'codigo_servico_municipio': line.codigo_servico_municipio,
                     'aliquota': aliquota,
-                    'base_calculo': base,
+                    'base_calculo': round(line.iss_base_calculo, 2),
                     'valor_unitario': unitario,
                     'quantidade': int(line.quantidade),
                     'valor_total': round(line.valor_liquido, 2),
