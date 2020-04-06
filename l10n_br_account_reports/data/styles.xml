@@ -1,0 +1,63 @@
+<odoo>
+  <data>
+
+    <record id="mis_report_style_base" model="mis.report.style">
+      <field name="name">Estilo Base</field>
+      <field name="dp_inherit" eval="0"/>
+      <field name="dp">2</field>
+    </record>
+
+    <record id="mis_report_style_green_l1" model="mis.report.style">
+      <field name="name">Enfase Verde 1</field>
+      <field name="background_color_inherit" eval="0"/>
+      <field name="background_color">#007F7D</field>
+      <field name="color_inherit" eval="0"/>
+      <field name="color">#FFFFFF</field>
+      <field name="font_weight_inherit" eval="0"/>
+      <field name="font_weight">bold</field>
+    </record>
+
+    <record id="mis_report_style_blue_l1" model="mis.report.style">
+      <field name="name">Enfase Azul 1</field>
+      <field name="background_color_inherit" eval="0"/>
+      <field name="background_color">#1572D3</field>
+      <field name="color_inherit" eval="0"/>
+      <field name="color">#FFFFFF</field>
+      <field name="font_weight_inherit" eval="0"/>
+      <field name="font_weight">bold</field>
+    </record>
+
+    <record id="mis_report_style_red_l2" model="mis.report.style">
+      <field name="name">Vermelho l2</field>
+      <field name="background_color_inherit" eval="0"/>
+      <field name="background_color">#F0F0F0</field>
+      <field name="color_inherit" eval="0"/>
+      <field name="color">#c11d1d</field>
+      <field name="font_weight_inherit" eval="0"/>
+      <field name="font_weight">bold</field>
+      <field name="indent_level_inherit" eval="0"/>
+      <field name="indent_level">1</field>
+    </record>
+
+    <record id="mis_report_style_l10n_es_l2" model="mis.report.style">
+      <field name="name">l10n_es l2</field>
+      <field name="font_weight_inherit" eval="0"/>
+      <field name="font_weight">bold</field>
+      <field name="hide_empty_inherit" eval="0"/>
+      <field name="hide_empty" eval="0"/>
+      <field name="indent_level_inherit" eval="0"/>
+      <field name="indent_level">1</field>
+    </record>
+
+    <record id="mis_report_style_l10n_es_l3i" model="mis.report.style">
+      <field name="name">l10n_es l3i</field>
+      <field name="indent_level_inherit" eval="0"/>
+      <field name="indent_level">2</field>
+      <field name="font_style_inherit" eval="0"/>
+      <field name="font_style">italic</field>
+      <field name="hide_empty_inherit" eval="0"/>
+      <field name="hide_empty" eval="0"/>
+    </record>
+
+  </data>
+</odoo>
