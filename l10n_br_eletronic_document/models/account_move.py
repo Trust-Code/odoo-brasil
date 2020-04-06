@@ -29,11 +29,14 @@ class AccountMove(models.Model):
     def _prepare_eletronic_line_vals(self, invoice_lines):
         lines = []
         for line in invoice_lines:
+
             pis = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'pis')
             cofins = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'cofins')
             iss = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'iss')
             csll = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'csll')
             irpj = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'irpj')
+
+            ipi = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'ipi')
 
             vals = {
                 'name': line.name,
@@ -47,7 +50,7 @@ class AccountMove(models.Model):
                 'valor_bruto': line.price_subtotal,
                 # 'desconto': line.valor_desconto,
                 'valor_liquido': line.price_total,
-                # 'origem': line.icms_origem,
+                'origem': line.product_id.l10n_br_origin,
                 #  'tributos_estimados': line.tributos_estimados,
                 # 'ncm': line.fiscal_classification_id.code,
                 'pedido_compra': self.ref,
@@ -71,10 +74,10 @@ class AccountMove(models.Model):
                 # 'icms_valor_credito': line.icms_valor_credito,
                 # - IPI -
                 # 'ipi_cst': line.ipi_cst,
-                # 'ipi_aliquota': line.ipi_aliquota,
-                # 'ipi_base_calculo': line.ipi_base_calculo,
+                'ipi_aliquota': ipi.tax_line_id.amount or 0,
+                'ipi_base_calculo': line.price_total or 0,
+                'ipi_valor': round(line.price_total *  ipi.tax_line_id.amount / 100, 2),
                 # 'ipi_reducao_bc': line.ipi_reducao_bc,
-                # 'ipi_valor': line.ipi_valor,
                 # - II -
                 # 'ii_base_calculo': line.ii_base_calculo,
                 # 'ii_valor_despesas': line.ii_valor_despesas,
@@ -84,14 +87,14 @@ class AccountMove(models.Model):
                 # 'pis_cst': line.pis_cst,
                 'pis_aliquota': pis.tax_line_id.amount or 0,
                 'pis_base_calculo': line.price_total or 0,
-                'pis_valor': pis.price_total or 0,
+                'pis_valor': round(line.price_total *  pis.tax_line_id.amount / 100, 2),
                 # 'pis_valor_retencao':
                 # abs(line.pis_valor) if line.pis_valor < 0 else 0,
                 # - COFINS -
                 # 'cofins_cst': line.cofins_cst,
                 'cofins_aliquota':  cofins.tax_line_id.amount or 0,
                 'cofins_base_calculo': line.price_total or 0,
-                'cofins_valor': cofins.price_total or 0,
+                'cofins_valor': round(line.price_total *  cofins.tax_line_id.amount / 100, 2),
                 # 'cofins_valor_retencao':
                 # abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
                 # - ISS -
@@ -99,17 +102,17 @@ class AccountMove(models.Model):
                 'codigo_servico': line.product_id.service_code,
                 'iss_aliquota': iss.tax_line_id.amount or 0,
                 'iss_base_calculo': line.price_total or 0,
-                'iss_valor': iss.price_total or 0,
+                'iss_valor': round(line.price_total *  iss.tax_line_id.amount / 100, 2),
                 # 'iss_valor_retencao':
                 # abs(line.iss_valor) if line.iss_valor < 0 else 0,
                 # - RETENÇÔES -
                 'csll_aliquota': csll.tax_line_id.amount or 0,
                 'csll_base_calculo': line.price_total or 0,
-                'csll_valor': csll.price_total or 0,
+                'csll_valor': round(line.price_total *  csll.tax_line_id.amount / 100, 2),
                 # abs(line.csll_valor) if line.csll_valor < 0 else 0,
                 'irpj_aliquota':  irpj.tax_line_id.amount or 0,
                 'irpj_base_calculo': line.price_total or 0,
-                'irpj_valor': irpj.price_total or 0,
+                'irpj_valor': round(line.price_total *  irpj.tax_line_id.amount / 100, 2),
                 # 'irrf_base_calculo': line.irrf_base_calculo,
                 # 'irrf_aliquota': abs(line.irrf_aliquota),
                 # 'irrf_valor_retencao':

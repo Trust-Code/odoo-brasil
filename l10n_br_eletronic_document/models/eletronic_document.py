@@ -3,12 +3,14 @@ import json
 import requests
 import base64
 import copy
+import time
 import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.tools.safe_eval import safe_eval
 
 from odoo.addons.l10n_br_account.models.cst import (
     CST_ICMS, CST_PIS_COFINS, CSOSN_SIMPLES, CST_IPI, ORIGEM_PROD)
@@ -515,7 +517,7 @@ class EletronicDocument(models.Model):
         return {
             'user': self.env.user,
             'ctx': self._context,
-            'invoice': self.invoice_id
+            'invoice': self.move_id
         }
 
     def validate_invoice(self):
@@ -599,29 +601,66 @@ class EletronicDocument(models.Model):
                     'Erro no envio de documento eletrônico', exc_info=True)
 
     def _find_attachment_ids_email(self):
-        return []
+        atts = []
+        attachment_obj = self.env['ir.attachment']
+
+        xml_id = attachment_obj.create(dict(
+            name=self.nfe_processada_name,
+            datas=self.nfe_processada,
+            mimetype='text/xml',
+            res_model='account.move',
+            res_id=self.move_id.id,
+        ))
+        atts.append(xml_id.id)
+
+        danfe_report = self.env['ir.actions.report'].search(
+            [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
+        report_service = danfe_report.xml_id
+        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
+        report_name = safe_eval(danfe_report.print_report_name,
+                                {'object': self, 'time': time})
+        filename = "%s.%s" % (report_name, "pdf")
+        if danfse:
+            danfe_id = attachment_obj.create(dict(
+                name=filename,
+                datas=base64.b64encode(danfse),
+                mimetype='application/pdf',
+                res_model='account.move',
+                res_id=self.move_id.id,
+            ))
+            atts.append(danfe_id.id)
+
+        return atts
 
     def send_email_nfe(self):
-        mail = self.env.user.company_id.nfe_email_template
+        mail = self.env.user.company_id.l10n_br_nfe_email_template
         if not mail:
             raise UserError(_('Modelo de email padrão não configurado'))
         atts = self._find_attachment_ids_email()
         _logger.info('Sending e-mail for e-doc %s (number: %s)' % (
             self.id, self.numero))
 
-        values = mail.generate_email([self.invoice_id.id])[self.invoice_id.id]
+        values = mail.generate_email([self.move_id.id])[self.move_id.id]
         subject = values.pop('subject')
         values.pop('body')
         values.pop('attachment_ids')
-        self.invoice_id.message_post(
+        values.pop('res_id')
+        values.pop('model')
+        # Hack - Those attachments are being encoded twice,
+        # so lets decode to message_post encode again
+        new_items = []
+        for item in values.get('attachments', []):
+            new_items.append((item[0], base64.b64decode(item[1])))
+        values['attachments'] = new_items
+        self.move_id.message_post(
             body=values['body_html'], subject=subject,
-            message_type='email', subtype='mt_comment',
+            message_type='email', subtype='mt_comment', email_layout_xmlid='mail.mail_notification_paynow',
             attachment_ids=atts + mail.attachment_ids.ids, **values)
 
     def send_email_nfe_queue(self):
-        after = datetime.now() + timedelta(days=-1)
+        after = datetime.now() + timedelta(days=-10)
         nfe_queue = self.env['eletronic.document'].search(
-            [('data_emissao', '>=', after.strftime(DATETIME_FORMAT)),
+            [('data_emissao', '>=', after),
              ('email_sent', '=', False),
              ('state', '=', 'done')], limit=5)
         for nfe in nfe_queue:

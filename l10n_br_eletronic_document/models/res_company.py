@@ -27,6 +27,9 @@ class ResCompany(models.Model):
 
     l10n_br_accountant_id = fields.Many2one('res.partner', string="Contador")
 
+    l10n_br_nfe_email_template = fields.Many2one(
+        'mail.template', string="Template de Email para NFe")
+
     cabecalho_danfe = fields.Selection(
         [
             ("vertical", "Modelo Vertical"),
