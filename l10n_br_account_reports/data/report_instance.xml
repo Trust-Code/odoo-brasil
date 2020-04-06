@@ -1,0 +1,91 @@
+<odoo>
+    <record id="mis_report_instance_expenses" model="mis.report.instance">
+        <field name="name">Relatório DRE</field>
+        <field name="report_id" ref="mis_report_dre" />
+        <field name="comparison_mode" eval="True" />
+        <field name="display_columns_description" eval="True" />
+    </record>
+    <record
+        id="mis_report_instance_expenses_act_mm3"
+        model="mis.report.instance.period"
+    >
+        <field name="name">M-3</field>
+        <field name="report_instance_id" ref="mis_report_instance_expenses" />
+        <field name="source">actuals</field>
+        <field name="mode">relative</field>
+        <field name="type">m</field>
+        <field name="offset">-3</field>
+        <field name="sequence">20</field>
+    </record>
+    <record
+        id="mis_report_instance_expenses_act_mm2"
+        model="mis.report.instance.period"
+    >
+        <field name="name">M-2</field>
+        <field name="report_instance_id" ref="mis_report_instance_expenses" />
+        <field name="source">actuals</field>
+        <field name="mode">relative</field>
+        <field name="type">m</field>
+        <field name="offset">-2</field>
+        <field name="sequence">30</field>
+    </record>
+    <record
+        id="mis_report_instance_expenses_act_mm1"
+        model="mis.report.instance.period"
+    >
+        <field name="name">M-1</field>
+        <field name="report_instance_id" ref="mis_report_instance_expenses" />
+        <field name="source">actuals</field>
+        <field name="mode">relative</field>
+        <field name="type">m</field>
+        <field name="offset">-1</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="mis_report_instance_expenses_act_m" model="mis.report.instance.period">
+        <field name="name">Mês Atual</field>
+        <field name="report_instance_id" ref="mis_report_instance_expenses" />
+        <field name="source">actuals</field>
+        <field name="mode">relative</field>
+        <field name="type">m</field>
+        <field name="offset">0</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="mis_report_instance_expenses_avail" model="mis.report.instance.period">
+        <field name="name">Totais</field>
+        <field name="report_instance_id" ref="mis_report_instance_expenses" />
+        <field name="source">sumcol</field>
+        <field name="mode">none</field>
+    </record>
+    <record
+        id="mis_report_instance_expenses_avail_s1"
+        model="mis.report.instance.period.sum"
+    >
+        <field name="period_id" ref="mis_report_instance_expenses_avail" />
+        <field name="period_to_sum_id" ref="mis_report_instance_expenses_act_mm3" />
+        <field name="sign">+</field>
+    </record>
+    <record
+        id="mis_report_instance_expenses_avail_s3"
+        model="mis.report.instance.period.sum"
+    >
+        <field name="period_id" ref="mis_report_instance_expenses_avail" />
+        <field name="period_to_sum_id" ref="mis_report_instance_expenses_act_mm2" />
+        <field name="sign">+</field>
+    </record>
+    <record
+        id="mis_report_instance_expenses_avail_s4"
+        model="mis.report.instance.period.sum"
+    >
+        <field name="period_id" ref="mis_report_instance_expenses_avail" />
+        <field name="period_to_sum_id" ref="mis_report_instance_expenses_act_mm1" />
+        <field name="sign">+</field>
+    </record>
+    <record
+        id="mis_report_instance_expenses_avail_s5"
+        model="mis.report.instance.period.sum"
+    >
+        <field name="period_id" ref="mis_report_instance_expenses_avail" />
+        <field name="period_to_sum_id" ref="mis_report_instance_expenses_act_m" />
+        <field name="sign">+</field>
+    </record>
+</odoo>
