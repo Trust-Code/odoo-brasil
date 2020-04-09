@@ -203,7 +203,10 @@ class ResPartner(models.Model):
             info = info.infCons
             if info.cStat == 111 or info.cStat == 112:
                 if not self.inscr_est:
-                    self.inscr_est = info.infCad.IE.text
+                    inscr = info.infCad.IE.text
+                    if self.state_id.code == 'BA':
+                        inscr = inscr.zfill(9)
+                    self.inscr_est = inscr
                 if not self.cnpj_cpf:
                     self.cnpj_cpf = info.infCad.CNPJ.text
 
