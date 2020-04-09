@@ -16,6 +16,7 @@
     'data': [
         'data/styles.xml',
         'data/dre.xml',
+        'data/balanco.xml',
         'data/report_instance.xml',
     ],
 }

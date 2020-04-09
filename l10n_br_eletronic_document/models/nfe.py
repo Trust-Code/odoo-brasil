@@ -526,8 +526,8 @@ class EletronicDocument(models.Model):
             'vII': "%.02f" % self.valor_ii,
             'vIPI': "%.02f" % self.valor_ipi,
             'vIPIDevol': '0.00',
-            'vPIS': "%.02f" % self.valor_pis,
-            'vCOFINS': "%.02f" % self.valor_cofins,
+            'vPIS': "%.02f" % self.pis_valor,
+            'vCOFINS': "%.02f" % self.cofins_valor,
             'vOutro': "%.02f" % self.valor_despesas,
             'vNF': "%.02f" % self.valor_final,
             'vFCPUFDest': "%.02f" % self.valor_icms_fcp_uf_dest,
@@ -726,7 +726,7 @@ class EletronicDocument(models.Model):
     def _prepare_lote(self, lote, nfe_values):
         return {
             'idLote': lote,
-            'indSinc': 1 if self.company_id.nfe_sinc else 0,
+            'indSinc': 1 if self.company_id.l10n_br_nfe_sinc else 0,
             'estado': self.company_id.partner_id.state_id.l10n_br_ibge_code,
             'ambiente': 1 if self.ambiente == 'producao' else 2,
             'NFes': [{

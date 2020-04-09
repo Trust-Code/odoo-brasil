@@ -13,8 +13,8 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     l10n_br_origin = fields.Selection(ORIGEM_PROD, 'Origem', default='0')
-    # fiscal_classification_id = fields.Many2one(
-    #     'product.fiscal.classification', string=u"Classificação Fiscal (NCM)")
+    l10n_br_ncm_id = fields.Many2one(
+        'account.ncm', string="Classificação Fiscal (NCM)")
     service_type_id = fields.Many2one('account.service.type', 'Tipo de Serviço')
     service_code = fields.Char(string='Código no Município')
 

@@ -38,6 +38,8 @@ class AccountMove(models.Model):
 
             ipi = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'ipi')
 
+            fiscal_pos = self.fiscal_position_id
+
             vals = {
                 'name': line.name,
                 'product_id': line.product_id.id,
@@ -52,11 +54,11 @@ class AccountMove(models.Model):
                 'valor_liquido': line.price_total,
                 'origem': line.product_id.l10n_br_origin,
                 #  'tributos_estimados': line.tributos_estimados,
-                # 'ncm': line.fiscal_classification_id.code,
+                'ncm': line.product_id.l10n_br_ncm_id.code,
                 'pedido_compra': self.ref,
                 # 'item_pedido_compra': line.item_pedido_compra,
                 # - ICMS -
-                # 'icms_cst': line.icms_cst,
+                'icms_cst': fiscal_pos.csosn_icms,
                 # 'icms_aliquota': line.icms_aliquota,
                 # 'icms_tipo_base': line.icms_tipo_base,
                 # 'icms_aliquota_reducao_base': line.icms_aliquota_reducao_base,
@@ -70,10 +72,10 @@ class AccountMove(models.Model):
                 # 'icms_st_base_calculo': line.icms_st_base_calculo,
                 # 'icms_st_valor': line.icms_st_valor,
                 # # - Simples Nacional -
-                # 'icms_aliquota_credito': line.icms_aliquota_credito,
-                # 'icms_valor_credito': line.icms_valor_credito,
+                'icms_aliquota_credito': fiscal_pos.icms_aliquota_credito,
+                'icms_valor_credito': round(line.price_total *  fiscal_pos.icms_aliquota_credito / 100, 2),
                 # - IPI -
-                # 'ipi_cst': line.ipi_cst,
+                'ipi_cst': '99',
                 'ipi_aliquota': ipi.tax_line_id.amount or 0,
                 'ipi_base_calculo': line.price_total or 0,
                 'ipi_valor': round(line.price_total *  ipi.tax_line_id.amount / 100, 2),
@@ -84,14 +86,14 @@ class AccountMove(models.Model):
                 # 'ii_valor': line.ii_valor,
                 # 'ii_valor_iof': line.ii_valor_iof,
                 # - PIS -
-                # 'pis_cst': line.pis_cst,
+                'pis_cst': '49',
                 'pis_aliquota': pis.tax_line_id.amount or 0,
                 'pis_base_calculo': line.price_total or 0,
                 'pis_valor': round(line.price_total *  pis.tax_line_id.amount / 100, 2),
                 # 'pis_valor_retencao':
                 # abs(line.pis_valor) if line.pis_valor < 0 else 0,
                 # - COFINS -
-                # 'cofins_cst': line.cofins_cst,
+                'cofins_cst': '49',
                 'cofins_aliquota':  cofins.tax_line_id.amount or 0,
                 'cofins_base_calculo': line.price_total or 0,
                 'cofins_valor': round(line.price_total *  cofins.tax_line_id.amount / 100, 2),
@@ -122,6 +124,13 @@ class AccountMove(models.Model):
                 # 'inss_valor_retencao':
                 # abs(line.inss_valor) if line.inss_valor < 0 else 0,
             }
+            cfop = fiscal_pos.l10n_br_cfop_id.code or '5101'
+            if self.company_id.state_id == self.commercial_partner_id.state_id:
+                cfop = '5' + cfop[1:]
+            else:
+                cfop = '6' + cfop[1:]
+            vals['cfop'] = cfop
+
             lines.append((0, 0, vals))
 
         return lines
@@ -130,6 +139,7 @@ class AccountMove(models.Model):
         invoice = self
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
+        numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
         vals = {
             'name': invoice.name,
             'move_id': invoice.id,
@@ -145,6 +155,9 @@ class AccountMove(models.Model):
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.invoice_payment_term_id.id,
             'fiscal_position_id': invoice.fiscal_position_id.id,
+            'natureza_operacao': invoice.fiscal_position_id.name,
+            'ind_pres': invoice.fiscal_position_id.ind_pres,
+            'finalidade_emissao': invoice.fiscal_position_id.finalidade_emissao,
             # 'valor_icms': invoice.icms_value,
             # 'valor_icmsst': invoice.icms_st_value,
             # 'valor_ipi': invoice.ipi_value,
@@ -165,7 +178,53 @@ class AccountMove(models.Model):
             # 'valor_retencao_csll': invoice.csll_retention,
             # 'valor_bc_inss': invoice.inss_base,
             # 'valor_retencao_inss': invoice.inss_retention,
+
+            'informacoes_complementares': invoice.narration,
+            'numero_fatura': invoice.name,
+            'fatura_bruto': invoice.amount_total,
+            'fatura_desconto': 0.0,
+            'fatura_liquido': invoice.amount_total,
+            'pedido_compra': invoice.invoice_payment_ref,
+            'serie_documento': 1,
+            'numero': numero_nfe,
         }
+        vals['cod_regime_tributario'] = '1' if invoice.company_id.l10n_br_tax_regime == 'simples' else '3'
+         # Indicador Consumidor Final
+        if invoice.commercial_partner_id.is_company:
+            vals['ind_final'] = '0'
+        else:
+            vals['ind_final'] = '1'
+        vals['ind_dest'] = '1'
+        if invoice.company_id.state_id != invoice.commercial_partner_id.state_id:
+            vals['ind_dest'] = '2'
+        if invoice.company_id.country_id != invoice.commercial_partner_id.country_id:
+            vals['ind_dest'] = '3'
+        if invoice.fiscal_position_id.ind_final:
+            vals['ind_final'] = invoice.fiscal_position_id.ind_final
+
+        # Indicador IE Destinatário
+        ind_ie_dest = False
+        if invoice.commercial_partner_id.is_company:
+            if invoice.commercial_partner_id.l10n_br_inscr_est:
+                ind_ie_dest = '1'
+            elif invoice.commercial_partner_id.state_id.code in ('AM', 'BA', 'CE',
+                                                                 'GO', 'MG', 'MS',
+                                                                 'MT', 'PE', 'RN',
+                                                                 'SP'):
+                ind_ie_dest = '9'
+            elif invoice.commercial_partner_id.country_id.code != 'BR':
+                ind_ie_dest = '9'
+            else:
+                ind_ie_dest = '2'
+        else:
+            ind_ie_dest = '9'
+        if invoice.commercial_partner_id.l10n_br_indicador_ie_dest:
+            ind_ie_dest = invoice.commercial_partner_id.l10n_br_indicador_ie_dest
+        vals['ind_ie_dest'] = ind_ie_dest
+        iest_id = invoice.company_id.l10n_br_iest_ids.filtered(
+            lambda x: x.state_id == invoice.commercial_partner_id.state_id)
+        if iest_id:
+            vals['iest'] = iest_id.name
 
         total_produtos = total_servicos = 0.0
         for inv_line in self.invoice_line_ids:
@@ -186,12 +245,12 @@ class AccountMove(models.Model):
             services = move.invoice_line_ids.filtered(lambda  x: x.product_id.type == 'service')
             if services:
                 vals['model'] = 'nfse'
-                vals['document_line_ids'] = self._prepare_eletronic_line_vals(services)
+                vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
                 self.env['eletronic.document'].create(vals)
             products = move.invoice_line_ids.filtered(lambda  x: x.product_id.type != 'service')
             if products:
                 vals['model'] = 'nfe'
-                vals['document_line_ids'] = self._prepare_eletronic_line_vals(products)
+                vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
                 self.env['eletronic.document'].create(vals)
 
     def action_post(self):

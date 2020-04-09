@@ -30,7 +30,10 @@ class ResCompany(models.Model):
     l10n_br_nfe_email_template = fields.Many2one(
         'mail.template', string="Template de Email para NFe")
 
-    cabecalho_danfe = fields.Selection(
+    l10n_br_nfe_sequence = fields.Many2one(
+        'ir.sequence', string="Sequência Numeracao NFe")
+
+    l10n_br_cabecalho_danfe = fields.Selection(
         [
             ("vertical", "Modelo Vertical"),
             ("horizontal", "Modelo Horizontal"),
@@ -39,16 +42,16 @@ class ResCompany(models.Model):
         default="vertical",
     )
     # NFC-e
-    id_token_csc = fields.Char(string="Identificador do CSC")
-    csc = fields.Char(string="Código de Segurança do Contribuinte")
-    nfe_sinc = fields.Boolean(string="Aceita envio síncrono")
+    l10n_br_id_token_csc = fields.Char(string="Identificador do CSC")
+    l10n_br_csc = fields.Char(string="Código de Segurança do Contribuinte")
+    l10n_br_nfe_sinc = fields.Boolean(string="Aceita envio síncrono")
 
     # Responsavel Técnico
-    id_token_csrt = fields.Char(string="Identificador do Responsavel Técnico")
-    csrt = fields.Char(string="Código de Segurança do Responsavel Técnico")
+    l10n_br_id_token_csrt = fields.Char(string="Identificador do Responsavel Técnico")
+    l10n_br_csrt = fields.Char(string="Código de Segurança do Responsavel Técnico")
     l10n_br_responsavel_tecnico_id = fields.Many2one(
         string="Responsável Técnico", comodel_name="res.partner")
-    iest_ids = fields.One2many(
+    l10n_br_iest_ids = fields.One2many(
         'res.company.iest', 'company_id', string="Inscrições Estaduais ST")
 
 

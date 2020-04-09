@@ -1,0 +1,11 @@
+<odoo>
+    <record id="view_nfe_res_partner_form" model="ir.ui.view">
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="l10n_br_base_address.view_account_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="l10n_br_suframa" position="after" >
+                <field name="l10n_br_indicador_ie_dest" />
+            </field>
+        </field>
+    </record>
+</odoo>

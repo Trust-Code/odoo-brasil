@@ -93,6 +93,7 @@
                     </group>
                     <group>
                         <field name="ind_pres" />
+                        <field name="edoc_policy" />
                     </group>
                 </group>
             </group>
@@ -143,7 +144,10 @@
             <page name="tax_mapping" position="before">
                 <page name="impostos_simples" string="Impostos - Cadastro Simplicado">
                     <p>Escolha os impostos que serão aplicados a todos os itens da fatura. <br />
-                    Em caso de empresa do simples pode ser configurado o CSOSN e a alíquota de crédito quando aplicável</p>
+                    Em caso de empresa do simples pode ser configurado o CSOSN e a alíquota de crédito quando aplicável <br />
+                    Escolha a CFOP para emissão de nota fiscal.<br />
+                    *O primeiro dígito será trocado conforme a operação (estadual ou interna)
+                    </p>
                     <group>
                         <field name="csosn_icms" />
                         <field name="icms_aliquota_credito" />

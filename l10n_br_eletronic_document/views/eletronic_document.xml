@@ -46,7 +46,6 @@
                             <page name="identificacao" string="Identificação">
                                 <group>
                                     <group>
-                                        <field name="code"/>
                                         <field name="name"/>
                                         <field name="company_id"/>
                                         <field name="currency_id" invisible="1"/>

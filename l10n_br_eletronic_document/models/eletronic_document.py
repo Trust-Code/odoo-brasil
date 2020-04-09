@@ -27,7 +27,6 @@ class EletronicDocument(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
-    code = fields.Char('Código', size=100, readonly=True, states=STATE)
     name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
     company_id = fields.Many2one('res.company')
     currency_id = fields.Many2one(

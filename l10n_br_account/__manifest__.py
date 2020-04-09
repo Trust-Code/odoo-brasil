@@ -17,5 +17,7 @@
         'views/fiscal_position.xml',
         'views/account_tax.xml',
         'views/product.xml',
+        'views/base_account.xml',
     ],
+    'post_init_hook': 'post_init',
 }
