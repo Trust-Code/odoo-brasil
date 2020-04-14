@@ -12,3 +12,7 @@ class ResConfigSettings(models.TransientModel):
     l10n_br_nfe_sequence = fields.Many2one(
         'ir.sequence', string="Sequência Numeracao NFe",
         related='company_id.l10n_br_nfe_sequence', readonly=False)
+
+    l10n_br_nfe_service_sequence = fields.Many2one(
+        'ir.sequence', string="Sequência Numeracao NFe de Serviço",
+        related='company_id.l10n_br_nfe_service_sequence', readonly=False)

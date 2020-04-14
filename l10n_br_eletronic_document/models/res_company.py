@@ -32,6 +32,8 @@ class ResCompany(models.Model):
 
     l10n_br_nfe_sequence = fields.Many2one(
         'ir.sequence', string="Sequência Numeracao NFe")
+    l10n_br_nfe_service_sequence = fields.Many2one(
+        'ir.sequence', string="Sequência Numeracao NFe de Servico")
 
     l10n_br_cabecalho_danfe = fields.Selection(
         [

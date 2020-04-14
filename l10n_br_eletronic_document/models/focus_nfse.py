@@ -1,6 +1,9 @@
 import json
 import base64
 import requests
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def _convert_values(vals):
@@ -17,8 +20,6 @@ def _convert_values(vals):
 
 
 def send_api(certificate, password, token, ambiente, edocs):
-    cert_pfx = base64.decodestring(certificate)
-
     edocs = _convert_values(edocs[0])
 
     if ambiente == 'producao':
@@ -27,8 +28,16 @@ def send_api(certificate, password, token, ambiente, edocs):
         url = 'https://homologacao.focusnfe.com.br/v2/nfse'
 
     ref = {'ref': edocs['nfe_reference']}
-    response = requests.post(url, params=ref, data=json.dumps(
-        edocs), auth=(token, "")).json()
+    response = requests.post(url, params=ref, data=json.dumps(edocs), auth=(token, ""))
+    if response.status_code == 500:
+        _logger.error('Erro ao enviar NFe Focus\n%s' + response.text)
+        _logger.info(json.dumps(edocs))
+        return {
+            'code': 400,
+            'api_code': 500,
+            'message': 'Erro ao tentar envio de NFe - Favor contactar suporte.',
+        }
+    response = response.json()
     if response.get('status', False) == 'processando_autorizacao':
         return {
             'code': 200,

@@ -29,6 +29,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Sequência NFe para serviços</span>
+                        <div class="text-muted">
+                            Sequência que irá gerar a numeração para NFe de serviços, 
+                            verique o último número emitido
+                        </div>
+                        <div class="text-muted">
+                            <field name="l10n_br_nfe_service_sequence"/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </field>
     </record>

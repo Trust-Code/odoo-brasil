@@ -1,7 +1,10 @@
+import re
 from datetime import datetime
 from random import SystemRandom
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
+
 
 TYPE2EDOC = {
     'out_invoice': 'saida',        # Customer Invoice
@@ -25,6 +28,123 @@ class AccountMove(models.Model):
         [('directly', 'Emitir agora'),
          ('after_payment', 'Emitir após pagamento'),
          ('manually', 'Manualmente')], string="Nota Eletrônica", default='directly')
+
+    def _validate_for_eletronic_document(self):
+        errors = []
+        for move in self:
+            if not move.company_id.l10n_br_certificate:
+                errors.append('Cadastro da Empresa - Certificado Digital')
+            if not move.company_id.l10n_br_cert_password:
+                errors.append('Cadastro da Empresa - Senha do Certificado Digital')
+            if not move.company_id.partner_id.l10n_br_legal_name:
+                errors.append('Cadastro da Empresa - Razão Social')
+            if not move.company_id.partner_id.l10n_br_cnpj_cpf:
+                errors.append('Cadastro da Empresa - CNPJ/CPF')
+            if not move.company_id.partner_id.street:
+                errors.append('Cadastro da Empresa / Endereço - Logradouro')
+            if not move.company_id.partner_id.l10n_br_number:
+                errors.append('Cadastro da Empresa / Endereço - Número')
+            if not move.company_id.partner_id.zip or len(
+                    re.sub(r"\D", "", self.company_id.partner_id.zip)) != 8:
+                errors.append('Cadastro da Empresa / Endereço - CEP')
+            if not move.company_id.partner_id.state_id:
+                errors.append('Cadastro da Empresa / Endereço - Estado')
+            else:
+                if not move.company_id.partner_id.state_id.l10n_br_ibge_code:
+                    errors.append('Cadastro da Empresa / Endereço - Cód. do IBGE do estado')
+                if not move.company_id.partner_id.state_id.name:
+                    errors.append('Cadastro da Empresa / Endereço - Nome do estado')
+
+            if not move.company_id.partner_id.city_id:
+                errors.append('Cadastro da Empresa / Endereço - município')
+            else:
+                if not move.company_id.partner_id.city_id.name:
+                    errors.append('Cadastro da Empresa / Endereço - Nome do município')
+                if not move.company_id.partner_id.city_id.l10n_br_ibge_code:
+                    errors.append('Cadastro da Empresa/Endereço - Cód. do IBGE do município')
+
+            if not move.company_id.partner_id.country_id:
+                errors.append('Cadastro da Empresa / Endereço - país')
+            else:
+                if not move.company_id.partner_id.country_id.name:
+                    errors.append('Cadastro da Empresa / Endereço - Nome do país')
+                if not move.company_id.partner_id.country_id.l10n_br_ibge_code:
+                    errors.append('Cadastro da Empresa / Endereço - Código do BC do país')
+            if not move.company_id.l10n_br_nfe_sequence:
+                errors.append('Configure a sequência para numeração de NFe')
+            if not move.company_id.l10n_br_nfe_service_sequence:
+                errors.append('Configure a sequência para numeração de NFe de serviço')
+
+            # produtos
+            for eletr in move.invoice_line_ids:
+                prod = "Produto: %s - %s" % (eletr.product_id.default_code,
+                                            eletr.product_id.name)
+                if not eletr.product_id.default_code:
+                    errors.append(
+                        'Prod: %s - Código do produto' % (
+                            eletr.product_id.name))
+
+                if not move.fiscal_position_id:
+                    errors.append('Configure a posição fiscal')
+                if move.company_id.l10n_br_accountant_id and not \
+                    move.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf:
+                    errors.append('Cadastro da Empresa / CNPJ do escritório contabilidade')
+
+            partner = move.partner_id.commercial_partner_id
+            company = move.company_id
+            # Destinatário
+            if partner.is_company and not partner.l10n_br_legal_name:
+                errors.append('Cliente - Razão Social')
+
+            if partner.country_id.id == company.partner_id.country_id.id:
+                if not partner.l10n_br_cnpj_cpf:
+                    errors.append('Cliente - CNPJ/CPF')
+
+            if not partner.street:
+                errors.append('Cliente / Endereço - Logradouro')
+
+            if not partner.l10n_br_number:
+                errors.append('Cliente / Endereço - Número')
+
+            if partner.country_id.id == company.partner_id.country_id.id:
+                if not partner.zip or len(
+                        re.sub(r"\D", "", partner.zip)) != 8:
+                    errors.append('Cliente / Endereço - CEP')
+
+            if partner.country_id.id == company.partner_id.country_id.id:
+                if not partner.state_id:
+                    errors.append('Cliente / Endereço - Estado')
+                else:
+                    if not partner.state_id.l10n_br_ibge_code:
+                        errors.append('Cliente / Endereço - Código do IBGE \
+                                    do estado')
+                    if not partner.state_id.name:
+                        errors.append('Cliente / Endereço - Nome do estado')
+
+            if partner.country_id.id == company.partner_id.country_id.id:
+                if not partner.city_id:
+                    errors.append('Cliente / Endereço - Município')
+                else:
+                    if not partner.city_id.name:
+                        errors.append('Cliente / Endereço - Nome do \
+                                    município')
+                    if not partner.city_id.l10n_br_ibge_code:
+                        errors.append('Cliente / Endereço - Código do IBGE \
+                                    do município')
+
+            if not partner.country_id:
+                errors.append('Cliente / Endereço - País')
+            else:
+                if not partner.country_id.name:
+                    errors.append('Cliente / Endereço - Nome do país')
+                if not partner.country_id.l10n_br_ibge_code:
+                    errors.append('Cliente / Endereço - Cód. do BC do país')
+        
+        if len(errors) > 0:
+            msg = "\n".join(
+                ["Por favor corrija os erros antes de prosseguir"] + errors)
+            raise UserError(msg)
+
 
     def _prepare_eletronic_line_vals(self, invoice_lines):
         lines = []
@@ -254,8 +374,9 @@ class AccountMove(models.Model):
                 self.env['eletronic.document'].create(vals)
 
     def action_post(self):
-        res = super(AccountMove, self).action_post()
         moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.type != 'entry')
+        moves._validate_for_eletronic_document()
+        res = super(AccountMove, self).action_post()
         moves.action_create_eletronic_document()
         return res
 
