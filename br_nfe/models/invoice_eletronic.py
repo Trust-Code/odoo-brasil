@@ -623,7 +623,9 @@ class InvoiceEletronic(models.Model):
                 'xPais': shipping_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', shipping_id.phone or '')
             }
-            cnpj_cpf = re.sub('[^0-9]', '', shipping_id.cnpj_cpf or '')
+            cnpj_cpf = re.sub(
+                "[^0-9]", "", shipping_id.cnpj_cpf or partner.cnpj_cpf or ""
+            )
 
             if len(cnpj_cpf) == 14:
                 entrega.update({'CNPJ': cnpj_cpf})
