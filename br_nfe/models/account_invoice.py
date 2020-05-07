@@ -107,7 +107,7 @@ class AccountInvoice(models.Model):
         res['fatura_desconto'] = inv.total_desconto
         res['fatura_liquido'] = inv.amount_total
 
-        if inv.type != "out_refund":
+        if inv.type not in ("out_refund", "in_refund"):
             res['pedido_compra'] = inv.name
 
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
