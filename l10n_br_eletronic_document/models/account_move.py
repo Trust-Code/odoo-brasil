@@ -29,6 +29,17 @@ class AccountMove(models.Model):
          ('after_payment', 'Emitir após pagamento'),
          ('manually', 'Manualmente')], string="Nota Eletrônica", default='directly')
 
+    @api.model
+    def _autopost_draft_entries(self):
+        records = self.search([
+            ('state', '=', 'draft'),
+            ('date', '<=', fields.Date.today()),
+            ('auto_post', '=', True),
+        ])
+        for item in records:
+            item.action_post()
+            self.env.cr.commit()
+
     def _validate_for_eletronic_document(self):
         errors = []
         for move in self:
@@ -70,13 +81,14 @@ class AccountMove(models.Model):
                     errors.append('Cadastro da Empresa / Endereço - Nome do país')
                 if not move.company_id.partner_id.country_id.l10n_br_ibge_code:
                     errors.append('Cadastro da Empresa / Endereço - Código do BC do país')
-            if not move.company_id.l10n_br_nfe_sequence:
-                errors.append('Configure a sequência para numeração de NFe')
-            if not move.company_id.l10n_br_nfe_service_sequence:
-                errors.append('Configure a sequência para numeração de NFe de serviço')
 
+            has_products = has_services = False
             # produtos
             for eletr in move.invoice_line_ids:
+                if eletr.product_id.type == 'service':
+                    has_services = True
+                if eletr.product_id.type in ('consu', 'product'):
+                    has_products = True
                 prod = "Produto: %s - %s" % (eletr.product_id.default_code,
                                             eletr.product_id.name)
                 if not eletr.product_id.default_code:
@@ -89,6 +101,11 @@ class AccountMove(models.Model):
                 if move.company_id.l10n_br_accountant_id and not \
                     move.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf:
                     errors.append('Cadastro da Empresa / CNPJ do escritório contabilidade')
+
+            if has_products and not move.company_id.l10n_br_nfe_sequence:
+                errors.append('Configure a sequência para numeração de NFe')
+            if has_services and not move.company_id.l10n_br_nfe_service_sequence:
+                errors.append('Configure a sequência para numeração de NFe de serviço')
 
             partner = move.partner_id.commercial_partner_id
             company = move.company_id
@@ -259,7 +276,11 @@ class AccountMove(models.Model):
         invoice = self
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
-        numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
+        numero_nfe = numero_rps = 0
+        if self.company_id.l10n_br_nfe_sequence:
+            numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
+        if self.company_id.l10n_br_nfe_service_sequence:
+            numero_rps = self.company_id.l10n_br_nfe_service_sequence.next_by_id()
         vals = {
             'name': invoice.name,
             'move_id': invoice.id,
@@ -307,6 +328,7 @@ class AccountMove(models.Model):
             'pedido_compra': invoice.invoice_payment_ref,
             'serie_documento': 1,
             'numero': numero_nfe,
+            'numero_rps': numero_rps,
         }
         vals['cod_regime_tributario'] = '1' if invoice.company_id.l10n_br_tax_regime == 'simples' else '3'
          # Indicador Consumidor Final

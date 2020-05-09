@@ -556,14 +556,13 @@ class EletronicDocument(models.Model):
         super(EletronicDocument, self).unlink()
 
     def log_exception(self, exc):
-        self.codigo_retorno = -1
-        self.mensagem_retorno = str(exc)
+        self.write({
+            'codigo_retorno': -1,
+            'mensagem_retorno': str(exc),
+            'state': 'error',
+        })
 
     def notify_user(self):
-        # msg = _('Verifique a %s, ocorreu um problema com o envio de \
-        #         documento eletrônico!') % self.name
-        # self.create_uid.notify_warning(
-        #     msg, sticky=True, title="Ação necessária!")
         try:
             activity_type_id = self.env.ref('mail.mail_activity_data_todo').id
         except ValueError:
@@ -592,12 +591,13 @@ class EletronicDocument(models.Model):
                 _logger.info('Sending edoc id: %s (number: %s) by cron' % (
                     item.id, item.numero))
                 item.action_send_eletronic_invoice()
-                self.env.cr.commit()
             except Exception as e:
                 item.log_exception(e)
                 item.notify_user()
                 _logger.error(
                     'Erro no envio de documento eletrônico', exc_info=True)
+            finally:
+                self.env.cr.commit()
 
     def _find_attachment_ids_email(self):
         atts = []

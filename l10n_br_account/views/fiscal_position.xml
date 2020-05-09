@@ -88,6 +88,7 @@
             <group position="after">
                 <group name="nfe" string="Informações NF-e">
                     <group>
+                        <field name="serie_nota_fiscal" />
                         <field name="finalidade_emissao" />
                         <field name="ind_final" />
                     </group>
@@ -108,18 +109,6 @@
                 <page name="notes" string="Observações Fiscais">
                     <group string="Observações">
                         <!-- <field name="fiscal_observation_ids" nolabel="1" /> -->
-                    </group>
-                </page>
-                <page name="other_information" string="Outras Informações">
-                    <group>
-                        <!-- <group>
-                            <field name="product_document_id" />
-                            <field name="product_serie_id" />
-                        </group>
-                        <group>
-                            <field name="service_document_id" />
-                            <field name="service_serie_id" />
-                        </group> -->
                     </group>
                 </page>
             </xpath>

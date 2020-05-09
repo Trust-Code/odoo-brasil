@@ -90,11 +90,13 @@ class AccountMove(models.Model):
                     'per_day_interest': True,
                     'customer_id': invoice.partner_id.iugu_id,
                     'early_payment_discount': False,
-                    'order_id': invoice.name,
+                    'order_id': '%s/%s' % (invoice.name, moveline.id),
                 }
                 data = iugu_invoice_api.create(vals)
                 if "errors" in data:
-                    print(data)
+                    if isinstance(data['errors'], str):
+                        raise UserError('Erro na integração com IUGU:\n%s' % data['errors'])
+
                     msg = "\n".join(
                         ["A integração com IUGU retornou os seguintes erros"] +
                         ["Field: %s %s" % (x[0], x[1][0])
