@@ -4,7 +4,7 @@
     'version': '11.0.1.0.0',
     'category': 'Website',
     'author': 'Trustcode',
-    'license': 'LGPLv3',
+    'license': 'LGPL-3',
     'website': 'http://www.odoo-next.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
