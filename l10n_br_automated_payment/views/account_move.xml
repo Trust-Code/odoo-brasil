@@ -16,7 +16,6 @@
                             <field name="date_maturity"/>
                             <field name="amount"/>
                             <field name="transaction_url" widget="url"/>
-                            <button name="action_wizard_edit" string="Editar" type="object" class="btn btn-success btn-sm" />
                             <button name="action_verify_transaction" string="Verificar" type="object" class="btn btn-success btn-sm" />
                             <button name="action_cancel_transaction" string="Cancelar" type="object" class="btn btn-danger btn-sm" confirm="Confirma o cancelamento?" />
                         </tree>

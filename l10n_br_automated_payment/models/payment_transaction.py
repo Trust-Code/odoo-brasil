@@ -1,9 +1,9 @@
 # © 2019 Danimar Ribeiro
 # Part of OdooNext. See LICENSE file for full copyright and licensing details.
 
-
-
+import iugu
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class PaymentTransaction(models.Model):
@@ -13,11 +13,22 @@ class PaymentTransaction(models.Model):
     origin_move_line_id = fields.Many2one('account.move.line')
     date_maturity = fields.Date(string="Data de Vencimento")
 
-    def action_wizard_edit(self):
-        pass
-
     def action_verify_transaction(self):
-        pass
+        if self.acquirer_reference:
+            token = self.env.user.company_id.iugu_api_token
+            iugu.config(token=token)
+            iugu_invoice_api = iugu.Invoice()
+
+            data = iugu_invoice_api.search(self.acquirer_reference)
+            if "errors" in data:
+                raise UserError(data['errors'])
+            if data.get('status', '') == 'paid' and self.state not in ('done', 'authorized'):
+                self._set_transaction_done()
+                self._post_process_after_done()
+            else:
+                self.iugu_status = data['status']
+        else:
+            raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
 
     def action_cancel_transaction(self):
         self._set_transaction_cancel()
