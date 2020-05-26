@@ -25,6 +25,7 @@ class PaymentTransaction(models.Model):
             if data.get('status', '') == 'paid' and self.state not in ('done', 'authorized'):
                 self._set_transaction_done()
                 self._post_process_after_done()
+                self.origin_move_line_id._create_bank_tax_move(data)
             else:
                 self.iugu_status = data['status']
         else:
