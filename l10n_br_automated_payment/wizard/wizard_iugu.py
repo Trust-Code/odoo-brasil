@@ -1,5 +1,5 @@
-# © 2016 Alessandro Fernandes Martini, Trustcode
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# © 2020 Danimar Ribeiro, Trustcode
+# Part of Trustcode. See LICENSE file for full copyright and licensing details.
 
 import iugu
 from odoo import api, fields, models

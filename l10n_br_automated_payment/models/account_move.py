@@ -120,7 +120,6 @@ class AccountMove(models.Model):
             transaction.write({
                 'acquirer_reference': data['id'],
                 'transaction_url': data['secure_url'],
-
             })
             moveline.write({
                 'iugu_id': data['id'],

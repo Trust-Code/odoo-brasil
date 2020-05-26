@@ -27,5 +27,6 @@
         'views/portal_templates.xml',
         'views/res_config_settings.xml',
         'wizard/wizard_iugu.xml',
+        'wizard/wizard_new_payment.xml',
     ],
 }

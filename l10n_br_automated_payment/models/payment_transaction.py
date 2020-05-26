@@ -20,4 +20,4 @@ class PaymentTransaction(models.Model):
         pass
 
     def action_cancel_transaction(self):
-        pass
+        self._set_transaction_cancel()

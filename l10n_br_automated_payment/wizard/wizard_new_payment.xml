@@ -1,0 +1,37 @@
+<odoo>
+
+    <record id="wizard_new_payment_invoice_form" model="ir.ui.view" >
+        <field name="model">wizard.new.payment.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Criar uma nova transação para pagamento">
+                <group>
+                    <group>
+                        <field name="move_id" invisible="1"/>
+                        <field name="description" />
+                        <field name="partner_id" />
+                        <field name="amount" />
+                        <field name="currency_id" invisible="1" />
+                        <field name="date_change" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_change_invoice_iugu" type="object" string="Criar nova cobrança" class="oe_highlight"/>
+                        or
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window
+        name="Gerar um novo pagamento"
+        res_model="wizard.new.payment.invoice"
+        binding_model="account.move"
+        binding_views="form"
+        view_mode="form"
+        target="new"
+        view_id="wizard_new_payment_invoice_form"
+        id="action_invoice_order_generate_link"
+    />
+
+</odoo>
