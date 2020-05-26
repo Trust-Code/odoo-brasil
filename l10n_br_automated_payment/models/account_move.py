@@ -6,6 +6,8 @@ import iugu
 from datetime import date
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo import api, SUPERUSER_ID, _
+from odoo import registry as registry_get
 
 
 class AccountMove(models.Model):
@@ -21,7 +23,7 @@ class AccountMove(models.Model):
     def _compute_payables(self):
         self.payable_move_line_ids = self.line_ids.filtered(
             lambda m: m.account_id.user_type_id.type == 'payable')
-        
+
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
         compute='_compute_receivables')
@@ -61,58 +63,80 @@ class AccountMove(models.Model):
             raise ValidationError(msg)
 
     def send_information_to_iugu(self):
-        for invoice in self:
-            if not invoice.payment_journal_id.receive_by_iugu:
-                continue
-                
-            base_url = (
-                self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-            )
-            token = self.env.user.company_id.iugu_api_token
-            iugu.config(token=token)
-            iugu_invoice_api = iugu.Invoice()
+        if not self.payment_journal_id.receive_by_iugu:
+            return
 
-            for moveline in invoice.receivable_move_line_ids:
-                invoice.partner_id.action_synchronize_iugu()
-                vals = {
-                    'email': invoice.partner_id.email,
-                    'due_date': moveline.date_maturity.strftime('%Y-%m-%d'),
-                    'ensure_workday_due_date': True,
-                    'items': [{
-                        'description': 'Fatura Ref: %s' % moveline.name,
-                        'quantity': 1,
-                        'price_cents': int(moveline.amount_residual * 100),
-                    }],
-                    'return_url': '%s/my/invoices/%s' % (base_url, invoice.id),
-                    'notification_url': '%s/iugu/webhook?id=%s' % (base_url, invoice.id),
-                    'fines': True,
-                    'late_payment_fine': 2,
-                    'per_day_interest': True,
-                    'customer_id': invoice.partner_id.iugu_id,
-                    'early_payment_discount': False,
-                    'order_id': '%s/%s' % (invoice.name, moveline.id),
-                }
-                data = iugu_invoice_api.create(vals)
-                if "errors" in data:
-                    if isinstance(data['errors'], str):
-                        raise UserError('Erro na integração com IUGU:\n%s' % data['errors'])
+        base_url = (
+            self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        )
+        token = self.env.user.company_id.iugu_api_token
+        iugu.config(token=token)
+        iugu_invoice_api = iugu.Invoice()
 
-                    msg = "\n".join(
-                        ["A integração com IUGU retornou os seguintes erros"] +
-                        ["Field: %s %s" % (x[0], x[1][0])
-                         for x in data['errors'].items()])
-                    raise UserError(msg)
-                moveline.write({
-                    'iugu_id': data['id'],
-                    'iugu_secure_payment_url': data['secure_url'],
-                    'iugu_digitable_line': data['bank_slip']['digitable_line'],
-                    'iugu_barcode_url': data['bank_slip']['barcode'],
-                })
+        for moveline in self.receivable_move_line_ids:
+            self.partner_id.action_synchronize_iugu()
+
+            iugu_p = self.env['payment.acquirer'].search([('provider', '=', 'iugu')])
+            transaction = self.env['payment.transaction'].create({
+                'acquirer_id': iugu_p.id,
+                'amount': moveline.amount_residual,
+                'currency_id': moveline.move_id.currency_id.id,
+                'partner_id': moveline.partner_id.id,
+                'type': 'server2server',
+                'date_maturity': moveline.date_maturity,
+                'origin_move_line_id': moveline.id,
+                'invoice_ids': [(6, 0, self.ids)]
+            })
+
+            vals = {
+                'email': self.partner_id.email,
+                'due_date': moveline.date_maturity.strftime('%Y-%m-%d'),
+                'ensure_workday_due_date': True,
+                'items': [{
+                    'description': 'Fatura Ref: %s' % moveline.name,
+                    'quantity': 1,
+                    'price_cents': int(moveline.amount_residual * 100),
+                }],
+                'return_url': '%s/my/invoices/%s' % (base_url, self.id),
+                'notification_url': '%s/iugu/webhook?id=%s' % (base_url, self.id),
+                'fines': True,
+                'late_payment_fine': 2,
+                'per_day_interest': True,
+                'customer_id': self.partner_id.iugu_id,
+                'early_payment_discount': False,
+                'order_id': transaction.reference,
+            }
+            data = iugu_invoice_api.create(vals)
+            if "errors" in data:
+                if isinstance(data['errors'], str):
+                    raise UserError('Erro na integração com IUGU:\n%s' % data['errors'])
+
+                msg = "\n".join(
+                    ["A integração com IUGU retornou os seguintes erros"] +
+                    ["Field: %s %s" % (x[0], x[1][0])
+                        for x in data['errors'].items()])
+                raise UserError(msg)
+
+            transaction.write({
+                'acquirer_reference': data['id'],
+                'transaction_url': data['secure_url'],
+
+            })
+            moveline.write({
+                'iugu_id': data['id'],
+                'iugu_secure_payment_url': data['secure_url'],
+                'iugu_digitable_line': data['bank_slip']['digitable_line'],
+                'iugu_barcode_url': data['bank_slip']['barcode'],
+            })
+
+    def generate_payment_transactions(self):
+        for item in self:
+            item.send_information_to_iugu()
 
     def action_post(self):
         self.validate_data_iugu()
         result = super(AccountMove, self).action_post()
-        self.send_information_to_iugu()
+        self.generate_payment_transactions()
         return result
 
 

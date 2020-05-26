@@ -7,13 +7,22 @@
             <field name="journal_id" position="before">
                 <field name="payment_journal_id" domain="[('type', 'in', ('bank', 'cash'))]"/>
             </field>
-            <xpath expr="//field[@name='line_ids']/tree/field[@name='tag_ids']" position="after">
-                <field name="iugu_status"/>
-                <field name="iugu_secure_payment_url" widget="url"/>
-                <button name="open_wizard_change_date" string="Alterar Iugu" type="object" class="btn btn-success btn-sm" />
-                <button name="action_verify_iugu_payment" string="Verificar Iugu" type="object" class="btn btn-success btn-sm" />
-                <button name="action_cancel_iugu" string="Cancelar" type="object" class="btn btn-danger btn-sm" confirm="Confirma o cancelamento?" />
-            </xpath>
+            <page id="aml_tab" position="after">
+                <page id="receivable_payments" string="Cobranças" name="receivable_payments">
+                    <field name="transaction_ids">
+                        <tree editable="bottom" string="Cobranças" default_order="date_maturity desc, origin_move_line_id">
+                            <field name="state"/>
+                            <field name="reference"/>
+                            <field name="date_maturity"/>
+                            <field name="amount"/>
+                            <field name="transaction_url" widget="url"/>
+                            <button name="action_wizard_edit" string="Editar" type="object" class="btn btn-success btn-sm" />
+                            <button name="action_verify_transaction" string="Verificar" type="object" class="btn btn-success btn-sm" />
+                            <button name="action_cancel_transaction" string="Cancelar" type="object" class="btn btn-danger btn-sm" confirm="Confirma o cancelamento?" />
+                        </tree>
+                    </field>
+                </page>
+            </page>
         </field>
     </record> 
 
