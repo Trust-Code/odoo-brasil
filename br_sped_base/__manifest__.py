@@ -22,6 +22,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/product.xml',
+        'views/invoice_eletronic.xml',
+        'views/account_fiscal_position_view.xml',
     ],
     'application': True,
 }

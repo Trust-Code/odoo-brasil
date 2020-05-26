@@ -4,3 +4,5 @@
 from . import account_invoice
 from . import product
 from . import mrp_production
+from . import account_fiscal_position
+from . import invoice_eletronic
