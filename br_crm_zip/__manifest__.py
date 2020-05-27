@@ -15,5 +15,5 @@
         'br_crm',
     ],
     'installable': True,
-    'auto_install': True,
+    'auto_install': False,
 }

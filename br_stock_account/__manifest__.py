@@ -21,5 +21,5 @@
         'views/stock_picking.xml',
         'reports/account_invoice.xml',
     ],
-    'auto_install': True,
+    'auto_install': False,
 }

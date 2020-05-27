@@ -26,5 +26,5 @@
         'views/hr_expense.xml',
         'views/payment_order.xml',
     ],
-    'auto_install': True
+    'auto_install': False
 }

@@ -19,5 +19,5 @@
         'reports/sale_order.xml',
         'views/sale_stock_view.xml',
     ],
-    'auto_install': True,
+    'auto_install': False,
 }

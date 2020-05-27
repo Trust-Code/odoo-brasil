@@ -16,5 +16,5 @@
         'views/purchase_stock_view.xml',
         'views/account_invoice.xml',
     ],
-    'auto_install': True,
+    'auto_install': False,
 }

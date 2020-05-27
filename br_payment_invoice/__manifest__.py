@@ -28,5 +28,5 @@
         'wizard/change_payment.xml',
         'reports/receipt.xml'
     ],
-    'auto_install': True
+    'auto_install': False
 }

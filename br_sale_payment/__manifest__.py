@@ -18,5 +18,5 @@
     'data': [
         'views/sale_order.xml',
     ],
-    'auto_install': True
+    'auto_install': False
 }
