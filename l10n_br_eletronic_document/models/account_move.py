@@ -326,7 +326,7 @@ class AccountMove(models.Model):
             'fatura_desconto': 0.0,
             'fatura_liquido': invoice.amount_total,
             'pedido_compra': invoice.invoice_payment_ref,
-            'serie_documento': 1,
+            'serie_documento': invoice.fiscal_position_id.serie_nota_fiscal,
             'numero': numero_nfe,
             'numero_rps': numero_rps,
         }

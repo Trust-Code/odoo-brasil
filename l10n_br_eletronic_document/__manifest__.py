@@ -30,7 +30,12 @@
         'views/fiscal_position.xml',
         'views/account_config_settings.xml',
         'views/res_partner.xml',
+        'wizard/cancel_nfe.xml',
+        'wizard/carta_correcao_eletronica.xml',
+        'wizard/export_nfe.xml',
+        'wizard/inutilize_nfe_numeration.xml',
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_florianopolis.xml',
+        'reports/danfe_report.xml',
     ],
 }

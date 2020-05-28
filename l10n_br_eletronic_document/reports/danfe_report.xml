@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <report
+            id="report_br_nfe_danfe"
+            string="Impressão de Danfe"
+            model="eletronic.document"
+            report_type="qweb-pdf"
+            file="l10n_br_eletronic_document.main_template_br_nfe_danfe"
+            name="l10n_br_eletronic_document.main_template_br_nfe_danfe" />
+
+        <record id="report_br_nfe_danfe" model="ir.actions.report">
+            <field name="print_report_name">'%s - NFe - %s' % (object.numero, object.partner_id.name)</field>
+        </record>
+    </data>
+</odoo>

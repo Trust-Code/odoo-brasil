@@ -4,7 +4,7 @@
     'version': '13.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
-    'license': 'OEEL-1',
+    'license': 'MIT',
     'website': 'http://www.odoo-next.com,br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',

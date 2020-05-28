@@ -1,0 +1,36 @@
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_cancel_nfe">
+        <field name="name">wizard.cancel.nfe.form</field>
+        <field name="model">wizard.cancel.nfe</field>
+        <field name="arch" type="xml">
+            <form string="Cancelamento de NFe">
+                <group>
+                    <field name="state" invisible="1"/>
+                    <field name="edoc_id"/>
+                    <field name="justificativa"/>
+                </group>
+                <group states="error" string="Resultado Envio">
+                    <field name="message" />
+                    <field name="sent_xml_name" invisible="1"/>
+                    <field name="sent_xml" filename="sent_xml_name"/>
+                    <field name="received_xml_name" invisible="1"/>
+                    <field name="received_xml" filename="received_xml_name"/>
+                </group>
+                <div>
+                    <strong>Regras para cancelamento !</strong>
+                    <ul>
+                        <li>O fato gerador não pode ter ocorrido. O cancelamento, portanto, só é válido se for registrado antes da saída da mercadoria do estabelecimento</li>
+                        <li>O destinatário não pode ter realizado a Ciência da Emissão, passo necessário para o download do arquivo XML da nota fiscal.</li>
+                        <li>Número mínimo de 15 caracteres e máximo de 255 caracteres na justificativa</li>
+                    </ul>
+                </div>
+                <footer>
+                    <button name="action_cancel_nfe"
+                        string="Enviar Cancelamento" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

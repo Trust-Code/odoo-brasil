@@ -519,6 +519,16 @@ class EletronicDocument(models.Model):
             'invoice': self.move_id
         }
 
+    def generate_correction_letter(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "wizard.carta.correcao.eletronica",
+            "views": [[False, "form"]],
+            "name": _("Carta de Correção"),
+            "target": "new",
+            "context": {'default_eletronic_doc_id': self.id},
+        }
+
     def validate_invoice(self):
         self.ensure_one()
         errors = self._hook_validation()
