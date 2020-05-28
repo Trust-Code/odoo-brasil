@@ -118,12 +118,12 @@ class NfeMde(models.Model):
     def action_view_edocs(self):
         if self.total_edocs == 1:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+                'l10n_br_eletronic_document', 'action_view_eletronic_document')
             dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'br_account_invoice_eletronic_form')
+                'l10n_br_eletronic_document', 'view_eletronic_document_form')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
-            vals['view_id'] = (view_id, u'sped.eletronic.doc.form')
-            vals['views'][1] = (view_id, u'form')
+            vals['view_id'] = (view_id, 'sped.eletronic.doc.form')
+            vals['views'][1] = (view_id, 'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
             edoc = self.env['eletronic.document'].search(
                 [('nfe_mde_id', '=', self.id)], limit=1)
@@ -131,7 +131,7 @@ class NfeMde(models.Model):
             return vals
         else:
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'br_account_einvoice', 'action_sped_base_eletronic_doc')
+                'l10n_br_eletronic_document', 'action_view_eletronic_document')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             return vals
 
@@ -162,22 +162,18 @@ class NfeMde(models.Model):
             return True
         evento = {
             'tpEvento': 210210,
-            'descEvento': u'Ciencia da Operacao',
+            'descEvento': 'Ciencia da Operacao',
         }
 
         nfe_result = send_event(
             self.company_id, self.chave_nfe, 'ciencia_operacao', self.id,
             evento=evento)
-        env_events = self.env['invoice.eletronic.event']
-
-        event = self._create_event(
-            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == 135:
             self.state = 'ciente'
         elif nfe_result['code'] == 573:
             self.state = 'ciente'
-            event['name'] = u'Ciência da operação já previamente realizada'
+            self.message_post(body='Ciência da operação já previamente realizada')
         else:
             self.message_post(
                 body='Download do xml não foi possível: %s - %s' % (
@@ -185,7 +181,6 @@ class NfeMde(models.Model):
                     ))
             return False
 
-        event = env_events.create(event)
         return True
 
     def action_confirm_operation(self):

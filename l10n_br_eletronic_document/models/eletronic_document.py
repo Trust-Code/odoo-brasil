@@ -886,8 +886,7 @@ class EletronicDocumentLine(models.Model):
     eletronic_document_id = fields.Many2one(
         'eletronic.document', string='Documento')
     company_id = fields.Many2one(
-        'res.company', 'Empresa', related='eletronic_document_id.company_id',
-        readonly=True, store=True)
+        'res.company', 'Empresa', readonly=True, store=True)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", store=True)

@@ -41,7 +41,7 @@ def distribuicao_nfe(company, ultimo_nsu):
         ultimo_nsu=ultimo_nsu,
         estado=company.partner_id.state_id.l10n_br_ibge_code,
         certificado=certificado,
-        ambiente=int(company.l10n_br_tipo_ambiente),
+        ambiente=1,
         modelo='55',
     )
 
@@ -86,7 +86,7 @@ def send_event(company, nfe_key, method, lote, justificativa=None, **kwargs):
     manifesto = {
         'Id': ide,
         'cOrgao': 91,
-        'tpAmb': int(company.tipo_ambiente),
+        'tpAmb': 1,
         'CNPJ': cnpj_partner,
         'chNFe': nfe_key,
         'dhEvento': datetime.now().strftime('%Y-%m-%dT%H:%M:%S-00:00'),
@@ -100,7 +100,7 @@ def send_event(company, nfe_key, method, lote, justificativa=None, **kwargs):
         certificado=certificado,
         evento=method,
         eventos=[manifesto],
-        ambiente=int(company.tipo_ambiente),
+        ambiente=1,
         idLote=lote,
         estado='91',
         modelo='55',
@@ -131,7 +131,7 @@ def exec_download_nfe(company, list_nfe):
     result = download_nfe(
         estado=company.partner_id.state_id.l10n_br_ibge_code,
         certificado=certificado,
-        ambiente=int(company.l10n_br_tipo_ambiente),
+        ambiente=1,
         cnpj_cpf=cnpj_partner,
         chave_nfe=list_nfe[0],
         modelo='55')

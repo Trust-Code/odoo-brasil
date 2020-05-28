@@ -1,4 +1,5 @@
 import base64
+import pytz
 import logging
 from odoo import fields, models, _
 from dateutil import parser
@@ -80,9 +81,9 @@ class EletronicDocument(models.Model):
         num_controle = ide.cNF
         numero_nfe = ide.nNF
         data_emissao = parser.parse(str(ide.dhEmi))
-        data_fatura = get(ide, 'dhSaiEnt')
-        if data_fatura:
-            data_fatura = parser.parse(str(data_fatura))
+        data_entrada_saida = get(ide, 'dhSaiEnt')
+        if data_entrada_saida:
+            data_entrada_saida = parser.parse(str(data_entrada_saida))
         indicador_destinatario = ide.idDest
         ambiente = 'homologacao' if ide.tpAmb == 2\
             else 'producao'
@@ -90,16 +91,15 @@ class EletronicDocument(models.Model):
 
         return dict(
             tipo_operacao=operacao,
-            model=str(modelo),
+            model='nfce' if str(modelo) == '65' else 'nfe',
             serie_documento=serie,
             numero_controle=num_controle,
             numero=numero_nfe,
-            data_emissao=data_emissao,
-            data_fatura=data_fatura,
+            data_emissao=data_emissao.astimezone(pytz.utc).replace(tzinfo=None),
+            data_entrada_saida=data_entrada_saida.astimezone(pytz.utc).replace(tzinfo=None),
             ind_dest=str(indicador_destinatario),
             ambiente=ambiente,
             finalidade_emissao=finalidade_emissao,
-            code='AUTO',
             state='imported',
             name='Documento Eletrônico: n° ' + str(numero_nfe),
         )
@@ -118,7 +118,7 @@ class EletronicDocument(models.Model):
             cnpj_cpf = cnpj_cpf_format(str(tag_nfe.CPF.text).zfill(11))
 
         partner_id = self.env['res.partner'].search([
-            ('cnpj_cpf', '=', cnpj_cpf)], limit=1)
+            ('l10n_br_cnpj_cpf', '=', cnpj_cpf)], limit=1)
         if not partner_id and partner_automation:
             partner_id = self._create_partner(tag_nfe, destinatary)
         elif not partner_id and not partner_automation:
@@ -142,8 +142,8 @@ class EletronicDocument(models.Model):
             valor_desconto=get(ICMSTot, 'vDesc'),
             valor_ii=get(ICMSTot, 'vII'),
             valor_ipi=get(ICMSTot, 'vIPI'),
-            valor_pis=get(ICMSTot, 'vPIS'),
-            valor_cofins=get(ICMSTot, 'vCOFINS'),
+            pis_valor=get(ICMSTot, 'vPIS'),
+            cofins_valor=get(ICMSTot, 'vCOFINS'),
             valor_final=get(ICMSTot, 'vNF'),
             valor_estimado_tributos=get(ICMSTot, 'vTotTrib'),
             # TODO Inserir novos campos
@@ -192,16 +192,15 @@ class EletronicDocument(models.Model):
                         ('country_id.code', '=', 'BR')])
 
                     vals = {
-                        'cnpj_cpf': cnpj_cpf,
+                        'l10n_br_cnpj_cpf': cnpj_cpf,
                         'name': get(transp, 'transporta.xNome'),
-                        'inscr_est': get(transp, 'transporta.IE', str),
+                        'l10n_br_inscr_est': get(transp, 'transporta.IE', str),
                         'street': get(transp, 'transporta.xEnder'),
                         'city': get(transp, 'transporta.xMun'),
                         'state_id': state_id.id,
-                        'legal_name': get(transp, 'transporta.xNome'),
+                        'l10n_br_legal_name': get(transp, 'transporta.xNome'),
                         'company_type': 'company',
                         'is_company': True,
-                        'supplier': True,
                         'company_id': None,
                     }
                     transportadora_id = self.env['res.partner'].create(vals)
@@ -292,10 +291,6 @@ class EletronicDocument(models.Model):
                 mensagem_retorno=protNFe.xMotivo,
                 protocolo_nfe=protNFe.nProt,
                 codigo_retorno=protNFe.cStat,
-                eletronic_event_ids=[(0, None, {
-                    'code': protNFe.cStat,
-                    'name': protNFe.xMotivo,
-                })]
             )
 
     def get_infAdic(self, nfe):
@@ -374,6 +369,7 @@ class EletronicDocument(models.Model):
             'cfop': cfop, 'ncm': ncm, 'product_ean': item.prod.cEAN,
             'product_cprod': codigo, 'product_xprod': item.prod.xProd,
             'cest': cest, 'item_pedido_compra': nItemPed,
+            'company_id': company_id.id,
         }
         if hasattr(item.imposto, 'ICMS'):
             invoice_eletronic_Item.update(self._get_icms(item.imposto))
@@ -551,7 +547,7 @@ class EletronicDocument(models.Model):
             item = self.create_invoice_eletronic_item(
                 det, company_id, partner_id, supplier, product_automation)
             items.append((4, item.id, False))
-        return {'eletronic_item_ids': items}
+        return {'document_line_ids': items}
 
     def get_compra(self, nfe):
         if hasattr(nfe.NFe.infNFe, 'compra'):
@@ -602,8 +598,7 @@ class EletronicDocument(models.Model):
         invoice_dict.update(self.get_cobr_dup(nfe))
         invoice_dict.update(self.get_compra(nfe))
         invoice_dict.pop('destinatary', False)
-        invoice_eletronic = self.env['eletronic.document'].create(
-            invoice_dict)
+        invoice_eletronic = self.env['eletronic.document'].create(invoice_dict)
 
         if account_invoice_automation:
             invoice = invoice_eletronic.prepare_account_invoice_vals(
@@ -647,8 +642,8 @@ class EletronicDocument(models.Model):
             ('code', '=', get(tag_nfe, ender_tag + '.UF')),
             ('country_id.code', '=', 'BR')])
 
-        city_id = self.env['res.state.city'].search([
-            ('ibge_code', '=', get(tag_nfe, ender_tag + '.cMun', str)[2:]),
+        city_id = self.env['res.city'].search([
+            ('l10n_br_ibge_code', '=', get(tag_nfe, ender_tag + '.cMun', str)[2:]),
             ('state_id', '=', state_id.id)])
 
         partner = {
@@ -661,14 +656,12 @@ class EletronicDocument(models.Model):
             'zip': get(tag_nfe, ender_tag + '.CEP', str),
             'country_id': state_id.country_id.id,
             'phone': get(tag_nfe, ender_tag + '.fone'),
-            'inscr_est': tag_nfe.IE.text if get(tag_nfe, 'IE', str) else None,
-            'inscr_mun': tag_nfe.IM.text if get(tag_nfe, 'IM', str) else None,
+            'l10n_br_inscr_est': tag_nfe.IE.text if get(tag_nfe, 'IE', str) else None,
+            'l10n_br_inscr_mun': tag_nfe.IM.text if get(tag_nfe, 'IM', str) else None,
             'l10n_br_cnpj_cpf': str(cnpj_cpf),
             'l10n_br_legal_name': get(tag_nfe, 'xNome'),
             'company_type': company_type,
             'is_company': is_company,
-            'supplier': True,
-            'customer': False,
             'company_id': None,
         }
         partner_id = self.env['res.partner'].create(partner)
@@ -826,7 +819,7 @@ class EletronicDocument(models.Model):
 
         items = []
         messages_log = []
-        for item in self.eletronic_item_ids:
+        for item in self.document_line_ids:
             invoice_item, message_log = self.prepare_account_invoice_line_vals(
                 item, purchase_order_id, supplierinfo_automation,
                 tax_automation, company_id)
