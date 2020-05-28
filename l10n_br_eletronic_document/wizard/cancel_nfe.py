@@ -6,16 +6,15 @@ class CancelNFe(models.TransientModel):
     _name = 'wizard.cancel.nfe'
     _description = "Cancelamento NF-e"
 
-    edoc_id = fields.Many2one('invoice.eletronic', string="Documento")
+    edoc_id = fields.Many2one('eletronic.document', string="Documento")
     justificativa = fields.Text('Justificativa', size=255, required=True)
-    state = fields.Selection([('drat', u'Provisório'), ('error', u'Erro')],
+    state = fields.Selection([('drat', 'Provisório'), ('error', u'Erro')],
                              string="Situação")
-    message = fields.Char(string=u"Mensagem", size=300, readonly=True)
+    message = fields.Char(string="Mensagem", size=300, readonly=True)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string=u"Xml Envio", size=30, readonly=True)
-    received_xml = fields.Binary(string=u"Xml Recebimento", readonly=True)
-    received_xml_name = fields.Char(
-        string=u"Xml Recebimento", size=30, readonly=True)
+    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
+    received_xml_name = fields.Char(string="Xml Recebimento", size=30, readonly=True)
 
     def action_cancel_nfe(self):
         if self.edoc_id and len(self.justificativa) > 15:
