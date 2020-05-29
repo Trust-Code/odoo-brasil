@@ -85,11 +85,13 @@ class L10nBrPaymentCnabImport(models.TransientModel):
                         nosso_numero = evento.nosso_numero[7:]
                     else:
                         nosso_numero = evento.nosso_numero
-                else:
+                elif (self.journal_id.bank_id.bic == '237'):
                     nosso_numero = evento.nosso_numero
+                else:
+                    nosso_numero = int(evento.nosso_numero)
 
                 payment_line = self.env['payment.order.line'].search(
-                    [('nosso_numero', '=', int(nosso_numero)),
+                    [('nosso_numero', '=', nosso_numero),
                      ('src_bank_account_id', '=',
                       self.journal_id.bank_account_id.id)])
 
