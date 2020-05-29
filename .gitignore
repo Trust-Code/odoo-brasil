@@ -3,6 +3,6 @@
 *~
 # Remove IDE files
 .idea/
-
+.vim/
 .vscode/
 
