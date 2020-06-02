@@ -28,7 +28,7 @@ class EletronicDocument(models.Model):
     _order = 'id desc'
 
     name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
-    company_id = fields.Many2one('res.company')
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True, states=STATE)
@@ -886,7 +886,8 @@ class EletronicDocumentLine(models.Model):
     eletronic_document_id = fields.Many2one(
         'eletronic.document', string='Documento')
     company_id = fields.Many2one(
-        'res.company', 'Empresa', readonly=True, store=True)
+        'res.company', 'Empresa', readonly=True, store=True,
+        default=lambda self: self.env.user.company_id)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", store=True)
