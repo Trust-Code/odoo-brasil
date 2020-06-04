@@ -44,6 +44,7 @@ def send_api(token, ambiente, edocs):
             "message": "Erro ao tentar envio de NFe - Favor contactar suporte.",
         }
     response = response.json()
+    print(edocs)
     if response.get("status", False) == "processando_autorizacao":
         return {
             "code": "processing",

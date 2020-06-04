@@ -238,8 +238,8 @@ class AccountMove(models.Model):
                 # 'cofins_valor_retencao':
                 # abs(line.cofins_valor) if line.cofins_valor < 0 else 0,
                 # - ISS -
-                'iss_codigo': line.product_id.service_type_id.code,
-                'codigo_servico': line.product_id.service_code,
+                'item_lista_servico': line.product_id.service_type_id.code,
+                'codigo_servico_municipio': line.product_id.service_code,
                 'iss_aliquota': iss.tax_line_id.amount or 0,
                 'iss_base_calculo': line.price_total or 0,
                 'iss_valor': round(line.price_total *  iss.tax_line_id.amount / 100, 2),

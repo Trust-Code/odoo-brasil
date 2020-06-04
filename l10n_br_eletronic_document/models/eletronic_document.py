@@ -696,7 +696,7 @@ class EletronicDocument(models.Model):
 
             emissor = {
                 'cnpj': re.sub('[^0-9]', '', doc.company_id.l10n_br_cnpj_cpf or ''),
-                'inscricao_municipal': re.sub('[^0-9]', '', doc.company_id.l10n_br_inscr_mun or ''),
+                'inscricao_municipal': doc.company_id.l10n_br_inscr_mun,
                 'codigo_municipio': '%s%s' % (
                     doc.company_id.state_id.l10n_br_ibge_code,
                     doc.company_id.city_id.l10n_br_ibge_code),
@@ -730,7 +730,7 @@ class EletronicDocument(models.Model):
                 items.append({
                     'name': line.product_id.name,
                     'cst_servico': '0',
-                    'codigo_servico': line.codigo_servico,
+                    'codigo_servico': line.item_lista_servico,
                     'cnae_servico': line.codigo_cnae,
                     'codigo_servico_municipio': line.codigo_servico_municipio,
                     'aliquota': aliquota,
@@ -936,10 +936,10 @@ class EletronicDocumentLine(models.Model):
     cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
     ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
 
-    codigo_servico = fields.Char(
-        string='Código NFSe', size=10, readonly=True, states=STATE)
+    item_lista_servico = fields.Char(
+        string="Código do serviço", size=10, readonly=True, states=STATE)
     codigo_servico_municipio = fields.Char(
-        string='Código NFSe', size=10, readonly=True, states=STATE)
+        string='Código NFSe', size=20, readonly=True, states=STATE)
     # Florianopolis
     codigo_cnae = fields.Char(string="CNAE", size=10,
                               readonly=True, states=STATE)
@@ -1125,8 +1125,6 @@ class EletronicDocumentLine(models.Model):
         readonly=True, states=STATE)
 
     # ----------- ISS -------------
-    iss_codigo = fields.Char(
-        string='Código', size=10, readonly=True, states=STATE)
     iss_aliquota = fields.Float(
         string='Alíquota', digits='Account',
         readonly=True, states=STATE)

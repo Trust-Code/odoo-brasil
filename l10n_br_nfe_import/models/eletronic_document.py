@@ -467,15 +467,13 @@ class EletronicDocument(models.Model):
         return remove_none_values(vals)
 
     def _get_issqn(self, issqn):
-
         vals = {
-            'iss_codigo': get(issqn, 'cListServ'),
+            'item_lista_servico': get(issqn, 'cListServ'),
             'iss_aliquota': get(issqn, 'vAliq'),
             'iss_base_calculo': get(issqn, 'vBC'),
             'iss_valor': get(issqn, 'vISSQN'),
             'iss_valor_retencao': get(issqn, 'vISSRet'),
         }
-
         return remove_none_values(vals)
 
     def _get_ipi(self, ipi):

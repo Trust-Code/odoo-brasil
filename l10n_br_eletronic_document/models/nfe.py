@@ -97,7 +97,7 @@ class EletronicDocument(models.Model):
                 if not eletr.ipi_cst:
                     errors.append('%s - CST do IPI' % prod)
             if eletr.tipo_produto == 'service':
-                if not eletr.iss_codigo:
+                if not eletr.item_lista_servico:
                     errors.append('%s - Código de Serviço' % prod)
             if not eletr.pis_cst:
                 errors.append('%s - CST do PIS' % prod)
@@ -282,13 +282,13 @@ class EletronicDocument(models.Model):
                     'vISSQN': "%.02f" % item.iss_valor,
                     'cMunFG': "%s%s" % (invoice.company_id.state_id.l10n_br_ibge_code,
                                         invoice.company_id.city_id.l10n_br_ibge_code),
-                    'cListServ': item.iss_codigo,
+                    'cListServ': item.item_lista_servico,
                     'vDeducao': '',
                     'vOutro': "%.02f" % retencoes if retencoes else '',
                     'vISSRet': "%.02f" % item.iss_valor_retencao
                     if item.iss_valor_retencao else '',
                     'indISS': 1,  # Exigivel
-                    'cServico': item.iss_codigo,
+                    'cServico': item.item_lista_servico,
                     'cMun': "%s%s" % (invoice.company_id.state_id.l10n_br_ibge_code,
                                       invoice.company_id.city_id.l10n_br_ibge_code),
                     'indIncentivo': 2,  # Não
