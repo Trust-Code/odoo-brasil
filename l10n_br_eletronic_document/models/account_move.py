@@ -181,6 +181,7 @@ class AccountMove(models.Model):
                 'name': line.name,
                 'product_id': line.product_id.id,
                 'eletronic_document_id': line.id,
+                'company_id': line.company_id.id,
                 'tipo_produto': 'service' if line.product_id.type == 'service' else 'product',
                 # 'cfop': line.cfop_id.code,
                 'uom_id': line.product_uom_id.id,

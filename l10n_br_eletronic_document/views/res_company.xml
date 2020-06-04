@@ -17,6 +17,9 @@
                         </group>
                     </group>
                     <group name="group_nfse">
+                        <group>
+                            <field name="l10n_br_nfse_token_acess" />
+                        </group>
                         <group string="Florianópolis">
                             <field name="l10n_br_aedf" />
                             <field name="l10n_br_client_id" />

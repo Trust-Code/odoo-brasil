@@ -13,6 +13,9 @@ class ResCompany(models.Model):
          ('presumido', 'Lucro Presumido'),
          ('real', 'Lucro Real')], string="Regime tributário")
 
+
+    # NFS-e
+    l10n_br_nfse_token_acess = fields.Char(string="Token de Acesso API", size=100)
     l10n_br_aedf = fields.Char(
         string="Número AEDF", size=10, help="Número de autorização para emissão de NFSe")
     l10n_br_client_id = fields.Char(string='Client Id', size=50)
@@ -25,6 +28,7 @@ class ResCompany(models.Model):
         'account.cnae', 'res_company_account_cnae',
         'company_id', 'cnae_id', 'CNAE Secundários')
 
+    # NF-e
     l10n_br_accountant_id = fields.Many2one('res.partner', string="Contador")
 
     l10n_br_nfe_email_template = fields.Many2one(

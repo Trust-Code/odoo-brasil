@@ -151,9 +151,10 @@ class EletronicDocument(models.Model):
         string='Valor Final', readonly=True, states=STATE)
 
     state = fields.Selection(
-        [('draft', u'Provisório'),
+        [('draft', 'Provisório'),
          ('edit', 'Editar'),
          ('error', 'Erro'),
+         ('processing', 'Em processamento'),
          ('denied', 'Denegado'),
          ('done', 'Enviado'),
          ('cancel', 'Cancelado')],
@@ -800,7 +801,7 @@ class EletronicDocument(models.Model):
         else:
             from .focus_nfse import send_api
             response = send_api(
-                certificate, password, 'sw9qPtcdFLAPD1XyAu84nEN4XEnfeg45',
+                company.l10n_br_nfse_token_acess,
                 doc_values[0]['ambiente'], doc_values)
 
         if response['code'] in (200, 201):
@@ -813,9 +814,39 @@ class EletronicDocument(models.Model):
                 'nfe_processada': base64.encodestring(response['xml']),
                 'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe']
             })
+        elif response['code'] == 'processing':
+            self.write({
+                'state': 'processing',
+            })
         else:
             raise UserError('%s - %s' %
                             (response['api_code'], response['message']))
+
+    def cron_check_status_nfse(self):
+        from .focus_nfse import check_nfse_api
+        documents = self.search([('state', '=', 'processing')], limit=100)
+        for edoc in documents:
+            response = check_nfse_api(
+                edoc.company_id.l10n_br_nfse_token_acess, 
+                edoc.company_id.l10n_br_tipo_ambiente,
+                str(edoc.id),
+            )
+            if response['code'] in (200, 201):
+                edoc.write({
+                    'protocolo_nfe': response['entity']['protocolo_nfe'],
+                    'numero': response['entity']['numero_nfe'],
+                    'state': 'done',
+                    'codigo_retorno': '100',
+                    'mensagem_retorno': 'Nota emitida com sucesso!',
+                    'nfe_processada': base64.encodestring(response['xml']),
+                    'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe']
+                })
+            elif response['code'] == 400:
+                edoc.write({
+                    'state': 'error',
+                    'codigo_retorno': response['api_code'],
+                    'mensagem_retorno': response['message'],
+                })
 
     def action_cancel_document(self, context=None, justificativa=None):
         company = self.mapped('company_id').with_context({'bin_size': False})
@@ -845,7 +876,8 @@ class EletronicDocument(models.Model):
             response = cancel_api(certificate, password, doc_values)
         else:
             from .focus_nfse import cancel_api
-            response = cancel_api(certificate, password, doc_values)
+            response = cancel_api(
+                company.l10n_br_nfse_token_acess, doc_values[0]['ambiente'], doc_values)
 
         if response['code'] in (200, 201):
             self.write({
