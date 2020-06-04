@@ -58,6 +58,11 @@ def send_api(token, ambiente, edocs):
         }
 
 
+def _download_pdf(pdf_path):
+    response = requests.get(pdf_path)
+    return response.content
+
+
 def check_nfse_api(token, ambiente, nfe_reference):
     if ambiente == "producao":
         url = "https://api.focusnfe.com.br/v2/nfse/" + nfe_reference
@@ -70,13 +75,14 @@ def check_nfse_api(token, ambiente, nfe_reference):
             "code": "processing",
         }
     elif response.get("status", False) == "autorizado":
+        pdf = _download_pdf(response["url_danfse"])
         return {
             "code": 201,
             "entity": {
                 "protocolo_nfe": response["codigo_verificacao"],
-                "numero_nfe": response["numero"],
+                "numero_nfe": int(response["numero"][4:]),
             },
-            "xml": response["caminho_xml_nota_fiscal"],
+            "pdf": pdf,
         }
     elif response.get("status", False) == "erro_autorizacao":
         return {

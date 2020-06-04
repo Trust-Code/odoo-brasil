@@ -10,6 +10,7 @@
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" />
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
                         <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
+                        <button name="action_check_status_nfse" string="Consultar Situação" type="object" states="processing" />
                         <button name="generate_correction_letter" type="object" class="oe_highlight" icon="fa-envelope"
                             string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('nfe', 'nfce'))]}">
                         </button>
@@ -59,6 +60,8 @@
                                         <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('nfce'))]}" />
                                         <field name="nfe_processada_name" invisible="1"/>
                                         <field name="nfe_processada" filename="nfe_processada_name"/>
+                                        <field name="nfse_pdf_name" invisible="1"/>
+                                        <field name="nfse_pdf" filename="nfse_pdf_name"/>
                                     </group>
                                     <group>
                                         <field name="data_emissao"/>

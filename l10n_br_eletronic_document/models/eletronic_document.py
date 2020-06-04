@@ -12,6 +12,8 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
+from .focus_nfse import check_nfse_api
+
 from odoo.addons.l10n_br_account.models.cst import (
     CST_ICMS, CST_PIS_COFINS, CSOSN_SIMPLES, CST_IPI, ORIGEM_PROD)
 
@@ -388,6 +390,11 @@ class EletronicDocument(models.Model):
         string=u"Xml da NFe", readonly=True, copy=False)
     nfe_processada_name = fields.Char(
         string=u"Xml da NFe", size=100, readonly=True, copy=False)
+
+    nfse_pdf = fields.Binary(
+        string="PDF da NFe", readonly=True, copy=False)
+    nfse_pdf_name = fields.Char(
+        string="PDF da NFe name", size=100, readonly=True, copy=False)
 
     valor_icms_uf_remet = fields.Monetary(
         string=u"ICMS Remetente", readonly=True, states=STATE,
@@ -805,15 +812,22 @@ class EletronicDocument(models.Model):
                 doc_values[0]['ambiente'], doc_values)
 
         if response['code'] in (200, 201):
-            self.write({
+            vals = {
                 'protocolo_nfe': response['entity']['protocolo_nfe'],
                 'numero': response['entity']['numero_nfe'],
                 'state': 'done',
                 'codigo_retorno': '100',
                 'mensagem_retorno': 'Nota emitida com sucesso!',
-                'nfe_processada': base64.encodestring(response['xml']),
-                'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe']
-            })
+                'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe'],
+                'nfse_pdf_name':  "NFe%08d.pdf" % response['entity']['numero_nfe'],
+            }
+            if response.get('xml', False):
+                vals['nfe_processada'] = base64.encodestring(response['xml'])
+            if response.get('pdf', False):
+                vals['nfse_pdf'] = base64.encodestring(response['pdf'])
+
+            self.write(vals)
+
         elif response['code'] == 'processing':
             self.write({
                 'state': 'processing',
@@ -822,25 +836,30 @@ class EletronicDocument(models.Model):
             raise UserError('%s - %s' %
                             (response['api_code'], response['message']))
 
-    def cron_check_status_nfse(self):
-        from .focus_nfse import check_nfse_api
-        documents = self.search([('state', '=', 'processing')], limit=100)
-        for edoc in documents:
+    def action_check_status_nfse(self):
+        for edoc in self:
             response = check_nfse_api(
                 edoc.company_id.l10n_br_nfse_token_acess, 
                 edoc.company_id.l10n_br_tipo_ambiente,
                 str(edoc.id),
             )
             if response['code'] in (200, 201):
-                edoc.write({
+                vals = {
                     'protocolo_nfe': response['entity']['protocolo_nfe'],
                     'numero': response['entity']['numero_nfe'],
                     'state': 'done',
                     'codigo_retorno': '100',
                     'mensagem_retorno': 'Nota emitida com sucesso!',
-                    'nfe_processada': base64.encodestring(response['xml']),
-                    'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe']
-                })
+                    'nfe_processada_name':  "NFe%08d.xml" % response['entity']['numero_nfe'],
+                    'nfse_pdf_name':  "NFe%08d.pdf" % response['entity']['numero_nfe'],
+                }
+                if response.get('xml', False):
+                    vals['nfe_processada'] = base64.encodestring(response['xml'])
+                if response.get('pdf', False):
+                    vals['nfse_pdf'] = base64.encodestring(response['pdf'])
+
+                edoc.write(vals)
+
             elif response['code'] == 400:
                 edoc.write({
                     'state': 'error',
@@ -848,6 +867,11 @@ class EletronicDocument(models.Model):
                     'mensagem_retorno': response['message'],
                 })
 
+
+    def cron_check_status_nfse(self):
+        documents = self.search([('state', '=', 'processing')], limit=100)
+        documents.action_check_status_nfse()
+        
     def action_cancel_document(self, context=None, justificativa=None):
         company = self.mapped('company_id').with_context({'bin_size': False})
         certificate = company.l10n_br_certificate
