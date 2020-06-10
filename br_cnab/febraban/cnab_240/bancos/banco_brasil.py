@@ -68,18 +68,14 @@ class BancoBrasil240(Cnab240):
             '17': 99,
             '99': 99,
             }
-
         especie_titulo = especie_titulo_banco[
             line.payment_mode_id.boleto_especie]
-
         vals['especie_titulo'] = especie_titulo
-
         vals['multa_codigo'] = vals['codigo_multa']
         vals['multa_data'] = self.format_date(line.date_maturity)
         vals['multa_percentual'] = Decimal(
             str(self.order.payment_mode_id.late_payment_fee)).quantize(
                 Decimal('1.00'))
-
         return vals
 
     def nosso_numero(self, format):

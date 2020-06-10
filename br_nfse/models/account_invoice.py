@@ -7,11 +7,15 @@ from odoo import api, fields, models
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.depends('invoice_eletronic_ids.numero_nfse')
+    @api.depends('invoice_line_ids.numero_nfse',
+                 'invoice_eletronic_ids.numero_nfse')
     def _compute_nfse_number(self):
         for inv in self:
             numeros = inv.invoice_eletronic_ids.mapped('numero_nfse')
             numeros = [n for n in numeros if n]
+            if not numeros:
+                numeros = inv.invoice_line_ids.mapped('numero_nfse')
+                numeros = [n for n in numeros if n]
             inv.numero_nfse = ','.join(numeros)
 
     ambiente_nfse = fields.Selection(
