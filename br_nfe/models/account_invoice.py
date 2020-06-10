@@ -217,6 +217,11 @@ class AccountInvoice(models.Model):
         vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
         vals['icms_aliquota_inter_part'] = \
             invoice_line.icms_aliquota_inter_part or 0.0
+        vals['icms_substituto'] = invoice_line.icms_substituto or 0.0
+        vals['icms_bc_st_retido'] = invoice_line.icms_bc_st_retido or 0.0
+        vals['icms_aliquota_st_retido'] = \
+            invoice_line.icms_aliquota_st_retido or 0.0
+        vals['icms_st_retido'] = invoice_line.icms_st_retido or 0.0
 
         di_importacao = []
         for di in invoice_line.import_declaration_ids:

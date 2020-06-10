@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="ir_cron_download_nfe_scheduler" model="ir.cron" forcecreate="True">
+        <field name="name">Agendamento NFe Download</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall" />
+        <field name="model_id" ref="model_nfe_schedule"/>
+        <field name="code">model.schedule_download()</field>
+    </record>
+
+    <record id="ir_cron_automacao_manifesto" model="ir.cron" forcecreate="True">
+        <field name="name">Automação de NFe entrada</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="state">code</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall" />
+        <field name="model_id" ref="model_nfe_schedule" />
+        <field name="code">model.cron_manifest_automation()</field>
+    </record>
+
+    <record id="form_nfe_schedule_download_nfe" model="ir.ui.view">
+        <field name="name">nfe.schedule.form</field>
+        <field name="model">nfe.schedule</field>
+        <field name="arch" type="xml">
+        <form string="Verificar downloads pendentes">
+            <field invisible="1" name="state"/>
+            <label for="state" string="Ao clicar em verificar o Odoo irá buscar as notas fiscais pendentes de
+                processamento no SEFAZ"></label>
+                <footer states="init">
+                    <button string="Verificar" name="execute_download" type="object" class="oe_highlight"/> ou
+                    <button string="Cancel" special="cancel" type="object" class="oe_link"/>
+                </footer>
+                <footer states="done">
+                    <button string="Done" name="done" type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_nfe_schedule_download_nfe" model="ir.actions.act_window">
+        <field name="name">Verificar NFe destinada</field>
+        <field name="res_model">nfe.schedule</field>
+        <field name="view_mode">form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="form_nfe_schedule_download_nfe"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_br_nfe_mde_processing_nfe_download" name="Verificar novas NFEs"
+        parent="br_account_einvoice.menu_eletronic_doc_base" action="action_nfe_schedule_download_nfe" sequence="50"/>
+
+</odoo>

@@ -7,3 +7,4 @@ python3-boleto
 xmlsec
 lxml==4.2.3
 pycnab240
+iugu

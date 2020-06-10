@@ -95,9 +95,9 @@ class AccountVoucher(models.Model):
         for line in move.line_ids:
             line2 = self.line_ids.filtered(
                 lambda x: x.account_id.id == line.account_id.id and
-                (x.price_subtotal if current_currency != company_currency else
-                 0.0) == line.amount_currency)
-            line.analytic_tag_ids = [(6, False, line2.analytic_tag_ids.ids)]
+                x.price_subtotal == line.balance)
+            if len(line2) == 1:
+                line.analytic_tag_ids = [(6, False, line2.analytic_tag_ids.ids)]
 
         return line_total
 

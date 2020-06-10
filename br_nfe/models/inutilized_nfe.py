@@ -62,6 +62,7 @@ class InutilizedNfe(models.Model):
             ('numero', '>=', self.numeration_start),
             ('numero', '<=', self.numeration_end),
             ('company_id', '=', self.env.user.company_id.id),
+            ('model', '=', self.modelo),
         ])
         if docs:
             errors.append('Não é possível invalidar essa série pois já existem'

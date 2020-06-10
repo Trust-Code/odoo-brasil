@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_operation_not_performed">
+        <field name="name">wizard.operation.not.performed.form</field>
+        <field name="model">wizard.operation.not.perfomed</field>
+        <field name="arch" type="xml">
+            <form string="Operação Não Realizada">
+                <group>
+                    <field name="mde_id"/>
+                    <field name="justificativa"/>
+                </group>
+                <footer>
+                    <button name="action_operation_not_performed"
+                        string="Confirmar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="acquirer_form_iugu" model="ir.ui.view">
+        <field name="name">payment.acquirer.form.inherit</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.acquirer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//group[@name="acquirer"]' position='after'>
+                <group attrs="{'invisible': [('provider', '!=', 'iugu')]}">
+                    <field name="iugu_api_key"/>
+                    <field name="return_url" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_payment_iugu_transaction_form" model="ir.ui.view">
+        <field name="name">view.payment.iugu.transaction.form</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.transaction_form"/>
+        <field name="arch" type="xml">
+            <field name="acquirer_reference" position="after">
+                <field name="invoice_url" readonly="1" widget="url"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

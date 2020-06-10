@@ -48,3 +48,15 @@ class InvoiceEletronicItem(models.Model):
     icms_fcp_uf_dest = fields.Monetary(
         string=u'Valor FCP', readonly=True, states=STATE)
     informacao_adicional = fields.Text(string=u"Informação Adicional")
+
+    # =========================================================================
+    # ICMS Retido anteriormente por ST
+    # =========================================================================
+    icms_substituto = fields.Monetary(
+        "ICMS Substituto", readonly=True, states=STATE)
+    icms_bc_st_retido = fields.Monetary(
+        "Base Calc. ST Ret.", readonly=True, states=STATE)
+    icms_aliquota_st_retido = fields.Float(
+        "% ST Retido", readonly=True, states=STATE)
+    icms_st_retido = fields.Monetary(
+        "ICMS ST Ret.", readonly=True, states=STATE)
