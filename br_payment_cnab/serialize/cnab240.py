@@ -314,5 +314,4 @@ class Cnab240(object):
     def get_mes_ano_competencia(self, line):
         if not line.invoice_date:
             return 0
-        date = datetime.strptime(line.invoice_date, "%Y-%m-%d")
-        return int('{}{}'.format(date.month, date.year))
+        return int(line.invoice_date.strftime('%m%y'))

@@ -32,12 +32,12 @@ class InvoiceEletronic(models.Model):
     def qrcode_floripa_url(self):
         import urllib
 
-        url_consulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
+        urlconsulta = "http://nfps-e.pmf.sc.gov.br/consulta-frontend/#!/\
 consulta?cod=%s&cmc=%s" % (self.verify_code, self.company_id.inscr_mun)
 
         url = '<img class="center-block"\
-style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
-?type=QR&value=' + urllib.parse.quote(url_consulta) + '"/>'
+style="max-width:100px;height:100px;margin:0px 0px;"src="/report/barcode/\
+?type=QR&width=100&height=100&value=' + urllib.parse.quote(urlconsulta) + '"/>'
         return url
 
     @api.multi
@@ -184,8 +184,11 @@ style="max-width:90px;height:90px;margin:0px 1px;"src="/report/barcode/\
         nfse_values = self._prepare_eletronic_invoice_values()
         xml_enviar = xml_processar_nota(certificado, rps=nfse_values)
 
-        self.xml_to_send = base64.encodestring(xml_enviar.encode('utf-8'))
-        self.xml_to_send_name = 'nfse-enviar-%s.xml' % self.numero
+        # SUDO Because Odoo added a strange condition (possible bug)
+        self.sudo().write({
+            'xml_to_send': base64.encodestring(xml_enviar.encode('utf-8')),
+            'xml_to_send_name': 'nfse-enviar-%s.xml' % self.numero,
+        })
 
     @api.multi
     def action_send_eletronic_invoice(self):

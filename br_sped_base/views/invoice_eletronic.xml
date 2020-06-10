@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_br_sped_invoice_eletronic_form" model="ir.ui.view">
+        <field name="name">view.br_sped.invoice.eletronic.form</field>
+        <field name="model">invoice.eletronic</field>
+        <field name="inherit_id" ref="br_nfe.view_br_nfe_invoice_eletronic_form"/>
+        <field name="arch" type="xml">
+            <field name="iest" position="after">
+                <field name="emissao_doc" />
+            </field>
+        </field>
+    </record>
+
+    <record id="invoice_eletronic_item_icms_sped" model="ir.ui.view">
+        <field name="name">invoice.eletronic.item.sped.form</field>
+        <field name="model">invoice.eletronic.item</field>
+        <field name="inherit_id" ref="br_nfe.invoice_eletronic_item_icms_inter" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="num_item" />
+            </field>
+        </field>
+    </record>
+</odoo>

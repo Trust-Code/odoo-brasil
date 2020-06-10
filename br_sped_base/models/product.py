@@ -6,7 +6,7 @@ from odoo import api, fields, models, _
 
 
 class ProductUom(models.Model):
-    _inherit = 'product.uom'
+    _inherit = 'uom.uom'
 
     l10n_br_description = fields.Char(string="Description", size=60)
 

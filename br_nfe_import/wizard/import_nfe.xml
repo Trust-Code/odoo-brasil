@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_import_nfe">
+        <field name="name">wizard.import.nfe.form</field>
+        <field name="model">wizard.import.nfe</field>
+        <field name="arch" type="xml">
+            <form string="Importa xml">
+                <field name="state" invisible="1" />
+                <group states="ok">
+                    <field name="import_batch_zip"/>
+                    <field name="nfe_xml" attrs="{'invisible': [('import_batch_zip', '=', True)]}"/>
+                    <field name="skip_wrong_xml" attrs="{'invisible': [('import_batch_zip', '=', False)]}"/>
+                    <field name="zip_file" attrs="{'invisible': [('import_batch_zip', '=', False)]}"/>
+                  </group>
+                <group states="error">
+                    <div>
+                        O arquivo zip abaixo contém os arquivos xml que não foram importados!
+                    </div>
+                    <field name="zip_file_error_name" invisible="1" />
+                    <field name="zip_file_error" filename="zip_file_error_name"/>
+                </group>
+                <footer states="ok">
+                    <button name="action_import_nfe"
+                        string="Importar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_import_nfe_wizard" model="ir.actions.act_window">
+        <field name="name">Importar NFe</field>
+        <field name="res_model">wizard.import.nfe</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_nfe_import"
+              name="Importar NF-e (XML)"
+              parent="account.menu_finance_payables"
+              action="action_import_nfe_wizard"
+              sequence="55" />
+
+    <menuitem id="menu_nfe_import2"
+              name="Importar NF-e (XML)"
+              parent="br_account_einvoice.menu_eletronic_doc_base"
+              action="action_import_nfe_wizard"
+              sequence="55" />
+
+</odoo>

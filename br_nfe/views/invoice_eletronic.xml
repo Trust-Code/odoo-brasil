@@ -17,6 +17,12 @@
                 <button name="generate_correction_letter" type="object" class="oe_highlight" icon="fa-envelope"
                     string="Carta de Correção" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('55', '65'))]}">
                 </button>
+                <button name="recriar_xml" type="object" class="oe_highlight" icon="fa-envelope"
+                    string="Recriar XML" attrs="{'invisible': ['|', ('state', '==', 'done'), ('model', 'not in', ('55', '65'))]}">
+                </button>
+                <button name="action_get_status" type="object" class="oe_highlight" icon="fa-envelope"
+                    string="Consultar Situação NFe" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('model', 'not in', ('55', '65'))]}">
+                </button>
             </button>
             <field name="payment_term_id" position="after">
                 <field name="payment_mode_id" />

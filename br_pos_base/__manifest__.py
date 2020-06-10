@@ -5,7 +5,7 @@
     'name': 'Point of Sale - Customer Modifications',
     'summary': """Module to adapt Odoo Point of Sale to Brazil""",
     'description': 'Point of Sale Brazil',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'pos',
     'author': 'Trustcode',
     'license': 'AGPL-3',

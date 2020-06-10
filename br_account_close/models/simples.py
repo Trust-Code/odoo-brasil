@@ -6,6 +6,7 @@ from odoo import fields, models
 
 class L10nBrTaxationSimples(models.Model):
     _name = 'l10n_br.taxation.simples'
+    _description = "Tributação Simples Nacional"
     _order = 'start_revenue'
 
     tax_id = fields.Many2one('account.tax', string="Tax")

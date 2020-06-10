@@ -7,7 +7,7 @@
     'summary': """Executes a period tax computation
     - Maintained by Trustcode""",
     'description': """Executes a monthly tax accouting""",
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'AGPL-3',

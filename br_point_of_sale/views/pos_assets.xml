@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="br_point_sale_assets_backend" inherit_id="point_of_sale.assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/br_point_of_sale/static/src/js/jquery.mask.min.js"></script>
+            <script type="text/javascript" src="/br_point_of_sale/static/src/lib/print.min.js"></script>
+            <script type="text/javascript" src="/br_point_of_sale/static/src/js/main.js"></script>
+            <script type="text/javascript" src="/br_point_of_sale/static/src/js/models.js"></script>
+            <script type="text/javascript" src="/br_point_of_sale/static/src/js/screens.js"></script>
+        </xpath>
+        <xpath expr="//link[@id='pos-stylesheet']" position="after">
+            <link rel="stylesheet" href="/br_point_of_sale/static/src/lib/print.min.css" />
+        </xpath>
+    </template>
+
+</odoo>

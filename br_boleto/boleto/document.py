@@ -6,7 +6,7 @@
 import re
 import io
 import logging
-from datetime import datetime, date
+from datetime import date
 
 _logger = logging.getLogger(__name__)
 
@@ -71,10 +71,8 @@ class Boleto:
 
     def _order_line(self, order_line):
         self._payment_mode(order_line.payment_mode_id)
-        self.boleto.data_vencimento = datetime.date(datetime.strptime(
-            order_line.date_maturity, '%Y-%m-%d'))
-        self.boleto.data_documento = datetime.date(datetime.strptime(
-            order_line.emission_date, '%Y-%m-%d'))
+        self.boleto.data_vencimento = order_line.date_maturity
+        self.boleto.data_documento = order_line.emission_date
         self.boleto.data_processamento = date.today()
         self.boleto.valor = "%.2f" % order_line.amount_total
         self.boleto.valor_documento = "%.2f" % order_line.amount_total

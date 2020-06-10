@@ -9,6 +9,9 @@ class TestBaseBr(TransactionCase):
     def setUp(self):
         super(TestBaseBr, self).setUp()
         self.main_company = self.env.ref('base.main_company')
+        self.main_company.write({
+            'account_sale_tax_id': None,
+        })
         self.currency_real = self.env.ref('base.BRL')
 
         self.default_ncm = self.env['product.fiscal.classification'].create({
@@ -18,7 +21,7 @@ class TestBaseBr(TransactionCase):
         self.default_product = self.env['product.product'].create({
             'name': 'Normal Product',
             'fiscal_classification_id': self.default_ncm.id,
-            'list_price': 15.0
+            'list_price': 15.0,
         })
         self.st_product = self.env['product.product'].create({
             'name': 'Product for ICMS ST',

@@ -13,7 +13,7 @@
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
     'category': 'account',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [
         'Guilherme Lenon da Silva <guilhermelds@gmail.com>',
@@ -21,7 +21,7 @@
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': [
-        'account_invoicing',
+        'account',
         'br_account_payment',
         'br_account_voucher',
     ],

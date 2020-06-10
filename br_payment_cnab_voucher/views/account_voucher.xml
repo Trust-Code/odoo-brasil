@@ -19,7 +19,7 @@
             </field>
             <group position="inside">
                 <h3 attrs="{'invisible': [('payment_type', 'not in', ('03', '04', '08'))]}">
-                    <strong><label string="Linha Digitável" /></strong>
+                    <strong><label for="linha_digitavel" string="Linha Digitável" /></strong>
                     <field name="linha_digitavel" />
                 </h3>
             </group>

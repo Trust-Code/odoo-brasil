@@ -6,7 +6,7 @@
     'summary': """Importação de extratos bancários nos formatos OFX e
     Cnab 240 - Mantido por Trustcode""",
     'description': 'Import Cnab Files',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'account',
     'author': 'Trustcode',
     'license': 'AGPL-3',

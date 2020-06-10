@@ -11,6 +11,7 @@ from .cst import CST_PIS_COFINS
 
 class AccountFiscalPositionTaxRule(models.Model):
     _name = 'account.fiscal.position.tax.rule'
+    _description = "Regras de Impostos"
     _order = 'sequence'
 
     sequence = fields.Integer(string=u"Sequência")

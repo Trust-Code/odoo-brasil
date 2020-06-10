@@ -32,6 +32,7 @@ class BrDeliveryCarrierVehicle(models.Model):
 
 class BrDeliveryShipment(models.Model):
     _name = 'br_delivery.shipment'
+    _description = "Expedição"
 
     code = fields.Char(u'Nome', size=32)
     description = fields.Char(u'Descrição', size=132)

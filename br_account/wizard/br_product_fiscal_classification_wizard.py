@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductFiscalClassificationWizard(models.TransientModel):
     _name = 'product.fiscal.classification.wizard'
+    _description = "Classificação fiscal do produto"
 
     product_fiscal_class_csv = fields.Binary(string="Arquivo CSV")
     ncm_csv_delimiter = fields.Char(string='Delimitador', size=3,

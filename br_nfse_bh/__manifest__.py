@@ -7,7 +7,7 @@
         - Mantido por Trustcode""",
     'summary': """Efetua a integração com a prefeitura de Belo Horizonte
     - Mantido por Trustcode""",
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': "Accounting & Finance",
     'author': 'Trustcode',
     'license': 'AGPL-3',

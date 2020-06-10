@@ -35,18 +35,9 @@
                 <field name="partner_id"
                        attrs="{'required': [('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"
                        context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound'}"/>
-                <!--<field name="payment_type" widget="radio" attrs="{'readonly': [('state', '!=', 'draft')]}" string="Tipo de Pagamento"/>-->
             </xpath>
             <xpath expr="//field[@name='payment_date']" position="after">
                 <field name="journal_id" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-            </xpath>
-
-            <xpath expr="//label[@for='amount']" position="attributes">
-                <attribute name="string">Valor do Pagamento</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='payment_date']" position="attributes">
-                <attribute name="string">Data de Pagamento</attribute>
             </xpath>
 
         </field>

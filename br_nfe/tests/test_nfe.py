@@ -253,7 +253,6 @@ class TestNFeBrasil(TransactionCase):
         ]
         default_invoice = {
             'name': "Teste Validação",
-            'reference_type': "none",
             'product_document_id': self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             'journal_id': self.journalrec.id,
@@ -266,7 +265,6 @@ class TestNFeBrasil(TransactionCase):
         }
         self.inv_incomplete = self.env['account.invoice'].create(dict(
             name="Teste Validação",
-            reference_type="none",
             product_document_id=self.env.ref(
                 'br_data_account.fiscal_document_55').id,
             journal_id=self.journalrec.id,

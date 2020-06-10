@@ -8,7 +8,7 @@
     'license': 'AGPL-3',
     'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'depends': [
         'br_purchase', 'br_stock_account'
     ],

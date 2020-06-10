@@ -17,9 +17,9 @@
     </record>
 
     <record id="stock_incoterms_delivery_form" model="ir.ui.view">
-        <field name="name">stock.incoterms.delivery.form</field>
-        <field name="model">stock.incoterms</field>
-        <field name="inherit_id" ref="stock.stock_incoterms_form"/>
+        <field name="name">account.incoterms.delivery.form</field>
+        <field name="model">account.incoterms</field>
+        <field name="inherit_id" ref="account.account_incoterms_form"/>
         <field name="arch" type="xml">
             <field name="code" position="after">
                 <field name="freight_responsibility" />

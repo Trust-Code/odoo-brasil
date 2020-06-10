@@ -65,7 +65,7 @@ class TestVoucher(TestBaseCnab):
             voucher.barcode,
             '75695765600000334351306901245640000037336001'
         )
-        self.assertEqual(voucher.date_due, '2018-09-23')
+        self.assertEqual(voucher.date_due, date(2018, 9, 23))
         self.assertEqual(voucher.amount, 334.35)
 
         with self.assertRaises(UserError):

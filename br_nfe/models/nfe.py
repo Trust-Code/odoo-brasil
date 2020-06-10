@@ -35,6 +35,7 @@ class AccountDocumentRelated(models.Model):
 
 class NfeReboque(models.Model):
     _name = 'nfe.reboque'
+    _description = "NF-e Reboque"
 
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
     placa_veiculo = fields.Char(string="Placa", size=7)
@@ -47,6 +48,7 @@ class NfeReboque(models.Model):
 
 class NfeVolume(models.Model):
     _name = 'nfe.volume'
+    _description = "NF-e Volume"
 
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
     quantidade_volumes = fields.Integer(string="Qtde. Volumes")
@@ -59,6 +61,7 @@ class NfeVolume(models.Model):
 
 class NFeCobrancaDuplicata(models.Model):
     _name = 'nfe.duplicata'
+    _description = "NF-e Duplicata"
     _order = 'data_vencimento'
 
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")

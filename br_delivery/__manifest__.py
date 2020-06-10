@@ -10,7 +10,7 @@
     'category': 'Stock',
     'author': 'Akretion, OpenERP Brasil',
     'website': 'http://openerpbrasil.org',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
@@ -19,6 +19,7 @@
         'br_sale_stock',
         'delivery',
         'br_stock_account',
+        'uom',
     ],
     'data': [
         'views/delivery_view.xml',

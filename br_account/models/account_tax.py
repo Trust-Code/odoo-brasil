@@ -10,10 +10,9 @@ class AccountChartTemplate(models.Model):
 
     @api.multi
     def _load_template(self, company, code_digits=None,
-                       transfer_account_id=None, account_ref=None,
-                       taxes_ref=None):
+                       account_ref=None, taxes_ref=None):
         acc_ref, tax_ref = super(AccountChartTemplate, self)._load_template(
-            company, code_digits, transfer_account_id, account_ref, taxes_ref)
+            company, code_digits, account_ref, taxes_ref)
 
         tax_tmpl_obj = self.env['account.tax.template']
         tax_obj = self.env['account.tax']

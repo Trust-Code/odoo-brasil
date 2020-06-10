@@ -8,7 +8,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     incoterm_id = fields.Many2one(
-        'stock.incoterms', 'Tipo do Frete',
+        'account.incoterms', 'Tipo do Frete',
         help="Incoterm which stands for 'International "
         "Commercial terms' implies its a series "
         "of sales terms which are used in the "

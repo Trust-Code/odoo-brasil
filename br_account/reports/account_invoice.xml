@@ -4,7 +4,7 @@
     <template id="br_account_report_invoice" inherit_id="account.report_invoice_document">
         <div id="total" position="replace">
           <div class="row" id="total">
-               <div class="col-xs-4 pull-right">
+               <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
                    <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
                        <tr name="tr_subtotal">
                            <td><strong>Subtotal</strong></td>
