@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from ..cnab_240 import Cnab240
+from decimal import Decimal
 
 
 class BancoBrasil240(Cnab240):
@@ -26,19 +27,55 @@ class BancoBrasil240(Cnab240):
         vals['carteira_numero'] = int(line.payment_mode_id.boleto_carteira[:2])
         vals['nosso_numero'] = self.format_nosso_numero(
             line.payment_mode_id.boleto_cnab_code, line.nosso_numero)
-        vals['prazo_baixa'] = '0'
+        vals['codigo_baixa'] = 0
+        vals['prazo_baixa'] = ''
         vals['controlecob_numero'] = self.order.id
         vals['controlecob_data_gravacao'] = self.data_hoje()
         # Codigo juro mora:
-        # 1 - Ao dia
-        # 2 - Mensal
+        # 1 - Valor ao dia
+        # 2 - Taxa Mensal
         # 3 - Isento (deve ser cadastrado no banco)
-        vals['juros_cod_mora'] = 2
+        vals['juros_cod_mora'] = int(
+            line.payment_mode_id.late_payment_interest_type)
+
+        if vals['juros_cod_mora'] in [3]:
+            vals['juros_mora_taxa'] = Decimal(str(0.00)).quantize(
+                Decimal('1.00'))
+        else:
+            vals['juros_mora_taxa'] = Decimal(
+                str(self.order.payment_mode_id.late_payment_interest)
+                ).quantize(Decimal('1.00'))
+
         # Banco do Brasil aceita apenas código de protesto 1, 2, ou
         # 3 (dias corridos, dias úteis ou não protestar, respectivamente)
         if vals['codigo_protesto'] not in [1, 2, 3]:
             vals['codigo_protesto'] = 3
         vals['cobranca_emissaoBloqueto'] = 2
+
+        especie_titulo_banco = {
+            '01': 2,
+            '02': 12,
+            '03': 16,
+            '04': 21,
+            '05': 17,
+            '06': 99,
+            '07': 99,
+            '08': 4,
+            '09': 7,
+            '13': 19,
+            '15': 24,
+            '16': 30,
+            '17': 99,
+            '99': 99,
+            }
+        especie_titulo = especie_titulo_banco[
+            line.payment_mode_id.boleto_especie]
+        vals['especie_titulo'] = especie_titulo
+        vals['multa_codigo'] = vals['codigo_multa']
+        vals['multa_data'] = self.format_date(line.date_maturity)
+        vals['multa_percentual'] = Decimal(
+            str(self.order.payment_mode_id.late_payment_fee)).quantize(
+                Decimal('1.00'))
         return vals
 
     def nosso_numero(self, format):
