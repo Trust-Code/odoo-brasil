@@ -884,6 +884,10 @@ class InvoiceEletronic(models.Model):
         return atts
 
     @api.multi
+    def recriar_xml(self):
+        self.action_post_validate()
+
+    @api.multi
     def action_post_validate(self):
         super(InvoiceEletronic, self).action_post_validate()
         if self.model not in ('55', '65'):
@@ -1179,6 +1183,12 @@ class InvoiceEletronic(models.Model):
                 self.sudo().write({
                     'nfe_processada': base64.encodestring(nfe_proc_cancel),
                 })
+        elif self.codigo_retorno == '100':
+            self.action_post_validate()
+            nfe_processada = base64.decodestring(self.xml_to_send).decode('utf-8')
+            nfe_proc = gerar_nfeproc(nfe_processada, resp['received_xml'])
+            self.nfe_processada = base64.encodestring(nfe_proc)
+            self.nfe_processada_name = "NFe%08d.xml" % self.numero
         else:
             message = "%s - %s" % (retorno_consulta.cStat,
                                    retorno_consulta.xMotivo)
