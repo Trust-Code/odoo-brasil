@@ -139,10 +139,10 @@
                         <div class="col-xs-2 linha br">
                             <span t-field="doc.company_id.cnpj_cpf" />
                         </div>
-                        <div class="col-xs-1 rotulo br">
-                            Inscr. Munic.
+                        <div class="col-xs-2 rotulo br">
+                            Insc. Municipal
                         </div>
-                        <div class="col-xs-2 linha br">
+                        <div class="col-xs-1 linha br">
                             <span t-field="doc.company_id.inscr_mun" />
                         </div>
                         <div class="col-xs-1 rotulo br">
@@ -205,10 +205,10 @@
                 <div class="col-xs-2 linha br">
                     <span t-field="doc.commercial_partner_id.cnpj_cpf" />
                 </div>
-                <div class="col-xs-1 rotulo br">
-                    Inscr. Municipal
+                <div class="col-xs-2 rotulo br">
+                    Insc. Municipal
                 </div>
-                <div class="col-xs-2 linha br">
+                <div class="col-xs-1 linha br">
                     <span t-field="doc.commercial_partner_id.inscr_mun" />
                 </div>
                 <div class="col-xs-1 rotulo br">

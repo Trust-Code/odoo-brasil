@@ -106,7 +106,10 @@ class AccountInvoice(models.Model):
         res['fatura_bruto'] = inv.total_bruto
         res['fatura_desconto'] = inv.total_desconto
         res['fatura_liquido'] = inv.amount_total
-        res['pedido_compra'] = inv.name
+
+        if inv.type not in ("out_refund", "in_refund"):
+            res['pedido_compra'] = inv.name
+
         res['valor_icms_uf_remet'] = inv.valor_icms_uf_remet
         res['valor_icms_uf_dest'] = inv.valor_icms_uf_dest
         res['valor_icms_fcp_uf_dest'] = inv.valor_icms_fcp_uf_dest
@@ -192,6 +195,11 @@ class AccountInvoice(models.Model):
         res['troco'] = 0.0
         res['metodo_pagamento'] = inv.payment_mode_id.tipo_pagamento or '01'
         res['valor_pago'] = inv.amount_total
+
+        # Endereço de Entrega
+        if inv.partner_shipping_id != inv.partner_id:
+            res['partner_shipping_id'] = inv.partner_shipping_id.id
+
         return res
 
     def _prepare_edoc_item_vals(self, invoice_line):
@@ -217,6 +225,11 @@ class AccountInvoice(models.Model):
         vals['icms_fcp_uf_dest'] = invoice_line.icms_fcp_uf_dest or 0.0
         vals['icms_aliquota_inter_part'] = \
             invoice_line.icms_aliquota_inter_part or 0.0
+        vals['icms_substituto'] = invoice_line.icms_substituto or 0.0
+        vals['icms_bc_st_retido'] = invoice_line.icms_bc_st_retido or 0.0
+        vals['icms_aliquota_st_retido'] = \
+            invoice_line.icms_aliquota_st_retido or 0.0
+        vals['icms_st_retido'] = invoice_line.icms_st_retido or 0.0
 
         di_importacao = []
         for di in invoice_line.import_declaration_ids:
