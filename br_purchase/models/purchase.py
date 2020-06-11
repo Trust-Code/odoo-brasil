@@ -219,8 +219,8 @@ class PurchaseOrderLine(models.Model):
             # Quando o imposto não tem conta contábil, deduzimos que ele não é
             # recuperável e portanto somamos ao custo, como partimos do valor
             # já com imposto se existir conta diminuimos o valor deste imposto
-            if tax['account_id']:
-                price -= tax['amount']
+            if tax['account_id'] and self.product_qty:
+                price -= tax['amount'] / self.product_qty
 
         if self.product_uom.id != self.product_id.uom_id.id:
             price *= self.product_uom.factor / self.product_id.uom_id.factor
