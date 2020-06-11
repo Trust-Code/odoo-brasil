@@ -353,7 +353,6 @@ class EletronicDocument(models.Model):
         if hasattr(item.prod, 'vOutro'):
             outras_despesas = item.prod.vOutro
         indicador_total = str(item.prod.indTot)
-        tipo_produto = product and product.fiscal_type or 'product'
         cfop = item.prod.CFOP
         ncm = item.prod.NCM
         cest = get(item, 'item.prod.CEST')
@@ -365,7 +364,7 @@ class EletronicDocument(models.Model):
             'valor_bruto': valor_bruto, 'desconto': desconto, 'seguro': seguro,
             'frete': frete, 'outras_despesas': outras_despesas,
             'valor_liquido': valor_bruto - desconto + frete + seguro + outras_despesas,
-            'indicador_total': indicador_total, 'tipo_produto': tipo_produto,
+            'indicador_total': indicador_total,
             'cfop': cfop, 'ncm': ncm, 'product_ean': item.prod.cEAN,
             'product_cprod': codigo, 'product_xprod': item.prod.xProd,
             'cest': cest, 'item_pedido_compra': nItemPed,
@@ -598,13 +597,13 @@ class EletronicDocument(models.Model):
         invoice_dict.pop('destinatary', False)
         invoice_eletronic = self.env['eletronic.document'].create(invoice_dict)
 
-        if account_invoice_automation:
-            invoice = invoice_eletronic.prepare_account_invoice_vals(
-                company_id, tax_automation=tax_automation,
-                supplierinfo_automation=supplierinfo_automation,
-                fiscal_position_id=fiscal_position_id,
-                payment_term_id=payment_term_id)
-            invoice_eletronic.invoice_id = invoice.id
+        # if account_invoice_automation:
+        #     invoice = invoice_eletronic.prepare_account_invoice_vals(
+        #         company_id, tax_automation=tax_automation,
+        #         supplierinfo_automation=supplierinfo_automation,
+        #         fiscal_position_id=fiscal_position_id,
+        #         payment_term_id=payment_term_id)
+        #     invoice_eletronic.invoice_id = invoice.id
 
     def existing_invoice(self, nfe):
         if hasattr(nfe, 'protNFe'):
@@ -676,7 +675,7 @@ class EletronicDocument(models.Model):
             raise UserError(
                 'A empresa não possui uma sequência de produto configurado!')
         ncm = get(nfe_item, 'NCM', str)
-        ncm_id = self.env['product.fiscal.classification'].search([
+        ncm_id = self.env['account.ncm'].search([
             ('code', '=', ncm)])
 
         category = self.env['product.category'].search(
@@ -689,12 +688,11 @@ class EletronicDocument(models.Model):
             'name': get(nfe_item, 'xProd'),
             'purchase_ok': True,
             'sale_ok': False,
-            'fiscal_type': 'product',
             'type': 'product',
-            'fiscal_classification_id': ncm_id.id,
+            'l10n_br_ncm_id': ncm_id.id,
             'standard_price': get(nfe_item, 'vUnCom'),
             'lst_price': 0.0,
-            'cest': get(nfe_item, 'CEST', str),
+            'l10n_br_cest': get(nfe_item, 'CEST', str),
             'taxes_id': [],
             'supplier_taxes_id': [],
             'company_id': None,
