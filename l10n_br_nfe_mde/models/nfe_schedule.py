@@ -102,7 +102,7 @@ class NfeSchedule(models.TransientModel):
                             root = objectify.fromstring(nfe['xml'])
                             infNfe = root.NFe.infNFe
                             protNFe = root.protNFe.infProt
-                            cnpj_forn = self._mask_cnpj(
+                            cnpj_forn = self._mask_cnpj_cpf(
                                 ('%014d' % infNfe.emit.CNPJ))
 
                             partner = self.env['res.partner'].search(
