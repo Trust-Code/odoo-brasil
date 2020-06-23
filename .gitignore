@@ -1,8 +1,9 @@
 *.py[cod]
 *.swp
 *~
+.tool-versions
 # Remove IDE files
 .idea/
-
+.vim/
 .vscode/
 
