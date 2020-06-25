@@ -12,10 +12,10 @@ class AccountInvoice(models.Model):
     def _compute_nfse_number(self):
         for inv in self:
             numeros = inv.invoice_eletronic_ids.mapped('numero_nfse')
-            numeros = [n for n in numeros if n]
+            numeros = set([n for n in numeros if n])
             if not numeros:
                 numeros = inv.invoice_line_ids.mapped('numero_nfse')
-                numeros = [n for n in numeros if n]
+                numeros = set([n for n in numeros if n])
             inv.numero_nfse = ','.join(numeros)
 
     ambiente_nfse = fields.Selection(
