@@ -17,7 +17,10 @@ class ZipSearchMixin(models.AbstractModel):
     def search_address_by_zip(self, zip_code):
         zip_code = re.sub('[^0-9]', '', zip_code or '')
         client = Client('https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl') # noqa
-        res = client.service.consultaCEP(zip_code)
+        try:
+            res = client.service.consultaCEP(zip_code)
+        except:
+            return {}
         state = self.env['res.country.state'].search(
             [('country_id.code', '=', 'BR'),
              ('code', '=', res['uf'])])

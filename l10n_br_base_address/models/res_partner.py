@@ -119,5 +119,5 @@ class ResPartner(models.Model):
                 msg = "%s - %s" % (info.cStat, info.xMotivo)
                 raise UserError(msg)
         else:
-            raise UserError(_(u'Fill the State and CNPJ fields to search'))
+            raise UserError(_('Fill the State and CNPJ fields to search'))
 
