@@ -10,7 +10,7 @@
             <page id="aml_tab" position="after">
                 <page id="receivable_payments" string="Cobranças" name="receivable_payments">
                     <field name="transaction_ids">
-                        <tree editable="bottom" string="Cobranças" default_order="date_maturity desc, origin_move_line_id">
+                        <tree editable="bottom" string="Cobranças" default_order="date_maturity desc">
                             <field name="state"/>
                             <field name="reference"/>
                             <field name="date_maturity"/>
