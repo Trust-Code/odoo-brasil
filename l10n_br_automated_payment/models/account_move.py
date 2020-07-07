@@ -87,7 +87,6 @@ class AccountMove(models.Model):
                 'type': 'server2server',
                 'date_maturity': moveline.date_maturity,
                 'origin_move_line_id': moveline.id,
-                'state': 'pending',
                 'invoice_ids': [(6, 0, self.ids)]
             })
 
