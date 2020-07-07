@@ -10,14 +10,16 @@
             <page id="aml_tab" position="after">
                 <page id="receivable_payments" string="Cobranças" name="receivable_payments">
                     <field name="transaction_ids">
-                        <tree editable="bottom" string="Cobranças" default_order="date_maturity desc">
+                        <tree editable="bottom" string="Cobranças" default_order="date_maturity desc" decoration-muted="state == 'cancel'">
                             <field name="state"/>
                             <field name="reference"/>
                             <field name="date_maturity"/>
                             <field name="amount"/>
                             <field name="transaction_url" widget="url"/>
-                            <button name="action_verify_transaction" string="Verificar" type="object" class="btn btn-success btn-sm" />
-                            <button name="action_cancel_transaction" string="Cancelar" type="object" class="btn btn-danger btn-sm" confirm="Confirma o cancelamento?" />
+                            <button name="action_verify_transaction" string="Verificar" type="object" 
+                                class="btn btn-success btn-sm" />
+                            <button name="action_cancel_transaction" string="Cancelar" type="object" 
+                                class="btn btn-danger btn-sm" confirm="Confirma o cancelamento?" />
                         </tree>
                     </field>
                 </page>

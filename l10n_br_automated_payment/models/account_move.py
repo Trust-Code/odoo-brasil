@@ -87,6 +87,7 @@ class AccountMove(models.Model):
                 'type': 'server2server',
                 'date_maturity': moveline.date_maturity,
                 'origin_move_line_id': moveline.id,
+                'state': 'pending',
                 'invoice_ids': [(6, 0, self.ids)]
             })
 
@@ -234,24 +235,6 @@ class AccountMoveLine(models.Model):
                 self.iugu_status = data['status']
         else:
             raise UserError('Esta parcela não foi enviada ao IUGU')
-
-    def action_cancel_iugu(self):
-        if not self.iugu_id:
-            raise UserError('Esta parcela não foi enviada ao IUGU')
-        token = self.env.user.company_id.iugu_api_token
-        iugu.config(token=token)
-        iugu_invoice_api = iugu.Invoice()
-        iugu_invoice_api.cancel(self.iugu_id)
-        self.iugu_status = 'canceled'
-
-    def unlink(self):
-        for line in self:
-            if line.iugu_id:
-                token = self.env.user.company_id.iugu_api_token
-                iugu.config(token=token)
-                iugu_invoice_api = iugu.Invoice()
-                iugu_invoice_api.cancel(line.iugu_id)
-        return super(AccountMoveLine, self).unlink()
 
     def open_wizard_change_date(self):
         return({

@@ -31,5 +31,14 @@ class PaymentTransaction(models.Model):
         else:
             raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
 
+    def cancel_transaction_in_iugu(self):
+        if not self.acquirer_reference:
+            raise UserError('Esta parcela não foi enviada ao IUGU')
+        token = self.env.user.company_id.iugu_api_token
+        iugu.config(token=token)
+        iugu_invoice_api = iugu.Invoice()
+        iugu_invoice_api.cancel(self.acquirer_reference)
+
     def action_cancel_transaction(self):
         self._set_transaction_cancel()
+        self.cancel_transaction_in_iugu()
