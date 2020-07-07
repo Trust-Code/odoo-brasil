@@ -15,14 +15,16 @@ class AccountMove(models.Model):
     
     @api.depends('line_ids')
     def _compute_receivables(self):
-        self.receivable_move_line_ids = self.line_ids.filtered(
-            lambda m: m.account_id.user_type_id.type == 'receivable'
-        ).sorted(key=lambda m: m.date_maturity)
+        for move in self:
+            move.receivable_move_line_ids = move.line_ids.filtered(
+                lambda m: m.account_id.user_type_id.type == 'receivable'
+            ).sorted(key=lambda m: m.date_maturity)
 
     @api.depends('line_ids')
     def _compute_payables(self):
-        self.payable_move_line_ids = self.line_ids.filtered(
-            lambda m: m.account_id.user_type_id.type == 'payable')
+        for move in self:
+            move.payable_move_line_ids = move.line_ids.filtered(
+                lambda m: m.account_id.user_type_id.type == 'payable')
 
     receivable_move_line_ids = fields.Many2many(
         'account.move.line', string='Receivable Move Lines',
