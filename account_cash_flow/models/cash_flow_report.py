@@ -219,8 +219,8 @@ class CashFlowReport(models.TransientModel):
         liquidity_lines = self.calculate_liquidity()
         move_lines = self.calculate_moves()
 
-        move_lines.sort(key=lambda x: datetime.datetime.strptime(x['date'],
-                                                                 '%Y-%m-%d'))
+        move_lines.sort(key=lambda x: x['date'])
+
         for lines in liquidity_lines+move_lines:
             balance += lines['credit'] + lines['debit']
             lines['balance'] = balance
