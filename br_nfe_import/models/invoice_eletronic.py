@@ -329,7 +329,8 @@ class InvoiceEletronic(models.Model):
 
         product = None
         if seller_id:
-            product = seller_id.product_id
+            product = seller_id.product_id or \
+                seller_id.product_tmpl_id.product_variant_id
 
         if not product and item.prod.cEAN and \
            str(item.prod.cEAN) != 'SEM GTIN':
