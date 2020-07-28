@@ -46,9 +46,9 @@ class IrActionsReport(models.Model):
                 cce_xml_element.append(etree.fromstring(cce_xml))
 
         logo = False
-        if nfe.company_id.logo:
+        if nfe.state != 'imported' and nfe.company_id.logo:
             logo = base64.decodestring(nfe.company_id.logo)
-        elif nfe.company_id.logo_web:
+        elif nfe.state != 'imported' and nfe.company_id.logo_web:
             logo = base64.decodestring(nfe.company_id.logo_web)
 
         if logo:
