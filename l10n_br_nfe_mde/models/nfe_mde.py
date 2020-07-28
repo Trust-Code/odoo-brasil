@@ -191,19 +191,13 @@ class NfeMde(models.Model):
         nfe_result = send_event(
             self.company_id, self.chave_nfe, 'confirma_operacao', self.id,
             evento=evento)
-        env_events = self.env['invoice.eletronic.event']
-
-        event = self._create_event(
-            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == 135:
             self.state = 'confirmado'
         elif nfe_result['code'] == 573:
             self.state = 'confirmado'
-            event['name'] = \
-                u'Confirmação da operação já previamente realizada'
+            self.message_post(body='Confirmação da operação já previamente realizada')
 
-        event = env_events.create(event)
         return True
 
     def action_unknown_operation(self):
@@ -214,19 +208,13 @@ class NfeMde(models.Model):
         nfe_result = send_event(
             self.company_id, self.chave_nfe, 'desconhece_operacao',
             self.id, evento=evento)
-        env_events = self.env['invoice.eletronic.event']
-
-        event = self._create_event(
-            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == 135:
             self.state = 'desconhecido'
         elif nfe_result['code'] == 573:
             self.state = 'desconhecido'
-            event['name'] = \
-                u'Desconhecimento da operação já previamente realizado'
+            self.message_post(body='Desconhecimento da operação já previamente realizado')
 
-        event = env_events.create(event)
         return True
 
     def action_not_operation(self, context=None, justificativa=None):
@@ -251,28 +239,18 @@ class NfeMde(models.Model):
         nfe_result = send_event(
             self.company_id, self.chave_nfe, 'nao_realizar_operacao',
             self.id, evento=evento, justificativa=justificativa)
-        env_events = self.env['invoice.eletronic.event']
-
-        event = self._create_event(
-            nfe_result['code'], nfe_result['message'], self.id)
 
         if nfe_result['code'] == 135:
             self.state = 'nao_realizado'
         elif nfe_result['code'] == 573:
             self.state = 'nao_realizado'
-            event['name'] = \
-                u'Tentativa de Operação não realizada ja previamente realizada'
+            self.message_post(body='Tentativa de Operação não realizada ja previamente realizada')
 
-        event = env_events.create(event)
         return True
 
     def action_download_xml(self):
         nfe_result = exec_download_nfe(self.company_id, [self.chave_nfe])
-        # env_events = self.env['invoice.eletronic.event']
         if nfe_result['code'] == 138:
-            # event = self._create_event(
-            #     nfe_result['code'], nfe_result['message'], self.id)
-            # env_events.create(event)
             file_name = 'NFe%08d.xml' % int(self.chave_nfe[25:34])
 
             retorno = nfe_result['object']
