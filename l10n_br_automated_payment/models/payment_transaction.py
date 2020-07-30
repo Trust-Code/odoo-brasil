@@ -14,22 +14,23 @@ class PaymentTransaction(models.Model):
     date_maturity = fields.Date(string="Data de Vencimento")
 
     def action_verify_transaction(self):
-        if self.acquirer_reference:
-            token = self.env.user.company_id.iugu_api_token
-            iugu.config(token=token)
-            iugu_invoice_api = iugu.Invoice()
-
-            data = iugu_invoice_api.search(self.acquirer_reference)
-            if "errors" in data:
-                raise UserError(data['errors'])
-            if data.get('status', '') == 'paid' and self.state not in ('done', 'authorized'):
-                self._set_transaction_done()
-                self._post_process_after_done()
-                self.origin_move_line_id._create_bank_tax_move(data)
-            else:
-                self.iugu_status = data['status']
-        else:
+        if not self.acquirer_reference:
             raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
+        if self.acquirer_id.provider != 'iugu':
+            return
+        token = self.env.user.company_id.iugu_api_token
+        iugu.config(token=token)
+        iugu_invoice_api = iugu.Invoice()
+
+        data = iugu_invoice_api.search(self.acquirer_reference)
+        if "errors" in data:
+            raise UserError(data['errors'])
+        if data.get('status', '') == 'paid' and self.state not in ('done', 'authorized'):
+            self._set_transaction_done()
+            self._post_process_after_done()
+            self.origin_move_line_id._create_bank_tax_move(data)
+        else:
+            self.iugu_status = data['status']
 
     def cancel_transaction_in_iugu(self):
         if not self.acquirer_reference:
@@ -41,4 +42,5 @@ class PaymentTransaction(models.Model):
 
     def action_cancel_transaction(self):
         self._set_transaction_cancel()
-        self.cancel_transaction_in_iugu()
+        if self.acquirer_id.provider == 'iugu':
+            self.cancel_transaction_in_iugu()
