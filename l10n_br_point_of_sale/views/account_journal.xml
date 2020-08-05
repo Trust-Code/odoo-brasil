@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="br_point_sale_account_journal" model="ir.ui.view">
+        <field name="name">br_point_sale_account_journal</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="type" position="after" >
+                <field name="metodo_pagamento" />
+            </field>
+        </field>
+    </record>
+</odoo>

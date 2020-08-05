@@ -21,10 +21,9 @@ Odoo Brasil - an easy way to use Odoo
 
 Para dúvidas acesse: [Documentação](http://www.odoo-next.com.br/my/documents/)
 
-[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=11.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
-[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=12.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=12.0)
-[![Code Climate](https://codeclimate.com/github/Trust-Code/odoo-brasil/badges/gpa.svg)](https://codeclimate.com/github/Trust-Code/odoo-brasil)
-[![Licence](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square)
+[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=13.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
+[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=13.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=13.0)
+[![Licence](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
 
 

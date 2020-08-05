@@ -3,6 +3,7 @@
 
     <record id="br_coa_me_epp_chart_template" model="account.chart.template">
         <field name="property_account_receivable_id" ref="account_account_1_1_2_01" />
+        <field name="default_pos_receivable_account_id" ref="account_account_1_1_2_01" />
         <field name="property_account_payable_id" ref="account_account_2_1_1_01" />
         <field name="property_account_income_categ_id" ref="account_account_3_1_1_01" />
         <field name="property_account_expense_categ_id" ref="account_account_3_2_1_01" />
