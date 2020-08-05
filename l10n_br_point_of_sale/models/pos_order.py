@@ -58,7 +58,7 @@ class PosOrder(models.Model):
             [('pos_order_id', '=', self.id)])
 
         if not docs:
-            raise UserError(u'Não existe um E-Doc relacionado à este pedido')
+            raise UserError('Não existe um E-Doc relacionado à este pedido')
 
         for doc in docs:
             if doc.state == 'draft':
@@ -69,20 +69,23 @@ class PosOrder(models.Model):
         return action
 
     @api.model
-    def _process_order(self, pos_order):
+    def _process_order(self, pos_order, draft, existing_order):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
 
-        res = super(PosOrder, self)._process_order(pos_order)
-        res.numero_controle = str(num_controle)
+        res = super(PosOrder, self)._process_order(
+            pos_order, draft, existing_order
+        )
 
+        res = self.env["pos.order"].browse(res)
+
+        res.numero_controle = str(num_controle)
         if not res.fiscal_position_id:
             res.fiscal_position_id = \
                 res.session_id.config_id.default_fiscal_position_id.id
 
         res.numero = \
-            res.fiscal_position_id.product_serie_id.\
-            internal_sequence_id.next_by_id()
+            res.company_id.l10n_br_nfe_sequence.next_by_id()
 
         for line in res.lines:
             values = line.order_id.fiscal_position_id.map_tax_extra_values(
@@ -114,7 +117,7 @@ class PosOrder(models.Model):
         eletronic = self.env['eletronic.document'].create(foo)
         eletronic.validate_invoice()
         eletronic.action_post_validate()
-        return res
+        return res.id
 
     def _prepare_edoc_item_vals(self, pos_line):
         vals = {

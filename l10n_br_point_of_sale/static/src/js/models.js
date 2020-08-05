@@ -40,7 +40,7 @@ odoo.define('br_point_of_sale.models', function (require) {
                 }
             });
             this.models.push({
-                model: 'res.state.city',
+                model: 'res.city',
                 fields: ['name', 'state_id'],
                 loaded: function (self, cities) {
                     self.company.city = null;

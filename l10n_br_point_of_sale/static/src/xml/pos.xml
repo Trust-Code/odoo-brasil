@@ -3,7 +3,7 @@
     <t t-extend="ClientLine">
         <t t-jquery="tr.client-line > td:first-child" t-operation="before">
             <td>
-                <t t-esc='partner.cnpj_cpf or ""'/>
+                <t t-esc='partner.l10n_br_cnpj_cpf or ""'/>
             </td>
         </t>
     </t>
@@ -16,9 +16,9 @@
         <t t-jquery="div.client-details-left" t-operation="prepend">
             <div class='client-detail'>
                 <span class='label'>Razão: </span>
-                <t t-if='partner.legal_name'>
+                <t t-if='partner.l10n_br_legal_name'>
                     <span class='detail'>
-                        <t t-esc='partner.legal_name' />
+                        <t t-esc='partner.l10n_br_legal_name' />
                     </span>
                 </t>
                 <t t-else="">
@@ -27,9 +27,9 @@
             </div>
             <div class='client-detail'>
                 <span class='label'>CNPJ:</span>
-                <t t-if='partner.cnpj_cpf'>
+                <t t-if='partner.l10n_br_cnpj_cpf'>
                     <span class='detail client-cnpj'>
-                        <t t-esc='partner.cnpj_cpf' />
+                        <t t-esc='partner.l10n_br_cnpj_cpf' />
                     </span>
                 </t>
                 <t t-else="">
@@ -77,11 +77,11 @@
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Razão:</span>
-                    <input class='detail client-legal-name' name='legal_name' t-att-value='partner.legal_name || ""' placeholder="Razão Social"></input>
+                    <input class='detail client-legal-name' name='l10n_br_legal_name' t-att-value='partner.l10n_br_legal_name || ""' placeholder="Razão Social"></input>
                 </div>
                 <div class='client-detail'>
                     <span class='label'>CNPJ/CPF:</span>
-                    <input class='detail client-cnpj' name='cnpj_cpf' t-att-value='partner.cnpj_cpf || ""' placeholder="CNPJ/CPF"></input>
+                    <input class='detail client-cnpj' name='l10n_br_cnpj_cpf' t-att-value='partner.l10n_br_cnpj_cpf || ""' placeholder="CNPJ/CPF"></input>
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Email</span>
@@ -127,11 +127,11 @@
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Número</span>
-                    <input class='detail client-address-number' name='number' t-att-value='partner.number || ""' placeholder='Número'></input>
+                    <input class='detail client-address-number' name='l10n_br_number' t-att-value='partner.l10n_br_number || ""' placeholder='Número'></input>
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Bairro</span>
-                    <input class='detail client-address-district' name='district' t-att-value='partner.district || ""' placeholder='Bairro'></input>
+                    <input class='detail client-address-district' name='l10n_br_district' t-att-value='partner.l10n_br_district || ""' placeholder='Bairro'></input>
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Compl.</span>
