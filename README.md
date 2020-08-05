@@ -61,6 +61,7 @@ Este repositório adapta o Odoo 13 para ser usado no Brasil
 
 * [Documentação](http://www.odoo-next.com.br/my/documents/)
 * [Videos](http://www.odoo-next.com.br/my/documents?categoria=4)
+* [Grupo Telegram](http://t.me/OdooBrasilOficial)
 
 
 ## Licence
