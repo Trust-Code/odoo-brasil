@@ -117,13 +117,13 @@ class EletronicDocument(models.Model):
                 errors.append('Cadastro da Empresa / CNPJ do escritório contabilidade')
         # NFC-e
         if self.model == 'nfce':
-            if len(self.company_id.id_token_csc or '') != 6:
+            if len(self.company_id.l10n_br_id_token_csc or '') != 6:
                 errors.append("Cadastro da Empresa - Identificador do CSC inválido")
-            if not len(self.company_id.csc or ''):
+            if not len(self.company_id.l10n_br_csc or ''):
                 errors.append("Cadastro da Empresa - CSC Inválido")
             if self.partner_id.l10n_br_cnpj_cpf is None:
                 errors.append("CNPJ/CPF do Parceiro inválido")
-            if len(self.serie) == 0:
+            if len(self.serie_documento) == 0:
                 errors.append("Número de Série da NFe Inválido")
 
         partner = self.partner_id.commercial_partner_id
