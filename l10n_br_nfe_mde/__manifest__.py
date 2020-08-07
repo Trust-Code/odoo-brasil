@@ -20,6 +20,7 @@
       Dependencias: PyTrustNFe
     """,
     'depends': [
+        'mail_bot',
         'l10n_br_nfe_import',
     ],
     'data': [
