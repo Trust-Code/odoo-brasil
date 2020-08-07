@@ -128,7 +128,7 @@ class PosOrder(models.Model):
         vals = {
             "name": pos_line.name,
             "product_id": pos_line.product_id.id,
-            # "cfop": pos_line.cfop_id.code,
+            "cfop": fiscal_pos.l10n_br_cfop_id.code,
             "cest": pos_line.product_id.l10n_br_cest
             or pos_line.product_id.l10n_br_ncm_id.cest
             or "",
