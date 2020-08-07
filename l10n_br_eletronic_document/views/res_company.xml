@@ -8,7 +8,6 @@
                 <page name="account_information" string="Informações contábeis">
                     <group name="group_account">
                         <group>
-                            <field name="l10n_br_tipo_ambiente" />
                             <field name="l10n_br_tax_regime" />
                             <field name="l10n_br_accountant_id" />
                             <field name="l10n_br_cnae_main_id"/>
@@ -25,6 +24,28 @@
                             <field name="l10n_br_client_id" />
                             <field name="l10n_br_client_secret" password="True" />
                             <field name="l10n_br_user_password" password="True" />
+                        </group>
+                    </group>
+                </page>
+                <page name="nfe_nfce" string="NF-e/NFC-e">
+                    <group>
+                        <group name="nfce" string="NFC-e">
+                            <field name="l10n_br_id_token_csc" />
+                            <field name="l10n_br_csc" />
+                        </group>
+                        <group name="nfe" string="NF-e">
+                            <field name="l10n_br_cabecalho_danfe" />
+                        </group>
+                    </group>
+                    <group name="general" string="Geral">
+                        <group name="envio" string="Envio">
+                            <field name="l10n_br_tipo_ambiente" />
+                            <field name="l10n_br_nfe_sinc" />
+                        </group>
+                        <group name="csrt" string="Responsável Técnico">
+                            <field name="l10n_br_responsavel_tecnico_id" />
+                            <field name="l10n_br_id_token_csrt" string="Identificador do CRST" />
+                            <field name="l10n_br_csrt" string="CRST" />
                         </group>
                     </group>
                 </page>
