@@ -670,7 +670,7 @@ class EletronicDocument(models.Model):
                 'xContato': responsavel_tecnico.child_ids[0].name or '',
                 'email': responsavel_tecnico.email or '',
                 'fone': fone,
-                'idCSRT': self.company_id.id_token_csrt or '',
+                'idCSRT': self.company_id.l10n_br_id_token_csrt or '',
                 'hashCSRT': self._get_hash_csrt() or '',
             }
 
@@ -709,8 +709,8 @@ class EletronicDocument(models.Model):
             ambiente = 1 if self.ambiente == 'producao' else 2
             estado = self.company_id.state_id.l10n_br_ibge_code
 
-            cid_token = int(self.company_id.id_token_csc)
-            csc = self.company_id.csc
+            cid_token = int(self.company_id.l10n_br_id_token_csc)
+            csc = self.company_id.l10n_br_csc
 
             c_hash_QR_code = "{0}|2|{1}|{2}{3}".format(
                 chave_nfe, ambiente, int(cid_token), csc)
@@ -1038,11 +1038,9 @@ class EletronicDocument(models.Model):
                                    retorno_consulta.xMotivo)
             raise UserError(message)
 
-
-
     def _get_hash_csrt(self):
         chave_nfe = self.chave_nfe
-        csrt = self.company_id.csrt
+        csrt = self.company_id.l10n_br_csrt
 
         if not csrt:
             return

@@ -4,7 +4,6 @@
 
 from datetime import datetime
 from random import SystemRandom
-from odoo.addons import decimal_precision as dp
 from odoo import api, models, fields
 from odoo.exceptions import UserError
 
@@ -113,15 +112,9 @@ class PosOrder(models.Model):
 
     def _prepare_edoc_item_vals(self, pos_line):
 
-        pis = pos_line.tax_ids.filtered(
-            lambda x: x.domain == "pis"
-        )
-        cofins = pos_line.tax_ids.filtered(
-            lambda x: x.domain == "cofins"
-        )
-        ipi = pos_line.tax_ids.filtered(
-            lambda x: x.domain == "ipi"
-        )
+        pis = pos_line.tax_ids.filtered(lambda x: x.domain == "pis")
+        cofins = pos_line.tax_ids.filtered(lambda x: x.domain == "cofins")
+        ipi = pos_line.tax_ids.filtered(lambda x: x.domain == "ipi")
 
         fiscal_pos = pos_line.order_id.fiscal_position_id
 
@@ -203,12 +196,11 @@ class PosOrder(models.Model):
             "company_id": pos.company_id.id,
             "state": "draft",
             "tipo_operacao": "saida",
+            "cod_regime_tributario": "1",
             "model": "nfce",
             "ind_dest": "1",
             "ind_ie_dest": "9",
-            "ambiente": "homologacao"
-            if pos.company_id.l10n_br_tipo_ambiente == "2"
-            else "producao",
+            "ambiente": pos.company_id.l10n_br_tipo_ambiente,
             "serie_documento": pos.fiscal_position_id.serie_nota_fiscal,
             "numero": pos.numero,
             "numero_nfe": pos.numero,
