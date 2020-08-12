@@ -121,8 +121,6 @@ class EletronicDocument(models.Model):
                 errors.append("Cadastro da Empresa - Identificador do CSC inválido")
             if not len(self.company_id.l10n_br_csc or ''):
                 errors.append("Cadastro da Empresa - CSC Inválido")
-            if self.partner_id.l10n_br_cnpj_cpf is None:
-                errors.append("CNPJ/CPF do Parceiro inválido")
             if len(self.serie_documento) == 0:
                 errors.append("Número de Série da NFe Inválido")
 
@@ -297,7 +295,7 @@ class EletronicDocument(models.Model):
         else:
             imposto.update({
                 'ICMS': {
-                    'orig':  item.origem,
+                    'orig':  item.product_id.l10n_br_origin,
                     'CST': item.icms_cst,
                     'modBC': item.icms_tipo_base,
                     'vBC': "%.02f" % item.icms_base_calculo,
@@ -519,7 +517,8 @@ class EletronicDocument(models.Model):
             'vST': "%.02f" % self.valor_icmsst,
             'vFCPST': '0.00',
             'vFCPSTRet': '0.00',
-            'vProd': "%.02f" % self.valor_bruto,
+            'vProd': "%.02f" % sum(self.document_line_ids.mapped(
+                "valor_bruto")),
             'vFrete': "%.02f" % self.valor_frete,
             'vSeg': "%.02f" % self.valor_seguro,
             'vDesc': "%.02f" % self.valor_desconto,
@@ -529,7 +528,8 @@ class EletronicDocument(models.Model):
             'vPIS': "%.02f" % self.pis_valor,
             'vCOFINS': "%.02f" % self.cofins_valor,
             'vOutro': "%.02f" % self.valor_despesas,
-            'vNF': "%.02f" % self.valor_final,
+            'vNF': "%.02f" % sum(self.document_line_ids.mapped(
+                "valor_liquido")),
             'vFCPUFDest': "%.02f" % self.valor_icms_fcp_uf_dest,
             'vICMSUFDest': "%.02f" % self.valor_icms_uf_dest,
             'vICMSUFRemet': "%.02f" % self.valor_icms_uf_remet,
@@ -771,7 +771,7 @@ class EletronicDocument(models.Model):
         })
 
     def action_send_eletronic_invoice(self):
-        if self.model != 'nfe':
+        if self.model not in ['nfe', 'nfce']:
             return super(EletronicDocument, self).action_send_eletronic_invoice()
 
         if self.state in ('done', 'denied', 'cancel'):
