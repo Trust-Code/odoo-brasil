@@ -404,7 +404,7 @@
                             </group>
                             <group name="import_declaration" string="Declaração de Importação">
                                 <field name="import_declaration_ids" colspan="4" nolabel="1" widget="many2many"
-                                    domain="[('invoice_id', '=', parent)]" context="{'search_default_invoice_id': parent.id}" />
+                                    domain="[('invoice_id', '=', parent.id)]" context="{'search_default_invoice_id': parent.id}" />
                             </group>
                         </page>
                         <page name="retencoes" string="Retenções" attrs="{'invisible': [('product_type','!=', 'service')]}">
