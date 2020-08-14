@@ -617,7 +617,7 @@ class InvoiceEletronic(models.Model):
         transp['vol'] = volumes
 
         duplicatas = []
-        for dup in self.duplicata_ids:
+        for dup in self.duplicata_ids.sorted(lambda x: x.data_vencimento):
             vencimento = fields.Datetime.from_string(dup.data_vencimento)
             duplicatas.append({
                 'nDup': dup.numero_duplicata,

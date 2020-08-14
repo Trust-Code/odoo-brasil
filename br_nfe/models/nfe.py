@@ -52,7 +52,7 @@ class NfeVolume(models.Model):
 
 class NFeCobrancaDuplicata(models.Model):
     _name = 'nfe.duplicata'
-    _order = 'numero_duplicata'
+    _order = 'data_vencimento'
 
     invoice_eletronic_id = fields.Many2one('invoice.eletronic', string="NFe")
     currency_id = fields.Many2one(
