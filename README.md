@@ -38,9 +38,10 @@ Este repositório adapta o Odoo 13 para ser usado no Brasil
 * Cálculo de impostos (ICMS, IPI, PIS, COFINS, ISSQN, DIFAL, FCP, Simples Nacional, CSLL, IRPJ)
 * Emissão de NFe
 * Emissao de SPED ICMS/IPI PIS/COFINS
-* Emissão de MDFe
 * Emissão de NFSe Paulistana, Florianopolis, FocusNFe
-* Emissão de Boletos Automatizada (IUGU, PagHiper, Zoop, Juno)
+* Emissão de Boletos Automatizada (IUGU, [PagHiper](https://github.com/Code-137/odoo-apps), Zoop)
+* Integração com gateway de pagamentos ([PicPay](https://github.com/Code-137/odoo-apps))
+* [Correios](https://github.com/Code-137/odoo-apps) - Cálculo de Frete, Impressão de etiquetas e Rastreamento
 * Importação de extratos bancários (OFX)
 * Contas a pagar e Receber
 * Retenções de Impostos (INSS, IRPJ, PIS, COFINS, CSLL, ISS)
