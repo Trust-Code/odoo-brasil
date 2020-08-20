@@ -35,16 +35,16 @@ def send_api(token, ambiente, edocs):
 
     ref = {"ref": edocs["nfe_reference"]}
     response = requests.post(url, params=ref, data=json.dumps(edocs), auth=(token, ""))
-    if response.status_code == 500:
+    if response.status_code in (401, 500):
         _logger.error("Erro ao enviar NFe Focus\n%s" + response.text)
         _logger.info(json.dumps(edocs))
         return {
             "code": 400,
             "api_code": 500,
-            "message": "Erro ao tentar envio de NFe - Favor contactar suporte.",
+            "message": "Erro ao tentar envio de NFe - Favor contactar suporte\n%s" % response.text,
         }
+
     response = response.json()
-    print(edocs)
     if response.get("status", False) == "processando_autorizacao":
         return {
             "code": "processing",
