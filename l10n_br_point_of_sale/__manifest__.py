@@ -27,7 +27,7 @@
         'views/pos_order.xml',
         'views/invoice_eletronic.xml',
         'views/pos_assets.xml',
-        'views/pos_templates.xml',
+        'views/pos_payment_method.xml',
     ],
     "qweb": [
         'static/src/xml/pos.xml',

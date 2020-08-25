@@ -106,11 +106,11 @@ class ResPartner(models.Model):
                 xMun = get_value(info.infCad.ender, 'xMun')
                 city = None
                 if cMun:
-                    city = self.env['res.state.city'].search(
+                    city = self.env['res.city'].search(
                         [('l10n_br_ibge_code', '=', str(cMun)[2:]),
                          ('state_id', '=', self.state_id.id)])
                 if not city and xMun:
-                    city = self.env['res.state.city'].search(
+                    city = self.env['res.city'].search(
                         [('name', 'ilike', xMun),
                          ('state_id', '=', self.state_id.id)])
                 if city:

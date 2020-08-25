@@ -8,17 +8,17 @@ odoo.define('br_point_of_sale', function (require) {
 
     let search_nfce = (pos_order_ids, fields) => {
         return rpc.query({
-            model: 'invoice.eletronic',
+            model: 'eletronic.document',
             method: 'search_read',
             fields: fields,
-            domain: [['pos_order_id', 'in', pos_order_ids]]
+            domain: [['pos_order_id', '=', pos_order_ids[0]["id"]]]
         })
     }
 
     models.PosModel = models.PosModel.extend({
         _save_to_server: function (order, opts) {
             var self = this
-            return _super_order._save_to_server.apply(this, arguments).done((result) => self.get_nfce(result));
+            return _super_order._save_to_server.apply(this, arguments).then((result) => self.get_nfce(result));
         },
         get_nfce: function (pos_order_ids) {
             if (!pos_order_ids.length) {
@@ -57,7 +57,7 @@ odoo.define('br_point_of_sale', function (require) {
         },
         cronSendNfe: function () {
             return rpc.query({
-                model: 'invoice.eletronic',
+                model: 'eletronic.document',
                 method: 'cron_send_nfe',
                 args: [[]]
             })
