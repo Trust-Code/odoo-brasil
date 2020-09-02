@@ -147,8 +147,9 @@ class L10nBrWebsiteSale(main.WebsiteSale):
 
 class BrWebsiteMyAccount(CustomerPortal):
 
-    MANDATORY_BILLING_FIELDS = ["name", "phone", "email", "street", "cnpj_cpf",
-                                "number", "district", "zipcode",
+    MANDATORY_BILLING_FIELDS = ["name", "phone", "email", "street",
+                                "l10n_br_cnpj_cpf", "l10n_br_number",
+                                "l10n_br_district", "zipcode",
                                 "company_type", "city_id", "state_id",
                                 "country_id"]
     OPTIONAL_BILLING_FIELDS = ["street2"]

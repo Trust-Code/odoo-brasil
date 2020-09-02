@@ -2,79 +2,127 @@ odoo.define('br_website_sale.address', function (require) {
     "use strict";
 
     var ajax = require('web.ajax');
+    var publicWidget = require('web.public.widget');
 
-    function cnpj_cpf_mask () {
-        var company = $('#radioCompany').prop('checked');
-        if (company) {
-            $('input[type=text][name=cnpj_cpf]').mask('00.000.000/0000-00');
-            $('label[for=contact_name]').text('CNPJ');
-        } else {
-            $('input[type=text][name=cnpj_cpf]').mask('000.000.000-00');
-            $('label[for=contact_name]').text('CPF');
-        }
-    }
 
-    $(document).ready(function () {
-        var SPMaskBehavior = function (val) {
-            return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' :
-                '(00) 0000-00009';
+    publicWidget.registry.BrWebsiteSale = publicWidget.Widget.extend({
+        selector: '.l10n_br_public_contact_form',
+        jsLibs: [
+            '/l10n_br_website_sale/static/src/lib/jquery.mask.min.js'
+        ],
+        events: {
+            'change #radioCompany': 'onChangeRadioCompany',
+            'change #radioPerson': 'onChangeRadioCompany',
+            'change #input_cnpj_cpf': 'onChangeCnpjCpf',
+            'change #id_country': 'onChangeIdCountry',
+            'change #select_state_id': 'onChangeSelectState',
+            'change #input_zip': 'onChangeZip',
+
         },
-        spOptions = {
-            onKeyPress: function (val, e, field, options) {
-                field.mask(SPMaskBehavior.apply({},
-                            arguments), options);
+
+        init: function (parent, options) {
+            this._super(parent, options);
+        },
+
+        start: function() {
+            let value = this.$el.find("#radioCompany")[0].checked;
+            this.cnpj_cpf_mask(value);
+            this.zip_mask();
+
+            var SPMaskBehavior = function (val) {
+                return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' :
+                    '(00) 0000-00009';
             }
-        };
-        $('#select_state_id').trigger('change');
-        $('input[type=text][name=zip]').mask('00000-000');
+            var spOptions = {
+                onKeyPress: function (val, e, field, options) {
+                    field.mask(SPMaskBehavior.apply({},
+                                arguments), options);
+                }
+            };
 
-        $('#id_country').change(function () {
-            var vals = {country_id: $(this).val()};
-            ajax.jsonRpc("/shop/get_states", 'call', vals)
-                .then(function (data) {
-                    var selected = parseInt($('#input_state_id').val());
-                    $('#select_state_id').find('option').remove().end();
-                    $('#select_state_id').append(
-                        '<option value="">Estado...</option>');
-                    $.each(data, function (i, item) {
-                        $('#select_state_id').append($('<option>', {
-                            value: item[0],
-                            text: item[1],
-                            selected: item[0]===selected?true:false,
-                        }));
-                    });
-                    $('#select_state_id').trigger('change');
+            $('input[name="phone"]').mask(SPMaskBehavior, spOptions);
+            this.$el.find("#select_state_id").trigger('change');
+            return this._super.apply(this, arguments);
+        },
+
+        cnpj_cpf_mask: function(company) {
+            if (company) {
+                this.$el.find('#input_cnpj_cpf').mask('00.000.000/0000-00');
+            } else {
+                this.$el.find('#input_cnpj_cpf').mask('000.000.000-00');
+            }
+        },
+
+        zip_mask: function() {
+            this.$el.find("#input_zip").mask("00000-000");
+        },
+
+        // EVENT HANDLERS
+
+        onChangeRadioCompany: function(ev) {
+            let $target = $(ev.target);
+            if($target.val() == 'company') {
+                this.$el.find("label[for=contact_name]").text("CNPJ")
+                this.cnpj_cpf_mask(true);
+            } else {
+                this.$el.find("label[for=contact_name]").text("CPF")
+                this.cnpj_cpf_mask(false);
+            }
+        },
+
+        onChangeCnpjCpf: function() {
+            if(this.$el.find("#radioCompany")[0].checked == 'company') {
+                this.cnpj_cpf_mask(true);
+            } else {
+                this.cnpj_cpf_mask(false);
+            }
+        },
+
+        onChangeIdCountry: function(ev) {
+            var self = this;
+            var vals = {country_id: $(ev.target).val()};
+            ajax.jsonRpc("/shop/get_states", 'call', vals).then(function (data) {
+                var selected = parseInt(self.$el.find('#input_state_id').val());
+                $('#select_state_id').find('option').remove().end();
+                $('#select_state_id').append(
+                    '<option value="">Estado...</option>');
+                $.each(data, function (i, item) {
+                    $('#select_state_id').append($('<option>', {
+                        value: item[0],
+                        text: item[1],
+                        selected: item[0]===selected?true:false,
+                    }));
                 });
-        });
+                $('#select_state_id').trigger('change');
+            });
+        },
 
-        cnpj_cpf_mask();
-
-        $('#select_state_id').change(function () {
-            var vals = { state_id: $(this).val() };
-            ajax.jsonRpc("/shop/get_cities", 'call', vals)
-                .then(function (data) {
-                    var selected = parseInt($('#input_city_id').val());
-                    $('#select_city_id').find('option').remove().end();
-                    $('#select_city_id').append(
-                        '<option value="">Cidade...</option>');
-                    $.each(data, function (i, item) {
-                        $('#select_city_id').append($('<option>', {
-                            value: item[0],
-                            text: item[1],
-                            selected: item[0]===selected?true:false,
-                        }));
-                    });
+        onChangeSelectState: function(ev) {
+            var self = this;
+            var vals = { state_id: $(ev.target).val() };
+            ajax.jsonRpc("/shop/get_cities", 'call', vals).then(function (data) {
+                var selected = parseInt(self.$el.find('#input_city_id').val());
+                $('#select_city_id').find('option').remove().end();
+                $('#select_city_id').append(
+                    '<option value="">Cidade...</option>');
+                $.each(data, function (i, item) {
+                    $('#select_city_id').append($('<option>', {
+                        value: item[0],
+                        text: item[1],
+                        selected: item[0]===selected?true:false,
+                    }));
                 });
-        });
+            });
+        },
 
-        $('#btn_search_zip').click(function () {
-            var vals = {zip: $('input[name="zip"]').val()};
+        onChangeZip: function(ev) {
+            var vals = {zip: $(ev.target).val()};
             ajax.jsonRpc("/shop/zip_search", 'call', vals)
                 .then(function(data) {
                     if (data.sucesso) {
                         $('#input_state_id').val(data.state_id);
                         $('#input_city_id').val(data.city_id);
-                        $('input[name="district"]').val(data.district);
+                        $('input[name="l10n_br_district"]').val(data.l10n_br_district);
                         $('input[name="street"]').val(data.street);
                         $('select[name="country_id"]').val(data.country_id);
                         $('select[name="country_id"]').change();
@@ -84,13 +132,9 @@ odoo.define('br_website_sale.address', function (require) {
                     }
                 }
             );
-        });
-
-        $('#select_state_id').trigger('change');
-        $('input[name="phone"]').mask(SPMaskBehavior, spOptions);
-
-        $('input[type=radio][name=company_type]').change(function () {
-            cnpj_cpf_mask();
-        });
+        },
     });
+
+    return publicWidget.registry.BrWebsiteSale;
+
 });
