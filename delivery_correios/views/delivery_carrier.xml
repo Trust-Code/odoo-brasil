@@ -34,7 +34,7 @@
                         <button string="Buscar Serviços de Postagem" type="object" name="action_get_correio_services" class="oe_highlight"/>
                     </group>
                     <group string="Serviço de Postagem usado neste método" attrs="{'invisible': [('has_contract', '!=', True)]}">
-                        <field name="service_id" attrs="{'required': [('has_contract', '=', True)]}" />
+                        <field name="service_id" />
                     </group>
                     <group>
                         <p>
