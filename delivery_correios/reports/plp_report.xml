@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<!-- Copyright 2015 Kmee
+     Copyright 2016 Trustcode
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+
+    <report
+        id="delivery_correios_plp_report"
+        string="Impressão PLP"
+        model="delivery.correios.postagem.plp"
+        report_type="qweb-pdf"
+        file="delivery_correios.main_template_plp_report"
+        name="delivery_correios.main_template_plp_report" />
+
+    <template id="template_plp_report">
+        <div class="page">
+            <table border="0" cellpadding="1" cellspacing="1" style="width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="width: 20%;"><img
+                            src="data:image/png;base64,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"
+                            style="height: 29px; width: 120px;"/></td>
+                    <td style="text-align: center; vertical-align: bottom;"><span
+                            style="font-size:16px;"><strong>EMPRESA BRASILEIRA DE
+                        CORREIOS E TELÉGRAFOS</strong></span></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table border="1" cellspacing="0"
+                   style="border: 1px solid black; width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="text-align: center;">
+                        <span style="font-size:16px;">
+                            <strong>PRÉ LISTA DE POSTAGEM - PLP - SIGEP WEB</strong>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table border="0" cellpadding="1" cellspacing="0"
+                               style="white-space: nowrap; width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <table border="0" cellpadding="1"
+                                           cellspacing="0"
+                                           style="width: 100%;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>SIGEP
+                                                WEB -
+                                                Gerenciador de postagem dos
+                                                correios</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Contrato: </strong> <span t-field="doc.delivery_id.num_contrato" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Cliente: </strong><span t-field="doc.company_id.l10n_br_legal_name" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Telefone
+                                                de
+                                                contato: </strong><span t-field="doc.company_id.phone" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Email de
+                                                contato: </strong><span t-field="doc.company_id.email" />
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <table border="0" cellpadding="1"
+                                           cellspacing="1"
+                                           style="width: 100%;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <strong>N º PLP: <span t-field="doc.id_plp_correios" /></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span style="text-align: center; white-space: nowrap;">
+                                                    <t t-if="doc.id_plp_correios">
+                                                        <img style="width:350px;height:40px;" t-att-src="'data:image/png;base64,{}'.format(doc.plp_barcode_url())" />
+                                                    </t>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table border="0" cellpadding="1" cellspacing="1"
+                               style="width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <t t-set="services" t-value="doc._get_post_services()" />
+                                    <table border="0" cellpadding="1"
+                                           cellspacing="1"
+                                           style="width: 100%;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="width: 33%;">
+                                                <strong>Cód. Serviço:</strong>
+                                            </td>
+                                            <td style="width: 33%;">
+                                                <strong>Quantidade:</strong>
+                                            </td>
+                                            <td style="width: 33%;">
+                                                <strong>Serviço:</strong>
+                                            </td>
+                                        </tr>
+                                            <t t-foreach="services.keys()" t-as="serv">
+                                                <tr>
+                                                    <td><span t-esc="services[serv]['code']" /></td>
+                                                    <td><span t-esc="services[serv]['quantity']" /></td>
+                                                    <td><span t-esc="services[serv]['name']" /></td>
+                                                </tr>
+                                            </t>
+                                        <tr>
+                                            <td><strong>Total:</strong></td>
+                                            <td><span t-esc="sum([x[1]['quantity'] for x in services.items()])" /></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="width: 30%;">
+                                    <p><strong>Data da entrega:</strong>
+                                        <span t-field="doc.sent_date" />
+                                    </p>
+                                    <br />
+                                    <br />
+                                    <p style="text-decoration: overline;">
+                                        Assinatura/Matrícula dos Correios</p>
+                                    <p>1ª via - Correios</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <hr size="1" style="border:1px dashed;" />
+            <table border="0" cellpadding="1" cellspacing="1" style="width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="width: 20%;"><img
+                            src="data:image/png;base64,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"
+                            style="height: 29px; width: 120px;"/></td>
+                    <td style="text-align: center; vertical-align: bottom;"><span
+                            style="font-size:16px;"><strong>EMPRESA BRASILEIRA DE
+                        CORREIOS E TELÉGRAFOS</strong></span></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table border="1" cellspacing="0"
+                   style="border: 1px solid black; width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="text-align: center;">
+                        <span style="font-size:16px;">
+                            <strong>PRÉ LISTA DE POSTAGEM - PLP - SIGEP WEB</strong>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table border="0" cellpadding="1" cellspacing="0"
+                               style="white-space: nowrap; width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <table border="0" cellpadding="1"
+                                           cellspacing="0"
+                                           style="width: 100%;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>SIGEP
+                                                WEB -
+                                                Gerenciador de postagem dos
+                                                correios</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Contrato: </strong> <span t-field="doc.delivery_id.num_contrato" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Cliente: </strong><span t-field="doc.company_id.name" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Telefone
+                                                de
+                                                contato: </strong><span t-field="doc.company_id.phone" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 45%;"><strong>Email de
+                                                contato: </strong><span t-field="doc.company_id.email" />
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <table border="0" cellpadding="1"
+                                           cellspacing="1"
+                                           style="width: 100%;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <strong>N º PLP: <span t-field="doc.id_plp_correios" /></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span
+                                                    style="text-align: center; white-space: nowrap;">
+                                                    <t t-if="doc.id_plp_correios">
+                                                        <img style="width:350px;height:40px;" t-att-src="'data:image/png;base64,{}'.format(doc.plp_barcode_url())" />
+                                                    </t>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table border="0" cellpadding="1" cellspacing="1"
+                               style="width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <table border="0" cellpadding="1"
+                                           cellspacing="1"
+                                           style="width: 100%;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="width: 33%;"><strong>Cód. Serviço:</strong></td>
+                                            <td style="width: 33%;">
+                                                <strong>Quantidade:</strong></td>
+                                            <td style="width: 33%;"><strong>Serviço:</strong>
+                                            </td>
+                                        </tr>
+                                            <t t-foreach="services.keys()" t-as="serv">
+                                                <tr>
+                                                    <td><span t-esc="services[serv]['code']" /></td>
+                                                    <td><span t-esc="services[serv]['quantity']" /></td>
+                                                    <td><span t-esc="services[serv]['name']" /></td>
+                                                </tr>
+                                            </t>
+                                        <tr>
+                                            <td><strong>Total:</strong></td>
+                                            <td><span t-esc="sum([x[1]['quantity'] for x in services.items()])" /></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="width: 30%;">
+                                    <p><strong>Data da entrega:</strong>
+                                        <span t-field="doc.sent_date" />
+                                    </p>
+                                    <br />
+                                    <br />
+                                    <p style="text-decoration: overline;">
+                                        Assinatura/Matrícula dos Correios</p>
+                                    <p>2ª via - Correios</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        <div class="footer">
+            <div class="row" style="font-size:10px">
+                Página <span class="page"/> de <span class="topage"/> ----
+                <span style="font-size:10px">PLP gerado com Odoo Brasil - Software open source - saiba mais em <a href="http://www.trustcode.com.br/page/open-source-1">Trustcode - Open Source</a></span>
+            </div>
+        </div>
+    </template>
+
+
+    <template id="main_template_plp_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="delivery_correios.template_plp_report" t-lang="doc.company_id.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

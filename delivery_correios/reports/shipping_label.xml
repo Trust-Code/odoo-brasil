@@ -1,0 +1,291 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="paperformat_correios_shipping_label" model="report.paperformat">
+        <field name="name">Etiquetas Correios</field>
+        <field name="default" eval="False" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">1</field>
+        <field name="margin_left">1</field>
+        <field name="margin_right">1</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">0</field>
+        <field name="dpi">51</field>
+    </record>
+
+    <report
+        id="delivery_correios_shipping_label"
+        string="Impressão de Etiquetas"
+        model="delivery.correios.postagem.plp"
+        report_type="qweb-pdf"
+        file="delivery_correios.main_template_shipping_label"
+        name="delivery_correios.main_template_shipping_label"
+        paperformat="paperformat_correios_shipping_label"
+        />
+
+    <template id="template_shipping_label">
+        <div class="page" style="position: relative;">
+            <style>
+                .arial{
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                .font-8{
+                    font-size: 11px;
+                }
+                .font-9{
+                    font-size: 12px;
+                }
+                .font-10{
+                    font-size: 13.3px;
+                }
+                .font-11{
+                    font-size: 14.6px;
+                }
+                .correios-main-wrapper{
+                    width: 400px;
+                    height: 521px;
+                    border: solid 2px black;
+                    float: left;
+                    position: absolute;
+                }
+                .no-border{
+                    border: none;
+                }
+                .header-images{
+                    width: 400px;
+                    height: 107px;
+                    position: absolute;
+                }
+                .header-logo{
+                    position: absolute;
+                    top: 10px;
+                    left: 18px;
+                }
+                .header-qrcode{
+                    position: absolute;
+                    top: 10px;
+                    left: 150px;
+                }
+                .header-chancela{
+                    position: absolute;
+                    top: 10px;
+                    right: 18px;
+                }
+                .header-infos{
+                    width: 400px;
+                    position: absolute;
+                    top: 107px;
+                }
+                .header-infos-item{
+                    position: absolute;
+                    top: 0;
+                }
+                .item-nf{
+                    left: 18px;
+                    width: 25%
+                }
+                .item-contrato{
+                    left: 80px;
+                    text-align: center;
+                    width: 55%;
+                }
+                .item-peso{
+                    right: 15px;
+                    width: 95px;
+                    width: 20%;
+                }
+                .contract-and-services{
+                    width: 400px;
+                    position: absolute;
+                    top: 134px;
+                }
+                .contract-and-services .contract{
+                    width: 340px;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    text-align: center;
+                }
+                .contract-and-services .services{
+                    width: 60px;
+                    position: absolute;
+                    top: 15px;
+                    left: 340px;
+                }
+                .correios-sign{
+                    width: 400px;
+                    position: absolute;
+                    padding: 10px 18px;
+                    top: 220px;
+                }
+                .correios-recipient-information{
+                    width: 384px;
+                    height: 173px;
+                    border-top: solid 2px black;
+                    border-bottom: solid 2px black;
+                    position: absolute;
+                    top: 268px;
+                    padding-right: 18px;
+                }
+                .correios-recipient-information .recipient-header{
+                    position: absolute;
+                    width: 400px;
+                }
+                .correios-recipient-information .recipient-header .recipient-title{
+                    position: absolute;
+                    width: 120px;
+                }
+                .correios-recipient-information .recipient-header img {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                }
+                .correios-recipient-information .recipient-header .recipient-title{
+                    min-width: 35%;
+                    max-height: 20px;
+                    text-transform: uppercase;
+                    color: white;
+                    background-color: black;
+                    padding-left: 18px;
+                }
+                .correios-recipient-information .recipient-address{
+                    position: absolute;
+                    top: 26px;
+                    padding-left: 18px;
+                }
+                .correios-recipient-information .recipient-address .ecipient-barcode-and-obs{
+                    display: -webkit-box;
+                    display: flex;
+                }
+                .emitter-information{
+                    position: absolute;
+                    top: 442px;
+                    padding-top: 10px;
+                    padding-left: 18px;
+                }
+            </style>
+            <t t-foreach="postagem_list" t-as="postagem">
+
+            <t t-set="postagem_index" t-value="postagem_list.index(postagem)" />
+
+            <t t-set="position_top" t-value="int(postagem_index / 2) * 530" />
+            <t t-set="position_left" t-value="(postagem_index % 2) * 410" />
+
+            <t t-if="postagem_index >= 4">
+                <t t-set="position_top" t-value="position_top + int(postagem_index / 4) * 90" />
+            </t>
+
+            <t t-if="postagem">
+            <div class="correios-main-wrapper" t-att-style="'top: ' + str(position_top) + 'px; left: ' + str(position_left) + 'px;'">
+                <div class="header-images">
+                    <t t-raw="doc.get_company_logo()" ></t>
+                    <img class="header-qrcode" style="width:95px;height:95px;"
+                        t-att-src="'data:image/png;base64,{}'.format(postagem.tracking_qrcode())" />
+                    <t t-raw="doc.get_chancela()" ></t>
+                </div>
+                <div class="header-infos arial font-8">
+                    <div class="header-infos-item item-nf">
+                        NF: <span t-esc="postagem.get_nfe_number()" /><br />
+                        Pedido: <span t-esc="postagem.stock_move_id.origin or ''" />
+                    </div>
+                    <div class="header-infos-item item-contrato">
+                        Contrato: <span t-esc="doc.delivery_id.num_contrato" /><br />
+                        <strong><span t-esc="doc.delivery_id.service_id.name" /></strong>
+                    </div>
+                    <div class="header-infos-item item-peso">
+                        Volume: 1/1 <br />
+                        Peso(g): <span t-esc="postagem.weight * 1000.0" />
+                    </div>
+                </div>
+                <div class="contract-and-services arial font-11">
+                    <div class="contract">
+                        <strong><span t-field="postagem.name"/></strong>
+                        <t t-if="postagem.name">
+                            <img style="width:300px;height:70px;"
+                                t-att-src="'data:image/png;base64,{}'.format(postagem.tracking_barcode())" />
+                        </t>
+                    </div>
+                    <div class="services">
+                        <strong><span>AR XX</span></strong><br />
+                        <strong><span>VD XX</span></strong><br />
+                        <strong><span>RR XX</span></strong><br />
+                        <strong><span>XX XX</span></strong><br />
+                    </div>
+                </div>
+                <div class="correios-sign arial font-9">
+                    Recebedor: ____________________________________________<br />
+                    Assinatura: ______________________ Documento:____________
+                </div>
+                <div class="correios-recipient-information arial font-11">
+                    <div class="recipient-header">
+                        <div class="recipient-title">
+                            Destinatário
+                        </div>
+                        <img style="width: 75px; height: auto;" src="/delivery_correios/static/images/logo-correios.png" />
+                    </div>
+                    <t t-set="partner" t-value="postagem.partner_id.commercial_partner_id" />
+                    <div class="recipient-address">
+                        <t t-if="partner.l10n_br_legal_name">
+                            <span t-field="partner.l10n_br_legal_name" />
+                        </t>
+                        <t t-else="">
+                            <span t-field="partner.name" />
+                        </t> <br />
+                        <span><t t-esc="partner.street" />, <t t-esc="partner.l10n_br_number" /></span> <br />,
+                        <span>
+                            <t t-if="partner.street2">
+                                <span t-field="partner.street2"></span>,
+                            </t>
+                            <span t-field="partner.l10n_br_district" />
+                        </span> <br />
+                        <span>
+                            <span t-field="partner.zip" />
+                            <span t-field="partner.city_id" />,
+                            <span t-field="partner.state_id.code" />
+                        </span> <br />
+                        <div class="recipient-barcode-and-obs">
+                            <t t-if="postagem.name">
+                                <img style="width:200px;height:50px;" 
+                                    t-att-src="'data:image/png;base64,{}'.format(postagem.zip_dest_barcode())" />
+                            </t>
+                            <span>Obs: </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="emitter-information arial font-10">
+                    <span><strong>Remetente: </strong><span t-field="doc.company_id.l10n_br_legal_name" /></span>  <br />
+                    <span><span t-field="doc.company_id.street"/>, <span t-field="doc.company_id.l10n_br_number" /></span> <br />
+                    <span><span t-field="doc.company_id.zip" /> <span t-field="doc.company_id.city_id" /> - <span t-field="doc.company_id.state_id" /></span> <br />
+                </div>
+            </div>
+            </t>
+            <t t-else="">
+                <div class="correios-main-wrapper no-border" t-att-style="'top: ' + str(position_top) + 'px; left: ' + str(position_left) + 'px;'">
+                </div>
+            </t>
+            </t>
+        </div>
+    </template>
+
+
+    <template id="main_template_shipping_label">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-if="doc.postagem_ids">
+                    <t t-set="postagem_list" t-value="[postagem for postagem in doc.postagem_ids]" />
+                    <t t-if="len(postagem_list) == 1">
+                        <!-- IF THERE'S ONLY ONE SHIPPING LABEL, ODOO WILL PRINT THE LABEL TOO BIG
+                        SO HERE I'M ADDING AN INVISIBLE LABEL TO BE PRINTED TOO -->
+                        <t t-set="postagem_list" t-value="[doc.postagem_ids, False]" />
+                    </t>
+                    <t t-call="delivery_correios.template_shipping_label" t-lang="doc.postagem_ids[0].partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

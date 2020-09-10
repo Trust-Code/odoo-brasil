@@ -1,0 +1,13 @@
+<odoo>
+
+    <record id="delivery_correios_choose_carrier" model="ir.ui.view">
+        <field name="model">choose.delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.choose_delivery_carrier_view_form" />
+        <field name="arch" type="xml">
+            <field name="carrier_id" position="after">
+                <field name="packaging_id" groups="stock.group_tracking_lot"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

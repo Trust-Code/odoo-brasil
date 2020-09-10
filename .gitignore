@@ -5,4 +5,4 @@
 .idea/
 .vim/
 .vscode/
-
+.DS_Store
