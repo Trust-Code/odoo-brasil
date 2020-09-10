@@ -2,8 +2,10 @@ import zeep
 import requests
 from xml.etree import ElementTree
 from zeep import helpers
+from zeep.exceptions import Fault
 
 from odoo import models, fields
+from odoo.exceptions import UserError
 from odoo.addons.delivery_correios.helpers.helpers import (
     URLS,
     validar,
@@ -108,20 +110,22 @@ nIndicaCalculo=3&nCdEmpresa={nCdEmpresa}&sDsSenha={sDsSenha}".format(
         return self._get_client().service.bloquearObjeto(**params)
 
     def busca_cliente(self, id_contrato, id_cartao_postagem):
+        try:
+            params = {
+                "idContrato": id_contrato,
+                "idCartaoPostagem": id_cartao_postagem,
+                "usuario": self.login,
+                "senha": self.password,
+            }
 
-        params = {
-            "idContrato": id_contrato,
-            "idCartaoPostagem": id_cartao_postagem,
-            "usuario": self.login,
-            "senha": self.password,
-        }
+            validar("idContrato", params["idContrato"])
+            validar("idCartaoPostagem", params["idCartaoPostagem"])
 
-        validar("idContrato", params["idContrato"])
-        validar("idCartaoPostagem", params["idCartaoPostagem"])
-
-        return helpers.serialize_object(
-            self._get_client().service.buscaCliente(**params), target_cls=dict
-        )
+            return helpers.serialize_object(
+                self._get_client().service.buscaCliente(**params), target_cls=dict
+            )
+        except Fault as e:
+            raise UserError(str(e))
 
     def solicita_etiquetas(
         self, tipo_destinatario, cnpj, id_servico, qtd_etiquetas
