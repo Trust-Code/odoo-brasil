@@ -1,0 +1,14 @@
+<Servicos>
+    <cServico>
+        <Codigo>41106</Codigo> 
+        <Valor>42,00</Valor> 
+        <PrazoEntrega>6</PrazoEntrega> 
+        <ValorMaoPropria>0,00</ValorMaoPropria> 
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento> 
+        <ValorValorDeclarado>0,00</ValorValorDeclarado> 
+        <EntregaDomiciliar>N</EntregaDomiciliar> 
+        <EntregaSabado>N</EntregaSabado> 
+        <Erro>0</Erro> 
+        <MsgErro /> 
+    </cServico>
+</Servicos>

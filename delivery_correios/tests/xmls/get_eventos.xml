@@ -1,0 +1,22 @@
+<objetos>
+    <versao>2.0</versao>
+    <qtd>1</qtd>
+    <objeto>
+        <numero>JF598971235BR</numero>
+        <sigla>JF</sigla>
+        <nome>REMESSA ECONÔMICA C/AR DIGITAL</nome>
+        <categoria>REMESSA ECONÔMICA TALÃO/CARTÃO</categoria>
+        <evento>
+            <tipo>BDE</tipo>
+            <status>23</status>
+            <data>18/03/2014</data>
+            <hora>18:37</hora>
+            <descricao>Objeto devolvido ao remetente</descricao>
+            <detalhe/>
+            <local>CTCE MACEIO</local>
+            <codigo>57060971</codigo>
+            <cidade>MACEIO</cidade>
+            <uf>AL</uf>
+        </evento>
+    </objeto>
+</objetos>

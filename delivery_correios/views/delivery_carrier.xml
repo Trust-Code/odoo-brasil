@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_delivery_correios_carrier_form" model="ir.ui.view">
+        <field name="name">view.delivery.correios.carrier.form</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form" />
+        <field name="arch" type="xml">
+            <field name="state_ids" position="replace">
+                <field name="state_ids" string="Estados" domain="[('country_id', 'in', country_ids)]" widget="many2many_tags" />
+            </field>
+            <page name="destination" position="before">
+                <page name="correios" string="Correios" attrs="{'invisible': [('delivery_type', '!=', 'correios')]}">
+                    <group>
+                        <field name="has_contract" />
+                        <field name="service_type" attrs="{'required': [('has_contract', '=', False)], 'invisible': [('has_contract', '=', True)]}" />
+                    </group>
+                    <group name="correios_contrato" attrs="{'invisible': [('has_contract', '!=', True)]}">
+                        <group>
+                            <field name="correio_login" attrs="{'required': [('has_contract', '=', True)]}" />
+                            <field name="correio_password" password="True" attrs="{'required': [('has_contract', '=', True)]}" />
+                            <field name="cod_administrativo" attrs="{'required': [('has_contract', '=', True)]}" />
+                            <field name="num_contrato" attrs="{'required': [('has_contract', '=', True)]}" />
+                            <field name="cartao_postagem" attrs="{'required': [('has_contract', '=', True)]}"  />
+                        </group>
+                        <group>
+                            <field name="ambiente" />
+                            <field name="mao_propria" />
+                            <field name="aviso_recebimento"/>
+                            <field name="valor_declarado"/>
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('has_contract', '!=', True)]}">
+                        <button string="Buscar Serviços de Postagem" type="object" name="action_get_correio_services" class="oe_highlight"/>
+                    </group>
+                    <group string="Serviço de Postagem usado neste método" attrs="{'invisible': [('has_contract', '!=', True)]}">
+                        <field name="service_id" />
+                    </group>
+                    <group>
+                        <p>
+                            <b>ATENÇÂO: PACOTE E CAIXAS</b><br />
+                            <table class="table table-sm">
+                                <tr><td>Especificações</td><td>Mínimo</td><td>Máximo</td></tr>
+                                <tr><td>Comprimento (C)</td><td>16 cm</td><td>105 cm</td></tr>
+                                <tr><td>Largura (L)</td><td>11 cm</td><td>105 cm</td></tr>
+                                <tr><td>Altura (A)</td><td>2 cm</td><td>105 cm</td></tr>
+                                <tr><td>Soma (C+L+A)</td><td>29 cm</td><td>200 cm</td></tr>
+                                <tr><td colspan="3">A soma resultante do comprimento + largura + altura não deve superar 200 cm.</td></tr>
+                                <tr><td colspan="3">A soma resultante do comprimento + o dobro do diâmetro não pode ser menor que 28 cm.</td></tr>
+                            </table>
+                        </p>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>

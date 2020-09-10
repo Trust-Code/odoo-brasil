@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="delivery_correios_postagem_plp_form" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_plp.form</field>
+        <field name="model">delivery.correios.postagem.plp</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"  statusbar_visible="draft,done" />
+                </header>
+                <sheet string="Pré Lista de Postagem">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_generate_voucher" type="object" class="oe_stat_button"
+                            icon="fa-send" string="Gerar Postagem" states="draft"
+                            confirm="Confirma a geração da PLP? O processo não poderá ser desfeito"/>
+                    </div>
+                    <group>
+                        <field name="name" />
+                        <field name="company_id" />
+                        <field name="delivery_id" />
+                        <field name="sent_date" />
+                        <field name="total_value" />
+                        <field name="id_plp_correios" />
+                    </group>
+                    <group string="Postagens">
+                        <field name="postagem_ids" nolabel="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="delivery_correios_postagem_plp_tree" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_plp.tree</field>
+        <field name="model">delivery.correios.postagem.plp</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="state" />
+                <field name="delivery_id" />
+                <field name="total_value" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="delivery_correios_postagem_objeto_form" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_objeto.form</field>
+        <field name="model">delivery.correios.postagem.objeto</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="name" />
+                        <field name="partner_id" />
+                        <field name="stock_move_id" />
+                        <field name="stock_package_id" />
+                        <field name="plp_id" invisible="1" />
+                    </group>
+                    <group>
+                        <field name="weight" />
+                        <field name="height" />
+                        <field name="width" />
+                        <field name="length" />
+                        <field name="diameter" attrs="{'invisible': [('diameter', '>', 0)]}"/>
+                    </group>
+                </group>
+                <group string="Situação">
+                    <field name="evento_ids" nolabel="1">
+                        <tree>
+                            <field name="etiqueta" />
+                            <field name="status" />
+                            <field name="descricao" />
+                        </tree>
+                    </field>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="delivery_correios_postagem_objeto_tree" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_objeto.tree</field>
+        <field name="model">delivery.correios.postagem.objeto</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="stock_move_id" />
+                <field name="stock_package_id" />
+                <field name="delivery_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="delivery_correios_postagem_eventos" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_eventos</field>
+        <field name="model">delivery.correios.postagem.eventos</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="etiqueta" />
+                <field name="postagem_id" />
+                <field name="status" />
+                <field name="data" />
+                <field name="local" />
+                <field name="descricao" />
+                <field name="detalhe" />
+            </form>
+        </field>
+    </record>
+    <record id="delivery_correios_postagem_eventos_tree" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_eventos.tree</field>
+        <field name="model">delivery.correios.postagem.eventos</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="etiqueta" />
+                <field name="postagem_id" />
+                <field name="status" />
+                <field name="data" />
+                <field name="local" />
+                <field name="descricao" />
+                <field name="detalhe" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_delivery_correios_service_form" model="ir.ui.view">
+        <field name="name">delivery_correios.service.form</field>
+        <field name="model">delivery.correios.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="code" />
+                        <field name="name" />
+                        <field name="identifier" />
+                        <field name="delivery_id" />
+                        <field name="ano_assinatura" />
+                    </group>
+                    <group>
+                        <field name="chancela" widget="image" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_delivery_correios_plp" model="ir.actions.act_window">
+        <field name="name">Pré-Lista Postagem</field>
+        <field name="res_model">delivery.correios.postagem.plp</field>
+        <field name="view_mode">tree,form</field>
+       <field name="view_id" ref="delivery_correios_postagem_plp_tree"/>
+    </record>
+
+    <menuitem  id="menu_delivery_correios_plp" name="Pré-Lista Postagem" sequence="90"
+        action="action_delivery_correios_plp" parent="stock.menu_stock_inventory_control"/>
+
+</odoo>

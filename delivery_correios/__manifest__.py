@@ -1,20 +1,30 @@
-{  # pylint: disable=C8101,C8103
-    'name': 'Odoo Next - Correios Integration',
-    'description': 'Integrate e-commerce to correios',
-    'version': '11.0.1.0.0',
-    'category': 'Website',
+{
+    'name': "Integração Correios",
+    'summary': """Integração com os Correios""",
+    'description': """Módulo para gerar etiquetas de rastreamento de \
+encomendas""",
+    'version': '12.0.1.0.0',
+    'category': 'Sale',
     'author': 'Trustcode',
-    'license': 'LGPL-3',
-    'website': 'http://www.odoo-next.com.br',
+    'license': 'Other OSI approved licence',
+    'website': 'http://www.trustcode.com.br',
     'contributors': [
-        'Danimar Ribeiro <danimaribeiro@gmail.com>'
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        "Felipe Paloschi <paloschi.eca@gmail.com>"
     ],
     'depends': [
-        'delivery',
-        'website_sale',
+        'stock', 'delivery'
     ],
     'data': [
-        'views/delivery.xml',
+        'security/ir.model.access.csv',
+        'views/correios.xml',
+        'views/delivery_carrier.xml',
+        'views/sale_order.xml',
         'views/product_template.xml',
+        'views/stock_picking.xml',
+        'reports/shipping_label.xml',
+        'reports/plp_report.xml',
     ],
+    'application': True,
+    'installable': True,
 }

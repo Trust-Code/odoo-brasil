@@ -1,0 +1,21 @@
+<cliente>
+    <cnpj>20535586000104</cnpj>
+    <contratos>
+        <cartoesPostagem>
+            <codigoAdministrativo>08082650</codigoAdministrativo>
+            <numero>12345678</numero>
+            <servicos>
+                <codigo>40096</codigo>
+                <descricao>SEDEX - CONTRATO</descricao>
+                <id>104625</id>
+                <servicoSigep>
+                    <chancela>
+                        <chancela>/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcH</chancela>
+                    </chancela>
+                </servicoSigep>
+            </servicos>
+        </cartoesPostagem>
+        <dataVigenciaInicio>2016</dataVigenciaInicio>
+        <codigoDiretoria>10</codigoDiretoria>
+    </contratos>
+</cliente>
