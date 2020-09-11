@@ -833,7 +833,7 @@ class InvoiceEletronic(models.Model):
         if len(duplicatas) > 0 and\
                 self.fiscal_position_id.finalidade_emissao not in ('2', '4'):
             vals['cobr'] = cobr
-            pag['tPag'] = '01' if pag['tPag'] == '90' else pag['tPag']
+            pag['tPag'] = '01' if pag['tPag'] == '' else pag['tPag']
             pag['vPag'] = "%.02f" % self.valor_final
 
         if self.model == '65':
