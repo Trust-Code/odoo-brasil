@@ -25,8 +25,10 @@ odoo.define('br_website_sale.address', function (require) {
         },
 
         start: function() {
-            let value = this.$el.find("#radioCompany")[0].checked;
-            this.cnpj_cpf_mask(value);
+            if (this.$el.find("#radioCompany").length > 0) {
+                let value = this.$el.find("#radioCompany")[0].checked;
+                this.cnpj_cpf_mask(value);
+            }
             this.zip_mask();
 
             var SPMaskBehavior = function (val) {
@@ -41,8 +43,24 @@ odoo.define('br_website_sale.address', function (require) {
             };
 
             $('input[name="phone"]').mask(SPMaskBehavior, spOptions);
-            this.$el.find("#select_state_id").trigger('change');
+            this.set_detault_state_city();
             return this._super.apply(this, arguments);
+        },
+
+        set_detault_state_city: function(){
+            $("#id_country").change();
+            let $state = $('#select_state_id');
+            let default_state = $("#input_state_id").val();
+            console.log(default_state);
+            if(default_state) {
+                console.log(default_state);
+                $state.val(default_state);
+                $state.change();
+                let $city = $('#select_city_id');
+                let default_city = $("#input_city_id").val();
+                console.log(default_city);
+                $city.val(default_city);
+            }
         },
 
         cnpj_cpf_mask: function(company) {
@@ -115,22 +133,34 @@ odoo.define('br_website_sale.address', function (require) {
             });
         },
 
+        disable_address_fields: function(disabled) {
+            $('input[name="l10n_br_district"]').attr('disabled', disabled);
+            $('input[name="street"]').attr('disabled', disabled);
+            $('select[name="state_id"]').attr('disabled', disabled);
+            $('select[name="city_id"]').attr('disabled', disabled);
+        },
+
         onChangeZip: function(ev) {
+            var self = this;
             var vals = {zip: $(ev.target).val()};
+            this.disable_address_fields(true);
             ajax.jsonRpc("/shop/zip_search", 'call', vals)
                 .then(function(data) {
                     if (data.sucesso) {
                         $('#input_state_id').val(data.state_id);
-                        $('#input_city_id').val(data.city_id);
                         $('input[name="l10n_br_district"]').val(data.l10n_br_district);
                         $('input[name="street"]').val(data.street);
                         $('select[name="country_id"]').val(data.country_id);
                         $('select[name="country_id"]').change();
                         $('select[name="state_id"]').val(data.state_id);
+                        $('select[name="state_id"]').change();
+                        $('#input_city_id').val(data.city_id);
+                        self.disable_address_fields(false);
                     } else {
                         alert('Nenhum cep encontrado');
+                        self.disable_address_fields(false);
                     }
-                }
+                }, () => self.disable_address_fields(false)
             );
         },
     });
