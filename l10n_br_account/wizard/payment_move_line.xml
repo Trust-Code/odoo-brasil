@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_payment_account_move_line_form" model="ir.ui.view">
+        <field name="name">wizard.payment.account.move.line</field>
+        <field name="model">payment.account.move.line</field>
+        <field name="arch" type="xml">
+            <form string="Payment Move Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="partner_type" invisible="1"/>
+                            <field name="amount_residual" invisible="1"/>
+                            <field name="partner_id"/>
+                            <field name="move_line_id"/>
+                            <field name="move_id"/>
+                            <field name="journal_id"/>
+                            <field name="amount"/>
+                            <field name="payment_date"/>
+                            <field name="communication"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirmar Pagamento" name="action_confirm_payment" type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_payment_account_move_line" model="ir.actions.act_window">
+        <field name="name">Registrar Pagamento</field>
+        <field name="res_model">payment.account.move.line</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_payment_account_move_line_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
