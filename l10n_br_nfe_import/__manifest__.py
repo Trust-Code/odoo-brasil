@@ -1,6 +1,6 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Importação de Documento Fiscal Eletronico',
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'category': 'Account addons',
     'license': 'AGPL-3',
     'author': 'Trustcode',
