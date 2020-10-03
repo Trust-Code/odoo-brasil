@@ -60,6 +60,7 @@
                                         <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('nfce'))]}" />
                                         <field name="nfe_processada_name" invisible="1"/>
                                         <field name="nfe_processada" filename="nfe_processada_name"/>
+                                        <field name="nfse_url" widget="url"/>
                                         <field name="nfse_pdf_name" invisible="1"/>
                                         <field name="nfse_pdf" filename="nfse_pdf_name"/>
                                     </group>

@@ -391,6 +391,8 @@ class EletronicDocument(models.Model):
     nfe_processada_name = fields.Char(
         string=u"Xml da NFe", size=100, readonly=True, copy=False)
 
+    nfse_url = fields.Char(
+        string="URL da NFe", size=500, readonly=True, copy=False)
     nfse_pdf = fields.Binary(
         string="PDF da NFe", readonly=True, copy=False)
     nfse_pdf_name = fields.Char(
@@ -825,6 +827,8 @@ class EletronicDocument(models.Model):
                 vals['nfe_processada'] = base64.encodestring(response['xml'])
             if response.get('pdf', False):
                 vals['nfse_pdf'] = base64.encodestring(response['pdf'])
+            if response.get('url_nfe', False):
+                vals['nfse_url'] = response['url_nfe']
 
             self.write(vals)
 
@@ -857,7 +861,8 @@ class EletronicDocument(models.Model):
                     vals['nfe_processada'] = base64.encodestring(response['xml'])
                 if response.get('pdf', False):
                     vals['nfse_pdf'] = base64.encodestring(response['pdf'])
-
+                if response.get('url_nfe', False):
+                    vals['nfse_url'] = response['url_nfe']
                 edoc.write(vals)
 
             elif response['code'] == 400:
@@ -886,6 +891,7 @@ class EletronicDocument(models.Model):
             'inscricao_municipal': re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
             'justificativa': 'Emissao de nota fiscal errada',
             'numero': self.numero,
+            'nfe_reference': str(self.id),
             'protocolo_nfe': self.protocolo_nfe,
             'codigo_municipio': '%s%s' % (
                 company.state_id.l10n_br_ibge_code,
@@ -901,7 +907,10 @@ class EletronicDocument(models.Model):
         else:
             from .focus_nfse import cancel_api
             response = cancel_api(
-                company.l10n_br_nfse_token_acess, doc_values[0]['ambiente'], doc_values)
+                company.l10n_br_nfse_token_acess,
+                doc_values['ambiente'],
+                doc_values['nfe_reference']
+            )
 
         if response['code'] in (200, 201):
             self.write({
