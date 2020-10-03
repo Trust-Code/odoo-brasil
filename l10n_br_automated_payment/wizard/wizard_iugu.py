@@ -19,7 +19,7 @@ class WizardChangeIuguInvoice(models.TransientModel):
             raise UserError('O pagamento já está reconciliado')
         if self.date_change:
 
-            token = self.env.user.company_id.iugu_api_token
+            token = self.env.company.iugu_api_token
             iugu.config(token=token)
             iugu_invoice_api = iugu.Invoice()
 

@@ -30,7 +30,7 @@ class EletronicDocument(models.Model):
     _order = 'id desc'
 
     name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True, states=STATE)
@@ -622,7 +622,6 @@ class EletronicDocument(models.Model):
     def _find_attachment_ids_email(self):
         atts = []
         attachment_obj = self.env['ir.attachment']
-
         xml_id = attachment_obj.create(dict(
             name=self.nfe_processada_name,
             datas=self.nfe_processada,
@@ -631,6 +630,16 @@ class EletronicDocument(models.Model):
             res_id=self.move_id.id,
         ))
         atts.append(xml_id.id)
+        if self.nfse_pdf:
+            pdf_id = attachment_obj.create(dict(
+                name=self.nfse_pdf_name,
+                datas=self.nfse_pdf,
+                mimetype='application/pdf',
+                res_model='account.move',
+                res_id=self.move_id.id,
+            ))
+            atts.append(pdf_id.id)
+            return atts
 
         danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
@@ -652,7 +661,7 @@ class EletronicDocument(models.Model):
         return atts
 
     def send_email_nfe(self):
-        mail = self.env.user.company_id.l10n_br_nfe_email_template
+        mail = self.company_id.l10n_br_nfe_email_template
         if not mail:
             raise UserError(_('Modelo de email padrão não configurado'))
         atts = self._find_attachment_ids_email()
@@ -952,7 +961,7 @@ class EletronicDocumentLine(models.Model):
         'eletronic.document', string='Documento')
     company_id = fields.Many2one(
         'res.company', 'Empresa', readonly=True, store=True,
-        default=lambda self: self.env.user.company_id)
+        default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", store=True)

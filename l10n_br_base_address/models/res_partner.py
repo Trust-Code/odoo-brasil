@@ -69,7 +69,7 @@ class ResPartner(models.Model):
             if self.state_id.code == 'RJ':
                 raise UserError(_(
                     u'Rio de Janeiro doesn\'t have this service'))
-            company = self.env.user.company_id
+            company = self.env.company
             if not company.l10n_br_certificate and not company.l10n_br_cert_password:
                 raise UserError(_(
                     u'Configure the company\'s certificate and password'))

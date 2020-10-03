@@ -133,7 +133,7 @@ class InutilizedNfe(models.Model):
             [
                 ("numero", ">=", self.numeration_start),
                 ("numero", "<=", self.numeration_end),
-                ("company_id", "=", self.env.user.company_id.id),
+                ("company_id", "=", self.env.company.id),
                 ("model", "=", self.modelo),
             ]
         )
@@ -156,11 +156,11 @@ class InutilizedNfe(models.Model):
             errors.append("A Justificativa deve ter no mínimo 15 caracteres")
         if len(self.justificativa) > 255:
             errors.append("A Justificativa deve ter no máximo 255 caracteres")
-        if not self.env.user.company_id.nfe_a1_file:
+        if not self.env.company.nfe_a1_file:
             errors.append("A empresa não possui um certificado de NFe " "cadastrado")
-        if not self.env.user.company_id.cnpj_cpf:
+        if not self.env.company.cnpj_cpf:
             errors.append("Cadastre o CNPJ da empresa.")
-        estado = self.env.user.company_id.state_id
+        estado = self.env.company.state_id
         if not estado or not estado.ibge_code:
             errors.append("Cadastre o Estado da empresa.")
         if len(errors):
@@ -232,7 +232,7 @@ class InutilizedNfe(models.Model):
             }
 
     def send_sefaz(self):
-        company = self.env.user.company_id
+        company = self.env.company
         ambiente = company.tipo_ambiente
         estado = company.state_id.ibge_code
 

@@ -41,7 +41,7 @@ class PaymentAccountMoveLine(models.TransientModel):
         "res.currency",
         string="Moeda",
         required=True,
-        default=lambda self: self.env.user.company_id.currency_id,
+        default=lambda self: self.env.company.currency_id,
     )
     amount_residual = fields.Monetary(
         string="Saldo", readonly=True, related="move_line_id.amount_residual"
