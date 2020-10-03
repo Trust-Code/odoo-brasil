@@ -4,9 +4,13 @@
     "version": "13.0.1.0.0",
     "category": "Localization",
     "author": "Code 137",
-    "license": "OEEL-1",
+    'license': 'Other OSI approved licence',
     "website": "http://www.code137.com.br",
-    "contributors": ["Fábio Luna <fabiocluna@hotmail.com>"],
-    "depends": ["sale"],
-    "data": [],
+    "contributors": [
+        "Fábio Luna <fabiocluna@hotmail.com>"
+    ],
+    "depends": [
+        "sale"
+    ],
+    "auto_install": True,
 }
