@@ -397,7 +397,7 @@ class AccountMove(models.Model):
                 self.env['eletronic.document'].create(vals)
 
     def action_post(self):
-        moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.type != 'entry')
+        moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.move_type != 'entry')
         moves._validate_for_eletronic_document()
         res = super(AccountMove, self).action_post()
         moves.action_create_eletronic_document()
