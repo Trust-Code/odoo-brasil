@@ -187,6 +187,7 @@ class PosOrder(models.Model):
             'code': pos.sequence_number,
             'name': u'Documento Eletrônico: nº %d' % pos.sequence_number,
             'company_id': pos.company_id.id,
+            'schedule_user_id': pos.user_id.id,
             'state': 'draft',
             'tipo_operacao': 'saida',
             'model': '65',
@@ -333,8 +334,7 @@ class PosOrderLine(models.Model):
             tributos_estimados_municipais)
 
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
-    def _compute_amount_line_all(self):
-        super(PosOrderLine, self)._compute_amount_line_all()
+    def _compute_amount_and_taxes(self):
         for line in self:
             currency = line.order_id.pricelist_id.currency_id
             values = line.order_id.fiscal_position_id.map_tax_extra_values(
@@ -424,29 +424,29 @@ class PosOrderLine(models.Model):
         string='Vlr. Desc. (-)', store=True,
         digits=dp.get_precision('Sale Price'))
     valor_bruto = fields.Float(
-        string='Vlr. Bruto', store=True, compute=_compute_amount_line_all,
+        string='Vlr. Bruto', store=True, compute=_compute_amount_and_taxes,
         digits=dp.get_precision('Sale Price'))
     valor_icms = fields.Float(string='Valor ICMS', store=True,
                               digits=dp.get_precision('Sale Price'),
-                              compute=_compute_amount_line_all)
+                              compute=_compute_amount_and_taxes)
     valor_ipi = fields.Float(string='Valor IPI', store=True,
                              digits=dp.get_precision('Sale Price'),
-                             compute=_compute_amount_line_all)
+                             compute=_compute_amount_and_taxes)
     valor_pis = fields.Float(string='Valor PIS', store=True,
                              digits=dp.get_precision('Sale Price'),
-                             compute=_compute_amount_line_all)
+                             compute=_compute_amount_and_taxes)
     valor_cofins = fields.Float(string='Valor COFINS', store=True,
                                 digits=dp.get_precision('Sale Price'),
-                                compute=_compute_amount_line_all)
+                                compute=_compute_amount_and_taxes)
     base_icms = fields.Float(string='Base ICMS', store=True,
-                             compute=_compute_amount_line_all)
+                             compute=_compute_amount_and_taxes)
     base_ipi = fields.Float(string='Base IPI', store=True,
-                            compute=_compute_amount_line_all)
+                            compute=_compute_amount_and_taxes)
     base_pis = fields.Float(string='Base PIS', store=True,
-                            compute=_compute_amount_line_all)
+                            compute=_compute_amount_and_taxes)
     base_cofins = fields.Float(string='Base COFINS', store=True,
-                               compute=_compute_amount_line_all)
-    aliquota_icms = fields.Float()
-    aliquota_ipi = fields.Float()
-    aliquota_pis = fields.Float()
-    aliquota_cofins = fields.Float()
+                               compute=_compute_amount_and_taxes)
+    aliquota_icms = fields.Float(compute=_compute_amount_and_taxes, store=True)
+    aliquota_ipi = fields.Float(compute=_compute_amount_and_taxes, store=True)
+    aliquota_pis = fields.Float(compute=_compute_amount_and_taxes, store=True)
+    aliquota_cofins = fields.Float(compute=_compute_amount_and_taxes, store=True)

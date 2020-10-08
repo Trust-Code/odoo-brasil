@@ -48,6 +48,7 @@
                     <field name="cfop_id" />
                     <field name="icms_cst_normal" />
                     <field name="icms_csosn_simples" />
+                    <field name="aliquota_icms" />
                     <field name="icms_st_aliquota_mva" />
                     <field name="aliquota_icms_proprio" />
                     <field name="icms_aliquota_reducao_base" />
