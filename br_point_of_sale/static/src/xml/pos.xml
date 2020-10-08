@@ -43,7 +43,7 @@
             <div class='button js_customer_cpf'>
                 <t t-name="setCutomerPopUp">
                     <i class='fa fa-user' />
-                    Only CPF
+                    CPF na Nota?
                 </t>
             </div>
         </t>
@@ -138,16 +138,17 @@
 <t t-name="TextInputPopupWidget">
     <div class="modal-dialog">
         <div class="popup popup-textinput">
-            <p class="title"> CPF Input</p>
-            <p class="body"> Insert  CPF  to  identificate  customer  in  NFce:
-            </p>
-            <input type='text' name="customer_cpf"> </input>
+            <p class="title"> CPF do cliente</p>
+            <div class="body">
+                <p> Insira o CPF para identificar o cliente na NFC-e:</p>
+                <input type='text' name="customer_cpf"> </input>
+            </div>
             <div class="footer">
                 <div class="button confirm">
-                    Ok 
+                    Confirmar
                 </div>
                 <div class="button cancel">
-                    Cancel 
+                    Cancelar
                 </div>
             </div>
         </div>
