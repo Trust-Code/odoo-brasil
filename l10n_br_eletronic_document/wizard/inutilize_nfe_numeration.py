@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class InutilizationNFeNumeration(models.TransientModel):
@@ -7,8 +7,7 @@ class InutilizationNFeNumeration(models.TransientModel):
 
     numeration_start = fields.Integer('Começo da Numeração', required=True)
     numeration_end = fields.Integer('Fim da Numeração', required=True)
-    serie = fields.Many2one('br_account.document.serie', string=u'Série',
-                            required=True)
+    serie = fields.Char(string='Série', required=True)
     modelo = fields.Selection([
         ('55', '55 - NFe'),
         ('65', '65 - NFCe'), ],
@@ -27,7 +26,7 @@ class InutilizationNFeNumeration(models.TransientModel):
             numeration_end=self.numeration_end,
             justificativa=self.justificativa,
             modelo=self.modelo,
-            serie=self.serie.id,
+            serie=self.serie,
             state='error',
         ))
         return inut_inv.action_send_inutilization()
