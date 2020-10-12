@@ -233,7 +233,7 @@ class InutilizedNfe(models.Model):
 
     def send_sefaz(self):
         company = self.env.company
-        ambiente = company.l10n_br_tipo_ambiente
+        ambiente = 1 if company.l10n_br_tipo_ambiente == "producao" else 2
         estado = company.state_id.l10n_br_ibge_code
 
         obj = self._prepare_obj(company=company, estado=estado, ambiente=ambiente)
