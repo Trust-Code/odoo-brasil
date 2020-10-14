@@ -79,3 +79,15 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         return vals
+
+    @api.onchange("product_id")
+    def _onchange_product_id(self):
+        vals = super(AccountMoveLine, self)._onchange_product_id()
+
+        if not self.move_id.fiscal_position_id:
+            return vals
+
+        fiscal_position_id = self.move_id.fiscal_position_id
+
+        if fiscal_position_id.account_id:
+            self.account_id = fiscal_position_id.account_id
