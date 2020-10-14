@@ -30,6 +30,11 @@ class ResPartner(models.Model):
     l10n_br_inscr_mun = fields.Char('Inscr. Municipal', size=20)
     l10n_br_suframa = fields.Char('Suframa', size=20)
 
+    _sql_constraints = [
+        ('res_partner_l10n_br_cnpj_cpf_uniq', 'unique (l10n_br_cnpj_cpf)',
+         'Este CPF/CNPJ já está em uso por outro parceiro!')
+    ]
+
     def _formatting_address_fields(self):
         fields = super(ResPartner, self)._formatting_address_fields()
         return fields + ['l10n_br_district', 'l10n_br_number']
@@ -53,6 +58,20 @@ class ResPartner(models.Model):
                     'message': 'Please use a 8 number value to search ;)'
                 }
             }
+
+    @api.onchange('l10n_br_cnpj_cpf')
+    def _onchange_l10n_br_cnpj_cpf(self):
+        country_code = self.country_id.code or ''
+        if self.l10n_br_cnpj_cpf and country_code.upper() == 'BR':
+            val = re.sub('[^0-9]', '', self.l10n_br_cnpj_cpf)
+            if len(val) == 14:
+                cnpj_cpf = "%s.%s.%s/%s-%s"\
+                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
+                self.l10n_br_cnpj_cpf = cnpj_cpf
+            elif not self.is_company and len(val) == 11:
+                cnpj_cpf = "%s.%s.%s-%s"\
+                    % (val[0:3], val[3:6], val[6:9], val[9:11])
+                self.l10n_br_cnpj_cpf = cnpj_cpf
 
     @api.model
     def install_default_country(self):
