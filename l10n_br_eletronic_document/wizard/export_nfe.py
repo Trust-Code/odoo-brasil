@@ -12,8 +12,6 @@ class ExportNfe(models.TransientModel):
 
     start_date = fields.Date(string=u"Data Inicial", required=True)
     end_date = fields.Date(string=u"Data Final", required=True)
-    model = fields.Many2one(
-        'br_account.fiscal.document', string='Documento')
     zip_file = fields.Binary('Arquivo', readonly=True)
     zip_file_name = fields.Char('Nome', size=255)
     state = fields.Selection(
@@ -41,16 +39,11 @@ class ExportNfe(models.TransientModel):
         search_vals = []
         search_vals.append(('data_emissao', '>=', self.start_date))
         search_vals.append(('data_emissao', '<=', self.end_date))
-        search_vals.append(('state', 'in', ['cancel', 'done', 'denied']))
+        search_vals.append(('state', 'in', ['cancel', 'done', 'denied', 'imported']))
 
-        if self.model:
-            search_vals.append(('model', 'in', [self.model.code]))
-
-        invoice_ids = self.env['invoice.eletronic'].search(search_vals)
+        invoice_ids = self.env['eletronic.document'].search(search_vals)
         xmls = []
         for invoice in invoice_ids:
-            if not invoice.nfe_processada:
-                invoice.generate_nfe_proc()
             if invoice.nfe_processada:
                 xmls.append({
                     'content': base64.decodestring(

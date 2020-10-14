@@ -10,9 +10,6 @@
                         <field name="start_date"/>
                         <field name="end_date"/>
                     </group>
-                    <group name='modelo-serie'>
-                        <field name="model" />
-                    </group>
                 </group>
                 <group states="done">
                     <field name="zip_file_name" invisible="1" />
