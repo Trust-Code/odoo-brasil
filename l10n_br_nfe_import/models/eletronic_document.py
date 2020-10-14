@@ -81,9 +81,11 @@ class EletronicDocument(models.Model):
         num_controle = ide.cNF
         numero_nfe = ide.nNF
         data_emissao = parser.parse(str(ide.dhEmi))
-        data_entrada_saida = get(ide, 'dhSaiEnt')
-        if data_entrada_saida:
-            data_entrada_saida = parser.parse(str(data_entrada_saida))
+        dt_entrada_saida = get(ide, 'dhSaiEnt')
+
+        if dt_entrada_saida:
+            dt_entrada_saida = parser.parse(str(dt_entrada_saida))
+            dt_entrada_saida = dt_entrada_saida.astimezone(pytz.utc).replace(tzinfo=None)
         indicador_destinatario = ide.idDest
         ambiente = 'homologacao' if ide.tpAmb == 2\
             else 'producao'
@@ -96,7 +98,7 @@ class EletronicDocument(models.Model):
             numero_controle=num_controle,
             numero=numero_nfe,
             data_emissao=data_emissao.astimezone(pytz.utc).replace(tzinfo=None),
-            data_entrada_saida=data_entrada_saida.astimezone(pytz.utc).replace(tzinfo=None),
+            data_entrada_saida=dt_entrada_saida,
             ind_dest=str(indicador_destinatario),
             ambiente=ambiente,
             finalidade_emissao=finalidade_emissao,
@@ -1154,8 +1156,8 @@ class EletronicDocument(models.Model):
 
         if not partner_automation and not emit_id:
             raise UserError(
-                "Parceiro não encontrado, caso deseje cadastrar \
-                um parceiro selecione a opção 'Cadastrar Parceiro'.")
+                "Parceiro não encontrado, caso deseje cadastrar " +
+                "um parceiro selecione a opção 'Cadastrar Parceiro'.")
 
         return dict(
             company_id=company.id,
