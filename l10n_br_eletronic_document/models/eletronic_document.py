@@ -1034,7 +1034,7 @@ class EletronicDocumentLine(models.Model):
         readonly=True, states=STATE)
 
     origem = fields.Selection(
-        ORIGEM_PROD, string='Origem Mercadoria', readonly=True, states=STATE)
+        ORIGEM_PROD, string='Origem Mercadoria', readonly=True, states=STATE, default='0')
     icms_cst = fields.Selection(
         CST_ICMS + CSOSN_SIMPLES, string='Situação Tributária',
         readonly=True, states=STATE)
@@ -1046,7 +1046,7 @@ class EletronicDocumentLine(models.Model):
          ('1', '1 - Pauta (Valor)'),
          ('2', '2 - Preço Tabelado Máx. (valor)'),
          ('3', '3 - Valor da operação')],
-        string='Modalidade BC do ICMS', readonly=True, states=STATE)
+        string='Modalidade BC do ICMS', readonly=True, states=STATE, default='3')
     icms_base_calculo = fields.Monetary(
         string='Base de cálculo', digits='Account',
         readonly=True, states=STATE)
