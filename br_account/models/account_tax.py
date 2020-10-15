@@ -297,6 +297,7 @@ class AccountTax(models.Model):
                 else:
                     vals['amount'] = tax._compute_amount(price_base, 1.0)
                     vals['base'] = price_base
+            vals['amount'] = round(vals['amount'], 2)
             taxes.append(vals)
         return taxes
 
