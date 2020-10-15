@@ -153,7 +153,7 @@ class AccountInvoiceLine(models.Model):
             'ipi_base_calculo': sum([x['base'] for x in ipi]),
             'ipi_valor': sum([x['amount'] for x in ipi]),
             'pis_base_calculo': sum([x['base'] for x in pis]),
-            'pis_valor': sum([x['amount'] for x in pis]),
+            'pis_valor': round(sum([x['amount'] for x in pis]), 2),
             'cofins_base_calculo': sum([x['base'] for x in cofins]),
             'cofins_valor': sum([x['amount'] for x in cofins]),
             'issqn_base_calculo': sum([x['base'] for x in issqn]),
