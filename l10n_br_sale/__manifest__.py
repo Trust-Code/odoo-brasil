@@ -10,7 +10,13 @@
         "Fábio Luna <fabiocluna@hotmail.com>"
     ],
     "depends": [
-        "sale"
+        "sale",
+        "delivery",
+    ],
+    'data':[
+        'views/delivery_view.xml',
+        'views/account_move_views.xml',
+        'report/sale_report_templates.xml',
     ],
     "auto_install": True,
 }

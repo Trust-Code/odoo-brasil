@@ -1,0 +1,10 @@
+<odoo>
+    <template id="report_quotation_inherit_carrier" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@class='row mt32 mb32']/div[last()]" position="after">
+            <div t-if="doc.carrier_id.partner_id" class="col-auto mw-100 mb-2">
+                <strong>Transportadora:</strong>
+                <p class="m-0" t-field="doc.carrier_id.partner_id"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

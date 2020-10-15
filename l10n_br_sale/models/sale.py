@@ -1,6 +1,17 @@
 from odoo import models
 
 
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+
+    def _prepare_invoice(self):
+        values = super(SaleOrder, self)._prepare_invoice()
+
+        if self.carrier_id and self.carrier_id.partner_id:
+            values['carrier_partner_id'] = self.carrier_id.partner_id
+        return values
+
+
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
