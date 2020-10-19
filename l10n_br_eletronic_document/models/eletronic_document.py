@@ -441,6 +441,15 @@ class EletronicDocument(models.Model):
 
     discriminacao_servicos = fields.Char(compute='_compute_discriminacao')
 
+    cert_state = fields.Selection(
+        [('not_loaded', 'Not loaded'),
+         ('expired', 'Expired'),
+         ('invalid_password', 'Invalid Password'),
+         ('unknown', 'Unknown'),
+         ('valid', 'Valid')],
+        string='Estado do Certificado', related='company_id.l10n_br_cert_state',
+        readonly=True)
+
     def _compute_discriminacao(self):
         for item in self:
             descricao = ''
