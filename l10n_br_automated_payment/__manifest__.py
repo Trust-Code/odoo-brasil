@@ -21,6 +21,7 @@
         'l10n_br_base_address',
     ],
     'data': [
+        'data/iugu_check_cron.xml',
         'views/res_company.xml',
         'views/account_move.xml',
         'views/account_journal.xml',
