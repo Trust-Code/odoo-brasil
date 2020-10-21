@@ -13,6 +13,12 @@ class PaymentTransaction(models.Model):
     origin_move_line_id = fields.Many2one('account.move.line')
     date_maturity = fields.Date(string="Data de Vencimento")
 
+    def cron_verify_transaction(self):
+        documents = self.search([('state', 'in', ['draft', 'pending']), ], limit=1000)
+
+        for doc in documents:
+            doc.action_verify_transaction()
+
     def action_verify_transaction(self):
         if not self.acquirer_reference:
             raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')

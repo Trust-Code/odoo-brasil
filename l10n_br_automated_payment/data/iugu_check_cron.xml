@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<odoo>
+   <data noupdate="0">
+       <record id="ir_cron_iugu_check" model="ir.cron" forcecreate="True">
+           <field name="name">IUgu Scheduler</field>
+           <field name="user_id" ref="base.user_root" />
+           <field name="interval_number">6</field>
+           <field name="interval_type">hours</field>
+           <field name="numbercall">-1</field>
+           <field name="model_id" ref="model_payment_transaction"/>
+           <field name="state">code</field>
+           <field name="code">model.cron_verify_transaction()</field>
+           <field name="active">True</field>
+           <field name="doall">False</field>
+       </record>
+   </data>
+</odoo>
