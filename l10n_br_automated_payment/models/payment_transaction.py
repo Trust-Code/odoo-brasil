@@ -13,12 +13,18 @@ class PaymentTransaction(models.Model):
     origin_move_line_id = fields.Many2one('account.move.line')
     date_maturity = fields.Date(string="Data de Vencimento")
 
+    def cron_verify_transaction(self):
+        documents = self.search([('state', 'in', ['draft', 'pending']), ], limit=1000)
+
+        for doc in documents:
+            doc.action_verify_transaction()
+
     def action_verify_transaction(self):
         if not self.acquirer_reference:
             raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
         if self.acquirer_id.provider != 'iugu':
             return
-        token = self.env.user.company_id.iugu_api_token
+        token = self.env.company.iugu_api_token
         iugu.config(token=token)
         iugu_invoice_api = iugu.Invoice()
 
@@ -35,7 +41,7 @@ class PaymentTransaction(models.Model):
     def cancel_transaction_in_iugu(self):
         if not self.acquirer_reference:
             raise UserError('Esta parcela não foi enviada ao IUGU')
-        token = self.env.user.company_id.iugu_api_token
+        token = self.env.company.iugu_api_token
         iugu.config(token=token)
         iugu_invoice_api = iugu.Invoice()
         iugu_invoice_api.cancel(self.acquirer_reference)

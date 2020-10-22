@@ -14,7 +14,7 @@ class ResPartner(models.Model):
 
     def action_synchronize_iugu(self):
         for partner in self:
-            token = self.env.user.company_id.iugu_api_token
+            token = self.env.company.iugu_api_token
             iugu.config(token=token)
 
             iugu_customer_api = iugu.Customer()

@@ -59,7 +59,7 @@ class NfeMde(models.Model):
                  ) for rec in self]
 
     def _default_company(self):
-        return self.env.user.company_id
+        return self.env.company
 
     def _compute_total_edocs(self):
         for item in self:

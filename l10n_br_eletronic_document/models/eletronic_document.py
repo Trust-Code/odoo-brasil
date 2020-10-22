@@ -30,7 +30,7 @@ class EletronicDocument(models.Model):
     _order = 'id desc'
 
     name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True, states=STATE)
@@ -391,6 +391,8 @@ class EletronicDocument(models.Model):
     nfe_processada_name = fields.Char(
         string=u"Xml da NFe", size=100, readonly=True, copy=False)
 
+    nfse_url = fields.Char(
+        string="URL da NFe", size=500, readonly=True, copy=False)
     nfse_pdf = fields.Binary(
         string="PDF da NFe", readonly=True, copy=False)
     nfse_pdf_name = fields.Char(
@@ -438,6 +440,15 @@ class EletronicDocument(models.Model):
         string="Cartas de Correção", readonly=True, states=STATE)
 
     discriminacao_servicos = fields.Char(compute='_compute_discriminacao')
+
+    cert_state = fields.Selection(
+        [('not_loaded', 'Not loaded'),
+         ('expired', 'Expired'),
+         ('invalid_password', 'Invalid Password'),
+         ('unknown', 'Unknown'),
+         ('valid', 'Valid')],
+        string='Estado do Certificado', related='company_id.l10n_br_cert_state',
+        readonly=True)
 
     def _compute_discriminacao(self):
         for item in self:
@@ -620,7 +631,6 @@ class EletronicDocument(models.Model):
     def _find_attachment_ids_email(self):
         atts = []
         attachment_obj = self.env['ir.attachment']
-
         xml_id = attachment_obj.create(dict(
             name=self.nfe_processada_name,
             datas=self.nfe_processada,
@@ -629,6 +639,16 @@ class EletronicDocument(models.Model):
             res_id=self.move_id.id,
         ))
         atts.append(xml_id.id)
+        if self.nfse_pdf:
+            pdf_id = attachment_obj.create(dict(
+                name=self.nfse_pdf_name,
+                datas=self.nfse_pdf,
+                mimetype='application/pdf',
+                res_model='account.move',
+                res_id=self.move_id.id,
+            ))
+            atts.append(pdf_id.id)
+            return atts
 
         danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
@@ -650,7 +670,7 @@ class EletronicDocument(models.Model):
         return atts
 
     def send_email_nfe(self):
-        mail = self.env.user.company_id.l10n_br_nfe_email_template
+        mail = self.company_id.l10n_br_nfe_email_template
         if not mail:
             raise UserError(_('Modelo de email padrão não configurado'))
         atts = self._find_attachment_ids_email()
@@ -825,6 +845,8 @@ class EletronicDocument(models.Model):
                 vals['nfe_processada'] = base64.encodestring(response['xml'])
             if response.get('pdf', False):
                 vals['nfse_pdf'] = base64.encodestring(response['pdf'])
+            if response.get('url_nfe', False):
+                vals['nfse_url'] = response['url_nfe']
 
             self.write(vals)
 
@@ -857,7 +879,8 @@ class EletronicDocument(models.Model):
                     vals['nfe_processada'] = base64.encodestring(response['xml'])
                 if response.get('pdf', False):
                     vals['nfse_pdf'] = base64.encodestring(response['pdf'])
-
+                if response.get('url_nfe', False):
+                    vals['nfse_url'] = response['url_nfe']
                 edoc.write(vals)
 
             elif response['code'] == 400:
@@ -886,6 +909,7 @@ class EletronicDocument(models.Model):
             'inscricao_municipal': re.sub('[^0-9]', '', company.l10n_br_inscr_mun),
             'justificativa': 'Emissao de nota fiscal errada',
             'numero': self.numero,
+            'nfe_reference': str(self.id),
             'protocolo_nfe': self.protocolo_nfe,
             'codigo_municipio': '%s%s' % (
                 company.state_id.l10n_br_ibge_code,
@@ -901,7 +925,10 @@ class EletronicDocument(models.Model):
         else:
             from .focus_nfse import cancel_api
             response = cancel_api(
-                company.l10n_br_nfse_token_acess, doc_values[0]['ambiente'], doc_values)
+                company.l10n_br_nfse_token_acess,
+                doc_values['ambiente'],
+                doc_values['nfe_reference']
+            )
 
         if response['code'] in (200, 201):
             self.write({
@@ -943,7 +970,7 @@ class EletronicDocumentLine(models.Model):
         'eletronic.document', string='Documento')
     company_id = fields.Many2one(
         'res.company', 'Empresa', readonly=True, store=True,
-        default=lambda self: self.env.user.company_id)
+        default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", store=True)
@@ -1016,7 +1043,7 @@ class EletronicDocumentLine(models.Model):
         readonly=True, states=STATE)
 
     origem = fields.Selection(
-        ORIGEM_PROD, string='Origem Mercadoria', readonly=True, states=STATE)
+        ORIGEM_PROD, string='Origem Mercadoria', readonly=True, states=STATE, default='0')
     icms_cst = fields.Selection(
         CST_ICMS + CSOSN_SIMPLES, string='Situação Tributária',
         readonly=True, states=STATE)
@@ -1028,7 +1055,7 @@ class EletronicDocumentLine(models.Model):
          ('1', '1 - Pauta (Valor)'),
          ('2', '2 - Preço Tabelado Máx. (valor)'),
          ('3', '3 - Valor da operação')],
-        string='Modalidade BC do ICMS', readonly=True, states=STATE)
+        string='Modalidade BC do ICMS', readonly=True, states=STATE, default='3')
     icms_base_calculo = fields.Monetary(
         string='Base de cálculo', digits='Account',
         readonly=True, states=STATE)

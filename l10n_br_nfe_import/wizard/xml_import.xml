@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_xml_import_form">
+        <field name="model">wizard.xml.import</field>
+        <field name="arch" type="xml">
+            <form string="Importa xml">
+                <field name="state" invisible="1" />
+                <group states="ok">
+                    <field name="nfe_xml"/>
+                </group>
+                <group string="Nota Fiscal já importada para o sistema!" attrs="{'invisible': [('already_imported', '=', False)]}">
+                    <field name="already_imported" invisible="1" />
+                </group>
+                <group string="Informações da nota fiscal" attrs="{'invisible': [('nfe_xml', '=', False)]}">
+                    <field name="partner_id" readonly="1" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                    <field name="partner_data" readonly="1" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
+                    <field name="nfe_type" readonly="1"/>
+                    <field name="total_products" readonly="1"/>
+                    <field name="amount_total" readonly="1"/>
+                </group>
+                <group string="Não achamos o cadastro desse parceiro!" attrs="{'invisible': ['|', ('partner_id', '!=', False), ('nfe_xml', '=', False)]}">
+                    <field name="create_partner" /> 
+                </group>
+                <footer states="ok">
+                    <button name="action_import_nfe"
+                        string="Importar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_xml_import_wizard" model="ir.actions.act_window">
+        <field name="name">Importar NFe</field>
+        <field name="res_model">wizard.xml.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_xml_import_nfe"
+              name="Importar NF-e (XML) - Experimental"
+              parent="l10n_br_eletronic_document.menu_eletronic_doc_base"
+              action="action_xml_import_wizard"
+              sequence="55" />
+
+</odoo>

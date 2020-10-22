@@ -22,12 +22,18 @@ class AccountMove(models.Model):
             item.total_edocs = self.env['eletronic.document'].search_count(
                 [('move_id', '=', item.id)])
 
+    def _get_default_policy(self):
+        if self.env.context.get('default_type', '') == 'out_invoice':
+            return 'directly'
+        if self.env.context.get('default_type', '') == 'in_invoice':
+            return 'manually'
+
     total_edocs = fields.Integer(string="Total NFe", compute=_compute_total_edocs)
 
     l10n_br_edoc_policy = fields.Selection(
         [('directly', 'Emitir agora'),
          ('after_payment', 'Emitir após pagamento'),
-         ('manually', 'Manualmente')], string="Nota Eletrônica", default='directly')
+         ('manually', 'Manualmente')], string="Nota Eletrônica", default=_get_default_policy)
 
     @api.model
     def _autopost_draft_entries(self):

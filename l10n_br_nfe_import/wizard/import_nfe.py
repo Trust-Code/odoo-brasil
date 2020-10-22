@@ -54,7 +54,7 @@ class WizardImportNfe(models.TransientModel):
     def _import_xml(self, xml):
         nfe = objectify.fromstring(xml)
         invoice_eletronic = self.env['eletronic.document']
-        company_id = self.env.user.company_id
+        company_id = self.env.company
         invoice_eletronic.import_nfe(
             company_id, nfe, xml, company_id.partner_automation,
             company_id.invoice_automation, company_id.tax_automation,

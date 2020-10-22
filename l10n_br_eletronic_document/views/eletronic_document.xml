@@ -21,6 +21,11 @@
                         attrs="{'invisible': ['|', ('ambiente', '==', 'producao')]}">
                         A NFe está em ambiente de homologação
                     </div>
+                    <field name="cert_state" invisible="1" />
+                    <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|', ('cert_state', '!=', 'expired')]}">
+                        O certificado digital da empresa está vencida!
+                    </div>
                     <div name="alertas" class="alert alert-info" role="alert" style="margin-bottom:0px;">
                         <div class="row">
                             <div class="col-md-6 col-md-offset-1">
@@ -60,6 +65,7 @@
                                         <field name="qrcode_url" attrs="{'invisible': [('model', 'not in', ('nfce'))]}" />
                                         <field name="nfe_processada_name" invisible="1"/>
                                         <field name="nfe_processada" filename="nfe_processada_name"/>
+                                        <field name="nfse_url" widget="url"/>
                                         <field name="nfse_pdf_name" invisible="1"/>
                                         <field name="nfse_pdf" filename="nfse_pdf_name"/>
                                     </group>

@@ -7,14 +7,13 @@
             <xpath expr="//field[@name='qr_code']/parent::div/parent::div" position="after">
                 <div class="col-xs-12 col-md-6 o_setting_box" title="Define accounts to use for fine and interest.">
                     <div class="o_setting_right_pane">
+                        <span class="o_form_label">Sequência NFe para serviços</span>
                         <label for="l10n_br_interest_account_id" />
                         <div class="text-muted">
                             Selecione a conta usada para registrar juros/multas recebidas
                         </div>
-                        <div class="content-group">
-                            <div class="row mt16">
-                                <field name="l10n_br_interest_account_id" domain="[('company_id', '=', company_id)]"/>
-                            </div>
+                        <div class="text-muted">
+                            <field name="l10n_br_interest_account_id" domain="[('company_id', '=', company_id)]"/>
                         </div>
                     </div>
                     <div class="o_setting_right_pane">
@@ -22,10 +21,8 @@
                         <div class="text-muted">
                             Selecione a conta usada para registrar tarifas bancárias
                         </div>
-                        <div class="content-group">
-                            <div class="row mt16">
-                                <field name="l10n_br_bankfee_account_id" domain="[('company_id', '=', company_id)]"/>
-                            </div>
+                        <div class="text-muted">
+                            <field name="l10n_br_bankfee_account_id" domain="[('company_id', '=', company_id)]"/>
                         </div>
                     </div>
                 </div>

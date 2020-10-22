@@ -1,6 +1,37 @@
 from odoo import api, fields, models
 
 
+class AccountMove(models.Model):
+    _inherit = "account.move"
+
+    @api.onchange("fiscal_position_id")
+    def _onchange_fiscal_position_id(self):
+        if not self.fiscal_position_id:
+            return
+
+        fiscal_position_id = self.fiscal_position_id
+        if fiscal_position_id.journal_id:
+            self.journal_id = fiscal_position_id.journal_id
+
+        if fiscal_position_id.account_id:
+            account_id = fiscal_position_id.account_id
+
+            if fiscal_position_id.fiscal_type == "saida":
+                move_lines = self.mapped("line_ids").filtered(
+                    lambda x: x.credit > 0
+                )
+
+                for line in move_lines:
+                    line.account_id = account_id
+            elif fiscal_position_id.fiscal_type == "entrada":
+                move_lines = self.mapped("line_ids").filtered(
+                    lambda x: x.debit > 0
+                )
+
+                for line in move_lines:
+                    line.account_id = account_id
+
+
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
@@ -48,3 +79,15 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         return vals
+
+    @api.onchange("product_id")
+    def _onchange_product_id(self):
+        vals = super(AccountMoveLine, self)._onchange_product_id()
+
+        if not self.move_id.fiscal_position_id:
+            return vals
+
+        fiscal_position_id = self.move_id.fiscal_position_id
+
+        if fiscal_position_id.account_id:
+            self.account_id = fiscal_position_id.account_id

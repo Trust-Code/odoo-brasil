@@ -81,9 +81,11 @@ class EletronicDocument(models.Model):
         num_controle = ide.cNF
         numero_nfe = ide.nNF
         data_emissao = parser.parse(str(ide.dhEmi))
-        data_entrada_saida = get(ide, 'dhSaiEnt')
-        if data_entrada_saida:
-            data_entrada_saida = parser.parse(str(data_entrada_saida))
+        dt_entrada_saida = get(ide, 'dhSaiEnt')
+
+        if dt_entrada_saida:
+            dt_entrada_saida = parser.parse(str(dt_entrada_saida))
+            dt_entrada_saida = dt_entrada_saida.astimezone(pytz.utc).replace(tzinfo=None)
         indicador_destinatario = ide.idDest
         ambiente = 'homologacao' if ide.tpAmb == 2\
             else 'producao'
@@ -96,7 +98,7 @@ class EletronicDocument(models.Model):
             numero_controle=num_controle,
             numero=numero_nfe,
             data_emissao=data_emissao.astimezone(pytz.utc).replace(tzinfo=None),
-            data_entrada_saida=data_entrada_saida.astimezone(pytz.utc).replace(tzinfo=None),
+            data_entrada_saida=dt_entrada_saida,
             ind_dest=str(indicador_destinatario),
             ambiente=ambiente,
             finalidade_emissao=finalidade_emissao,
@@ -137,6 +139,7 @@ class EletronicDocument(models.Model):
             valor_bc_icmsst=get(ICMSTot, 'vBCST'),
             valor_icmsst=get(ICMSTot, 'vST'),
             valor_bruto=get(ICMSTot, 'vProd'),
+            valor_produtos=get(ICMSTot, 'vProd'),
             valor_frete=get(ICMSTot, 'vFrete'),
             valor_seguro=get(ICMSTot, 'vSeg'),
             valor_desconto=get(ICMSTot, 'vDesc'),
@@ -234,12 +237,12 @@ class EletronicDocument(models.Model):
         if hasattr(nfe.NFe.infNFe.transp, 'vol'):
             vol = nfe.NFe.infNFe.transp.vol
             volume_ids = {
-                'especie': get(vol, '.esp'),
+                'especie': get(vol, 'esp'),
                 'quantidade_volumes': get(vol, 'qVol'),
                 'numeracao': get(vol, 'nVol'),
                 'peso_liquido': get(vol, 'pesoL'),
-                'peso_bruto': get(vol, '.pesoB'),
-                'marca': get(vol, '.marca'),
+                'peso_bruto': get(vol, 'pesoB'),
+                'marca': get(vol, 'marca'),
             }
 
             return remove_none_values(volume_ids)
@@ -612,7 +615,6 @@ class EletronicDocument(models.Model):
             raise UserError('XML invalido!')
 
         chave_nfe = protNFe.chNFe
-
         invoice_eletronic = self.env['eletronic.document'].search([
             ('chave_nfe', '=', chave_nfe)])
 
@@ -1135,6 +1137,7 @@ class EletronicDocument(models.Model):
         company = self.env['res.company'].sudo().search(
             [('partner_id.l10n_br_cnpj_cpf', '=', dest_cnpj_cpf)])
 
+        # company = self.env.company
         if not company:
             company = self.env['res.company'].sudo().search(
                 [('partner_id.l10n_br_cnpj_cpf', '=', emit_cnpj_cpf)])
@@ -1154,8 +1157,8 @@ class EletronicDocument(models.Model):
 
         if not partner_automation and not emit_id:
             raise UserError(
-                "Parceiro não encontrado, caso deseje cadastrar \
-                um parceiro selecione a opção 'Cadastrar Parceiro'.")
+                "Parceiro não encontrado, caso deseje cadastrar " +
+                "um parceiro selecione a opção 'Cadastrar Parceiro'.")
 
         return dict(
             company_id=company.id,
@@ -1163,6 +1166,81 @@ class EletronicDocument(models.Model):
             partner_id=emit_id.id,
             destinatary=destinatary,
         )
+
+    # ==================================================
+    # Novos métodos para importação de XML
+    def get_basic_info(self, nfe):
+        nfe_type = get(nfe.NFe.infNFe.ide, 'tpNF', str)
+        total = nfe.NFe.infNFe.total.ICMSTot.vNF
+        products = len(nfe.NFe.infNFe.det)
+        vals = self.inspect_partner_from_nfe(nfe)
+        already_imported = self.existing_invoice(nfe)
+        return dict(
+            already_imported=already_imported,
+            nfe_type=nfe_type,
+            amount_total=total,
+            total_products=products,
+            **vals
+        )
+
+    def inspect_partner_from_nfe(self, nfe):
+        '''Importação da sessão <emit> do xml'''
+        nfe_type = nfe.NFe.infNFe.ide.tpNF
+        tag_nfe = None
+        if nfe_type == 1:
+            tag_nfe = nfe.NFe.infNFe.emit
+        else:
+            tag_nfe = nfe.NFe.infNFe.dest
+
+        if hasattr(tag_nfe, 'CNPJ'):
+            cnpj_cpf = cnpj_cpf_format(str(tag_nfe.CNPJ.text).zfill(14))
+        else:
+            cnpj_cpf = cnpj_cpf_format(str(tag_nfe.CPF.text).zfill(11))
+
+        partner_id = self.env['res.partner'].search([
+            ('l10n_br_cnpj_cpf', '=', cnpj_cpf)], limit=1)
+
+        partner_data = "%s - %s" % (cnpj_cpf, tag_nfe.xNome)
+        return dict(partner_id=partner_id.id, partner_data=partner_data)
+    
+    
+    def generate_eletronic_document(self, xml_nfe, create_partner):
+        nfe = objectify.fromstring(xml_nfe)
+        
+        invoice_dict = {}
+        if self.existing_invoice(nfe):
+            raise UserError('Nota Fiscal já importada para o sistema!')
+
+        partner_vals = self._get_company_invoice(nfe, create_partner)
+        company_id = self.env['res.company'].browse(
+            partner_vals['company_id'])
+        invoice_dict.update(partner_vals)
+        invoice_dict.update({
+            'nfe_processada': base64.encodestring(xml_nfe),
+            'nfe_processada_name': "NFe%08d.xml" % nfe.NFe.infNFe.ide.nNF
+        })
+        invoice_dict.update(self.get_protNFe(nfe, company_id))
+        invoice_dict.update(self.get_main(nfe))
+        partner = self.get_partner_nfe(
+            nfe, partner_vals['destinatary'], create_partner)
+        invoice_dict.update(
+            self.get_ide(nfe, partner_vals['tipo_operacao']))
+        invoice_dict.update(partner)
+        invoice_dict.update(self.get_ICMSTot(nfe))
+        invoice_dict.update(self.get_items(
+            nfe, company_id, partner['partner_id'],
+            invoice_dict['partner_id'],
+            False))
+        invoice_dict.update(self.get_infAdic(nfe))
+        invoice_dict.update(self.get_cobr_fat(nfe))
+        invoice_dict.update(self.get_transp(nfe))
+        invoice_dict.update(
+            {'reboque_ids': [(0, None, self.get_reboque(nfe))]})
+        invoice_dict.update({'volume_ids': [(0, None, self.get_vol(nfe))]})
+        invoice_dict.update(self.get_cobr_dup(nfe))
+        invoice_dict.update(self.get_compra(nfe))
+        invoice_dict.pop('destinatary', False)
+        return self.env['eletronic.document'].create(invoice_dict)
 
 
 class EletronicDocumentLine(models.Model):
