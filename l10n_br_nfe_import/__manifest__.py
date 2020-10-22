@@ -20,6 +20,7 @@
         'views/invoice_eletronic.xml',
         'views/product_category.xml',
         'wizard/import_nfe.xml',
+        'wizard/xml_import.xml',
     ],
     'installable': True,
 }
