@@ -4,6 +4,11 @@ from odoo import fields, models, api
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    eletronic_doc_id = fields.Many2one('eletronic.document', string="Nota Fiscal")
+
+    def _recompute_payment_terms_lines(self):
+        return super(AccountMove, self.with_context(eletronic_doc_id=self.eletronic_doc_id))._recompute_payment_terms_lines()
+
     def action_invoice_open(self):
         for invoice in self:
             super(AccountInvoice, self).action_invoice_open()

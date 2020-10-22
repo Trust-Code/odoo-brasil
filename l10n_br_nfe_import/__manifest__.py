@@ -15,6 +15,7 @@
         'l10n_br_eletronic_document'
     ],
     'data': [
+        "data/payment_term.xml",
         'security/ir.model.access.csv',
         'views/res_config_settings.xml',
         'views/invoice_eletronic.xml',
