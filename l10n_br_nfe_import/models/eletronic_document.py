@@ -367,7 +367,7 @@ class EletronicDocument(models.Model):
             'valor_bruto': valor_bruto, 'desconto': desconto, 'seguro': seguro,
             'frete': frete, 'outras_despesas': outras_despesas,
             'valor_liquido': valor_bruto - desconto + frete + seguro + outras_despesas,
-            'indicador_total': indicador_total,
+            'indicador_total': indicador_total, 'unidade_medida': str(item.prod.uCom),
             'cfop': cfop, 'ncm': ncm, 'product_ean': item.prod.cEAN,
             'product_cprod': codigo, 'product_xprod': item.prod.xProd,
             'cest': cest, 'item_pedido_compra': nItemPed,
@@ -989,6 +989,33 @@ class EletronicDocument(models.Model):
         invoice_dict.pop('destinatary', False)
         return self.env['eletronic.document'].create(invoice_dict)
 
+    def check_inconsistency_and_redirect(self):
+        to_check = []
+        for line in self.document_line_ids:
+            if not line.product_id or not line.uom_id:
+                to_check.append((0, 0, {
+                    'eletronic_line_id': line.id,
+                    'uom_id': line.uom_id.id,
+                    'product_id': line.product_id.id,
+                }))
+
+        if to_check:
+            wizard = self.env['wizard.nfe.configuration'].create({
+                'eletronic_doc_id': self.id,
+                'partner_id': self.partner_id.id,
+                'nfe_item_ids': to_check
+            })
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "wizard.nfe.configuration",
+                'view_type': 'form',
+                'views': [[False, 'form']],
+                "name": "Configuracao",
+                "res_id": wizard.id,
+                'flags': {'mode': 'edit'}
+            }
+            
+
     def _prepare_account_invoice_vals(self):
         operation = 'in_invoice' \
             if self.tipo_operacao == 'entrada' else 'out_invoice'
@@ -1006,18 +1033,21 @@ class EletronicDocument(models.Model):
             'type': operation,
             'state': 'draft',
             'invoice_origin': self.pedido_compra,
-            # 'ref': "%s/%s" % (self.numero, self.serie_documento),
+            'ref': "%s/%s" % (self.numero, self.serie_documento),
             'invoice_date': self.data_emissao.date(),
             'date': self.data_emissao.date(),
             'partner_id': self.partner_id.id,
             'journal_id': journal_id,
-            # 'account_id': account_id,
             'amount_total': self.valor_final,
             'invoice_payment_term_id': self.env.ref('l10n_br_nfe_import.payment_term_for_import').id,
         }
         return vals
 
     def generate_account_move(self):
+        next_action = self.check_inconsistency_and_redirect()
+        if next_action:
+            return next_action
+        
         vals = self._prepare_account_invoice_vals()
 
         # purchase_order_vals = self._get_purchase_order_vals(self.pedido_compra)
@@ -1027,20 +1057,14 @@ class EletronicDocument(models.Model):
         #     purchase_order_id = vals['purchase_id']
 
         items = []
-        # messages_log = []
         for item in self.document_line_ids:
             invoice_item = self.prepare_account_invoice_line_vals(item)
             items.append((0, 0, invoice_item))
-        #     messages_log.append(message_log)
 
         vals['invoice_line_ids'] = items
         account_invoice = self.env['account.move'].create(vals)
         account_invoice.message_post(
             body="<ul><li>Fatura criada através da do xml da NF-e %s</li></ul>" % self.numero)
-
-        # for message in messages_log:
-        #     if message:
-        #         account_invoice.message_post(body=message)
 
         return {
             'type': 'ir.actions.act_window',
@@ -1049,7 +1073,7 @@ class EletronicDocument(models.Model):
             'res_id': account_invoice.id,
             'view_type': 'form',
             'views': [[False, 'form']],
-            'flags':{'mode':'readonly'} # default is 'edit'
+            'flags': {'mode': 'readonly'}
         }
 
 

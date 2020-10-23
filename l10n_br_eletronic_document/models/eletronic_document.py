@@ -986,6 +986,7 @@ class EletronicDocumentLine(models.Model):
         string="Tipo Produto", readonly=True, states=STATE)
     cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
     ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
+    unidade_medida = fields.Char('Un. Medida Xml', size=10, readonly=True, states=STATE)
 
     item_lista_servico = fields.Char(
         string="Código do serviço", size=10, readonly=True, states=STATE)

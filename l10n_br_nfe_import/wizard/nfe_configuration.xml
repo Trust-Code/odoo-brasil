@@ -1,0 +1,43 @@
+<odoo>
+
+    <record model="ir.ui.view" id="view_wizard_nfe_configuration">
+        <field name="model">wizard.nfe.configuration</field>
+        <field name="arch" type="xml">
+            <form string="NFe Configuracao">
+                <header>
+                    <button name="action_confirm_items" string="Confirmar configuração" type="object" class="oe_highlight"/>
+                </header>
+                <sheet string="Configurando a NFe">
+                    <group>
+                        <group>
+                            <field name="eletronic_doc_id" invisible="1" />
+                            <field name="currency_id" invisible="1" />
+                            <field name="partner_id" />
+                        </group>
+                        <group>
+                            <field name="nfe_number" />
+                            <field name="amount_total" />
+                        </group>
+                    </group>
+                    <group string="Selecione o produto ou a unidade de medida correta">
+                        <field name="nfe_item_ids" nolabel="1">
+                            <tree editable="bottom" create="false">
+                                <field name="eletronic_line_id" invisible="1" />
+                                <field name="product_id" />
+                                <field name="uom_id" />
+                                <field name="xml_product_code" />
+                                <field name="xml_product_name" />
+                                <field name="xml_uom_code" />
+                                <field name="quantity" />
+                                <field name="price_total" />
+                                <field name="xml_ncm_code" optional="hide"/>
+                                <field name="xml_cfop" optional="hide" />
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

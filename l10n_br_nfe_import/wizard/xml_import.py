@@ -1,14 +1,9 @@
-import logging
 import base64
-from os import path
-from zipfile import ZipFile
-from io import BytesIO
 from lxml import objectify
 
 from odoo import api, models, fields
-from odoo.exceptions import UserError, RedirectWarning
+from odoo.exceptions import UserError
 
-_logger = logging.getLogger(__file__)
 
 
 class WizardXmlImport(models.TransientModel):
@@ -54,6 +49,10 @@ class WizardXmlImport(models.TransientModel):
         document = self.env['eletronic.document'].generate_eletronic_document(
             xml_nfe=xml, create_partner=self.create_partner)
         
+        next_action = document.check_inconsistency_and_redirect()
+        if next_action:
+            return next_action
+
         return {
             "type": "ir.actions.act_window",
             "res_model": "eletronic.document",
