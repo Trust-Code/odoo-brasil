@@ -390,17 +390,26 @@ class AccountMove(models.Model):
 
     def action_create_eletronic_document(self):
         for move in self:
-            vals = move._prepare_eletronic_doc_vals()
-            services = move.invoice_line_ids.filtered(lambda  x: x.product_id.type == 'service')
+            
+            services = move.invoice_line_ids.filtered(lambda x: x.product_id.type == 'service')
             if services:
-                vals['model'] = 'nfse'
-                vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
-                self.env['eletronic.document'].create(vals)
-            products = move.invoice_line_ids.filtered(lambda  x: x.product_id.type != 'service')
+                self._create_service_eletronic_document(move, services)
+
+            products = move.invoice_line_ids.filtered(lambda x: x.product_id.type != 'service')
             if products:
-                vals['model'] = 'nfe'
-                vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
-                self.env['eletronic.document'].create(vals)
+                self._create_product_eletronic_document(move, products)
+
+    def _create_service_eletronic_document(self, move, services):
+        vals = move._prepare_eletronic_doc_vals()
+        vals['model'] = 'nfse'
+        vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
+        self.env['eletronic.document'].create(vals)
+
+    def _create_product_eletronic_document(self, move, products):
+        vals = move._prepare_eletronic_doc_vals()
+        vals['model'] = 'nfe'
+        vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
+        self.env['eletronic.document'].create(vals)
 
     def action_post(self):
         moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.type != 'entry')
