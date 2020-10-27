@@ -26,6 +26,7 @@
         'views/eletronic_document.xml',
         'views/eletronic_document_line.xml',
         'views/nfe.xml',
+        'views/nfe_inutilization.xml',
         'views/base_account.xml',
         'views/fiscal_position.xml',
         'views/account_config_settings.xml',

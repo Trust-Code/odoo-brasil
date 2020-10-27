@@ -264,7 +264,7 @@ class InutilizedNfe(models.Model):
             {
                 "name": file_name,
                 "datas": base64.b64encode(data.encode("utf-8")),
-                "datas_fname": file_name,
+                "store_fname": file_name,
                 "description": u"",
                 "res_model": "invoice.eletronic.inutilized",
                 "res_id": event.id,
