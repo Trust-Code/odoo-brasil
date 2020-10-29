@@ -178,6 +178,7 @@ class AccountMove(models.Model):
             iss = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'iss')
             csll = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'csll')
             irpj = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'irpj')
+            inss = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'inss')
 
             ipi = self.line_ids.filtered(lambda x: x.tax_line_id.domain == 'ipi')
 
@@ -247,8 +248,8 @@ class AccountMove(models.Model):
                 'item_lista_servico': line.product_id.service_type_id.code,
                 'codigo_servico_municipio': line.product_id.service_code,
                 'iss_aliquota': iss.tax_line_id.amount or 0,
-                'iss_base_calculo': line.price_total or 0,
-                'iss_valor': round(line.price_total *  iss.tax_line_id.amount / 100, 2),
+                'iss_base_calculo': line.price_subtotal or 0,
+                'iss_valor': round(line.price_subtotal * iss.tax_line_id.amount / 100, 2),
                 # 'iss_valor_retencao':
                 # abs(line.iss_valor) if line.iss_valor < 0 else 0,
                 # - RETENÇÔES -
@@ -263,10 +264,11 @@ class AccountMove(models.Model):
                 # 'irrf_aliquota': abs(line.irrf_aliquota),
                 # 'irrf_valor_retencao':
                 # abs(line.irrf_valor) if line.irrf_valor < 0 else 0,
-                # 'inss_base_calculo': line.inss_base_calculo,
-                # 'inss_aliquota': abs(line.inss_aliquota),
-                # 'inss_valor_retencao':
-                # abs(line.inss_valor) if line.inss_valor < 0 else 0,
+                'inss_base_calculo': line.price_subtotal or 0,
+                'inss_aliquota': abs(inss.tax_line_id.amount or 0),
+                'inss_valor_retencao': abs(
+                    round(line.price_subtotal * inss.tax_line_id.amount / 100, 2)
+                ),
             }
             cfop = fiscal_pos.l10n_br_cfop_id.code or '5101'
             if self.company_id.state_id == self.commercial_partner_id.state_id:
