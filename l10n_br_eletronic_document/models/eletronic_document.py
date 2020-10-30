@@ -458,12 +458,11 @@ class EletronicDocument(models.Model):
             descricao = ''
             for line in item.document_line_ids:
                 if line.name:
-                    descricao += line.name.replace('\n', '<br/>') + '<br/>'
+                    descricao += line.name.replace('\n', '|') + '|'
             if item.informacoes_legais:
-                descricao += item.informacoes_legais.replace('\n', '<br/>')
+                descricao += item.informacoes_legais.replace('\n', '|')
             if item.informacoes_complementares:
-                descricao += item.informacoes_complementares.replace(
-                    '\n', '<br/>')
+                descricao += item.informacoes_complementares.replace('\n', '|')
             item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
@@ -793,13 +792,10 @@ class EletronicDocument(models.Model):
                 'valor_iss': round(doc.iss_valor, 2),
                 'valor_total': round(doc.valor_final, 2),
                 'iss_valor_retencao': round(doc.iss_valor_retencao, 2),
-
                 'inss_valor_retencao': round(doc.inss_valor_retencao, 2),
-
-                'valor_carga_tributaria': round(doc.valor_estimado_tributos, 2),
+                'valor_carga_tributaria': round(doc.valor_estimado_tributos, 2) or '',
                 'fonte_carga_tributaria': 'IBPT',
                 'iss_retido': True if doc.iss_valor_retencao > 0.0 else False,
-
                 'aedf': doc.company_id.l10n_br_aedf,
                 'client_id': doc.company_id.l10n_br_client_id,
                 'client_secret': doc.company_id.l10n_br_client_secret,

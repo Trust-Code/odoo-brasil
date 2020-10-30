@@ -281,7 +281,7 @@ class AccountMove(models.Model):
 
         return lines
 
-    def _prepare_eletronic_doc_vals(self):
+    def _prepare_eletronic_doc_vals(self, invoice_lines):
         invoice = self
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
@@ -314,9 +314,9 @@ class AccountMove(models.Model):
             # 'valor_pis': invoice.pis_value,
             # 'valor_cofins': invoice.cofins_value,
             # 'valor_ii': invoice.ii_value,
-            'valor_bruto': invoice.amount_total,
+            # 'valor_bruto': invoice.amount_total,
             # 'valor_desconto': invoice.total_desconto,
-            'valor_final': invoice.amount_total,
+            # 'valor_final': invoice.amount_total,
             # 'valor_bc_icms': invoice.icms_base,
             # 'valor_bc_icmsst': invoice.icms_st_base,
             # 'valor_estimado_tributos': invoice.total_tributos_estimados,
@@ -334,7 +334,7 @@ class AccountMove(models.Model):
             'fatura_bruto': invoice.amount_total,
             'fatura_desconto': 0.0,
             'fatura_liquido': invoice.amount_total,
-            'pedido_compra': invoice.invoice_payment_ref,
+            'pedido_compra': invoice.ref,
             'serie_documento': invoice.fiscal_position_id.serie_nota_fiscal,
             'numero': numero_nfe,
             'numero_rps': numero_rps,
@@ -378,7 +378,7 @@ class AccountMove(models.Model):
             vals['iest'] = iest_id.name
 
         total_produtos = total_servicos = 0.0
-        for inv_line in self.invoice_line_ids:
+        for inv_line in invoice_lines:
             if inv_line.product_id.type == 'service':
                 total_servicos += inv_line.price_subtotal
             else:
@@ -387,6 +387,8 @@ class AccountMove(models.Model):
         vals.update({
             'valor_servicos': total_servicos,
             'valor_produtos': total_produtos,
+            'valor_bruto': total_produtos + total_servicos,
+            'valor_final': total_produtos + total_servicos,
         })
         return vals
 
@@ -402,13 +404,13 @@ class AccountMove(models.Model):
                 self._create_product_eletronic_document(move, products)
 
     def _create_service_eletronic_document(self, move, services):
-        vals = move._prepare_eletronic_doc_vals()
+        vals = move._prepare_eletronic_doc_vals(services)
         vals['model'] = 'nfse'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
         self.env['eletronic.document'].create(vals)
 
     def _create_product_eletronic_document(self, move, products):
-        vals = move._prepare_eletronic_doc_vals()
+        vals = move._prepare_eletronic_doc_vals(products)
         vals['model'] = 'nfe'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
         self.env['eletronic.document'].create(vals)

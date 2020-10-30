@@ -203,7 +203,7 @@
                 <div class="row">
                     <div name="discriminacao" class="col-12">
                         <br />
-                        <span t-raw="doc.discriminacao_servicos"></span>
+                        <span t-esc="doc.discriminacao_servicos.replace('|', '<br/>')"></span>
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@
                 <div class="col-12">
                     Código do serviço:
                     <br />
-                    <strong t-field="doc.document_line_ids[0].codigo_servico_paulistana"></strong> -
+                    <strong t-field="doc.document_line_ids[0].codigo_servico_municipio"></strong> -
                     <strong t-field="doc.document_line_ids[0].codigo_servico_paulistana_nome"></strong>
                 </div>
             </div>
