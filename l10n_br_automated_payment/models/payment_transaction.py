@@ -4,6 +4,8 @@
 import iugu
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class PaymentTransaction(models.Model):
@@ -16,14 +18,19 @@ class PaymentTransaction(models.Model):
     def cron_verify_transaction(self):
         documents = self.search([('state', 'in', ['draft', 'pending']), ], limit=50)
         for doc in documents:
-            doc.action_verify_transaction()
-            self.env.cr.commit()
+            try:
+                doc.action_verify_transaction()
+                self.env.cr.commit()
+            except Exception as e:
+                self.env.cr.rollback()
+                _logger.exception("Payment Transaction ID {}: {}.".format(
+                    doc.id, str(e), doc.retry_attempts), exc_info=True)
 
     def action_verify_transaction(self):
-        if not self.acquirer_reference:
-            raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
         if self.acquirer_id.provider != 'iugu':
             return
+        if not self.acquirer_reference:
+            raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
         token = self.env.company.iugu_api_token
         iugu.config(token=token)
         iugu_invoice_api = iugu.Invoice()
