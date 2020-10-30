@@ -24,7 +24,7 @@ class PaymentTransaction(models.Model):
             except Exception as e:
                 self.env.cr.rollback()
                 _logger.exception("Payment Transaction ID {}: {}.".format(
-                    doc.id, str(e), doc.retry_attempts), exc_info=True)
+                    doc.id, str(e)), exc_info=True)
 
     def action_verify_transaction(self):
         if self.acquirer_id.provider != 'iugu':
