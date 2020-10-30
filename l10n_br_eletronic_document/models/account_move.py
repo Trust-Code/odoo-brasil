@@ -14,6 +14,16 @@ TYPE2EDOC = {
 }
 
 
+def _update_amount_total(vals_dict, amount_total):
+    vals_dict.update({
+        'valor_bruto': amount_total,
+        'valor_final': amount_total,
+        'fatura_bruto': amount_total,
+        'fatura_liquido': amount_total,
+    })
+    return vals_dict
+
+
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
@@ -392,25 +402,40 @@ class AccountMove(models.Model):
 
     def action_create_eletronic_document(self):
         for move in self:
-            
-            services = move.invoice_line_ids.filtered(lambda x: x.product_id.type == 'service')
-            if services:
-                self._create_service_eletronic_document(move, services)
 
+            services = move.invoice_line_ids.filtered(lambda x: x.product_id.type == 'service')
             products = move.invoice_line_ids.filtered(lambda x: x.product_id.type != 'service')
-            if products:
+
+            if services and products:
+                self._create_service_eletronic_document(move, services, True)
+                self._create_product_eletronic_document(move, products, True)
+            elif services:
+                self._create_service_eletronic_document(move, services)
+            elif products:
                 self._create_product_eletronic_document(move, products)
 
-    def _create_service_eletronic_document(self, move, services):
+    def _create_service_eletronic_document(self, move, services, has_products=False):
         vals = move._prepare_eletronic_doc_vals()
         vals['model'] = 'nfse'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
+
+        if has_products:
+            amount_total = sum(move.price_subtotal for move in services)
+            vals = _update_amount_total(vals, amount_total)
+            vals['valor_produtos'] = 0.0
+
         self.env['eletronic.document'].create(vals)
 
-    def _create_product_eletronic_document(self, move, products):
+    def _create_product_eletronic_document(self, move, products, has_services=False):
         vals = move._prepare_eletronic_doc_vals()
         vals['model'] = 'nfe'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
+
+        if has_services:
+            amount_total = sum(move.price_subtotal for move in products)
+            vals = _update_amount_total(vals, amount_total)
+            vals['valor_servicos'] = 0.0
+
         self.env['eletronic.document'].create(vals)
 
     def action_post(self):

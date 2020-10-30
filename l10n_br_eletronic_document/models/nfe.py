@@ -539,34 +539,34 @@ class EletronicDocument(models.Model):
             issqn_total = {
                 'vServ': "%.02f" % self.valor_servicos
                 if self.valor_servicos else "",
-                'vBC': "%.02f" % self.valor_bc_iss
-                if self.valor_bc_iss else "",
-                'vISS': "%.02f" % self.valor_iss if self.valor_iss else "",
-                'vPIS': "%.02f" % self.valor_pis_servicos
-                if self.valor_pis_servicos else "",
-                'vCOFINS': "%.02f" % self.valor_cofins_servicos
-                if self.valor_cofins_servicos else "",
+                'vBC': "%.02f" % self.iss_base_calculo
+                if self.iss_base_calculo else "",
+                'vISS': "%.02f" % self.iss_valor if self.iss_valor else "",
+                'vPIS': "%.02f" % self.pis_valor
+                if self.pis_valor else "",
+                'vCOFINS': "%.02f" % self.cofins_valor
+                if self.cofins_valor else "",
                 'dCompet': dt_emissao[:10],
                 'vDeducao': "",
                 'vOutro': "",
-                'vISSRet': "%.02f" % self.valor_retencao_iss
-                if self.valor_retencao_iss else '',
+                'vISSRet': "%.02f" % self.iss_valor_retencao
+                if self.iss_valor_retencao else '',
             }
             tributos_retidos = {
-                'vRetPIS': "%.02f" % self.valor_retencao_pis
-                if self.valor_retencao_pis else '',
-                'vRetCOFINS': "%.02f" % self.valor_retencao_cofins
-                if self.valor_retencao_cofins else '',
-                'vRetCSLL': "%.02f" % self.valor_retencao_csll
-                if self.valor_retencao_csll else '',
-                'vBCIRRF': "%.02f" % self.valor_bc_irrf
-                if self.valor_retencao_irrf else '',
-                'vIRRF': "%.02f" % self.valor_retencao_irrf
-                if self.valor_retencao_irrf else '',
-                'vBCRetPrev': "%.02f" % self.valor_bc_inss
-                if self.valor_retencao_inss else '',
-                'vRetPrev': "%.02f" % self.valor_retencao_inss
-                if self.valor_retencao_inss else '',
+                'vRetPIS': "%.02f" % self.iss_valor_retencao
+                if self.iss_valor_retencao else '',
+                'vRetCOFINS': "%.02f" % self.cofins_valor_retencao
+                if self.cofins_valor_retencao else '',
+                'vRetCSLL': "%.02f" % self.csll_valor_retencao
+                if self.csll_valor_retencao else '',
+                'vBCIRRF': "%.02f" % self.irrf_base_calculo
+                if self.irrf_base_calculo else '',
+                'vIRRF': "%.02f" % self.irrf_valor_retencao
+                if self.irrf_valor_retencao else '',
+                'vBCRetPrev': "%.02f" % self.inss_base_calculo
+                if self.inss_base_calculo else '',
+                'vRetPrev': "%.02f" % self.inss_valor_retencao
+                if self.inss_valor_retencao else '',
             }
         if self.transportadora_id.street:
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
