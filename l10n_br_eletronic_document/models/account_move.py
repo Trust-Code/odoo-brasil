@@ -194,8 +194,8 @@ class AccountMove(models.Model):
                 'uom_id': line.product_uom_id.id,
                 'quantidade': line.quantity,
                 'preco_unitario': line.price_unit,
-                'valor_bruto': line.price_subtotal,
-                # 'desconto': line.valor_desconto,
+                'valor_bruto': round(line.quantity * line.price_unit, 2),
+                'desconto': round(line.quantity * line.price_unit, 2) - line.price_total,
                 'valor_liquido': line.price_total,
                 'origem': line.product_id.l10n_br_origin,
                 #  'tributos_estimados': line.tributos_estimados,
@@ -340,18 +340,13 @@ class AccountMove(models.Model):
             'numero_rps': numero_rps,
         }
         vals['cod_regime_tributario'] = '1' if invoice.company_id.l10n_br_tax_regime == 'simples' else '3'
-         # Indicador Consumidor Final
-        if invoice.commercial_partner_id.is_company:
-            vals['ind_final'] = '0'
-        else:
-            vals['ind_final'] = '1'
+
+        # Indicador de destino
         vals['ind_dest'] = '1'
         if invoice.company_id.state_id != invoice.commercial_partner_id.state_id:
             vals['ind_dest'] = '2'
         if invoice.company_id.country_id != invoice.commercial_partner_id.country_id:
             vals['ind_dest'] = '3'
-        if invoice.fiscal_position_id.ind_final:
-            vals['ind_final'] = invoice.fiscal_position_id.ind_final
 
         # Indicador IE Destinatário
         ind_ie_dest = False
@@ -372,22 +367,39 @@ class AccountMove(models.Model):
         if invoice.commercial_partner_id.l10n_br_indicador_ie_dest:
             ind_ie_dest = invoice.commercial_partner_id.l10n_br_indicador_ie_dest
         vals['ind_ie_dest'] = ind_ie_dest
+
+        # Indicador Consumidor Final
+        if invoice.commercial_partner_id.is_company:
+            if vals['ind_ie_dest'] == '9':
+                vals['ind_final'] = '1'
+            else:
+                vals['ind_final'] = '0'
+        else:
+            vals['ind_final'] = '1'
+
+        if invoice.fiscal_position_id.ind_final:
+            vals['ind_final'] = invoice.fiscal_position_id.ind_final
+
         iest_id = invoice.company_id.l10n_br_iest_ids.filtered(
             lambda x: x.state_id == invoice.commercial_partner_id.state_id)
         if iest_id:
             vals['iest'] = iest_id.name
 
         total_produtos = total_servicos = 0.0
+        bruto_produtos = bruto_servicos = 0.0
         for inv_line in invoice_lines:
             if inv_line.product_id.type == 'service':
                 total_servicos += inv_line.price_subtotal
+                bruto_servicos += round(inv_line.quantity * inv_line.price_unit, 2)
             else:
                 total_produtos += inv_line.price_subtotal
+                bruto_produtos += round(inv_line.quantity * inv_line.price_unit, 2)
 
         vals.update({
+            'valor_bruto': bruto_produtos + bruto_servicos,
             'valor_servicos': total_servicos,
             'valor_produtos': total_produtos,
-            'valor_bruto': total_produtos + total_servicos,
+            'valor_desconto': (bruto_produtos + bruto_servicos) - (total_produtos + total_servicos),
             'valor_final': total_produtos + total_servicos,
         })
         return vals
