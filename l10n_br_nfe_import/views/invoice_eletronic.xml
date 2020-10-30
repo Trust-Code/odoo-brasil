@@ -16,9 +16,6 @@
         <field name="model">eletronic.document.line</field>
         <field name="inherit_id" ref="l10n_br_eletronic_document.view_eletronic_document_line_form"/>
         <field name="arch" type="xml">
-            <field name="state" position="before">
-                <button name="generate_account_move" states="imported" string="Terminar processo de importação" type="object" class="oe_highlight"/>
-            </field>
             <field name="item_pedido_compra" position="after">
                 <field name="product_ean" />
                 <field name="product_cprod" />

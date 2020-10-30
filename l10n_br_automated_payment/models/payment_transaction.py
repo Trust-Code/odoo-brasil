@@ -14,10 +14,10 @@ class PaymentTransaction(models.Model):
     date_maturity = fields.Date(string="Data de Vencimento")
 
     def cron_verify_transaction(self):
-        documents = self.search([('state', 'in', ['draft', 'pending']), ], limit=1000)
-
+        documents = self.search([('state', 'in', ['draft', 'pending']), ], limit=50)
         for doc in documents:
             doc.action_verify_transaction()
+            self.env.cr.commit()
 
     def action_verify_transaction(self):
         if not self.acquirer_reference:
