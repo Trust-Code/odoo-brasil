@@ -1,0 +1,13 @@
+<odoo>
+    <record id="ir_cron_ibpt_taxes_sync" model="ir.cron">
+        <field name="name">Sincronia de Tabela do IBPT</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">48</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="model_id" ref="model_account_ncm"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_sync_average_tax_rate()</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
