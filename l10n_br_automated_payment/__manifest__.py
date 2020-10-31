@@ -4,7 +4,7 @@
 
 {
     'name': 'Integração Iugu',
-    'version': '14.0.1.0.0',
+    'version': '13.0.1.0.0',
     'category': 'Finance',
     'sequence': 5,
     'author': 'Trustcode',
