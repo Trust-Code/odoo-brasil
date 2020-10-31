@@ -6,7 +6,7 @@
     'name': 'Plano de Contas para Microempresa e Empresa de Pequeno Porte',
     'summary': "Plano de Contas para Microempresa e Empresa de Pequeno Porte",
     'description': """Plano de Contas para Microempresa e EPP""",
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'AGPL-3',

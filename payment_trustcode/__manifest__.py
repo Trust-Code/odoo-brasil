@@ -4,7 +4,7 @@
     'description': """Iugu payment gateway for Odoo.""",
     'author': "Danimar Ribeiro",
     'category': 'Accounting',
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'depends': ['account', 'payment', 'sale'],
     'external_dependencies': {
         'python': ['iugu'],
