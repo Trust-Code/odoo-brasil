@@ -13,7 +13,6 @@ odoo.define('br_point_of_sale.models', function (require) {
         export_as_JSON: function() {
             var vals = _super_posorder.export_as_JSON.call(this);
             vals["customer_cpf"] = this.get_client_cpf();
-            console.log(vals);
             return vals;
         },
         set_client_cpf: function(customerCpf){
