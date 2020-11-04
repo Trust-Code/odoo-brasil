@@ -375,7 +375,7 @@ class InvoiceEletronic(models.Model):
 
         base_icms = 0
         for pos_line in vals.get("eletronic_item_ids"):
-            base_icms += pos_line[2].get("icms_base_calculo")
+            base_icms += pos_line[2].get("icms_base_calculo") or 0
 
         vals.update(
             {
