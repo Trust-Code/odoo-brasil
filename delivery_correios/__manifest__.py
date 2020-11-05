@@ -10,11 +10,10 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'delivery',
+        'br_delivery',
         'website_sale',
     ],
     'data': [
         'views/delivery.xml',
-        'views/product_template.xml',
     ],
 }
