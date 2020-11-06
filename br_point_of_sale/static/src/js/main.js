@@ -19,8 +19,7 @@ odoo.define('br_point_of_sale', function (require) {
     models.PosModel = models.PosModel.extend({
         create_invoice_eletronic: function(pos_order) {
             var self = this;
-            var args = [0, [_super_posorder.export_as_JSON.call(pos_order)]]
-
+            var args = [0, [pos_order.export_as_JSON()]]
             return rpc.query({
                 model: 'invoice.eletronic',
                 method: 'create_from_ui',
