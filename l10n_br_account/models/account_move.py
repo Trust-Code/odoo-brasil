@@ -18,14 +18,14 @@ class AccountMove(models.Model):
 
             if fiscal_position_id.fiscal_type == "saida":
                 move_lines = self.mapped("line_ids").filtered(
-                    lambda x: x.credit > 0
+                    lambda x: x.debit > 0
                 )
 
                 for line in move_lines:
                     line.account_id = account_id
             elif fiscal_position_id.fiscal_type == "entrada":
                 move_lines = self.mapped("line_ids").filtered(
-                    lambda x: x.debit > 0
+                    lambda x: x.credit > 0
                 )
 
                 for line in move_lines:
