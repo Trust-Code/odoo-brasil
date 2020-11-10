@@ -41,7 +41,7 @@ class HrExpenseSheet(models.Model):
             'name': self.name,
             'bank_account_id': self.bank_account_id.id,
             'partner_acc_number': self.bank_account_id.acc_number,
-            'partner_bra_number': self.bank_account_id.bra_number,
+            'partner_bra_number': self.bank_account_id.l10n_br_number,
             'move_line_id': move_line_id.id,
             'expense_sheet_id': self.id,
             'date_maturity': self.date_payment,

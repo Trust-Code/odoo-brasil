@@ -29,7 +29,7 @@
                     </group>
                 </page>
             </notebook>
-            <field name="cnae_secondary_ids" position="after">
+            <field name="l10n_br_cnae_secondary_ids" position="after">
                 <separator colspan="4" string="Inscrições Estaduais do Substituto Tributário"/>
                 <field colspan="4" nolabel="1" name="iest_ids">
                     <tree editable="bottom">

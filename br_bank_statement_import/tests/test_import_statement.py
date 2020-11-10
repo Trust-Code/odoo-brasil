@@ -22,8 +22,6 @@ class TestImportStatement(TransactionCase):
         })
 
         self.import_ofx = self.env['account.bank.statement.import'].create({
-            'force_format': True,
-            'file_format': 'ofx',
             'force_journal_account': True,
             'journal_id': self.journal.id,
             'data_file': base64.b64encode(b'000'),

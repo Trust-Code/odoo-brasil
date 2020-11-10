@@ -11,7 +11,7 @@ class AccountInvoiceLine(models.Model):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
         lines = self.invoice_id.invoice_line_ids
         amount_total = sum((l.quantity * l.price_unit) +
-                           l.price_tax - l.valor_desconto
+                           l.l10n_br_price_tax - l.l10n_br_valor_desconto
                            for l in lines)
         amount = (amount_total
                   + self.quantity * self.price_unit)

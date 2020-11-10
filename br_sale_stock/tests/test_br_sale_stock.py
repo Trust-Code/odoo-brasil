@@ -1,16 +1,18 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-
+from mock import patch
 from odoo.addons.sale.tests.test_sale_common import TestSale
 
 
 class TestBrSaleStock(TestSale):
 
-    def test_sale_order_ratio_expenses(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def test_sale_order_ratio_expenses(self, br_localization):
         """ Test the sale order new fields
             - Invoice repeatedly while varrying delivered quantities and
             check that invoice are always what we expect
         """
+        br_localization.return_value = True
         product = self.env.ref('product.product_order_01')
         so = self.env['sale.order'].create({
             'partner_id': self.partner.id,

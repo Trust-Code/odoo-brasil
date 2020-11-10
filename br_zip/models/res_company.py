@@ -20,4 +20,5 @@ class ResCompany(models.Model):
         self.zip = "%s-%s" % (cep[0:5], cep[5:8])
         res = self.env['br.zip'].search_by_zip(zip_code=self.zip)
         if res:
+            res['l10n_br_district'] = res.pop('district')
             self.update(res)

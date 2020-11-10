@@ -197,7 +197,7 @@ class BoletoCaixa(Boleto):
         self.branch_number = conta.l10n_br_number
         # bank specific
         self.account_digit = conta.acc_number_dig
-        self.branch_digit = conta.bra_number_dig
+        self.branch_digit = conta.l10n_br_number_dig
         # end bank specific
         Boleto.__init__(self, order_line, nosso_numero)
         self.boleto.nosso_numero = self.nosso_numero

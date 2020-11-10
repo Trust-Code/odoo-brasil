@@ -79,7 +79,7 @@ class TestCrm(TransactionCase):
         self.assertEquals(lead.cnpj, partner.l10n_br_cnpj_cpf)
         self.assertEquals(lead.inscr_est, partner.l10n_br_inscr_est)
         self.assertEquals(lead.suframa, partner.l10n_br_suframa)
-        self.assertEquals(lead.l10n_br_district, partner.l10n_br_district)
+        self.assertEquals(lead.district, partner.l10n_br_district)
         self.assertEquals(lead.city_id, partner.city_id)
         self.assertEquals(lead.city, partner.city_id.name)
 
@@ -95,7 +95,7 @@ class TestCrm(TransactionCase):
             'inscr_mun': '123456',
             'legal_name': 'Razão social',
             'suframa': '123456',
-            'l10n_br_district': 'Centro',
+            'district': 'Centro',
             'city_id': self.env.ref('br_base.city_3205002').id,
         })
         values = {'lead_ids': [lead.id]}

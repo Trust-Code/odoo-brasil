@@ -84,7 +84,7 @@ class Cnab240(object):
             'numero_parcela': str(information_id.numero_parcela_icms),
             'divida_ativa_etiqueta': str(information_id.divida_ativa_etiqueta),
             "cedente_inscricao_numero": self._string_to_num(
-                self._order.company_id.cnpj_cpf),
+                self._order.company_id.l10n_br_cnpj_cpf),
             "identificador_fgts": information_id.identificacao_fgts,
             "lacre_conectividade_social": information_id.conec_social_fgts,
             "lacre_conectividade_social_dv":

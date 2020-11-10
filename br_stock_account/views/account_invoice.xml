@@ -60,7 +60,7 @@
         <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
         <field name="arch" type="xml">
             <field name="fiscal_position_id" position="after">
-                <field name="fiscal_position_type" invisible="1"/>
+                <field name="l10n_br_fiscal_position_type" invisible="1"/>
             </field>
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
                 <field name="l10n_br_valor_frete" invisible="1" />
@@ -122,7 +122,7 @@
         <field name="inherit_id" ref="account.view_account_invoice_filter" />
         <field name="arch" type="xml">
             <field name="date" position="after">
-                <field name="picking_origin_id" />
+                <field name="l10n_br_picking_origin_id" />
             </field>
         </field>
     </record>

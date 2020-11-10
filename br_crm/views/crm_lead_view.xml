@@ -14,7 +14,7 @@
                 <field name="zip" placeholder="CEP" class="o_address_zip oe_inline" />
                 <field name="street" class="o_address_street" placeholder="Logradouro" />
                 <field name="number" class="o_address_street" placeholder="Número" />
-                <field name="l10n_br_district" class="o_address_street" placeholder="Bairro" />
+                <field name="district" class="o_address_street" placeholder="Bairro" />
             </field>
             <field name="street2" position="replace">
                 <field name="street2" placeholder="Complemento" class="o_address_street" />

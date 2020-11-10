@@ -11,7 +11,7 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._prepare_edoc_vals(
             inv, inv_lines, serie_id)
 
-        res['ambiente'] = inv.company_id.tipo_ambiente_nfse
+        res['ambiente'] = inv.company_id.l10n_br_tipo_ambiente_nfse
         return res
 
     def _return_pdf_invoice(self, doc):

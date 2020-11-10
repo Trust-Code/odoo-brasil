@@ -12,7 +12,7 @@
     'website': 'http://openerpbrasil.org',
     'version': '11.0.1.0.0',
     'depends': [
-        'sale_stock', 'br_sale', 'br_stock_account'
+        'sale_stock', 'br_sale', 'br_stock_account', 'br_localization_filtering'
     ],
     'data': [
         'security/ir.model.access.csv',

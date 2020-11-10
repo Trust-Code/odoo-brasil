@@ -37,14 +37,14 @@ class BancoBrasil240(Cnab240):
         # 2 - Taxa Mensal
         # 3 - Isento (deve ser cadastrado no banco)
         vals['juros_cod_mora'] = int(
-            line.payment_mode_id.late_payment_interest_type)
+            line.l10n_br_payment_mode_id.late_payment_interest_type)
 
         if vals['juros_cod_mora'] in [3]:
             vals['juros_mora_taxa'] = Decimal(str(0.00)).quantize(
                 Decimal('1.00'))
         else:
             vals['juros_mora_taxa'] = Decimal(
-                str(self.order.payment_mode_id.late_payment_interest)
+                str(self.order.l10n_br_payment_mode_id.late_payment_interest)
                 ).quantize(Decimal('1.00'))
 
         # Banco do Brasil aceita apenas código de protesto 1, 2, ou
@@ -70,12 +70,12 @@ class BancoBrasil240(Cnab240):
             '99': 99,
             }
         especie_titulo = especie_titulo_banco[
-            line.payment_mode_id.boleto_especie]
+            line.l10n_br_payment_mode_id.boleto_especie]
         vals['especie_titulo'] = especie_titulo
         vals['multa_codigo'] = vals['codigo_multa']
         vals['multa_data'] = self.format_date(line.date_maturity)
         vals['multa_percentual'] = Decimal(
-            str(self.order.payment_mode_id.late_payment_fee)).quantize(
+            str(self.order.l10n_br_payment_mode_id.late_payment_fee)).quantize(
                 Decimal('1.00'))
         return vals
 

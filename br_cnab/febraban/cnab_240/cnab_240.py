@@ -78,7 +78,7 @@ class Cnab240(Cnab):
             'cedente_conta_dv': cedente_conta_dv,
             'cedente_convenio': self.order.src_bank_account_id.codigo_convenio,
             'cedente_agencia_dv':
-            self.order.src_bank_account_id.bra_number_dig,
+            self.order.src_bank_account_id.l10n_br_number_dig,
             'cedente_nome': self.order.company_id.l10n_br_legal_name,
             # DV ag e conta
             'cedente_dv_ag_cc': self.order.src_bank_account_id.l10n_br_number_dig,

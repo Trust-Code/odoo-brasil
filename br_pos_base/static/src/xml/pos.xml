@@ -109,7 +109,7 @@
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Bairro</span>
-                    <input class='detail client-address-district' name='district' t-att-value='partner.district || ""' placeholder='Bairro'></input>
+                    <input class='detail client-address-district' name='district' t-att-value='partner.l10n_br_district || ""' placeholder='Bairro'></input>
                 </div>
                 <div class='client-detail'>
                     <span class='label'>Compl.</span>

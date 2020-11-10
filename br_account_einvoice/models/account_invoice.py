@@ -233,10 +233,10 @@ class AccountInvoice(models.Model):
         total_produtos = total_servicos = 0.0
         eletronic_items = []
         for inv_line in inv_lines:
-            if inv_line.product_type == 'service':
-                total_servicos += inv_line.valor_bruto
+            if inv_line.l10n_br_product_type == 'service':
+                total_servicos += inv_line.l10n_br_valor_bruto
             else:
-                total_produtos += inv_line.valor_bruto
+                total_produtos += inv_line.l10n_br_valor_bruto
             eletronic_items.append((0, 0,
                                     self._prepare_edoc_item_vals(inv_line)))
 

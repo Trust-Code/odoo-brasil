@@ -20,7 +20,7 @@
   !python {model: crm.lead, id: br_crm_zip.zip_crm_lead_test }: |
     self.zip_search('88032050')
     assert self.zip == '88032-050', 'Zip is wrong'
-    assert self.l10n_br_district == 'centro', 'District value is wrong'
+    assert self.district == 'centro', 'District value is wrong'
     assert self.street == 'Rua Donicia', 'Street value is wrong'
     assert self.city_id.id == ref('br_base.city_4205407')
 -

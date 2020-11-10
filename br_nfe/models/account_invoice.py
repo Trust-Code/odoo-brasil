@@ -114,7 +114,7 @@ class AccountInvoice(models.Model):
         res['valor_icms_fcp_uf_dest'] = inv.l10n_br_valor_icms_fcp_uf_dest
         res['serie'] = serie_id.id
         res['serie_documento'] = serie_id.code
-        res['model'] = serie_id.l10n_br_fiscal_document_id.code
+        res['model'] = serie_id.fiscal_document_id.code
         res['numero_nfe'] = numero_nfe
         res['numero'] = numero_nfe
         res['name'] = 'Documento Eletrônico: nº %s' % numero_nfe

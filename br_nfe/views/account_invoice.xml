@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <div class="alert alert-info" position="after">
                 <field name="ambiente_nfe" invisible="1" />
+                <field name="l10n_br_fiscal_position_type" invisible="1" />
                 <field name="l10n_br_invoice_model" invisible="1" />
                 <field name="sending_nfe" invisible="1" />
                 <field name="nfe_exception" invisible="1" />
@@ -43,7 +44,7 @@
         <field name="inherit_id" ref="br_stock_account.br_account_product_invoice_supplier_form"/>
         <field name="arch" type="xml">
             <page name="other_info" position="after">
-                <page name="info_importacao" string="Importação" attrs="{'invisible': [('fiscal_position_type', '!=', 'import')]}">
+                <page name="info_importacao" string="Importação" attrs="{'invisible': [('l10n_br_fiscal_position_type', '!=', 'import')]}">
                     <button string="Aplicar esta DI a todos os itens" name="apply_di_to_items" type="object" class="btn btn-success"/>
                     <field nolabel="1" name="import_declaration_ids" />
                 </page>

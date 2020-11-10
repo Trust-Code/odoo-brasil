@@ -10,6 +10,6 @@ class ResPartner(models.Model):
     property_purchase_fiscal_position_id = fields.Many2one(
         string="Purchase Fiscal Position",
         comodel_name="account.fiscal.position",
-        domain="[('fiscal_type', '=', 'entrada')]",
+        domain="[('l10n_br_fiscal_type', '=', 'entrada')]",
         company_dependent=True,
         ondelete="set null")

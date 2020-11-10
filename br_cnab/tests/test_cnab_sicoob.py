@@ -9,7 +9,10 @@ from odoo.addons.br_cnab.tests.test_cnab_common import TestCnab
 
 class TestCnabSicoob(TestCnab):
 
-    def _return_payment_mode(self):
+    @patch('odoo.addons.br_localization_filtering.models.br_localization_filtering.BrLocalizationFiltering._is_user_br_localization')  # noqa  java feelings
+    def _return_payment_mode(self, br_localization):
+        br_localization.return_value = True
+
         super(TestCnabSicoob, self)._return_payment_mode()
         sequencia = self.env['ir.sequence'].create({
             'name': "Nosso Numero"

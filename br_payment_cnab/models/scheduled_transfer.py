@@ -66,7 +66,7 @@ class L10nBrScheduledTransfer(models.Model):
             'destiny_journal_id': self.destiny_journal_id.id,
             "bank_account_id": bank_account.id,
             'partner_acc_number': bank_account.acc_number,
-            'partner_bra_number': bank_account.bra_number,
+            'partner_bra_number': bank_account.l10n_br_number,
             'date_maturity': self.transfer_date,
         }
 

@@ -97,7 +97,7 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'l10n_br_payment_mode_id':
                 self.payment_order.l10n_br_payment_mode_id.id,
             'src_bank_account_id':
-            self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
+            self.payment_order.l10n_br_payment_mode_id.journal_id.bank_account_id.id,
             'amount_total': 150.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),
@@ -118,7 +118,8 @@ class TestBrCnabSicoob(TestBrCnabPayment):
             'l10n_br_payment_mode_id':
                 self.payment_order.l10n_br_payment_mode_id.id,
             'src_bank_account_id':
-                self.payment_order.payment_mode_id.journal_id.bank_account_id.id,
+                self.payment_order.l10n_br_payment_mode_id.journal_id.bank_account_id
+                    .id,
             'amount_total': 120.00,
             'nosso_numero': nosso_numero.next_by_id(),
             'date_maturity': time.strftime(DATE_FORMAT),

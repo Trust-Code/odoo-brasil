@@ -131,7 +131,7 @@ class PuchaseOrderLine(models.Model):
             'valor_seguro': self.l10n_br_valor_seguro,
             'outras_despesas': self.l10n_br_outras_despesas,
             'ii_despesas': self.l10n_br_valor_aduana,
-            'fiscal_type': self.fiscal_position_type,
+            'fiscal_type': self.l10n_br_fiscal_position_type,
         })
         return res
 

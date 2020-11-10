@@ -19,7 +19,7 @@ class CrmLead(models.Model):
     suframa = fields.Char('Suframa', size=18)
     city_id = fields.Many2one('res.city', u'Município',
                               domain="[('state_id','=',state_id)]")
-    l10n_br_district = fields.Char('Bairro', size=32, oldname="district")
+    district = fields.Char('Bairro', size=32)
     number = fields.Char(u'Número', size=10)
     name_surname = fields.Char(u'Nome e Sobrenome', size=128,
                                help="Nome utilizado em documentos fiscais")
@@ -113,7 +113,7 @@ class CrmLead(models.Model):
                 'inscr_est': partner.l10n_br_inscr_est,
                 'suframa': partner.l10n_br_suframa,
                 'number': partner.l10n_br_number,
-                'l10n_br_district': partner.l10n_br_district,
+                'district': partner.l10n_br_district,
                 'city_id': partner.city_id.id,
             })
         return res
@@ -124,7 +124,7 @@ class CrmLead(models.Model):
             name, is_company, parent_id)
         partner.update({
             'l10n_br_number': self.number,
-            'l10n_br_district': self.l10n_br_district,
+            'l10n_br_district': self.district,
             'city_id': self.city_id.id
         })
         if is_company:

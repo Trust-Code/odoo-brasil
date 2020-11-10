@@ -4,7 +4,7 @@
   <record id="tax_pis_paulistana" model="account.tax">
       <field name="description">PIS 1.05 Saída Paulistana</field>
       <field name="name">PIS 1.05 Saída Paulistana</field>
-      <field name="domain">pis</field>
+      <field name="l10n_br_domain">pis</field>
       <field name="type_tax_use">sale</field>
       <field name="amount_type">code</field>
       <field name="amount">0</field>
@@ -20,7 +20,7 @@ if invoice_amount and invoice_amount > 215.15:
   <record id="tax_cofins_paulistana" model="account.tax">
       <field name="description">COFINS 1.05 Saída Paulistana</field>
       <field name="name">COFINS 1.05 Saída Paulistana</field>
-      <field name="domain">cofins</field>
+      <field name="l10n_br_domain">cofins</field>
       <field name="type_tax_use">sale</field>
       <field name="amount_type">code</field>
       <field name="amount">0</field>
@@ -36,7 +36,7 @@ if invoice_amount and invoice_amount > 215.15:
   <record id="tax_csll_paulistana" model="account.tax">
       <field name="description">CSLL 1.05 Saída Paulistana</field>
       <field name="name">CSLL 1.05 Saída Paulistana</field>
-      <field name="domain">csll</field>
+      <field name="l10n_br_domain">csll</field>
       <field name="type_tax_use">sale</field>
       <field name="amount_type">code</field>
       <field name="amount">0</field>
@@ -52,7 +52,7 @@ if invoice_amount and invoice_amount > 215.15:
   <record id="tax_irrf_paulistana" model="account.tax">
       <field name="description">IRRF 1.05 Saída Paulistana</field>
       <field name="name">IRRF 1.05 Saída Paulistana</field>
-      <field name="domain">irrf</field>
+      <field name="l10n_br_domain">irrf</field>
       <field name="type_tax_use">sale</field>
       <field name="amount_type">code</field>
       <field name="amount">0</field>

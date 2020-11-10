@@ -29,7 +29,7 @@ class ResPartner(models.Model):
                 }
             }
 
-    @api.onchange('street', 'city_id', 'district')
+    @api.onchange('street', 'city_id', 'l10n_br_district')
     def _search_street(self):
         if self.street and self.city_id and not self.zip:
             res = self.env['br.zip'].search_by_address(
@@ -38,7 +38,7 @@ class ResPartner(models.Model):
                 city_id=self.city_id.id,
                 street=self.street,
                 obj=None,
-                district=self.district,
+                district=self.l10n_br_district,
                 error=False
             )
             if res:

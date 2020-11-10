@@ -91,7 +91,7 @@ class PurchaseOrderLine(models.Model):
                  'l10n_br_incluir_ipi_base', 'l10n_br_icms_st_aliquota_mva')
     def _compute_amount(self):
         for line in self:
-            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            price = line.price_unit * (1 - (line.l10n_br_discount or 0.0) / 100.0)
             ctx = line._prepare_tax_context()
             tax_ids = line.taxes_id.with_context(**ctx)
             taxes = tax_ids.compute_all(
@@ -100,7 +100,7 @@ class PurchaseOrderLine(models.Model):
                 partner=line.order_id.partner_id)
 
             valor_bruto = line.price_unit * line.product_qty
-            desconto = valor_bruto * line.discount / 100.0
+            desconto = valor_bruto * line.l10n_br_discount / 100.0
             desconto = line.order_id.currency_id.round(desconto)
 
             line.update({

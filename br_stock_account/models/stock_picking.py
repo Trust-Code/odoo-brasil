@@ -12,7 +12,7 @@ class StockPicking(models.Model):
     def _compute_invoices(self):
         for picking in self:
             total = self.env['account.invoice'].search_count(
-                [('picking_origin_id', '=', picking.id)])
+                [('l10_br_picking_origin_id', '=', picking.id)])
             picking.invoice_count = total
 
     invoice_count = fields.Integer(
@@ -24,7 +24,7 @@ class StockPicking(models.Model):
 
     def action_preview_danfe(self):
         invoices = self.env['account.invoice'].search(
-            [('picking_origin_id', '=', self.id)])
+            [('l10n_br_picking_origin_id', '=', self.id)])
         return invoices.action_preview_danfe()
 
     def _prepare_inv_line_vals(self, move_line_id):
@@ -66,7 +66,7 @@ class StockPicking(models.Model):
             'fiscal_position_id':
             picking_id.partner_id.property_account_position_id.id,
             'invoice_line_ids': inv_line_vals,
-            'picking_origin_id': picking_id.id,
+            'l10n_br_picking_origin_id': picking_id.id,
         }
         if self.fiscal_position_id:
             fpos = self.fiscal_position_id

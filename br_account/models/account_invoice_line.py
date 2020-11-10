@@ -137,7 +137,7 @@ class AccountInvoiceLine(models.Model):
                 price_subtotal_signed, self.invoice_id.company_id.currency_id)
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
 
-        if self.icms_aliquota_credito:
+        if self.l10n_br_icms_aliquota_credito:
             # Calcular o valor da base_icms para o calculo de
             # credito de ICMS
             ctx = self._prepare_tax_context()

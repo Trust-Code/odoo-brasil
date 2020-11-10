@@ -584,7 +584,7 @@ class InvoiceEletronic(models.Model):
                 },
                 'indIEDest': self.ind_ie_dest,
                 'IE':  re.sub('[^0-9]', '', partner.l10n_br_inscr_est or ''),
-                'ISUF': partner.suframa or '',
+                'ISUF': partner.l10n_br_suframa or '',
             }
             if self.model == '65':
                 dest.update(
@@ -783,7 +783,7 @@ class InvoiceEletronic(models.Model):
             'dup': duplicatas
         }
         pag = {
-            'indPag': self.payment_term_id.indPag or '0',
+            'indPag': self.payment_term_id.l10n_br_indPag or '0',
             'tPag': self.payment_mode_id.tipo_pagamento or '90',
             'vPag': '0.00',
         }

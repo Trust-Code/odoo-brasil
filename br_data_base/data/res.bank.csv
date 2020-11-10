@@ -68,7 +68,7 @@
 "res_bank_67","300","BANCO DE LA NACION ARGENTINA","base.br","%(acc_number)s"
 "res_bank_68","318","BANCO BMG S.A.","base.br","%(acc_number)s"
 "res_bank_69","320","BANCO INDUSTRIAL E COMERCIAL S.A.","base.br","%(acc_number)s"
-"res_bank_70","341","BANCO ITAÚ S.A.","base.br","%(bra_number)s%(acc_number)s%(acc_number_dig)s"
+"res_bank_70","341","BANCO ITAÚ S.A.","base.br","%(l10n_br_number)s%(acc_number)s%(acc_number_dig)s"
 "res_bank_71","366","BANCO SOCIETE GENERALE BRASIL S.A.","base.br","%(acc_number)s"
 "res_bank_72","370","BANCO WESTLB DO BRASIL S.A.","base.br","%(acc_number)s"
 "res_bank_73","376","BANCO J.P. MORGAN S.A.","base.br","%(acc_number)s"
