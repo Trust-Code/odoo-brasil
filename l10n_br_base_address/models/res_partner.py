@@ -112,7 +112,7 @@ class ResPartner(models.Model):
                     if prop not in dir(obj):
                         return None
                     return getattr(obj, prop)
-                self.legal_name = get_value(info.infCad, 'xNome')
+                self.l10n_br_legal_name = get_value(info.infCad, 'xNome')
                 if "ender" not in dir(info.infCad):
                     return
                 cep = get_value(info.infCad.ender, 'CEP') or ''
