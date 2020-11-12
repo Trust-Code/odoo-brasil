@@ -143,8 +143,6 @@ class NfeRelatedDocumento(models.Model):
     _name = 'nfe.related.document'
     _description = "Documentos Relacionados"
 
-    move_id = fields.Many2one(
-        'account.move', 'Documento Fiscal', ondelete='cascade')
     move_related_id = fields.Many2one(
         'account.move', 'Fatura Referenciada', ondelete='cascade')
     eletronic_document_id = fields.Many2one(
@@ -195,27 +193,6 @@ class NfeRelatedDocumento(models.Model):
         if not check_ie:
             raise UserError(
                 _('Inscrição Estadual do documento fiscal inválida!'))
-
-    @api.onchange('eletronic_document_id')
-    def onchange_related_document_id(self):
-        if not self.eletronic_document_id:
-            return
-        inv_id = self.eletronic_document_id
-        if not inv_id.product_document_id:
-            return
-
-        self.document_type = \
-            self.translate_document_type(inv_id.product_document_id.code)
-
-        if inv_id.product_document_id.code in ('55', '57'):
-            self.serie = False
-            self.internal_number = False
-            self.state_id = False
-            self.cnpj_cpf = False
-            self.cpfcnpj_type = False
-            self.date = False
-            self.fiscal_document_id = False
-            self.inscr_est = False
 
     def translate_document_type(self, code):
         if code == '55':
