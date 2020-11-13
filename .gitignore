@@ -3,3 +3,4 @@
 .tool-versions
 .vim/
 *.swp
+.vscode/

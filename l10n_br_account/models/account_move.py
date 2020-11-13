@@ -4,8 +4,7 @@ from odoo import api, fields, models
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    @api.onchange("fiscal_position_id")
-    def _onchange_fiscal_position_id(self):
+    def _mapping_fiscal_position_account(self):
         if not self.fiscal_position_id:
             return
 
@@ -15,21 +14,39 @@ class AccountMove(models.Model):
 
         if fiscal_position_id.account_id:
             account_id = fiscal_position_id.account_id
+            move_lines = []
 
-            if fiscal_position_id.fiscal_type == "saida":
+            if self.is_sale_document(include_receipts=True):
                 move_lines = self.mapped("line_ids").filtered(
-                    lambda x: x.debit > 0
+                    lambda x: x.account_id.user_type_id.type == "receivable"
+                )
+            elif self.is_purchase_document(include_receipts=True):
+                move_lines = self.mapped("line_ids").filtered(
+                    lambda x: x.account_id.user_type_id.type == "payable"
                 )
 
-                for line in move_lines:
-                    line.account_id = account_id
-            elif fiscal_position_id.fiscal_type == "entrada":
-                move_lines = self.mapped("line_ids").filtered(
-                    lambda x: x.credit > 0
-                )
+            for line in move_lines:
+                line.account_id = account_id
 
-                for line in move_lines:
-                    line.account_id = account_id
+    # @api.onchange("fiscal_position_id")
+    # def _onchange_fiscal_position_id(self):
+        # self._mapping_fiscal_position_account()
+
+    # @api.onchange("invoice_line_ids")
+    # def _onchange_invoice_line_ids(self):
+        # super(AccountMove, self)._onchange_invoice_line_ids()
+        # self._mapping_fiscal_position_account()
+
+    def action_post(self):
+        self._mapping_fiscal_position_account()
+        return super(AccountMove, self).action_post()
+
+    # def _recompute_dynamic_lines(
+        # self, recompute_all_taxes=False, recompute_tax_base_amount=False
+    # ):
+        # super(AccountMove, self)._recompute_dynamic_lines(
+            # recompute_all_taxes, recompute_tax_base_amount
+        # )
 
 
 class AccountMoveLine(models.Model):
@@ -79,15 +96,3 @@ class AccountMoveLine(models.Model):
             'default_move_line_id': self.id,
         }
         return vals
-
-    @api.onchange("product_id")
-    def _onchange_product_id(self):
-        vals = super(AccountMoveLine, self)._onchange_product_id()
-
-        if not self.move_id.fiscal_position_id:
-            return vals
-
-        fiscal_position_id = self.move_id.fiscal_position_id
-
-        if fiscal_position_id.account_id:
-            self.account_id = fiscal_position_id.account_id
