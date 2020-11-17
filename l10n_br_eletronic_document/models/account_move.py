@@ -271,10 +271,18 @@ class AccountMove(models.Model):
                 ),
             }
             cfop = fiscal_pos.l10n_br_cfop_id.code or '5101'
-            if self.company_id.state_id == self.commercial_partner_id.state_id:
-                cfop = '5' + cfop[1:]
-            else:
-                cfop = '6' + cfop[1:]
+
+            if self.type in ['in_invoice', 'out_refund']:
+                if self.company_id.state_id == self.commercial_partner_id.state_id:
+                    cfop = '1' + cfop[1:]
+                else:
+                    cfop = '2' + cfop[1:]
+            elif self.type in ['out_invoice', 'in_refund']:
+                if self.company_id.state_id == self.commercial_partner_id.state_id:
+                    cfop = '5' + cfop[1:]
+                else:
+                    cfop = '6' + cfop[1:]
+
             vals['cfop'] = cfop
 
             lines.append((0, 0, vals))
@@ -402,11 +410,11 @@ class AccountMove(models.Model):
             'valor_desconto': (bruto_produtos + bruto_servicos) - (total_produtos + total_servicos),
             'valor_final': total_produtos + total_servicos,
         })
+
         return vals
 
     def action_create_eletronic_document(self):
         for move in self:
-            
             services = move.invoice_line_ids.filtered(lambda x: x.product_id.type == 'service')
             if services:
                 self._create_service_eletronic_document(move, services)
@@ -424,8 +432,30 @@ class AccountMove(models.Model):
     def _create_product_eletronic_document(self, move, products):
         vals = move._prepare_eletronic_doc_vals(products)
         vals['model'] = 'nfe'
+
+        if self.type == 'out_refund':
+            vals['related_document_ids'] = self._create_related_doc(vals)
+
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
         self.env['eletronic.document'].create(vals)
+
+    def _create_related_doc(self, vals):
+        related_move_id = self.env['account.move'].search([
+            ('reversal_move_id', 'in', self.id)], limit=1)
+
+        doc = self.env['eletronic.document'].search([
+            ('move_id', '=', related_move_id.id),
+            ('model', '=', vals['model']),
+            ('state', '=', 'done')
+        ], limit=1, order='id desc')
+
+        if doc:
+            related_doc = self.env['nfe.related.document'].create({
+                'move_related_id': related_move_id.id,
+                'document_type': 'nfe',
+                'access_key': doc.chave_nfe,
+            })
+            return related_doc
 
     def action_post(self):
         moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.type != 'entry')
