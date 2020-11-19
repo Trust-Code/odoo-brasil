@@ -72,12 +72,16 @@ odoo.define('br_point_of_sale.screens', function (require) {
             var order = this.pos.get_order();
             order.initialize_validation_date();
             this.pos.create_invoice_eletronic(order)
-            .done( result => self.finalize_pos_order())
+            .done( () => self.finalize_pos_order())
             .fail( reason => {
-                if(reason.data.type == "xhrtimeout") {
-                    alert("Não foi possível conectar ao servidor!");
+                if(typeof(reason) == "object" && "data" in reason) {
+                    if(reason.data.type == "xhrtimeout") {
+                        alert("Não foi possível conectar ao servidor!");
+                    } else {
+                        alert(reason.data.name);
+                    }
                 } else {
-                    alert(reason.data.name);
+                    alert(reason);
                 }
             })
         },
