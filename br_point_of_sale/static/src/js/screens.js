@@ -91,6 +91,8 @@ odoo.define('br_point_of_sale.screens', function (require) {
                     } else {
                         alert("Erro ao realizar emissão da NFCe!");
                     }
+                } else {
+                    alert(reason);
                 }
             })
         },
