@@ -21,6 +21,8 @@ class AccountServiceType(models.Model):
     federal_importado = fields.Float('Imposto Fed. Sobre Serviço Importado')
     estadual_imposto = fields.Float('Imposto Estadual')
     municipal_imposto = fields.Float('Imposto Municipal')
+    sincronizado_ibpt = fields.Boolean(default=False)
+    fonte_impostos = fields.Char(string="Fonte dos Impostos", size=100)
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
@@ -88,6 +90,10 @@ class AccountNcm(models.Model):
             self.notify_account_users(message)
             return
 
+        headers = {
+            "content-type": "application/json;",
+        }
+
         products = self.env['product.template'].search(
             [('l10n_br_ncm_id.sincronizado_ibpt', '=', False)])
 
@@ -104,8 +110,32 @@ class AccountNcm(models.Model):
                 'valor': 1,
                 'gtin': '-',
             }
-            headers = {
-                "content-type": "application/json;",
+            response = requests.get(url, params=data, headers=headers)
+            response.raise_for_status()
+            result = response.json()
+            ncm.write({
+                'federal_nacional': result['Nacional'],
+                'federal_importado': result['Importado'],
+                'estadual_imposto': result['Estadual'],
+                'municipal_imposto': result['Municipal'],
+                'fonte_impostos': result['Fonte'],
+                'sincronizado_ibpt': True,
+            })
+            self.env.cr.commit()
+
+        services = self.env['product.template'].search(
+            [('service_type_id.sincronizado_ibpt', '=', False)])
+
+        for ncm in services.mapped('service_type_id'):
+            url = 'https://apidoni.ibpt.org.br/api/v1/servicos'
+            data = {
+                'token': self.env.company.l10n_br_ibpt_api_token,
+                'cnpj': re.sub('[^0-9]', '', self.env.company.l10n_br_cnpj_cpf or ''),
+                'codigo': re.sub('[^0-9]', '', ncm.code or ''),
+                'uf': self.env.company.state_id.code,
+                'descricao': '-----',
+                'unidadeMedida': 'UN',
+                'valor': 1,
             }
             response = requests.get(url, params=data, headers=headers)
             response.raise_for_status()
