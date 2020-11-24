@@ -61,7 +61,7 @@ class PosOrder(models.Model):
     @api.model
     def _order_fields(self, ui_order):
         res = super(PosOrder, self)._order_fields(ui_order)
-        res.update({"customer_cpf": ui_order["customer_cpf"] or False})
+        res.update({"customer_cpf": ui_order.get("customer_cpf", "")})
         return res
 
     def action_preview_danfe(self):
