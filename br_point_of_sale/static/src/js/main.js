@@ -31,7 +31,7 @@ odoo.define('br_point_of_sale', function (require) {
         },
         get_nfce: function (edoc_ids) {
             if (!edoc_ids.length) {
-                return (new $.Deferred()).reject();
+                return (new $.Deferred()).resolve();
             }
             let self = this;
             return self.cronSendNfe().then(function() {

@@ -90,7 +90,6 @@ class InvoiceEletronic(models.Model):
         existing_edocs = self.search(
             [("pos_reference", "in", submitted_references)]
         )
-
         error_edocs = self.env["invoice.eletronic"]
         done_edocs = self.env["invoice.eletronic"]
 
