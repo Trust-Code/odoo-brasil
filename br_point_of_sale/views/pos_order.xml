@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="br_pos_order_form_view" model="ir.ui.view">
+        <field name="name">br_pos_order.form.view</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <field name="ambiente_nfe" invisible="1" />
+                <field name="sending_nfe" invisible="1" />
+                <field name="nfe_exception" invisible="1" />
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                    attrs="{'invisible': ['|', ('ambiente_nfe', '==', '1')]}">
+                    A NFC-e está em ambiente de homologação
+                </div>
+                <div class="alert alert-success" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('sending_nfe', '==', False)]}">
+                    Sua <b>NFC-e de número <field name="nfe_number" class="oe_inline"/></b> está na fila de envio.
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                        context="{ 'search_default_invoice_id': id }" string="Visualizar Fila">
+                    </button>
+                    ou
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                        context="{ 'search_default_invoice_id': id }" string="Enviar Agora">
+                    </button>
+                </div>
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('nfe_exception', '==', False)]}">
+                    Ocorreu um erro com a <b>NFC-e de número <field name="nfe_exception_number" class="oe_inline"/>. </b>
+                    <button name="action_view_edocs" type="object" class="label label-primary"
+                        context="{ 'search_default_invoice_id': id }" string="Visualizar NFe">
+                    </button>
+                    <br/>
+                    <field name="nfe_status" />
+                </div>
+            </sheet>
+
+            <div name="button_box" position="inside">
+                <button name="action_view_edocs" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                    attrs="{'invisible': [('state', '==', 'draft')]}">
+                    <field name="total_edocs" /> <span> E-Docs</span>
+                </button>
+                <button name="action_preview_danfe" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
+                   string="Imprimir Danfe"
+                   attrs="{'invisible': [('total_edocs', '=', 0)]}">
+               </button>
+            </div>
+
+            <field name="notice" position="after">
+                    <field name="cfop_id" />
+                    <field name="icms_cst_normal" />
+                    <field name="icms_csosn_simples" />
+                    <field name="aliquota_icms" />
+                    <field name="icms_st_aliquota_mva" />
+                    <field name="aliquota_icms_proprio" />
+                    <field name="icms_aliquota_reducao_base" />
+                    <field name="icms_st_aliquota_reducao_base" />
+                    <field name="pis_cst" />
+                    <field name="cofins_cst" />
+                    <field name="valor_desconto" />
+                    <field name="valor_bruto" />
+                    <field name="valor_icms" />
+                    <field name="valor_cofins" />
+                    <field name="valor_pis" />
+            </field>
+
+        </field>
+    </record>
+</odoo>

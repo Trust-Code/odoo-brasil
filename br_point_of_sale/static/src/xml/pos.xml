@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-extend="ClientLine">
+        <t t-jquery="tr.client-line > td:first-child" t-operation="before">
+            <td>
+                <t t-esc='partner.cnpj_cpf or ""'/>
+            </td>
+        </t>
+    </t>
+    <t t-extend="ClientListScreenWidget">
+        <t t-jquery="table.client-list > thead > tr > th:first-child" t-operation="before">
+            <th style="min-width:150px;">CNPJ/CPF</th>
+        </t>
+    </t>
+    <t t-extend="ClientDetails">
+        <t t-jquery="div.client-details-left" t-operation="prepend">
+            <div class='client-detail'>
+                <span class='label'>Razão: </span>
+                <t t-if='partner.legal_name'>
+                    <span class='detail'>
+                        <t t-esc='partner.legal_name' />
+                    </span>
+                </t>
+                <t t-else="">
+                    <span class='detail empty'>N/A</span>
+                </t>
+            </div>
+            <div class='client-detail'>
+                <span class='label'>CNPJ:</span>
+                <t t-if='partner.cnpj_cpf'>
+                    <span class='detail client-cnpj'>
+                        <t t-esc='partner.cnpj_cpf' />
+                    </span>
+                </t>
+                <t t-else="">
+                    <span class='detail empty'>N/A</span>
+                </t>
+            </div>
+        </t>
+    </t>
+    <t t-extend="PaymentScreenWidget">
+        <t t-jquery="div.js_set_customer" t-operation="after">
+            <div class='button js_customer_cpf'>
+                <t t-name="setCutomerPopUp">
+                    <i class='fa fa-user' />
+                    CPF na Nota?
+                </t>
+            </div>
+        </t>
+    </t>
+    <t t-extend="ReceiptScreenWidget">
+        <t t-jquery="div.touch-scrollable" t-operation="replace">
+            <div class="centered-content">
+                <h1> <center> <br/>
+                    <i class='fa fa-print'></i>
+                    Aguarde a Impressão <br/>
+                         da nota
+                </center> </h1>
+            </div>
+        </t>
+    </t>
+    <t t-extend="ClientDetailsEdit">
+        <t t-jquery="div.client-details-left" t-operation="replace">
+            <div class='client-details-left'>
+                <div class='client-detail'>
+                    <span class='label'>Empresa?:</span>
+                    <input type="checkbox" class='detail client-company' name='is_company' t-att-value='partner.is_company'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Razão:</span>
+                    <input class='detail client-legal-name' name='legal_name' t-att-value='partner.legal_name' placeholder="Razão Social"></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>CNPJ/CPF:</span>
+                    <input class='detail client-cnpj' name='cnpj_cpf' t-att-value='partner.cnpj_cpf' placeholder="CPF"></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Cep</span>
+                    <input class='detail client-address-zip' name='zip' t-att-value='partner.zip || ""' placeholder='ZIP'></input>
+                    <span class="button back">
+                        <i class="fa fa-search"></i>
+                    </span>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Street</span>
+                    <input class='detail client-address-street' name='street' t-att-value='partner.street || ""' placeholder='Street'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Número</span>
+                    <input class='detail client-address-number' name='number' t-att-value='partner.number || ""' placeholder='Número'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Bairro</span>
+                    <input class='detail client-address-district' name='district' t-att-value='partner.district || ""' placeholder='Bairro'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Compl.</span>
+                    <input class='detail client-address-street2' name='street2' t-att-value='partner.street2 || ""' placeholder='Complemento'></input>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Country</span>
+                    <select class='detail client-address-country needsclick' name='country_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.countries' t-as='country'>
+                            <option t-att-value='country.id' t-att-selected="partner.country_id ? ((country.id === partner.country_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='country.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Estado</span>
+                    <select class='detail client-address-state needsclick' name='country_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.states' t-as='state'>
+                            <option t-att-value='state.id' t-att-selected="partner.state_id ? ((state.id === partner.state_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='state.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div class='client-detail'>
+                    <span class='label'>Cidade</span>
+                    <select class='detail client-address-city needsclick' name='city_id'>
+                        <option value=''>None</option>
+                        <t t-foreach='widget.pos.cities' t-as='city'>
+                            <option t-att-value='city.id' t-att-selected="partner.city_id ? ((city.id === partner.city_id[0]) ? true : undefined) : undefined">
+                                <t t-esc='city.name'/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+        </t>
+    </t>
+
+
+<t t-name="TextInputPopupWidget">
+    <div class="modal-dialog">
+        <div class="popup popup-textinput">
+            <p class="title"> CPF do cliente</p>
+            <div class="body">
+                <p> Insira o CPF para identificar o cliente na NFC-e:</p>
+                <input type='text' name="customer_cpf"> </input>
+            </div>
+            <div class="footer">
+                <div class="button confirm">
+                    Confirmar
+                </div>
+                <div class="button cancel">
+                    Cancelar
+                </div>
+            </div>
+        </div>
+    </div>
+</t>
+
+</templates>
