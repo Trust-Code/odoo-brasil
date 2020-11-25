@@ -1,4 +1,4 @@
-odoo.define('br_point_of_sale.models', function (require) {
+odoo.define('br_pos_base.models', function (require) {
     "use strict";
 
     var models = require('point_of_sale.models');
