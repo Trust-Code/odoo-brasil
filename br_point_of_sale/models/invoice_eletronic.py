@@ -177,6 +177,9 @@ class InvoiceEletronic(models.Model):
             + tax_values.get("tax_issqn_id", empty)
         )
 
+        valor_bruto = round(line_vals.get("qty") * line_vals.get("price_unit"), 2)
+        valor_liquido = round(valor_bruto * (1 - (line_vals.get('discount', 0) / 100)), 2)
+
         vals = {
             "name": line_vals.get("name"),
             "product_id": product.id,
@@ -191,11 +194,12 @@ class InvoiceEletronic(models.Model):
             "ncm": product.fiscal_classification_id.code,
             "quantidade": line_vals.get("qty"),
             "preco_unitario": line_vals.get("price_unit"),
-            "valor_bruto": line_vals.get("price_subtotal_incl"),
-            "valor_liquido": line_vals.get("price_subtotal"),
+            "valor_bruto": valor_bruto,
+            "valor_liquido": valor_liquido,
+            "desconto": valor_bruto - valor_liquido,
             "origem": product.origin,
             "tributos_estimados": self.get_approximate_taxes(
-                product, line_vals.get("price_subtotal")
+                product, valor_liquido
             ),
             # - ICMS -
             "icms_cst": tax_values.get("icms_cst_normal", False)
@@ -373,8 +377,12 @@ class InvoiceEletronic(models.Model):
         }
 
         base_icms = 0
+        valor_bruto = 0
+        total_desconto = 0
         for pos_line in vals.get("eletronic_item_ids"):
             base_icms += pos_line[2].get("icms_base_calculo") or 0
+            valor_bruto += pos_line[2].get("valor_bruto") or 0
+            total_desconto += pos_line[2].get("desconto") or 0
 
         vals.update(
             {
@@ -394,9 +402,8 @@ class InvoiceEletronic(models.Model):
                     for line in vals.get("eletronic_item_ids")
                 ),
                 "valor_ii": 0,
-                "valor_bruto": ui_order["amount_total"]
-                - ui_order["amount_tax"],
-                "valor_desconto": ui_order["amount_tax"],
+                "valor_bruto": valor_bruto,
+                "valor_desconto": total_desconto,
                 "valor_final": ui_order["amount_total"],
                 "valor_bc_icms": base_icms,
                 "valor_bc_icmsst": 0,
