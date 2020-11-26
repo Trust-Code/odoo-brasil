@@ -42,7 +42,8 @@ class PaymentTransaction(models.Model):
             self._set_transaction_done()
             self._post_process_after_done()
             if self.origin_move_line_id:
-                self.origin_move_line_id._create_bank_tax_move(data)
+                self.origin_move_line_id._create_bank_tax_move(
+                    (data.get('taxes_paid_cents') or 0) / 100)
         else:
             self.iugu_status = data['status']
 
