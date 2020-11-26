@@ -6,7 +6,11 @@ class WizardNFeConfiguration(models.TransientModel):
     _name = "wizard.nfe.configuration"
 
     eletronic_doc_id = fields.Many2one("eletronic.document")
-    partner_id = fields.Many2one("res.partner", string="Parceiro")
+    partner_id = fields.Many2one("res.partner", string="Parceiro")  
+
+    create_all_products = fields.Boolean(
+        string="Criar os produtos?", 
+        help="Se marcado vai criar os produtos não encontrados")
 
     currency_id = fields.Many2one(related='eletronic_doc_id.currency_id')
 
@@ -15,8 +19,39 @@ class WizardNFeConfiguration(models.TransientModel):
 
     nfe_item_ids = fields.One2many('wizard.nfe.configuration.item', 'wizard_id')
     
+    @api.onchange('create_all_products')
+    def _onchange_create_all_products(self):
+        for item in self.nfe_item_ids:
+            item.create_products = self.create_all_products
+            
+    
     def action_confirm_items(self):
         for item in self.nfe_item_ids:
+            if item.create_products:
+                product = self.env['product.product'].create({
+                    'name': item.xml_product_name,
+                    'purchase_ok': True,
+                    'sale_ok': False,
+                    'type': 'product',
+                    'list_price': item.price_total / item.quantity,
+                    # 'l10n_br_fiscal_category_id':'Venda de produto',
+                    'l10n_br_origin': 0,
+                    'taxes_id': [],
+                    'supplier_taxes_id': [],
+                    'company_id': None,
+                })
+                item.product_id = product
+                item.uom_id = product.uom_id
+                
+                self.env['product.supplierinfo'].create({
+                    'product_id': product.id,
+                    'product_tmpl_id': product.product_tmpl_id.id,
+                    'name': self.partner_id.id,
+                    'product_code': item.xml_product_code,
+                    'product_name': item.xml_product_name,
+                })
+
+
             if not item.product_id or not item.uom_id:
                 raise UserError('Configure todos os produtos para continuar')
         
@@ -38,6 +73,8 @@ class WizardNFeConfigurationItem(models.TransientModel):
     _name = "wizard.nfe.configuration.item"
 
     wizard_id = fields.Many2one('wizard.nfe.configuration')
+    create_products = fields.Boolean(string='Criar?', 
+        help="Se marcado vai criar os produtos não encontrados")
     product_id = fields.Many2one("product.product")
     uom_id = fields.Many2one("uom.uom")
     
