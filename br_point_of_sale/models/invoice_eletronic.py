@@ -354,18 +354,8 @@ class InvoiceEletronic(models.Model):
             "ind_final": fiscal_position.ind_final,
             "ind_pres": fiscal_position.ind_pres,
             "metodo_pagamento": journal.metodo_pagamento,
-            "troco": abs(
-                sum(
-                    payment[2].get("amount")
-                    for payment in ui_order.get("statement_ids")
-                    if payment[2].get("amount") < 0
-                )
-            ),
-            "valor_pago": sum(
-                payment[2].get("amount")
-                for payment in ui_order.get("statement_ids")
-                if payment[2].get("amount") > 0
-            ),
+            "troco": ui_order.get("amount_return"),
+            "valor_pago": ui_order.get("amount_paid"),
             "eletronic_item_ids": [
                 self._prepare_edoc_item_fields(
                     line, fiscal_position, partner, company, pricelist
