@@ -195,7 +195,7 @@ class AccountMove(models.Model):
                 'quantidade': line.quantity,
                 'preco_unitario': line.price_unit,
                 'valor_bruto': round(line.quantity * line.price_unit, 2),
-                'desconto': round(line.quantity * line.price_unit, 2) - line.price_total,
+                'desconto': round(line.quantity * line.price_unit, 2) - line.price_subtotal,
                 'valor_liquido': line.price_total,
                 'origem': line.product_id.l10n_br_origin,
                 #  'tributos_estimados': line.tributos_estimados,
