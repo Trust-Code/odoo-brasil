@@ -56,10 +56,6 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    l10n_br_tax_rule_id = fields.Many2one(
-        "account.fiscal.position.tax.rule", string="Regra Imposto"
-    )
-
     l10n_br_calculated_taxes = fields.Text(string="Impostos Calculados")
 
     l10n_br_payment_value = fields.Monetary(
