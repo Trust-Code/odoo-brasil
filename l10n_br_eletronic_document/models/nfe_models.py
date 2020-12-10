@@ -256,7 +256,7 @@ class InutilizedNfe(models.Model):
         retorno = self.send_sefaz()
         if retorno:
             return retorno
-        return self.env.ref("br_nfe.action_invoice_eletronic_inutilized").read()[0]
+        return self.env.ref("l10n_br_eletronic_document.action_invoice_eletronic_inutilized").read()[0]
 
     def _create_attachment(self, prefix, event, data):
         file_name = "%s-%s.xml" % (prefix, datetime.now().strftime("%Y-%m-%d-%H-%M"))
