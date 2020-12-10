@@ -4,9 +4,11 @@ from pytrustnfe.nfse.bh import gerar_nfse
 from pytrustnfe.nfse.bh import cancelar_nfse
 
 from pytrustnfe.certificado import Certificado
-
+from odoo.exceptions import UserError
 
 def _convert_values(vals):
+    # import ipdb
+    # ipdb.set_trace()
     # Numero lote
     vals['numero_lote'] =  vals['numero_rps']
 
@@ -30,20 +32,30 @@ def _convert_values(vals):
 
     # Valores
     vals['valor_deducao'] = 0.00
-
     if vals['valor_iss'] < 0:
         vals['iss_retido'] = '1'
         vals['valor_iss_retido'] = vals['iss_valor_retencao'] = abs(vals['valor_iss'])
         vals['valor_iss'] = 0
     else:
         vals['iss_retido'] = '2'
-
     vals['aliquota_issqn'] = "%.4f" % abs(vals['itens_servico'][0]['aliquota'])
-
     vals['descricao'] = vals['discriminacao']
+
+    # Código Serviço
+    cod_servico = vals['itens_servico'][0]['codigo_servico_municipio']
+    for item_servico in vals['itens_servico']:
+        if item_servico['codigo_servico_municipio'] != cod_servico:
+            raise UserError('Não é possível gerar notas de serviço com linhas que possuem código de serviço diferentes.'
+                            + '\nPor favor, verifique se todas as linhas de serviço possuem o mesmo código de serviço.'
+                            + '\nNome: %s: Código de serviço: %s\nNome: %s: Código de serviço: %s'
+                            % (vals['itens_servico'][0]['name'], cod_servico,
+                             item_servico['name'], item_servico['codigo_servico_municipio']))
+
+    vals['codigo_servico'] = vals['itens_servico'][0]['codigo_servico_municipio']
 
     # Prestador
     vals['prestador'] = vals['emissor']
+    vals['cod_municipio'] = vals['emissor']['codigo_municipio']
 
     # Tomador
     vals['tomador'].update(
@@ -81,8 +93,12 @@ def send_api(certificate, password, list_rps):
         password=vals['user_password'])
 
     retorno = recebe_lote['object']
-    import ipdb
-    ipdb.set_trace()
+    # import ipdb
+    # ipdb.set_trace()
+    try:
+        print(retorno['ListaMensagemRetorno']['MensagemRetorno']['Mensagem'])
+    except Exception as e:
+        print(e)
     if "codigoVerificacao" in dir(retorno):
         return {
             'code': 201,
