@@ -820,11 +820,17 @@ class EletronicDocument(models.Model):
         doc_values = self.generate_dict_values()
 
         response = {}
-        if doc_values[0]['emissor']['codigo_municipio'] == '4205407':
+        cod_municipio = doc_values[0]['emissor']['codigo_municipio']
+        if  cod_municipio == '4205407':
             from .nfse_florianopolis import send_api
             response = send_api(certificate, password, doc_values)
-        elif doc_values[0]['emissor']['codigo_municipio'] == '3550308':
+        elif cod_municipio == '3550308':
             from .nfse_paulistana import send_api
+            response = send_api(certificate, password, doc_values)
+        elif cod_municipio == '3106200':
+            from .nfse_bh import send_api
+            for doc in doc_values:
+                doc['data_emissao'] = self[0].data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
             response = send_api(certificate, password, doc_values)
         else:
             from .focus_nfse import send_api
@@ -922,6 +928,10 @@ class EletronicDocument(models.Model):
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3550308':
             from .nfse_paulistana import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+        elif doc_values['codigo_municipio'] == '':
+            # TODO
+            from .nfse_bh import cancel_api
             response = cancel_api(certificate, password, doc_values)
         else:
             from .focus_nfse import cancel_api
