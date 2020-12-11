@@ -6,9 +6,9 @@ from pytrustnfe.nfse.bh import cancelar_nfse
 from pytrustnfe.certificado import Certificado
 from odoo.exceptions import UserError
 
+import re
+
 def _convert_values(vals):
-    # import ipdb
-    # ipdb.set_trace()
     # Numero lote
     vals['numero_lote'] =  vals['numero_rps']
 
@@ -42,25 +42,28 @@ def _convert_values(vals):
     vals['descricao'] = vals['discriminacao']
 
     # Código Serviço
-    cod_servico = vals['itens_servico'][0]['codigo_servico_municipio']
+    cod_servico = vals['itens_servico'][0]['codigo_servico']
     for item_servico in vals['itens_servico']:
-        if item_servico['codigo_servico_municipio'] != cod_servico:
+        if item_servico['codigo_servico'] != cod_servico:
             raise UserError('Não é possível gerar notas de serviço com linhas que possuem código de serviço diferentes.'
                             + '\nPor favor, verifique se todas as linhas de serviço possuem o mesmo código de serviço.'
                             + '\nNome: %s: Código de serviço: %s\nNome: %s: Código de serviço: %s'
                             % (vals['itens_servico'][0]['name'], cod_servico,
-                             item_servico['name'], item_servico['codigo_servico_municipio']))
-
-    vals['codigo_servico'] = vals['itens_servico'][0]['codigo_servico_municipio']
+                             item_servico['name'], item_servico['codigo_servico']))
+    vals['codigo_servico'] = cod_servico
+    vals['codigo_tributacao_municipio'] = vals['itens_servico'][0]['codigo_servico_municipio']
 
     # Prestador
-    vals['prestador'] = vals['emissor']
-    vals['cod_municipio'] = vals['emissor']['codigo_municipio']
+    vals['prestador'] = {}
+    vals['prestador']['cnpj'] = re.sub('[^0-9]', '', vals['emissor']['cnpj'])
+    vals['prestador']['inscricao_municipal'] = re.sub('\W+','', vals['emissor']['inscricao_municipal'])
+    vals['codigo_municipio'] = vals['emissor']['codigo_municipio']
 
     # Tomador
     vals['tomador'].update(
         vals['tomador']['endereco']
     )
+    vals['tomador']['cidade'] =vals['tomador']['codigo_municipio']
 
     # ValorServicos - ValorPIS - ValorCOFINS - ValorINSS - ValorIR - ValorCSLL - OutrasRetençoes
     # - ValorISSRetido - DescontoIncondicionado - DescontoCondicionado)
@@ -93,12 +96,7 @@ def send_api(certificate, password, list_rps):
         password=vals['user_password'])
 
     retorno = recebe_lote['object']
-    # import ipdb
-    # ipdb.set_trace()
-    try:
-        print(retorno['ListaMensagemRetorno']['MensagemRetorno']['Mensagem'])
-    except Exception as e:
-        print(e)
+
     if "codigoVerificacao" in dir(retorno):
         return {
             'code': 201,

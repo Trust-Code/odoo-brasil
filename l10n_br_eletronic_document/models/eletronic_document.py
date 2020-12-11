@@ -830,7 +830,12 @@ class EletronicDocument(models.Model):
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
             for doc in doc_values:
-                doc['data_emissao'] = self[0].data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
+                doc['data_emissao'] = self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
+                doc['valor_pis'] = self.pis_valor_retencao
+                doc['valor_cofins'] = self.cofins_valor_retencao
+                doc['valor_inss'] = self.inss_valor_retencao
+                doc['valor_ir'] = self.irrf_valor_retencao
+                doc['valor_csll'] = self.csll_valor_retencao
             response = send_api(certificate, password, doc_values)
         else:
             from .focus_nfse import send_api
