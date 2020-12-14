@@ -97,7 +97,7 @@ def send_api(certificate, password, list_rps):
 
     retorno = recebe_lote['object']
 
-    if "codigoVerificacao" in dir(retorno):
+    if "ListaNFse" in dir(retorno):
         return {
             'code': 201,
             'entity': {
@@ -109,8 +109,8 @@ def send_api(certificate, password, list_rps):
     else:
         return {
             'code': 400,
-            'api_code': recebe_lote['status_code'],
-            'message': retorno.message,
+            'api_code': retorno['ListaMensagemRetornoLote']['MensagemRetorno']['Codigo'],
+            'message': retorno['ListaMensagemRetornoLote']['MensagemRetorno']['Mensagem'],
         }
 
 
