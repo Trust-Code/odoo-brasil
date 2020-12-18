@@ -4,7 +4,7 @@
     <report
         id="report_br_nfse_danfe_bh"
         string="Nota de Serviço - Belo Horizonte"
-        model="invoice.eletronic"
+        model="eletronic.document"
         report_type="qweb-pdf"
         file="l10n_br_eletronic_document.main_template_br_nfse_bh"
         name="l10n_br_eletronic_document.main_template_br_nfse_bh" />
@@ -23,8 +23,8 @@
 
     <record id="report_br_nfse_danfe_bh" model="ir.actions.report">
         <field name="paperformat_id" ref="paperformat_br_nfse_danfse"/>
-        <field name="name">Nota de Serviço - Nota Belo Horizonte</field>
-        <field name="print_report_name">'%s - NF - %s.pdf' % (object.numero, object.partner_id.name)</field>
+        <field name="name">Nota de Serviço - Belo Horizonte</field>
+        <field name="print_report_name">'%s - NF - %s' % (object.numero, object.partner_id.name)</field>
     </record>
 
     <template id="danfse_report_template_bh">
@@ -56,7 +56,7 @@
                         <t t-if="doc.state == 'done'">
                             <span style="font-size:9px;">Número da Nota</span>
                             <br />
-                            <strong t-field="doc.numero_nfse"/>
+                            <strong t-field="doc.numero"/>
                         </t>
                         <t t-if="doc.state != 'done'">
                             <span style="font-size:9px;">Número RPS</span>
@@ -77,7 +77,7 @@
                         <div style="border: 1px solid black; padding: 2px;text-align:center;">
                             <span style="font-size:8px;">Código de verificação</span>
                             <br />
-                            <strong t-field="doc.verify_code"/>
+                            <strong t-field="doc.protocolo_nfe"/>
                         </div>
                     </t>
                 </div>
@@ -92,23 +92,23 @@
                     </div>
                     <div class="col-xs-12">
                         Nome/Razão Social:
-                        <strong t-field="doc.company_id.partner_id.legal_name"/>
+                        <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"/>
                     </div>
                     <div class="col-xs-6">
                         CNPJ:
-                        <strong t-field="doc.company_id.partner_id.cnpj_cpf"/>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_cnpj_cpf"/>
                     </div>
                     <div class="col-xs-6">
                         Inscrição Municipal:
-                        <strong t-field="doc.company_id.partner_id.inscr_mun"/>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_inscr_mun"/>
                     </div>
                     <div class="col-xs-12">
                         Endereço:
                         <strong t-field="doc.company_id.partner_id.street">
                         </strong>
-                        <strong t-field="doc.company_id.partner_id.number">
+                        <strong t-field="doc.company_id.partner_id.l10n_br_number">
                         </strong>
-                        <strong t-field="doc.company_id.partner_id.district">
+                        <strong t-field="doc.company_id.partner_id.l10n_br_district">
                         </strong>
                     </div>
                     <div class="col-xs-6">
@@ -135,16 +135,16 @@
                 </div>
                 <div class="col-xs-12">
                     Nome/Razão Social:
-                    <strong t-raw="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name"/>
+                    <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"/>
                 </div>
                 <div class="col-xs-6">
                     CNPJ:
-                    <strong t-field="doc.commercial_partner_id.cnpj_cpf"/>
+                    <strong t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf"/>
                 </div>
                 <div class="col-xs-6">
                     Inscrição Municipal:
-                    <strong t-field="doc.commercial_partner_id.inscr_mun"/>
-                    <t t-if="not doc.commercial_partner_id.inscr_mun">
+                    <strong t-field="doc.commercial_partner_id.l10n_br_inscr_mun"/>
+                    <t t-if="not doc.commercial_partner_id.l10n_br_inscr_mun">
                       <span>Não informado</span>
                     </t>
                 </div>
@@ -152,9 +152,9 @@
                     Endereço:
                     <strong t-field="doc.commercial_partner_id.street">
                     </strong>
-                    <strong t-field="doc.commercial_partner_id.number">
+                    <strong t-field="doc.commercial_partner_id.l10n_br_number">
                     </strong>
-                    <strong t-field="doc.commercial_partner_id.district">
+                    <strong t-field="doc.commercial_partner_id.l10n_br_district">
                     </strong>
                 </div>
                 <div class="col-xs-6">
@@ -180,7 +180,7 @@
                 </div>
                 <div class="col-xs-12">
                     <br />
-                    <t t-foreach="doc.eletronic_item_ids" t-as="line">
+                    <t t-foreach="doc.document_line_ids" t-as="line">
                         <p t-field="line.name"/>
                     </t>
                     <span t-field="doc.informacoes_legais"/>
@@ -192,8 +192,8 @@
                     <h4 style="margin:0px;font-weight:bold;">Código de Tributação do Município (CTISS)</h4>
                 </div>
                 <div class="col-xs-12">
-                    <span t-field="doc.eletronic_item_ids[0].codigo_tributacao_municipio" /> -
-                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                    <span t-field="doc.document_line_ids[0].codigo_servico_municipio" /> -
+                    <span t-field="doc.document_line_ids[0].product_id.service_type_id.name" />
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 10px;">
@@ -201,8 +201,8 @@
                     <h4 style="margin:0px;font-weight:bold;">Subitem Lista de Serviços LC 116/03 / Descrição:</h4>
                 </div>
                 <div class="col-xs-12">
-                    <span t-field="doc.eletronic_item_ids[0].issqn_codigo" /> -
-                    <span t-field="doc.eletronic_item_ids[0].product_id.service_type_id.name" />
+                    <span t-field="doc.document_line_ids[0].product_id.service_type_id.code" /> -
+                    <span t-field="doc.document_line_ids[0].product_id.service_type_id.name" />
                 </div>
             </div>
             <div class="row" style="border: 1px solid black; padding: 10px;">
@@ -232,24 +232,29 @@
                                       t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                             </td>
                         </tr>
+                        <t t-set="retencoes_federais"
+                                   t-value="doc.pis_valor_retencao+doc.cofins_valor_retencao+doc.inss_valor_retencao
+                                   +doc.irrf_valor_retencao+doc.csll_valor_retencao"/>
                         <tr style="border-bottom:1px solid gray;">
                             <td>(-) Retenções Federais:</td>
                             <td style="text-align:right;">
-                                <span t-field="doc.retencoes_federais"
+                                <span t-esc="retencoes_federais"
                                       t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                             </td>
                         </tr>
                         <tr style="border-bottom:1px solid gray;">
                             <td>(-) ISS Retido na Fonte:</td>
                             <td style="text-align:right;">
-                                <span t-field="doc.valor_retencao_issqn"
+                                <span t-field="doc.iss_valor_retencao"
                                       t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                             </td>
                         </tr>
                         <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;color:red;">
                             <td>Valor Líquido:</td>
+                            <t t-set="valor_com_retencao" t-value="doc.valor_final-doc.valor_desconto-retencoes_federais
+                            -doc.iss_valor_retencao"/>
                             <td style="text-align:right;">
-                                <span t-field="doc.total_com_retencoes"
+                                <span t-esc="valor_com_retencao"
                                       t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                             </td>
                         </tr>
@@ -279,20 +284,20 @@
                       <tr style="border-bottom:1px solid gray;font-weight:bold;">
                           <td>(=) Base de Cálculo:</td>
                           <td style="text-align:right;">
-                              <span t-field="doc.valor_bc_issqn"
+                              <span t-field="doc.iss_base_calculo"
                                     t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                           </td>
                       </tr>
                       <tr style="border-bottom:1px solid gray;">
                           <td>(x) Alíquota:</td>
                           <td style="text-align:right;">
-                              <span t-field="doc.eletronic_item_ids[0].issqn_aliquota"/> %
+                              <span t-esc="abs(doc.document_line_ids[0].iss_aliquota)"/> %
                           </td>
                       </tr>
                       <tr style="border-bottom:1px solid gray;font-size:18px;font-weight:bold;">
                           <td style="color:red;">(=) Valor do ISS:</td>
                           <td style="text-align:right;">
-                              <span style="color:red;" t-field="doc.valor_issqn"
+                              <span style="color:red;" t-esc="abs(doc.iss_valor_retencao)"
                                     t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                           </td>
                       </tr>
@@ -318,11 +323,11 @@
     </template>
 
     <template id="main_template_br_nfse_bh">
-        <div class="article">
+        <t t-call="web.basic_layout">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="l10n_br_eletronic_document.danfse_report_template_bh" t-lang="doc.partner_id.lang"/>
             </t>
-        </div>
+        </t>
     </template>
 
 

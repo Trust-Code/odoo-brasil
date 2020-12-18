@@ -13,6 +13,7 @@ def _convert_values(vals):
     vals['numero_lote'] =  vals['numero_rps']
 
     # IdentificacaoRps ~ Status
+    vals['numero'] = vals['numero_rps']
     vals['tipo_rps'] = '1'
     vals['natureza_operacao'] = '1'
 
@@ -96,23 +97,24 @@ def send_api(certificate, password, list_rps):
         password=vals['user_password'])
 
     retorno = recebe_lote['object']
-
-    if "ListaNFse" in dir(retorno):
+    if "ListaNfse" in dir(retorno):
+        inf_nfse = retorno.ListaNfse.CompNfse.Nfse.InfNfse
         return {
             'code': 201,
             'entity': {
-                'protocolo_nfe': retorno.codigoVerificacao,
-                'numero_nfe': retorno.numeroSerie,
+                'protocolo_nfe': inf_nfse.CodigoVerificacao,
+                # get last 9 digits :)
+                'numero_nfe': inf_nfse.Numero % 1000000000,
             },
-            'xml': recebe_lote['received_xml'],
+            'xml': recebe_lote['received_xml'].encode('utf-8'),
         }
     else:
+        mensagem_retorno = retorno.ListaMensagemRetornoLote.MensagemRetorno
         return {
             'code': 400,
-            'api_code': retorno['ListaMensagemRetornoLote']['MensagemRetorno']['Codigo'],
-            'message': retorno['ListaMensagemRetornoLote']['MensagemRetorno']['Mensagem'],
+            'api_code': mensagem_retorno.Codigo,
+            'message': mensagem_retorno.Mensagem,
         }
-
 
 def cancel_api(certificate, password, vals):
     cert_pfx = base64.decodestring(certificate)
