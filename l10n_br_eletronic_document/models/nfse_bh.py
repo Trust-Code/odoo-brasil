@@ -122,8 +122,11 @@ def cancel_api(certificate, password, vals):
     canc = {
         'motivo': vals['justificativa'],
         'aedf': vals['aedf'],
-        'numero': vals['numero'],
+        'numero_nfse': vals['numero'],
         'codigo_verificacao': vals['protocolo_nfe'],
+        'cnpj_prestador': vals['cnpj_cpf'],
+        'inscricao_municipal': vals['inscricao_municipal'],
+        'cidade': vals['codigo_municipio'],
     }
     resposta = cancelar_nfse(
         certificado, cancelamento=canc,
@@ -141,8 +144,9 @@ def cancel_api(certificate, password, vals):
             'message': 'Nota Fiscal Cancelada',
         }
     else:
+        erro_retorno = retorno.ListaMensagemRetorno.MensagemRetorno
         return {
             'code': 400,
-            'api_code': resposta['status_code'],
-            'message': retorno.message,
+            'api_code': erro_retorno.Codigo,
+            'message': erro_retorno.Mensagem,
         }
