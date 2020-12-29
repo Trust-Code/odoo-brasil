@@ -937,6 +937,7 @@ class EletronicDocument(models.Model):
         elif doc_values['codigo_municipio'] == '3106200':
             from .nfse_bh import cancel_api
             doc_values['inscricao_municipal'] = re.sub('\W+','', company.l10n_br_inscr_mun)
+            doc_values['numero'] = str(self.data_emissao.year) + '{:>011d}'.format(self.numero)
             response = cancel_api(certificate, password, doc_values)
         else:
             from .focus_nfse import cancel_api

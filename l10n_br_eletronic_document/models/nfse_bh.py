@@ -109,7 +109,10 @@ def send_api(certificate, password, list_rps):
             'xml': recebe_lote['received_xml'].encode('utf-8'),
         }
     else:
-        mensagem_retorno = retorno.ListaMensagemRetornoLote.MensagemRetorno
+        if "ListaMensagemRetornoLote" in dir(retorno):
+            mensagem_retorno = retorno.ListaMensagemRetornoLote.MensagemRetorno
+        else:
+            mensagem_retorno = retorno.ListaMensagemRetorno.MensagemRetorno
         return {
             'code': 400,
             'api_code': mensagem_retorno.Codigo,
@@ -120,10 +123,7 @@ def cancel_api(certificate, password, vals):
     cert_pfx = base64.decodestring(certificate)
     certificado = Certificado(cert_pfx, password)
     canc = {
-        'motivo': vals['justificativa'],
-        'aedf': vals['aedf'],
         'numero_nfse': vals['numero'],
-        'codigo_verificacao': vals['protocolo_nfe'],
         'cnpj_prestador': vals['cnpj_cpf'],
         'inscricao_municipal': vals['inscricao_municipal'],
         'cidade': vals['codigo_municipio'],
@@ -137,8 +137,7 @@ def cancel_api(certificate, password, vals):
         password=vals['user_password']
     )
     retorno = resposta['object']
-    msg_cancelada = 'A Nota Fiscal já está com a situação cancelada.'
-    if resposta['status_code'] == 200 or retorno.message == msg_cancelada:
+    if "RetCancelamento" in dir(retorno):
         return {
             'code': 200,
             'message': 'Nota Fiscal Cancelada',
