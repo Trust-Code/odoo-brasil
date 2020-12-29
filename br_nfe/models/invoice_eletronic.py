@@ -580,6 +580,7 @@ class InvoiceEletronic(models.Model):
                 'ISUF': partner.suframa or '',
             }
             if self.model == '65':
+                dest['IE'] = ''
                 dest.update(
                     {'CPF': re.sub('[^0-9]', '', partner.cnpj_cpf or '')})
 
