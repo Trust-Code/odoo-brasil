@@ -141,6 +141,7 @@ def cancel_api(certificate, password, vals):
         return {
             'code': 200,
             'message': 'Nota Fiscal Cancelada',
+            'xml': resposta['received_xml'].split("<?xml version='1.0' encoding='UTF-8'?>")[1].encode('utf - 8')
         }
     else:
         erro_retorno = retorno.ListaMensagemRetorno.MensagemRetorno

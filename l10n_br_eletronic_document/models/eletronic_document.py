@@ -948,14 +948,25 @@ class EletronicDocument(models.Model):
             )
 
         if response['code'] in (200, 201):
-            self.write({
+            vals = {
                 'state': 'cancel',
                 'codigo_retorno': response['code'],
                 'mensagem_retorno': response['message']
-            })
+            }
+            if response.get('xml', False):
+                # split na nfse antiga para adicionar o xml da nfe cancelada
+                # [parte1 nfse] + [parte2 nfse]
+                split_nfe_processada = base64.decodebytes(self.nfe_processada).split(b'</Nfse>')
+                # readicionar a tag nfse pq o mesmo é removido ao dar split
+                split_nfe_processada[0] = split_nfe_processada[0] + b'</Nfse>'
+                # [parte1 nfse] + [parte2 nfse] + [parte2 nfse]
+                split_nfe_processada.append(split_nfe_processada[1])
+                # [parte1 nfse] + [nfse cancelada] + [parte2 nfse]
+                split_nfe_processada[1] = response['xml']
+                vals['nfe_processada'] = base64.encodebytes(b''.join(split_nfe_processada))
+            self.write(vals)
         else:
-            raise UserError('%s - %s' %
-                            (response['api_code'], response['message']))
+            raise UserError('%s - %s' % (response['api_code'], response['message']))
 
     def qrcode_floripa_url(self):
         import urllib

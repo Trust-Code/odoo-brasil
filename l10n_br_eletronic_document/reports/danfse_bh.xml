@@ -34,6 +34,9 @@
             }
             td, th { padding: 0 4px; }
         </style>
+        <pageGraphics t-if="doc.state == 'cancel'">
+            <img src="/l10n_br_eletronic_document/static/src/img/cancelado_carimbo.png" x="6" y="0"/>
+        </pageGraphics>
         <div class="page">
             <div class="row" style="border: 1px solid black;">
                 <div class="col" style="padding:0px;text-align:center;font-size:18px;">
