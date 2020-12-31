@@ -34,17 +34,30 @@
             }
             td, th { padding: 0 4px; }
         </style>
-        <pageGraphics t-if="doc.state == 'cancel'">
-            <img src="/l10n_br_eletronic_document/static/src/img/cancelado_carimbo.png" x="6" y="0"/>
-        </pageGraphics>
-        <div class="page">
-            <div class="row" style="border: 1px solid black;">
+        <t t-if="doc.state == 'cancel'">
+            <div class="page" style="
+            background-image:url('/l10n_br_eletronic_document/static/src/img/cancelado_carimbo.svg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 90%;">
+                <t t-call="l10n_br_eletronic_document.danfse_report_template_bh_body"/>
+            </div>
+        </t>
+        <t t-else="">
+            <div class="page">
+                <t t-call="l10n_br_eletronic_document.danfse_report_template_bh_body"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="danfse_report_template_bh_body">
+        <div class="row" style="border: 1px solid black;">
                 <div class="col" style="padding:0px;text-align:center;font-size:18px;">
-                    <t t-if="doc.state != 'done'">
+                    <t t-if="doc.state not in ('done', 'cancel')">
                         <strong style="font-size:20px;">RECIBO PROVISÓRIO DE SERVIÇOS - RPS
                         </strong>
                     </t>
-                    <t t-if="doc.state == 'done'">
+                    <t t-if="doc.state in ('done', 'cancel')">
                         <strong style="font-size:20px;">NFS-e  - NOTA FISCAL ELETRÔNICA DE SERVIÇOS</strong><br />
                         <strong style="font-size:20px;">- NOTA BH -</strong><br />
                     </t>
@@ -52,12 +65,12 @@
             </div>
             <div class="row">
                 <div class="col-4" style="border: 1px solid black; padding: 2px;text-align:center;">
-                    <t t-if="doc.state == 'done'">
+                    <t t-if="doc.state in ('done', 'cancel')">
                         <span style="font-size:10px;">Número da Nota</span>
                         <br />
                         <strong t-esc="str(doc.data_emissao.year) + '{:&gt;011d}'.format(doc.numero)"/>
                     </t>
-                    <t t-if="doc.state != 'done'">
+                    <t t-if="doc.state not in ('done', 'cancel')">
                         <spam style="font-size:10px;">Número RPS</spam>
                         <br />
                         <strong t-esc="str(doc.data_emissao.year) + '{:&gt;011d}'.format(doc.numero)"/>
@@ -68,7 +81,7 @@
                     <br />
                     <strong t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'/>
                 </div>
-                <div t-if="doc.state == 'done'" class="col-4"
+                <div t-if="doc.state in ('done', 'cancel')" class="col-4"
                      style="border: 1px solid black; padding: 2px;text-align:center;">
                     <span style="font-size:10px;">Código de verificação</span>
                     <br />
@@ -344,7 +357,6 @@
                         style="max-height:80px; margin-top:4px;" />
                 </div>
             </div>
-        </div>
     </template>
 
     <template id="main_template_br_nfse_bh">
