@@ -820,11 +820,22 @@ class EletronicDocument(models.Model):
         doc_values = self.generate_dict_values()
 
         response = {}
-        if doc_values[0]['emissor']['codigo_municipio'] == '4205407':
+        cod_municipio = doc_values[0]['emissor']['codigo_municipio']
+        if  cod_municipio == '4205407':
             from .nfse_florianopolis import send_api
             response = send_api(certificate, password, doc_values)
-        elif doc_values[0]['emissor']['codigo_municipio'] == '3550308':
+        elif cod_municipio == '3550308':
             from .nfse_paulistana import send_api
+            response = send_api(certificate, password, doc_values)
+        elif cod_municipio == '3106200':
+            from .nfse_bh import send_api
+            for doc in doc_values:
+                doc['data_emissao'] = self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
+                doc['valor_pis'] = self.pis_valor_retencao
+                doc['valor_cofins'] = self.cofins_valor_retencao
+                doc['valor_inss'] = self.inss_valor_retencao
+                doc['valor_ir'] = self.irrf_valor_retencao
+                doc['valor_csll'] = self.csll_valor_retencao
             response = send_api(certificate, password, doc_values)
         else:
             from .focus_nfse import send_api
@@ -923,6 +934,11 @@ class EletronicDocument(models.Model):
         elif doc_values['codigo_municipio'] == '3550308':
             from .nfse_paulistana import cancel_api
             response = cancel_api(certificate, password, doc_values)
+        elif doc_values['codigo_municipio'] == '3106200':
+            from .nfse_bh import cancel_api
+            doc_values['inscricao_municipal'] = re.sub('\W+','', company.l10n_br_inscr_mun)
+            doc_values['numero'] = str(self.data_emissao.year) + '{:>011d}'.format(self.numero)
+            response = cancel_api(certificate, password, doc_values)
         else:
             from .focus_nfse import cancel_api
             response = cancel_api(
@@ -932,14 +948,25 @@ class EletronicDocument(models.Model):
             )
 
         if response['code'] in (200, 201):
-            self.write({
+            vals = {
                 'state': 'cancel',
                 'codigo_retorno': response['code'],
                 'mensagem_retorno': response['message']
-            })
+            }
+            if response.get('xml', False):
+                # split na nfse antiga para adicionar o xml da nfe cancelada
+                # [parte1 nfse] + [parte2 nfse]
+                split_nfe_processada = base64.decodebytes(self.nfe_processada).split(b'</Nfse>')
+                # readicionar a tag nfse pq o mesmo é removido ao dar split
+                split_nfe_processada[0] = split_nfe_processada[0] + b'</Nfse>'
+                # [parte1 nfse] + [parte2 nfse] + [parte2 nfse]
+                split_nfe_processada.append(split_nfe_processada[1])
+                # [parte1 nfse] + [nfse cancelada] + [parte2 nfse]
+                split_nfe_processada[1] = response['xml']
+                vals['nfe_processada'] = base64.encodebytes(b''.join(split_nfe_processada))
+            self.write(vals)
         else:
-            raise UserError('%s - %s' %
-                            (response['api_code'], response['message']))
+            raise UserError('%s - %s' % (response['api_code'], response['message']))
 
     def qrcode_floripa_url(self):
         import urllib

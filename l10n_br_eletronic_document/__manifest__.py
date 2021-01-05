@@ -37,6 +37,7 @@
         'wizard/inutilize_nfe_numeration.xml',
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_florianopolis.xml',
+        'reports/danfse_bh.xml',
         'reports/danfe_report.xml',
     ],
 }
