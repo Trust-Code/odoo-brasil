@@ -241,8 +241,13 @@ class EletronicDocument(models.Model):
         string=u'Total II', readonly=True, states=STATE)
     valor_ipi = fields.Monetary(
         string=u"Total IPI", readonly=True, states=STATE)
+
+    @api.depends('document_line_ids')
+    def _compute_valor_estimado_tributos(self):
+        self.valor_estimado_tributos = sum(line.tributos_estimados for line in self.document_line_ids)
     valor_estimado_tributos = fields.Monetary(
-        string=u"Tributos Estimados", readonly=True, states=STATE)
+        string=u"Tributos Estimados", readonly=True, states=STATE,
+        compute="_compute_valor_estimado_tributos")
 
     valor_servicos = fields.Monetary(
         string=u"Total Serviços", readonly=True, states=STATE)
@@ -453,42 +458,6 @@ class EletronicDocument(models.Model):
         string='Estado do Certificado', related='company_id.l10n_br_cert_state',
         readonly=True)
 
-    # Imposto NCM
-    @api.depends('document_line_ids')
-    def _compute_doc_national_fed_tax(self):
-        total_national_fed_tax = 0
-        for line in self.document_line_ids:
-            total_national_fed_tax += line.national_federal_tax
-        self.national_federal_tax = total_national_fed_tax
-    national_federal_tax = fields.Monetary(
-        string=u'Imposto Federal Nacional', compute=_compute_doc_national_fed_tax)
-
-    @api.depends('document_line_ids')
-    def _compute_doc_fed_import_tax(self):
-        total_fed_import_tax = 0
-        for line in self.document_line_ids:
-            total_fed_import_tax += line.federal_import_tax
-        self.federal_import_tax = total_fed_import_tax
-    federal_import_tax = fields.Monetary(
-        string=u'Imposto Federal Importação', compute='_compute_doc_fed_import_tax')
-
-    @api.depends('document_line_ids')
-    def _compute_doc_state_tax(self):
-        total_state_tax = 0
-        for line in self.document_line_ids:
-            total_state_tax += line.state_tax
-        self.state_tax = total_state_tax
-    state_tax = fields.Monetary(
-        string=u'Imposto Estadual', compute='_compute_doc_state_tax')
-
-    @api.depends('document_line_ids')
-    def _compute_doc_city_tax(self):
-        total_city_tax = 0
-        for line in self.document_line_ids:
-            total_city_tax += line.city_tax
-        self.state_tax = total_city_tax
-    city_tax = fields.Monetary(string=u'Imposto Municipal')
-
     def _compute_discriminacao(self):
         for item in self:
             descricao = ''
@@ -518,7 +487,7 @@ class EletronicDocument(models.Model):
             self.invoice_id.fiscal_comment or '')
 
         ncm_tax_related = 'Valor Aprox. dos Tributos R$ %s. Fonte: IBPT\n' % \
-                          (str(self.national_federal_tax + self.federal_import_tax + self.state_tax + self.city_tax))
+                          (str(self.valor_estimado_tributos))
 
         observacao = ncm_tax_related + self._compute_msg(obs_ids) + (
             self.invoice_id.comment or '')
@@ -1096,9 +1065,19 @@ class EletronicDocumentLine(models.Model):
         string='Outras despesas', digits='Account',
         readonly=True, states=STATE)
 
+    def _compute_tributos_estimados(self):
+        for item in self:
+            tributos_estimados = 0.0
+            ncm = item.product_id.service_type_id if item.product_id.type == 'service' else item.product_id.l10n_br_ncm_id
+            if ncm:
+                ncm_mult = (ncm.federal_nacional + ncm.federal_importado
+                            + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                tributos_estimados += item.valor_bruto * ncm_mult
+            item.tributos_estimados = tributos_estimados
+
     tributos_estimados = fields.Monetary(
         string='Valor Estimado Tributos', digits='Account',
-        readonly=True, states=STATE)
+        readonly=True, states=STATE, compute="_compute_tributos_estimados")
 
     valor_bruto = fields.Monetary(
         string='Valor Bruto', digits='Account',
@@ -1307,51 +1286,6 @@ class EletronicDocumentLine(models.Model):
     inss_valor_retencao = fields.Monetary(
         string='Retenção INSS', digits='Account',
         readonly=True, states=STATE)
-
-    # ============== Impostos NCM ===============
-    # @api.depends('product_id', 'ncm')
-    def _compute_national_fed_tax(self):
-        for item in self:
-            fed_national_val = item.product_id.l10n_br_ncm_id.federal_nacional
-            # if fed_national_val > 1:
-            fed_national_val /= 100
-            item.national_federal_tax = item.valor_bruto * fed_national_val
-
-    national_federal_tax = fields.Monetary(
-            string=u'Imposto Federal Nacional', compute="_compute_national_fed_tax")
-
-    # @api.depends('product_id')
-    def _compute_fed_imp_tax(self):
-        for item in self:
-            fed_imp_tax = item.product_id.l10n_br_ncm_id.federal_importado
-            # if fed_imp_tax > 1:
-            fed_imp_tax /= 100
-            item.federal_import_tax = item.valor_bruto * fed_imp_tax
-
-    federal_import_tax = fields.Monetary(
-        string=u'Imposto Federal Importação', compute="_compute_fed_imp_tax")
-
-    # @api.depends('ncm')
-    def _compute_state_tax(self):
-        for item in self:
-            state_tax = item.product_id.l10n_br_ncm_id.estadual_imposto
-            # if state_tax > 1:
-            state_tax /= 100
-            item.state_tax = item.valor_bruto * state_tax
-
-    state_tax = fields.Monetary(
-        string=u'Imposto Estadual', compute="_compute_state_tax")
-
-    # @api.depends('ncm')
-    def _compute_city_tax(self):
-        for item in self:
-            city_tax = item.product_id.l10n_br_ncm_id.municipal_imposto
-            # if city_tax > 1:
-            city_tax /= 100
-            item.city_tax = item.valor_bruto * city_tax
-
-    city_tax = fields.Monetary(
-        string=u'Imposto Municipal', compute="_compute_city_tax")
 
     @api.depends('icms_cst', 'origem')
     def _compute_cst_danfe(self):
