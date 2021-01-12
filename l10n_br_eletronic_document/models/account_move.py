@@ -162,12 +162,11 @@ class AccountMove(models.Model):
                     errors.append('Cliente / Endereço - Nome do país')
                 if not partner.country_id.l10n_br_ibge_code:
                     errors.append('Cliente / Endereço - Cód. do BC do país')
-        
+
         if len(errors) > 0:
             msg = "\n".join(
                 ["Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
-
 
     def _prepare_eletronic_line_vals(self, invoice_lines):
         lines = []
@@ -198,7 +197,6 @@ class AccountMove(models.Model):
             'numero_controle': num_controle,
             'data_emissao': datetime.now(),
             'data_agendada': invoice.invoice_date,
-            'finalidade_emissao': '1',
             'ambiente': invoice.company_id.l10n_br_tipo_ambiente,
             'partner_id': invoice.partner_id.id,
             'payment_term_id': invoice.invoice_payment_term_id.id,
@@ -206,27 +204,6 @@ class AccountMove(models.Model):
             'natureza_operacao': invoice.fiscal_position_id.name,
             'ind_pres': invoice.fiscal_position_id.ind_pres,
             'finalidade_emissao': invoice.fiscal_position_id.finalidade_emissao,
-            # 'valor_icms': invoice.icms_value,
-            # 'valor_icmsst': invoice.icms_st_value,
-            # 'valor_ipi': invoice.ipi_value,
-            # 'valor_pis': invoice.pis_value,
-            # 'valor_cofins': invoice.cofins_value,
-            # 'valor_ii': invoice.ii_value,
-            # 'valor_bruto': invoice.amount_total,
-            # 'valor_desconto': invoice.total_desconto,
-            # 'valor_final': invoice.amount_total,
-            # 'valor_bc_icms': invoice.icms_base,
-            # 'valor_bc_icmsst': invoice.icms_st_base,
-            # 'valor_estimado_tributos': invoice.total_tributos_estimados,
-            # 'valor_retencao_pis': invoice.pis_retention,
-            # 'valor_retencao_cofins': invoice.cofins_retention,
-            # 'valor_bc_irrf': invoice.irrf_base,
-            # 'valor_retencao_irrf': invoice.irrf_retention,
-            # 'valor_bc_csll': invoice.csll_base,
-            # 'valor_retencao_csll': invoice.csll_retention,
-            # 'valor_bc_inss': invoice.inss_base,
-            # 'valor_retencao_inss': invoice.inss_retention,
-
             'informacoes_complementares': invoice.narration,
             'numero_fatura': invoice.name,
             'fatura_bruto': invoice.amount_total,
@@ -285,31 +262,57 @@ class AccountMove(models.Model):
 
         total_produtos = total_servicos = 0.0
         bruto_produtos = bruto_servicos = 0.0
+        total_desconto = 0
         for inv_line in invoice_lines:
+            total_desconto += round(inv_line.price_unit * inv_line.quantity * inv_line.discount / 100, 2)
             if inv_line.product_id.type == 'service':
-                total_servicos += inv_line.price_subtotal
+                total_servicos += inv_line.price_total
                 bruto_servicos += round(inv_line.quantity * inv_line.price_unit, 2)
             else:
-                total_produtos += inv_line.price_subtotal
+                total_produtos += inv_line.price_total
                 bruto_produtos += round(inv_line.quantity * inv_line.price_unit, 2)
 
         vals.update({
             'valor_bruto': bruto_produtos + bruto_servicos,
             'valor_servicos': total_servicos,
             'valor_produtos': total_produtos,
-            'valor_desconto': (bruto_produtos + bruto_servicos) - (total_produtos + total_servicos),
+            'valor_desconto': total_desconto,
             'valor_final': total_produtos + total_servicos,
         })
 
         return vals
 
+    def sum_line_taxes(self, vals):
+        lines = vals.get("document_line_ids")
+        return {
+            'valor_icms': sum(line[2].get("icms_valor", 0) for line in lines),
+            'valor_icmsst': sum(line[2].get("icms_st_valor", 0) for line in lines),
+            'valor_ipi': sum(line[2].get("ipi_valor", 0) for line in lines),
+            'pis_valor': sum(line[2].get("pis_valor", 0) for line in lines),
+            'cofins_valor': sum(line[2].get("cofins_valor", 0) for line in lines),
+            'valor_ii': sum(line[2].get("ii_valor", 0) for line in lines),
+            'valor_bc_icms': sum(line[2].get("icms_base_calculo", 0) for line in lines),
+            'valor_bc_icmsst': sum(line[2].get("icms_st_base_calculo", 0) for line in lines),
+            'pis_valor_retencao': sum(line[2].get("pis_valor_retencao", 0) for line in lines),
+            'cofins_valor_retencao': sum(line[2].get("cofins_valor_retencao", 0) for line in lines),
+            'irrf_base_calculo': sum(line[2].get("irrf_base_calculo", 0) for line in lines),
+            'irrf_valor_retencao': sum(line[2].get("irrf_valor_retencao", 0) for line in lines),
+            'csll_base_calculo': sum(line[2].get("csll_base_calculo", 0) for line in lines),
+            'csll_valor_retencao': sum(line[2].get("csll_valor_retencao", 0) for line in lines),
+            'inss_base_calculo': sum(line[2].get("inss_base_calculo", 0) for line in lines),
+            'inss_valor_retencao': sum(line[2].get("inss_valor_retencao", 0) for line in lines),
+        }
+
     def action_create_eletronic_document(self):
         for move in self:
-            services = move.invoice_line_ids.filtered(lambda x: x.product_id.type == 'service')
+            invoice_lines = move.invoice_line_ids.filtered(
+                lambda x: True not in x.mapped("sale_line_ids.is_delivery")
+            )
+            services = invoice_lines.filtered(lambda x: x.product_id.type == 'service')
             if services:
                 self._create_service_eletronic_document(move, services)
 
-            products = move.invoice_line_ids.filtered(lambda x: x.product_id.type != 'service')
+            products = invoice_lines.filtered(lambda x: x.product_id.type != 'service')
             if products:
                 self._create_product_eletronic_document(move, products)
 
@@ -317,6 +320,11 @@ class AccountMove(models.Model):
         vals = move._prepare_eletronic_doc_vals(services)
         vals['model'] = 'nfse'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
+        vals['valor_frete'] = sum(
+            item[2].get("frete", 0) for item in vals['document_line_ids']
+        )
+        vals['valor_final'] += vals.get("valor_frete", 0)
+        vals.update(self.sum_line_taxes(vals))
         self.env['eletronic.document'].create(vals)
 
     def _create_product_eletronic_document(self, move, products):
@@ -327,6 +335,11 @@ class AccountMove(models.Model):
             vals['related_document_ids'] = self._create_related_doc(vals)
 
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
+        vals['valor_frete'] = sum(
+            item[2].get("frete", 0) for item in vals['document_line_ids']
+        )
+        vals['valor_final'] += vals.get("valor_frete", 0)
+        vals.update(self.sum_line_taxes(vals))
         self.env['eletronic.document'].create(vals)
 
     def _create_related_doc(self, vals):
@@ -402,7 +415,9 @@ class AccountMoveLine(models.Model):
             'quantidade': self.quantity,
             'preco_unitario': self.price_unit,
             'valor_bruto': round(self.quantity * self.price_unit, 2),
-            'desconto': round(self.quantity * self.price_unit, 2) - self.price_subtotal,
+            'desconto': round(
+                self.quantity * self.price_unit * self.discount / 100, 2
+            ),
             'valor_liquido': self.price_total,
             'origem': self.product_id.l10n_br_origin,
             #  'tributos_estimados': self.tributos_estimados,
@@ -425,12 +440,12 @@ class AccountMoveLine(models.Model):
             # 'icms_st_valor': self.icms_st_valor,
             # # - Simples Nacional -
             'icms_aliquota_credito': fiscal_pos.icms_aliquota_credito,
-            'icms_valor_credito': round(self.price_total *  fiscal_pos.icms_aliquota_credito / 100, 2),
+            'icms_valor_credito': round(self.price_total * fiscal_pos.icms_aliquota_credito / 100, 2),
             # - IPI -
             'ipi_cst': '99',
             'ipi_aliquota': ipi.tax_line_id.amount or 0,
             'ipi_base_calculo': self.price_total or 0,
-            'ipi_valor': round(self.price_total *  ipi.tax_line_id.amount / 100, 2),
+            'ipi_valor': round(self.price_total * ipi.tax_line_id.amount / 100, 2),
             # 'ipi_reducao_bc': self.ipi_reducao_bc,
             # - II -
             # 'ii_base_calculo': self.ii_base_calculo,
@@ -441,14 +456,14 @@ class AccountMoveLine(models.Model):
             'pis_cst': '49',
             'pis_aliquota': pis.tax_line_id.amount or 0,
             'pis_base_calculo': self.price_total or 0,
-            'pis_valor': round(self.price_total *  pis.tax_line_id.amount / 100, 2),
+            'pis_valor': round(self.price_total * pis.tax_line_id.amount / 100, 2),
             # 'pis_valor_retencao':
             # abs(self.pis_valor) if self.pis_valor < 0 else 0,
             # - COFINS -
             'cofins_cst': '49',
             'cofins_aliquota':  cofins.tax_line_id.amount or 0,
             'cofins_base_calculo': self.price_total or 0,
-            'cofins_valor': round(self.price_total *  cofins.tax_line_id.amount / 100, 2),
+            'cofins_valor': round(self.price_total * cofins.tax_line_id.amount / 100, 2),
             # 'cofins_valor_retencao':
             # abs(self.cofins_valor) if self.cofins_valor < 0 else 0,
             # - ISS -
@@ -462,11 +477,11 @@ class AccountMoveLine(models.Model):
             # - RETENÇÔES -
             'csll_aliquota': csll.tax_line_id.amount or 0,
             'csll_base_calculo': self.price_total or 0,
-            'csll_valor': round(self.price_total *  csll.tax_line_id.amount / 100, 2),
+            'csll_valor': round(self.price_total * csll.tax_line_id.amount / 100, 2),
             # abs(self.csll_valor) if self.csll_valor < 0 else 0,
             'irpj_aliquota':  irpj.tax_line_id.amount or 0,
             'irpj_base_calculo': self.price_total or 0,
-            'irpj_valor': round(self.price_total *  irpj.tax_line_id.amount / 100, 2),
+            'irpj_valor': round(self.price_total * irpj.tax_line_id.amount / 100, 2),
             # 'irrf_base_calculo': self.irrf_base_calculo,
             # 'irrf_aliquota': abs(self.irrf_aliquota),
             # 'irrf_valor_retencao':
