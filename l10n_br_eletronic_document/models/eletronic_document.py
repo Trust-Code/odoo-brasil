@@ -1068,11 +1068,15 @@ class EletronicDocumentLine(models.Model):
     def _compute_tributos_estimados(self):
         for item in self:
             tributos_estimados = 0.0
-            ncm = item.product_id.service_type_id if item.product_id.type == 'service' else item.product_id.l10n_br_ncm_id
+            ncm = item.product_id.service_type_id if item.product_id.type == 'service' \
+                else item.product_id.l10n_br_ncm_id
             if ncm:
-                ncm_mult = (ncm.federal_nacional + ncm.federal_importado
-                            + ncm.estadual_imposto + ncm.municipal_imposto) / 100
-                tributos_estimados += item.valor_bruto * ncm_mult
+                # origem nacional
+                if item.product_id.l10n_br_origin in ['0', '3', '4', '5', '8']:
+                    ncm_mult = (ncm.federal_nacional + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                else:
+                    ncm_mult = (ncm.federal_importado + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                tributos_estimados += item.quantidade * item.preco_unitario * ncm_mult
             item.tributos_estimados = tributos_estimados
 
     tributos_estimados = fields.Monetary(
