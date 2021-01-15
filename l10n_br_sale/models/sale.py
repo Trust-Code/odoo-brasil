@@ -22,4 +22,4 @@ class SaleOrderLine(models.Model):
             fiscal_position_id = line.order_id.fiscal_position_id
 
             if fiscal_position_id:
-                line.tax_id = fiscal_position_id.apply_tax_ids
+                line.tax_id += fiscal_position_id.apply_tax_ids
