@@ -6,13 +6,12 @@
     "author": "Code 137",
     'license': 'Other OSI approved licence',
     "contributors": [
-        "Johny Chen Jy <johnychenjy@gmail.com>"
+        "Johny Chen Jy <johnychenjy@gmail.com>",
+        "Felipe Paloschi <paloschi.eca@gmail.com>"
     ],
     "depends": [
-        "purchase",
+        "purchase", "l10n_br_account"
     ],
-    'data':[
-
-    ],
+    'data': ["views/purchase_order.xml"],
     "auto_install": True,
 }
