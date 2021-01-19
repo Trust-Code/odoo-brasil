@@ -145,7 +145,9 @@ class AccountMove(models.Model):
                 }
             )
         self.compute_lines_partition(line_type)
-        self._recompute_dynamic_lines(recompute_all_taxes=True)
+        self.with_context(
+            check_move_validity=False
+        )._move_autocomplete_invoice_lines_values()
 
     @api.onchange(
         "invoice_line_ids",
