@@ -14,7 +14,18 @@
                 <field name="date_maturity"/>
                 <field name="move_id" readonly="1"/>
                 <field name="reconciled" string="Pago" />
-                <button name="action_register_payment_move_line" type="object" string="PAGAR" groups="account.group_account_invoice" attrs="{'invisible': [('reconciled', '!=', False)]}" class="btn btn-success btn-xs"/>
+                <button name="action_register_payment_move_line"
+                        type="object"
+                        string="RECEBER"
+                        groups="account.group_account_invoice"
+                        attrs="{'invisible': ['|', ('reconciled', '!=', False), ('l10n_br_payment_value', '&lt;', 0)]}"
+                        class="btn btn-success"/>
+                <button name="action_register_payment_move_line"
+                        type="object"
+                        string="PAGAR"
+                        groups="account.group_account_invoice"
+                        attrs="{'invisible': ['|', ('reconciled', '!=', False), ('l10n_br_payment_value', '&gt;', 0)]}"
+                        class="btn btn-info"/>
             </tree>
         </field>
     </record>
