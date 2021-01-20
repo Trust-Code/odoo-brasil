@@ -15,11 +15,13 @@
     ],
     'data': [
         'data/cron.xml',
+        'data/product.xml',
         'security/ir.model.access.csv',
         'views/fiscal_position.xml',
         'views/account_tax.xml',
         'views/product.xml',
         'views/base_account.xml',
+        'views/account_move.xml',
         'views/account_move_line.xml',
         'views/res_company.xml',
         'wizard/account_move_reversal_view.xml',
@@ -27,4 +29,3 @@
     ],
     'post_init_hook': 'post_init',
 }
-
