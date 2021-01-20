@@ -821,6 +821,8 @@ class EletronicDocument(models.Model):
 
         response = {}
         cod_municipio = doc_values[0]['emissor']['codigo_municipio']
+
+        self._verify_nfse_key_fields(cod_municipio, company, doc_values)
         if  cod_municipio == '4205407':
             from .nfse_florianopolis import send_api
             response = send_api(certificate, password, doc_values)
@@ -902,6 +904,27 @@ class EletronicDocument(models.Model):
                     'mensagem_retorno': response['message'],
                 })
 
+    def _verify_nfse_key_fields(self, cod_municipio, company_id, doc_values):
+        error_string = ''
+        if cod_municipio == '4205407' and not all([
+                company_id.l10n_br_aedf,
+                company_id.l10n_br_client_id,
+                company_id.l10n_br_client_secret,
+                company_id.l10n_br_user_password
+            ]):
+            error_string += 'Campos de validação para a API de Florianópolis não estão preenchidos.\n'
+        elif cod_municipio in ['3550308', '3106200']:
+            for line in self.document_line_ids:
+                if not line.item_lista_servico:
+                    error_string += 'Produto %s não possui Código de Serviço.\n' % line.product_id.name
+                if not line.codigo_servico_municipio:
+                    error_string += 'Produto %s não possui Código NFSe.\n' % line.product_id.name
+        else:
+            if not company_id.l10n_br_nfse_token_acess:
+                error_string += 'Token da Focus não está preenchida!\nPor favor, preencha-a no cadastro da empresa.\n'
+        if error_string:
+            raise UserError('Erros detectados pelo sistema. Por favor, corrigí-los e tentar novamente: \n%s'
+                            % error_string)
 
     def cron_check_status_nfse(self):
         documents = self.search([('state', '=', 'processing')], limit=100)
@@ -927,7 +950,7 @@ class EletronicDocument(models.Model):
                 company.state_id.l10n_br_ibge_code,
                 company.city_id.l10n_br_ibge_code),
         }
-
+        # self._verify_nfse_key_fields(doc_values['codigo_municipio'], company)
         if doc_values['codigo_municipio'] == '4205407':
             from .nfse_florianopolis import cancel_api
             response = cancel_api(certificate, password, doc_values)
