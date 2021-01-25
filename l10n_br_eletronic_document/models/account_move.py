@@ -415,6 +415,7 @@ class AccountMoveLine(models.Model):
             'origem': self.product_id.l10n_br_origin,
             #  'tributos_estimados': self.tributos_estimados,
             'ncm': self.product_id.l10n_br_ncm_id.code,
+            'cest': self.product_id.l10n_br_cest,
             'pedido_compra': self.ref,
             # 'item_pedido_compra': self.item_pedido_compra,
             # - ICMS -
