@@ -979,7 +979,9 @@ class InvoiceEletronic(models.Model):
             'price_subtotal': item.valor_bruto,
             'valor_frete': item.frete,
             'valor_seguro': item.seguro,
-            'outras_despesas': item.outras_despesas,
+            'outras_despesas': item.outras_despesas
+            + item.icms_st_valor
+            + item.ipi_valor,
             'fiscal_classification_id': ncm.id,
             'account_id': account_id.id,
             'tributos_estimados': item.tributos_estimados,
