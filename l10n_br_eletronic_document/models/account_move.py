@@ -5,12 +5,11 @@ from random import SystemRandom
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-
 TYPE2EDOC = {
-    'out_invoice': 'saida',        # Customer Invoice
-    'in_invoice': 'entrada',          # Vendor Bill
-    'out_refund': 'entrada',        # Customer Refund
-    'in_refund': 'saida',          # Vendor Refund
+    'out_invoice': 'saida',  # Customer Invoice
+    'in_invoice': 'entrada',  # Vendor Bill
+    'out_refund': 'entrada',  # Customer Refund
+    'in_refund': 'saida',  # Vendor Refund
 }
 
 
@@ -96,7 +95,7 @@ class AccountMove(models.Model):
                 if eletr.product_id.type in ('consu', 'product'):
                     has_products = True
                 prod = "Produto: %s - %s" % (eletr.product_id.default_code,
-                                            eletr.product_id.name)
+                                             eletr.product_id.name)
                 if not eletr.product_id.default_code:
                     errors.append(
                         'Prod: %s - Código do produto' % (
@@ -105,13 +104,37 @@ class AccountMove(models.Model):
                 if not move.fiscal_position_id:
                     errors.append('Configure a posição fiscal')
                 if move.company_id.l10n_br_accountant_id and not \
-                    move.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf:
+                        move.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf:
                     errors.append('Cadastro da Empresa / CNPJ do escritório contabilidade')
 
             if has_products and not move.company_id.l10n_br_nfe_sequence:
                 errors.append('Configure a sequência para numeração de NFe')
             if has_services and not move.company_id.l10n_br_nfe_service_sequence:
                 errors.append('Configure a sequência para numeração de NFe de serviço')
+
+            # Verificar os campos necessários para envio de nfse (serviço)
+            if has_services:
+                cod_municipio = '%s%s' % (
+                    move.company_id.state_id.l10n_br_ibge_code,
+                    move.company_id.city_id.l10n_br_ibge_code,
+                )
+                if cod_municipio == '4205407' and not all([
+                    move.company_id.l10n_br_aedf,
+                    move.company_id.l10n_br_client_id,
+                    move.company_id.l10n_br_client_secret,
+                    move.company_id.l10n_br_user_password
+                ]):
+                    errors.append('Campos de validação para a API de Florianópolis não estão preenchidos')
+                elif cod_municipio in ['3550308', '3106200']:
+                    for line in move.invoice_line_ids:
+                        if line.product_id.type == 'service':
+                            if not line.product_id.service_type_id:
+                                errors.append('Produto %s não possui Tipo de Serviço.' % line.product_id.name)
+                            if not line.product_id.service_code:
+                                errors.append('Produto %s não possui Código do Município.' % line.product_id.name)
+                else:
+                    if not move.company_id.l10n_br_nfse_token_acess:
+                        errors.append('Token da Focus não está preenchida!\nPor favor, preencha-a no cadastro da empresa.')
 
             partner = move.partner_id.commercial_partner_id
             company = move.company_id
@@ -162,17 +185,15 @@ class AccountMove(models.Model):
                     errors.append('Cliente / Endereço - Nome do país')
                 if not partner.country_id.l10n_br_ibge_code:
                     errors.append('Cliente / Endereço - Cód. do BC do país')
-        
+
         if len(errors) > 0:
             msg = "\n".join(
                 ["Por favor corrija os erros antes de prosseguir"] + errors)
             raise UserError(msg)
 
-
     def _prepare_eletronic_line_vals(self, invoice_lines):
         lines = []
         for line in invoice_lines:
-
             vals = line.get_eletronic_line_vals()
 
             lines.append((0, 0, vals))
@@ -425,12 +446,12 @@ class AccountMoveLine(models.Model):
             # 'icms_st_valor': self.icms_st_valor,
             # # - Simples Nacional -
             'icms_aliquota_credito': fiscal_pos.icms_aliquota_credito,
-            'icms_valor_credito': round(self.price_total *  fiscal_pos.icms_aliquota_credito / 100, 2),
+            'icms_valor_credito': round(self.price_total * fiscal_pos.icms_aliquota_credito / 100, 2),
             # - IPI -
             'ipi_cst': '99',
             'ipi_aliquota': ipi.tax_line_id.amount or 0,
             'ipi_base_calculo': self.price_total or 0,
-            'ipi_valor': round(self.price_total *  ipi.tax_line_id.amount / 100, 2),
+            'ipi_valor': round(self.price_total * ipi.tax_line_id.amount / 100, 2),
             # 'ipi_reducao_bc': self.ipi_reducao_bc,
             # - II -
             # 'ii_base_calculo': self.ii_base_calculo,
@@ -441,14 +462,14 @@ class AccountMoveLine(models.Model):
             'pis_cst': '49',
             'pis_aliquota': pis.tax_line_id.amount or 0,
             'pis_base_calculo': self.price_total or 0,
-            'pis_valor': round(self.price_total *  pis.tax_line_id.amount / 100, 2),
+            'pis_valor': round(self.price_total * pis.tax_line_id.amount / 100, 2),
             # 'pis_valor_retencao':
             # abs(self.pis_valor) if self.pis_valor < 0 else 0,
             # - COFINS -
             'cofins_cst': '49',
-            'cofins_aliquota':  cofins.tax_line_id.amount or 0,
+            'cofins_aliquota': cofins.tax_line_id.amount or 0,
             'cofins_base_calculo': self.price_total or 0,
-            'cofins_valor': round(self.price_total *  cofins.tax_line_id.amount / 100, 2),
+            'cofins_valor': round(self.price_total * cofins.tax_line_id.amount / 100, 2),
             # 'cofins_valor_retencao':
             # abs(self.cofins_valor) if self.cofins_valor < 0 else 0,
             # - ISS -
@@ -462,11 +483,11 @@ class AccountMoveLine(models.Model):
             # - RETENÇÔES -
             'csll_aliquota': csll.tax_line_id.amount or 0,
             'csll_base_calculo': self.price_total or 0,
-            'csll_valor': round(self.price_total *  csll.tax_line_id.amount / 100, 2),
+            'csll_valor': round(self.price_total * csll.tax_line_id.amount / 100, 2),
             # abs(self.csll_valor) if self.csll_valor < 0 else 0,
-            'irpj_aliquota':  irpj.tax_line_id.amount or 0,
+            'irpj_aliquota': irpj.tax_line_id.amount or 0,
             'irpj_base_calculo': self.price_total or 0,
-            'irpj_valor': round(self.price_total *  irpj.tax_line_id.amount / 100, 2),
+            'irpj_valor': round(self.price_total * irpj.tax_line_id.amount / 100, 2),
             # 'irrf_base_calculo': self.irrf_base_calculo,
             # 'irrf_aliquota': abs(self.irrf_aliquota),
             # 'irrf_valor_retencao':
