@@ -48,7 +48,7 @@ class TestDeliveryCorreios(TransactionCase):
         }
         self.partner = self.env['res.partner'].create(partner)
         self.company = self.env['res.company'].create({
-            'l10n_br_legal_name': 'Nome Legal',
+            'legal_name': 'Nome Legal',
             'name': 'Company 1',
             'cnpj_cpf': '1234567890123234',
         })
