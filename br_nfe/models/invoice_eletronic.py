@@ -320,6 +320,30 @@ class InvoiceEletronic(models.Model):
             'xPed': item.pedido_compra or invoice.pedido_compra or '',
             'nItemPed': item.item_pedido_compra or '',
         }
+        if item.informacao_adicional:
+            infAdProd = item.informacao_adicional
+        else:
+            infAdProd = ''
+        if item.product_id.tracking == 'lot':
+            pick = self.env['stock.picking'].search([
+                ('origin','=', self.invoice_id.origin),
+                ('state','=', 'done')])
+            for line in pick.move_line_ids:
+                lotes = []
+                if line.product_id.id == item.product_id.id:
+                    for lot in line.lot_id:
+                        lote = {
+                            'nLote': lot.name, 
+                            'qLote': line.qty_done,
+                            'dVal': lot.life_date.strftime('%Y-%m-%d'),
+                            'dFab': lot.use_date.strftime('%Y-%m-%d'),
+                        }
+                        lotes.append(lote)
+                        fab = fields.Datetime.from_string(lot.use_date)
+                        vcto = fields.Datetime.from_string(lot.life_date)
+                        infAdProd += ' Lote: %s, Fab.: %s, Vencto.: %s' \
+                            %(lot.name, fab, vcto)
+                prod["rastro"] = lotes
         di_vals = []
         for di in item.import_declaration_ids:
             adicoes = []
@@ -438,7 +462,7 @@ class InvoiceEletronic(models.Model):
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
                 'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
         return {'prod': prod, 'imposto': imposto,
-                'infAdProd': item.informacao_adicional}
+                'infAdProd': infAdProd}
 
     @api.multi
     def _prepare_eletronic_invoice_values(self):
