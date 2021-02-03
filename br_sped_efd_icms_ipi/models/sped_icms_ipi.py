@@ -48,20 +48,20 @@ class SpedEfdIcmsIpi(models.Model):
     _description = "Cria o arquivo para o Sped ICMS / IPI"
     _order = "date_start desc"
 
-    date_start= fields.Date(string='Inicio de')
+    date_start = fields.Date(string='Inicio de')
     date_end = fields.Date(string='até')
     data_vencimento_e316 = fields.Date(string='Vencimento E-316')
-    
+
     cod_obrigacao = fields.Selection([
         ('000', 'ICMS a recolher'),
         ('003', 'Antecipação do diferencial de alíquotas do ICMS'),
         ('004', 'Antecipação do ICMS da importação'),
         ('005', 'Antecipação tributária'),
         ('006', 'ICMS resultante da alíquota adicional dos itens incluídos no Fundo de Combate à Pobreza'),
-        ('090', 'Outras obrigações do ICMS'),       
-        ], string= 'Código Obrigação', dafault='000')
-        
-    cod_receita = fields.Selection([     
+        ('090', 'Outras obrigações do ICMS'),
+    ], string='Código Obrigação', dafault='000')
+
+    cod_receita = fields.Selection([
         ('046-2', 'Regime Periódico de Apuração'),
         ('060-7', 'Regime de Estimativa'),
         ('063-2', 'Outros recolhimentos especiais'),
@@ -98,31 +98,35 @@ class SpedEfdIcmsIpi(models.Model):
         ('154-5', 'Diferença de estimativa'),
         ('214-8', 'Mercadoria importada (desembaraçada em outra UF)'),
         ('246-0', 'Substituição tributária por apuração (contribuinte de outra UF )'),
-        ('247-1', 'Substituição tributária por operação (outra UF)'),		
-        ], string='Código Receita') 
-        
+        ('247-1', 'Substituição tributária por operação (outra UF)'),
+    ], string='Código Receita')
+
     tipo_arquivo = fields.Selection([
         ('0', 'Remessa do arquivo original'),
         ('1', 'Remessa do arquivo substituto'),
-        ], string='Finalidade do Arquivo', default='0')
+    ], string='Finalidade do Arquivo', default='0')
     ind_apur = fields.Selection([
         ('0', 'Mensal'),
         ('1', 'Decendial'),
-        ], string='Período apuração IPI', default='0')
+    ], string='Período apuração IPI', default='0')
     ind_ativ = fields.Selection([
         ('0', 'Industrial ou equiparado a industrial'),
         ('1', 'Outros'),
-        ], string='Indicador tipo atividade', default='0')
+    ], string='Indicador tipo atividade', default='0')
     log_faturamento = fields.Html('Log de Faturamento')
     company_id = fields.Many2one('res.company', string='Empresa', required=True,
-        default=lambda self: self.env['res.company']._company_default_get('account.account'))
+                                 default=lambda self: self.env['res.company']._company_default_get('account.account'))
     sped_file = fields.Binary(string=u"Sped")
     sped_file_name = fields.Char(
         string=u"Arquivo Sped")
-    vl_sld_cred_ant_difal = fields.Float('Saldo Credor per. ant. Difal', default=0.0)
-    vl_sld_cred_transp_difal = fields.Float('Saldo Credor per. seguinte Difal', default=0.0)
-    vl_sld_cred_ant_fcp = fields.Float('Saldo Credor per. ant. FCP', default=0.0)
-    vl_sld_cred_transp_fcp = fields.Float('Saldo Credor per. seguinte FCP', default=0.0)
+    vl_sld_cred_ant_difal = fields.Float(
+        'Saldo Credor per. ant. Difal', default=0.0)
+    vl_sld_cred_transp_difal = fields.Float(
+        'Saldo Credor per. seguinte Difal', default=0.0)
+    vl_sld_cred_ant_fcp = fields.Float(
+        'Saldo Credor per. ant. FCP', default=0.0)
+    vl_sld_cred_transp_fcp = fields.Float(
+        'Saldo Credor per. seguinte FCP', default=0.0)
     clas_estab_ind = fields.Selection([
         ('00', 'Industrial - Transformação'),
         ('01', 'Industrial - Beneficiamento'),
@@ -133,13 +137,14 @@ class SpedEfdIcmsIpi(models.Model):
         ('06', 'Equiparado a industrial - Importação Direta'),
         ('07', 'Equiparado a industrial - Por lei específica'),
         ('08', 'Equiparado a industrial - Não enquadrado nos códigos 05, 06 ou 07'),
-        ('09', 'Outros'),        
-        ], string='Classif. estabelecimento')
+        ('09', 'Outros'),
+    ], string='Classif. estabelecimento')
 
     @api.multi
     def create_file(self):
         if self.date_start > self.date_end:
-            raise UserError('Erro, a data de início é maior que a data de encerramento!')
+            raise UserError(
+                'Erro, a data de início é maior que a data de encerramento!')
         self.log_faturamento = 'Gerando arquivo .. <br />'
         self.registro0000()
         if not self.log_faturamento:
@@ -165,7 +170,7 @@ class SpedEfdIcmsIpi(models.Model):
 
     def limpa_formatacao(self, data):
         if data:
-            replace = ['-', ' ', '(', ')', '/', '.', ':','º']
+            replace = ['-', ' ', '(', ')', '/', '.', ':', 'º']
             for i in replace:
                 data = data.replace(i, '')
         return data
@@ -181,24 +186,27 @@ class SpedEfdIcmsIpi(models.Model):
 
     def registro0000(self):
         arq = ArquivoDigital()
-        cod_mun = '%s%s' %(self.company_id.state_id.ibge_code, self.company_id.city_id.ibge_code)        
+        cod_mun = '%s%s' % (self.company_id.state_id.ibge_code,
+                            self.company_id.city_id.ibge_code)
         arq._registro_abertura.COD_VER = self.versao()
         arq._registro_abertura.COD_FIN = self.tipo_arquivo
         arq._registro_abertura.DT_INI = self.date_start
         arq._registro_abertura.DT_FIN = self.date_end
         arq._registro_abertura.NOME = self.company_id.legal_name
-        arq._registro_abertura.CNPJ = self.limpa_formatacao(self.company_id.cnpj_cpf)
+        arq._registro_abertura.CNPJ = self.limpa_formatacao(
+            self.company_id.cnpj_cpf)
         arq._registro_abertura.UF = self.company_id.state_id.code
-        arq._registro_abertura.IE = self.limpa_formatacao(self.company_id.inscr_est)
+        arq._registro_abertura.IE = self.limpa_formatacao(
+            self.company_id.inscr_est)
         arq._registro_abertura.COD_MUN = self.formata_cod_municipio(cod_mun)
         arq._registro_abertura.IM = ''
         arq._registro_abertura.SUFRAMA = ''
         arq._registro_abertura.IND_PERFIL = 'A'
         arq._registro_abertura.IND_ATIV = self.ind_ativ
         #reg0001 = Registro0001()
-        #if inv:
+        # if inv:
         #    reg0001.IND_MOV = '0'
-        #else:
+        # else:
         #    reg0001.IND_MOV = '1'
         if self.ind_ativ == '0':
             reg0002 = Registro0002()
@@ -213,7 +221,7 @@ class SpedEfdIcmsIpi(models.Model):
         reg0005.BAIRRO = self.company_id.district
         reg0005.FONE = self.limpa_formatacao(self.company_id.phone)
         reg0005.EMAIL = self.company_id.email
-        arq._blocos['0'].add(reg0005)            
+        arq._blocos['0'].add(reg0005)
 
         if self.company_id.accountant_id:
             contabilista = Registro0100()
@@ -221,12 +229,12 @@ class SpedEfdIcmsIpi(models.Model):
             if len(self.company_id.accountant_id.cnpj_cpf) > 14:
                 if self.company_id.accountant_id.child_ids:
                     ctd = self.company_id.accountant_id.child_ids[0]
-                else:  
+                else:
                     msg_err = 'Cadastre o contador Pessoa Fisica dentro do Contato da Contabilidade'
                     raise UserError(msg_err)
             contador = ctd.name
             cpf = ctd.cnpj_cpf
-            cod_mun = '%s%s' %(ctd.state_id.ibge_code, ctd.city_id.ibge_code)
+            cod_mun = '%s%s' % (ctd.state_id.ibge_code, ctd.city_id.ibge_code)
             contabilista.NOME = contador
             contabilista.CPF = self.limpa_formatacao(cpf)
             contabilista.CRC = self.limpa_formatacao(ctd.rg_fisica)
@@ -240,18 +248,18 @@ class SpedEfdIcmsIpi(models.Model):
             contabilista.COD_MUN = cod_mun
             arq._blocos['0'].add(contabilista)
         dt = self.date_start
-        dta_s = '%s-%s-%s' %(str(dt.year),str(dt.month).zfill(2),
-            str(dt.day).zfill(2))
+        dta_s = '%s-%s-%s' % (str(dt.year), str(dt.month).zfill(2),
+                              str(dt.day).zfill(2))
         dt = self.date_end
-        dta_e = '%s-%s-%s' %(str(dt.year),str(dt.month).zfill(2),
-            str(dt.day).zfill(2))
+        dta_e = '%s-%s-%s' % (str(dt.year), str(dt.month).zfill(2),
+                              str(dt.day).zfill(2))
         periodo = 'date_trunc(\'day\', ie.data_fatura) \
-            between \'%s\' and \'%s\'' %(dta_s, dta_e)
+            between \'%s\' and \'%s\'' % (dta_s, dta_e)
         com_movimento = '1'
         for item_lista in self.query_registro0150(periodo):
             com_movimento = '0'
             arq.read_registro(self.junta_pipe(item_lista))
-            
+
         for item_lista in self.query_registro0190(periodo):
             arq.read_registro(self.junta_pipe(item_lista))
 
@@ -263,17 +271,16 @@ class SpedEfdIcmsIpi(models.Model):
             # 0220 - Conversão Unidade Medida
             for item_unit in self.query_registro0220(item_lista.COD_ITEM, periodo):
                 arq.read_registro(self.junta_pipe(item_unit))
-            
-            
+
         for item_lista in self.query_registro0400(periodo):
             arq.read_registro(self.junta_pipe(item_lista))
-        
+
         regB001 = RegistroB001()
-        #arq._blocos['B'].add(regB001)        
-        
+        # arq._blocos['B'].add(regB001)
+
         regC001 = RegistroC001()
         regC001.IND_MOV = com_movimento
-        #arq._blocos['C'].add(regC001)
+        # arq._blocos['C'].add(regC001)
         query = """
                     select distinct
                         ie.id, ie.state, ie.emissao_doc
@@ -301,12 +308,11 @@ class SpedEfdIcmsIpi(models.Model):
             if id[2] == '2':
                 for item_lista in self.query_registroC170(nf):
                     arq.read_registro(self.junta_pipe(item_lista))
-                        
+
             for item_lista in self.query_registroC190(nf):
                 arq.read_registro(self.junta_pipe(item_lista))
 
-                
-        # TODO BLOCO D - prestações ou contratações de serviços 
+        # TODO BLOCO D - prestações ou contratações de serviços
         # de comunicação, transporte interestadual e intermunicipa
         # TODO D100 - Periodo Apuracao
 
@@ -329,7 +335,7 @@ class SpedEfdIcmsIpi(models.Model):
             registro_D001.IND_MOV = '0'
         else:
             registro_D001.IND_MOV = '1'
-        #arq._blocos['D'].add(registro_D001)
+        # arq._blocos['D'].add(registro_D001)
 
         for cte_id in query_resposta:
             for item_lista in self.query_registroD100(cte_id[0]):
@@ -343,24 +349,24 @@ class SpedEfdIcmsIpi(models.Model):
         arq._blocos['E'].add(registro_E100)
 
         for item_lista in self.query_registroE110(periodo):
-            arq.read_registro(self.junta_pipe(item_lista))  
-        
+            arq.read_registro(self.junta_pipe(item_lista))
+
         for item_lista in self.query_registroE200(periodo):
             arq.read_registro(self.junta_pipe(item_lista))
             for item in self.query_registroE210(item_lista.UF, periodo):
                 arq.read_registro(self.junta_pipe(item))
 
         for item_lista in self.query_registroE300(periodo):
-            arq.read_registro(self.junta_pipe(item_lista))      
+            arq.read_registro(self.junta_pipe(item_lista))
             for uf_lista in self.query_registroE310(
-                self.company_id.state_id.code,
-                item_lista.UF,
-                perido):
+                    self.company_id.state_id.code,
+                    item_lista.UF,
+                    perido):
                 arq.read_registro(self.junta_pipe(uf_lista))
             for uf_lista in self.query_registroE316(
-                self.company_id.state_id.code,
-                item_lista.UF,
-                periodo):
+                    self.company_id.state_id.code,
+                    item_lista.UF,
+                    periodo):
                 arq.read_registro(self.junta_pipe(uf_lista))
 
         if self.ind_ativ == '0':
@@ -379,20 +385,20 @@ class SpedEfdIcmsIpi(models.Model):
         registro_K100.DT_INI = self.date_start
         registro_K100.DT_FIN = self.date_end
         arq._blocos['K'].add(registro_K100)
-            
+
         # K200
         for item_lista in self.query_registroK200():
             arq.read_registro(self.junta_pipe(item_lista))
-        
+
         registro_1001 = Registro1001()
         registro_1001.IND_MOV = '0'
-        #arq._blocos['1'].add(registro_1001)
+        # arq._blocos['1'].add(registro_1001)
 
-        # TODO Colocar no cadastro da Empresa 
+        # TODO Colocar no cadastro da Empresa
         registro_1010 = Registro1010()
         registro_1010.IND_EXP = 'N'
         registro_1010.IND_CCRF = 'N'
-        registro_1010.IND_COMB  = 'N'
+        registro_1010.IND_COMB = 'N'
         registro_1010.IND_USINA = 'N'
         registro_1010.IND_VA = 'N'
         registro_1010.IND_EE = 'N'
@@ -405,12 +411,13 @@ class SpedEfdIcmsIpi(models.Model):
         registro_1010.IND_REST_RESSARC_COMPL_ICMS = 'N'
         arq._blocos['1'].add(registro_1010)
         arq.prepare()
-        self.sped_file_name =  'Sped-%s_%s.txt' % (
+        self.sped_file_name = 'Sped-%s_%s.txt' % (
             str(dt.month).zfill(2), str(dt.year))
         #arqxx = open('/opt/odoo/novo_arquivo.txt', 'w')
-        #arqxx.write(arq.getstring())
-        #arqxx.close()
-        self.sped_file = base64.encodestring(bytes(arq.getstring(), 'iso-8859-1'))        
+        # arqxx.write(arq.getstring())
+        # arqxx.close()
+        self.sped_file = base64.encodestring(
+            bytes(arq.getstring(), 'iso-8859-1'))
 
     def query_registro0150(self, periodo):
         query = """
@@ -434,25 +441,30 @@ class SpedEfdIcmsIpi(models.Model):
             cod_pais = resposta_participante.country_id.bc_code
             registro_0150.COD_PAIS = cod_pais
             cpnj_cpf = self.limpa_formatacao(resposta_participante.cnpj_cpf)
-            cod_mun = '%s%s' %(resposta_participante.state_id.ibge_code, resposta_participante.city_id.ibge_code)
+            cod_mun = '%s%s' % (resposta_participante.state_id.ibge_code,
+                                resposta_participante.city_id.ibge_code)
             if cod_pais == '01058':
                 registro_0150.COD_MUN = self.formata_cod_municipio(cod_mun)
                 if len(cpnj_cpf) == 11:
                     registro_0150.CPF = cpnj_cpf
                 else:
                     registro_0150.CNPJ = cpnj_cpf
-                    registro_0150.IE = self.limpa_formatacao(resposta_participante.inscr_est)
+                    registro_0150.IE = self.limpa_formatacao(
+                        resposta_participante.inscr_est)
             else:
                 registro_0150.COD_MUN = '9999999'
-            registro_0150.SUFRAMA = self.limpa_formatacao(resposta_participante.suframa)
+            registro_0150.SUFRAMA = self.limpa_formatacao(
+                resposta_participante.suframa)
             registro_0150.END = resposta_participante.street
             registro_0150.NUM = resposta_participante.number
             registro_0150.COMPL = ''
             if resposta_participante.street2:
-                registro_0150.COMPL = str(resposta_participante.street2.split())
+                registro_0150.COMPL = str(
+                    resposta_participante.street2.split())
             registro_0150.BAIRRO = ''
             if resposta_participante.district:
-                registro_0150.BAIRRO = str(resposta_participante.district.split())
+                registro_0150.BAIRRO = str(
+                    resposta_participante.district.split())
             lista.append(registro_0150)
         return lista
 
@@ -494,26 +506,27 @@ class SpedEfdIcmsIpi(models.Model):
                 unidade = id[0]
             unidade = unidade[:6]
             if un == unidade:
-                continue 
+                continue
             lista_un.append(unidade)
             registro_0190.UNID = unidade
             desc = id[1]
             if not desc:
-                msg_err = 'Unidade de medida sem descricao - Un %s.' %(unidade)
+                msg_err = 'Unidade de medida sem descricao - Un %s.' % (
+                    unidade)
                 raise UserError(msg_err)
             registro_0190.DESCR = desc.strip()
             lista.append(registro_0190)
             un = unidade
         # adicionar Lista dos itens q tem estoque e nao estao aqui
-        data_estoque = '%s 23:59:00' %(datetime.strftime(
-            self.date_end, '%Y-%m-%d'))   
+        data_estoque = '%s 23:59:00' % (datetime.strftime(
+            self.date_end, '%Y-%m-%d'))
         context = dict(self.env.context, to_date=data_estoque)
         product = self.env['product.product'].with_context(context)
         resposta_inv = product.search([])
         produtos = []
         for inv in resposta_inv:
             if inv.qty_available > 0.0 and \
-                inv.l10n_br_sped_type in ('00','01','02','03','04','05','06','10'):
+                    inv.l10n_br_sped_type in ('00', '01', '02', '03', '04', '05', '06', '10'):
                 produtos.append(inv.id)
         un = ''
         lista_unk = []
@@ -524,11 +537,11 @@ class SpedEfdIcmsIpi(models.Model):
             if not resposta_produto:
                 continue
             if un == resposta_produto.uom_id.name:
-                continue 
-            if resposta_produto.uom_id.name in lista_unk:        
+                continue
+            if resposta_produto.uom_id.name in lista_unk:
                 continue
             lista_unk.append(resposta_produto.uom_id.name)
-            if resposta_produto.uom_id.name.upper() not in lista_un:        
+            if resposta_produto.uom_id.name.upper() not in lista_un:
                 registro_0190 = registros.Registro0190()
                 registro_0190.UNID = resposta_produto.uom_id.name
                 registro_0190.DESCR = resposta_produto.uom_id.l10n_br_description
@@ -574,7 +587,8 @@ class SpedEfdIcmsIpi(models.Model):
             if resposta_produto.barcode != resposta_produto.default_code:
                 registro_0200.COD_BARRA = resposta_produto.barcode
             if resposta_produto.uom_id.name.find('-') != -1:
-                unidade = resposta_produto.uom_id.name[:resposta_produto.uom_id.name.find('-')]
+                unidade = resposta_produto.uom_id.name[:resposta_produto.uom_id.name.find(
+                    '-')]
             else:
                 unidade = resposta_produto.uom_id.name
             unidade = unidade.strip()
@@ -582,10 +596,11 @@ class SpedEfdIcmsIpi(models.Model):
             unidade = unidade[:6]
             registro_0200.UNID_INV = unidade[:6]
             registro_0200.TIPO_ITEM = resposta_produto.l10n_br_sped_type
-            registro_0200.COD_NCM = self.limpa_formatacao(resposta_produto.fiscal_classification_id.code)            
+            registro_0200.COD_NCM = self.limpa_formatacao(
+                resposta_produto.fiscal_classification_id.code)
             lista.append(registro_0200)
-        # adicionar Lista dos itens q tem estoque e nao estao aqui   
-        data_estoque = '%s 23:59:00' %(datetime.strftime(
+        # adicionar Lista dos itens q tem estoque e nao estao aqui
+        data_estoque = '%s 23:59:00' % (datetime.strftime(
             self.date_end, '%Y-%m-%d'))
         context = dict(self.env.context, to_date=data_estoque)
         product = self.env['product.product'].with_context(context)
@@ -593,26 +608,29 @@ class SpedEfdIcmsIpi(models.Model):
         produtos = []
         for inv in resposta_inv:
             if inv.qty_available > 0.0 and \
-                inv.l10n_br_sped_type in ('00','01','02','03','04','05','06','10'): 
+                    inv.l10n_br_sped_type in ('00', '01', '02', '03', '04', '05', '06', '10'):
                 produtos.append(inv.id)
         for prd in produtos:
-            if prd not in lista_item:        
+            if prd not in lista_item:
                 resposta_produto = self.env['product.product'].browse(prd)
                 if not resposta_produto:
                     continue
                 registro_0200 = registros.Registro0200()
                 cprod = resposta_produto.default_code
                 registro_0200.COD_ITEM = cprod[:60]
-                registro_0200.DESCR_ITEM = unidecode(resposta_produto.name.strip())
+                registro_0200.DESCR_ITEM = unidecode(
+                    resposta_produto.name.strip())
                 if resposta_produto.barcode != resposta_produto.default_code:
                     registro_0200.COD_BARRA = resposta_produto.barcode
                 if resposta_produto.uom_id.name.find('-') != -1:
-                    unidade = resposta_produto.uom_id.name[:resposta_produto.uom_id.name.find('-')]
+                    unidade = resposta_produto.uom_id.name[:resposta_produto.uom_id.name.find(
+                        '-')]
                 else:
                     unidade = resposta_produto.uom_id.name
                 registro_0200.UNID_INV = unidade[:6].upper()
                 registro_0200.TIPO_ITEM = resposta_produto.l10n_br_sped_type
-                registro_0200.COD_NCM = self.limpa_formatacao(resposta_produto.fiscal_classification_id.code)
+                registro_0200.COD_NCM = self.limpa_formatacao(
+                    resposta_produto.fiscal_classification_id.code)
                 lista.append(registro_0200)
         return lista
 
@@ -621,32 +639,32 @@ class SpedEfdIcmsIpi(models.Model):
         # alteração do item, deverá ser informada no primeiro período \
         # em que houver movimentação do item ou no inventário.
         lista = []
-        # O valor informado deve ser menor que no campo DT_FIN do registro 0000. 
+        # O valor informado deve ser menor que no campo DT_FIN do registro 0000.
         # tem q buscar a partir do ultimo dia do mes anterior
         # pois, se alterou no ultimo dia nao entrou no arquivo anterior
-        data_final = datetime.strptime('%s 23:59:00' %(datetime.strftime(
+        data_final = datetime.strptime('%s 23:59:00' % (datetime.strftime(
             self.date_end, '%Y-%m-%d')), '%Y-%m-%d %H:%M:%S')
-        data_final = data_final - timedelta(days=1) 
-        #data_final = datetime.strftime(data_final, '%Y-%m-%d %H:%M:%S') 
-        data_ini = datetime.strptime('%s 01:00:00' %(datetime.strftime(
+        data_final = data_final - timedelta(days=1)
+        #data_final = datetime.strftime(data_final, '%Y-%m-%d %H:%M:%S')
+        data_ini = datetime.strptime('%s 01:00:00' % (datetime.strftime(
             self.date_end, '%Y-%m-%d')), '%Y-%m-%d %H:%M:%S')
-        data_ini = data_ini - timedelta(days=1) 
-        #data_ini = datetime.strftime(data_ini, '%Y-%m-%d %H:%M:%S') 
+        data_ini = data_ini - timedelta(days=1)
+        #data_ini = datetime.strftime(data_ini, '%Y-%m-%d %H:%M:%S')
         resposta_produto = self.env['l10n_br.product.changes'].search([
-            ('product_id.default_code','=',item),
+            ('product_id.default_code', '=', item),
             ('changed_date', '>=', data_ini),
             ('changed_date', '<=', data_final)
-            ],limit=1,order='changed_date desc')
+        ], limit=1, order='changed_date desc')
         ultima_alteracao = data_ini
         for alterado in resposta_produto:
             ultima_mudanca = self.env['l10n_br.product.changes'].search([
-                ('product_id.default_code','=',item),
+                ('product_id.default_code', '=', item),
                 ('changed_date', '<', ultima_alteracao)
-                ],limit=1,order='changed_date desc')
+            ], limit=1, order='changed_date desc')
             if ultima_mudanca:
                 data_inicio = ultima_mudanca.changed_date
             else:
-                data_inicio = alterado.product_id.create_date    
+                data_inicio = alterado.product_id.create_date
             registro_0205 = registros.Registro0205()
             if not alterado.old_value:
                 continue
@@ -720,11 +738,12 @@ class SpedEfdIcmsIpi(models.Model):
                 registro_0220.UNID_CONV = str(resposta[4][:6])
                 registro_0220.FAT_CONV = conversao
             except:
-                x_error = 'Erro, fator conversao : %s - %s' %(str(resposta[4][:6]), str(conversao))
+                x_error = 'Erro, fator conversao : %s - %s' % (
+                    str(resposta[4][:6]), str(conversao))
                 raise UserError(x_error)
             lista.append(registro_0220)
         return lista
-        
+
     def query_registro0400(self, periodo):
         query = """
                     select distinct
@@ -741,32 +760,33 @@ class SpedEfdIcmsIpi(models.Model):
         query_resposta = self._cr.fetchall()
         lista = []
         for resposta in query_resposta:
-            resposta_nat = self.env['account.fiscal.position'].browse(resposta[0])
+            resposta_nat = self.env['account.fiscal.position'].browse(
+                resposta[0])
             registro_0400 = registros.Registro0400()
             registro_0400.COD_NAT = str(resposta_nat.id)
             registro_0400.DESCR_NAT = unidecode(resposta_nat.l10n_br_operation)
             lista.append(registro_0400)
-        return lista        
+        return lista
 
     def transforma_valor(self, valor):
         #valor = ("%.2f" % (float(valor)))
-        #return str(valor).replace('.', ',')
+        # return str(valor).replace('.', ',')
         return valor
 
     def query_registroC100(self, nf):
         lista = []
         nfe_ids = self.env['invoice.eletronic'].browse(nf)
-        for nfe in nfe_ids:    
+        for nfe in nfe_ids:
             # removendo Emissao de Terceiros canceladas
             if nfe.emissao_doc == '2' and nfe.state == 'cancel':
                 return True
-            cancel = False 
+            cancel = False
             registro_c100 = registros.RegistroC100()
             if nfe.tipo_operacao == 'entrada':
                 registro_c100.IND_OPER = '0'
             else:
                 registro_c100.IND_OPER = '1'
-            if nfe.emissao_doc == '1':    
+            if nfe.emissao_doc == '1':
                 registro_c100.IND_EMIT = '0'
             else:
                 registro_c100.IND_EMIT = '1'
@@ -777,14 +797,14 @@ class SpedEfdIcmsIpi(models.Model):
             elif nfe.finalidade_emissao == '1':
                 registro_c100.COD_SIT = '00'
             elif nfe.finalidade_emissao == '2':
-                registro_c100.COD_SIT = '06'                    
+                registro_c100.COD_SIT = '06'
             elif nfe.finalidade_emissao == '4':
-                registro_c100.COD_SIT = '00'                    
-            elif nfe.state  == 'denied':
-                registro_c100.COD_SIT = '04'                    
+                registro_c100.COD_SIT = '00'
+            elif nfe.state == 'denied':
+                registro_c100.COD_SIT = '04'
             if not nfe.state == 'cancel' and nfe.chave_nfe[6:20] != \
-                self.limpa_formatacao(nfe.partner_id.cnpj_cpf):
-                registro_c100.COD_SIT = '08'                    
+                    self.limpa_formatacao(nfe.partner_id.cnpj_cpf):
+                registro_c100.COD_SIT = '08'
             if nfe.serie_documento:
                 registro_c100.SER = nfe.serie_documento
             if nfe.chave_nfe:
@@ -799,7 +819,7 @@ class SpedEfdIcmsIpi(models.Model):
                         registro_c100.DT_E_S = nfe.data_emissao
                 except:
                     msg_err = 'Data Emissao Fatura %s , invalida. \
-                        <br />' %(str(nfe.numero or nfe.id))
+                        <br />' % (str(nfe.numero or nfe.id))
                     self.log_faturamento += msg_err
                 if nfe.duplicata_ids:
                     if len(nfe.duplicata_ids) == 1:
@@ -817,7 +837,7 @@ class SpedEfdIcmsIpi(models.Model):
                 registro_c100.VL_SEG = nfe.valor_seguro
                 registro_c100.VL_OUT_DA = nfe.valor_despesas
                 registro_c100.VL_DESC = nfe.valor_desconto
-                registro_c100.VL_DOC  = nfe.valor_final
+                registro_c100.VL_DOC = nfe.valor_final
                 registro_c100.VL_BC_ICMS = nfe.valor_bc_icms
                 registro_c100.VL_ICMS = nfe.valor_icms
                 registro_c100.VL_BC_ICMS_ST = nfe.valor_bc_icmsst
@@ -826,9 +846,9 @@ class SpedEfdIcmsIpi(models.Model):
                 registro_c100.VL_PIS = nfe.valor_pis
                 registro_c100.VL_COFINS = nfe.valor_cofins
                 registro_c100.COD_PART = str(nfe.partner_id.id)
-            lista.append(registro_c100)                
+            lista.append(registro_c100)
         return lista
-                
+
     def query_registroC101(self, nf):
         query = """
                     select 
@@ -853,7 +873,7 @@ class SpedEfdIcmsIpi(models.Model):
         for id in query_resposta:
             registro_c101 = registros.RegistroC101()
             registro_c101.VL_FCP_UF_DEST = self.transforma_valor(id[2])
-            if id[3] == 'entrada':                
+            if id[3] == 'entrada':
                 registro_c101.VL_ICMS_UF_DEST = self.transforma_valor(id[0])
                 registro_c101.VL_ICMS_UF_REM = self.transforma_valor(id[1])
             else:
@@ -865,8 +885,8 @@ class SpedEfdIcmsIpi(models.Model):
     def query_registroC170(self, nf):
         lista = []
         nfe_line = self.env['invoice.eletronic.item'].search([
-                ('invoice_eletronic_id','=', nf),
-                ], order='num_item')
+            ('invoice_eletronic_id', '=', nf),
+        ], order='num_item')
         n_item = 1
         for item in nfe_line:
             registro_c170 = registros.RegistroC170()
@@ -878,11 +898,13 @@ class SpedEfdIcmsIpi(models.Model):
                 registro_c170.NUM_ITEM = str(n_item)
             cprod = item.product_id.default_code
             registro_c170.COD_ITEM = cprod
-            registro_c170.DESCR_COMPL = self.limpa_caracteres(item.name.strip())
+            registro_c170.DESCR_COMPL = self.limpa_caracteres(
+                item.name.strip())
             registro_c170.QTD = self.transforma_valor(item.quantidade)
             if not item.uom_id:
-                msg_err = 'Sem cadastro UN : %s, NF : %s' %(item.name.strip(), nf.numero)
-                raise UserError(msg_err)                    
+                msg_err = 'Sem cadastro UN : %s, NF : %s' % (
+                    item.name.strip(), nf.numero)
+                raise UserError(msg_err)
             if item.uom_id.name.find('-') != -1:
                 unidade = item.uom_id.name[:item.uom_id.name.find('-')]
             else:
@@ -897,15 +919,16 @@ class SpedEfdIcmsIpi(models.Model):
             try:
                 registro_c170.CST_ICMS = item.product_id.origin + item.icms_cst
             except:
-                msg_err = 'Sem CST na Fatura %s. <br />' %(
-                    str(item.invoice_eletronic_id.numero or 
-                    item.invoice_eletronic_id.id))
+                msg_err = 'Sem CST na Fatura %s. <br />' % (
+                    str(item.invoice_eletronic_id.numero or
+                        item.invoice_eletronic_id.id))
                 self.log_faturamento += msg_err
             if item.cfop:
                 registro_c170.CFOP = str(item.cfop)
             else:
                 registro_c170.CFOP = '0000'
-            registro_c170.COD_NAT = str(item.invoice_eletronic_id.fiscal_position_id.id)
+            registro_c170.COD_NAT = str(
+                item.invoice_eletronic_id.fiscal_position_id.id)
             registro_c170.VL_BC_ICMS = item.icms_base_calculo
             registro_c170.ALIQ_ICMS = '0'
             registro_c170.ALIQ_ICMS = item.icms_aliquota
@@ -933,7 +956,7 @@ class SpedEfdIcmsIpi(models.Model):
             n_item += 1
             lista.append(registro_c170)
         return lista
-        
+
     def query_registroC190(self, nf):
         query = """
                 select distinct
@@ -1030,33 +1053,33 @@ class SpedEfdIcmsIpi(models.Model):
         for cte in cte_ids:
             registro_d100 = registros.RegistroD100()
             if cte.tipo_operacao == 'entrada':
-                registro_d100.IND_OPER = '0' # Aquisicao
+                registro_d100.IND_OPER = '0'  # Aquisicao
             else:
-                registro_d100.IND_OPER = '1' # Prestação
+                registro_d100.IND_OPER = '1'  # Prestação
             if cte.emissao_doc == 2:
-                registro_d100.IND_EMIT = '1' # Terceiros
+                registro_d100.IND_EMIT = '1'  # Terceiros
             else:
-                registro_d100.IND_EMIT = '0' # Propria
+                registro_d100.IND_EMIT = '0'  # Propria
             registro_d100.COD_PART = str(cte.partner_id.id)
             registro_d100.COD_MOD = str(cte.model)
             if cte.tp_emiss_cte == '1':
-               registro_d100.COD_SIT = '00'
+                registro_d100.COD_SIT = '00'
             elif cte.tp_emiss_cte == '2':
-               registro_d100.COD_SIT = '01'
+                registro_d100.COD_SIT = '01'
             elif cte.tp_emiss_cte == '3':
-               registro_d100.COD_SIT = '02'
+                registro_d100.COD_SIT = '02'
             elif cte.tp_emiss_cte == '4':
-               registro_d100.COD_SIT = '03'
+                registro_d100.COD_SIT = '03'
             elif cte.tp_emiss_cte == '5':
-               registro_d100.COD_SIT = '04'
+                registro_d100.COD_SIT = '04'
             elif cte.tp_emiss_cte == '6':
-               registro_d100.COD_SIT = '05'
+                registro_d100.COD_SIT = '05'
             elif cte.tp_emiss_cte == '7':
-               registro_d100.COD_SIT = '06'
+                registro_d100.COD_SIT = '06'
             elif cte.tp_emiss_cte == '8':
-               registro_d100.COD_SIT = '07'
+                registro_d100.COD_SIT = '07'
             elif cte.tp_emiss_cte == '9':
-               registro_d100.COD_SIT = '08'
+                registro_d100.COD_SIT = '08'
             registro_d100.SER = cte.serie_documento
             if cte.chave_nfe:
                 registro_d100.CHV_CTE = str(cte.chave_nfe)
@@ -1108,7 +1131,7 @@ class SpedEfdIcmsIpi(models.Model):
             registro_d110.VL_SERV = self.transforma_valor(itens.price_subtotal)
             registro_d110.VL_OUT = '0'
             item += 1
-    """        
+    """
 
     # transporte - analitico
     def query_registroD190(self, nf):
@@ -1160,7 +1183,7 @@ class SpedEfdIcmsIpi(models.Model):
         return lista
 
     def query_registroE110(self, periodo):
-        #SAIDA
+        # SAIDA
         query = """
                 select  
                     sum(COALESCE(ie.valor_icms,0.0)) as VL_ICMS 
@@ -1189,7 +1212,7 @@ class SpedEfdIcmsIpi(models.Model):
             if id[0]:
                 sld_icms = id[0]
                 sld_transp = id[0]
-        #ENTRADA
+        # ENTRADA
         query = """
                 select  
                     sum(COALESCE(ie.valor_icms,0.0)) as VL_ICMS 
@@ -1210,7 +1233,8 @@ class SpedEfdIcmsIpi(models.Model):
         for id in query_resposta:
             registro_E110.VL_TOT_CREDITOS = self.transforma_valor(id[0])
             if not id[0]:
-                registro_E110.VL_ICMS_RECOLHER = self.transforma_valor(sld_icms)
+                registro_E110.VL_ICMS_RECOLHER = self.transforma_valor(
+                    sld_icms)
                 registro_E110.VL_SLD_APURADO = self.transforma_valor(sld_icms)
                 continue
             if id[0] > sld_icms:
@@ -1219,7 +1243,8 @@ class SpedEfdIcmsIpi(models.Model):
                 registro_E110.VL_SLD_APURADO = '0'
             else:
                 sld_icms = sld_icms - id[0]
-                registro_E110.VL_ICMS_RECOLHER = self.transforma_valor(sld_icms)
+                registro_E110.VL_ICMS_RECOLHER = self.transforma_valor(
+                    sld_icms)
                 registro_E110.VL_SLD_APURADO = self.transforma_valor(sld_icms)
             sld_transp -= id[0]
         if sld_transp > 0.0:
@@ -1234,7 +1259,8 @@ class SpedEfdIcmsIpi(models.Model):
         registro_E110.VL_ESTORNOS_DEB = '0'
         registro_E110.VL_SLD_CREDOR_ANT = '0'
         registro_E110.VL_TOT_DED = '0'
-        registro_E110.VL_SLD_CREDOR_TRANSPORTAR = self.transforma_valor(sld_transp)
+        registro_E110.VL_SLD_CREDOR_TRANSPORTAR = self.transforma_valor(
+            sld_transp)
         registro_E110.DEB_ESP = '0'
         lista.append(registro_E110)
         registro_E116 = RegistroE116()
@@ -1242,17 +1268,17 @@ class SpedEfdIcmsIpi(models.Model):
         registro_E116.VL_OR = self.transforma_valor(sld_icms)
         registro_E116.DT_VCTO = self.data_vencimento_e316
         # remover
-        #'%s%s%s' %(
-        #    str(self.data_vencimento_e316.day).zfill(2), 
-        #    str(self.data_vencimento_e316.month).zfill(2), 
+        # '%s%s%s' %(
+        #    str(self.data_vencimento_e316.day).zfill(2),
+        #    str(self.data_vencimento_e316.month).zfill(2),
         #    str(self.data_vencimento_e316.year))
         registro_E116.COD_REC = self.cod_receita
-        #registro_E116.NUM_PROC
-        #registro_E116.IND_PROC 
-        #registro_E116.PROC
-        #registro_E116.COMPL
-        registro_E116.MES_REF = '%s%s' %(
-            str(self.date_start.month).zfill(2), 
+        # registro_E116.NUM_PROC
+        # registro_E116.IND_PROC
+        # registro_E116.PROC
+        # registro_E116.COMPL
+        registro_E116.MES_REF = '%s%s' % (
+            str(self.date_start.month).zfill(2),
             str(self.date_start.year))
         lista.append(registro_E116)
         return lista
@@ -1362,7 +1388,8 @@ class SpedEfdIcmsIpi(models.Model):
             lista.append(registro_e300)
         if not uf_emitente and query_resposta:
             registro_e300 = registros.RegistroE300()
-            registro_e300.UF = self.limpa_formatacao(self.company_id.state_id.code)
+            registro_e300.UF = self.limpa_formatacao(
+                self.company_id.state_id.code)
             registro_e300.DT_INI = self.date_start
             registro_e300.DT_FIN = self.date_end
             lista.append(registro_e300)
@@ -1394,7 +1421,7 @@ class SpedEfdIcmsIpi(models.Model):
                         and rs.code = '%s'
                     group by ie.tipo_operacao
                 """ % (periodo, uf_dif)
-        else:   
+        else:
             # mesmo uf
             tipo_mov = '0'
             query = """
@@ -1448,11 +1475,12 @@ class SpedEfdIcmsIpi(models.Model):
             registro_e310.VL_SLD_CRED_TRANSPORTAR_FCP = '0'
             registro_e310.DEB_ESP_FCP = '0'
         lista.append(registro_e310)
-        
+
         registro_e316 = registros.RegistroE316()
         if not self.data_vencimento_e316:
-            raise UserError('Erro, a data de vencimento (E-316) não informada.')
-        
+            raise UserError(
+                'Erro, a data de vencimento (E-316) não informada.')
+
         for id in query_resposta:
             registro_e316.COD_OR = self.cod_obrigacao
             registro_e316.VL_OR = id[0]+id[2]
@@ -1504,7 +1532,7 @@ class SpedEfdIcmsIpi(models.Model):
                         and %s
                     group by fp.fiscal_type
                 """ % (uf_dif, periodo)
-        else:   
+        else:
             # mesmo uf
             tipo_mov = '0'
             query = """
@@ -1565,7 +1593,7 @@ class SpedEfdIcmsIpi(models.Model):
         lista.append(registro_e316)
         return lista
         """
-        
+
     def query_registroE510(self, periodo):
         query = """
                 select distinct
@@ -1625,7 +1653,7 @@ class SpedEfdIcmsIpi(models.Model):
             registro_E520.VL_DEB_IPI = self.transforma_valor(id[0])
             if id[0]:
                 sld_ipi = id[0]
-        registro_E520.VL_SD_ANT_IPI = '0'            
+        registro_E520.VL_SD_ANT_IPI = '0'
         registro_E520.VL_OD_IPI = '0'
         registro_E520.VL_OC_IPI = '0'
         query = """
@@ -1644,31 +1672,31 @@ class SpedEfdIcmsIpi(models.Model):
                 """ % (periodo)
         self._cr.execute(query)
         query_resposta = self._cr.fetchall()
-        for id in query_resposta:            
+        for id in query_resposta:
             registro_E520.VL_CRED_IPI = self.transforma_valor(id[0])
             if id[0] and id[0] > sld_ipi:
-               sld_ipi = id[0] - sld_ipi
-               registro_E520.VL_SC_IPI = self.transforma_valor(sld_ipi)
-               registro_E520.VL_SD_IPI = '0'
+                sld_ipi = id[0] - sld_ipi
+                registro_E520.VL_SC_IPI = self.transforma_valor(sld_ipi)
+                registro_E520.VL_SD_IPI = '0'
             else:
-               if id[0]:
-                   sld_ipi = sld_ipi - id[0]
-               registro_E520.VL_SD_IPI = self.transforma_valor(sld_ipi)
-               registro_E520.VL_SC_IPI = '0'
+                if id[0]:
+                    sld_ipi = sld_ipi - id[0]
+                registro_E520.VL_SD_IPI = self.transforma_valor(sld_ipi)
+                registro_E520.VL_SC_IPI = '0'
         lista.append(registro_E520)
         return lista
 
     def query_registroK200(self):
         lista = []
-        data_estoque = '%s 23:59:00' %(datetime.strftime(
+        data_estoque = '%s 23:59:00' % (datetime.strftime(
             self.date_end, '%Y-%m-%d'))
         context = dict(self.env.context, to_date=data_estoque)
         product = self.env['product.product'].with_context(context)
         resposta_inv = product.search([])
         for inv in resposta_inv:
             if inv.qty_available > 0.0 and \
-                inv.l10n_br_sped_type in ('00','01','02','03','04','05','06','10'):
-                registro_K200 = RegistroK200()                                                                                                           
+                    inv.l10n_br_sped_type in ('00', '01', '02', '03', '04', '05', '06', '10'):
+                registro_K200 = RegistroK200()
                 registro_K200.DT_EST = self.date_end
                 registro_K200.COD_ITEM = inv.default_code
                 registro_K200.QTD = inv.qty_available
