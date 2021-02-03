@@ -297,6 +297,7 @@ class AccountTax(models.Model):
                 else:
                     vals['amount'] = tax._compute_amount(price_base, 1.0)
                     vals['base'] = price_base
+            vals['amount'] = round(vals['amount'], 2)
             taxes.append(vals)
         return taxes
 
@@ -375,7 +376,6 @@ class AccountTax(models.Model):
                 price_unit, currency, quantity, product, partner)
             res['price_without_tax'] = round(price_unit * quantity, 2)
             return res
-
         price_base = price_unit * quantity
         taxes = self.sum_taxes(price_base)
         total_included = total_excluded = price_base

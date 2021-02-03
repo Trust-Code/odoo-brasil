@@ -2,45 +2,56 @@ odoo.define('br_point_of_sale', function (require) {
     "use strict";
 
     var models = require('point_of_sale.models');
-    var _super_order = models.PosModel.prototype;
     var rpc = require('web.rpc');
     var session = require('web.session');
+    var models = require('point_of_sale.models');
+    var _super_posorder = models.Order.prototype;
 
-    let search_nfce = (pos_order_ids, fields) => {
+    let search_nfce = (edoc_ids, fields) => {
         return rpc.query({
             model: 'invoice.eletronic',
             method: 'search_read',
             fields: fields,
-            domain: [['pos_order_id', 'in', pos_order_ids]]
+            domain: [['id', 'in', edoc_ids]]
         })
     }
 
     models.PosModel = models.PosModel.extend({
-        _save_to_server: function (order, opts) {
-            var self = this
-            return _super_order._save_to_server.apply(this, arguments).done((result) => self.get_nfce(result));
+        create_invoice_eletronic: function(pos_order) {
+            var self = this;
+            var args = [0, [pos_order.export_as_JSON()]]
+            return rpc.query({
+                model: 'invoice.eletronic',
+                method: 'create_from_ui',
+                args: args,
+                kwargs: {context: session.user_context},
+            }, {
+                timeout: 7500,
+            }).then( edoc_ids => self.get_nfce(edoc_ids));
         },
-        get_nfce: function (pos_order_ids) {
-            if (!pos_order_ids.length) {
-                return;
+        get_nfce: function (edoc_ids) {
+            if (!edoc_ids.length) {
+                return (new $.Deferred()).resolve();
             }
             let self = this;
-            self.cronSendNfe()
-            .then(function() {
-                self.checkNfe(self, pos_order_ids);
+            return self.cronSendNfe().then(function() {
+                return self.checkNfe(self, edoc_ids);
             });
         },
-        checkNfe: function(self, pos_order_ids)
+        checkNfe: function(self, edoc_ids)
         {
             let inv_fields = ['state', 'pos_order_id', 'codigo_retorno', 'mensagem_retorno', 'id'];
-            search_nfce(pos_order_ids, inv_fields).then(function (einvoices) {
+            var def = $.Deferred();
+            search_nfce(edoc_ids, inv_fields).then(function (einvoices) {
                 let einvoice = einvoices[0];
                 if (einvoice.state == 'done') {
                     self.print_nfce(einvoice.id);
+                    def.resolve();
                 } else if (['error', 'cancel'].indexOf(einvoice.state) > -1) {
-                    alert('NFC-e Rejeitada: ' + einvoice.codigo_retorno + ' - ' + einvoice.mensagem_retorno);
+                    def.reject('NFC-e Rejeitada: ' + einvoice.codigo_retorno + ' - ' + einvoice.mensagem_retorno);
                 }
             });
+            return def;
         },
         print_nfce: function (einvoice_id)
         {

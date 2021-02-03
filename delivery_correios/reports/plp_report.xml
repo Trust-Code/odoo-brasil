@@ -60,7 +60,7 @@
                                         </tr>
 
                                         <tr>
-                                            <td style="width: 45%;"><strong>Cliente: </strong><span t-field="doc.company_id.l10n_br_legal_name" /></td>
+                                            <td style="width: 45%;"><strong>Cliente: </strong><span t-field="doc.company_id.legal_name" /></td>
                                         </tr>
                                         <tr>
                                             <td style="width: 45%;"><strong>Telefone

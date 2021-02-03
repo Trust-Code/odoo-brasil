@@ -4,9 +4,9 @@
 #        KMEE - www.kmee.com.br
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
 from ..cnab_240 import Cnab240
 from datetime import datetime
+from decimal import Decimal
 
 
 class Itau240(Cnab240):
@@ -42,6 +42,10 @@ class Itau240(Cnab240):
         vals['codigo_multa'] = int(vals['codigo_multa'])
         vals['data_multa'] = str(vals['data_multa']).zfill(8)
         vals['juros_multa'] = vals['juros_multa']
+        if vals.get('juros_mora_taxa') > 0.0:
+            multa_mes = vals['valor_titulo'] * (vals.get('juros_mora_taxa') / 100)
+            dia = round(multa_mes / 30, 2) or 0.01;
+            vals['juros_mora_taxa'] = Decimal(str(dia)).quantize(Decimal('1.00'))
         return vals
 
     def dv_nosso_numero(self, agencia, conta, carteira, nosso_numero):

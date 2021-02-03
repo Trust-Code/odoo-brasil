@@ -266,14 +266,14 @@ class InvoiceEletronic(models.Model):
                 errors.append(u'Emitente / CNPJ do escritório contabilidade')
         # NFC-e
         if self.model == '65':
-            if len(self.company_id.id_token_csc or '') != 6:
-                errors.append(u"Identificador do CSC inválido")
+            if not self.company_id.id_token_csc:
+                errors.append("Identificador do CSC inválido")
             if not len(self.company_id.csc or ''):
-                errors.append(u"CSC Inválido")
+                errors.append("CSC Inválido")
             if self.partner_id.cnpj_cpf is None:
-                errors.append(u"CNPJ/CPF do Parceiro inválido")
+                errors.append("CNPJ/CPF do Parceiro inválido")
             if len(self.serie) == 0:
-                errors.append(u"Número de Série da NFe Inválido")
+                errors.append("Número de Série da NFe Inválido")
 
         return errors
 
@@ -446,7 +446,7 @@ class InvoiceEletronic(models.Model):
         if self.model not in ('55', '65'):
             return res
 
-        tz = timezone(self.env.user.tz)
+        tz = timezone(self.env.user.tz or 'America/Sao_Paulo')
         dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
         dt_saida = fields.Datetime.from_string(self.data_entrada_saida)
         if dt_saida:
@@ -580,6 +580,7 @@ class InvoiceEletronic(models.Model):
                 'ISUF': partner.suframa or '',
             }
             if self.model == '65':
+                dest['IE'] = ''
                 dest.update(
                     {'CPF': re.sub('[^0-9]', '', partner.cnpj_cpf or '')})
 

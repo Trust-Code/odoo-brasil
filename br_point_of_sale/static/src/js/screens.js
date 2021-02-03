@@ -48,7 +48,7 @@ odoo.define('br_point_of_sale.screens', function (require) {
             };
         },
         renderElement: function(){
-            this._super()
+            this._super();
             var self = this;
             this.$('.js_customer_cpf').ready(function($)
             {
@@ -59,13 +59,67 @@ odoo.define('br_point_of_sale.screens', function (require) {
             });
         },
         click_set_customer_cpf: function(){
+            var self = this;
             var order = this.pos.get_order();
             this.gui.show_popup('textinput',{
                 'title': 'Input CPF',
                 'confirm': function(value) {
                     order.set_client_cpf(value);
+                    self.render_cpf_button(value);
                 }
             })
         },
+        render_cpf_button: function(value) {
+            if(value.length > 0) {
+                this.$('.js_customer_cpf').addClass("highlight");
+                this.$('.js_customer_cpf').html(`<i class='fa fa-user'></i> CPF: &nbsp; ${value}`);
+            } else {
+                this.$('.js_customer_cpf').removeClass("highlight");
+                this.$('.js_customer_cpf').html(`<i class='fa fa-user'></i> CPF na Nota?`);
+            }
+        },
+        finalize_validation: function() {
+            var self = this;
+            var order = this.pos.get_order();
+            order.initialize_validation_date();
+            this.pos.create_invoice_eletronic(order)
+            .done( () => self.finalize_pos_order())
+            .fail( reason => {
+                if(typeof(reason) == "object" && "data" in reason) {
+                    if(reason.data.type == "xhrtimeout") {
+                        alert("Não foi possível conectar ao servidor!");
+                    } else {
+                        alert("Erro ao realizar emissão da NFCe!");
+                    }
+                } else {
+                    alert(reason);
+                }
+            })
+        },
+        finalize_pos_order: function() {
+            var self = this;
+            var order = this.pos.get_order();
+            if (order.is_paid_with_cash() && this.pos.config.iface_cashdrawer) { 
+    
+                    this.pos.proxy.open_cashbox();
+            }
+            order.initialize_validation_date();
+            order.finalized = true;
+    
+            if (order.is_to_invoice()) {
+                var invoiced = this.pos.push_and_invoice_order(order);
+                this.invoicing = true;
+    
+                invoiced.fail(this._handleFailedPushForInvoice.bind(this, order, false));
+    
+                invoiced.done(function(){
+                    self.invoicing = false;
+                    self.gui.show_screen('receipt');
+                });
+            } else {
+                this.pos.push_order(order);
+                this.gui.show_screen('receipt');
+            }
+        }
     });
 });

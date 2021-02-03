@@ -30,7 +30,8 @@ class AccountInvoice(models.Model):
             'name':  partner_id.id,
             'product_name': account_invoice_line_id.product_xprod,
             'product_code': account_invoice_line_id.product_cprod,
-            'product_tmpl_id': account_invoice_line_id.product_id.id,
+            'price': account_invoice_line_id.price_unit,
+            'product_tmpl_id': account_invoice_line_id.product_id.product_tmpl_id.id,
         }
 
         return self.env['product.supplierinfo'].create(vals)
