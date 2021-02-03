@@ -157,7 +157,7 @@
                     top: 26px;
                     padding-left: 18px;
                 }
-                .correios-recipient-information .recipient-address .ecipient-barcode-and-obs{
+                .correios-recipient-information .recipient-address .recipient-barcode-and-obs{
                     display: -webkit-box;
                     display: flex;
                 }
@@ -229,18 +229,18 @@
                     </div>
                     <t t-set="partner" t-value="postagem.partner_id.commercial_partner_id" />
                     <div class="recipient-address">
-                        <t t-if="partner.l10n_br_legal_name">
-                            <span t-field="partner.l10n_br_legal_name" />
+                        <t t-if="partner.legal_name">
+                            <span t-field="partner.legal_name" />
                         </t>
                         <t t-else="">
                             <span t-field="partner.name" />
                         </t> <br />
-                        <span><t t-esc="partner.street" />, <t t-esc="partner.l10n_br_number" /></span> <br />,
+                        <span><t t-esc="partner.street" />, <t t-esc="partner.number" /></span> <br />,
                         <span>
                             <t t-if="partner.street2">
                                 <span t-field="partner.street2"></span>,
                             </t>
-                            <span t-field="partner.l10n_br_district" />
+                            <span t-field="partner.district" />
                         </span> <br />
                         <span>
                             <span t-field="partner.zip" />
@@ -257,8 +257,8 @@
                     </div>
                 </div>
                 <div class="emitter-information arial font-10">
-                    <span><strong>Remetente: </strong><span t-field="doc.company_id.l10n_br_legal_name" /></span>  <br />
-                    <span><span t-field="doc.company_id.street"/>, <span t-field="doc.company_id.l10n_br_number" /></span> <br />
+                    <span><strong>Remetente: </strong><span t-field="doc.company_id.legal_name" /></span>  <br />
+                    <span><span t-field="doc.company_id.street"/>, <span t-field="doc.company_id.number" /></span> <br />
                     <span><span t-field="doc.company_id.zip" /> <span t-field="doc.company_id.city_id" /> - <span t-field="doc.company_id.state_id" /></span> <br />
                 </div>
             </div>

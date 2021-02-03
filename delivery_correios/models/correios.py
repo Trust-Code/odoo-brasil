@@ -6,6 +6,7 @@ import logging
 import os
 import requests
 import base64
+from urllib.parse import urlparse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from lxml import etree
 from datetime import datetime
@@ -106,11 +107,11 @@ class CorreiosPostagemPlp(models.Model):
             "numero_contrato": self.delivery_id.num_contrato,
             "numero_diretoria": "36",
             "codigo_administrativo": self.delivery_id.cod_administrativo,
-            "nome_remetente": self.company_id.l10n_br_legal_name,
+            "nome_remetente": self.company_id.legal_name,
             "logradouro_remetente": self.company_id.street,
-            "numero_remetente": self.company_id.l10n_br_number,
+            "numero_remetente": self.company_id.number,
             "complemento_remetente": self.company_id.street2 or "",
-            "bairro_remetente": self.company_id.l10n_br_district,
+            "bairro_remetente": self.company_id.district,
             "cep_remetente": re.sub("[^0-9]", "", self.company_id.zip or ""),
             "cidade_remetente": self.company_id.city_id.name,
             "uf_remetente": self.company_id.state_id.code,
@@ -131,7 +132,7 @@ class CorreiosPostagemPlp(models.Model):
                     "codigo_servico_postagem":
                     item.delivery_id.service_id.code.strip(),
                     "peso": "%d" % (item.weight * 1000),
-                    "nome_destinatario": item.partner_id.l10n_br_legal_name
+                    "nome_destinatario": item.partner_id.legal_name
                     or item.partner_id.name,
                     "telefone_destinatario": re.sub(
                         "[^0-9]", "", item.partner_id.phone or ""
@@ -142,8 +143,8 @@ class CorreiosPostagemPlp(models.Model):
                     "email_destinatario": item.partner_id.email,
                     "logradouro_destinatario": item.partner_id.street,
                     "complemento_destinatario": item.partner_id.street2 or "",
-                    "numero_end_destinatario": item.partner_id.l10n_br_number,
-                    "bairro_destinatario": item.partner_id.l10n_br_district,
+                    "numero_end_destinatario": item.partner_id.number,
+                    "bairro_destinatario": item.partner_id.district,
                     "cidade_destinatario": item.partner_id.city_id.name,
                     "uf_destinatario": item.partner_id.state_id.code,
                     "cep_destinatario": re.sub(
@@ -239,7 +240,6 @@ class CorreiosPostagemObjeto(models.Model):
         url = "{}/report/barcode/?type={}&value={}&width={}&height={}".format(
             web_base_url.value, barcode_type, code, width, height
         )
-
         response = requests.get(url)
 
         image = base64.b64encode(response.content)
@@ -253,11 +253,11 @@ class CorreiosPostagemObjeto(models.Model):
 
         dados["destino_cep"] = re.sub("[^0-9]", "", destino.zip or "")
         dados["destino_compl"] = re.sub(
-            r"\D", "", destino.l10n_br_number or ""
+            r"\D", "", destino.number or ""
         ).zfill(5)
         dados["origem_cep"] = re.sub("[^0-9]", "", origem.zip or "")
         dados["origem_compl"] = re.sub(
-            r"\D", "", origem.l10n_br_number or ""
+            r"\D", "", origem.number or ""
         ).zfill(5)
         validador_cep_dest = sum(
             [int(n) for n in re.sub(r"\D", "", destino.zip) or ""]
@@ -287,12 +287,13 @@ class CorreiosPostagemObjeto(models.Model):
         dados["cartao_postagem"] = transportadora.cartao_postagem.zfill(10)
         dados["codigo_servico"] = transportadora.service_id.code
         dados["agrupamento"] = "00"
-        dados["num_logradouro"] = destino.l10n_br_number.zfill(5) or "0" * 5
+        dados["num_logradouro"] = destino.number.zfill(5) or "0" * 5
         dados["compl_logradouro"] = "{:.20}".format(
             str(destino.street2 or "")
         ).zfill(20)
         dados["valor_declarado"] = (
-            str(self.product_id * self.product_qty)
+            #str(self.product_id * self.product_qty)
+            str(" ")
             .replace(".", "")
             .replace(",", "")
             .zfill(5)

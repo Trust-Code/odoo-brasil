@@ -235,7 +235,7 @@ com o Correio",
 
     def _get_correios_tracking_ref(self, picking):
         cnpj_empresa = re.sub(
-            "[^0-9]", "", picking.company_id.l10n_br_cnpj_cpf or ""
+            "[^0-9]", "", picking.company_id.cnpj_cpf or ""
         )
 
         client = self.get_correio_sigep()
