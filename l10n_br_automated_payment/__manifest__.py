@@ -20,6 +20,11 @@
         'account',
         'l10n_br_base_address',
     ],
+    'external_dependencies': {
+        'python': [
+            'iugu',
+        ],
+    },
     'data': [
         'data/verify_transaction_cron.xml',
         'views/res_company.xml',
