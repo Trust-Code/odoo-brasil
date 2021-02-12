@@ -20,6 +20,7 @@ def _convert_values(vals):
         for item in vals['itens_servico']:
             item['cst_servico'] = '1'
             item['base_calculo'] = 0
+            item['aliquota'] = 0
     else:
         vals['valor_issqn'] = vals['valor_iss']
     for item in vals['itens_servico']:
