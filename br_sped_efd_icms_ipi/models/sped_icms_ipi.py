@@ -7,41 +7,43 @@ from unidecode import unidecode
 from datetime import datetime, timedelta
 import pytz
 import base64
-from sped.efd.icms_ipi.arquivos import ArquivoDigital
-from sped.efd.icms_ipi import registros
-from sped.efd.icms_ipi.registros import Registro0100
-from sped.efd.icms_ipi.registros import Registro0001
-from sped.efd.icms_ipi.registros import Registro0002
-from sped.efd.icms_ipi.registros import Registro0005
-from sped.efd.icms_ipi.registros import RegistroB001
-from sped.efd.icms_ipi.registros import RegistroB990
-from sped.efd.icms_ipi.registros import RegistroC001
-from sped.efd.icms_ipi.registros import RegistroC100
-from sped.efd.icms_ipi.registros import RegistroC101
-from sped.efd.icms_ipi.registros import RegistroC170
-from sped.efd.icms_ipi.registros import RegistroC190
-from sped.efd.icms_ipi.registros import RegistroC191
-from sped.efd.icms_ipi.registros import RegistroC197
-from sped.efd.icms_ipi.registros import RegistroC300
-from sped.efd.icms_ipi.registros import RegistroD001
-from sped.efd.icms_ipi.registros import RegistroD100
-from sped.efd.icms_ipi.registros import RegistroD110
-from sped.efd.icms_ipi.registros import RegistroD120
-from sped.efd.icms_ipi.registros import RegistroD190
-from sped.efd.icms_ipi.registros import Registro9001
-from sped.efd.icms_ipi.registros import RegistroE100
-from sped.efd.icms_ipi.registros import RegistroE110
-from sped.efd.icms_ipi.registros import RegistroE116
-from sped.efd.icms_ipi.registros import RegistroE200
-from sped.efd.icms_ipi.registros import RegistroE210
-from sped.efd.icms_ipi.registros import RegistroE500
-from sped.efd.icms_ipi.registros import RegistroE510
-from sped.efd.icms_ipi.registros import RegistroE520
-from sped.efd.icms_ipi.registros import RegistroK100
-from sped.efd.icms_ipi.registros import RegistroK200
-from sped.efd.icms_ipi.registros import Registro1001
-from sped.efd.icms_ipi.registros import Registro1010
-
+try:
+    from sped.efd.icms_ipi.arquivos import ArquivoDigital
+    from sped.efd.icms_ipi import registros
+    from sped.efd.icms_ipi.registros import Registro0100
+    from sped.efd.icms_ipi.registros import Registro0001
+    # from sped.efd.icms_ipi.registros import Registro0002
+    from sped.efd.icms_ipi.registros import Registro0005
+    from sped.efd.icms_ipi.registros import RegistroB001
+    from sped.efd.icms_ipi.registros import RegistroB990
+    from sped.efd.icms_ipi.registros import RegistroC001
+    from sped.efd.icms_ipi.registros import RegistroC100
+    from sped.efd.icms_ipi.registros import RegistroC101
+    from sped.efd.icms_ipi.registros import RegistroC170
+    from sped.efd.icms_ipi.registros import RegistroC190
+    # from sped.efd.icms_ipi.registros import RegistroC191
+    from sped.efd.icms_ipi.registros import RegistroC197
+    from sped.efd.icms_ipi.registros import RegistroC300
+    from sped.efd.icms_ipi.registros import RegistroD001
+    from sped.efd.icms_ipi.registros import RegistroD100
+    from sped.efd.icms_ipi.registros import RegistroD110
+    from sped.efd.icms_ipi.registros import RegistroD120
+    from sped.efd.icms_ipi.registros import RegistroD190
+    from sped.efd.icms_ipi.registros import Registro9001
+    from sped.efd.icms_ipi.registros import RegistroE100
+    from sped.efd.icms_ipi.registros import RegistroE110
+    from sped.efd.icms_ipi.registros import RegistroE116
+    from sped.efd.icms_ipi.registros import RegistroE200
+    from sped.efd.icms_ipi.registros import RegistroE210
+    from sped.efd.icms_ipi.registros import RegistroE500
+    from sped.efd.icms_ipi.registros import RegistroE510
+    from sped.efd.icms_ipi.registros import RegistroE520
+    from sped.efd.icms_ipi.registros import RegistroK100
+    from sped.efd.icms_ipi.registros import RegistroK200
+    from sped.efd.icms_ipi.registros import Registro1001
+    from sped.efd.icms_ipi.registros import Registro1010
+except ImportError:
+    pass
 
 class SpedEfdIcmsIpi(models.Model):
     _name = "sped.efd.icms.ipi"

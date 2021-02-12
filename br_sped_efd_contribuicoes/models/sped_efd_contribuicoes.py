@@ -6,38 +6,41 @@ from unidecode import unidecode
 from datetime import datetime, timedelta
 import pytz
 import base64
-from sped.efd.pis_cofins.arquivos import ArquivoDigital
-from sped.efd.pis_cofins import registros
-from sped.efd.pis_cofins.registros import Registro0100
-from sped.efd.pis_cofins.registros import Registro0001
-from sped.efd.pis_cofins.registros import Registro0110
-from sped.efd.pis_cofins.registros import Registro0140
-from sped.efd.pis_cofins.registros import Registro0500
-from sped.efd.pis_cofins.registros import RegistroA001
-from sped.efd.pis_cofins.registros import RegistroA990
-from sped.efd.pis_cofins.registros import RegistroC001
-from sped.efd.pis_cofins.registros import RegistroC010
-from sped.efd.pis_cofins.registros import RegistroC100
-from sped.efd.pis_cofins.registros import RegistroC170
-from sped.efd.pis_cofins.registros import RegistroD001
-from sped.efd.pis_cofins.registros import RegistroD100
-from sped.efd.pis_cofins.registros import RegistroF001
-from sped.efd.pis_cofins.registros import RegistroI001
-from sped.efd.pis_cofins.registros import Registro9001
-from sped.efd.pis_cofins.registros import RegistroM200
-from sped.efd.pis_cofins.registros import RegistroM205
-from sped.efd.pis_cofins.registros import RegistroM210
-from sped.efd.pis_cofins.registros import RegistroM400
-from sped.efd.pis_cofins.registros import RegistroM410
-from sped.efd.pis_cofins.registros import RegistroM600
-from sped.efd.pis_cofins.registros import RegistroM605
-from sped.efd.pis_cofins.registros import RegistroM610
-from sped.efd.pis_cofins.registros import RegistroM800
-from sped.efd.pis_cofins.registros import RegistroM810
-from sped.efd.pis_cofins.registros import RegistroP001
-from sped.efd.pis_cofins.registros import Registro9900
-from sped.efd.pis_cofins.registros import Registro1001
-from sped.efd.pis_cofins.registros import Registro1010
+try:
+    from sped.efd.pis_cofins.arquivos import ArquivoDigital
+    from sped.efd.pis_cofins import registros
+    from sped.efd.pis_cofins.registros import Registro0100
+    from sped.efd.pis_cofins.registros import Registro0001
+    from sped.efd.pis_cofins.registros import Registro0110
+    from sped.efd.pis_cofins.registros import Registro0140
+    from sped.efd.pis_cofins.registros import Registro0500
+    from sped.efd.pis_cofins.registros import RegistroA001
+    from sped.efd.pis_cofins.registros import RegistroA990
+    from sped.efd.pis_cofins.registros import RegistroC001
+    from sped.efd.pis_cofins.registros import RegistroC010
+    from sped.efd.pis_cofins.registros import RegistroC100
+    from sped.efd.pis_cofins.registros import RegistroC170
+    from sped.efd.pis_cofins.registros import RegistroD001
+    from sped.efd.pis_cofins.registros import RegistroD100
+    from sped.efd.pis_cofins.registros import RegistroF001
+    from sped.efd.pis_cofins.registros import RegistroI001
+    from sped.efd.pis_cofins.registros import Registro9001
+    from sped.efd.pis_cofins.registros import RegistroM200
+    from sped.efd.pis_cofins.registros import RegistroM205
+    from sped.efd.pis_cofins.registros import RegistroM210
+    from sped.efd.pis_cofins.registros import RegistroM400
+    from sped.efd.pis_cofins.registros import RegistroM410
+    from sped.efd.pis_cofins.registros import RegistroM600
+    from sped.efd.pis_cofins.registros import RegistroM605
+    from sped.efd.pis_cofins.registros import RegistroM610
+    from sped.efd.pis_cofins.registros import RegistroM800
+    from sped.efd.pis_cofins.registros import RegistroM810
+    from sped.efd.pis_cofins.registros import RegistroP001
+    from sped.efd.pis_cofins.registros import Registro9900
+    from sped.efd.pis_cofins.registros import Registro1001
+    from sped.efd.pis_cofins.registros import Registro1010
+except ImportError:
+    pass
 
 
 class SpedEfdContribuicoes(models.Model):
