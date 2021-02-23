@@ -60,10 +60,7 @@ odoo.define('br_point_of_sale', function (require) {
                 let base_url = session['web.base.url'];
                 let w = window.open(`${base_url}/report/pdf/br_nfe.main_template_br_nfe_danfe/${einvoice_id}`);
                 if(w) {
-                    w.onload = function() {
-                        w.print();
-                        setTimeout(function() { w.close(); }, 500);
-                    }
+                    w.print();
                 }
                 else{
                     alert('Verifique se o bloqueio de pop-ups está ativado!');
