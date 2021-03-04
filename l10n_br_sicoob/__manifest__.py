@@ -19,10 +19,12 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'account',
+        'l10n_br_automated_payment',
     ],
     'data': [
+        'data/acquirer.xml',
         'views/res_bank_views.xml',
+        'views/payment_transaction.xml',
         'views/account_journal_views.xml',
         'wizard/setup_wizard_views.xml',
     ],

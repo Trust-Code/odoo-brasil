@@ -31,7 +31,7 @@ class SicoobController(http.Controller):
         }
 
         response = requests.post(url, data, headers=header)
-        journal.temp_access_token = response.json()['access_token']
+        journal.l10n_br_sicoob_access_token = response.json()['access_token']
 
         act_jour_id = request.env.ref('account.action_account_journal_form').id
         url = '/web#id=%s&view_type=form&model=account.journal&action=%s' % (

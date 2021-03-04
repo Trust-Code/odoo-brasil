@@ -25,7 +25,8 @@ class AccountJournal(models.Model):
     l10n_br_sicoob_url_base = fields.Char(string="URL de Retorno Sicoob", size=100,
                                           default=_default_sicoob_url)
 
-    temp_access_token = fields.Char(string="Access Token Sicoob", size=150)
+    l10n_br_sicoob_access_token = fields.Char(string="Access Token Sicoob", size=150)
+    l10n_br_sicoob_refresh_token = fields.Char(string="Sicoob Refresh Access Token", size=150)
 
     @api.onchange('bank_account_id')
     def _onchange_bank_account(self):
@@ -48,13 +49,18 @@ class AccountJournal(models.Model):
         if not self.l10n_br_sicoob_url_base:
             raise UserError('Configure a URL base de retorno!')
 
+        scope_extrato = 'cco_extrato+cco_saldo'
+        scope_boleto = 'cobranca_boletos_incluir+cobranca_boletos_consultar+cobranca_boletos_segunda_via+cobranca_boletos_prorrogacoes_data_vencimento+cobranca_boletos_baixa'
+
         return_url = '%s/sicoob/authorization?journal=%s' % (
             self.l10n_br_sicoob_url_base, self.id)
         url = 'https://sandbox.sicoob.com.br/oauth2/authorize?response_type=code&redirect_uri=%s&client_id=%s' \
-              '&cooperativa=%s&contaCorrente=%s&scope=cco_extrato+cco_saldo' % (
+              '&cooperativa=%s&contaCorrente=%s&scope=%s+%s' % (
                   return_url, self.l10n_br_sicoob_client_id,
                   self.bank_account_id.l10n_br_branch_number or '',
                   self.bank_account_id.acc_number or '',
+                  scope_extrato,
+                  scope_boleto,
               )
         return {
             'type': 'ir.actions.act_url',
@@ -63,9 +69,12 @@ class AccountJournal(models.Model):
         }
 
     def action_synchronize_statement(self):
+        # TODO sincronizar o extrato do mês atual
+        # Sincronizar via cron todo dia, e apenas atualizar a diferença 
+        # caso o extrato já exista
         url = 'https://sandbox.sicoob.com.br/conta-corrente/extrato/10/2020'
         headers = {
-            "Authorization": "Bearer %s" % self.temp_access_token
+            "Authorization": "Bearer %s" % self.l10n_br_sicoob_access_token
         }
         r = requests.get(url, headers=headers)
         if r.status_code == 200:
