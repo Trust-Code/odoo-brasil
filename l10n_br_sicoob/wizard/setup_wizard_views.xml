@@ -1,6 +1,6 @@
 <odoo>
 
-    <record id="trustcode_sicoob_res_partner_bank_form" model="ir.ui.view" >
+    <record id="l10n_br_sicoob_online_sync_form" model="ir.ui.view" >
         <field name="name">l10n.br.account.online.sync.res.partner.bank.setup.form</field>
         <field name="model">account.setup.bank.manual.config</field>
         <field name="inherit_id" ref="account.setup_bank_account_wizard" />

@@ -96,17 +96,7 @@ class AccountJournal(models.Model):
                 'balance_end_real': saldo,
                 'line_ids': line_ids,
             })
-            action = self.env.ref(
-                'account.action_bank_reconcile_bank_statements')
-            return {
-                'name': action.name,
-                'tag': action.tag,
-                'context': {
-                    'statement_ids': [statement.id],
-                    'notifications': []
-                },
-                'type': 'ir.actions.client',
-            }
+            return self.action_open_reconcile()
         elif r.status_code == 401:
             raise UserError(
                 'O token de acesso está expirado!\n\

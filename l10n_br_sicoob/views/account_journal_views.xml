@@ -52,7 +52,7 @@
         <field name="inherit_id" ref="account.view_account_bank_journal_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='bank_acc_number']" position="before">
-                    <field name="l10n_br_bank_branch_number"/>
+                <field name="l10n_br_bank_branch_number"/>
             </xpath>
         </field>
     </record>
