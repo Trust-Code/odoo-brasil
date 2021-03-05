@@ -58,88 +58,55 @@ class AccountMove(models.Model):
 
             api_token = self.payment_journal_id.l10n_br_sicoob_access_token
 
-            # instrucao = self.payment_journal_id.instrucoes or ''
-            # instrucoes = [instrucao[y-95:y] for y in range(95, len(instrucao)+95, 95)]
+            instrucao = self.payment_journal_id.l10n_br_boleto_instrucoes or ''
+            instrucoes = instrucao.split('\n')
+
+            tipo_mora = 3 # Isento
+            if self.payment_journal_id.l10n_br_valor_juros_mora:
+                tipo_mora = 2
+
+            tipo_multa = 0  # Isento
+            if self.payment_journal_id.l10n_br_valor_multa:
+                tipo_multa = 2  # Taxa Mensal
 
             # TODO Esses valores aqui precisam ser preenchidos
             vals = {
-                "numeroContrato": 25546454,
+                "numeroContrato": self.payment_journal_id.l10n_br_sicoob_contrato,
                 "modalidade": 1,
-                "numeroContaCorrente": 0,
+                "numeroContaCorrente": self.payment_journal_id.bank_account_id.acc_number,
                 "especieDocumento": "DM",
-                "dataEmissao": "2018-09-20T00:00:00-03:00",
-                "nossoNumero": 2588658,
-                "seuNumero": "1235512",
-                "identificacaoBoletoEmpresa": "4562",
-                "identificacaoEmissaoBoleto": 1,
-                "identificacaoDistribuicaoBoleto": 1,
-                "valor": 156.23,
-                "dataVencimento": "2018-09-20T00:00:00-03:00",
-                "dataLimitePagamento": "2018-09-20T00:00:00-03:00",
-                "valorAbatimento": 1,
-                "tipoDesconto": 1,
-                "dataPrimeiroDesconto": "2018-09-20T00:00:00-03:00",
-                "valorPrimeiroDesconto": 1,
-                "dataSegundoDesconto": "2018-09-20T00:00:00-03:00",
-                "valorSegundoDesconto": 0,
-                "dataTerceiroDesconto": "2018-09-20T00:00:00-03:00",
-                "valorTerceiroDesconto": 0,
-                "tipoMulta": 0,
-                "dataMulta": "2018-09-20T00:00:00-03:00",
-                "valorMulta": 5,
-                "tipoJurosMora": 2,
-                "dataJurosMora": "2018-09-20T00:00:00-03:00",
-                "valorJurosMora": 4,
+                "seuNumero": transaction.reference,
+                "identificacaoBoletoEmpresa": transaction.reference,
+                "identificacaoEmissaoBoleto": 2,
+                "identificacaoDistribuicaoBoleto": 2,
+                "valor": "%.2f" % moveline.amount_residual,
+                "dataVencimento": moveline.date_maturity.isoformat(),
+                "tipoMulta": tipo_multa,
+                "valorMulta": self.payment_journal_id.l10n_br_valor_multa,
+                "tipoJurosMora": tipo_mora,
+                "valorJurosMora": self.payment_journal_id.l10n_br_valor_juros_mora,
                 "numeroParcela": 1,
                 "aceite": True,
-                "codigoNegativacao": 2,
-                "numeroDiasNegativacao": 60,
-                "codigoProtesto": 1,
-                "numeroDiasProtesto": 30,
                 "pagador": {
-                    "numeroCpfCnpj": "98765432185",
-                    "nome": "Marcelo dos Santos",
-                    "endereco": "Rua 87 Quadra 1 Lote 1 casa 1",
-                    "bairro": "Santa Rosa",
-                    "cidade": "Luziânia",
-                    "cep": "72320000",
-                    "uf": "DF",
-                    "email": ["pagador@dominio.com.br"]
+                    "numeroCpfCnpj": self.partner_id.l10n_br_cnpj_cpf,
+                    "nome": self.partner_id.name,
+                    "endereco": self.partner_id.street,
+                    "bairro": self.partner_id.l10n_br_district,
+                    "cidade": self.partner_id.city_id.name,
+                    "cep": self.partner_id.zip,
+                    "uf": self.partner_id.state_id.code,
+                    "email": self.partner_id.email
                 },
                 "beneficiarioFinal": {
-                    "numeroCpfCnpj": "98784978699",
-                    "nome": "Lucas de Lima"
+                    "numeroCpfCnpj": self.company_id.l10n_br_cnpj_cpf,
+                    "nome": self.company_id.l10n_br_legal_name,
                 },
                 "mensagensInstrucao": {
                     "tipoInstrucao": 1,
-                    "mensagens": [
-                        "Descrição da Instrução 1",
-                        "Descrição da Instrução 2",
-                        "Descrição da Instrução 3",
-                        "Descrição da Instrução 4",
-                        "Descrição da Instrução 5"
-                    ]
+                    "mensagens": instrucoes,
                 },
                 "gerarPdf": True,
             }
-
-            # Aqui é um exemplo de como buscar as informações
-            # vals = {
-            #     'boleto.emissao': self.invoice_date,
-            #     'boleto.vencimento': self.invoice_date_due,
-            #     'boleto.documento': self.name,
-            #     'boleto.titulo': "DM",
-            #     'boleto.valor': "%.2f" % self.amount_total,
-            #     'boleto.pagador.nome': self.partner_id.name,
-            #     'boleto.pagador.cprf': self.partner_id.l10n_br_cnpj_cpf,
-            #     'boleto.pagador.endereco.cep': "%s-%s" % (self.partner_id.zip[:5], self.partner_id.zip[-3:]),
-            #     'boleto.pagador.endereco.uf': self.partner_id.state_id.code,
-            #     'boleto.pagador.endereco.localidade': self.partner_id.city_id.name,
-            #     'boleto.pagador.endereco.bairro': self.partner_id.l10n_br_district,
-            #     'boleto.pagador.endereco.logradouro': self.partner_id.street,
-            #     'boleto.pagador.endereco.numero': self.partner_id.l10n_br_number,
-            #     'boleto.pagador.endereco.complemento': "",
-            # }
 
             headers = {
                 "Authorization": "Bearer %s" % self.payment_journal_id.l10n_br_sicoob_access_token
@@ -148,21 +115,18 @@ class AccountMove(models.Model):
             # Essa parte aqui precisa chamar a API do sicoob e 
             # salvar o retorno no objeto transaction
             response = requests.post("%s/cobranca-bancaria/v1/boletos" % url, json=[vals], headers=headers)
-            import ipdb; ipdb.set_trace()
             if response.status_code == 207:
                 json_p = response.json()["resultado"][0]
                 
                 boleto_pdf = json_p["boleto"]["pdfBoleto"]
 
-                seu_numero = json_p["boleto"]["seuNumero"]
                 nosso_numero = json_p["boleto"]["nossoNumero"]
                 linha_digitavel = json_p["boleto"]["linhaDigitavel"]
 
+            elif response.status_code == 401:
+                raise UserError('A autorização do Sicoob expirou, favor efetuar login novamente!')
             else:
-                print(response.text)
-                jsonp = response.json()
-                message = '\n'.join([x['mensagem'] for x in jsonp['erro']['causas']])
-                raise UserError('Houve um erro com a API do Boleto Cloud:\n%s' % message)
+                raise UserError('Houve um erro com a API do Sicoob:\n%s' % response.text)
 
             transaction.write({
                 'acquirer_reference': nosso_numero,

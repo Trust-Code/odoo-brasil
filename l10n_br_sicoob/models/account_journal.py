@@ -28,6 +28,12 @@ class AccountJournal(models.Model):
     l10n_br_sicoob_access_token = fields.Char(string="Access Token Sicoob", size=150)
     l10n_br_sicoob_refresh_token = fields.Char(string="Sicoob Refresh Access Token", size=150)
 
+    l10n_br_sicoob_contrato = fields.Char(string="Nº Contrato Boleto", size=50)
+
+    l10n_br_valor_multa = fields.Float(string="Valor da Multa (%): ")
+    l10n_br_valor_juros_mora = fields.Float(string="Valor Juros Mora (%): ")
+    l10n_br_boleto_instrucoes = fields.Char(string="Instruções do Boleto", size=400)
+
     @api.onchange('bank_account_id')
     def _onchange_bank_account(self):
         self.ensure_one()
