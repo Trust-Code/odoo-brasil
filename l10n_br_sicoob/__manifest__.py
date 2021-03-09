@@ -23,6 +23,7 @@
     ],
     'data': [
         'data/acquirer.xml',
+        'data/cron.xml',
         'views/res_bank_views.xml',
         'views/payment_transaction.xml',
         'views/account_journal_views.xml',

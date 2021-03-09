@@ -75,16 +75,18 @@ class AccountJournal(models.Model):
         }
 
     def cron_synchronize_statement(self):
-        # todo
-        # buscar os diarios que precisam ser sincronizados
-        # depois vai iterar sobre eles e chamar a funcao que sincroniza
-        pass
+        synchronize = self.search([
+            ('bank_statements_source', '=', 'sicoob_sync')
+        ])
+        for journal in synchronize:
+            journal.action_synchronize_statement()
+
 
     def action_synchronize_statement(self):
         # TODO sincronizar o extrato do mês atual
         # Sincronizar via cron todo dia, e apenas atualizar a diferença 
         # caso o extrato já exista
-        url = 'https://sandbox.sicoob.com.br/conta-corrente/extrato/03/2021'
+        url = "https://sandbox.sicoob.com.br/conta-corrente/extrato/" + datetime.now().strftime("%m/%Y")
         headers = {
             "Authorization": "Bearer %s" % self.l10n_br_sicoob_access_token
         }
