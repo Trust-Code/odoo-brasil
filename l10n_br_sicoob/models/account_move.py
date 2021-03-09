@@ -63,11 +63,10 @@ class AccountMove(models.Model):
 
             tipo_mora = 3 # Isento
             if self.payment_journal_id.l10n_br_valor_juros_mora:
-                tipo_mora = 2
-
+                tipo_mora = 2  # Taxa Mensal
             tipo_multa = 0  # Isento
             if self.payment_journal_id.l10n_br_valor_multa:
-                tipo_multa = 2  # Taxa Mensal
+                tipo_multa = 2  # Percentual
 
             # TODO Esses valores aqui precisam ser preenchidos
             vals = {

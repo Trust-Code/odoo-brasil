@@ -2,7 +2,7 @@
 # Part of Trustcode. See LICENSE file for full copyright and licensing details.
 
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from odoo import fields, models, api
 from odoo.exceptions import UserError
 
@@ -74,11 +74,17 @@ class AccountJournal(models.Model):
             'target': 'self',
         }
 
+    def cron_synchronize_statement(self):
+        # todo
+        # buscar os diarios que precisam ser sincronizados
+        # depois vai iterar sobre eles e chamar a funcao que sincroniza
+        pass
+
     def action_synchronize_statement(self):
         # TODO sincronizar o extrato do mês atual
         # Sincronizar via cron todo dia, e apenas atualizar a diferença 
         # caso o extrato já exista
-        url = 'https://sandbox.sicoob.com.br/conta-corrente/extrato/10/2020'
+        url = 'https://sandbox.sicoob.com.br/conta-corrente/extrato/03/2021'
         headers = {
             "Authorization": "Bearer %s" % self.l10n_br_sicoob_access_token
         }
@@ -102,15 +108,36 @@ class AccountJournal(models.Model):
                     'amount': valor,
                 }))
 
-            statement = self.env['account.bank.statement'].create({
-                'name': 'Sincronização online',
-                'journal_id': self.id,
-                'date': datetime.today(),
-                'company_id': self.company_id.id,
-                'balance_start': 0.0,
-                'balance_end_real': saldo,
-                'line_ids': line_ids,
-            })
+            hoje = datetime.now().date()
+            dia_primeiro = hoje.replace(day=1)
+            statement = self.env['account.bank.statement'].search(
+                [('journal_id', '=', self.id),
+                 ('date', '=', dia_primeiro.isoformat()),
+                 ('state', '=', 'open')]
+            )
+
+            if not statement:
+                statement = self.env['account.bank.statement'].create({
+                    'name': datetime.now().strftime("Extrato de %B / %m"),
+                    'journal_id': self.id,
+                    'date': dia_primeiro,
+                    'company_id': self.company_id.id,
+                    'balance_start': 0.0,
+                    'balance_end_real': saldo,
+                    'line_ids': line_ids,
+                })
+
+            else:
+                for linha in line_ids:
+                    not_found = True
+                    for line1 in statement.line_ids:
+                        if linha[2]['ref'] == line1.ref:
+                            not_found = False
+                            break
+                    if not_found:
+                        linha[2]['statement_id'] = statement.id
+                        self.env['account.bank.statement.line'].create(linha[2])
+
             return self.action_open_reconcile()
         elif r.status_code == 401:
             raise UserError(
