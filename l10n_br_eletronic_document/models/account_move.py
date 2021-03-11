@@ -118,13 +118,14 @@ class AccountMove(models.Model):
                     move.company_id.state_id.l10n_br_ibge_code,
                     move.company_id.city_id.l10n_br_ibge_code,
                 )
-                if cod_municipio == '4205407' and not all([
-                    move.company_id.l10n_br_aedf,
-                    move.company_id.l10n_br_client_id,
-                    move.company_id.l10n_br_client_secret,
-                    move.company_id.l10n_br_user_password
-                ]):
-                    errors.append('Campos de validação para a API de Florianópolis não estão preenchidos')
+                if cod_municipio == '4205407':
+                    if not all([
+                        move.company_id.l10n_br_aedf,
+                        move.company_id.l10n_br_client_id,
+                        move.company_id.l10n_br_client_secret,
+                        move.company_id.l10n_br_user_password
+                    ]):
+                        errors.append('Campos de validação para a API de Florianópolis não estão preenchidos')
                 elif cod_municipio in ['3550308', '3106200']:
                     for line in move.invoice_line_ids:
                         if line.product_id.type == 'service':
