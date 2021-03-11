@@ -830,6 +830,7 @@ class EletronicDocument(models.Model):
 
         response = {}
         cod_municipio = doc_values[0]['emissor']['codigo_municipio']
+
         if  cod_municipio == '4205407':
             from .nfse_florianopolis import send_api
             response = send_api(certificate, password, doc_values)
@@ -911,7 +912,6 @@ class EletronicDocument(models.Model):
                     'mensagem_retorno': response['message'],
                 })
 
-
     def cron_check_status_nfse(self):
         documents = self.search([('state', '=', 'processing')], limit=100)
         documents.action_check_status_nfse()
@@ -936,7 +936,6 @@ class EletronicDocument(models.Model):
                 company.state_id.l10n_br_ibge_code,
                 company.city_id.l10n_br_ibge_code),
         }
-
         if doc_values['codigo_municipio'] == '4205407':
             from .nfse_florianopolis import cancel_api
             response = cancel_api(certificate, password, doc_values)
