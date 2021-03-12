@@ -38,7 +38,7 @@
                 <field name="inscr_mun"/>
                 <field name="suframa"/>
             </field>
-            <field name="email_from" position="before">
+            <field name="partner_is_blacklisted" position="after">
                 <field name="name_surname"/>
                 <field name="cpf"/>
                 <field name="rg"/>
