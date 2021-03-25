@@ -925,7 +925,7 @@ class InvoiceEletronic(models.Model):
                 'cfop_id': cfop.id,
                 'icms_csosn_simples': item.icms_cst if item.icms_cst and len(
                     item.icms_cst) == 3 else '',
-                'icms_cst': item.icms_cst if item.icms_cst and len(
+                'icms_cst_normal': item.icms_cst if item.icms_cst and len(
                     item.icms_cst) == 2 else '',
                 'icms_aliquota_reducao_base': item.icms_aliquota_reducao_base,
                 'icms_aliquota_credito': item.icms_aliquota_credito,
