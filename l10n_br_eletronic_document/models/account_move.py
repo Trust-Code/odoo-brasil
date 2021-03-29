@@ -87,6 +87,17 @@ class AccountMove(models.Model):
                 if not move.company_id.partner_id.country_id.l10n_br_ibge_code:
                     errors.append('Cadastro da Empresa / Endereço - Código do BC do país')
 
+            responsavel_tecnico = move.company_id.l10n_br_responsavel_tecnico_id
+            if responsavel_tecnico:
+                if not responsavel_tecnico.l10n_br_cnpj_cpf:
+                    errors.append("Configure o CNPJ do responsável técnico")
+                if not responsavel_tecnico.email:
+                    errors.append("Configure o Email do responsável técnico")
+                if not responsavel_tecnico.phone:
+                    errors.append("Configure o Telefone do responsável técnico")
+                if len(responsavel_tecnico.child_ids) == 0:
+                    errors.append("Adicione um contato para o responsável técnico!")
+
             has_products = has_services = False
             # produtos
             for eletr in move.invoice_line_ids:
@@ -100,6 +111,8 @@ class AccountMove(models.Model):
                     errors.append(
                         'Prod: %s - Código do produto' % (
                             eletr.product_id.name))
+                if has_products and not eletr.product_id.l10n_br_ncm_id:
+                    errors.append('%s - NCM do produto' % prod)
 
                 if not move.fiscal_position_id:
                     errors.append('Configure a posição fiscal')

@@ -85,6 +85,17 @@ class EletronicDocument(models.Model):
             if not self.company_id.partner_id.country_id.l10n_br_ibge_code:
                 errors.append('Cadastro da Empresa / Endereço - Código do BC do país')
 
+        responsavel_tecnico = self.company_id.l10n_br_responsavel_tecnico_id
+        if responsavel_tecnico:
+            if not responsavel_tecnico.l10n_br_cnpj_cpf:
+                errors.append("Configure o CNPJ do responsável técnico")
+            if not responsavel_tecnico.email:
+                errors.append("Configure o Email do responsável técnico")
+            if not responsavel_tecnico.phone:
+                errors.append("Configure o Telefone do responsável técnico")
+            if len(responsavel_tecnico.child_ids) == 0:
+                errors.append("Adicione um contato para o responsável técnico!")
+
         # produtos
         for eletr in self.document_line_ids:
             prod = "Produto: %s - %s" % (eletr.product_id.default_code,
@@ -92,6 +103,8 @@ class EletronicDocument(models.Model):
             if not eletr.cfop:
                 errors.append('%s - CFOP' % prod)
             if eletr.tipo_produto == 'product':
+                if not eletr.ncm:
+                    errors.append('%s - NCM do produto' % prod)
                 if not eletr.icms_cst:
                     errors.append('%s - CST do ICMS' % prod)
                 if not eletr.ipi_cst:
@@ -342,7 +355,7 @@ class EletronicDocument(models.Model):
         if self.model not in ('nfe', 'nfce'):
             return
 
-        tz = timezone(self.env.user.tz)
+        tz = timezone(self.env.user.tz or 'America/Sao_Paulo')
         dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
         dt_saida = fields.Datetime.from_string(self.data_entrada_saida)
         if dt_saida:
@@ -647,10 +660,6 @@ class EletronicDocument(models.Model):
         infRespTec = {}
 
         if responsavel_tecnico:
-            if len(responsavel_tecnico.child_ids) == 0:
-                raise UserError(
-                    "Adicione um contato para o responsável técnico!")
-
             cnpj = re.sub('[^0-9]', '', responsavel_tecnico.l10n_br_cnpj_cpf)
             fone = re.sub('[^0-9]', '', responsavel_tecnico.phone or '')
             infRespTec = {
