@@ -9,4 +9,4 @@ def post_init(cr, registry):
 
     filename = 'data/account.ncm.csv'
     convert_file(cr, 'l10n_br_account', filename, None,
-                 mode='init', noupdate=False, kind='init', report=None)
+                 mode='init', noupdate=True, kind='init', report=None)
