@@ -902,7 +902,7 @@ class InvoiceEletronic(models.Model):
                 'name': purchase_line_id.name,
                 'cfop_id': purchase_line_id.cfop_id.id,
                 'icms_csosn_simples': purchase_line_id.icms_csosn_simples,
-                'icms_cst': purchase_line_id.icms_cst_normal,
+                'icms_cst_normal': purchase_line_id.icms_cst_normal,
                 'icms_aliquota_reducao_base':
                 purchase_line_id.icms_aliquota_reducao_base,
                 'icms_aliquota_credito':
