@@ -79,6 +79,11 @@ class InvoiceEletronic(models.Model):
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
+    ind_intermed = fields.Selection([
+        ('0', u'Operação sem intermediador'),
+        ('1', u'Operação em site ou Plataformas de Terceiros'),
+    ], u'Indicativo do Intermediador', readonly=True, states=STATE,
+         default='0')
     ind_dest = fields.Selection([
         ('1', u'1 - Operação Interna'),
         ('2', u'2 - Operação Interestadual'),
@@ -498,6 +503,7 @@ class InvoiceEletronic(models.Model):
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
+            'indIntermed': self.ind_intermed or '0',
             'procEmi': 0,
             'verProc': 'Odoo 11 - Trustcode',
         }
