@@ -98,7 +98,7 @@ class PurchaseOrder(models.Model):
         ):
             line._compute_tax_id()
 
-    @api.onchange(
+    @api.depends(
         "order_line",
         "order_line.price_unit",
         "order_line.product_qty",
@@ -115,7 +115,7 @@ class PurchaseOrder(models.Model):
         for item in self:
             item.handle_delivery_expense_insurance_lines("delivery")
 
-    @api.onchange(
+    @api.depends(
         "order_line",
         "order_line.price_unit",
         "order_line.product_qty",
@@ -132,7 +132,7 @@ class PurchaseOrder(models.Model):
         for item in self:
             item.handle_delivery_expense_insurance_lines("expense")
 
-    @api.onchange(
+    @api.depends(
         "order_line",
         "order_line.price_unit",
         "order_line.product_qty",

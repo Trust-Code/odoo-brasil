@@ -99,7 +99,7 @@ class SaleOrder(models.Model):
         ):
             line._compute_amount()
 
-    @api.onchange(
+    @api.depends(
         "order_line", "order_line.price_unit", "order_line.product_uom_qty"
     )
     def _compute_l10n_br_delivery_amount(self):
@@ -108,7 +108,7 @@ class SaleOrder(models.Model):
             item.l10n_br_delivery_amount = delivery_line.price_total
             item.compute_lines_partition("delivery")
 
-    @api.onchange(
+    @api.depends(
         "order_line",
         "order_line.price_unit",
         "order_line.product_uom_qty",
@@ -125,7 +125,7 @@ class SaleOrder(models.Model):
         for item in self:
             item.handle_delivery_expense_insurance_lines("expense")
 
-    @api.onchange(
+    @api.depends(
         "order_line",
         "order_line.price_unit",
         "order_line.product_uom_qty",

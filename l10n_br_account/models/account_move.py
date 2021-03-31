@@ -149,7 +149,7 @@ class AccountMove(models.Model):
             check_move_validity=False
         )._move_autocomplete_invoice_lines_values()
 
-    @api.onchange(
+    @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.price_unit",
         "invoice_line_ids.quantity",
@@ -166,7 +166,7 @@ class AccountMove(models.Model):
         for item in self:
             item.handle_delivery_expense_insurance_lines("delivery")
 
-    @api.onchange(
+    @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.price_unit",
         "invoice_line_ids.quantity",
@@ -183,7 +183,7 @@ class AccountMove(models.Model):
         for item in self:
             item.handle_delivery_expense_insurance_lines("expense")
 
-    @api.onchange(
+    @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.price_unit",
         "invoice_line_ids.quantity",
