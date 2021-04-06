@@ -19,6 +19,9 @@ class AccountJournal(models.Model):
         return self.env['ir.config_parameter'].sudo().get_param('web.base.url')
 
     l10n_br_bank_branch_number = fields.Char(string="Número da Agência")
+    l10n_br_sicoob_enviroment = fields.Selection(
+        [('homologacao', 'Homologação'), ('producao', 'Produção')],
+        string="Ambiente de uso", default="homologacao")
     l10n_br_sicoob_client_id = fields.Char(string="Client Id", size=100)
     l10n_br_sicoob_client_secret = fields.Char(string="Client Secret", size=100)
     l10n_br_sicoob_token_basic = fields.Char(string="Token Basic", size=100)
@@ -28,6 +31,7 @@ class AccountJournal(models.Model):
     l10n_br_sicoob_access_token = fields.Char(string="Access Token Sicoob", size=150)
     l10n_br_sicoob_refresh_token = fields.Char(string="Sicoob Refresh Access Token", size=150)
 
+    l10n_br_emitir_boleto = fields.Boolean(string="Emitir boleto?")
     l10n_br_sicoob_contrato = fields.Char(string="Nº Contrato Boleto", size=50)
 
     l10n_br_valor_multa = fields.Float(string="Valor da Multa (%): ")
@@ -58,11 +62,17 @@ class AccountJournal(models.Model):
         scope_extrato = 'cco_extrato+cco_saldo'
         scope_boleto = 'cobranca_boletos_incluir+cobranca_boletos_consultar+cobranca_boletos_segunda_via+cobranca_boletos_prorrogacoes_data_vencimento+cobranca_boletos_baixa'
 
+        if self.l10n_br_sicoob_enviroment == 'producao':
+            url = 'https://api.sisbr.com.br'
+        else:
+            url = 'https://sandbox.sicoob.com.br'
+
+
         return_url = '%s/sicoob/authorization?journal=%s' % (
             self.l10n_br_sicoob_url_base, self.id)
-        url = 'https://sandbox.sicoob.com.br/oauth2/authorize?response_type=code&redirect_uri=%s&client_id=%s' \
+        url = '%s/oauth2/authorize?response_type=code&redirect_uri=%s&client_id=%s' \
               '&cooperativa=%s&contaCorrente=%s&scope=%s+%s' % (
-                  return_url, self.l10n_br_sicoob_client_id,
+                  url, return_url, self.l10n_br_sicoob_client_id,
                   self.bank_account_id.l10n_br_branch_number or '',
                   self.bank_account_id.acc_number or '',
                   scope_extrato,
@@ -83,10 +93,12 @@ class AccountJournal(models.Model):
 
 
     def action_synchronize_statement(self):
-        # TODO sincronizar o extrato do mês atual
-        # Sincronizar via cron todo dia, e apenas atualizar a diferença 
-        # caso o extrato já exista
-        url = "https://sandbox.sicoob.com.br/conta-corrente/extrato/" + datetime.now().strftime("%m/%Y")
+        if self.l10n_br_sicoob_enviroment == 'producao':
+            url = 'https://api.sisbr.com.br'
+        else:
+            url = 'https://sandbox.sicoob.com.br'
+
+        url = "%s/conta-corrente/extrato/%s" % (url, datetime.now().strftime("%m/%Y"))
         headers = {
             "Authorization": "Bearer %s" % self.l10n_br_sicoob_access_token
         }

@@ -52,11 +52,9 @@ class AccountMove(models.Model):
             })
 
             if acquirer.state == 'enabled':
-                url = 'https://sandbox.sicoob.com.br'  # TODO URL principal
+                url = 'https://api.sisbr.com.br'
             else:
                 url = 'https://sandbox.sicoob.com.br'
-
-            api_token = self.payment_journal_id.l10n_br_sicoob_access_token
 
             instrucao = self.payment_journal_id.l10n_br_boleto_instrucoes or ''
             instrucoes = instrucao.split('\n')
@@ -68,7 +66,6 @@ class AccountMove(models.Model):
             if self.payment_journal_id.l10n_br_valor_multa:
                 tipo_multa = 2  # Percentual
 
-            # TODO Esses valores aqui precisam ser preenchidos
             vals = {
                 "numeroContrato": self.payment_journal_id.l10n_br_sicoob_contrato,
                 "modalidade": 1,
@@ -120,7 +117,6 @@ class AccountMove(models.Model):
                 boleto_pdf = json_p["boleto"]["pdfBoleto"]
 
                 nosso_numero = json_p["boleto"]["nossoNumero"]
-                linha_digitavel = json_p["boleto"]["linhaDigitavel"]
 
             elif response.status_code == 401:
                 raise UserError('A autorização do Sicoob expirou, favor efetuar login novamente!')

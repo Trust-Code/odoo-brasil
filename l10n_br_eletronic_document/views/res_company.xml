@@ -16,7 +16,7 @@
                         </group>
                     </group>
                     <group name="group_nfse">
-                        <group>
+                        <group string="Token Integração NFSe Focus">
                             <field name="l10n_br_nfse_token_acess" />
                         </group>
                         <group string="Florianópolis">

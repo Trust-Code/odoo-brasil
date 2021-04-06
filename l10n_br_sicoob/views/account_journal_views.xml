@@ -7,18 +7,20 @@
         <field name="arch" type="xml">
             <xpath expr="//page[@name='bank_account']" position="inside">
                 <group attrs="{'invisible': [('bank_statements_source', '!=', 'sicoob_sync')]}">
-                    <group string="Configurações do Boleto">
-                        <field name="l10n_br_sicoob_contrato"/>
-                        <field name="l10n_br_valor_multa"/>
-                        <field name="l10n_br_valor_juros_mora"/>
-                        <field name="l10n_br_boleto_instrucoes" widget="text"/>
-                    </group>
                     <group string="Sincronização Sicoob">
+                        <field name="l10n_br_sicoob_enviroment"/>
                         <field name="l10n_br_sicoob_url_base"/>
                         <field name="l10n_br_sicoob_client_id"/>
                         <field name="l10n_br_sicoob_client_secret"/>
                         <field name="l10n_br_sicoob_token_basic"/>
                         <button string="Autorizar" type="object" name="action_authorize_odoo" class="btn btn-primary btn-sm"/>
+                    </group>
+                    <group string="Configurações do Boleto Sicoob">
+                        <field name="l10n_br_emitir_boleto"/>
+                        <field name="l10n_br_sicoob_contrato"/>
+                        <field name="l10n_br_valor_multa"/>
+                        <field name="l10n_br_valor_juros_mora"/>
+                        <field name="l10n_br_boleto_instrucoes" widget="text"/>
                     </group>
                 </group>
             </xpath>
