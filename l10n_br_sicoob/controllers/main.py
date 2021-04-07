@@ -17,8 +17,7 @@ class SicoobController(http.Controller):
             ('bank_statements_source', '=', 'sicoob_sync')
         ], limit=1)
         codigo = post['code']
-        return_url = '%s/sicoob/authorization?journal=%s' % (
-            journal.l10n_br_sicoob_url_base, journal.id)
+        return_url = '%s/sicoob/authorization' % journal.l10n_br_sicoob_url_base
 
         if journal.l10n_br_sicoob_enviroment == 'producao':
             url = 'https://api.sisbr.com.br/auth/token'

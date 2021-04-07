@@ -68,8 +68,7 @@ class AccountJournal(models.Model):
             url = 'https://sandbox.sicoob.com.br'
 
 
-        return_url = '%s/sicoob/authorization?journal=%s' % (
-            self.l10n_br_sicoob_url_base, self.id)
+        return_url = '%s/sicoob/authorization' % self.l10n_br_sicoob_url_base
         url = '%s/oauth2/authorize?response_type=code&redirect_uri=%s&client_id=%s' \
               '&cooperativa=%s&contaCorrente=%s&scope=%s+%s' % (
                   url, return_url, self.l10n_br_sicoob_client_id,
