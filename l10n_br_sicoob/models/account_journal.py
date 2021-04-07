@@ -93,11 +93,11 @@ class AccountJournal(models.Model):
 
     def action_synchronize_statement(self):
         if self.l10n_br_sicoob_enviroment == 'producao':
-            url = 'https://api.sisbr.com.br'
+            url = 'https://api.sisbr.com.br/cooperado'
         else:
             url = 'https://sandbox.sicoob.com.br'
 
-        url = "%s/conta-corrente/extrato/%s" % (url, datetime.now().strftime("%m/%Y"))
+        url = "%s/conta-corrente/extrato/v1/%s" % (url, datetime.now().strftime("%m/%Y"))
         headers = {
             "Authorization": "Bearer %s" % self.l10n_br_sicoob_access_token
         }

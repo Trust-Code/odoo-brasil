@@ -52,7 +52,7 @@ class AccountMove(models.Model):
             })
 
             if acquirer.state == 'enabled':
-                url = 'https://api.sisbr.com.br'
+                url = 'https://api.sisbr.com.br/cooperado'
             else:
                 url = 'https://sandbox.sicoob.com.br'
 
@@ -113,9 +113,7 @@ class AccountMove(models.Model):
             response = requests.post("%s/cobranca-bancaria/v1/boletos" % url, json=[vals], headers=headers)
             if response.status_code == 207:
                 json_p = response.json()["resultado"][0]
-                
                 boleto_pdf = json_p["boleto"]["pdfBoleto"]
-
                 nosso_numero = json_p["boleto"]["nossoNumero"]
 
             elif response.status_code == 401:
