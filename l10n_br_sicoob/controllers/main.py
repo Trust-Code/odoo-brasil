@@ -13,13 +13,17 @@ class SicoobController(http.Controller):
         '/sicoob/authorization', type='http', auth="none",
         methods=['GET', 'POST'], csrf=False)
     def sicoob_authorization(self, **post):
-        journal_id = int(post['journal'])
-        journal = request.env['account.journal'].sudo().browse(journal_id)
+        journal = request.env['account.journal'].sudo().search([
+            ('bank_statements_source', '=', 'sicoob_sync')
+        ], limit=1)
         codigo = post['code']
         return_url = '%s/sicoob/authorization?journal=%s' % (
             journal.l10n_br_sicoob_url_base, journal.id)
 
-        url = 'https://sandbox.sicoob.com.br/token'
+        if journal.l10n_br_sicoob_enviroment == 'producao':
+            url = 'https://api.sisbr.com.br/auth/token'
+        else:
+            url = 'https://sandbox.sicoob.com.br/token'
         header = {
             "Content-type": "application/x-www-form-urlencoded",
             "Authorization": "Basic %s" % journal.l10n_br_sicoob_token_basic,
@@ -35,6 +39,6 @@ class SicoobController(http.Controller):
 
         act_jour_id = request.env.ref('account.action_account_journal_form').id
         url = '/web#id=%s&view_type=form&model=account.journal&action=%s' % (
-            journal_id, act_jour_id
+            journal.id, act_jour_id
         )
         return werkzeug.utils.redirect(url)

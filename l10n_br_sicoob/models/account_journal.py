@@ -63,7 +63,7 @@ class AccountJournal(models.Model):
         scope_boleto = 'cobranca_boletos_incluir+cobranca_boletos_consultar+cobranca_boletos_segunda_via+cobranca_boletos_prorrogacoes_data_vencimento+cobranca_boletos_baixa'
 
         if self.l10n_br_sicoob_enviroment == 'producao':
-            url = 'https://api.sisbr.com.br'
+            url = 'https://api.sisbr.com.br/auth'
         else:
             url = 'https://sandbox.sicoob.com.br'
 
