@@ -1,0 +1,22 @@
+<odoo>
+
+    <record id="trustcode_inter_account_journal_form" model="ir.ui.view">
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='bank_account']" position="inside">
+                <group>
+                    <group string="Boleto Banco Inter">
+                        <field name="l10n_br_use_boleto_inter"/>
+                        <field name="l10n_br_inter_cert"/>
+                        <field name="l10n_br_inter_key"/>
+                        <field name="l10n_br_valor_multa"/>
+                        <field name="l10n_br_valor_juros_mora"/>
+                        <field name="l10n_br_boleto_instrucoes" widget="text"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

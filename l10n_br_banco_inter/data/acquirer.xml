@@ -1,0 +1,21 @@
+<odoo>
+    <data noupdate="1">
+        <record id="payment_acquirer_boleto_inter" model="payment.acquirer">
+            <field name="name">Boleto Inter</field>
+            <field name="provider">boleto-inter</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="description" type="html">
+                <p>
+                    Emita boletos via Banco Inter. <br />
+                    Simplifique seu recebimento, gere o boleto já registrado,
+                    envie por email, disponibilize online e receba o pagamento diretamente na sua conta; 
+                    sem intermediação*
+                </p>
+                <ul class="list-inline">
+                    <li><i class="fa fa-check"/>eCommerce</li>
+                    <li><i class="fa fa-check"/>Botão de pagamento em cotações online</li>
+                </ul>
+            </field>
+        </record>
+    </data>
+</odoo>

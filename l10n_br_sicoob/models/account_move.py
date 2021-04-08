@@ -11,7 +11,7 @@ class AccountMove(models.Model):
     def validate_data_boleto(self):
         errors = []
         for invoice in self:
-            if not invoice.payment_journal_id:
+            if not invoice.payment_journal_id or not self.payment_journal_id.l10n_br_emitir_boleto:
                 continue
             partner = invoice.partner_id.commercial_partner_id
             if partner.is_company and not partner.l10n_br_legal_name:
@@ -34,7 +34,7 @@ class AccountMove(models.Model):
             raise ValidationError(msg)
 
     def send_information_to_sicoob(self):
-        if not self.payment_journal_id:
+        if not self.payment_journal_id or not self.payment_journal_id.l10n_br_emitir_boleto:
             return
 
         for moveline in self.receivable_move_line_ids:
