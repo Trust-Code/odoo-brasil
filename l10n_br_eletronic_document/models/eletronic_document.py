@@ -65,15 +65,18 @@ class EletronicDocument(models.Model):
 
             doc.iss_base_calculo = sum([x.iss_base_calculo for x in doc.document_line_ids])
             doc.iss_valor = sum([x.iss_valor for x in doc.document_line_ids])
-            doc.iss_valor_retencao = sum([x.iss_valor_retencao for x in doc.document_line_ids])   
+            doc.iss_valor_retencao = sum([x.iss_valor_retencao for x in doc.document_line_ids])
 
             doc.irpj_base_calculo = sum([x.irpj_base_calculo for x in doc.document_line_ids])
             doc.irpj_valor = sum([x.irpj_valor for x in doc.document_line_ids])
-            doc.irpj_valor_retencao = sum([x.irpj_valor_retencao for x in doc.document_line_ids])  
+            doc.irpj_valor_retencao = sum([x.irpj_valor_retencao for x in doc.document_line_ids])
 
             doc.csll_base_calculo = sum([x.csll_base_calculo for x in doc.document_line_ids])
             doc.csll_valor = sum([x.csll_valor for x in doc.document_line_ids])
-            doc.csll_valor_retencao = sum([x.csll_valor_retencao for x in doc.document_line_ids])  
+            doc.csll_valor_retencao = sum([x.csll_valor_retencao for x in doc.document_line_ids])
+
+            doc.inss_base_calculo = sum([x.inss_base_calculo for x in doc.document_line_ids])
+            doc.inss_valor_retencao = sum([x.inss_valor_retencao for x in doc.document_line_ids])
 
     # ------------ PIS ---------------------
     pis_base_calculo = fields.Monetary(
@@ -238,8 +241,13 @@ class EletronicDocument(models.Model):
         string=u'Total II', readonly=True, states=STATE)
     valor_ipi = fields.Monetary(
         string=u"Total IPI", readonly=True, states=STATE)
+
+    @api.depends('document_line_ids')
+    def _compute_valor_estimado_tributos(self):
+        self.valor_estimado_tributos = sum(line.tributos_estimados for line in self.document_line_ids)
     valor_estimado_tributos = fields.Monetary(
-        string=u"Tributos Estimados", readonly=True, states=STATE)
+        string=u"Tributos Estimados", readonly=True, states=STATE,
+        compute="_compute_valor_estimado_tributos")
 
     valor_servicos = fields.Monetary(
         string=u"Total Serviços", readonly=True, states=STATE)
@@ -455,12 +463,11 @@ class EletronicDocument(models.Model):
             descricao = ''
             for line in item.document_line_ids:
                 if line.name:
-                    descricao += line.name.replace('\n', '<br/>') + '<br/>'
+                    descricao += line.name.replace('\n', '|') + '|'
             if item.informacoes_legais:
-                descricao += item.informacoes_legais.replace('\n', '<br/>')
+                descricao += item.informacoes_legais.replace('\n', '|')
             if item.informacoes_complementares:
-                descricao += item.informacoes_complementares.replace(
-                    '\n', '<br/>')
+                descricao += item.informacoes_complementares.replace('\n', '|')
             item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
@@ -478,7 +485,11 @@ class EletronicDocument(models.Model):
 
         fiscal = self._compute_msg(fiscal_ids) + (
             self.invoice_id.fiscal_comment or '')
-        observacao = self._compute_msg(obs_ids) + (
+
+        ncm_tax_related = 'Valor Aprox. dos Tributos R$ %s. Fonte: IBPT\n' % \
+                          (str(self.valor_estimado_tributos))
+
+        observacao = ncm_tax_related + self._compute_msg(obs_ids) + (
             self.invoice_id.comment or '')
 
         self.informacoes_legais = fiscal
@@ -790,11 +801,10 @@ class EletronicDocument(models.Model):
                 'valor_iss': round(doc.iss_valor, 2),
                 'valor_total': round(doc.valor_final, 2),
                 'iss_valor_retencao': round(doc.iss_valor_retencao, 2),
-
-                'valor_carga_tributaria': round(doc.valor_estimado_tributos, 2),
+                'inss_valor_retencao': round(doc.inss_valor_retencao, 2),
+                'valor_carga_tributaria': round(doc.valor_estimado_tributos, 2) or '',
                 'fonte_carga_tributaria': 'IBPT',
                 'iss_retido': True if doc.iss_valor_retencao > 0.0 else False,
-
                 'aedf': doc.company_id.l10n_br_aedf,
                 'client_id': doc.company_id.l10n_br_client_id,
                 'client_secret': doc.company_id.l10n_br_client_secret,
@@ -819,11 +829,23 @@ class EletronicDocument(models.Model):
         doc_values = self.generate_dict_values()
 
         response = {}
-        if doc_values[0]['emissor']['codigo_municipio'] == '4205407':
+        cod_municipio = doc_values[0]['emissor']['codigo_municipio']
+
+        if  cod_municipio == '4205407':
             from .nfse_florianopolis import send_api
             response = send_api(certificate, password, doc_values)
-        elif doc_values[0]['emissor']['codigo_municipio'] == '3550308':
+        elif cod_municipio == '3550308':
             from .nfse_paulistana import send_api
+            response = send_api(certificate, password, doc_values)
+        elif cod_municipio == '3106200':
+            from .nfse_bh import send_api
+            for doc in doc_values:
+                doc['data_emissao'] = self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
+                doc['valor_pis'] = self.pis_valor_retencao
+                doc['valor_cofins'] = self.cofins_valor_retencao
+                doc['valor_inss'] = self.inss_valor_retencao
+                doc['valor_ir'] = self.irrf_valor_retencao
+                doc['valor_csll'] = self.csll_valor_retencao
             response = send_api(certificate, password, doc_values)
         else:
             from .focus_nfse import send_api
@@ -890,7 +912,6 @@ class EletronicDocument(models.Model):
                     'mensagem_retorno': response['message'],
                 })
 
-
     def cron_check_status_nfse(self):
         documents = self.search([('state', '=', 'processing')], limit=100)
         documents.action_check_status_nfse()
@@ -915,12 +936,16 @@ class EletronicDocument(models.Model):
                 company.state_id.l10n_br_ibge_code,
                 company.city_id.l10n_br_ibge_code),
         }
-
         if doc_values['codigo_municipio'] == '4205407':
             from .nfse_florianopolis import cancel_api
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3550308':
             from .nfse_paulistana import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+        elif doc_values['codigo_municipio'] == '3106200':
+            from .nfse_bh import cancel_api
+            doc_values['inscricao_municipal'] = re.sub('\W+','', company.l10n_br_inscr_mun)
+            doc_values['numero'] = str(self.data_emissao.year) + '{:>011d}'.format(self.numero)
             response = cancel_api(certificate, password, doc_values)
         else:
             from .focus_nfse import cancel_api
@@ -931,14 +956,25 @@ class EletronicDocument(models.Model):
             )
 
         if response['code'] in (200, 201):
-            self.write({
+            vals = {
                 'state': 'cancel',
                 'codigo_retorno': response['code'],
                 'mensagem_retorno': response['message']
-            })
+            }
+            if response.get('xml', False):
+                # split na nfse antiga para adicionar o xml da nfe cancelada
+                # [parte1 nfse] + [parte2 nfse]
+                split_nfe_processada = base64.decodebytes(self.nfe_processada).split(b'</Nfse>')
+                # readicionar a tag nfse pq o mesmo é removido ao dar split
+                split_nfe_processada[0] = split_nfe_processada[0] + b'</Nfse>'
+                # [parte1 nfse] + [parte2 nfse] + [parte2 nfse]
+                split_nfe_processada.append(split_nfe_processada[1])
+                # [parte1 nfse] + [nfse cancelada] + [parte2 nfse]
+                split_nfe_processada[1] = response['xml']
+                vals['nfe_processada'] = base64.encodebytes(b''.join(split_nfe_processada))
+            self.write(vals)
         else:
-            raise UserError('%s - %s' %
-                            (response['api_code'], response['message']))
+            raise UserError('%s - %s' % (response['api_code'], response['message']))
 
     def qrcode_floripa_url(self):
         import urllib
@@ -986,6 +1022,7 @@ class EletronicDocumentLine(models.Model):
         string="Tipo Produto", readonly=True, states=STATE)
     cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
     ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
+    unidade_medida = fields.Char('Un. Medida Xml', size=10, readonly=True, states=STATE)
 
     item_lista_servico = fields.Char(
         string="Código do serviço", size=10, readonly=True, states=STATE)
@@ -1027,9 +1064,23 @@ class EletronicDocumentLine(models.Model):
         string='Outras despesas', digits='Account',
         readonly=True, states=STATE)
 
+    def _compute_tributos_estimados(self):
+        for item in self:
+            tributos_estimados = 0.0
+            ncm = item.product_id.service_type_id if item.product_id.type == 'service' \
+                else item.product_id.l10n_br_ncm_id
+            if ncm:
+                # origem nacional
+                if item.product_id.l10n_br_origin in ['0', '3', '4', '5', '8']:
+                    ncm_mult = (ncm.federal_nacional + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                else:
+                    ncm_mult = (ncm.federal_importado + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                tributos_estimados += item.quantidade * item.preco_unitario * ncm_mult
+            item.tributos_estimados = tributos_estimados
+
     tributos_estimados = fields.Monetary(
         string='Valor Estimado Tributos', digits='Account',
-        readonly=True, states=STATE)
+        readonly=True, states=STATE, compute="_compute_tributos_estimados")
 
     valor_bruto = fields.Monetary(
         string='Valor Bruto', digits='Account',

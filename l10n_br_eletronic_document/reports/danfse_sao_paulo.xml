@@ -69,24 +69,24 @@
                         <t t-if="doc.state == 'done'">
                             <span style="font-size:9px;">Número NFSe</span>
                             <br />
-                            <strong t-field="doc.numero"></strong>
+                            <strong t-field="doc.numero"/>
                         </t>
                         <t t-if="doc.state != 'done'">
                             <span style="font-size:9px;">Número RPS</span>
                             <br />
-                            <strong t-field="doc.numero_rps"></strong>
+                            <strong t-field="doc.numero_rps"/>
                         </t>
                     </div>
                     <div style="border: 1px solid black; padding: 2px;">
                         <span style="font-size:9px;">Data de Emissão</span>
                         <br />
-                        <strong t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'></strong>
+                        <strong t-field="doc.data_emissao" t-options='{"format": "dd/MM/yyyy"}'/>
                     </div>
                     <t t-if="doc.state == 'done'">
                         <div style="border: 1px solid black; padding: 2px;">
                             <span style="font-size:8px;">Código de verificação</span>
                             <br />
-                            <strong t-field="doc.protocolo_nfe"></strong>
+                            <strong t-field="doc.protocolo_nfe"/>
                         </div>
                     </t>
                 </div>
@@ -101,15 +101,15 @@
                     </div>
                     <div class="col-12">
                         Nome/Razão Social:
-                        <strong t-field="doc.company_id.partner_id.l10n_br_legal_name"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_legal_name"/>
                     </div>
                     <div class="col-8">
                         CNPJ:
-                        <strong t-field="doc.company_id.partner_id.l10n_br_cnpj_cpf"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_cnpj_cpf"/>
                     </div>
                     <div class="col-4">
                         Inscrição Municipal:
-                        <strong t-field="doc.company_id.partner_id.l10n_br_inscr_mun"></strong>
+                        <strong t-field="doc.company_id.partner_id.l10n_br_inscr_mun"/>
                     </div>
                     <div class="col-12">
                         Endereço:
@@ -121,11 +121,11 @@
                     </div>
                     <div class="col-6">
                         Município:
-                        <strong t-field="doc.company_id.partner_id.city_id"></strong>
+                        <strong t-field="doc.company_id.partner_id.city_id"/>
                     </div>
                     <div class="col-6">
                         UF:
-                        <strong t-field="doc.company_id.partner_id.state_id.code"></strong>
+                        <strong t-field="doc.company_id.partner_id.state_id.code"/>
                     </div>
                 </div>
             </div>
@@ -138,17 +138,17 @@
                 <div class="row">
                     <div class="col-12">
                         Nome/Razão Social:
-                        <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"></strong>
+                        <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-8">
                         CNPJ:
-                        <strong t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf"></strong>
+                        <strong t-field="doc.commercial_partner_id.l10n_br_cnpj_cpf"/>
                     </div>
                     <div class="col-4">
                         Inscrição Municipal:
-                        <strong t-field="doc.commercial_partner_id.l10n_br_inscr_mun"></strong>
+                        <strong t-field="doc.commercial_partner_id.l10n_br_inscr_mun"/>
                     </div>
                 </div>
                 <div class="row">
@@ -164,15 +164,15 @@
                 <div class="row">
                     <div class="col-4">
                         Município:
-                        <strong t-field="doc.commercial_partner_id.city_id"></strong>
+                        <strong t-field="doc.commercial_partner_id.city_id"/>
                     </div>
                     <div class="col-2">
                         UF:
-                        <strong t-field="doc.commercial_partner_id.state_id.code"></strong>
+                        <strong t-field="doc.commercial_partner_id.state_id.code"/>
                     </div>
                     <div class="col-6">
                         E-mail:
-                        <strong t-field="doc.partner_id.email"></strong>
+                        <strong t-field="doc.partner_id.email"/>
                     </div>
                 </div>
             </div>
@@ -203,7 +203,7 @@
                 <div class="row">
                     <div name="discriminacao" class="col-12">
                         <br />
-                        <span t-raw="doc.discriminacao_servicos"></span>
+                        <span t-esc="doc.discriminacao_servicos.replace('|', '&lt;br/&gt;')"/>
                     </div>
                 </div>
             </div>
@@ -211,7 +211,7 @@
                 <div class="col-12" style="text-align:center;">
                     <strong>VALOR TOTAL DA NOTA = </strong>
                     <strong t-field="doc.valor_final"
-                        t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     <br />
                 </div>
             </div>
@@ -221,7 +221,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.inss_valor_retencao"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>-</strong>
@@ -232,7 +232,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.irrf_valor_retencao"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>-</strong>
@@ -243,7 +243,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.csll_valor_retencao"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>-</strong>
@@ -254,7 +254,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.cofins_valor_retencao"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>-</strong>
@@ -265,7 +265,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.pis_valor_retencao"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>-</strong>
@@ -276,8 +276,8 @@
                 <div class="col-12">
                     Código do serviço:
                     <br />
-                    <strong t-field="doc.document_line_ids[0].codigo_servico_paulistana"></strong> -
-                    <strong t-field="doc.document_line_ids[0].codigo_servico_paulistana_nome"></strong>
+                    <strong t-field="doc.document_line_ids[0].codigo_servico_municipio"/> -
+                    <strong t-field="doc.document_line_ids[0].codigo_servico_paulistana_nome"/>
                 </div>
             </div>
             <div class="row" style="border: 1px solid black;">
@@ -291,7 +291,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.valor_bc_iss"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>*</strong>
@@ -312,7 +312,7 @@
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
                         <strong t-field="doc.valor_iss"
-                            t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'></strong>
+                                t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         <strong>*</strong>

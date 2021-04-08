@@ -1,0 +1,66 @@
+<odoo>
+
+    <record id="trustcode_sicoob_account_journal_form" model="ir.ui.view">
+        <field name="name">trustcode_sicoob_account_journal_form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='bank_account']" position="inside">
+                <group attrs="{'invisible': [('bank_statements_source', '!=', 'sicoob_sync')]}">
+                    <group string="Sincronização Sicoob">
+                        <field name="l10n_br_sicoob_enviroment"/>
+                        <field name="l10n_br_sicoob_url_base"/>
+                        <field name="l10n_br_sicoob_client_id"/>
+                        <field name="l10n_br_sicoob_client_secret"/>
+                        <field name="l10n_br_sicoob_token_basic"/>
+                        <button string="Autorizar" type="object" name="action_authorize_odoo" class="btn btn-primary btn-sm"/>
+                    </group>
+                    <group string="Configurações do Boleto Sicoob">
+                        <field name="l10n_br_emitir_boleto"/>
+                        <field name="l10n_br_sicoob_contrato"/>
+                        <field name="l10n_br_valor_multa"/>
+                        <field name="l10n_br_valor_juros_mora"/>
+                        <field name="l10n_br_boleto_instrucoes" widget="text"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="trustcode_sicoob_account_journal_dashboard_kanban" model="ir.ui.view">
+        <field name="name">trustcode_sicoob_account_journal_kanban</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='JournalBodyBankCash']/div/t[1]" position='before'>
+                <t t-if="dashboard.bank_statements_source == 'sicoob_sync'">
+                    <button type="object" name="action_synchronize_statement" class="btn btn-primary">Consultar extrato</button>
+                </t>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="trustcode_sicoob_account_bank_journal_form_view" model="ir.ui.view">
+        <field name="name">trustcode_sicoob_account_journal_creation</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bank_acc_number']" position="before">
+                    <field name="l10n_br_bank_branch_number"
+                           attrs="{'readonly': [('bank_account_id', '!=', False)], 'invisible':[('bank_account_id', '=', False)]}"
+                           force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="trustcode_sicoob_account_bank_journal_tree_view" model="ir.ui.view">
+        <field name="name">trustcode_sicoob_account_journal_creation</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_bank_journal_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bank_acc_number']" position="before">
+                <field name="l10n_br_bank_branch_number"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

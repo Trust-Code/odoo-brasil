@@ -85,6 +85,17 @@ class EletronicDocument(models.Model):
             if not self.company_id.partner_id.country_id.l10n_br_ibge_code:
                 errors.append('Cadastro da Empresa / Endereço - Código do BC do país')
 
+        responsavel_tecnico = self.company_id.l10n_br_responsavel_tecnico_id
+        if responsavel_tecnico:
+            if not responsavel_tecnico.l10n_br_cnpj_cpf:
+                errors.append("Configure o CNPJ do responsável técnico")
+            if not responsavel_tecnico.email:
+                errors.append("Configure o Email do responsável técnico")
+            if not responsavel_tecnico.phone:
+                errors.append("Configure o Telefone do responsável técnico")
+            if len(responsavel_tecnico.child_ids) == 0:
+                errors.append("Adicione um contato para o responsável técnico!")
+
         # produtos
         for eletr in self.document_line_ids:
             prod = "Produto: %s - %s" % (eletr.product_id.default_code,
@@ -92,6 +103,8 @@ class EletronicDocument(models.Model):
             if not eletr.cfop:
                 errors.append('%s - CFOP' % prod)
             if eletr.tipo_produto == 'product':
+                if not eletr.ncm:
+                    errors.append('%s - NCM do produto' % prod)
                 if not eletr.icms_cst:
                     errors.append('%s - CST do ICMS' % prod)
                 if not eletr.ipi_cst:
@@ -215,7 +228,7 @@ class EletronicDocument(models.Model):
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
-            'xPed': item.pedido_compra or invoice.pedido_compra or '',
+            'xPed': (item.pedido_compra or invoice.pedido_compra or '')[:15],
             'nItemPed': item.item_pedido_compra or '',
         }
         di_vals = []
@@ -342,7 +355,7 @@ class EletronicDocument(models.Model):
         if self.model not in ('nfe', 'nfce'):
             return
 
-        tz = timezone(self.env.user.tz)
+        tz = timezone(self.env.user.tz or 'America/Sao_Paulo')
         dt_emissao = datetime.now(tz).replace(microsecond=0).isoformat()
         dt_saida = fields.Datetime.from_string(self.data_entrada_saida)
         if dt_saida:
@@ -537,36 +550,24 @@ class EletronicDocument(models.Model):
         }
         if self.valor_servicos > 0.0:
             issqn_total = {
-                'vServ': "%.02f" % self.valor_servicos
-                if self.valor_servicos else "",
-                'vBC': "%.02f" % self.valor_bc_iss
-                if self.valor_bc_iss else "",
-                'vISS': "%.02f" % self.valor_iss if self.valor_iss else "",
-                'vPIS': "%.02f" % self.valor_pis_servicos
-                if self.valor_pis_servicos else "",
-                'vCOFINS': "%.02f" % self.valor_cofins_servicos
-                if self.valor_cofins_servicos else "",
+                'vServ': "%.02f" % self.valor_servicos if self.valor_servicos else "",
+                'vBC': "%.02f" % self.iss_base_calculo if self.iss_base_calculo else "",
+                'vISS': "%.02f" % self.iss_valor if self.iss_valor else "",
+                'vPIS': "%.02f" % self.pis_valor if self.pis_valor else "",
+                'vCOFINS': "%.02f" % self.cofins_valor if self.cofins_valor else "",
                 'dCompet': dt_emissao[:10],
                 'vDeducao': "",
                 'vOutro': "",
-                'vISSRet': "%.02f" % self.valor_retencao_iss
-                if self.valor_retencao_iss else '',
+                'vISSRet': "%.02f" % self.iss_valor_retencao if self.iss_valor_retencao else '',
             }
             tributos_retidos = {
-                'vRetPIS': "%.02f" % self.valor_retencao_pis
-                if self.valor_retencao_pis else '',
-                'vRetCOFINS': "%.02f" % self.valor_retencao_cofins
-                if self.valor_retencao_cofins else '',
-                'vRetCSLL': "%.02f" % self.valor_retencao_csll
-                if self.valor_retencao_csll else '',
-                'vBCIRRF': "%.02f" % self.valor_bc_irrf
-                if self.valor_retencao_irrf else '',
-                'vIRRF': "%.02f" % self.valor_retencao_irrf
-                if self.valor_retencao_irrf else '',
-                'vBCRetPrev': "%.02f" % self.valor_bc_inss
-                if self.valor_retencao_inss else '',
-                'vRetPrev': "%.02f" % self.valor_retencao_inss
-                if self.valor_retencao_inss else '',
+                'vRetPIS': "%.02f" % self.iss_valor_retencao if self.iss_valor_retencao else '',
+                'vRetCOFINS': "%.02f" % self.cofins_valor_retencao if self.cofins_valor_retencao else '',
+                'vRetCSLL': "%.02f" % self.csll_valor_retencao if self.csll_valor_retencao else '',
+                'vBCIRRF': "%.02f" % self.irrf_base_calculo if self.irrf_valor_retencao else '',
+                'vIRRF': "%.02f" % self.irrf_valor_retencao if self.irrf_valor_retencao else '',
+                'vBCRetPrev': "%.02f" % self.inss_base_calculo if self.inss_valor_retencao else '',
+                'vRetPrev': "%.02f" % self.inss_valor_retencao if self.inss_valor_retencao else '',
             }
         if self.transportadora_id.street:
             end_transp = "%s - %s, %s" % (self.transportadora_id.street,
@@ -659,10 +660,6 @@ class EletronicDocument(models.Model):
         infRespTec = {}
 
         if responsavel_tecnico:
-            if len(responsavel_tecnico.child_ids) == 0:
-                raise UserError(
-                    "Adicione um contato para o responsável técnico!")
-
             cnpj = re.sub('[^0-9]', '', responsavel_tecnico.l10n_br_cnpj_cpf)
             fone = re.sub('[^0-9]', '', responsavel_tecnico.phone or '')
             infRespTec = {

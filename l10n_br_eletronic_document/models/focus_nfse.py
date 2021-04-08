@@ -9,12 +9,19 @@ _logger = logging.getLogger(__name__)
 
 
 def _convert_values(vals):
+
+    aliquota_iss = vals["itens_servico"][0]["aliquota"]
+
     vals["servico"] = {
         "item_lista_servico": vals["itens_servico"][0]["codigo_servico"],
         "codigo_tributario_municipio": vals["itens_servico"][0][
             "codigo_servico_municipio"
         ],
-        "aliquota": vals["itens_servico"][0]["aliquota"],
+        "aliquota": abs(aliquota_iss),
+        "iss_retido": False if aliquota_iss >= 0 else True,
+        "valor_iss": vals["valor_iss"] if vals['valor_iss'] >= 0 else 0,
+        "valor_iss_retido": abs(vals["valor_iss"]) if vals['valor_iss'] < 0 else 0,
+        "valor_inss": vals["inss_valor_retencao"],
         "valor_servicos": vals["valor_servico"],
         "discriminacao": vals["discriminacao"],
     }
@@ -25,7 +32,7 @@ def _convert_values(vals):
     elif len(vals["tomador"]["cnpj_cpf"]) == 11:
         vals["tomador"]["cpf"] = vals["tomador"]["cnpj_cpf"]
     if vals['regime_tributario'] == 'simples':
-        vals['regime_especial_tributacao'] = 5
+        vals['regime_especial_tributacao'] = 6
         vals['optante_simples_nacional'] = True
     return vals
 

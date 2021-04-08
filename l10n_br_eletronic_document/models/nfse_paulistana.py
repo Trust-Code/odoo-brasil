@@ -22,7 +22,7 @@ def _convert_values(vals):
         rps['tomador']['tipo_cpfcnpj'] = 2 if rps['tomador']['empresa'] else 1
         rps['aliquota_atividade'] = "%.3f" % rps['itens_servico'][0]['aliquota']
         rps['codigo_atividade'] = re.sub(
-            '[^0-9]', '', rps['itens_servico'][0]['codigo_servico'] or '')
+            '[^0-9]', '', rps['itens_servico'][0]['codigo_servico_municipio'] or '')
         rps['valor_deducao'] = '0.00'
         rps['descricao'] = rps['discriminacao']
         rps['deducoes'] = []

@@ -367,7 +367,7 @@ class EletronicDocument(models.Model):
             'valor_bruto': valor_bruto, 'desconto': desconto, 'seguro': seguro,
             'frete': frete, 'outras_despesas': outras_despesas,
             'valor_liquido': valor_bruto - desconto + frete + seguro + outras_despesas,
-            'indicador_total': indicador_total,
+            'indicador_total': indicador_total, 'unidade_medida': str(item.prod.uCom),
             'cfop': cfop, 'ncm': ncm, 'product_ean': item.prod.cEAN,
             'product_cprod': codigo, 'product_xprod': item.prod.xProd,
             'cest': cest, 'item_pedido_compra': nItemPed,
@@ -725,121 +725,9 @@ class EletronicDocument(models.Model):
             de xml</li></ul>")
         return product_id
 
-    def _prepare_account_invoice_vals(self, company_id, tax_automation=False,
-                                      supplierinfo_automation=False,
-                                      fiscal_position_id=False,
-                                      payment_term_id=False):
-        operation = 'in_invoice' \
-            if self.tipo_operacao == 'entrada' else 'out_invoice'
-        journal_id = self.env['account.invoice'].with_context(
-            type=operation, company_id=company_id.id
-        ).default_get(['journal_id'])['journal_id']
-        partner = self.partner_id.with_context(force_company=company_id.id)
-        account_id = partner.property_account_payable_id.id \
-            if operation == 'in_invoice' else \
-            partner.property_account_receivable_id.id
-        if not fiscal_position_id:
-            fiscal_position_id = partner.property_account_position_id
-            if not fiscal_position_id:
-                fpos = self.env['account.fiscal.position'].search(
-                    [('auto_apply', '=', True),
-                     ('fiscal_type', '=', self.tipo_operacao),
-                     ('company_id', '=', company_id.id)], limit=1)
-                fiscal_position_id = fpos
-        if not payment_term_id:
-            payment_term_id = partner.property_supplier_payment_term_id
-        if not journal_id:
-            raise UserError(
-                _('Please define an accounting sale journal for\
-                    this company.'))
-        vals = {
-            'company_id': company_id.id,
-            'fiscal_position_id':
-            fiscal_position_id and fiscal_position_id.id or False,
-            'payment_term_id': payment_term_id and payment_term_id.id or False,
-            'type': operation,
-            'state': 'draft',
-            'origin': self.pedido_compra,
-            'reference': "%s/%s" % (self.numero, self.serie_documento),
-            'date_invoice': datetime.strftime(self.data_emissao,
-                                              "%Y-%m-%d %H:%M:%S"),
-            'partner_id': self.partner_id.id,
-            'journal_id': journal_id,
-            'account_id': account_id,
-            'icms_value': self.valor_icms,
-            'icms_st_value': self.valor_icmsst,
-            'ipi_value': self.valor_ipi,
-            'pis_value': self.valor_pis,
-            'cofins_value': self.valor_cofins,
-            'ii_value': self.valor_ii,
-            'total_bruto': self.valor_bruto,
-            'total_desconto': self.valor_desconto,
-            'amount_total': self.valor_final,
-            'icms_base': self.valor_bc_icms,
-            'icms_st_base': self.valor_bc_icmsst,
-            'total_tributos_estimados': self.valor_estimado_tributos,
-            'iss_retention': self.valor_retencao_issqn,
-            'pis_retention': self.valor_retencao_pis,
-            'cofins_retention': self.valor_retencao_cofins,
-            'irrf_base': self.valor_bc_irrf,
-            'irrf_retention': self.valor_retencao_irrf,
-            'csll_base': self.valor_bc_csll,
-            'csll_retention': self.valor_retencao_csll,
-            'inss_base': self.valor_bc_inss,
-            'inss_retention': self.valor_retencao_inss,
-        }
-        return vals
-
-    def prepare_account_invoice_vals(
-            self, company_id, tax_automation=False,
-            supplierinfo_automation=False, fiscal_position_id=False,
-            payment_term_id=False):
-
-        vals = self._prepare_account_invoice_vals(
-            company_id, tax_automation, supplierinfo_automation,
-            fiscal_position_id, payment_term_id)
-        if vals['payment_term_id']:
-            payment_term = self.env['account.payment.term'].browse(
-                vals['payment_term_id'])
-            date_invoice = self.data_emissao
-            if not date_invoice:
-                date_invoice = fields.Date.context_today(self)
-            pterm_list = payment_term.with_context(
-                currency_id=company_id.currency_id.id).compute(
-                    value=1, date_ref=date_invoice)[0]
-            vals['date_due'] = max(line[0] for line in pterm_list)
-
-        purchase_order_vals = self._get_purchase_order_vals(self.pedido_compra)
-        purchase_order_id = None
-        if purchase_order_vals:
-            vals.update(purchase_order_vals)
-            purchase_order_id = vals['purchase_id']
-
-        items = []
-        messages_log = []
-        for item in self.document_line_ids:
-            invoice_item, message_log = self.prepare_account_invoice_line_vals(
-                item, purchase_order_id, supplierinfo_automation,
-                tax_automation, company_id)
-            items.append((0, 0, invoice_item))
-            messages_log.append(message_log)
-
-        vals['invoice_line_ids'] = items
-        account_invoice = self.env['account.invoice'].create(vals)
-        account_invoice.message_post(body=u"<ul><li>Fatura criada através da do xml\
-                                     da NF-e %s</li></ul>" % self.numero)
-
-        for message in messages_log:
-            if message:
-                account_invoice.message_post(body=message)
-
-        return account_invoice
-
-    def prepare_account_invoice_line_vals(
-            self, item, purchase_order_id, supplierinfo_automation,
-            tax_automation, company_id):
+    def prepare_account_invoice_line_vals(self, item):
         if item.product_id:
-            product = item.product_id.with_context(force_company=company_id.id)
+            product = item.product_id.with_context(force_company=self.company_id.id)
             if product.property_account_expense_id:
                 account_id = product.property_account_expense_id
             else:
@@ -847,159 +735,18 @@ class EletronicDocument(models.Model):
                     product.categ_id.property_account_expense_categ_id
         else:
             account_id = self.env['ir.property'].with_context(
-                force_company=company_id.id).get(
+                force_company=self.company_id.id).get(
                     'property_account_expense_categ_id', 'product.category')
 
-        cfop = self.env['br_account.cfop'].search([('code', '=', item.cfop)])
-        ncm = self.env['product.fiscal.classification'].search([
-            ('code', '=', item.ncm)])
-
-        tax_icms_id = None
-        tax_icms_st_id = None
-        tax_ipi_id = None
-        tax_pis_id = None
-        tax_cofins_id = None
-        tax_issqn_id = None
-        message_log = ''
-        purchase_line_id = None
-
-        if item.item_pedido_compra:
-            purchase_line_id, message_log = self._get_purchase_line_id(
-                item, purchase_order_id, supplierinfo_automation)
-
-        if purchase_line_id:
-            taxes_id = purchase_line_id.taxes_id
-            tax_icms_id = taxes_id.filtered(
-                lambda x: x.domain == 'icms' and x.amount > 0)
-            tax_icms_st_id = taxes_id.filtered(
-                lambda x: x.domain == 'icmsst' and x.amount > 0)
-            tax_ipi_id = taxes_id.filtered(
-                lambda x: x.domain == 'ipi' and x.amount > 0)
-            tax_pis_id = taxes_id.filtered(
-                lambda x: x.domain == 'pis' and x.amount > 0)
-            tax_cofins_id = taxes_id.filtered(
-                lambda x: x.domain == 'cofins' and x.amount > 0)
-
-            vals = {
-                'imported': True,
-                'product_id': purchase_line_id.product_id.id,
-                'uom_id': purchase_line_id.product_id.uom_po_id.id,
-                'name': purchase_line_id.name,
-                'cfop_id': purchase_line_id.cfop_id.id,
-                'icms_csosn_simples': purchase_line_id.icms_csosn_simples,
-                'icms_cst': purchase_line_id.icms_cst_normal,
-                'icms_aliquota_reducao_base':
-                purchase_line_id.icms_aliquota_reducao_base,
-                'icms_aliquota_credito':
-                purchase_line_id.aliquota_icms_proprio,
-                'icms_st_aliquota_mva': purchase_line_id.icms_st_aliquota_mva,
-                'icms_st_aliquota_reducao_base':
-                purchase_line_id.icms_st_aliquota_reducao_base,
-                'icms_st_aliquota_deducao':
-                purchase_line_id.icms_st_aliquota_deducao,
-                'ipi_cst': purchase_line_id.ipi_cst,
-                'pis_cst': purchase_line_id.pis_cst,
-                'cofins_cst': purchase_line_id.cofins_cst,
-            }
-        else:
-            vals = {
-                'imported': True,
-                'product_id': item.product_id.id,
-                'uom_id': item.uom_id.id,
-                'name': item.name if item.name else item.product_xprod,
-                'cfop_id': cfop.id,
-                'icms_csosn_simples': item.icms_cst if item.icms_cst and len(
-                    item.icms_cst) == 3 else '',
-                'icms_cst': item.icms_cst if item.icms_cst and len(
-                    item.icms_cst) == 2 else '',
-                'icms_aliquota_reducao_base': item.icms_aliquota_reducao_base,
-                'icms_aliquota_credito': item.icms_aliquota_credito,
-                'icms_st_aliquota_mva': item.icms_st_aliquota_mva,
-                'icms_st_aliquota_reducao_base':
-                item.icms_st_aliquota_reducao_base,
-                'icms_st_aliquota_deducao': item.icms_st_aliquota_reducao_base,
-                'issqn_aliquota': item.issqn_aliquota if item.issqn_aliquota
-                else '',
-                'issqn_base_calculo': item.issqn_base_calculo if
-                item.issqn_base_calculo else '',
-                'issqn_valor': item.issqn_valor if item.issqn_valor else '',
-                'ipi_cst': item.ipi_cst,
-                'pis_cst': item.pis_cst,
-                'cofins_cst': item.cofins_cst,
-            }
-
-        if not tax_icms_id and item.icms_aliquota > 0:
-            tax_icms_id, message = self._get_tax(
-                'icms', item.icms_aliquota, company_id, tax_automation)
-            message_log = message_log + message
-
-        if not tax_icms_st_id and item.icms_st_aliquota > 0:
-            tax_icms_st_id, message = self._get_tax(
-                'icmsst', item.icms_st_aliquota, company_id, tax_automation)
-            message_log = message_log + message
-
-        if not tax_ipi_id and item.ipi_aliquota > 0:
-            tax_ipi_id, message = self._get_tax(
-                'ipi', item.ipi_aliquota, company_id, tax_automation)
-            message_log = message_log + message
-
-        if not tax_pis_id and item.pis_aliquota > 0:
-            tax_pis_id, message = self._get_tax(
-                'pis', item.pis_aliquota, company_id, tax_automation)
-            message_log = message_log + message
-
-        if not tax_cofins_id and item.cofins_aliquota > 0:
-            tax_cofins_id, message = self._get_tax(
-                'cofins', item.cofins_aliquota, company_id, tax_automation)
-            message_log = message_log + message
-
-        if not tax_issqn_id and item.issqn_aliquota > 0:
-            tax_issqn_id, message = self._get_tax(
-                'issqn', item.issqn_aliquota, company_id, tax_automation)
-            message_log = message_log + message
-
-        vals.update({
+        vals = {
+            'product_id': item.product_id.id,
+            'product_uom_id': item.uom_id.id,
+            'name': item.name if item.name else item.product_xprod,
             'quantity': item.quantidade,
             'price_unit': item.preco_unitario,
-            'price_subtotal': item.valor_bruto,
-            'valor_frete': item.frete,
-            'valor_seguro': item.seguro,
-            'outras_despesas': item.outras_despesas,
-            'fiscal_classification_id': ncm.id,
             'account_id': account_id.id,
-            'tributos_estimados': item.tributos_estimados,
-            'tax_icms_id': None if tax_icms_id is None else tax_icms_id.id,
-            'icms_origem': item.origem,
-            'icms_base_calculo': item.icms_base_calculo,
-            'icms_valor': item.icms_valor,
-            'icms_valor_credito': item.icms_valor_credito,
-            'icms_st_base_calculo': item.icms_st_base_calculo,
-            'icms_st_valor': item.icms_st_valor,
-            'tax_icms_st_id': None if tax_icms_st_id is None else
-            tax_icms_st_id.id,
-            'tax_ipi_id': None if tax_ipi_id is None else tax_ipi_id.id,
-            'ipi_base_calculo': item.ipi_aliquota,
-            'ipi_reducao_bc': item.ipi_reducao_bc,
-            'pis_valor': item.pis_valor,
-            'pis_base_calculo': item.pis_base_calculo,
-            'tax_pis_id': None if tax_pis_id is None else tax_pis_id.id,
-            'cofins_base_calculo': item.cofins_base_calculo,
-            'cofins_valor': item.cofins_valor,
-            'tax_cofins_id': None if tax_cofins_id is None else
-            tax_cofins_id.id,
-            'tax_ii_id': None,
-            'tax_issqn_id': None if tax_issqn_id is None else
-            tax_issqn_id.id,
-            'ii_base_calculo': item.ii_base_calculo,
-            'ii_valor_despesas': item.ii_valor_despesas,
-            'ii_valor_iof': item.ii_valor_iof,
-            'ii_valor': item.ii_valor,
-            'product_ean': item.product_ean,
-            'product_cprod': item.product_cprod,
-            'product_xprod': item.product_xprod,
-        })
-
-        return vals, message_log
+        }
+        return vals
 
     def _get_purchase_order_vals(self, po_number):
         purchase_order_id = self.env['purchase.order'].search([
@@ -1241,6 +988,93 @@ class EletronicDocument(models.Model):
         invoice_dict.update(self.get_compra(nfe))
         invoice_dict.pop('destinatary', False)
         return self.env['eletronic.document'].create(invoice_dict)
+
+    def check_inconsistency_and_redirect(self):
+        to_check = []
+        for line in self.document_line_ids:
+            if not line.product_id or not line.uom_id:
+                to_check.append((0, 0, {
+                    'eletronic_line_id': line.id,
+                    'uom_id': line.uom_id.id,
+                    'product_id': line.product_id.id,
+                }))
+
+        if to_check:
+            wizard = self.env['wizard.nfe.configuration'].create({
+                'eletronic_doc_id': self.id,
+                'partner_id': self.partner_id.id,
+                'nfe_item_ids': to_check
+            })
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "wizard.nfe.configuration",
+                'view_type': 'form',
+                'views': [[False, 'form']],
+                "name": "Configuracao",
+                "res_id": wizard.id,
+                'flags': {'mode': 'edit'}
+            }
+            
+
+    def _prepare_account_invoice_vals(self):
+        operation = 'in_invoice' \
+            if self.tipo_operacao == 'entrada' else 'out_invoice'
+        journal_id = self.env['account.move'].with_context(
+            default_type=operation, default_company_id=self.company_id.id
+        ).default_get(['journal_id'])['journal_id']
+        partner = self.partner_id.with_context(force_company=self.company_id.id)
+        account_id = partner.property_account_payable_id.id \
+            if operation == 'in_invoice' else \
+            partner.property_account_receivable_id.id
+
+        vals = {
+            'eletronic_doc_id': self.id,
+            'company_id': self.company_id.id,
+            'type': operation,
+            'state': 'draft',
+            'invoice_origin': self.pedido_compra,
+            'ref': "%s/%s" % (self.numero, self.serie_documento),
+            'invoice_date': self.data_emissao.date(),
+            'date': self.data_emissao.date(),
+            'partner_id': self.partner_id.id,
+            'journal_id': journal_id,
+            'amount_total': self.valor_final,
+            'invoice_payment_term_id': self.env.ref('l10n_br_nfe_import.payment_term_for_import').id,
+        }
+        return vals
+
+    def generate_account_move(self):
+        next_action = self.check_inconsistency_and_redirect()
+        if next_action:
+            return next_action
+        
+        vals = self._prepare_account_invoice_vals()
+
+        # purchase_order_vals = self._get_purchase_order_vals(self.pedido_compra)
+        # purchase_order_id = None
+        # if purchase_order_vals:
+        #     vals.update(purchase_order_vals)
+        #     purchase_order_id = vals['purchase_id']
+
+        items = []
+        for item in self.document_line_ids:
+            invoice_item = self.prepare_account_invoice_line_vals(item)
+            items.append((0, 0, invoice_item))
+
+        vals['invoice_line_ids'] = items
+        account_invoice = self.env['account.move'].create(vals)
+        account_invoice.message_post(
+            body="<ul><li>Fatura criada através da do xml da NF-e %s</li></ul>" % self.numero)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Fatura',
+            'res_model': 'account.move',
+            'res_id': account_invoice.id,
+            'view_type': 'form',
+            'views': [[False, 'form']],
+            'flags': {'mode': 'readonly'}
+        }
 
 
 class EletronicDocumentLine(models.Model):

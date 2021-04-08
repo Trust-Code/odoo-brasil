@@ -1,7 +1,7 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Odoo Next - Eletronic documents',
     'description': 'Enable Eletronic Documents',
-    'version': '14.0.1.0.0',
+    'version': '13.0.1.0.0',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'OEEL-1',
@@ -26,6 +26,7 @@
         'views/eletronic_document.xml',
         'views/eletronic_document_line.xml',
         'views/nfe.xml',
+        'views/nfe_inutilization.xml',
         'views/base_account.xml',
         'views/fiscal_position.xml',
         'views/account_config_settings.xml',
@@ -36,6 +37,7 @@
         'wizard/inutilize_nfe_numeration.xml',
         'reports/danfse_sao_paulo.xml',
         'reports/danfse_florianopolis.xml',
+        'reports/danfse_bh.xml',
         'reports/danfe_report.xml',
     ],
 }

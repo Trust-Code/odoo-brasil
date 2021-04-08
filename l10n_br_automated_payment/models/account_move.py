@@ -150,8 +150,8 @@ class AccountMoveLine(models.Model):
     iugu_digitable_line = fields.Char(string="Linha Digitável", size=100, copy=False)
     iugu_barcode_url = fields.Char(string="Código de barras", size=100, copy=False)
 
-    def _create_bank_tax_move(self, iugu_data):
-        bank_taxes = iugu_data.get('taxes_paid_cents') / 100
+    def _create_bank_tax_move(self, fees_amount):
+        bank_taxes = fees_amount or 0
 
         ref = 'Taxa: %s' % self.name
         journal = self.move_id.payment_journal_id

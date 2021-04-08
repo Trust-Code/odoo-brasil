@@ -70,6 +70,7 @@
                         <field name="federal_importado" />
                         <field name="estadual_imposto" />
                         <field name="municipal_imposto" />
+                        <field name="fonte_impostos" />
                     </group>
                 </sheet>
             </form>

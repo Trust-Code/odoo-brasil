@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <record id="view_eletronic_document_form" model="ir.ui.view">
+        <field name="model">eletronic.document</field>
+        <field name="inherit_id" ref="l10n_br_eletronic_document.view_eletronic_document_form"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <button name="generate_account_move" states="imported" string="Terminar processo de importação" type="object" class="oe_highlight"/>
+            </field>
+        </field>
+    </record>
+
     <record id="view_br_nfe_import_invoice_eletronic_item_form" model="ir.ui.view">
         <field name="name">br_nfe_import_invoice_eletronic_item_form</field>
         <field name="model">eletronic.document.line</field>
