@@ -68,6 +68,17 @@
                               <field name="icms_st_aliquota" />
                               <field name="icms_st_valor"/>
                           </group>
+                          <group name="icms_interestaual">
+                                <field name="tem_difal" />
+                                <field name="icms_bc_uf_dest" />
+                                <field name="icms_aliquota_fcp_uf_dest" />
+                                <field name="icms_aliquota_uf_dest" />
+                                <field name="icms_aliquota_interestadual" />
+                                <field name="icms_aliquota_inter_part" />
+                                <field name="icms_fcp_uf_dest" />
+                                <field name="icms_uf_dest" />
+                                <field name="icms_uf_remet" />
+                        </group>
                       </group>
                   </page>
                   <page name="iss" string="ISS" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">
