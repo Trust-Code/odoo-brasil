@@ -452,6 +452,8 @@ class AccountMoveLine(models.Model):
             #  'tributos_estimados': self.tributos_estimados,
             'ncm': self.product_id.l10n_br_ncm_id.code,
             'cest': self.product_id.l10n_br_cest,
+            'extipi': self.product_id.l10n_br_extipi,
+            'codigo_beneficio': self.product_id.l10n_br_fiscal_benefit,
             'pedido_compra': self.ref,
             # 'item_pedido_compra': self.item_pedido_compra,
             # - ICMS -

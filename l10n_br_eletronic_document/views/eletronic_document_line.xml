@@ -26,6 +26,9 @@
                               <field name="tipo_produto" />
                               <field name="cfop" />
                               <field name="ncm" />
+                              <field name="cest" />
+                              <field name="codigo_beneficio" />
+                              <field name="extipi" />
                               <field name="tributos_estimados" />
                               <field name="indicador_total" />
                               <field name="pedido_compra" />

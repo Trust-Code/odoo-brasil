@@ -1,7 +1,7 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Odoo Next - Enable tax calculations',
     'description': 'Enable Tax Calculations',
-    'version': '13.0.1.0.0',
+    'version': '13.0.1.0.1',
     'category': 'Localization',
     'author': 'Trustcode',
     'license': 'OEEL-1',

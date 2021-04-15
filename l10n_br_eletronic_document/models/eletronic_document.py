@@ -1299,6 +1299,8 @@ class EletronicDocumentLine(models.Model):
 
     cest = fields.Char(string="CEST", size=10, readonly=True, states=STATE,
                        help="Código Especificador da Substituição Tributária")
+    codigo_beneficio = fields.Char(string="Benefício Fiscal", size=10, readonly=True, states=STATE)
+    extipi = fields.Char(string="Código EX TIPI", size=3, readonly=True, states=STATE)
     classe_enquadramento_ipi = fields.Char(
         string="Classe Enquadramento", size=5, readonly=True, states=STATE)
     codigo_enquadramento_ipi = fields.Char(

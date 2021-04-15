@@ -228,6 +228,8 @@ class EletronicDocument(models.Model):
             'indTot': item.indicador_total,
             'cfop': item.cfop,
             'CEST': re.sub('[^0-9]', '', item.cest or ''),
+            'cBenef': item.codigo_beneficio or '',
+            'EXTIPI': item.extipi or '',
             'xPed': (item.pedido_compra or invoice.pedido_compra or '')[:15],
             'nItemPed': item.item_pedido_compra or '',
         }
