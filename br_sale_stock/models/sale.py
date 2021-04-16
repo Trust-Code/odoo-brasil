@@ -13,7 +13,7 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.depends('order_line.price_total')
+    @api.depends('order_line.price_total', 'total_frete')
     def _amount_all(self):
         super(SaleOrder, self)._amount_all()
         for order in self:
