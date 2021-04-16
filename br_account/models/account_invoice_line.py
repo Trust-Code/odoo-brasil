@@ -253,12 +253,13 @@ class AccountInvoiceLine(models.Model):
     tax_icms_st_id = fields.Many2one('account.tax', string=u"Alíquota ICMS ST",
                                      domain=[('domain', '=', 'icmsst')])
     icms_st_tipo_base = fields.Selection(
-        [('0', u'0 - Preço tabelado ou máximo  sugerido'),
-         ('1', u'1 - Lista Negativa (valor)'),
-         ('2', u'2 - Lista Positiva (valor)'),
-         ('3', u'3 - Lista Neutra (valor)'),
-         ('4', u'4 - Margem Valor Agregado (%)'),
-         ('5', u'5 - Pauta (valor)')],
+        [('0', '0 - Preço tabelado ou máximo  sugerido'),
+         ('1', '1 - Lista Negativa (valor)'),
+         ('2', '2 - Lista Positiva (valor)'),
+         ('3', '3 - Lista Neutra (valor)'),
+         ('4', '4 - Margem Valor Agregado (%)'),
+         ('5', '5 - Pauta (valor)'),
+         ('6', '6 - Valor da Operação')],
         'Tipo Base ICMS ST', required=True, default='4')
     icms_st_valor = fields.Float(
         'Valor ICMS ST', required=True, compute='_compute_price', store=True,

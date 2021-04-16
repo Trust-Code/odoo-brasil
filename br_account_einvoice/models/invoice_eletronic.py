@@ -673,11 +673,13 @@ class InvoiceEletronicItem(models.Model):
         readonly=True, states=STATE)
 
     icms_st_tipo_base = fields.Selection(
-        [('0', u'0- Preço tabelado ou máximo  sugerido'),
-         ('1', u'1 - Lista Negativa (valor)'),
-         ('2', u'2 - Lista Positiva (valor)'),
-         ('3', u'3 - Lista Neutra (valor)'),
-         ('4', u'4 - Margem Valor Agregado (%)'), ('5', '5 - Pauta (valor)')],
+        [('0', '0 - Preço tabelado ou máximo  sugerido'),
+         ('1', '1 - Lista Negativa (valor)'),
+         ('2', '2 - Lista Positiva (valor)'),
+         ('3', '3 - Lista Neutra (valor)'),
+         ('4', '4 - Margem Valor Agregado (%)'),
+         ('5', '5 - Pauta (valor)'),
+         ('6', '6 - Valor da Operação')],
         string='Tipo Base ICMS ST', required=True, default='4',
         readonly=True, states=STATE)
     icms_st_aliquota_mva = fields.Float(

@@ -29,6 +29,8 @@
                         <field name="reducao_icms_st" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="tem_difal" />
                         <field name="tax_icms_intra_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
+                        <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
+                        <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
                     </group>
                     <group>
                         <field name="incluir_ipi_base" attrs="{'invisible': [('domain', '!=', 'icms')]}" />
@@ -36,8 +38,6 @@
                         <field name="reducao_icms" attrs="{'invisible': [('cst_icms', 'not in', ('20', '70', '90'))]}" />
                         <field name="aliquota_mva" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
                         <field name="icms_st_aliquota_deducao" attrs="{'invisible': [('cst_icms', 'not in', ('10', '30', '70', '90')), ('csosn_icms', 'not in', ('201', '202', '203', '900'))]}" />
-                        <field name="tax_icms_inter_id" attrs="{'invisible': [('tem_difal', '=', False)]}" />
-                        <field name="tax_icms_fcp_id" attrs="{'invisible': ['|', ('tem_difal', '=', False), ('domain', '=', 'simples')]}" />
                     </group>
                 </group>
                 <group name="ipi" attrs="{'invisible': [('domain', '!=', 'ipi')]}">
