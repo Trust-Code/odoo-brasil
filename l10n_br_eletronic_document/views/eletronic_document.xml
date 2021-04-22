@@ -8,6 +8,7 @@
                         <button name="action_send_eletronic_invoice" states="draft" string="Enviar Agora" type="object" class="oe_highlight"/>
                         <button name="action_back_to_draft" states="edit,error" string="Repetir" type="object"/>
                         <button name="action_edit_edoc" states="draft,error" string="Habilitar Edição" type="object" />
+                        <button name="action_generate_xml" states="draft,error" string="Gerar XML" type="object" groups="base.group_no_one"/>
                         <button name="action_cancel_document" confirm="Confirma o cancelamento do documento?" states="done" string="Cancelar" type="object"/>
                         <button name="send_email_nfe" string="Reenviar Email" type="object" attrs="{'invisible': [('state', '!=', 'done')]}" />
                         <button name="action_check_status_nfse" string="Consultar Situação" type="object" states="processing" />
@@ -227,6 +228,8 @@
                                         <field name="schedule_user_id" />
                                         <field name="email_sent" />
                                         <field name="salvar_xml_enviado" />
+                                        <field name="xml_to_send_name" invisible="1"/>
+                                        <field name="xml_to_send" filename="xml_to_send_name" groups="base.group_no_one"/>
                                     </group>
                                     
                                     <!-- <field name="eletronic_event_ids" nolabel="1">

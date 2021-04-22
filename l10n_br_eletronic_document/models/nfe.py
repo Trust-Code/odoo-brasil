@@ -329,6 +329,14 @@ class EletronicDocument(models.Model):
                     'vBCSTRet': "%.02f" % item.icms_bc_st_retido,
                     'pST': "%.02f" % item.icms_aliquota_st_retido,
                     'vICMSSTRet': "%.02f" % item.icms_st_retido,
+                    # TODO Implementar o FCP vBCFCP
+                    'vBCFCP': '',
+                    'pFCP': '',
+                    'vFCP': '',
+                    # TODO Implementar o calculo de ICMS diferido
+                    'vICMSOp': "%.02f" % item.icms_valor_original_operacao,
+                    'pDif': "%.02f" % item.icms_aliquota_diferimento,
+                    'vICMSDif': "%.02f" % item.icms_valor_diferido,
                 },
                 'IPI': {
                     'clEnq': item.classe_enquadramento_ipi or '',

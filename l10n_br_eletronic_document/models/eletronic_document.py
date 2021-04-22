@@ -20,6 +20,13 @@ from odoo.addons.l10n_br_account.models.cst import (
 _logger = logging.getLogger(__name__)
 
 
+try:
+    from pytrustnfe.nfe import xml_autorizar_nfe
+    from pytrustnfe.certificado import Certificado
+except ImportError:
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
+
+
 STATE = {'draft': [('readonly', False)]}
 
 
@@ -582,6 +589,23 @@ class EletronicDocument(models.Model):
 
     def action_edit_edoc(self):
         self.state = 'edit'
+
+    def action_generate_xml(self):
+        if self.state in ('draft', 'error'):
+            cert = self.company_id.with_context(
+                {'bin_size': False}).l10n_br_certificate
+            cert_pfx = base64.decodestring(cert)
+            certificado = Certificado(
+                cert_pfx, self.company_id.l10n_br_cert_password)
+
+            nfe_values = self._prepare_eletronic_invoice_values()
+            lote = self._prepare_lote(self.id, nfe_values)
+
+            xml_enviar = xml_autorizar_nfe(certificado, **lote)
+            self.sudo().write({
+                'xml_to_send': base64.encodestring(xml_enviar.encode('utf-8')),
+                'xml_to_send_name': 'nfe-enviar-%s.xml' % self.numero,
+            })
 
     def can_unlink(self):
         if self.state not in ('done', 'cancel', 'denied'):
@@ -1147,6 +1171,9 @@ class EletronicDocumentLine(models.Model):
         string='Valor Total', digits='Account',
         readonly=True, states=STATE)
 
+    icms_valor_original_operacao = fields.Float(
+        string='ICMS da Operação', digits='Account',
+        readonly=True, states=STATE)
     icms_aliquota_diferimento = fields.Float(
         string='% Diferimento', digits='Account',
         readonly=True, states=STATE)

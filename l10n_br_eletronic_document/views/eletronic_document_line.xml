@@ -45,6 +45,7 @@
                               <field name="icms_cst" />
                               <field name="origem"/>
                               <field name="icms_tipo_base"/>
+                              <field name="icms_valor_original_operacao" />
                               <field name="icms_aliquota_diferimento" />
                               <field name="icms_valor_diferido" />
                               <field name="icms_motivo_desoneracao" />
