@@ -8,7 +8,7 @@ PARAMETERS = {
     'al': {'tam': 9, 'starts_with': '24'},
     'am': {'tam': 9},
     'ce': {'tam': 9},
-    'df': {'tam': 13, 'val_tam': 11, 'starts_with': '07'},
+    'df': {'tam': 13, 'val_tam': 11},
     'es': {'tam': 9},
     'ma': {'tam': 9, 'starts_with': '12'},
     'mt': {'tam': 11, 'prod': [3, 2, 9, 8, 7, 6, 5, 4, 3, 2]},
