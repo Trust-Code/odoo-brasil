@@ -299,6 +299,18 @@ class AccountMove(models.Model):
         if iest_id:
             vals['iest'] = iest_id.name
 
+        # Duplicatas
+        duplicatas = []
+        count = 1
+        for parcela in invoice.receivable_move_line_ids.sorted(lambda x: x.date_maturity):
+            duplicatas.append((0, None, {
+                'numero_duplicata': "%03d" % count,
+                'data_vencimento': parcela.date_maturity,
+                'valor': parcela.credit or parcela.debit,
+            }))
+            count += 1
+        vals['duplicata_ids'] = duplicatas
+
         total_produtos = total_servicos = 0.0
         bruto_produtos = bruto_servicos = 0.0
         total_desconto = 0
