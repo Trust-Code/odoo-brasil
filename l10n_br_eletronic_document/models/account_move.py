@@ -317,10 +317,10 @@ class AccountMove(models.Model):
         for inv_line in invoice_lines:
             total_desconto += round(inv_line.price_unit * inv_line.quantity * inv_line.discount / 100, 2)
             if inv_line.product_id.type == 'service':
-                total_servicos += inv_line.price_total
+                total_servicos += inv_line.price_subtotal
                 bruto_servicos += round(inv_line.quantity * inv_line.price_unit, 2)
             else:
-                total_produtos += inv_line.price_total
+                total_produtos += inv_line.price_subtotal
                 bruto_produtos += round(inv_line.quantity * inv_line.price_unit, 2)
 
         vals.update({
