@@ -6,6 +6,9 @@
             <field name="amount_type" position="after">
                 <field name="domain" />
             </field>
+            <xpath expr="//group/group/div" position="after">
+                <field name="l10n_br_retention"></field>
+            </xpath>
         </field>
     </record>
 </odoo>
