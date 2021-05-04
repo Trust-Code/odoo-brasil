@@ -583,12 +583,14 @@ class AccountInvoiceLine(models.Model):
     def _update_invoice_line_ids(self):
         other_taxes = self.invoice_line_tax_ids.filtered(
             lambda x: not x.domain)
+        product_taxes = self.product_id.taxes_id
         self.invoice_line_tax_ids = other_taxes | self.tax_icms_id | \
             self.tax_icms_st_id | self.tax_icms_inter_id | \
             self.tax_icms_intra_id | self.tax_icms_fcp_id | \
             self.tax_ipi_id | self.tax_pis_id | \
             self.tax_cofins_id | self.tax_issqn_id | self.tax_ii_id | \
-            self.tax_csll_id | self.tax_irrf_id | self.tax_inss_id
+            self.tax_csll_id | self.tax_irrf_id | self.tax_inss_id | \
+            product_taxes
 
     @api.onchange('tax_icms_id')
     def _onchange_tax_icms_id(self):
