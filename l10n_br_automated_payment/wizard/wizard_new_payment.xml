@@ -9,13 +9,14 @@
                         <field name="move_id" invisible="1"/>
                         <field name="description" />
                         <field name="partner_id" />
+                        <field name="payment_journal_id" />
                         <field name="amount" />
                         <field name="currency_id" invisible="1" />
                         <field name="date_change" />
                     </group>
                 </group>
                 <footer>
-                    <button name="action_change_invoice_iugu" type="object" string="Criar nova cobrança" class="oe_highlight"/>
+                    <button name="action_generate_new_payment" type="object" string="Criar nova cobrança" class="oe_highlight"/>
                         or
                     <button special="cancel" string="Cancelar"/>
                 </footer>
@@ -24,7 +25,7 @@
     </record>
 
     <act_window
-        name="Gerar um novo pagamento"
+        name="Gerar um novo boleto para pagamento"
         res_model="wizard.new.payment.invoice"
         binding_model="account.move"
         binding_views="form"
