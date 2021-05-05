@@ -121,6 +121,6 @@ class AccountInvoiceLine(models.Model):
     def _prepare_tax_context(self):
         res = super(AccountInvoiceLine, self)._prepare_tax_context()
         res.update({
-            'fiscal_type': self.fiscal_position_type,
+            'fiscal_type': self.invoice_id.fiscal_position_type,
         })
         return res
