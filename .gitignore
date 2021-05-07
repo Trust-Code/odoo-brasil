@@ -6,3 +6,4 @@
 .vim/
 .vscode/
 .DS_Store
+pyrightconfig.json
