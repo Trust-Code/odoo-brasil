@@ -466,6 +466,8 @@ class EletronicDocument(models.Model):
         readonly=True)
 
     def _compute_discriminacao(self):
+        import ipdb
+        ipdb.set_trace()
         for item in self:
             descricao = ''
             for line in item.document_line_ids:
@@ -478,17 +480,17 @@ class EletronicDocument(models.Model):
             item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
-        fiscal_ids = self.move_id.fiscal_observation_ids.filtered(
+        fiscal_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'fiscal')
-        obs_ids = self.move_id.fiscal_observation_ids.filtered(
+        obs_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'observacao')
 
-        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
-        for item in self.move_id.invoice_line_ids:
-            prod_obs_ids |= item.product_id.fiscal_observation_ids
-
-        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
-        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
+        # prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
+        # for item in self.move_id.invoice_line_ids:
+        #     prod_obs_ids |= item.product_id.fiscal_observation_ids
+        #
+        # fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
+        # obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
 
         fiscal = self._compute_msg(fiscal_ids) + (
             self.invoice_id.fiscal_comment or '')

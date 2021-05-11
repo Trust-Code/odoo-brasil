@@ -8,6 +8,9 @@
                 *O primeiro dígito será trocado conforme a operação (estadual ou interna)</p>
                 <field name="l10n_br_cfop_id"></field>
             </field>
+            <xpath expr="//page[@name='notes']/group[1]" position="inside">
+                <field name="fiscal_observation_ids" nolabel="1" />
+            </xpath>
         </field>
     </record>
 </odoo>

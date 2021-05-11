@@ -8,4 +8,6 @@ class AccountFiscalPosition(models.Model):
         'nfe.cfop', string="CFOP",
         help="CFOP da nota fiscal.", copy=True)
 
-
+    fiscal_observation_ids = fields.Many2many(
+        'nfe.fiscal.observation', string=u"Mensagens Doc. Eletrônico",
+        copy=True)
