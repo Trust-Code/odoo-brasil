@@ -341,10 +341,16 @@ class AccountTax(models.Model):
         others = self.filtered(lambda x: x.domain == 'outros' or not x.domain)
         if not others:
             return []
-        vals = self._tax_vals(others)
-        vals['amount'] = others._compute_amount(price_base, 1.0)
-        vals['base'] = price_base
-        return [vals]
+
+        others_vals = []
+
+        for other in others:
+            vals = self._tax_vals(other)
+            vals['amount'] = other._compute_amount(price_base, 0.0)
+            vals['base'] = price_base
+            others_vals.append(vals)
+
+        return others_vals
 
     def sum_taxes(self, price_base):
         ipi = self._compute_ipi(price_base)
