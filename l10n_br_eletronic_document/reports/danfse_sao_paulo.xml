@@ -203,7 +203,8 @@
                 <div class="row">
                     <div name="discriminacao" class="col-12">
                         <br />
-                        <span t-esc="doc.discriminacao_servicos.replace('|', '&lt;br/&gt;')"/>
+<!--                        <span t-esc="doc.discriminacao_servicos.replace('|', '&lt;br/&gt;')"/>-->
+                        <span t-esc="doc.discriminacao_servicos"/>
                     </div>
                 </div>
             </div>
