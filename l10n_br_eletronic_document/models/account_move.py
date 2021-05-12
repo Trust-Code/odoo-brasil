@@ -229,7 +229,7 @@ class AccountMove(models.Model):
             'company_id': invoice.company_id.id,
             'schedule_user_id': self.env.user.id,
             'state': 'draft',
-            'tipo_operacao': TYPE2EDOC[invoice.type],
+            'tipo_operacao': TYPE2EDOC[invoice.move_type],
             'numero_controle': num_controle,
             'data_emissao': datetime.now(),
             'data_agendada': invoice.invoice_date,
@@ -366,7 +366,7 @@ class AccountMove(models.Model):
         vals = move._prepare_eletronic_doc_vals(products)
         vals['model'] = 'nfe'
 
-        if self.type == 'out_refund':
+        if self.move_type == 'out_refund':
             vals['related_document_ids'] = self._create_related_doc(vals)
 
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
@@ -392,7 +392,7 @@ class AccountMove(models.Model):
             return related_doc
 
     def action_post(self):
-        moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.type != 'entry')
+        moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.move_type != 'entry')
         moves._validate_for_eletronic_document()
         res = super(AccountMove, self).action_post()
         moves.action_create_eletronic_document()
@@ -527,12 +527,12 @@ class AccountMoveLine(models.Model):
         }
         cfop = fiscal_pos.l10n_br_cfop_id.code or '5101'
 
-        if self.move_id.type in ['in_invoice', 'out_refund']:
+        if self.move_id.move_type in ['in_invoice', 'out_refund']:
             if self.move_id.company_id.state_id == self.move_id.commercial_partner_id.state_id:
                 cfop = '1' + cfop[1:]
             else:
                 cfop = '2' + cfop[1:]
-        elif self.move_id.type in ['out_invoice', 'in_refund']:
+        elif self.move_id.move_type in ['out_invoice', 'in_refund']:
             if self.move_id.company_id.state_id == self.move_id.commercial_partner_id.state_id:
                 cfop = '5' + cfop[1:]
             else:
