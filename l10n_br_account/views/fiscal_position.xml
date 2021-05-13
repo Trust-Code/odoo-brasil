@@ -31,7 +31,7 @@
             <xpath expr="//page[@name='account_mapping']" position="after">
                 <page name="notes" string="Observações Fiscais">
                     <group string="Observações">
-                        <!-- <field name="fiscal_observation_ids" nolabel="1" /> -->
+<!--                         <field name="fiscal_observation_ids" nolabel="1" />-->
                     </group>
                 </page>
             </xpath>
