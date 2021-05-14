@@ -100,7 +100,8 @@ class AccountMove(models.Model):
 
             has_products = has_services = False
             # produtos
-            for eletr in move.invoice_line_ids:
+            doc_lines = move.invoice_line_ids.filtered(lambda x: not x.is_delivery_expense_or_insurance())
+            for eletr in doc_lines:
                 if eletr.product_id.type == 'service':
                     has_services = True
                 if eletr.product_id.type in ('consu', 'product'):
