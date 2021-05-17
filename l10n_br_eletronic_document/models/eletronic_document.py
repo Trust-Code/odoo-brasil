@@ -467,7 +467,6 @@ class EletronicDocument(models.Model):
         readonly=True)
 
     def _compute_discriminacao(self):
-        self._compute_legal_information()
         for item in self:
             descricao = ''
             for line in item.document_line_ids:
