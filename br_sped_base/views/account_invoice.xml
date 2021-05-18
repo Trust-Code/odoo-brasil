@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_br_sped_account_invoice_form" model="ir.ui.view">
+        <field name="name">view.br.sped.account.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_bank_id" position="after">
+                <field name="l10n_br_sped_emit" string="Emissor da Nota" />
+            </field>
+        </field>
+    </record>
+</odoo>
