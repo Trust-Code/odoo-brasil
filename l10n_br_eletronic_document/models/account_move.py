@@ -100,7 +100,8 @@ class AccountMove(models.Model):
 
             has_products = has_services = False
             # produtos
-            for eletr in move.invoice_line_ids:
+            doc_lines = move.invoice_line_ids.filtered(lambda x: not x.is_delivery_expense_or_insurance())
+            for eletr in doc_lines:
                 if eletr.product_id.type == 'service':
                     has_services = True
                 if eletr.product_id.type in ('consu', 'product'):
@@ -375,7 +376,8 @@ class AccountMove(models.Model):
         vals['model'] = 'nfse'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
         vals.update(self.sum_line_taxes(vals))
-        self.env['eletronic.document'].create(vals)
+        nfse = self.env['eletronic.document'].create(vals)
+        nfse._compute_legal_information()
 
     def _create_product_eletronic_document(self, move, products):
         vals = move._prepare_eletronic_doc_vals(products)
@@ -386,7 +388,8 @@ class AccountMove(models.Model):
 
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
         vals.update(self.sum_line_taxes(vals))
-        self.env['eletronic.document'].create(vals)
+        nfe = self.env['eletronic.document'].create(vals)
+        nfe._compute_legal_information()
 
     def _create_related_doc(self, vals):
         related_move_id = self.env['account.move'].search([

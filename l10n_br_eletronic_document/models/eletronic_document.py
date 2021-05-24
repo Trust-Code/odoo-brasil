@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
+from odoo.tools import ustr
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
@@ -478,27 +479,24 @@ class EletronicDocument(models.Model):
             item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
-        fiscal_ids = self.move_id.fiscal_observation_ids.filtered(
+        fiscal_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'fiscal')
-        obs_ids = self.move_id.fiscal_observation_ids.filtered(
+        obs_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'observacao')
 
-        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
-        for item in self.move_id.invoice_line_ids:
-            prod_obs_ids |= item.product_id.fiscal_observation_ids
+        # prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
+        # for item in self.move_id.invoice_line_ids:
+        #     prod_obs_ids |= item.product_id.fiscal_observation_ids
+        #
+        # fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
+        # obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
 
-        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
-        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
-
-        fiscal = self._compute_msg(fiscal_ids) + (
-            self.invoice_id.fiscal_comment or '')
+        fiscal = self._compute_msg(fiscal_ids)
 
         ncm_tax_related = 'Valor Aprox. dos Tributos R$ %s. Fonte: IBPT\n' % \
                           (str(self.valor_estimado_tributos))
 
-        observacao = ncm_tax_related + self._compute_msg(obs_ids) + (
-            self.invoice_id.comment or '')
-
+        observacao = ncm_tax_related + self._compute_msg(obs_ids)
         self.informacoes_legais = fiscal
         self.informacoes_complementares = observacao
 
@@ -541,9 +539,9 @@ class EletronicDocument(models.Model):
 
         result = ''
         for item in observation_ids:
-            if item.document_id and item.document_id.code != self.model:
-                continue
-            template = mako_safe_env.from_string(tools.ustr(item.message))
+            # if item.tipo != self.model:
+            #     continue
+            template = mako_safe_env.from_string(ustr(item.message))
             variables = self._get_variables_msg()
             render_result = template.render(variables)
             result += render_result + '\n'

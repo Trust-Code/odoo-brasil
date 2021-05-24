@@ -42,15 +42,22 @@ class PurchaseOrder(models.Model):
             for line in self.order_line
             if not line.is_delivery_expense_or_insurance()
         )
-        for line in self.order_line.filtered(
+        filtered_lines = self.order_line.filtered(
             lambda x: not x.is_delivery_expense_or_insurance()
-        ):
-            field_name = "l10n_br_{}_amount".format(line_type)
-            line[field_name] = compute_partition_amount(
-                self[field_name],
-                line.price_unit * line.product_qty,
-                total,
-            )
+        )
+        field_name = "l10n_br_{}_amount".format(line_type)
+        balance = self[field_name]
+        for line in filtered_lines:
+            if line == filtered_lines[-1]:
+                amount = balance
+            else:
+                amount = compute_partition_amount(
+                    self[field_name],
+                    line.price_unit * line.product_qty,
+                    total,
+                )
+            line.update({field_name: amount})
+            balance -= amount
 
     def handle_delivery_expense_insurance_lines(self, line_type):
         if line_type not in ("delivery", "expense", "insurance"):

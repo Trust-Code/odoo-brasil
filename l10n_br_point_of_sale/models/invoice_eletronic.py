@@ -49,7 +49,7 @@ class EletronicDocument(models.Model):
         obs_ids = self.pos_order_id.fiscal_position_id.\
             fiscal_observation_ids.filtered(lambda x: x.tipo == 'observacao')
 
-        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
+        prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
         for item in self.pos_order_id.lines:
             prod_obs_ids |= item.product_id.fiscal_observation_ids
 
