@@ -864,11 +864,6 @@ class EletronicDocument(models.Model):
             if self.codigo_retorno in ('302', '205'):
                 self.write({'state': 'denied'})
 
-        # self.env['invoice.eletronic.event'].create({
-        #     'code': self.codigo_retorno,
-        #     'name': self.mensagem_retorno,
-        #     'eletronic_document_id': self.id,
-        # })
         self._create_attachment('nfe-envio', self, resposta['sent_xml'])
         self._create_attachment('nfe-ret', self, resposta['received_xml'])
         recibo_xml = resposta['received_xml']
@@ -1025,11 +1020,6 @@ class EletronicDocument(models.Model):
             resp['received_xml'] = etree.tostring(
                 retorno_consulta, encoding=str)
 
-            # self.env['invoice.eletronic.event'].create({
-            #     'code': self.codigo_retorno,
-            #     'name': self.mensagem_retorno,
-            #     'eletronic_document_id': self.id,
-            # })
             self._create_attachment('canc', self, resp['sent_xml'])
             self._create_attachment('canc-ret', self, resp['received_xml'])
             nfe_processada = base64.decodestring(self.nfe_processada)

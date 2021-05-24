@@ -4,7 +4,7 @@
 
 {
     'name': 'Integração Banco Inter - Boleto Bancário',
-    'version': '13.0.1.0.0',
+    'version': '13.0.1.0.1',
     'category': 'Finance',
     'sequence': 5,
     'author': 'Trustcode',
@@ -20,6 +20,7 @@
     ],
     'depends': [
         'l10n_br_automated_payment',
+        'l10n_br_eletronic_document',
     ],
     'data': [
         'data/acquirer.xml',

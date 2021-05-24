@@ -15,4 +15,3 @@ class AccountJournal(models.Model):
 
     l10n_br_valor_multa = fields.Float(string="Valor da Multa (%): ")
     l10n_br_valor_juros_mora = fields.Float(string="Valor Juros Mora (%): ")
-    l10n_br_boleto_instrucoes = fields.Char(string="Instruções do Boleto", size=400)
