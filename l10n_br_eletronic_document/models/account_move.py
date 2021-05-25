@@ -329,8 +329,16 @@ class AccountMove(models.Model):
             'valor_servicos': total_servicos,
             'valor_produtos': total_produtos,
             'valor_desconto': total_desconto,
-            'valor_final': total_produtos + total_servicos,
+            'valor_final': total_produtos + total_servicos + vals['valor_frete'] + vals['valor_seguro'] +
+                           vals['valor_despesas'],
         })
+
+        # Transportadora
+        if invoice.carrier_partner_id:
+            vals.update({
+                'modalidade_frete': invoice.modalidade_frete,
+                'transportadora_id': invoice.carrier_partner_id.id,
+            })
 
         return vals
 
