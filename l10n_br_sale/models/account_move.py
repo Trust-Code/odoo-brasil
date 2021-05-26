@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, api
 
 
 class AccountMove(models.Model):
@@ -12,7 +12,7 @@ class AccountMove(models.Model):
          ('3', '3 - Transporte Próprio por conta do Remetente'),
          ('4', '4 - Transporte Próprio por conta do Destinatário'),
          ('9', '9 - Sem Ocorrência de Transporte')],
-        string=u'Modalidade do frete', default="9", readonly=True)
+        string=u'Modalidade do frete', default="9")
     num_volumes = fields.Integer('Quant. total de volumes')
     quant_peso = fields.Float('Peso')
     # peso_uom = fields.Many2one('uom.uom')
