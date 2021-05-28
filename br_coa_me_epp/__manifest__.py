@@ -13,6 +13,7 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Jonatas Biazus <jonatasbiazusct@gmail.com>',
     ],
     'depends': [
         'account',

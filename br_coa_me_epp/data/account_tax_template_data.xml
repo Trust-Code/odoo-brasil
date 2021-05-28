@@ -11,152 +11,917 @@
         <field name="expense_currency_exchange_account_id" ref="account_account_3_2_4_04" />
     </record>
 
-    <record id="tax_template_out_ipi" model="account.tax.template">
-        <field name="description">IPI Saída 3%</field>
-        <field name="name">IPI Saída 3%</field>
-        <field name="amount">3.00</field>
+        <!-- IPI ( 3 % )  SAIDA  -->
+
+    <record id="tax_template_out_ipi3" model="account.tax.template">
+        <field name="description">IPI 3%</field>
+        <field name="name">IPI 3%</field>
+        <field name="amount">3</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_09'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_ipi-3" model="account.tax.template">
+        <field name="description">(-)IPI 3%</field>
+        <field name="name">(-)IPI 3%</field>
+        <field name="amount">-3</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_12'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_ipi3-" model="account.tax.template">
+        <field name="description">IPI saida 3%</field>
+        <field name="name">IPI saida 3%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_ipi3'), ref('tax_template_out_ipi-3')])]"/>
+    </record>
+
+    <!-- IPI ( 5 % )  SAIDA  -->
+
+    <record id="tax_template_out_ipi5" model="account.tax.template">
+        <field name="description">IPI 5%</field>
+        <field name="name">IPI 5%</field>
+        <field name="amount">5</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_09'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_ipi-5" model="account.tax.template">
+        <field name="description">(-)IPI 5%</field>
+        <field name="name">(-)IPI 5%</field>
+        <field name="amount">-5</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_12'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_ipi5-" model="account.tax.template">
+        <field name="description">IPI saida 5%</field>
+        <field name="name">IPI saida 5%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_ipi5'), ref('tax_template_out_ipi-5')])]"/>
+    </record>
+
+     <!-- IPI ( 10 % )  SAIDA  -->
+
+    <record id="tax_template_out_ipi10" model="account.tax.template">
+        <field name="description">IPI 10%</field>
+        <field name="name">IPI 10%</field>
+        <field name="amount">10</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_09'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_ipi-10" model="account.tax.template">
+        <field name="description">(-)IPI 10%</field>
+        <field name="name">(-)IPI 10%</field>
+        <field name="amount">-10</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_12'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_ipi10-" model="account.tax.template">
+        <field name="description">IPI saida 10%</field>
+        <field name="name">IPI saida 10%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_ipi10'), ref('tax_template_out_ipi-10')])]"/>
+    </record>
+
+    <!-- ICMS ST ( 7 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_st7" model="account.tax.template">
+        <field name="description">ICMS ST 7%</field>
+        <field name="name">ICMS ST 7%</field>
+        <field name="amount">7</field>
         <field name="type_tax_use">sale</field>
         <field eval="0" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_04'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_in_ipi" model="account.tax.template">
-        <field name="description">IPI Entrada 5%</field>
-        <field name="name">IPI Entrada 5%</field>
-        <field name="amount">5.00</field>
-        <field name="type_tax_use">purchase</field>
+    <record id="tax_template_out_icms_st-7" model="account.tax.template">
+        <field name="description">(-)ICMS ST -7%</field>
+        <field name="name">(-)ICMS ST -7%</field>
+        <field name="amount">-7</field>
+        <field name="type_tax_use">sale</field>
         <field eval="0" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_07'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_out_icms_subist" model="account.tax.template">
+    <record id="tax_template_out_group_icms_st7-" model="account.tax.template">
+        <field name="description">ICMS ST Saida 7%</field>
+        <field name="name">ICMS ST Saida 7%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="0" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_st7'), ref('tax_template_out_icms_st-7')])]"/>
+    </record>
+
+    <!-- ICMS ST ( 12 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_st12" model="account.tax.template">
+        <field name="description">ICMS ST 12%</field>
+        <field name="name">ICMS ST 12%</field>
+        <field name="amount">12</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="0" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_04'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_icms_st-12" model="account.tax.template">
+        <field name="description">(-)ICMS ST -12%</field>
+        <field name="name">(-)ICMS ST -12%</field>
+        <field name="amount">-12</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="0" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_07'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_icms_st12-" model="account.tax.template">
+        <field name="description">ICMS ST Saida 12%</field>
+        <field name="name">ICMS ST Saida 12%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="0" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_st12'), ref('tax_template_out_icms_st-12')])]"/>
+    </record>
+
+        <!-- ICMS ST ( 18 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_st18" model="account.tax.template">
         <field name="description">ICMS ST 18%</field>
-        <field name="name">ICMS ST Saída 18%</field>
+        <field name="name">ICMS ST 18%</field>
         <field name="amount">18</field>
         <field name="type_tax_use">sale</field>
         <field eval="0" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_04'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_out_icms_externo7" model="account.tax.template">
+    <record id="tax_template_out_icms_st-18" model="account.tax.template">
+        <field name="description">(-)ICMS ST -18%</field>
+        <field name="name">(-)ICMS ST -18%</field>
+        <field name="amount">-18</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="0" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_07'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_icms_st18-" model="account.tax.template">
+        <field name="description">ICMS ST Saida 18%</field>
+        <field name="name">ICMS ST Saida 18%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="0" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_st18'), ref('tax_template_out_icms_st-18')])]"/>
+    </record>
+
+        <!-- ICMS INTERESTADUAL ( 7 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_inter7" model="account.tax.template">
         <field name="description">ICMS Inter 7%</field>
-        <field name="name">ICMS Interestadual 7%</field>
+        <field name="name">ICMS Inter 7%</field>
         <field name="amount">7</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_02'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_out_icms_externo12" model="account.tax.template">
+    <record id="tax_template_out_icms_inter-7" model="account.tax.template">
+        <field name="description">(-)ICMS Inter -7%</field>
+        <field name="name">(-)ICMS Inter -7%</field>
+        <field name="amount">-7</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_05'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_icms_inter7-" model="account.tax.template">
+        <field name="description">ICMS Interestadual Saída 7%</field>
+        <field name="name">ICMS Interestadual 7%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_inter7'), ref('tax_template_out_icms_inter-7')])]"/>
+    </record>
+
+        <!-- ICMS INTERESTADUAL ( 12 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_inter12" model="account.tax.template">
         <field name="description">ICMS Inter 12%</field>
         <field name="name">ICMS Interestadual 12%</field>
         <field name="amount">12</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_02'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_out_icms_interno17" model="account.tax.template">
-        <field name="description">ICMS Interno 17%</field>
-        <field name="name">ICMS Saida Interno 17%</field>
-        <field name="amount">17</field>
+    <record id="tax_template_out_icms_inter-12" model="account.tax.template">
+        <field name="description">(-)ICMS Inter -12%</field>
+        <field name="name">(-)ICMS Inter -12%</field>
+        <field name="amount">-12</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_05'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_in_icms_externo7" model="account.tax.template">
-        <field name="description">ICMS Externo 7%</field>
-        <field name="name">ICMS Entrada Externo 7%</field>
-        <field name="amount">7</field>
-        <field name="type_tax_use">purchase</field>
+    <record id="tax_template_out_group_icms_inter12-" model="account.tax.template">
+        <field name="description">ICMS Interestadual Saída 12%</field>
+        <field name="name">ICMS Interestadual Saída 12%</field>
+        <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_inter12'), ref('tax_template_out_icms_inter-12')])]"/>
     </record>
 
-    <record id="tax_template_in_icms_externo12" model="account.tax.template">
-        <field name="description">ICMS Externo 12%</field>
-        <field name="name">ICMS Entrada Externo 12%</field>
-        <field name="amount">12</field>
-        <field name="type_tax_use">purchase</field>
+       <!-- ICMS INTERESTADUAL ( 18 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_inter18" model="account.tax.template">
+        <field name="description">ICMS Interestadual 18%</field>
+        <field name="name">ICMS Interestadual 18%</field>
+        <field name="amount">18</field>
+        <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_02'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_in_icms_interno19" model="account.tax.template">
-        <field name="description">ICMS Entrada 19%</field>
-        <field name="name">ICMS Entrada 19%</field>
-        <field name="amount">19</field>
-        <field name="type_tax_use">purchase</field>
+    <record id="tax_template_out_icms_inter-18" model="account.tax.template">
+        <field name="description">(-)ICMS Inter -18%</field>
+        <field name="name">(-)ICMS Inter -18%</field>
+        <field name="amount">-18</field>
+        <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_05'),
+                }),
+            ]"/>
     </record>
+
+    <record id="tax_template_out_group_icms_inter18-" model="account.tax.template">
+        <field name="description">ICMS Interestadual Saída 18%</field>
+        <field name="name">ICMS Interestadual Saída 18%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_inter18'), ref('tax_template_out_icms_inter-18')])]"/>
+    </record>
+
+    <!-- ICMS INTRAESTADUAL ( 18 % )  SAIDA  -->
+
+    <record id="tax_template_out_icms_intra18" model="account.tax.template">
+        <field name="description">ICMS Intraestadual 18%</field>
+        <field name="name">ICMS Intraestadual 18%</field>
+        <field name="amount">18</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_02'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_icms_intra-18" model="account.tax.template">
+        <field name="description">(-)ICMS Intraestadual -18%</field>
+        <field name="name">(-)ICMS Intraestadual -18%</field>
+        <field name="amount">-18</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_05'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_icms_intra18-" model="account.tax.template">
+        <field name="description">ICMS Intraestadual Saída 18%</field>
+        <field name="name">ICMS Intraestadual Saída 18%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_icms_intra18'), ref('tax_template_out_icms_intra-18')])]"/>
+    </record>
+
+        <!-- PIS ( 0,65 % )  SAIDA  -->
 
     <record id="tax_template_out_pis065" model="account.tax.template">
-        <field name="description">PIS Saída 0,65%</field>
-        <field name="name">PIS Saida 0,65%</field>
+        <field name="description">PIS 0,65%</field>
+        <field name="name">PIS 0,65%</field>
         <field name="amount">0.65</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_09'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_in_pis065" model="account.tax.template">
-        <field name="description">PIS Entrada 0,65%</field>
-        <field name="name">PIS Entrada 0,65%</field>
+    <record id="tax_template_out_pis-065" model="account.tax.template">
+        <field name="description">(-)PIS -0,65%</field>
+        <field name="name">(-)PIS -0,65%</field>
+        <field name="amount">-0.65</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_06'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_pis065-" model="account.tax.template">
+        <field name="description">PIS saida 0,65%</field>
+        <field name="name">PIS saida 0,65%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_pis065'), ref('tax_template_out_pis-065')])]"/>
+    </record>
+
+    <!-- COFINS ( 0,65 % )  SAIDA  -->
+
+    <record id="tax_template_out_cofins065" model="account.tax.template">
+        <field name="description">COFINS 0,65%</field>
+        <field name="name">COFINS 0,65%</field>
         <field name="amount">0.65</field>
-        <field name="type_tax_use">purchase</field>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_cofins3" model="account.tax.template">
-        <field name="description">COFINS Saída 3%</field>
-        <field name="name">COFINS Saida 3%</field>
-        <field name="amount">3</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">3</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_05'),
+                }),
+            ]"/>
     </record>
 
-    <record id="tax_template_in_cofins3" model="account.tax.template">
-        <field name="description">COFINS Entrada 3%</field>
-        <field name="name">COFINS Entrada 3%</field>
-        <field name="amount">3</field>
-        <field name="type_tax_use">purchase</field>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_in_issqn2" model="account.tax.template">
-        <field name="description">ISS Entrada 2%</field>
-        <field name="name">ISS Entrada 2%</field>
-        <field name="amount">2</field>
-        <field name="type_tax_use">purchase</field>
-        <field eval="1" name="price_include"/>
-        <field name="amount_type">division</field>
-        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
-    </record>
-
-    <record id="tax_template_out_issqn3" model="account.tax.template">
-        <field name="description">ISS Entrada 3%</field>
-        <field name="name">ISS Saida 3%</field>
-        <field name="amount">3</field>
+    <record id="tax_template_out_cofins-065" model="account.tax.template">
+        <field name="description">(-)COFINS -0,65%</field>
+        <field name="name">(-)COFINS -0,65%</field>
+        <field name="amount">-0.65</field>
         <field name="type_tax_use">sale</field>
         <field eval="1" name="price_include"/>
         <field name="amount_type">division</field>
+        <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_08'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_cofins065-" model="account.tax.template">
+        <field name="description">COFINS saida 0,65%</field>
+        <field name="name">COFINS saida 0,65%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_cofins065'), ref('tax_template_out_cofins-065')])]"/>
+    </record>
+
+    <!-- CSLL ( 9 % )  SAIDA  -->
+
+    <record id="tax_template_out_csll9" model="account.tax.template">
+        <field name="description">CSLL 9%</field>
+        <field name="name">CSLL 9%</field>
+        <field name="amount">9</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_07'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_csll-9" model="account.tax.template">
+        <field name="description">(-)CSLL -9%</field>
+        <field name="name">(-)CSLL -9%</field>
+        <field name="amount">-9</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_10'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_csll9" model="account.tax.template">
+        <field name="description">CSLL saida 9%</field>
+        <field name="name">CSLL saida 9%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_csll9'), ref('tax_template_out_csll-9')])]"/>
+    </record>
+
+    <!-- IRPJ ( - % )  SAIDA  -->
+
+    <record id="tax_template_out_irpj" model="account.tax.template">
+        <field name="description">IRPJ</field>
+        <field name="name">IRPJ</field>
+        <field name="amount">0</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_08'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_irpj-" model="account.tax.template">
+        <field name="description">(-)IRPJ</field>
+        <field name="name">(-)IRPJ</field>
+        <field name="amount">-0</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_11'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_irpj" model="account.tax.template">
+        <field name="description">IRPJ %</field>
+        <field name="name">IRPJ %</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_irpj'), ref('tax_template_out_irpj-')])]"/>
+    </record>
+
+     <!-- INSS ( 11 % )  SAIDA  -->
+
+    <record id="tax_template_out_inss11" model="account.tax.template">
+        <field name="description">INSS 11%</field>
+        <field name="name">INSS 11%</field>
+        <field name="amount">11</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_10'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_inss-11" model="account.tax.template">
+        <field name="description">(-)INSS 11%</field>
+        <field name="name">(-)INSS 11%</field>
+        <field name="amount">-11</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_13'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_inss11-" model="account.tax.template">
+        <field name="description">INSS Saida 11%</field>
+        <field name="name">INSS Saida 11%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_inss11'), ref('tax_template_out_inss-11')])]"/>
+    </record>
+
+    <!-- ISS ( 4,65 % )  SAIDA  -->
+
+    <record id="tax_template_out_iss465" model="account.tax.template">
+        <field name="description">ISS 4,65%</field>
+        <field name="name">ISS 4.65%</field>
+        <field name="amount">4.65</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">3</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_11'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_iss-465" model="account.tax.template">
+        <field name="description">(-)ISS 4.65%</field>
+        <field name="name">(-)ISS 4.65%</field>
+        <field name="amount">-4.65</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">division</field>
+        <field name="sequence">4</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_14'),
+                }),
+            ]"/>
+    </record>
+
+    <record id="tax_template_out_group_iss465" model="account.tax.template">
+        <field name="description">ISS Saida 4.65%</field>
+        <field name="name">ISS Saida 4.65%</field>
+        <field name="type_tax_use">sale</field>
+        <field eval="1" name="price_include"/>
+        <field name="amount_type">group</field>
+        <field name="sequence">1</field>
+        <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
+        <field name="children_tax_ids" eval="[(6,0,[ref('tax_template_out_iss465'), ref('tax_template_out_iss-465')])]"/>
     </record>
 
 </odoo>
+
