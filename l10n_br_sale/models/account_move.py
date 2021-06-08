@@ -34,10 +34,9 @@ class AccountMove(models.Model):
             ('origin', '=', self.invoice_origin),
             ('state', '=', 'done')])
 
-        if picking_ids:
-            self.write({
-                'quantidade_volumes': len(picking_ids),
-            })
+        self.write({
+            'quantidade_volumes': len(picking_ids),
+        })
 
     @api.onchange('carrier_partner_id')
     def _update_modalidade_frete(self):
