@@ -54,6 +54,10 @@ class AccountFiscalPosition(models.Model):
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
+    ind_intermed = fields.Selection([
+        ('0', u'Operação sem intermediador'),
+        ('1', u'Operação em site ou Plataformas de Terceiros'),
+    ], u'Indicativo do Intermediador', default='0')
     # TODO Fazer este campo gerar mensagens dinamicas
     note = fields.Text(u'Observações')
 

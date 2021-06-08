@@ -11,6 +11,7 @@
                     <group>
                         <field name="finalidade_emissao" />
                         <field name="ind_final" />
+                        <field name="ind_intermed"></field>
                     </group>
                     <group>
                         <field name="ind_pres" />
