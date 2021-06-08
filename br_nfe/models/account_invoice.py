@@ -99,6 +99,7 @@ class AccountInvoice(models.Model):
 
         res['payment_mode_id'] = inv.payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
+        res['ind_intermed'] = inv.fiscal_position_id.ind_intermed
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
         res['informacoes_complementares'] = inv.comment
