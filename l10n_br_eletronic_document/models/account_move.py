@@ -397,7 +397,17 @@ class AccountMove(models.Model):
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(products)
         vals.update(self.sum_line_taxes(vals))
         nfe = self.env['eletronic.document'].create(vals)
+        self._compute_nfe_volumes(nfe, move)
         nfe._compute_legal_information()
+
+    def _compute_nfe_volumes(self, nfe, move):
+        self.env['nfe.volume'].create({
+            'eletronic_document_id': nfe.id,
+            'quantidade_volumes': move.quantidade_volumes,
+            'peso_liquido': move.peso_bruto,
+            'peso_bruto': move.peso_bruto,
+        })
+
 
     def _create_related_doc(self, vals):
         related_move_id = self.env['account.move'].search([
