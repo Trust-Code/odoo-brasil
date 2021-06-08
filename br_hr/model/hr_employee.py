@@ -5,7 +5,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from datetime import datetime
+from datetime import date
 
 from odoo import api, fields, models, _
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
@@ -113,9 +113,7 @@ class HrEmployeeDependent(models.Model):
     @api.one
     @api.constrains('dependent_age')
     def _check_birth(self):
-        dep_age = datetime.strptime(
-            self.dependent_age, DEFAULT_SERVER_DATE_FORMAT)
-        if dep_age.date() > datetime.now().date():
+        if self.dependent_age > date.today():
             raise ValidationError(_('Data de aniversário inválida'))
         return True
 
