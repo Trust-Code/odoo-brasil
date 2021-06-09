@@ -13,7 +13,7 @@ class AccountMove(models.Model):
          ('4', '4 - Transporte Próprio por conta do Destinatário'),
          ('9', '9 - Sem Ocorrência de Transporte')],
         string=u'Modalidade do frete', default="9")
-    quantidade_volumes = fields.Integer('Qtde. Volumes', compute="_compute_volumes", readonly=False)
+    quantidade_volumes = fields.Integer('Qtde. Volumes')
     # peso_liquido = fields.Float(string=u"Peso Líquido")
     peso_bruto = fields.Float(string="Peso Bruto")
 
