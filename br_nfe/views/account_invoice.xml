@@ -34,6 +34,12 @@
                     <field name="nfe_status" />
                 </div>
             </div>
+            <page name="other_info" position="inside">
+              <group name="Intermediador" string="Intermediador">
+                <field name="nfe_inf_intermed"></field>
+                <field name="nfe_id_cad_int_tran"></field>
+              </group>
+            </page>
         </field>
     </record>
 

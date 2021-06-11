@@ -36,6 +36,8 @@ class AccountInvoice(models.Model):
         string=u"Número NFe", compute="_compute_nfe_number")
     import_declaration_ids = fields.One2many(
         'br_account.import.declaration', 'invoice_id')
+    nfe_inf_intermed = fields.Many2one(string='Intermediador', comodel_name='res.partner')
+    nfe_id_cad_int_tran = fields.Char(string='Identificador Cadastro no Intermediador')
 
     @api.multi
     def action_invoice_draft(self):
@@ -100,6 +102,11 @@ class AccountInvoice(models.Model):
         res['payment_mode_id'] = inv.payment_mode_id.id
         res['ind_pres'] = inv.fiscal_position_id.ind_pres
         res['ind_intermed'] = inv.fiscal_position_id.ind_intermed
+
+        if inv.fiscal_position_id.ind_intermed == '1':
+            res['inf_intermed'] = inv.nfe_inf_intermed.id
+            res['id_cad_int_tran'] = inv.nfe_id_cad_int_tran
+
         res['finalidade_emissao'] = inv.fiscal_position_id.finalidade_emissao
         res['informacoes_legais'] = inv.fiscal_comment
         res['informacoes_complementares'] = inv.comment
