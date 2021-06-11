@@ -85,6 +85,8 @@ class InvoiceEletronic(models.Model):
         ('1', u'Operação em site ou Plataformas de Terceiros'),
     ], u'Indicativo do Intermediador', readonly=True, states=STATE,
          default='0')
+    inf_intermed = fields.Many2one(string='Intermediador', comodel_name='res.partner')
+    id_cad_int_tran = fields.Char(string='Indentificador cadastro no intermediador')
     ind_dest = fields.Selection([
         ('1', u'1 - Operação Interna'),
         ('2', u'2 - Operação Interestadual'),
@@ -785,6 +787,10 @@ class InvoiceEletronic(models.Model):
             'tPag': self.payment_mode_id.tipo_pagamento or '90',
             'vPag': '0.00',
         }
+        infIntermed = {
+            'CNPJ': re.sub('[^0-9]', '', self.inf_intermed.cnpj_cpf),
+            'idCadIntTran': self.id_cad_int_tran,
+        }
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
         self.informacoes_legais = self.informacoes_legais.replace(
@@ -828,6 +834,7 @@ class InvoiceEletronic(models.Model):
             'detalhes': eletronic_items,
             'total': total,
             'pag': [pag],
+            'infIntermed': infIntermed,
             'transp': transp,
             'infAdic': infAdic,
             'exporta': exporta,
