@@ -7,7 +7,7 @@
     'summary': "Plano de Contas para Microempresa e Empresa de Pequeno Porte",
     'description': """Plano de Contas para Microempresa e EPP""",
     'version': '13.0.1.0.0',
-    'category': 'Localization',
+    'category': 'Accounting/Localizations/Account Charts',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
