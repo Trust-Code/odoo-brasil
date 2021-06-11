@@ -10,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.tools.safe_eval import safe_eval
+from odoo.tools import safe_eval
 
 from .focus_nfse import check_nfse_api
 
@@ -664,9 +664,9 @@ class EletronicDocument(models.Model):
         danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
         report_service = danfe_report.xml_id
-        danfse, dummy = self.env.ref(report_service).render_qweb_pdf([self.id])
-        report_name = safe_eval(danfe_report.print_report_name,
-                                {'object': self, 'time': time})
+        danfse, dummy = self.env.ref(report_service)._render_qweb_pdf([self.id])
+        report_name = safe_eval.safe_eval(
+            danfe_report.print_report_name, {'object': self, 'time': safe_eval.time})
         filename = "%s.%s" % (report_name, "pdf")
         if danfse:
             danfe_id = attachment_obj.create(dict(
@@ -688,7 +688,11 @@ class EletronicDocument(models.Model):
         _logger.info('Sending e-mail for e-doc %s (number: %s)' % (
             self.id, self.numero))
 
-        values = mail.generate_email([self.move_id.id])[self.move_id.id]
+        values = mail.generate_email(
+            [self.move_id.id],
+            ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 
+             'email_cc', 'reply_to', 'mail_server_id']
+        )[self.move_id.id]
         subject = values.pop('subject')
         values.pop('body')
         values.pop('attachment_ids')
@@ -702,7 +706,7 @@ class EletronicDocument(models.Model):
         values['attachments'] = new_items
         self.move_id.message_post(
             body=values['body_html'], subject=subject,
-            message_type='email', subtype='mt_comment', email_layout_xmlid='mail.mail_notification_paynow',
+            message_type='email', subtype_xmlid='mail.mt_comment', email_layout_xmlid='mail.mail_notification_paynow',
             attachment_ids=atts + mail.attachment_ids.ids, **values)
 
     def send_email_nfe_queue(self):
