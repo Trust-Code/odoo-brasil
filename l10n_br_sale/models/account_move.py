@@ -29,15 +29,6 @@ class AccountMove(models.Model):
             else:
                 item.nfe_number = 0
 
-    def _compute_volumes(self):
-        picking_ids = self.env['stock.picking'].search([
-            ('origin', '=', self.invoice_origin),
-            ('state', '=', 'done')])
-
-        self.write({
-            'quantidade_volumes': len(picking_ids),
-        })
-
     @api.onchange('carrier_partner_id')
     def _update_modalidade_frete(self):
         if self.carrier_partner_id and self.modalidade_frete == '9':
