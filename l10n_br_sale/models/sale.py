@@ -149,6 +149,17 @@ class SaleOrder(models.Model):
         for item in self:
             item.handle_delivery_expense_insurance_lines("insurance")
 
+    def _prepare_invoice(self):
+        vals = super(SaleOrder, self)._prepare_invoice()
+        picking_ids = self.env['stock.picking'].search([
+            ('origin', '=', self.name),
+            ('state', '=', 'done'),
+        ])
+
+        quantidade_volumes = sum(len(picking.package_ids) for picking in picking_ids)
+        vals['quantidade_volumes'] = quantidade_volumes
+        return vals
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
