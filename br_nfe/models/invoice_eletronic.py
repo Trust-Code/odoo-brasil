@@ -247,6 +247,17 @@ class InvoiceEletronic(models.Model):
         if self.model in ('55', '65'):
             if not self.company_id.partner_id.inscr_est:
                 errors.append(u'Emitente / Inscrição Estadual')
+            if self.ind_intermed == '1':
+                if not self.inf_intermed:
+                    errors.append(u'Intermediador / Para indicativo de \
+intermediador igual a 1, informe o intermediador')
+                else:
+                    if not self.inf_intermed.cnpj_cpf:
+                        errors.append(u'Intermediador / CNPJ')
+
+                    if not self.id_cad_int_tran:
+                        errors.append(u'Intermediador / Indentificador de \
+cadastro no intermediador')
 
             for eletr in self.eletronic_item_ids:
                 prod = u"Produto: %s - %s" % (eletr.product_id.default_code,
