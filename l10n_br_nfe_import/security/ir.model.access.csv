@@ -2,3 +2,6 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_l10n_br_ncm_category_manager,l10n_br_ncm_category.manager,model_l10n_br_ncm_category,account.group_account_manager,1,1,1,1
 access_l10n_br_ncm_category_user,l10n_br_ncm_category.user,model_l10n_br_ncm_category,account.group_account_user,1,1,1,0
 access_l10n_br_ncm_category_invoice,l10n_br_ncm_category.invoice,model_l10n_br_ncm_category,account.group_account_invoice,1,0,0,0
+access_wizard_import_nfe,access_wizard_import_nfe,model_wizard_import_nfe,account.group_account_invoice,1,1,1,0
+access_wizard_nfe_configuration,access_wizard_nfe_configuration,model_wizard_nfe_configuration,account.group_account_invoice,1,1,1,0
+access_wizard_xml_import,access_wizard_xml_import,model_wizard_xml_import,account.group_account_invoice,1,1,1,0
