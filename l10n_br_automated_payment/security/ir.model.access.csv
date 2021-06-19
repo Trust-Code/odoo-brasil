@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wizard_new_payment_invoice,access_wizard_new_payment_invoice,model_wizard_new_payment_invoice,account.group_account_invoice,1,1,1,0
+access_wizard_change_iugu_invoice,access_wizard_change_iugu_invoice,model_wizard_change_iugu_invoice,account.group_account_invoice,1,1,1,0

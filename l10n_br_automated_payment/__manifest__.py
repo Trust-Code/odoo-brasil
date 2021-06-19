@@ -27,6 +27,7 @@
     },
     'data': [
         'data/verify_transaction_cron.xml',
+        'security/ir.model.access.csv',
         'views/res_company.xml',
         'views/account_move.xml',
         'views/account_journal.xml',
