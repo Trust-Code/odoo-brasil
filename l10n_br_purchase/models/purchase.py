@@ -181,7 +181,7 @@ class PurchaseOrderLine(models.Model):
                 line.taxes_id | fpos.apply_tax_ids
             )
 
-    def _prepare_account_move_line(self, move):
+    def _prepare_account_move_line(self, move=False):
         res = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
         res.update(
             {
