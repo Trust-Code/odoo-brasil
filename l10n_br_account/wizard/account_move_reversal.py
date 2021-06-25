@@ -22,11 +22,11 @@ class AccountMoveReversal(models.TransientModel):
             invoice_ids = self.env['account.move'].browse(res.get('res_id'))
         else:
             invoice_ids = self.env['account.move'].search(res.get('domain'))
-
         fiscal_pos = self.fiscal_position_id
-        for invoice_id in invoice_ids:
-            for line in invoice_id.invoice_line_ids:
-                if line.move_id.state == 'draft':
-                    line.tax_ids = fiscal_pos.apply_tax_ids
+        if fiscal_pos.apply_tax_ids:
+            for invoice_id in invoice_ids:
+                for line in invoice_id.invoice_line_ids:
+                    if line.move_id.state == 'draft':
+                        line.tax_ids = fiscal_pos.apply_tax_ids
 
         return res
