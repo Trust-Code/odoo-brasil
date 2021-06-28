@@ -100,7 +100,10 @@ class AccountMove(models.Model):
 
             has_products = has_services = False
             # produtos
-            doc_lines = move.invoice_line_ids.filtered(lambda x: not x.is_delivery_expense_or_insurance())
+            # Remove section, note, delivery, expense and insurance lines
+            doc_lines = move.invoice_line_ids.filtered(
+                lambda x: not (x.display_type or x.is_delivery_expense_or_insurance())
+            )
             for eletr in doc_lines:
                 if eletr.product_id.type == 'service':
                     has_services = True
@@ -369,7 +372,7 @@ class AccountMove(models.Model):
     def action_create_eletronic_document(self):
         for move in self:
             invoice_lines = move.invoice_line_ids.filtered(
-                lambda x: not x.is_delivery_expense_or_insurance()
+                lambda x: not (x.display_type or x.is_delivery_expense_or_insurance())
             )
             services = invoice_lines.filtered(lambda x: x.product_id.type == 'service')
             if services:
