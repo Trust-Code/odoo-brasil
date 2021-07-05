@@ -79,7 +79,7 @@
 "account_account_3_2_1_02","3.2.1.02","Custos da Mão de Obra","False","account.data_account_type_direct_costs","br_coa_me_epp_chart_template"
 "account_account_3_2_1_03","3.2.1.03","Outros Custos","False","account.data_account_type_direct_costs","br_coa_me_epp_chart_template"
 "account_account_3_2_2_01","3.2.2.01","Despesas Administrativas","False","account.data_account_type_expenses","br_coa_me_epp_chart_template"
-"account_account_3_2_2_02","3.2.2.02","Despesas com Vendas","False","account.data_account_type_expenses","br_coa_me_epp_chart_template"
+"account_account_3_2_2_02","3.2.2.02","(-) Despesas com Vendas","False","account.data_account_type_expenses","br_coa_me_epp_chart_template"
 "account_account_3_2_2_03","3.2.2.03","Outras Despesas Gerais","False","account.data_account_type_expenses","br_coa_me_epp_chart_template"
 "account_account_3_2_3_01","3.2.3.01","Juros Passivos","False","account.data_account_type_expenses","br_coa_me_epp_chart_template"
 "account_account_3_2_3_02","3.2.3.02","Outras Despesas Financeiras","False","account.data_account_type_expenses","br_coa_me_epp_chart_template"

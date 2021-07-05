@@ -1,4 +1,3 @@
-
 from odoo import fields, models
 
 
@@ -20,3 +19,5 @@ class AccountTax(models.Model):
                                ('irrf', 'IRRF'),
                                ('inss', 'INSS'),
                                ('outros', 'Outros')], string="Tipo")
+
+
