@@ -799,8 +799,8 @@ cadastro no intermediador')
             'vPag': '0.00',
         }
         infIntermed = {
-            'CNPJ': re.sub('[^0-9]', '', self.inf_intermed.cnpj_cpf),
-            'idCadIntTran': self.id_cad_int_tran,
+            'CNPJ': re.sub('[^0-9]', '', self.inf_intermed.cnpj_cpf or ''),
+            'idCadIntTran': self.id_cad_int_tran or '',
         }
         self.informacoes_complementares = self.informacoes_complementares.\
             replace('\n', '<br />')
