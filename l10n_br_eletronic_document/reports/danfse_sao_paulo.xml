@@ -290,7 +290,7 @@
                     Base de Cálculo (R$):
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
-                        <strong t-field="doc.valor_bc_iss"
+                        <strong t-field="doc.iss_base_calculo"
                                 t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
@@ -311,7 +311,7 @@
                     Valor do ISS (R$):
                     <br />
                     <t t-if="doc.company_id.l10n_br_tax_regime != 'simples'">
-                        <strong t-field="doc.valor_iss"
+                        <strong t-field="doc.iss_valor"
                                 t-options='{"widget": "monetary",  "display_currency": doc.currency_id }'/>
                     </t>
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
