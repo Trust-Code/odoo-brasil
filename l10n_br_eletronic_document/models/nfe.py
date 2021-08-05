@@ -551,8 +551,7 @@ class EletronicDocument(models.Model):
             'vPIS': "%.02f" % self.pis_valor,
             'vCOFINS': "%.02f" % self.cofins_valor,
             'vOutro': "%.02f" % self.valor_despesas,
-            'vNF': "%.02f" % sum(self.document_line_ids.mapped(
-                "valor_liquido")),
+            'vNF': "%.02f" % self.valor_final,
             'vFCPUFDest': "%.02f" % self.valor_icms_fcp_uf_dest,
             'vICMSUFDest': "%.02f" % self.valor_icms_uf_dest,
             'vICMSUFRemet': "%.02f" % self.valor_icms_uf_remet,
