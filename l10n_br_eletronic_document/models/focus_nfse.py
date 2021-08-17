@@ -28,7 +28,7 @@ def _convert_values(vals):
     }
 
     # Tratar codigo_servico quando muncipio for campinas
-    if vals[0]['emissor']['codigo_municipio'] == '3509502':
+    if vals['emissor']['codigo_municipio'] == '3509502':
         vals['servico']['item_lista_servico'] = re.sub(
             '[^0-9]', '', vals["itens_servico"][0]["codigo_servico_municipio"])
 
