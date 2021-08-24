@@ -83,7 +83,7 @@
                             <label class="col-form-label" for="state_id">Estado</label>
                             <input id="input_state_id" type="hidden" t-att-value="'state_id' in checkout and checkout['state_id']" />
                             <select id="select_state_id" name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}"
-                                t-att-data-default="'state_id' in checkout and int(checkout['state_id'])">
+                                t-att-data-default="'state_id' in checkout and checkout['state_id'] and int(checkout['state_id'])">
                                 <option value="">Estado...</option>
                             </select>
                         </div>
