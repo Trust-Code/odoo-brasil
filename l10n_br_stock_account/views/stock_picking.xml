@@ -1,0 +1,43 @@
+<odoo>
+  <record id="view_stock_account_move_filter" model="ir.ui.view">
+    <field name="name">stock.account.move.select</field>
+    <field name="model">account.move</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="l10n_br_picking_origin_id"></field>
+        <filter name="pqp" domain="[('l10n_br_picking_origin_id', '=', [active_id])]" />
+      </search>
+    </field>
+  </record>
+
+  <record id="view_out_invoice_tree_stock_account" model="ir.ui.view">
+    <field name="name">account.out.invoice.tree.stock.account</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_out_invoice_tree" />
+    <field name="arch" type="xml">
+      <xpath expr="//tree" position="inside">
+        <field name="l10n_br_picking_origin_id" invisible="0"></field>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="stock_picking_view_br_stock_account" model="ir.ui.view">
+    <field name="name">stock.picking.view.br.stock.account</field>
+    <field name="model">stock.picking</field>
+    <field name="inherit_id" ref="stock.view_picking_form" />
+    <field name="arch" type="xml">
+      <div name="button_box" position="inside">
+        <button name="action_stock_account_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o" context="{ 'default_l10n_br_picking_origin_id': id }" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+          <field name="invoice_count" />
+          <span> Invoices</span>
+        </button>
+      </div>
+      <page name="extra" position="inside">
+        <group string="Invoice" name="invoice">
+          <field name="enable_invoicing"></field>
+          <field name="fiscal_position_id" attrs="{'invisible': [('enable_invoicing', '=', False)]}"></field>
+        </group>
+      </page>
+    </field>
+  </record>
+</odoo>

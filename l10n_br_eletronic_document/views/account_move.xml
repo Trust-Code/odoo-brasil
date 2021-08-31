@@ -11,7 +11,7 @@
              <field name="total_edocs" /> <span> NFEs</span>
         </button>
       </div>
-      <button name="action_invoice_register_payment" position="before">
+      <button name="action_register_payment" position="before">
         <button name="action_create_eletronic_document" type="object" string="Criar nota fiscal" attrs="{'invisible':['|', ('state', '!=', 'posted'), ('l10n_br_edoc_policy', '=', 'directly')]}" class="oe_highlight" groups="base.group_user"/>  
       </button>
       <field name="fiscal_position_id" position="after">
