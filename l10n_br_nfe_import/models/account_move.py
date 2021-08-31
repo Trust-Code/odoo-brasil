@@ -10,8 +10,8 @@ class AccountMove(models.Model):
         return super(AccountMove, self.with_context(eletronic_doc_id=self.eletronic_doc_id))._recompute_payment_terms_lines()
 
     def action_invoice_open(self):
+        super(AccountMove, self).action_invoice_open()
         for invoice in self:
-            super(AccountInvoice, self).action_invoice_open()
 
             for item in invoice.invoice_line_ids:
                 if not item.product_cprod:

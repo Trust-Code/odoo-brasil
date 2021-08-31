@@ -9,9 +9,9 @@
                     <group id="carrier_tab_group">
                         <group string="Informações da Transportadora">
                             <field name="carrier_partner_id"/>
-                            <field name="num_volumes"/>
-                            <field name="quant_peso"/>
-<!--                            <field name="peso_uom"/>-->
+                            <field name="modalidade_frete"/>
+                            <field name="quantidade_volumes"/>
+                            <field name="peso_bruto"/>
                         </group>
                     </group>
                 </page>

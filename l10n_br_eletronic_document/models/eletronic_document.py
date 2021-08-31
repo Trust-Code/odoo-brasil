@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
+from odoo.tools import ustr
 from odoo.exceptions import UserError
 from odoo.tools import safe_eval
 
@@ -18,6 +19,13 @@ from odoo.addons.l10n_br_account.models.cst import (
     CST_ICMS, CST_PIS_COFINS, CSOSN_SIMPLES, CST_IPI, ORIGEM_PROD)
 
 _logger = logging.getLogger(__name__)
+
+
+try:
+    from pytrustnfe.nfe import xml_autorizar_nfe
+    from pytrustnfe.certificado import Certificado
+except ImportError:
+    _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
 STATE = {'draft': [('readonly', False)]}
@@ -471,27 +479,24 @@ class EletronicDocument(models.Model):
             item.discriminacao_servicos = descricao
 
     def _compute_legal_information(self):
-        fiscal_ids = self.move_id.fiscal_observation_ids.filtered(
+        fiscal_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'fiscal')
-        obs_ids = self.move_id.fiscal_observation_ids.filtered(
+        obs_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
             lambda x: x.tipo == 'observacao')
 
-        prod_obs_ids = self.env['br_account.fiscal.observation'].browse()
-        for item in self.move_id.invoice_line_ids:
-            prod_obs_ids |= item.product_id.fiscal_observation_ids
+        # prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
+        # for item in self.move_id.invoice_line_ids:
+        #     prod_obs_ids |= item.product_id.fiscal_observation_ids
+        #
+        # fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
+        # obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
 
-        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
-        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
-
-        fiscal = self._compute_msg(fiscal_ids) + (
-            self.invoice_id.fiscal_comment or '')
+        fiscal = self._compute_msg(fiscal_ids)
 
         ncm_tax_related = 'Valor Aprox. dos Tributos R$ %s. Fonte: IBPT\n' % \
                           (str(self.valor_estimado_tributos))
 
-        observacao = ncm_tax_related + self._compute_msg(obs_ids) + (
-            self.invoice_id.comment or '')
-
+        observacao = ncm_tax_related + self._compute_msg(obs_ids)
         self.informacoes_legais = fiscal
         self.informacoes_complementares = observacao
 
@@ -534,9 +539,9 @@ class EletronicDocument(models.Model):
 
         result = ''
         for item in observation_ids:
-            if item.document_id and item.document_id.code != self.model:
-                continue
-            template = mako_safe_env.from_string(tools.ustr(item.message))
+            # if item.tipo != self.model:
+            #     continue
+            template = mako_safe_env.from_string(ustr(item.message))
             variables = self._get_variables_msg()
             render_result = template.render(variables)
             result += render_result + '\n'
@@ -582,6 +587,23 @@ class EletronicDocument(models.Model):
 
     def action_edit_edoc(self):
         self.state = 'edit'
+
+    def action_generate_xml(self):
+        if self.state in ('draft', 'error'):
+            cert = self.company_id.with_context(
+                {'bin_size': False}).l10n_br_certificate
+            cert_pfx = base64.decodestring(cert)
+            certificado = Certificado(
+                cert_pfx, self.company_id.l10n_br_cert_password)
+
+            nfe_values = self._prepare_eletronic_invoice_values()
+            lote = self._prepare_lote(self.id, nfe_values)
+
+            xml_enviar = xml_autorizar_nfe(certificado, **lote)
+            self.sudo().write({
+                'xml_to_send': base64.encodestring(xml_enviar.encode('utf-8')),
+                'xml_to_send_name': 'nfe-enviar-%s.xml' % self.numero,
+            })
 
     def can_unlink(self):
         if self.state not in ('done', 'cancel', 'denied'):
@@ -1151,6 +1173,9 @@ class EletronicDocumentLine(models.Model):
         string='Valor Total', digits='Account',
         readonly=True, states=STATE)
 
+    icms_valor_original_operacao = fields.Float(
+        string='ICMS da Operação', digits='Account',
+        readonly=True, states=STATE)
     icms_aliquota_diferimento = fields.Float(
         string='% Diferimento', digits='Account',
         readonly=True, states=STATE)
@@ -1303,6 +1328,8 @@ class EletronicDocumentLine(models.Model):
 
     cest = fields.Char(string="CEST", size=10, readonly=True, states=STATE,
                        help="Código Especificador da Substituição Tributária")
+    codigo_beneficio = fields.Char(string="Benefício Fiscal", size=10, readonly=True, states=STATE)
+    extipi = fields.Char(string="Código EX TIPI", size=3, readonly=True, states=STATE)
     classe_enquadramento_ipi = fields.Char(
         string="Classe Enquadramento", size=5, readonly=True, states=STATE)
     codigo_enquadramento_ipi = fields.Char(

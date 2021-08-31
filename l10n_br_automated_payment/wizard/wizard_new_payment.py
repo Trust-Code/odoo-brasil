@@ -20,6 +20,7 @@ class WizardNewPaymentInvoice(models.TransientModel):
                 'move_id': record.id,
                 'description': record.invoice_payment_ref,
                 'amount': record.amount_residual,
+                'payment_journal_id': record.payment_journal_id.id,
                 'currency_id': record.currency_id.id,
                 'partner_id': record.partner_id.id,
             })
@@ -28,18 +29,20 @@ class WizardNewPaymentInvoice(models.TransientModel):
     payment_due = fields.Boolean(string="Pagamento Atrasado?")
     description = fields.Char(string="Descrição", readonly=1)
     partner_id = fields.Many2one('res.partner', readonly=1)
+    payment_journal_id = fields.Many2one(
+        'account.journal', domain=[('type', '=', 'bank')],
+        string="Forma de Pagamento", required=True)
     date_change = fields.Date(string='Novo Vencimento')
     move_id = fields.Many2one('account.move')
     amount = fields.Monetary(string="Valor")
     currency_id = fields.Many2one('res.currency')
 
-    def action_change_invoice_iugu(self):
+    def action_generate_new_payment(self):
         if self.move_id.invoice_payment_state == 'paid':
             raise UserError('A fatura já está paga!')
         if self.date_change:
-
             self.move_id.receivable_move_line_ids.write(
                 {'date_maturity': self.date_change}
             )
-
-            self.move_id.generate_payment_transactions()
+        self.move_id.write({'payment_journal_id': self.payment_journal_id.id})
+        self.move_id.generate_payment_transactions()

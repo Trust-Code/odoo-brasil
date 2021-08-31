@@ -95,13 +95,15 @@
             </div>
             <div class="row border-top-0" style="border: 1px solid black; padding: 0 0 5px 5px;">
                 <div class="col-2">
-                    <img style="height:65px;margin-top:15px;" t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
+                    <img style="height:65px;margin-top:15px;"
+                         t-att-src="'data:image/png;base64,%s' % to_text(doc.company_id.logo)" /><br />
                 </div>
                 <div class="col-10">
                     <div class="row">
                         <div class="col-12">
                             Nome/Razão Social:
-                            <strong t-raw="doc.commercial_partner_id.l10n_br_legal_name or doc.commercial_partner_id.name"/>
+                            <strong t-raw="doc.company_id.partner_id.l10n_br_legal_name or
+                            doc.company_id.partner_id.name"/>
                         </div>
                     </div>
                     <div class="row">

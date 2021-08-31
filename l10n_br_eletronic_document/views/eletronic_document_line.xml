@@ -26,6 +26,9 @@
                               <field name="tipo_produto" />
                               <field name="cfop" />
                               <field name="ncm" />
+                              <field name="cest" />
+                              <field name="codigo_beneficio" />
+                              <field name="extipi" />
                               <field name="tributos_estimados" />
                               <field name="indicador_total" />
                               <field name="pedido_compra" />
@@ -42,6 +45,7 @@
                               <field name="icms_cst" />
                               <field name="origem"/>
                               <field name="icms_tipo_base"/>
+                              <field name="icms_valor_original_operacao" />
                               <field name="icms_aliquota_diferimento" />
                               <field name="icms_valor_diferido" />
                               <field name="icms_motivo_desoneracao" />
@@ -65,6 +69,17 @@
                               <field name="icms_st_aliquota" />
                               <field name="icms_st_valor"/>
                           </group>
+                          <group name="icms_interestaual">
+                                <field name="tem_difal" />
+                                <field name="icms_bc_uf_dest" />
+                                <field name="icms_aliquota_fcp_uf_dest" />
+                                <field name="icms_aliquota_uf_dest" />
+                                <field name="icms_aliquota_interestadual" />
+                                <field name="icms_aliquota_inter_part" />
+                                <field name="icms_fcp_uf_dest" />
+                                <field name="icms_uf_dest" />
+                                <field name="icms_uf_remet" />
+                        </group>
                       </group>
                   </page>
                   <page name="iss" string="ISS" attrs="{'invisible': [('tipo_produto','!=', 'service')]}">

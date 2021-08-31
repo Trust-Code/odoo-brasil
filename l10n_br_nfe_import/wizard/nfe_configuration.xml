@@ -13,6 +13,7 @@
                             <field name="eletronic_doc_id" invisible="1" />
                             <field name="currency_id" invisible="1" />
                             <field name="partner_id" />
+                            <field name="create_all_products" />
                         </group>
                         <group>
                             <field name="nfe_number" />
@@ -23,6 +24,7 @@
                         <field name="nfe_item_ids" nolabel="1">
                             <tree editable="bottom" create="false">
                                 <field name="eletronic_line_id" invisible="1" />
+                                <field name="create_products" />
                                 <field name="product_id" />
                                 <field name="uom_id" />
                                 <field name="xml_product_code" />

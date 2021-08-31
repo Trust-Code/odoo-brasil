@@ -3,7 +3,7 @@ import base64
 import requests
 import tempfile
 from datetime import timedelta
-from odoo import api, fields, models
+from odoo import models
 from odoo.exceptions import ValidationError, UserError
     
 
@@ -55,8 +55,6 @@ class AccountMove(models.Model):
             })
 
             url = "https://apis.bancointer.com.br/openbanking/v1/certificado/boletos"
-
-            instrucao = self.payment_journal_id.l10n_br_boleto_instrucoes or ''
 
             tipo_mora = "ISENTO"
             if self.payment_journal_id.l10n_br_valor_juros_mora:
@@ -145,8 +143,6 @@ class AccountMove(models.Model):
             if response.status_code == 200:
                 json_p = response.json()
                 nosso_numero = json_p["nossoNumero"]
-                linha_digitavel = json_p["linhaDigitavel"]
-                codigo_barras = json_p["codigoBarras"]
             elif response.status_code == 401:
                 raise UserError("Erro de autorização ao consultar a API do Banco Inter")
             else:

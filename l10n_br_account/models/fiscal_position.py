@@ -27,7 +27,7 @@ class AccountFiscalPosition(models.Model):
         'account.account', string="Conta Contábil",
         help="Conta Contábil a ser utilizada na fatura.", copy=True)
     # fiscal_observation_ids = fields.Many2many(
-    #     'br_account.fiscal.observation', string=u"Mensagens Doc. Eletrônico",
+    #     'l10n_br_eletronic_document.nfe.fiscal.observation', string=u"Mensagens Doc. Eletrônico",
     #     copy=True)
     note = fields.Text('Observações')
 
