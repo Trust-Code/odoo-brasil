@@ -1,3 +1,4 @@
+import re
 import json
 import base64
 import requests
@@ -103,7 +104,7 @@ def check_nfse_api(token, ambiente, nfe_reference):
             "code": 201,
             "entity": {
                 "protocolo_nfe": response["codigo_verificacao"],
-                "numero_nfe": int(response["numero"][4:]),
+                "numero_nfe": int(re.sub("[^0-9]", "", response["numero"])),
             },
             "pdf": pdf,
             "xml": xml,
