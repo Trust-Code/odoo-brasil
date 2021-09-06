@@ -1047,6 +1047,22 @@ class EletronicDocument(models.Model):
         }
         return vals
 
+    def prepare_extra_line_items(self, product, price):
+        product = product.with_context(force_company=self.company_id.id)
+        if product.property_account_expense_id:
+            account_id = product.property_account_expense_id
+        else:
+            account_id =\
+                product.categ_id.property_account_expense_categ_id
+        return {
+            'product_id': product.id,
+            'product_uom_id': product.uom_id.id,
+            'name': product.name if product.name else product.product_xprod,
+            'quantity': 1.0,
+            'price_unit': price,
+            'account_id': account_id.id,
+        }
+
     def generate_account_move(self):
         next_action = self.check_inconsistency_and_redirect()
         if next_action:
@@ -1064,6 +1080,18 @@ class EletronicDocument(models.Model):
         for item in self.document_line_ids:
             invoice_item = self.prepare_account_invoice_line_vals(item)
             items.append((0, 0, invoice_item))
+
+        if self.valor_frete:
+            product = self.env.ref("l10n_br_account.product_product_delivery")
+            items.append((0, 0, self.prepare_extra_line_items(product, self.valor_frete)))
+
+        if self.valor_despesas:
+            product = self.env.ref("l10n_br_account.product_product_expense")
+            items.append((0, 0, self.prepare_extra_line_items(product, self.valor_despesas)))
+
+        if self.valor_seguro:
+            product = self.env.ref("l10n_br_account.product_product_insurance")
+            items.append((0, 0, self.prepare_extra_line_items(product, self.valor_seguro)))
 
         vals['invoice_line_ids'] = items
         account_invoice = self.env['account.move'].create(vals)
