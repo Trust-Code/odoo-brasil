@@ -318,11 +318,15 @@ class EletronicDocument(models.Model):
 
         seller_id = self.env['product.supplierinfo'].search([
             ('name', '=', partner_id),
-            ('product_code', '=', codigo)])
+            ('product_code', '=', codigo),
+            ('product_id.active', '=', True)])
 
         product = None
         if seller_id:
             product = seller_id.product_id
+            if len(product) > 1:
+                message = '\n'.join(["Produto: %s - %s" % (x.default_code or '', x.name) for x in product])
+                raise UserError("Existem produtos duplicados com mesma codificação, corrija-os antes de prosseguir:\n%s" % message)
 
         if not product and item.prod.cEAN and \
            str(item.prod.cEAN) != 'SEM GTIN':
