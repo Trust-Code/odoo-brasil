@@ -1,0 +1,17 @@
+name: Triggers a new docker image build
+
+on:
+  push:
+    branches: [ 12.0 ]
+
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger a dispatch action to docker-odoo repository
+        run: |
+          curl -X POST https://api.github.com/repos/Trust-Code/docker-odoo/actions/workflows/main.yml/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACCESS_TOKEN }} \
+          --data '{"ref": "12.0"}'

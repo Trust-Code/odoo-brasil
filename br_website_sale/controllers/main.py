@@ -16,7 +16,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
         res = super(L10nBrWebsiteSale, self)._get_mandatory_billing_fields()
         res.remove('city')
         return res + ["cnpj_cpf", "zip", "number", "district",
-                      "state_id", "city_id"]
+                      "state_id", "city_id", "company_type"]
 
     def _get_mandatory_shipping_fields(self):
         res = super(L10nBrWebsiteSale, self)._get_mandatory_shipping_fields()
@@ -72,6 +72,8 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             if existe > 0:
                 errors["email"] = u"invalid"
                 error_msg.append(('E-mail já cadastrado'))
+        if errors.get('company_type', '') == 'missing':
+            error_msg.append(('Escolha o tipo de pessoa'))
         return errors, error_msg
 
     def values_postprocess(self, order, mode, values, errors, error_msg):
