@@ -1081,6 +1081,14 @@ class EletronicDocument(models.Model):
             invoice_item = self.prepare_account_invoice_line_vals(item)
             items.append((0, 0, invoice_item))
 
+        if self.valor_ipi:
+            product = self.env.ref("l10n_br_nfe_import.product_product_tax_ipi")
+            items.append((0, 0, self.prepare_extra_line_items(product, self.valor_ipi)))
+
+        if self.valor_icmsst:
+            product = self.env.ref("l10n_br_nfe_import.product_product_tax_icmsst")
+            items.append((0, 0, self.prepare_extra_line_items(product, self.valor_icmsst)))
+
         if self.valor_frete:
             product = self.env.ref("l10n_br_account.product_product_delivery")
             items.append((0, 0, self.prepare_extra_line_items(product, self.valor_frete)))
