@@ -271,11 +271,15 @@ class AccountTax(models.Model):
             taxes += [vals_fcp]
         return taxes
 
-    def _compute_pis_cofins(self, price_base):
+    def _compute_pis_cofins(self, price_base, icms):
         pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
         if not pis_cofins_tax:
             return []
         taxes = []
+        base_pis_cofins = price_base
+        if self.env.context.get('excluir_icms_pis_cofins') and icms:
+            base_pis_cofins = price_base - icms[0]['amount']
+        base_pis_cofins = price_base
         for tax in pis_cofins_tax:
             vals = self._tax_vals(tax)
             if tax.domain == 'pis':
@@ -285,8 +289,8 @@ class AccountTax(models.Model):
                         self.env.context['pis_base_calculo_manual'], 1.0)
                     vals['base'] = self.env.context['pis_base_calculo_manual']
                 else:
-                    vals['amount'] = tax._compute_amount(price_base, 1.0)
-                    vals['base'] = price_base
+                    vals['amount'] = tax._compute_amount(base_pis_cofins, 1.0)
+                    vals['base'] = base_pis_cofins
             if tax.domain == 'cofins':
                 if 'cofins_base_calculo_manual' in self.env.context and\
                         self.env.context['cofins_base_calculo_manual'] > 0:
@@ -295,8 +299,8 @@ class AccountTax(models.Model):
                     vals['base'] = self.env.context[
                         'cofins_base_calculo_manual']
                 else:
-                    vals['amount'] = tax._compute_amount(price_base, 1.0)
-                    vals['base'] = price_base
+                    vals['amount'] = tax._compute_amount(base_pis_cofins, 1.0)
+                    vals['base'] = base_pis_cofins
             vals['amount'] = round(vals['amount'], 2)
             taxes.append(vals)
         return taxes
@@ -365,7 +369,7 @@ class AccountTax(models.Model):
             price_base, ipi[0]['amount'] if ipi else 0.0)
 
         taxes = icms + icmsst + difal + ipi
-        taxes += self._compute_pis_cofins(price_base)
+        taxes += self._compute_pis_cofins(price_base, icms)
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)

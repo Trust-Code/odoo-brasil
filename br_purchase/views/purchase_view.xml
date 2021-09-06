@@ -14,6 +14,7 @@
                 <field name="valor_bruto" widget="monetary" />
                 <field name="cfop_id" invisible="1" />
                 <field name="incluir_ipi_base" invisible="1" />
+                <field name="excluir_icms_pis_cofins" invisible="1" />
                 <field name="icms_cst_normal" invisible="1" />
                 <field name="icms_csosn_simples" invisible="1" />
                 <field name="icms_st_aliquota_mva" invisible="1" />
@@ -33,6 +34,7 @@
                 <field name="price_subtotal" />
                 <field name="cfop_id" invisible="1" />
                 <field name="incluir_ipi_base" invisible="1" />
+                <field name="excluir_icms_pis_cofins" invisible="1" />
                 <field name="icms_cst_normal" invisible="1" />
                 <field name="icms_csosn_simples" invisible="1" />
                 <field name="icms_st_aliquota_mva" invisible="1" />

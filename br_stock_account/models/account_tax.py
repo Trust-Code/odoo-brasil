@@ -30,7 +30,7 @@ class AccountTax(models.Model):
                 self.env.context['fiscal_type'] == 'import'):
             icms_tax = self.filtered(lambda x: x.domain == 'icms')
             ii = self._compute_ii(price_base)
-            pis_cofins = self._compute_pis_cofins(price_base)
+            pis_cofins = self._compute_pis_cofins(price_base, None)
             base_icms = price_base
             reducao_icms = 0.0
             if "valor_frete" in self.env.context:
@@ -50,14 +50,14 @@ class AccountTax(models.Model):
             return super(
                 AccountTax, self).calc_icms_base(price_base, ipi_value)
 
-    def _compute_pis_cofins(self, price_base):
+    def _compute_pis_cofins(self, price_base, icms):
         if ('fiscal_type' in self.env.context) and (
                 self.env.context['fiscal_type'] == 'import'):
             if "valor_frete" in self.env.context:
                 price_base += self.env.context["valor_frete"]
             if "valor_seguro" in self.env.context:
                 price_base += self.env.context["valor_seguro"]
-        return super(AccountTax, self)._compute_pis_cofins(price_base)
+        return super(AccountTax, self)._compute_pis_cofins(price_base, icms)
 
     def _compute_ii(self, price_base):
         if ('fiscal_type' in self.env.context) and (

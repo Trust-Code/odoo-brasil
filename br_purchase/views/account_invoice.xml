@@ -32,6 +32,7 @@
                 <field name="icms_origem" invisible="1"/>
                 <field name="tributos_estimados" invisible="1"/>
                 <field name="incluir_ipi_base" invisible="1"/>
+                <field name="excluir_icms_pis_cofins" invisible="1" />
                 <field name="icms_aliquota" invisible="1"/>
 
                 <field name="icms_tipo_base" invisible="1"/>

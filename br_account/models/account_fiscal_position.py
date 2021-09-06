@@ -52,6 +52,7 @@ class AccountFiscalPositionTaxRule(models.Model):
                                      domain=[('domain', '=', 'icmsst')])
     icms_aliquota_credito = fields.Float(string=u"% Crédito de ICMS")
     incluir_ipi_base = fields.Boolean(string=u"Incl. IPI na base ICMS")
+    excluir_icms_pis_cofins = fields.Boolean(string="Excluir ICMS da Base PIS e COFINS")
     reducao_icms = fields.Float(string=u"Redução de base")
     reducao_icms_st = fields.Float(string=u"Redução de base ST")
     reducao_ipi = fields.Float(string=u"Redução de base IPI")
@@ -183,6 +184,7 @@ class AccountFiscalPosition(models.Model):
                 'icms_cst_normal': rules[0].cst_icms,
                 'icms_aliquota_reducao_base': rules[0].reducao_icms,
                 'incluir_ipi_base': rules[0].incluir_ipi_base,
+                'excluir_icms_pis_cofins': rules[0].excluir_icms_pis_cofins,
                 # ICMS ST
                 'tax_icms_st_id': rules[0].tax_icms_st_id,
                 'icms_st_aliquota_mva': rules[0].aliquota_mva,
@@ -207,7 +209,7 @@ class AccountFiscalPosition(models.Model):
                 'l10n_br_issqn_deduction': rules[0].l10n_br_issqn_deduction,
             }
         else:
-            return{}
+            return {}
 
     @api.model
     def map_tax_extra_values(self, company, product, partner):

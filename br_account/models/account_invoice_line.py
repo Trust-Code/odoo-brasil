@@ -26,6 +26,7 @@ class AccountInvoiceLine(models.Model):
     def _prepare_tax_context(self):
         return {
             'incluir_ipi_base': self.incluir_ipi_base,
+            'excluir_icms_pis_cofins': self.excluir_icms_pis_cofins,
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
             'icms_st_aliquota_reducao_base':
@@ -55,7 +56,7 @@ class AccountInvoiceLine(models.Model):
                  'tax_icms_intra_id', 'tax_icms_fcp_id', 'tax_ipi_id',
                  'tax_pis_id', 'tax_cofins_id', 'tax_ii_id', 'tax_issqn_id',
                  'tax_csll_id', 'tax_irrf_id', 'tax_inss_id',
-                 'incluir_ipi_base', 'tem_difal', 'icms_aliquota_reducao_base',
+                 'incluir_ipi_base', 'excluir_icms_pis_cofins', 'tem_difal', 'icms_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_mva',
                  'icms_st_aliquota_reducao_base', 'icms_aliquota_credito',
                  'icms_st_aliquota_deducao', 'icms_st_base_calculo_manual',
@@ -234,6 +235,9 @@ class AccountInvoiceLine(models.Model):
     incluir_ipi_base = fields.Boolean(
         string="Incl. Valor IPI?",
         help=u"Se marcado o valor do IPI inclui a base de cálculo")
+    excluir_icms_pis_cofins = fields.Boolean(
+        string="Excluir ICMS da base de PIS e COFINS"
+    )
     icms_base_calculo = fields.Float(
         'Base ICMS', required=True, compute='_compute_price', store=True,
         digits=dp.get_precision('Account'), default=0.00)

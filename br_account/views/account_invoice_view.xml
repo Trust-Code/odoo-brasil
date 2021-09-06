@@ -366,6 +366,7 @@
                                     <field name="pis_cst"/>
                                     <field name="pis_tipo"/>
                                     <field name="pis_rule_id" />
+                                    <field name="excluir_icms_pis_cofins" />
                                 </group>
                                 <group>
                                     <field name="pis_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>
@@ -382,6 +383,7 @@
                                     <field name="cofins_cst"/>
                                     <field name="cofins_tipo"/>
                                     <field name="cofins_rule_id" />
+                                    <field name="excluir_icms_pis_cofins" />
                                 </group>
                                 <group>
                                     <field name="cofins_base_calculo_manual" groups="br_account.group_edit_bases_calculo"/>

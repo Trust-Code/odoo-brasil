@@ -14,6 +14,7 @@
                     <group>
                         <field name="tax_id" domain="[('domain', '=', domain)]" />
                         <field name="cfop_id" domain="[('internal_type', '=', 'normal')]" attrs="{'invisible': [('domain', 'not in', ('icms', 'issqn'))]}"/>
+                        <field name="excluir_icms_pis_cofins" attrs="{'invisible': [('domain', 'not in', ('pis', 'cofins'))]}" />
                     </group>
                     <group>
                         <field name="cst_icms" attrs="{'invisible': [('domain', '!=', 'icms')]}" />

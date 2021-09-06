@@ -66,6 +66,7 @@ class PurchaseOrderLine(models.Model):
     def _prepare_tax_context(self):
         return {
             'incluir_ipi_base': self.incluir_ipi_base,
+            'excluir_icms_pis_cofins': self.excluir_icms_pis_cofins,
             'icms_st_aliquota_mva': self.icms_st_aliquota_mva,
             'aliquota_icms_proprio': self.aliquota_icms_proprio,
             'icms_aliquota_reducao_base': self.icms_aliquota_reducao_base,
@@ -79,7 +80,7 @@ class PurchaseOrderLine(models.Model):
     @api.depends('taxes_id', 'product_qty', 'price_unit', 'discount',
                  'icms_aliquota_reducao_base', 'icms_st_aliquota_reducao_base',
                  'ipi_reducao_bc', 'icms_st_aliquota_deducao',
-                 'incluir_ipi_base', 'icms_st_aliquota_mva')
+                 'incluir_ipi_base', 'excluir_icms_pis_cofins', 'icms_st_aliquota_mva')
     def _compute_amount(self):
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
@@ -116,6 +117,7 @@ class PurchaseOrderLine(models.Model):
         string=u'Alíquota ICMS Próprio (%)',
         digits=dp.get_precision('Account'))
     incluir_ipi_base = fields.Boolean(string="Incluir IPI na Base ICMS")
+    excluir_icms_pis_cofins = fields.Boolean(string="Excluir ICMS da Base PIS e COFINS")
     icms_aliquota_reducao_base = fields.Float(
         string=u'Redução Base ICMS (%)', digits=dp.get_precision('Account'))
     icms_st_aliquota_reducao_base = fields.Float(
