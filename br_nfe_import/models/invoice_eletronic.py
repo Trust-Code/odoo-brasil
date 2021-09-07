@@ -988,6 +988,7 @@ class InvoiceEletronic(models.Model):
             'icms_base_calculo': item.icms_base_calculo,
             'icms_valor': item.icms_valor,
             'icms_valor_credito': item.icms_valor_credito,
+            'icms_st_base_calculo_manual': item.icms_st_base_calculo,
             'icms_st_base_calculo': item.icms_st_base_calculo,
             'icms_st_valor': item.icms_st_valor,
             'tax_icms_st_id': None if tax_icms_st_id is None else
