@@ -279,7 +279,7 @@ class AccountTax(models.Model):
         base_pis_cofins = price_base
         if self.env.context.get('excluir_icms_pis_cofins') and icms:
             base_pis_cofins = price_base - icms[0]['amount']
-        base_pis_cofins = price_base
+
         for tax in pis_cofins_tax:
             vals = self._tax_vals(tax)
             if tax.domain == 'pis':
