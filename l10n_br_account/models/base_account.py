@@ -74,12 +74,16 @@ class AccountNcm(models.Model):
         return result
 
     def notify_account_users(self, message):
-        partner = self.env['res.users'].browse(self.env.context['uid']).partner_id
-        odoobot_id = self.env['ir.model.data'].xmlid_to_res_id("base.partner_root")
+        group_id = self.env.ref("base.group_system").id
+        users = self.env['res.users'].search([('groups_id', '=', group_id)])
+        for user in users:
+            partner = user.partner_id
 
-        channel_info = self.env['mail.channel'].channel_get([partner.id, odoobot_id], pin=True)
-        channel = self.env['mail.channel'].browse(channel_info['id'])
-        channel.sudo().message_post(body=message, author_id=odoobot_id, message_type="comment", subtype="mail.mt_comment")
+            odoobot_id = self.env['ir.model.data'].xmlid_to_res_id("base.partner_root")
+
+            channel_info = self.env['mail.channel'].channel_get([partner.id, odoobot_id], pin=True)
+            channel = self.env['mail.channel'].browse(channel_info['id'])
+            channel.sudo().message_post(body=message, author_id=odoobot_id, message_type="comment", subtype="mail.mt_comment")
 
     def cron_sync_average_tax_rate(self):
         if not self.env.company.l10n_br_ibpt_api_token:
