@@ -172,12 +172,10 @@ class ResPartner(models.Model):
                 self.zip = zip
 
     @api.model
-    def _address_fields(self):
-        """ Returns the list of address fields that are synced from the parent
-        when the `use_parent_address` flag is set.
-        Extenção para os novos campos do endereço """
-        address_fields = super(ResPartner, self)._address_fields()
-        return list(address_fields + ['city_id', 'number', 'district'])
+    def _formatting_address_fields(self):
+        """Returns the list of address fields usable to format addresses."""
+        address_fields = super(ResPartner, self)._formatting_address_fields()
+        return list(address_fields + ['number', 'district'])
 
     @api.one
     def action_check_sefaz(self):
