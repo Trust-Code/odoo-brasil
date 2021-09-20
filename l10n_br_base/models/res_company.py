@@ -58,15 +58,6 @@ class ResCompany(models.Model):
     l10n_br_cert_expire_date = fields.Date(
         string="Cert. Expiration Date", compute='_compute_expiry_date')
 
-    @api.onchange('l10n_br_cnpj_cpf')
-    def onchange_mask_cnpj_cpf(self):
-        if self.l10n_br_cnpj_cpf:
-            val = re.sub('[^0-9]', '', self.l10n_br_cnpj_cpf)
-            if len(val) == 14:
-                cnpj_cpf = "%s.%s.%s/%s-%s"\
-                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
-                self.l10n_br_cnpj_cpf = cnpj_cpf
-
     @api.onchange('zip')
     def onchange_mask_zip(self):
         if self.zip:

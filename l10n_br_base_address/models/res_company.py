@@ -64,6 +64,15 @@ class ResCompany(models.Model):
         for company in self:
             company.partner_id.city_id = company.city_id
 
+    @api.onchange('l10n_br_cnpj_cpf')
+    def onchange_mask_cnpj_cpf(self):
+        if self.l10n_br_cnpj_cpf:
+            val = re.sub('[^0-9]', '', self.l10n_br_cnpj_cpf)
+            if len(val) == 14:
+                cnpj_cpf = "%s.%s.%s/%s-%s"\
+                    % (val[0:2], val[2:5], val[5:8], val[8:12], val[12:14])
+                self.l10n_br_cnpj_cpf = cnpj_cpf
+
     @api.onchange('zip')
     def _onchange_zip(self):
         cep = re.sub('[^0-9]', '', self.zip or '')
