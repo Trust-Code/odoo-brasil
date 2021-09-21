@@ -245,7 +245,7 @@ class AccountMove(models.Model):
             'natureza_operacao': invoice.fiscal_position_id.name,
             'ind_pres': invoice.fiscal_position_id.ind_pres,
             'informacoes_complementares': invoice.narration,
-            'numero_fatura': invoice.name,
+            'numero_fatura': numero_nfe,
             'fatura_bruto': invoice.amount_total,
             'fatura_desconto': 0.0,
             'fatura_liquido': invoice.amount_total,
