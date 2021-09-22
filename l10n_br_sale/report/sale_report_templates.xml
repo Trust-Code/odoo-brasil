@@ -6,5 +6,8 @@
                 <p class="m-0" t-field="doc.carrier_id.partner_id"/>
             </div>
         </xpath>
+        <div t-field="doc.partner_id" position="after">
+            <p t-if="doc.partner_id.commercial_partner_id.l10n_br_cnpj_cpf">CNPJ/CPF: <span t-field="doc.partner_id.commercial_partner_id.l10n_br_cnpj_cpf"/></p>
+        </div>
     </template>
 </odoo>

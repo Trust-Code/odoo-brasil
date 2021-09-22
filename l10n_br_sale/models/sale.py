@@ -30,13 +30,6 @@ class SaleOrder(models.Model):
         states=STATES,
     )
 
-    def _prepare_invoice(self):
-        values = super(SaleOrder, self)._prepare_invoice()
-
-        if self.carrier_id and self.carrier_id.partner_id:
-            values["carrier_partner_id"] = self.carrier_id.partner_id
-        return values
-
     def compute_lines_partition(self, line_type):
         if line_type not in ("delivery", "expense", "insurance"):
             return
@@ -155,9 +148,13 @@ class SaleOrder(models.Model):
             ('origin', '=', self.name),
             ('state', '=', 'done'),
         ])
-
         quantidade_volumes = sum(len(picking.package_ids) for picking in picking_ids)
         vals['quantidade_volumes'] = quantidade_volumes
+
+        if self.carrier_id and self.carrier_id.partner_id:
+            vals["carrier_partner_id"] = self.carrier_id.partner_id
+        if self.fiscal_position_id:
+            vals["l10n_br_edoc_policy"] = self.fiscal_position_id.edoc_policy
         return vals
 
 

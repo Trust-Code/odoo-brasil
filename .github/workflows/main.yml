@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 14.0 ]
 
+
 jobs:
   trigger-build:
     runs-on: ubuntu-latest
@@ -14,7 +15,3 @@ jobs:
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
           --data '{"ref": "14.0"}'
-
-
-
-

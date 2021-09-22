@@ -908,6 +908,30 @@ class EletronicDocument(models.Model):
         else:
             raise UserError(_('A NFe não está validada'))
 
+    def _create_response_cancel(self, code, motive, response, justificativa):
+        message = "%s - %s" % (code, motive)
+        wiz = self.env['wizard.cancel.nfe'].create({
+            'edoc_id': self.id,
+            'justificativa': justificativa,
+            'state': 'error',
+            'message': message,
+            'sent_xml': base64.b64encode(
+                response['sent_xml'].encode('utf-8')),
+            'sent_xml_name': 'cancelamento-envio.xml',
+            'received_xml': base64.b64encode(
+                response['received_xml'].encode('utf-8')),
+            'received_xml_name': 'cancelamento-retorno.xml',
+        })
+        return {
+            'name': _('Cancelamento NFe'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.cancel.nfe',
+            'res_id': wiz.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
     def action_cancel_document(self, context=None, justificativa=None):
         if self.model not in ('nfe', 'nfce'):
             return super(EletronicDocument, self).action_cancel_document(
@@ -978,14 +1002,8 @@ class EletronicDocument(models.Model):
             if code == 573:  # Duplicidade, já cancelado
                 return self.action_get_status()
 
-            return self._create_response_cancel(
-                code, motive, resp, justificativa)
+            return self._create_response_cancel(code, motive, resp, justificativa)
 
-        # self.env['invoice.eletronic.event'].create({
-        #     'code': self.codigo_retorno,
-        #     'name': self.mensagem_retorno,
-        #     'eletronic_document_id': self.id,
-        # })
         self._create_attachment('canc', self, resp['sent_xml'])
         self._create_attachment('canc-ret', self, resp['received_xml'])
         nfe_processada = base64.decodestring(self.nfe_processada)

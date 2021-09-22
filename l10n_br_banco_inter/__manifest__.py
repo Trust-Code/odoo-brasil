@@ -24,7 +24,6 @@
     ],
     'data': [
         'data/acquirer.xml',
-        'data/cron.xml',
         'views/payment_transaction.xml',
         'views/account_journal_views.xml',
     ],
