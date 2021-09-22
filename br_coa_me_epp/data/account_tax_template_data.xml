@@ -36,6 +36,17 @@
                     'account_id': ref('account_account_2_1_3_09'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_09'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_ipi-3" model="account.tax.template">
@@ -49,6 +60,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_12'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -96,6 +118,17 @@
                     'account_id': ref('account_account_2_1_3_09'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_09'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_ipi-5" model="account.tax.template">
@@ -109,6 +142,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_12'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -156,6 +200,17 @@
                     'account_id': ref('account_account_2_1_3_09'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_09'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_ipi-10" model="account.tax.template">
@@ -169,6 +224,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_12'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -216,6 +282,17 @@
                     'account_id': ref('account_account_2_1_3_04'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_04'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_st-7" model="account.tax.template">
@@ -229,6 +306,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_07'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -276,6 +364,17 @@
                     'account_id': ref('account_account_2_1_3_04'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_04'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_st-12" model="account.tax.template">
@@ -289,6 +388,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_07'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -336,6 +446,17 @@
                     'account_id': ref('account_account_2_1_3_04'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_04'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_st-18" model="account.tax.template">
@@ -349,6 +470,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_07'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -396,6 +528,17 @@
                     'account_id': ref('account_account_2_1_3_03'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_03'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_inter-7" model="account.tax.template">
@@ -409,6 +552,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -456,6 +610,17 @@
                     'account_id': ref('account_account_2_1_3_03'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_03'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_inter-12" model="account.tax.template">
@@ -469,6 +634,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -516,6 +692,17 @@
                     'account_id': ref('account_account_2_1_3_03'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_03'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_intra-17" model="account.tax.template">
@@ -529,6 +716,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -576,6 +774,17 @@
                     'account_id': ref('account_account_2_1_3_03'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_03'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_intra-175" model="account.tax.template">
@@ -589,6 +798,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -636,6 +856,17 @@
                     'account_id': ref('account_account_2_1_3_03'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_03'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_intra-18" model="account.tax.template">
@@ -649,6 +880,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -696,6 +938,17 @@
                     'account_id': ref('account_account_2_1_3_03'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_03'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_icms_intra-20" model="account.tax.template">
@@ -709,6 +962,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -755,6 +1019,17 @@
                     'account_id': ref('account_account_3_1_1_09'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_09'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_pis-065" model="account.tax.template">
@@ -767,6 +1042,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_06'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -812,6 +1098,17 @@
                     'account_id': ref('account_account_2_1_3_05'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_05'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_cofins-065" model="account.tax.template">
@@ -824,6 +1121,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_08'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -869,6 +1177,17 @@
                     'account_id': ref('account_account_2_1_3_07'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_07'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_csll-9" model="account.tax.template">
@@ -881,6 +1200,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_10'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -926,6 +1256,17 @@
                     'account_id': ref('account_account_2_1_3_08'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_08'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_irpj-" model="account.tax.template">
@@ -938,6 +1279,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_11'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -983,6 +1335,17 @@
                     'account_id': ref('account_account_2_1_3_10'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_10'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_inss-11" model="account.tax.template">
@@ -995,6 +1358,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_13'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -1040,6 +1414,17 @@
                     'account_id': ref('account_account_2_1_3_11'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_2_1_3_11'),
+                }),
+            ]"/>
     </record>
 
     <record id="tax_template_out_iss-465" model="account.tax.template">
@@ -1052,6 +1437,17 @@
         <field name="sequence">4</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_3_1_1_14'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -1099,6 +1495,17 @@
                     'account_id': ref('account_account_1_1_4_04'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_1_1_4_04'),
+                }),
+            ]"/>
     </record>
 
     <!-- IPI ( 5 % )  ENTRADA  -->
@@ -1113,6 +1520,17 @@
         <field name="sequence">2</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_1_1_4_04'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -1147,6 +1565,17 @@
                     'account_id': ref('account_account_1_1_4_04'),
                 }),
             ]"/>
+        <field name="refund_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_1_1_4_04'),
+                }),
+            ]"/>
     </record>
 
     <!-- ICMS ( 7 % )  ENTRADA  -->
@@ -1161,6 +1590,17 @@
         <field name="sequence">2</field>
         <field ref="br_coa_me_epp_chart_template" name="chart_template_id"/>
         <field name="invoice_repartition_line_ids" eval="[
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('account_account_1_1_4_03'),
+                }),
+            ]"/>
+        <field name="refund_repartition_line_ids" eval="[
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
