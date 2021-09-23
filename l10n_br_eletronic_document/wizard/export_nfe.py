@@ -4,6 +4,7 @@ import base64
 import os.path
 from zipfile import ZipFile
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 
 class ExportNfe(models.TransientModel):
