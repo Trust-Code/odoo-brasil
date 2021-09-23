@@ -10,6 +10,11 @@
                         <field name="start_date"/>
                         <field name="end_date"/>
                     </group>
+                    <group>
+                        <field name="emitter"/>
+                        <field name="edoc_type"/>
+                        <field name="model"/>
+                    </group>
                 </group>
                 <group states="done">
                     <field name="zip_file_name" invisible="1" />
