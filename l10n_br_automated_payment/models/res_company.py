@@ -8,7 +8,7 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    iugu_api_token = fields.Char(string="IUGU Api Token", size=60)
+    iugu_api_token = fields.Char(string="IUGU Api Token", size=100)
 
     l10n_br_payment_interest_account_id = fields.Many2one(
         'account.account', string="Conta para pagamento de juros")
