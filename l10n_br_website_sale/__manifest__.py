@@ -17,4 +17,9 @@
         'views/website_sale_view.xml',
         'views/website_portal.xml',
     ],
+    'assets': {
+        'web.assets_frontend': [
+            'l10n_br_website_sale/static/src/js/website_sale.js',
+        ]
+    }
 }
