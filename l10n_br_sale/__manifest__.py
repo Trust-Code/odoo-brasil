@@ -19,6 +19,7 @@
         'views/delivery_view.xml',
         'views/account_move_views.xml',
         'views/sale_order.xml',
+        'views/product_pricelist.xml',
         'report/sale_report_templates.xml',
     ],
     "auto_install": True,
