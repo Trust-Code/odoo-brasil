@@ -1024,7 +1024,7 @@ class EletronicDocument(models.Model):
         operation = 'in_invoice' \
             if self.tipo_operacao == 'entrada' else 'out_invoice'
         journal_id = self.env['account.move'].with_context(
-            default_type=operation, default_company_id=self.company_id.id
+            default_move_type=operation, default_company_id=self.company_id.id
         ).default_get(['journal_id'])['journal_id']
         partner = self.partner_id.with_context(force_company=self.company_id.id)
         account_id = partner.property_account_payable_id.id \
@@ -1034,7 +1034,7 @@ class EletronicDocument(models.Model):
         vals = {
             'eletronic_doc_id': self.id,
             'company_id': self.company_id.id,
-            'type': operation,
+            'move_type': operation,
             'state': 'draft',
             'invoice_origin': self.pedido_compra,
             'ref': "%s/%s" % (self.numero, self.serie_documento),
