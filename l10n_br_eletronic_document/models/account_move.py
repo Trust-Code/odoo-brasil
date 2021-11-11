@@ -33,6 +33,7 @@ class AccountMove(models.Model):
         [('directly', 'Emitir agora'),
          ('after_payment', 'Emitir após pagamento'),
          ('manually', 'Manualmente')], string="Nota Eletrônica", default=_get_default_policy)
+    carrier_partner_id = fields.Many2one('res.partner', string='Transportadora')
 
     @api.model
     def _autopost_draft_entries(self):
@@ -44,6 +45,13 @@ class AccountMove(models.Model):
         for item in records:
             item.action_post()
             self.env.cr.commit()
+
+    @api.onchange('carrier_partner_id')
+    def _update_modalidade_frete(self):
+        if self.carrier_partner_id and self.modalidade_frete == '9':
+            self.write({
+                'modalidade_frete': '1'
+            })
 
     def _validate_for_eletronic_document(self):
         errors = []
