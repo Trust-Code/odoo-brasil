@@ -13,7 +13,7 @@
     "depends": [
         "sale",
         "delivery",
-        "l10n_br_account",
+        "l10n_br_eletronic_document",
     ],
     'data': [
         'views/delivery_view.xml',
