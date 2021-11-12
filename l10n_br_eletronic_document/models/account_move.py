@@ -34,6 +34,16 @@ class AccountMove(models.Model):
          ('after_payment', 'Emitir após pagamento'),
          ('manually', 'Manualmente')], string="Nota Eletrônica", default=_get_default_policy)
     carrier_partner_id = fields.Many2one('res.partner', string='Transportadora')
+    modalidade_frete = fields.Selection(
+        [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
+         ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
+         ('2', '2 - Contratação do Frete por conta de Terceiros'),
+         ('3', '3 - Transporte Próprio por conta do Remetente'),
+         ('4', '4 - Transporte Próprio por conta do Destinatário'),
+         ('9', '9 - Sem Ocorrência de Transporte')],
+        string=u'Modalidade do frete', default="9")
+    quantidade_volumes = fields.Integer('Qtde. Volumes')
+    peso_bruto = fields.Float(string="Peso Bruto")
 
     @api.model
     def _autopost_draft_entries(self):
