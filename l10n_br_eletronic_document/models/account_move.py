@@ -470,6 +470,18 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    pedido_compra = fields.Char(
+        string="Pedido Compra",
+        size=60,
+        help="Se setado aqui sobrescreve o pedido de compra da fatura"
+    )
+
+    item_pedido_compra = fields.Char(
+        string="Item de compra",
+        size=20,
+        help='Item do pedido de compra do cliente'
+    )
+
     def get_eletronic_line_vals(self):
         pis = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'pis')
         cofins = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'cofins')
@@ -501,8 +513,8 @@ class AccountMoveLine(models.Model):
             'cest': self.product_id.l10n_br_cest,
             'extipi': self.product_id.l10n_br_extipi,
             'codigo_beneficio': self.product_id.l10n_br_fiscal_benefit,
-            'pedido_compra': self.ref,
-            # 'item_pedido_compra': self.item_pedido_compra,
+            'pedido_compra': self.pedido_compra or self.ref or "",
+            'item_pedido_compra': self.item_pedido_compra or "",
             # - ICMS -
             'icms_cst': fiscal_pos.csosn_icms,
             # 'icms_aliquota': self.icms_aliquota,
