@@ -34,6 +34,17 @@ class AccountMove(models.Model):
          ('after_payment', 'Emitir após pagamento'),
          ('manually', 'Manualmente')], string="Nota Eletrônica", default=_get_default_policy)
 
+    nfe_number = fields.Integer(string="Número NFe", compute="_compute_nfe_number")
+
+    def _compute_nfe_number(self):
+        for item in self:
+            docs = self.env['eletronic.document'].search(
+                [('move_id', '=', item.id)])
+            if docs:
+                item.nfe_number = docs[0].numero
+            else:
+                item.nfe_number = 0
+
     @api.model
     def _autopost_draft_entries(self):
         records = self.search([
