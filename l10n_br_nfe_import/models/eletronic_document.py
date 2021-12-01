@@ -82,6 +82,10 @@ class EletronicDocument(models.Model):
         numero_nfe = ide.nNF
         data_emissao = parser.parse(str(ide.dhEmi))
         dt_entrada_saida = get(ide, 'dhSaiEnt')
+        natureza_operacao = ide.natOp
+        fpos = self.env['account.fiscal.position'].search(
+            [('name', '=', natureza_operacao)], limit=1
+        )
 
         if dt_entrada_saida:
             dt_entrada_saida = parser.parse(str(dt_entrada_saida))
@@ -104,6 +108,8 @@ class EletronicDocument(models.Model):
             finalidade_emissao=finalidade_emissao,
             state='imported',
             name='Documento Eletrônico: n° ' + str(numero_nfe),
+            natureza_operacao=natureza_operacao,
+            fiscal_position_id=fpos.id
         )
 
     def get_partner_nfe(self, nfe, destinatary, partner_automation):
@@ -390,6 +396,11 @@ class EletronicDocument(models.Model):
 
         if hasattr(item.imposto, 'II'):
             invoice_eletronic_Item.update(self._get_ii(item.imposto.II))
+        if hasattr(item.prod, 'DI'):
+            di_ids = []
+            for di in item.prod.DI:
+                di_ids.append(self._get_di(item.prod.DI))
+            invoice_eletronic_Item.update({'import_declaration_ids': di_ids})
 
         return self.env['eletronic.document.line'].create(
             invoice_eletronic_Item)
@@ -533,16 +544,47 @@ class EletronicDocument(models.Model):
         return remove_none_values(vals)
 
     def _get_ii(self, ii):
-        vals = {}
-        for item in ii.getchildren():
-            vals = {
-                'ii_base_calculo': get(ii, '%s.vBC' % item),
-                'ii_valor_despesas': get(ii, '%s.vDespAdu' % item),
-                'ii_valor_iof': get(ii, '%s.vIOF' % item),
-                'ii_valor': get(ii, '%s.vII' % item),
-            }
-
+        vals = {
+            'ii_base_calculo': get(ii, 'vBC'),
+            'ii_valor_despesas': get(ii, 'vDespAdu'),
+            'ii_valor_iof': get(ii, 'vIOF'),
+            'ii_valor': get(ii, 'vII'),
+        }
         return remove_none_values(vals)
+
+    def _get_di(self, di):
+        state_code = get(di, 'UFDesemb')
+        state_id = self.env['res.country.state'].search([
+            ('code', '=', state_code),
+            ('country_id.code', '=', 'BR')
+        ])
+        vals = {
+            'name': get(di, 'nDI'),
+            'date_registration': get(di, 'dDI'),
+            'location': get(di, 'xLocDesemb'),
+            'state_id': state_id.id,
+            'date_release': get(di, 'dDesemb'),
+            'type_transportation': get(di, 'tpViaTransp', str),
+            'type_import': get(di, 'tpIntermedio', str),
+            'exporting_code': get(di, 'cExportador'),
+            'line_ids': []
+        }
+
+        if hasattr(di, 'adi'):
+            for adi in di.adi:
+                adi_vals = {
+                    'sequence': get(di.adi, 'nSeqAdic'),
+                    'name': get(di.adi, 'nAdicao'),
+                    'manufacturer_code': get(di.adi, 'cFabricante'),
+                }
+                adi_vals = remove_none_values(adi_vals)
+                adi = self.env['nfe.import.declaration.line'].create(adi_vals)
+                vals['line_ids'].append((4, adi.id, False))
+
+        vals = remove_none_values(vals)
+        di = self.env['nfe.import.declaration'].create(vals)
+
+        return (4, di.id, False)
 
     def get_items(self, nfe, company_id, partner_id,
                   supplier, product_automation):
