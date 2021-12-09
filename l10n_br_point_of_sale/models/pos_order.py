@@ -112,16 +112,23 @@ class PosOrder(models.Model):
 
     def _prepare_edoc_item_vals(self, pos_line):
 
+        icms = pos_line.tax_ids.filtered(lambda x: x.domain == "icms")
         pis = pos_line.tax_ids.filtered(lambda x: x.domain == "pis")
         cofins = pos_line.tax_ids.filtered(lambda x: x.domain == "cofins")
         ipi = pos_line.tax_ids.filtered(lambda x: x.domain == "ipi")
 
         fiscal_pos = pos_line.order_id.fiscal_position_id
 
+        cfop_code = None
+        icms_cst = None
+        if hasattr(fiscal_pos, "icms_tax_rule_ids"):
+            cfop_code = fiscal_pos.icms_tax_rule_ids[0].l10n_br_cfop_id.code
+            icms_cst = fiscal_pos.icms_tax_rule_ids[0].cst_icms
+
         vals = {
             "name": pos_line.name,
             "product_id": pos_line.product_id.id,
-            "cfop": fiscal_pos.l10n_br_cfop_id.code,
+            "cfop": cfop_code or fiscal_pos.l10n_br_cfop_id.code,
             "cest": pos_line.product_id.l10n_br_cest
             or pos_line.product_id.l10n_br_ncm_id.cest
             or "",
@@ -133,13 +140,13 @@ class PosOrder(models.Model):
             "valor_liquido": pos_line.price_subtotal,
             "tributos_estimados": pos_line.get_approximate_taxes(),
             # - ICMS -
-            "icms_cst": fiscal_pos.csosn_icms,
-            # 'icms_aliquota': pos_line.aliquota_icms,
-            # 'icms_tipo_base': '3',
-            # 'icms_aliquota_reducao_base':
-            #     pos_line.icms_aliquota_reducao_base,
-            # 'icms_base_calculo': pos_line.base_icms,
-            # 'icms_valor': pos_line.valor_icms,
+            "icms_cst": icms_cst or fiscal_pos.csosn_icms,
+            'icms_aliquota': icms.amount or 0,
+            'icms_tipo_base': '3',
+            'icms_base_calculo': pos_line.price_subtotal or 0,
+            'icms_valor': round(
+                (icms.amount or 0) * pos_line.price_subtotal / 100, 2
+            ),
             # # - ICMS ST -
             # 'icms_st_aliquota': 0,
             # 'icms_st_aliquota_mva': 0,
@@ -196,7 +203,7 @@ class PosOrder(models.Model):
             "company_id": pos.company_id.id,
             "state": "draft",
             "tipo_operacao": "saida",
-            "cod_regime_tributario": "1",
+            "cod_regime_tributario": '1' if pos.company_id.l10n_br_tax_regime == 'simples' else '3',
             "model": "nfce",
             "ind_dest": "1",
             "ind_ie_dest": "9",
@@ -230,30 +237,30 @@ class PosOrder(models.Model):
             ),
         }
 
-        # base_icms = 0
-        # base_cofins = 0
-        # base_pis = 0
+        base_icms = 0
+        total_icms = 0
+        total_pis = 0
+        total_cofins = 0
+
         eletronic_items = []
         for pos_line in pos.lines:
-            eletronic_items.append(
-                (0, 0, self._prepare_edoc_item_vals(pos_line))
-            )
-            # base_icms += pos_line.base_icms
-            # base_pis += pos_line.base_pis
-            # base_cofins += pos_line.base_cofins
+            line_vals = self._prepare_edoc_item_vals(pos_line)
+            eletronic_items.append((0, 0, line_vals))
+
+            base_icms += line_vals["icms_base_calculo"]
+            total_icms += line_vals["icms_valor"]
+            total_pis += line_vals["pis_valor"]
+            total_cofins += line_vals["cofins_valor"]
 
         vals["document_line_ids"] = eletronic_items
-        # vals['valor_estimado_tributos'] = \
-        #     self.get_total_tributes(eletronic_items)
-        # vals['valor_icms'] = pos.total_icms
-        # vals['valor_pis'] = pos.total_pis
-        # vals['valor_cofins'] = pos.total_cofins
-        # vals['valor_ii'] = 0
-        # vals['valor_bruto'] = pos.amount_total - pos.amount_tax
+        vals['valor_bc_icms'] = base_icms
+        vals['valor_icms'] = total_icms
+        vals['pis_valor'] = total_pis
+        vals['cofins_valor'] = total_cofins
+        vals['valor_bruto'] = pos.amount_total
+        vals['valor_produtos'] = pos.amount_total
         # vals['valor_desconto'] = pos.amount_tax
-        # vals['valor_final'] = pos.amount_total
-        # vals['valor_bc_icms'] = base_icms
-        # vals['valor_bc_icmsst'] = 0
+        vals['valor_final'] = pos.amount_total
         return vals
 
     def get_total_tributes(self, values):
@@ -276,27 +283,23 @@ class PosOrder(models.Model):
 
     def action_view_edocs(self):
         if self.total_edocs == 1:
-            edoc = self.env["eletronic.document"].search(
-                [("pos_order_id", "=", self.id)], limit=1
-            )
-            dummy, act_id = self.env["ir.model.data"].get_object_reference(
-                "br_account_einvoice", "action_sped_base_eletronic_doc"
-            )
-            dummy, view_id = self.env["ir.model.data"].get_object_reference(
-                "br_account_einvoice", "br_account_invoice_eletronic_form"
-            )
-            vals = self.env["ir.actions.act_window"].browse(act_id).read()[0]
-            vals["view_id"] = (view_id, u"sped.eletronic.doc.form")
-            vals["views"][1] = (view_id, u"form")
-            vals["views"] = [vals["views"][1], vals["views"][0]]
-            vals["res_id"] = edoc.id
-            vals["search_view"] = False
+            dummy, act_id = self.env['ir.model.data'].get_object_reference(
+                'l10n_br_eletronic_document', 'action_view_eletronic_document')
+            dummy, view_id = self.env['ir.model.data'].get_object_reference(
+                'l10n_br_eletronic_document', 'view_eletronic_document_form')
+            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals['view_id'] = (view_id, 'sped.eletronic.doc.form')
+            vals['views'][1] = (view_id, 'form')
+            vals['views'] = [vals['views'][1], vals['views'][0]]
+            edoc = self.env['eletronic.document'].search(
+                [('pos_order_id', '=', self.id)], limit=1)
+            vals['res_id'] = edoc.id
             return vals
         else:
-            dummy, act_id = self.env["ir.model.data"].get_object_reference(
-                "br_account_einvoice", "action_sped_base_eletronic_doc"
-            )
-            vals = self.env["ir.actions.act_window"].browse(act_id).read()[0]
+            dummy, act_id = self.env['ir.model.data'].get_object_reference(
+                'l10n_br_eletronic_document', 'action_view_eletronic_document')
+            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals['domain'] = [('pos_order_id', '=', self.id)]
             return vals
 
     @api.model
