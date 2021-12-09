@@ -49,17 +49,13 @@ class EletronicDocument(models.Model):
         obs_ids = self.pos_order_id.fiscal_position_id.\
             fiscal_observation_ids.filtered(lambda x: x.tipo == 'observacao')
 
-        prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
-        for item in self.pos_order_id.lines:
-            prod_obs_ids |= item.product_id.fiscal_observation_ids
+        fiscal = self._compute_msg(fiscal_ids)
 
-        fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
-        obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
+        ncm_tax_related = 'Valor Aprox. dos Tributos R$ %s. Fonte: IBPT\n' % \
+                          (str(self.valor_estimado_tributos))
 
-        fiscal = self._compute_msg(fiscal_ids) + (
-            self.invoice_id.fiscal_comment or '')
-        observacao = self._compute_msg(obs_ids) + (
-            self.invoice_id.comment or '')
+        observacao = ncm_tax_related + self._compute_msg(obs_ids)
+
         if self.informacoes_legais:
             self.informacoes_legais += fiscal
         else:
