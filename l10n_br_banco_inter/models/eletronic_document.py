@@ -1,8 +1,3 @@
-import re
-import base64
-import requests
-import tempfile
-import base64
 from odoo import models
 
 
