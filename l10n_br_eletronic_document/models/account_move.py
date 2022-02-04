@@ -33,6 +33,7 @@ class AccountMove(models.Model):
         [('directly', 'Emitir agora'),
          ('after_payment', 'Emitir após pagamento'),
          ('manually', 'Manualmente')], string="Nota Eletrônica", default=_get_default_policy)
+    carrier_partner_id = fields.Many2one('res.partner', string='Transportadora')
 
     @api.model
     def _autopost_draft_entries(self):
@@ -44,6 +45,13 @@ class AccountMove(models.Model):
         for item in records:
             item.action_post()
             self.env.cr.commit()
+
+    @api.onchange('carrier_partner_id')
+    def _update_modalidade_frete(self):
+        if self.carrier_partner_id and self.modalidade_frete == '9':
+            self.write({
+                'modalidade_frete': '1'
+            })
 
     def _validate_for_eletronic_document(self):
         errors = []
@@ -462,15 +470,27 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    def get_eletronic_line_vals(self):
-        pis = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'pis')
-        cofins = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'cofins')
-        iss = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'iss')
-        csll = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'csll')
-        irpj = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'irpj')
-        inss = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'inss')
+    pedido_compra = fields.Char(
+        string="Pedido Compra",
+        size=60,
+        help="Se setado aqui sobrescreve o pedido de compra da fatura"
+    )
 
-        ipi = self.move_id.line_ids.filtered(lambda x: x.tax_line_id.domain == 'ipi')
+    item_pedido_compra = fields.Char(
+        string="Item de compra",
+        size=20,
+        help='Item do pedido de compra do cliente'
+    )
+
+    def get_eletronic_line_vals(self):
+        pis = self.tax_ids.filtered(lambda x: x.domain == 'pis')
+        cofins = self.tax_ids.filtered(lambda x: x.domain == 'cofins')
+        iss = self.tax_ids.filtered(lambda x: x.domain == 'iss')
+        csll = self.tax_ids.filtered(lambda x: x.domain == 'csll')
+        irpj = self.tax_ids.filtered(lambda x: x.domain == 'irpj')
+        inss = self.tax_ids.filtered(lambda x: x.domain == 'inss')
+
+        ipi = self.tax_ids.filtered(lambda x: x.domain == 'ipi')
 
         fiscal_pos = self.move_id.fiscal_position_id
 
@@ -493,8 +513,8 @@ class AccountMoveLine(models.Model):
             'cest': self.product_id.l10n_br_cest,
             'extipi': self.product_id.l10n_br_extipi,
             'codigo_beneficio': self.product_id.l10n_br_fiscal_benefit,
-            'pedido_compra': self.ref,
-            # 'item_pedido_compra': self.item_pedido_compra,
+            'pedido_compra': self.pedido_compra or self.ref or "",
+            'item_pedido_compra': self.item_pedido_compra or "",
             # - ICMS -
             'icms_cst': fiscal_pos.csosn_icms,
             # 'icms_aliquota': self.icms_aliquota,
@@ -514,9 +534,9 @@ class AccountMoveLine(models.Model):
             'icms_valor_credito': round(self.price_total * fiscal_pos.icms_aliquota_credito / 100, 2),
             # - IPI -
             'ipi_cst': '99',
-            'ipi_aliquota': ipi.tax_line_id.amount or 0,
-            'ipi_base_calculo': self.price_total or 0,
-            'ipi_valor': round(self.price_total * ipi.tax_line_id.amount / 100, 2),
+            'ipi_aliquota': ipi.amount or 0,
+            'ipi_base_calculo': self.price_total if ipi.amount else 0,
+            'ipi_valor': round(self.price_total * ipi.amount / 100, 2),
             # 'ipi_reducao_bc': self.ipi_reducao_bc,
             # - II -
             # 'ii_base_calculo': self.ii_base_calculo,
@@ -525,42 +545,42 @@ class AccountMoveLine(models.Model):
             # 'ii_valor_iof': self.ii_valor_iof,
             # - PIS -
             'pis_cst': '49',
-            'pis_aliquota': pis.tax_line_id.amount or 0,
-            'pis_base_calculo': self.price_total or 0,
-            'pis_valor': round(self.price_total * pis.tax_line_id.amount / 100, 2),
+            'pis_aliquota': pis.amount or 0,
+            'pis_base_calculo': self.price_total if pis.amount else 0,
+            'pis_valor': round(self.price_total * pis.amount / 100, 2),
             # 'pis_valor_retencao':
             # abs(self.pis_valor) if self.pis_valor < 0 else 0,
             # - COFINS -
             'cofins_cst': '49',
-            'cofins_aliquota': cofins.tax_line_id.amount or 0,
-            'cofins_base_calculo': self.price_total or 0,
-            'cofins_valor': round(self.price_total * cofins.tax_line_id.amount / 100, 2),
+            'cofins_aliquota': cofins.amount or 0,
+            'cofins_base_calculo': self.price_total if cofins.amount else 0,
+            'cofins_valor': round(self.price_total * cofins.amount / 100, 2),
             # 'cofins_valor_retencao':
             # abs(self.cofins_valor) if self.cofins_valor < 0 else 0,
             # - ISS -
             'item_lista_servico': self.product_id.service_type_id.code,
             'codigo_servico_municipio': self.product_id.service_code,
-            'iss_aliquota': iss.tax_line_id.amount or 0,
-            'iss_base_calculo': self.price_subtotal or 0,
-            'iss_valor': round(self.price_subtotal * iss.tax_line_id.amount / 100, 2),
+            'iss_aliquota': iss.amount or 0,
+            'iss_base_calculo': self.price_subtotal if iss.amount else 0,
+            'iss_valor': round(self.price_subtotal * iss.amount / 100, 2),
             # 'iss_valor_retencao':
             # abs(self.iss_valor) if self.iss_valor < 0 else 0,
             # - RETENÇÔES -
-            'csll_aliquota': csll.tax_line_id.amount or 0,
-            'csll_base_calculo': self.price_total or 0,
-            'csll_valor': round(self.price_total * csll.tax_line_id.amount / 100, 2),
+            'csll_aliquota': csll.amount or 0,
+            'csll_base_calculo': self.price_total if csll.amount else 0,
+            'csll_valor': round(self.price_total * csll.amount / 100, 2),
             # abs(self.csll_valor) if self.csll_valor < 0 else 0,
-            'irpj_aliquota': irpj.tax_line_id.amount or 0,
-            'irpj_base_calculo': self.price_total or 0,
-            'irpj_valor': round(self.price_total * irpj.tax_line_id.amount / 100, 2),
+            'irpj_aliquota': irpj.amount or 0,
+            'irpj_base_calculo': self.price_total if irpj.amount else 0,
+            'irpj_valor': round(self.price_total * irpj.amount / 100, 2),
             # 'irrf_base_calculo': self.irrf_base_calculo,
             # 'irrf_aliquota': abs(self.irrf_aliquota),
             # 'irrf_valor_retencao':
             # abs(self.irrf_valor) if self.irrf_valor < 0 else 0,
-            'inss_base_calculo': self.price_subtotal or 0,
-            'inss_aliquota': abs(inss.tax_line_id.amount or 0),
+            'inss_base_calculo': self.price_subtotal if inss.amount else 0,
+            'inss_aliquota': abs(inss.amount or 0),
             'inss_valor_retencao': abs(
-                round(self.price_subtotal * inss.tax_line_id.amount / 100, 2)
+                round(self.price_subtotal * inss.amount / 100, 2)
             ),
             'frete': self.l10n_br_delivery_amount,
             'seguro': self.l10n_br_insurance_amount,
