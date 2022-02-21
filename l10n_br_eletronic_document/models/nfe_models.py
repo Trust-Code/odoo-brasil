@@ -75,7 +75,7 @@ class CartaCorrecaoEletronicaEvento(models.Model):
     sequencial_evento = fields.Integer(string="Sequencial do Evento")
     correcao = fields.Text(string="Correção", max_length=1000)
     message = fields.Char(string="Mensagem", size=300)
-    protocolo = fields.Char(string="Protocolo", size=30)
+    protocolo = fields.Char(string="Protocolo", size=60)
 
 
 STATE = {"edit": [("readonly", False)], "draft": [("readonly", False)]}
@@ -118,9 +118,9 @@ class InutilizedNfe(models.Model):
     code = fields.Char(string="Código", size=10)
     motive = fields.Char(string="Motivo", size=300)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    sent_xml_name = fields.Char(string="Xml Envio", size=100, readonly=True)
     received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
-    received_xml_name = fields.Char(string="Xml Recebimento", size=30, readonly=True)
+    received_xml_name = fields.Char(string="Xml Recebimento", size=100, readonly=True)
 
     @api.model
     def create(self, vals):

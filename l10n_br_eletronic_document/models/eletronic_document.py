@@ -37,7 +37,7 @@ class EletronicDocument(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
-    name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
+    name = fields.Char(string='Name', readonly=True, states=STATE)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
@@ -220,7 +220,7 @@ class EletronicDocument(models.Model):
         'account.fiscal.position', string=u'Posição Fiscal',
         readonly=True, states=STATE)
     natureza_operacao = fields.Char(
-        string='Natureza da Operação', size=60, readonly=True, states=STATE)
+        string='Natureza da Operação', size=100, readonly=True, states=STATE)
     # eletronic_event_ids = fields.One2many(
     #     'invoice.eletronic.event', 'invoice_eletronic_id', string=u"Eventos",
     #     readonly=True, states=STATE)
@@ -1027,7 +1027,7 @@ class EletronicDocumentLine(models.Model):
     _name = 'eletronic.document.line'
     _description = 'Eletronic document line (NFE, NFSe)'
 
-    name = fields.Char(string='Name', size=30)
+    name = fields.Char(string='Name')
     eletronic_document_id = fields.Many2one(
         'eletronic.document', string='Documento')
     company_id = fields.Many2one(

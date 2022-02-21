@@ -1,5 +1,9 @@
 <odoo>
 
- <function name="install_default_country" model="res.partner"/>
+    <function name="install_default_country" model="res.partner"/>
+
+    <record id="base.br" model="res.country">
+        <field name="address_format" eval="'%(street)s, %(l10n_br_number)s - %(street2)s\n%(l10n_br_district)s\n%(zip)s - %(city)s - %(state_code)s\n%(country_name)s'" />
+    </record>
 
 </odoo>

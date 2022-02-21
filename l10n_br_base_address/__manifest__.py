@@ -22,5 +22,5 @@
         'views/res_city.xml',
         'views/res_company.xml',
     ],
-    'post_init_hook': 'post_init',
+    # 'post_init_hook': 'post_init',
 }
