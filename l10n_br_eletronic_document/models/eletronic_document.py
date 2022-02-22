@@ -31,6 +31,13 @@ except ImportError:
 STATE = {'draft': [('readonly', False)]}
 
 
+REPORT_NAME = {
+    '05407': 'danfse',  # Florianopolis
+    '06200': 'bh',  # Belo Horizonte
+    '50308': 'danfe',  # Sao Paulo
+}
+
+
 class EletronicDocument(models.Model):
     _name = 'eletronic.document'
     _description = 'Eletronic documents (NFE, NFSe)'
@@ -38,7 +45,8 @@ class EletronicDocument(models.Model):
     _order = 'id desc'
 
     name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(
+        'res.company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True, states=STATE)
@@ -63,28 +71,41 @@ class EletronicDocument(models.Model):
     @api.depends('document_line_ids')
     def _compute_tax_totals(self):
         for doc in self:
-            doc.pis_base_calculo = sum([x.pis_base_calculo for x in doc.document_line_ids])
+            doc.pis_base_calculo = sum(
+                [x.pis_base_calculo for x in doc.document_line_ids])
             doc.pis_valor = sum([x.pis_valor for x in doc.document_line_ids])
-            doc.pis_valor_retencao = sum([x.pis_valor_retencao for x in doc.document_line_ids])
+            doc.pis_valor_retencao = sum(
+                [x.pis_valor_retencao for x in doc.document_line_ids])
 
-            doc.cofins_base_calculo = sum([x.cofins_base_calculo for x in doc.document_line_ids])
-            doc.cofins_valor = sum([x.cofins_valor for x in doc.document_line_ids])
-            doc.cofins_valor_retencao = sum([x.cofins_valor_retencao for x in doc.document_line_ids])
+            doc.cofins_base_calculo = sum(
+                [x.cofins_base_calculo for x in doc.document_line_ids])
+            doc.cofins_valor = sum(
+                [x.cofins_valor for x in doc.document_line_ids])
+            doc.cofins_valor_retencao = sum(
+                [x.cofins_valor_retencao for x in doc.document_line_ids])
 
-            doc.iss_base_calculo = sum([x.iss_base_calculo for x in doc.document_line_ids])
+            doc.iss_base_calculo = sum(
+                [x.iss_base_calculo for x in doc.document_line_ids])
             doc.iss_valor = sum([x.iss_valor for x in doc.document_line_ids])
-            doc.iss_valor_retencao = sum([x.iss_valor_retencao for x in doc.document_line_ids])
+            doc.iss_valor_retencao = sum(
+                [x.iss_valor_retencao for x in doc.document_line_ids])
 
-            doc.irpj_base_calculo = sum([x.irpj_base_calculo for x in doc.document_line_ids])
+            doc.irpj_base_calculo = sum(
+                [x.irpj_base_calculo for x in doc.document_line_ids])
             doc.irpj_valor = sum([x.irpj_valor for x in doc.document_line_ids])
-            doc.irpj_valor_retencao = sum([x.irpj_valor_retencao for x in doc.document_line_ids])
+            doc.irpj_valor_retencao = sum(
+                [x.irpj_valor_retencao for x in doc.document_line_ids])
 
-            doc.csll_base_calculo = sum([x.csll_base_calculo for x in doc.document_line_ids])
+            doc.csll_base_calculo = sum(
+                [x.csll_base_calculo for x in doc.document_line_ids])
             doc.csll_valor = sum([x.csll_valor for x in doc.document_line_ids])
-            doc.csll_valor_retencao = sum([x.csll_valor_retencao for x in doc.document_line_ids])
+            doc.csll_valor_retencao = sum(
+                [x.csll_valor_retencao for x in doc.document_line_ids])
 
-            doc.inss_base_calculo = sum([x.inss_base_calculo for x in doc.document_line_ids])
-            doc.inss_valor_retencao = sum([x.inss_valor_retencao for x in doc.document_line_ids])
+            doc.inss_base_calculo = sum(
+                [x.inss_base_calculo for x in doc.document_line_ids])
+            doc.inss_valor_retencao = sum(
+                [x.inss_valor_retencao for x in doc.document_line_ids])
 
     # ------------ PIS ---------------------
     pis_base_calculo = fields.Monetary(
@@ -130,7 +151,7 @@ class EletronicDocument(models.Model):
         string='Retenção CSLL', digits='Account',
         readonly=True, states=STATE, store=True, compute=_compute_tax_totals)
 
-     # ------------ IRPJ ------------
+    # ------------ IRPJ ------------
     irpj_base_calculo = fields.Monetary(
         string='Base IRPJ', digits='Account',
         readonly=True, states=STATE, store=True, compute=_compute_tax_totals)
@@ -141,7 +162,7 @@ class EletronicDocument(models.Model):
         string='Retenção IRPJ', digits='Account',
         readonly=True, states=STATE, store=True, compute=_compute_tax_totals)
 
-    # ------------ Retencoes ------------   
+    # ------------ Retencoes ------------
     irrf_base_calculo = fields.Monetary(
         string='Base IRRF', digits='Account',
         readonly=True, states=STATE)
@@ -252,7 +273,8 @@ class EletronicDocument(models.Model):
 
     @api.depends('document_line_ids')
     def _compute_valor_estimado_tributos(self):
-        self.valor_estimado_tributos = sum(line.tributos_estimados for line in self.document_line_ids)
+        self.valor_estimado_tributos = sum(
+            line.tributos_estimados for line in self.document_line_ids)
     valor_estimado_tributos = fields.Monetary(
         string=u"Tributos Estimados", readonly=True, states=STATE,
         compute="_compute_valor_estimado_tributos")
@@ -683,10 +705,13 @@ class EletronicDocument(models.Model):
             atts.append(pdf_id.id)
             return atts
 
+        danfe_city = REPORT_NAME.get(self.partner_id.city_id.l10n_br_ibge_code)
         danfe_report = self.env['ir.actions.report'].search(
-            [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
+            ['|', ('report_name', '=', ('l10n_br_eletronic_document.main_template_br_nfse_%s', danfe_city)),
+            ('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
         report_service = danfe_report.xml_id
-        danfse, dummy = self.env.ref(report_service)._render_qweb_pdf([self.id])
+        danfse, dummy = self.env.ref(
+            report_service)._render_qweb_pdf([self.id])
         report_name = safe_eval.safe_eval(
             danfe_report.print_report_name, {'object': self, 'time': safe_eval.time})
         filename = "%s.%s" % (report_name, "pdf")
@@ -712,7 +737,7 @@ class EletronicDocument(models.Model):
 
         values = mail.generate_email(
             [self.move_id.id],
-            ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 
+            ['subject', 'body_html', 'email_from', 'email_to', 'partner_to',
              'email_cc', 'reply_to', 'mail_server_id']
         )[self.move_id.id]
         subject = values.pop('subject')
@@ -857,7 +882,7 @@ class EletronicDocument(models.Model):
         response = {}
         cod_municipio = doc_values[0]['emissor']['codigo_municipio']
 
-        if  cod_municipio == '4205407':
+        if cod_municipio == '4205407':
             from .nfse_florianopolis import send_api
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3550308':
@@ -866,7 +891,8 @@ class EletronicDocument(models.Model):
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
             for doc in doc_values:
-                doc['data_emissao'] = self.data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
+                doc['data_emissao'] = self.data_emissao.strftime(
+                    '%Y-%m-%dT%H:%M:%S')
                 doc['valor_pis'] = self.pis_valor_retencao
                 doc['valor_cofins'] = self.cofins_valor_retencao
                 doc['valor_inss'] = self.inss_valor_retencao
@@ -909,7 +935,7 @@ class EletronicDocument(models.Model):
     def action_check_status_nfse(self):
         for edoc in self:
             response = check_nfse_api(
-                edoc.company_id.l10n_br_nfse_token_acess, 
+                edoc.company_id.l10n_br_nfse_token_acess,
                 edoc.company_id.l10n_br_tipo_ambiente,
                 str(edoc.id),
             )
@@ -924,7 +950,8 @@ class EletronicDocument(models.Model):
                     'nfse_pdf_name':  "NFe%08d.pdf" % response['entity']['numero_nfe'],
                 }
                 if response.get('xml', False):
-                    vals['nfe_processada'] = base64.encodestring(response['xml'])
+                    vals['nfe_processada'] = base64.encodestring(
+                        response['xml'])
                 if response.get('pdf', False):
                     vals['nfse_pdf'] = base64.encodestring(response['pdf'])
                 if response.get('url_nfe', False):
@@ -941,7 +968,7 @@ class EletronicDocument(models.Model):
     def cron_check_status_nfse(self):
         documents = self.search([('state', '=', 'processing')], limit=100)
         documents.action_check_status_nfse()
-        
+
     def action_cancel_document(self, context=None, justificativa=None):
         company = self.mapped('company_id').with_context({'bin_size': False})
         certificate = company.l10n_br_certificate
@@ -970,8 +997,10 @@ class EletronicDocument(models.Model):
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3106200':
             from .nfse_bh import cancel_api
-            doc_values['inscricao_municipal'] = re.sub('\W+','', company.l10n_br_inscr_mun)
-            doc_values['numero'] = str(self.data_emissao.year) + '{:>011d}'.format(self.numero)
+            doc_values['inscricao_municipal'] = re.sub(
+                '\W+', '', company.l10n_br_inscr_mun)
+            doc_values['numero'] = str(
+                self.data_emissao.year) + '{:>011d}'.format(self.numero)
             response = cancel_api(certificate, password, doc_values)
         else:
             from .focus_nfse import cancel_api
@@ -990,17 +1019,20 @@ class EletronicDocument(models.Model):
             if response.get('xml', False):
                 # split na nfse antiga para adicionar o xml da nfe cancelada
                 # [parte1 nfse] + [parte2 nfse]
-                split_nfe_processada = base64.decodebytes(self.nfe_processada).split(b'</Nfse>')
+                split_nfe_processada = base64.decodebytes(
+                    self.nfe_processada).split(b'</Nfse>')
                 # readicionar a tag nfse pq o mesmo é removido ao dar split
                 split_nfe_processada[0] = split_nfe_processada[0] + b'</Nfse>'
                 # [parte1 nfse] + [parte2 nfse] + [parte2 nfse]
                 split_nfe_processada.append(split_nfe_processada[1])
                 # [parte1 nfse] + [nfse cancelada] + [parte2 nfse]
                 split_nfe_processada[1] = response['xml']
-                vals['nfe_processada'] = base64.encodebytes(b''.join(split_nfe_processada))
+                vals['nfe_processada'] = base64.encodebytes(
+                    b''.join(split_nfe_processada))
             self.write(vals)
         else:
-            raise UserError('%s - %s' % (response['api_code'], response['message']))
+            raise UserError('%s - %s' %
+                            (response['api_code'], response['message']))
 
     def qrcode_floripa_url(self):
         import urllib
@@ -1048,7 +1080,8 @@ class EletronicDocumentLine(models.Model):
         string="Tipo Produto", readonly=True, states=STATE)
     cfop = fields.Char('CFOP', size=5, readonly=True, states=STATE)
     ncm = fields.Char('NCM', size=10, readonly=True, states=STATE)
-    unidade_medida = fields.Char('Un. Medida Xml', size=10, readonly=True, states=STATE)
+    unidade_medida = fields.Char(
+        'Un. Medida Xml', size=10, readonly=True, states=STATE)
 
     item_lista_servico = fields.Char(
         string="Código do serviço", size=10, readonly=True, states=STATE)
@@ -1098,9 +1131,11 @@ class EletronicDocumentLine(models.Model):
             if ncm:
                 # origem nacional
                 if item.product_id.l10n_br_origin in ['0', '3', '4', '5', '8']:
-                    ncm_mult = (ncm.federal_nacional + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                    ncm_mult = (ncm.federal_nacional +
+                                ncm.estadual_imposto + ncm.municipal_imposto) / 100
                 else:
-                    ncm_mult = (ncm.federal_importado + ncm.estadual_imposto + ncm.municipal_imposto) / 100
+                    ncm_mult = (ncm.federal_importado +
+                                ncm.estadual_imposto + ncm.municipal_imposto) / 100
                 tributos_estimados += item.quantidade * item.preco_unitario * ncm_mult
             item.tributos_estimados = tributos_estimados
 
@@ -1328,8 +1363,10 @@ class EletronicDocumentLine(models.Model):
 
     cest = fields.Char(string="CEST", size=10, readonly=True, states=STATE,
                        help="Código Especificador da Substituição Tributária")
-    codigo_beneficio = fields.Char(string="Benefício Fiscal", size=10, readonly=True, states=STATE)
-    extipi = fields.Char(string="Código EX TIPI", size=3, readonly=True, states=STATE)
+    codigo_beneficio = fields.Char(
+        string="Benefício Fiscal", size=10, readonly=True, states=STATE)
+    extipi = fields.Char(string="Código EX TIPI", size=3,
+                         readonly=True, states=STATE)
     classe_enquadramento_ipi = fields.Char(
         string="Classe Enquadramento", size=5, readonly=True, states=STATE)
     codigo_enquadramento_ipi = fields.Char(
