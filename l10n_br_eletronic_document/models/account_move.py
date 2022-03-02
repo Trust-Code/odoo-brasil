@@ -231,9 +231,9 @@ class AccountMove(models.Model):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         numero_nfe = numero_rps = 0
-        if self.company_id.l10n_br_nfe_sequence:
+        if invoice_lines.product_id.type == 'product':
             numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
-        if self.company_id.l10n_br_nfe_service_sequence:
+        else: 
             numero_rps = self.company_id.l10n_br_nfe_service_sequence.next_by_id()
         vals = {
             'name': invoice.name,
