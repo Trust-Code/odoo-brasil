@@ -40,7 +40,7 @@ class AccountMove(models.Model):
         if not self.payment_journal_id or not self.payment_journal_id.l10n_br_use_boleto_inter:
             return
 
-        for moveline in self.receivable_move_line_ids:
+        for moveline in self.receivable_move_line_ids.filtered(lambda x: not x.reconciled):
             acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto-inter')])
             if not acquirer:
                 raise UserError('Configure o modo de pagamento do Boleto Banco Inter')
@@ -152,12 +152,15 @@ class AccountMove(models.Model):
                 'acquirer_reference': nosso_numero,
             })
 
-    def generate_boleto_banco_inter_transactions(self):
+    def generate_payment_transactions(self):
+        super(AccountMove, self).generate_payment_transactions()
         for item in self:
             item.send_information_to_banco_inter()
+            if self.env.context.get("print_boleto_pdf"):
+                item.transaction_ids.filtered(
+                    lambda x: x.state in ("draft", "pending")
+                ).action_get_pdf_inter()
 
     def action_post(self):
         self.validate_data_boleto()
-        result = super(AccountMove, self).action_post()
-        self.generate_boleto_banco_inter_transactions()
-        return result
+        return super(AccountMove, self).action_post()

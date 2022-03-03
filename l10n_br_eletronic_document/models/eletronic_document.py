@@ -705,10 +705,16 @@ class EletronicDocument(models.Model):
             atts.append(pdf_id.id)
             return atts
 
-        danfe_city = REPORT_NAME.get(self.partner_id.city_id.l10n_br_ibge_code)
+        danfe_name = "l10n_br_eletronic_document.main_template_br_nfe_danfe"
+        if self.model == "nfse":
+             danfe_name = "l10n_br_eletronic_document.main_template_br_nfse_danfpse"
+             danfe_city = REPORT_NAME.get(self.partner_id.city_id.l10n_br_ibge_code)
+             if danfe_city:
+                  danfe_name = 'l10n_br_eletronic_document.main_template_br_nfse_%s' % danfe_city
+
         danfe_report = self.env['ir.actions.report'].search(
-            ['|', ('report_name', '=', ('l10n_br_eletronic_document.main_template_br_nfse_%s', danfe_city)),
-            ('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfse_danfpse')])
+            [('report_name', '=', danfe_name)])
+
         report_service = danfe_report.xml_id
         danfse, dummy = self.env.ref(
             report_service)._render_qweb_pdf([self.id])

@@ -47,7 +47,7 @@ odoo.define('br_point_of_sale', function (require) {
             var self = this;
                 console.log('Printing');
                 let base_url = session['web.base.url'];
-                let w = window.open(`${base_url}/report/pdf/br_nfe.main_template_br_nfe_danfe/${einvoice_id}`);
+                let w = window.open(`${base_url}/report/pdf/l10n_br_eletronic_document.main_template_br_nfe_danfe/${einvoice_id}`);
                 if(w) {
                     w.print();
                 }

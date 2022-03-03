@@ -43,6 +43,26 @@ class PaymentTransaction(models.Model):
             raise UserError('Houve um erro com a API do Banco Inter:\n%s' % response.text)
         return response
 
+    def action_get_pdf_inter(self):
+        attachment_ids = []
+        for transaction in self:
+            if transaction.acquirer_id.provider != 'boleto-inter':
+                continue
+            url = "https://apis.bancointer.com.br/openbanking/v1/certificado/boletos/%s/pdf" % transaction.acquirer_reference
+            response = transaction.execute_request_inter("GET", url, None)
+            if response.status_code != 200:  # Vamos ignorar
+                continue
+            filename = "%s - Boleto - %s.%s" % (transaction.partner_id.name_get()[0][1], transaction.reference, "pdf")
+            boleto_id = self.env['ir.attachment'].create(dict(
+                name=filename,
+                datas=response.text,
+                mimetype='application/pdf',
+                res_model='account.move',
+                res_id=transaction.invoice_ids and transaction.invoice_ids[0].id or False
+            ))
+            attachment_ids.append(boleto_id.id)
+        return attachment_ids
+
     def action_verify_transaction(self):
         if self.acquirer_id.provider != 'boleto-inter':
             return super(PaymentTransaction, self).action_verify_transaction()
