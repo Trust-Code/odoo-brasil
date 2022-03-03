@@ -41,8 +41,10 @@ class WizardNewPaymentInvoice(models.TransientModel):
         if self.move_id.invoice_payment_state == 'paid':
             raise UserError('A fatura já está paga!')
         if self.date_change:
-            self.move_id.receivable_move_line_ids.write(
+            self.move_id.receivable_move_line_ids.filtered(
+                lambda x: not x.reconciled
+            ).write(
                 {'date_maturity': self.date_change}
             )
         self.move_id.write({'payment_journal_id': self.payment_journal_id.id})
-        self.move_id.generate_payment_transactions()
+        self.move_id.with_context(print_boleto_pdf=True).generate_payment_transactions()

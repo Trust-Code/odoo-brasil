@@ -35,6 +35,17 @@ class AccountMove(models.Model):
          ('manually', 'Manualmente')], string="Nota Eletrônica", default=_get_default_policy)
     carrier_partner_id = fields.Many2one('res.partner', string='Transportadora')
 
+    nfe_number = fields.Integer(string="Número NFe", compute="_compute_nfe_number")
+
+    def _compute_nfe_number(self):
+        for item in self:
+            docs = self.env['eletronic.document'].search(
+                [('move_id', '=', item.id)])
+            if docs:
+                item.nfe_number = docs[0].numero
+            else:
+                item.nfe_number = 0
+
     @api.model
     def _autopost_draft_entries(self):
         records = self.search([
@@ -231,9 +242,9 @@ class AccountMove(models.Model):
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
         numero_nfe = numero_rps = 0
-        if self.company_id.l10n_br_nfe_sequence:
+        if invoice_lines.product_id.type == 'product':
             numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
-        if self.company_id.l10n_br_nfe_service_sequence:
+        else: 
             numero_rps = self.company_id.l10n_br_nfe_service_sequence.next_by_id()
         vals = {
             'name': invoice.name,

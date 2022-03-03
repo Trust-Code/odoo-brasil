@@ -90,8 +90,7 @@ class AccountMove(models.Model):
         if line_type not in ("delivery", "expense", "insurance"):
             return
         total = sum(
-            line.price_unit * line.quantity
-            for line in self.invoice_line_ids
+            line.price_unit * line.quantity for line in self.invoice_line_ids
             if not line.is_delivery_expense_or_insurance()
         )
         filtered_lines = self.invoice_line_ids.filtered(
@@ -204,6 +203,25 @@ class AccountMove(models.Model):
     def _inverse_l10n_br_insurance_amount(self):
         for item in self:
             item.handle_delivery_expense_insurance_lines("insurance")
+
+    @api.depends(
+        'line_ids.debit',
+        'line_ids.credit',
+        'line_ids.currency_id',
+        'line_ids.amount_currency',
+        'line_ids.amount_residual',
+        'line_ids.amount_residual_currency',
+        'line_ids.payment_id.state')
+    def _compute_amount(self):
+        super(AccountMove, self)._compute_amount()
+        for move in self:
+            amount_total = sum(move.line_ids.filtered(
+                lambda x: x.balance > 0).mapped("balance"))
+            amount_tax = sum(abs(x) for x in move.line_ids.filtered(
+                lambda x: x.tax_line_id).mapped("balance"))
+            move.amount_untaxed = amount_total - amount_tax
+            move.amount_tax = amount_tax
+            move.amount_total = amount_total
 
 
 class AccountMoveLine(models.Model):

@@ -160,7 +160,7 @@ class L10nBrWebsiteSale(main.WebsiteSale):
             result.qcontext["city"] = partner_id.city_id
             result.qcontext["state"] = partner_id.state_id
         if "city_id" in kw and kw["city_id"]:
-            result.qcontext["city"] = kw["city_id"]
+            result.qcontext["city"] = request.env['res.city'].browse(kw["city_id"])
         return result
 
     @http.route(
