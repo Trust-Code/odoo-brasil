@@ -26,12 +26,23 @@
         'views/account_journal.xml',
         'views/pos_order.xml',
         'views/invoice_eletronic.xml',
-        'views/pos_assets.xml',
         'views/pos_payment_method.xml',
     ],
     "qweb": [
         'static/src/xml/pos.xml',
     ],
+    'assets': {
+        'point_of_sale.assets': [
+            'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js',
+            'l10n_br_point_of_sale/static/src/lib/print.min.js',
+            'l10n_br_point_of_sale/static/src/js/main.js',
+            'l10n_br_point_of_sale/static/src/js/models.js',
+            'l10n_br_point_of_sale/static/src/js/screens.js',
+        ],
+        'point_of_sale.pos_assets_backend_style': [
+            'l10n_br_point_of_sale/static/src/lib/print.min.css',
+        ]
+    },
     'application': True,
     'installable': True
 }
