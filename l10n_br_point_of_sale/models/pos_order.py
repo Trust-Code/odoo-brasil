@@ -46,6 +46,7 @@ class PosOrder(models.Model):
     nfe_exception_number = fields.Integer(
         string=u"Número NFe", compute="_compute_nfe_number"
     )
+    numero = fields.Integer()
     numero_controle = fields.Integer()
     customer_cpf = fields.Char(string="CPF cliente")
 

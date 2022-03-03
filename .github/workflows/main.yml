@@ -2,7 +2,8 @@ name: Triggers a new docker image build
 
 on:
   push:
-    branches: [ 13.0 ]
+    branches: [ 14.0 ]
+
 
 jobs:
   trigger-build:
@@ -13,4 +14,4 @@ jobs:
           curl -X POST https://api.github.com/repos/Trust-Code/docker-odoo/actions/workflows/main.yml/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"ref": "13.0"}'
+          --data '{"ref": "14.0"}'

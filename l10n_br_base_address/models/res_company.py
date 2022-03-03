@@ -9,8 +9,8 @@ class ResCompany(models.Model):
     ]
     _name = 'res.company'
 
-    def _get_company_address_fields(self, partner):
-        vals = super(ResCompany, self)._get_company_address_fields(partner)
+    def _get_company_address_update(self, partner):
+        vals = super(ResCompany, self)._get_company_address_update(partner)
         vals.update({
             'l10n_br_cnpj_cpf': partner.l10n_br_cnpj_cpf,
             'l10n_br_legal_name': partner.l10n_br_legal_name,

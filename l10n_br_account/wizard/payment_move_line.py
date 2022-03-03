@@ -46,7 +46,7 @@ class PaymentAccountMoveLine(models.TransientModel):
     amount_residual = fields.Monetary(
         string="Saldo", readonly=True, related="move_line_id.amount_residual"
     )
-    amount = fields.Monetary(string="Valor do Pagamento", required=True,)
+    amount = fields.Monetary(string="Valor do Pagamento", required=True, )
 
     @api.model
     def default_get(self, fields):
@@ -67,7 +67,7 @@ class PaymentAccountMoveLine(models.TransientModel):
         if move_line[0].move_id:
             rec.update({"move_id": move_line[0].move_id.id})
         rec.update(
-            {"amount": amount,}
+            {"amount": amount, }
         )
 
         return rec
@@ -78,9 +78,9 @@ class PaymentAccountMoveLine(models.TransientModel):
         """
         payment_type = "inbound" if self.move_line_id.debit else "outbound"
         payment_methods = (
-            payment_type == "inbound"
-            and self.journal_id.inbound_payment_method_ids
-            or self.journal_id.outbound_payment_method_ids
+                payment_type == "inbound"
+                and self.journal_id.inbound_payment_method_ids
+                or self.journal_id.outbound_payment_method_ids
         )
         payment_method_id = payment_methods and payment_methods[0].id or False
         if not payment_method_id:
@@ -90,11 +90,11 @@ class PaymentAccountMoveLine(models.TransientModel):
             )
         vals = {
             "partner_id": self.partner_id.id,
-            "move_line_ids": [(4, 0, self.move_line_id.id)],
+            "destination_account_id": self.move_line_id.account_id.id,
             "journal_id": self.journal_id.id,
-            "communication": self.communication,
+            "ref": self.communication,
             "amount": self.amount,
-            "payment_date": self.payment_date,
+            "date": self.payment_date,
             "payment_type": payment_type,
             "payment_method_id": payment_method_id,
             "currency_id": self.currency_id.id,
@@ -107,14 +107,13 @@ class PaymentAccountMoveLine(models.TransientModel):
         """
         payment = self.env["account.payment"]
         vals = self._get_payment_vals()
-        pay = payment.with_context(
-            force_counterpart_account=self.move_line_id.account_id.id
-        ).create(vals)
-        pay.post()
+        pay = payment.create(vals)
+        pay.action_post()
         move_line = self.env["account.move.line"].browse(
-            vals["move_line_ids"][0][2]
+            self.move_line_id.id
         )
-        lines_to_reconcile = (pay.move_line_ids + move_line).filtered(
+
+        lines_to_reconcile = (pay.line_ids + move_line).filtered(
             lambda l: l.account_id == move_line.account_id
         )
         lines_to_reconcile.reconcile()
