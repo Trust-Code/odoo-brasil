@@ -149,11 +149,9 @@ class EletronicDocument(models.Model):
         string='Valor IRRF', digits='Account',
         readonly=True, states=STATE)
     inss_base_calculo = fields.Monetary(
-        string='Base INSS', digits='Account',
-        readonly=True, states=STATE)
+        string='Base INSS', readonly=True, states=STATE)
     inss_valor_retencao = fields.Monetary(
-        string='Valor INSS', digits='Account',
-        readonly=True, states=STATE)
+        string='Valor INSS', readonly=True, states=STATE)
 
     valor_produtos = fields.Monetary(
         string='Valor Produtos', readonly=True, states=STATE)

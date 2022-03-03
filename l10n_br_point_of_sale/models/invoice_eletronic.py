@@ -43,7 +43,9 @@ class EletronicDocument(models.Model):
         return vals
 
     def _compute_legal_information(self):
-        super(EletronicDocument, self)._compute_legal_information
+        super(EletronicDocument, self)._compute_legal_information()
+        if self.model != '65':
+            return 
         fiscal_ids = self.pos_order_id.fiscal_position_id.\
             fiscal_observation_ids.filtered(lambda x: x.tipo == 'fiscal')
         obs_ids = self.pos_order_id.fiscal_position_id.\
@@ -56,10 +58,8 @@ class EletronicDocument(models.Model):
         fiscal_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'fiscal')
         obs_ids |= prod_obs_ids.filtered(lambda x: x.tipo == 'observacao')
 
-        fiscal = self._compute_msg(fiscal_ids) + (
-            self.invoice_id.fiscal_comment or '')
-        observacao = self._compute_msg(obs_ids) + (
-            self.invoice_id.comment or '')
+        fiscal = self._compute_msg(fiscal_ids)
+        observacao = self._compute_msg(obs_ids)
         if self.informacoes_legais:
             self.informacoes_legais += fiscal
         else:
