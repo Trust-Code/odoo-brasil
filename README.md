@@ -21,15 +21,24 @@ Odoo Brasil - an easy way to use Odoo
 
 Para dúvidas acesse: [Documentação](http://www.odoo-next.com.br/my/documents/)
 
-[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=13.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
-[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=13.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=13.0)
+[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=15.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
+[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=15.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=15.0)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
 
 
 ## Introdução
 
-Este repositório adapta o Odoo 13 para ser usado no Brasil
+Este repositório adapta o Odoo 15 para ser usado no Brasil
+
+Procurando pelas outras versões?
+* [Versão 14.0](https://github.com/Trust-Code/odoo-brasil/tree/14.0)
+* [Versão 13.0](https://github.com/Trust-Code/odoo-brasil/tree/13.0)
+* [Versão 12.0](https://github.com/Trust-Code/odoo-brasil/tree/12.0)
+* [Versão 11.0](https://github.com/Trust-Code/odoo-brasil/tree/11.0)
+* [Versão 10.0](https://github.com/Trust-Code/odoo-brasil/tree/10.0)
+
+
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 

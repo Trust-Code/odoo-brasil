@@ -43,7 +43,9 @@ class EletronicDocument(models.Model):
         return vals
 
     def _compute_legal_information(self):
-        super(EletronicDocument, self)._compute_legal_information
+        super(EletronicDocument, self)._compute_legal_information()
+        if self.model != '65':
+            return 
         fiscal_ids = self.pos_order_id.fiscal_position_id.\
             fiscal_observation_ids.filtered(lambda x: x.tipo == 'fiscal')
         obs_ids = self.pos_order_id.fiscal_position_id.\
@@ -56,11 +58,5 @@ class EletronicDocument(models.Model):
 
         observacao = ncm_tax_related + self._compute_msg(obs_ids)
 
-        if self.informacoes_legais:
-            self.informacoes_legais += fiscal
-        else:
-            self.informacoes_legais = fiscal
-        if self.informacoes_complementares:
-            self.informacoes_complementares += observacao
-        else:
-            self.informacoes_complementares = observacao
+        self.informacoes_legais = fiscal
+        self.informacoes_complementares = observacao
