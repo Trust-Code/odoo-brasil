@@ -284,10 +284,10 @@ class PosOrder(models.Model):
 
     def action_view_edocs(self):
         if self.total_edocs == 1:
-            dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'action_view_eletronic_document')
-            dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'view_eletronic_document_form')
+            dummy, act_id = self.env['ir.model.data']._xmlid_to_res_model_res_id(
+                'l10n_br_eletronic_document.action_view_eletronic_document')
+            dummy, view_id = self.env['ir.model.data']._xmlid_to_res_model_res_id(
+                'l10n_br_eletronic_document.view_eletronic_document_form')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             vals['view_id'] = (view_id, 'sped.eletronic.doc.form')
             vals['views'][1] = (view_id, 'form')
@@ -297,8 +297,8 @@ class PosOrder(models.Model):
             vals['res_id'] = edoc.id
             return vals
         else:
-            dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'action_view_eletronic_document')
+            dummy, act_id = self.env['ir.model.data']._xmlid_to_res_model_res_id(
+                'l10n_br_eletronic_document.action_view_eletronic_document')
             vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
             vals['domain'] = [('pos_order_id', '=', self.id)]
             return vals
