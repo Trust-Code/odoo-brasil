@@ -237,15 +237,10 @@ class AccountMove(models.Model):
 
         return lines
 
-    def _prepare_eletronic_doc_vals(self, invoice_lines):
+    def _prepare_eletronic_doc_vals(self, invoice_lines, numero_nfe):
         invoice = self
         num_controle = int(''.join([str(SystemRandom().randrange(9))
                                     for i in range(8)]))
-        numero_nfe = numero_rps = 0
-        if invoice_lines.product_id.type == 'product':
-            numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
-        else: 
-            numero_rps = self.company_id.l10n_br_nfe_service_sequence.next_by_id()
         vals = {
             'name': invoice.name,
             'move_id': invoice.id,
@@ -271,7 +266,7 @@ class AccountMove(models.Model):
             'pedido_compra': invoice.ref,
             'serie_documento': invoice.fiscal_position_id.serie_nota_fiscal,
             'numero': numero_nfe,
-            'numero_rps': numero_rps,
+            'numero_rps': numero_nfe,
             'valor_frete': invoice.l10n_br_delivery_amount,
             'valor_seguro': invoice.l10n_br_insurance_amount,
             'valor_despesas': invoice.l10n_br_expense_amount,
@@ -402,7 +397,8 @@ class AccountMove(models.Model):
                 self._create_product_eletronic_document(move, products)
 
     def _create_service_eletronic_document(self, move, services):
-        vals = move._prepare_eletronic_doc_vals(services)
+        numero_rps = self.company_id.l10n_br_nfe_service_sequence.next_by_id()
+        vals = move._prepare_eletronic_doc_vals(services, numero_rps)
         vals['model'] = 'nfse'
         vals['document_line_ids'] = move._prepare_eletronic_line_vals(services)
         vals.update(self.sum_line_taxes(vals))
@@ -410,7 +406,8 @@ class AccountMove(models.Model):
         nfse._compute_legal_information()
 
     def _create_product_eletronic_document(self, move, products):
-        vals = move._prepare_eletronic_doc_vals(products)
+        numero_nfe = self.company_id.l10n_br_nfe_sequence.next_by_id()
+        vals = move._prepare_eletronic_doc_vals(products, numero_nfe)
         vals['model'] = 'nfe'
 
         if self.move_type == 'out_refund':
