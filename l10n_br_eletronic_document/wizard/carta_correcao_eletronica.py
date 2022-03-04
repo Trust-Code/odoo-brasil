@@ -33,17 +33,16 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
 
     state = fields.Selection([('drat', 'Provisório'), ('error', 'Erro')],
                              string="Situação")
-    correcao = fields.Text(string="Correção", max_length=1000, required=True)
+    correcao = fields.Text(string="Correção", required=True)
     sequential = fields.Integer(
         string="Sequência Evento", default=_default_sequence_number)
     eletronic_doc_id = fields.Many2one(
         'eletronic.document', string="Documento Eletrônico")
     message = fields.Char(string="Mensagem", size=300, readonly=True)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    sent_xml_name = fields.Char(string="Nome Xml Envio", size=30, readonly=True)
     received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
-    received_xml_name = fields.Char(
-        string="Xml Recebimento", size=30, readonly=True)
+    received_xml_name = fields.Char(string="Nome Xml Recebimento", size=30, readonly=True)
 
     def valida_carta_correcao_eletronica(self):
         if len(self.correcao) < 15:

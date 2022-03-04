@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class WizardNFeConfiguration(models.TransientModel):
     _name = "wizard.nfe.configuration"
+    _description = "Wizard Configuracao NFe"
 
     eletronic_doc_id = fields.Many2one("eletronic.document")
     partner_id = fields.Many2one("res.partner", string="Parceiro")  
@@ -71,6 +72,7 @@ class WizardNFeConfiguration(models.TransientModel):
 
 class WizardNFeConfigurationItem(models.TransientModel):
     _name = "wizard.nfe.configuration.item"
+    _description = "Wizard Configuracao NFe Item"
 
     wizard_id = fields.Many2one('wizard.nfe.configuration')
     create_products = fields.Boolean(string='Criar?', 

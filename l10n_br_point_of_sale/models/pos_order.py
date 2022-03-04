@@ -41,10 +41,10 @@ class PosOrder(models.Model):
         string="Mensagem NFe", compute="_compute_nfe_number"
     )
     nfe_number = fields.Integer(
-        string=u"Número NFe", compute="_compute_nfe_number"
+        string="Número NFe", compute="_compute_nfe_number"
     )
     nfe_exception_number = fields.Integer(
-        string=u"Número NFe", compute="_compute_nfe_number"
+        string="Número NFe Erro", compute="_compute_nfe_number"
     )
     numero = fields.Integer()
     numero_controle = fields.Integer()

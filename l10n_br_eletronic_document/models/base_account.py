@@ -115,7 +115,7 @@ class ImportDeclaration(models.Model):
     ], 'Tipo de Importação', default='1', required=True)
     thirdparty_cnpj = fields.Char('CNPJ', size=18)
     thirdparty_state_id = fields.Many2one(
-        'res.country.state', 'Estado',
+        'res.country.state', 'Estado Parceiro',
         domain="[('country_id.code', '=', 'BR')]")
     exporting_code = fields.Char(
         'Código do Exportador', required=True, size=60)

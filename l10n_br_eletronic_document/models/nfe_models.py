@@ -69,11 +69,11 @@ class CartaCorrecaoEletronicaEvento(models.Model):
     )
 
     # Fields CCe
-    id_cce = fields.Char(string="ID", size=60)
+    id_cce = fields.Char(string="ID CCE", size=60)
     datahora_evento = fields.Datetime(string="Data do Evento")
     tipo_evento = fields.Char(string="Código do Evento")
     sequencial_evento = fields.Integer(string="Sequencial do Evento")
-    correcao = fields.Text(string="Correção", max_length=1000)
+    correcao = fields.Text(string="Correção")
     message = fields.Char(string="Mensagem", size=300)
     protocolo = fields.Char(string="Protocolo", size=30)
 
@@ -118,9 +118,9 @@ class InutilizedNfe(models.Model):
     code = fields.Char(string="Código", size=10)
     motive = fields.Char(string="Motivo", size=300)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    sent_xml_name = fields.Char(string="Nome Xml Envio", size=30, readonly=True)
     received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
-    received_xml_name = fields.Char(string="Xml Recebimento", size=30, readonly=True)
+    received_xml_name = fields.Char(string="Nome Xml Recebimento", size=30, readonly=True)
 
     @api.model
     def create(self, vals):

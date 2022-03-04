@@ -1,8 +1,5 @@
-import requests
-import base64
-from datetime import datetime
 from odoo import fields, models
-from odoo.exceptions import UserError
+
 
 
 class BoletoSicoob(models.Model):
