@@ -120,7 +120,7 @@
                 <field name="name"/>
                 <field name="small_name"/>
                 <newline/>
-                <group  expand='0' string='Agrupar Por...' groups="base.group_extended">
+                <group  expand='0' string='Agrupar Por...'>
                     <filter name="type" string='Tipo' domain="[]" context="{'group_by' : 'type'}" />
                 </group>
             </search>

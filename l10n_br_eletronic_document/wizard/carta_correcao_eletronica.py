@@ -40,10 +40,9 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
         'eletronic.document', string="Documento Eletrônico")
     message = fields.Char(string="Mensagem", size=300, readonly=True)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    sent_xml_name = fields.Char(string="Nome Xml Envio", size=30, readonly=True)
     received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
-    received_xml_name = fields.Char(
-        string="Xml Recebimento", size=30, readonly=True)
+    received_xml_name = fields.Char(string="Nome Xml Recebimento", size=30, readonly=True)
 
     def valida_carta_correcao_eletronica(self):
         if len(self.correcao) < 15:

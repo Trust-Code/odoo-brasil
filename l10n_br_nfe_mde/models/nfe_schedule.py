@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class NfeSchedule(models.TransientModel):
     _name = 'nfe.schedule'
+    _description = "Scheduler para efetuar download de notas"
 
     state = fields.Selection(
         string="Estado",
