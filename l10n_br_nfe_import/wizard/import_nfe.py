@@ -13,6 +13,7 @@ _logger = logging.getLogger(__file__)
 
 class WizardImportNfe(models.TransientModel):
     _name = 'wizard.import.nfe'
+    _description = "Wizard Importacao NFE"
 
     state = fields.Selection([('ok', 'OK'), ('error', 'Erro')], default='ok')
     import_batch_zip = fields.Boolean(

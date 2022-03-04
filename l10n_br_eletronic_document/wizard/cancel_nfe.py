@@ -12,9 +12,9 @@ class CancelNFe(models.TransientModel):
                              string="Situação")
     message = fields.Char(string="Mensagem", size=300, readonly=True)
     sent_xml = fields.Binary(string="Xml Envio", readonly=True)
-    sent_xml_name = fields.Char(string="Xml Envio", size=30, readonly=True)
+    sent_xml_name = fields.Char(string="Nome Xml Envio", size=30, readonly=True)
     received_xml = fields.Binary(string="Xml Recebimento", readonly=True)
-    received_xml_name = fields.Char(string="Xml Recebimento", size=30, readonly=True)
+    received_xml_name = fields.Char(string="Nome Xml Recebimento", size=30, readonly=True)
 
     def action_cancel_nfe(self):
         if self.edoc_id and len(self.justificativa) > 15:
