@@ -18,7 +18,7 @@ class WizardNewPaymentInvoice(models.TransientModel):
             record = self.env[res_model].browse(res_id)
             res.update({
                 'move_id': record.id,
-                'description': record.invoice_payment_ref,
+                'description': record.payment_reference,
                 'amount': record.amount_residual,
                 'payment_journal_id': record.payment_journal_id.id,
                 'currency_id': record.currency_id.id,

@@ -73,7 +73,7 @@ class CartaCorrecaoEletronicaEvento(models.Model):
     datahora_evento = fields.Datetime(string="Data do Evento")
     tipo_evento = fields.Char(string="Código do Evento")
     sequencial_evento = fields.Integer(string="Sequencial do Evento")
-    correcao = fields.Text(string="Correção", max_length=1000)
+    correcao = fields.Text(string="Correção")
     message = fields.Char(string="Mensagem", size=300)
     protocolo = fields.Char(string="Protocolo", size=30)
 

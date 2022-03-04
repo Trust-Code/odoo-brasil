@@ -3,3 +3,4 @@ access_nfe_mde_manager,nfe.mde.manager,model_nfe_mde,account.group_account_manag
 access_nfe_mde_user,nfe.mde.user,model_nfe_mde,account.group_account_user,1,1,1,0
 access_nfe_mde_invoice,nfe.mde.invoice,model_nfe_mde,account.group_account_invoice,1,0,0,0
 access_wizard_operation_not_perfomed,access_wizard_operation_not_perfomed,model_wizard_operation_not_perfomed,account.group_account_invoice,1,1,1,0
+access_nfe_schedule,access_nfe_schedule,model_nfe_schedule,base.group_user,1,1,1,0
