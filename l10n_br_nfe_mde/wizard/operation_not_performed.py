@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class OperationNotPerformed(models.TransientModel):
     _name = 'wizard.operation.not.perfomed'
+    _description = "Wizard Operacao nao Confirmada"
 
     mde_id = fields.Many2one('nfe.mde', string="Documento")
     justificativa = fields.Text('Justificativa', size=255, required=True)

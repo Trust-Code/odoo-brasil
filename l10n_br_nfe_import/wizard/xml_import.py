@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 
 class WizardXmlImport(models.TransientModel):
     _name = 'wizard.xml.import'
+    _description = "Wizard Importacao XMl"
 
     state = fields.Selection([('ok', 'OK'), ('error', 'Erro')], default='ok')
 

@@ -48,6 +48,7 @@ def cnpj_cpf_format(cnpj_cpf):
 
 class NfeMde(models.Model):
     _name = 'nfe.mde'
+    _description = "Manifesto de NFe"
     _inherit = ['mail.thread', 'mail.activity.mixin', 'mail.bot']
     _rec_name = 'numero_sequencial'
     _order = 'numero_sequencial desc'
@@ -102,7 +103,7 @@ class NfeMde(models.Model):
     #     readonly=True)
     nfe_processada = fields.Binary(string=u"Xml da NFe", readonly=True)
     nfe_processada_name = fields.Char(
-        string=u"Xml da NFe", size=100, readonly=True)
+        string="Nome Xml da NFe", size=100, readonly=True)
     is_processed = fields.Boolean(string="Processado?", default=False)
     is_imported = fields.Boolean(string="Importado?", default=False)
     total_edocs = fields.Integer(string="Total NFe",
