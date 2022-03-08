@@ -206,7 +206,7 @@ class AccountMoveLine(models.Model):
             'partner_type': 'customer',
             'amount': self.amount_residual,
             'payment_date': date.today(),
-            'payment_method_id': journal.inbound_payment_method_ids[0].id,
+            'payment_method_id': journal.inbound_payment_method_line_ids[0].id,
             'invoice_ids': [(4, self.move_id.id, None)]
         })
         payment.post()

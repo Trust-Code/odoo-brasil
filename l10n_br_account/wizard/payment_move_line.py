@@ -79,8 +79,8 @@ class PaymentAccountMoveLine(models.TransientModel):
         payment_type = "inbound" if self.move_line_id.debit else "outbound"
         payment_methods = (
                 payment_type == "inbound"
-                and self.journal_id.inbound_payment_method_ids
-                or self.journal_id.outbound_payment_method_ids
+                and self.journal_id.inbound_payment_method_line_ids
+                or self.journal_id.outbound_payment_method_line_ids
         )
         payment_method_id = payment_methods and payment_methods[0].id or False
         if not payment_method_id:
