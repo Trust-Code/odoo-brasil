@@ -96,7 +96,7 @@ class PaymentAccountMoveLine(models.TransientModel):
             "amount": self.amount,
             "date": self.payment_date,
             "payment_type": payment_type,
-            "payment_method_id": payment_method_id,
+            "payment_method_line_id": payment_method_id,
             "currency_id": self.currency_id.id,
         }
         return vals
