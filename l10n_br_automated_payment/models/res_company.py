@@ -19,3 +19,5 @@ class ResCompany(models.Model):
         'account.account', string="Conta para recebimento de juros/multa")
     l10n_br_bankfee_account_id = fields.Many2one(
         'account.account', string="Conta para tarifas bancárias")
+    l10n_br_bank_slip_email_template = fields.Many2one(
+        'mail.template', string="Template de Email para boleto")
