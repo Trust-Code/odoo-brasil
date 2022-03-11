@@ -56,6 +56,8 @@ class EletronicDocument(models.Model):
 
     move_id = fields.Many2one(
         'account.move', string='Fatura', readonly=True, states=STATE)
+    l10n_br_edoc_policy = fields.Selection(related="move_id.l10n_br_edoc_policy")
+    invoice_payment_state = fields.Selection(related="move_id.invoice_payment_state")
 
     document_line_ids = fields.One2many(
         'eletronic.document.line', 'eletronic_document_id', string="Linhas", copy=True)
@@ -641,13 +643,25 @@ class EletronicDocument(models.Model):
     def _get_state_to_send(self):
         return ('draft',)
 
-    def cron_send_nfe(self, limit=50):
+    def _get_nfes_to_send(self, limit):
         inv_obj = self.env['eletronic.document'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
         nfes = inv_obj.search([('state', 'in', states),
                                ('data_agendada', '<=', fields.Date.today())],
                               limit=limit)
+
+        nfes_to_pop = nfes.filtered(
+            lambda n: n.l10n_br_edoc_policy == 'after_payment'
+            and n.invoice_payment_state != 'paid')
+
+        nfes = nfes - nfes_to_pop
+
+        return nfes
+
+    def cron_send_nfe(self, limit=50):
+        nfes = self._get_nfes_to_send(limit)
+
         for item in nfes:
             try:
                 _logger.info('Sending edoc id: %s (number: %s) by cron' % (

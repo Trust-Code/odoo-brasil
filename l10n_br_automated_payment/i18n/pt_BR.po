@@ -1,0 +1,460 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_br_automated_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-11 14:24+0000\n"
+"PO-Revision-Date: 2022-03-11 14:24+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_br_automated_payment
+#: model:mail.template,subject:l10n_br_automated_payment.email_template_bank_slip
+msgid "${object.company_id.name} Invoice (Ref ${object.name or 'n/a'})"
+msgstr "${object.company_id.name} Fatura (Ref ${object.name or 'n/a'})"
+
+#. module: l10n_br_automated_payment
+#: model:mail.template,body_html:l10n_br_automated_payment.email_template_bank_slip
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"        Dear\n"
+"        % if object.partner_id.parent_id:\n"
+"            ${object.partner_id.name} (${object.partner_id.parent_id.name}),\n"
+"        % else:\n"
+"            ${object.partner_id.name},\n"
+"        % endif\n"
+"        <br/><br/>\n"
+"        Here is your\n"
+"        % if object.name:\n"
+"            bank slip for invoice <strong>${object.name}</strong>\n"
+"        % else:\n"
+"            bank slip for invoice\n"
+"        %endif\n"
+"        % if object.invoice_origin:\n"
+"            (with reference: ${object.invoice_origin})\n"
+"        % endif\n"
+"        amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>\n"
+"        from ${object.company_id.name}.\n"
+"        Please remit payment at your earliest convenience.\n"
+"        <br/><br/>\n"
+"        Do not hesitate to contact us if you have any questions.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"        Car@\n"
+"        % if object.partner_id.parent_id:\n"
+"            ${object.partner_id.name} (${object.partner_id.parent_id.name}),\n"
+"        % else:\n"
+"            ${object.partner_id.name},\n"
+"        % endif\n"
+"        <br/><br/>\n"
+"        Aqui está seu\n"
+"        % if object.name:\n"
+"            boleto para a fatura <strong>${object.name}</strong>\n"
+"        % else:\n"
+"            boleto para a fatura\n"
+"        %endif\n"
+"        % if object.invoice_origin:\n"
+"            (with reference: ${object.invoice_origin})\n"
+"        % endif\n"
+"        no valor de <strong>${format_amount(object.amount_total, object.currency_id)}</strong>\n"
+"        from ${object.company_id.name}.\n"
+"        Por favor, realize o pagamento assim que possível.\n"
+"        <br/><br/>\n"
+"        Se tiver alguma dúvida, não hesite em nos contactar.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "<span class=\"o_form_label\">Modelo de e-mail Boleto</span>"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "<span class=\"o_form_label\">Sequência NFe para serviços</span>"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__date_change
+msgid "Alterar Vencimento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_wizard_change_iugu_form
+msgid "Alterar data de vencimento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:mail.template,report_name:l10n_br_automated_payment.email_template_bank_slip
+msgid ""
+"Bank_Slip_${(object.name or '').replace('/','_')}${object.state == 'draft' "
+"and '_draft' or ''}"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_account_move_form
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_wizard_change_iugu_form
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.wizard_new_payment_invoice_form
+msgid "Cancelar"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_account_move_form
+msgid "Cobranças"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajuste de configurações"
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_account_move_form
+msgid "Confirma o cancelamento?"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "Conta"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,help:l10n_br_automated_payment.field_res_config_settings__l10n_br_interest_account_id
+msgid "Conta onde será creditado o montante dos juros recebidos"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,help:l10n_br_automated_payment.field_res_config_settings__l10n_br_bankfee_account_id
+msgid "Conta onde será debitado o montante de tarifas pagas"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,help:l10n_br_automated_payment.field_res_config_settings__l10n_br_payment_discount_account_id
+msgid "Conta onde será registrado o desconto recebido de pagamentos"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,help:l10n_br_automated_payment.field_res_config_settings__l10n_br_payment_interest_account_id
+msgid "Conta onde será registrado o montante dos juros e multas pagos"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_company__l10n_br_payment_discount_account_id
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_config_settings__l10n_br_payment_discount_account_id
+msgid "Conta para desconto de pagamentos"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_company__l10n_br_payment_interest_account_id
+msgid "Conta para pagamento de juros"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_config_settings__l10n_br_payment_interest_account_id
+msgid "Conta para pagamento de juros/multa"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_config_settings__l10n_br_interest_account_id
+msgid "Conta para recebimento de juros"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_company__l10n_br_interest_account_id
+msgid "Conta para recebimento de juros/multa"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_company__l10n_br_bankfee_account_id
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_config_settings__l10n_br_bankfee_account_id
+msgid "Conta para tarifas bancárias"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_res_partner
+msgid "Contact"
+msgstr "Contato"
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__create_uid
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__create_date
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.wizard_new_payment_invoice_form
+msgid "Criar nova cobrança"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_wizard_new_payment_invoice
+msgid "Criar nova transação para pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.wizard_new_payment_invoice_form
+msgid "Criar uma nova transação para pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move_line__iugu_barcode_url
+msgid "Código de barras"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_payment_transaction__date_maturity
+msgid "Data de Vencimento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "Define accounts to use for fine and interest."
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__description
+msgid "Descrição"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__display_name
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__payment_journal_id
+msgid "Forma de Pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move__payment_journal_id
+msgid "Forma de pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.actions.act_window,name:l10n_br_automated_payment.action_invoice_order_generate_link
+msgid "Gerar um novo boleto para pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__id
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__id
+msgid "ID"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move_line__iugu_id
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_partner__iugu_id
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_users__iugu_id
+msgid "ID Iugu"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_res_company_form
+msgid "IUGU"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_company__iugu_api_token
+msgid "IUGU Api Token"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.actions.server,name:l10n_br_automated_payment.ir_cron_iugu_check_ir_actions_server
+#: model:ir.cron,cron_name:l10n_br_automated_payment.ir_cron_iugu_check
+#: model:ir.cron,name:l10n_br_automated_payment.ir_cron_iugu_check
+msgid "IUgu Scheduler"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_account_journal
+msgid "Journal"
+msgstr "Diário"
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_account_move
+msgid "Journal Entries"
+msgstr "Lançamentos de Diário"
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_account_move_line
+msgid "Journal Item"
+msgstr "Item de Diário"
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice____last_update
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__write_uid
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__write_date
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move_line__iugu_digitable_line
+msgid "Linha Digitável"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "Modelo a ser utilizado no envio de boleto automatizado"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_wizard_change_iugu_invoice
+msgid "Modificar parcelamento boleto"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__move_id
+msgid "Move"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__move_line_id
+msgid "Move Line"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__date_change
+msgid "Novo Vencimento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_payment_transaction__origin_move_line_id
+msgid "Origin Move Line"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_change_iugu_invoice__payment_due
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__payment_due
+msgid "Pagamento Atrasado?"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move__payable_move_line_ids
+msgid "Payable Move Lines"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model,name:l10n_br_automated_payment.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transação do Pagamento"
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_bank_statement_import_journal_creation__receive_by_iugu
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_journal__receive_by_iugu
+msgid "Receber pelo IUGU?"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move__receivable_move_line_ids
+msgid "Receivable Move Lines"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "Selecione a conta usada para registrar descontos recebidos"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid ""
+"Selecione a conta usada para registrar juros/multas pagos a fornecedores"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "Selecione a conta usada para registrar juros/multas recebidas"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.res_config_settings_account_payment
+msgid "Selecione a conta usada para registrar tarifas bancárias"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move_line__iugu_status
+msgid "Status Iugu"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_company__l10n_br_bank_slip_email_template
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_res_config_settings__l10n_br_bank_slip_email_template
+msgid "Template de Email para boleto"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_account_move_line__iugu_secure_payment_url
+msgid "URL de Pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_payment_transaction__transaction_url
+msgid "Url de Pagamento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model:ir.model.fields,field_description:l10n_br_automated_payment.field_wizard_new_payment_invoice__amount
+msgid "Valor"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_wizard_change_iugu_form
+msgid "Vencimento"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_account_move_form
+msgid "Verificar"
+msgstr ""
+
+#. module: l10n_br_automated_payment
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.view_wizard_change_iugu_form
+#: model_terms:ir.ui.view,arch_db:l10n_br_automated_payment.wizard_new_payment_invoice_form
+msgid "or"
+msgstr ""
