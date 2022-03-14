@@ -24,15 +24,14 @@
         </field>
     </record>
 
-    <act_window
-        name="Gerar um novo boleto para pagamento"
-        res_model="wizard.new.payment.invoice"
-        binding_model="account.move"
-        binding_views="form"
-        view_mode="form"
-        target="new"
-        view_id="wizard_new_payment_invoice_form"
-        id="action_invoice_order_generate_link"
-    />
+    <record id="action_invoice_order_generate_link" model="ir.actions.act_window">
+        <field name="name">Gerar um novo boleto para pagamento</field>
+        <field name="res_model">wizard.new.payment.invoice</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="binding_view_types">form</field>
+        <field name="view_id" ref="wizard_new_payment_invoice_form"/>
+    </record>
 
 </odoo>

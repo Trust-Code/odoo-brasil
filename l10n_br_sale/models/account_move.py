@@ -4,7 +4,6 @@ from odoo import fields, models, api
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    carrier_partner_id = fields.Many2one('res.partner', string='Transportadora')
     modalidade_frete = fields.Selection(
         [('0', '0 - Contratação do Frete por conta do Remetente (CIF)'),
          ('1', '1 - Contratação do Frete por conta do Destinatário (FOB)'),
@@ -16,10 +15,3 @@ class AccountMove(models.Model):
     quantidade_volumes = fields.Integer('Qtde. Volumes')
     # peso_liquido = fields.Float(string=u"Peso Líquido")
     peso_bruto = fields.Float(string="Peso Bruto")
-
-    @api.onchange('carrier_partner_id')
-    def _update_modalidade_frete(self):
-        if self.carrier_partner_id and self.modalidade_frete == '9':
-            self.write({
-                'modalidade_frete': '1'
-            })

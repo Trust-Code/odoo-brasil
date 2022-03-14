@@ -11,3 +11,4 @@ access_br_account_fiscal_category_invoice,access_br_account_fiscal_category,mode
 access_account_ncm,access_account_ncm,model_account_ncm,account.group_account_manager,1,1,1,1
 access_account_ncm_user,access_account_ncm,model_account_ncm,account.group_account_user,1,0,0,0
 access_account_ncm_invoice,access_account_ncm,model_account_ncm,account.group_account_invoice,1,0,0,0
+access_payment_account_move_line,access_wizard_payment_account_move_line,model_payment_account_move_line,account.group_account_invoice,1,1,1,0
