@@ -64,7 +64,7 @@ class EletronicDocument(models.Model):
     move_id = fields.Many2one(
         'account.move', string='Fatura', readonly=True, states=STATE)
     l10n_br_edoc_policy = fields.Selection(related="move_id.l10n_br_edoc_policy")
-    invoice_payment_state = fields.Selection(related="move_id.invoice_payment_state")
+    payment_state = fields.Selection(related="move_id.payment_state")
 
     document_line_ids = fields.One2many(
         'eletronic.document.line', 'eletronic_document_id', string="Linhas", copy=True)
@@ -648,7 +648,7 @@ class EletronicDocument(models.Model):
 
         nfes_to_pop = nfes.filtered(
             lambda n: n.l10n_br_edoc_policy == 'after_payment'
-            and n.invoice_payment_state != 'paid')
+            and n.payment_state != 'paid')
 
         nfes = nfes - nfes_to_pop
 
