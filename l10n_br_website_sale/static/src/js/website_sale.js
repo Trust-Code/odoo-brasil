@@ -80,10 +80,10 @@ odoo.define('br_website_sale.address', function (require) {
         onChangeRadioCompany: function(ev) {
             let $target = $(ev.target);
             if($target.val() == 'company') {
-                this.$el.find("label[for=contact_name]").text("CNPJ")
+                this.$el.find("label[for=input_cnpj_cpf]").text("CNPJ")
                 this.cnpj_cpf_mask(true);
             } else {
-                this.$el.find("label[for=contact_name]").text("CPF")
+                this.$el.find("label[for=input_cnpj_cpf]").text("CPF")
                 this.cnpj_cpf_mask(false);
             }
         },
