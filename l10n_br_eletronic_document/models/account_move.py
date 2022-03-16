@@ -45,6 +45,12 @@ class AccountMove(models.Model):
             else:
                 item.nfe_number = 0
 
+    @api.onchange("fiscal_position_id")
+    def _onchange_fiscal_position_id(self):
+        super(AccountMove, self)._onchange_fiscal_position_id()
+        if self.fiscal_position_id:
+            self.l10n_br_edoc_policy = self.fiscal_position_id.edoc_policy
+
     @api.model
     def _autopost_draft_entries(self):
         records = self.search([
