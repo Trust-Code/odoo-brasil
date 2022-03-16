@@ -439,7 +439,9 @@ class AccountMove(models.Model):
             return related_doc
 
     def action_post(self):
-        moves = self.filtered(lambda x: x.l10n_br_edoc_policy == 'directly' and x.type != 'entry')
+        moves = self.filtered(lambda x: (
+            x.l10n_br_edoc_policy == 'directly' 
+            or x.l10n_br_edoc_policy == 'after_payment') and x.type != 'entry')
         moves._validate_for_eletronic_document()
         res = super(AccountMove, self).action_post()
         moves.action_create_eletronic_document()
