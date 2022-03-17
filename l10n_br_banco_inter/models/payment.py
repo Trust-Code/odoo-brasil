@@ -11,7 +11,7 @@ from odoo.exceptions import UserError
 class BoletoSicoob(models.Model):
     _inherit = "payment.acquirer"
 
-    provider = fields.Selection(selection_add=[("boleto-inter", "Boleto Banco Inter")])
+    provider = fields.Selection(selection_add=[("boleto-inter", "Boleto Banco Inter")], ondelete = { 'boleto-inter' : 'set default' })
 
 
 class PaymentTransaction(models.Model):

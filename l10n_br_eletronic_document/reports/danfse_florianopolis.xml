@@ -1,30 +1,28 @@
 <?xml version="1.0"?>
 <odoo>
 
-    <report
-        id="report_br_nfse_danfpse"
-        string="Nota de Prestação de Serviço"
-        model="eletronic.document"
-        report_type="qweb-pdf"
-        file="l10n_br_eletronic_document.main_template_br_nfse_danfpse"
-        name="l10n_br_eletronic_document.main_template_br_nfse_danfpse" />
-
-      <record id="paperformat_br_nfse_danfpse" model="report.paperformat">
-          <field name="name">Danfpse</field>
-          <field name="default" eval="True" />
-          <field name="orientation">Portrait</field>
-          <field name="margin_top">3</field>
-          <field name="margin_bottom">3</field>
-          <field name="margin_left">3</field>
-          <field name="margin_right">3</field>
-          <field name="header_line" eval="False" />
-          <field name="header_spacing">3</field>
-      </record>
+    <record id="paperformat_br_nfse_danfpse" model="report.paperformat">
+        <field name="name">Danfpse</field>
+        <field name="default" eval="True" />
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">3</field>
+    </record>
 
     <record id="report_br_nfse_danfpse" model="ir.actions.report">
-        <field name="paperformat_id" ref="paperformat_br_nfse_danfpse"/>
         <field name="name">NFS-e Florianópolis</field>
+        <field name="model">eletronic.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_br_eletronic_document.main_template_br_nfse_danfpse</field>
+        <field name="report_file">l10n_br_eletronic_document.main_template_br_nfse_danfpse</field>
         <field name="print_report_name">'%s - NF - %s' % (object.numero, object.partner_id.name_get()[0][1])</field>
+        <field name="paperformat_id" ref="paperformat_br_nfse_danfpse"/>
+        <field name="binding_model_id" ref="model_eletronic_document"/>
+        <field name="binding_type">report</field>
     </record>
 
     <template id="danfpse_report_template">

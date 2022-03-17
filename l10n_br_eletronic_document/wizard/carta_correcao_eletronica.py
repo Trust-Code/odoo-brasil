@@ -33,7 +33,7 @@ class WizardCartaCorrecaoEletronica(models.TransientModel):
 
     state = fields.Selection([('drat', 'Provisório'), ('error', 'Erro')],
                              string="Situação")
-    correcao = fields.Text(string="Correção", max_length=1000, required=True)
+    correcao = fields.Text(string="Correção", required=True)
     sequential = fields.Integer(
         string="Sequência Evento", default=_default_sequence_number)
     eletronic_doc_id = fields.Many2one(

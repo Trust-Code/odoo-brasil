@@ -31,7 +31,7 @@
           icon="fa-search" string="Consultar CNPJ" attrs="{'invisible': [('company_type', '=', 'person')]}">
         </button>
       </xpath>
-      <xpath expr="//div[hasclass('o_row')]" position="before">
+      <xpath expr="//h1" position="after">
         <h3 attrs="{'invisible': [('is_company', '=', False)]}">
           <field name="l10n_br_legal_name" placeholder="Legal Name" nolabel="1" />
         </h3>

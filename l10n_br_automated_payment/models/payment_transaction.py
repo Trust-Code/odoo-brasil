@@ -77,7 +77,11 @@ class PaymentTransaction(models.Model):
         _logger.info('Sending e-mail for bank_slip %s (number: %s)' % (
             self.id, self.invoice_ids[0].name))
 
-        values = mail.generate_email([self.invoice_ids[0].id])[self.invoice_ids[0].id]
+        values = mail.generate_email(
+            [self.invoice_ids[0].id],
+            ['subject', 'body_html', 'email_from', 'email_to', 'partner_to',
+             'email_cc', 'reply_to', 'mail_server_id']
+        )[self.invoice_ids[0].id]
         subject = values.pop('subject')
         values.pop('body')
         values.pop('attachment_ids')
@@ -91,7 +95,8 @@ class PaymentTransaction(models.Model):
         values['attachments'] = new_items
         self.invoice_ids[0].message_post(
             body=values['body_html'], subject=subject,
-            message_type='email', subtype='mt_comment', email_layout_xmlid='mail.mail_notification_paynow',
+            message_type='email', subtype_xmlid='mail.mt_comment',
+            email_layout_xmlid='mail.mail_notification_paynow',
             attachment_ids=atts + mail.attachment_ids.ids, **values)
 
     def send_email_bank_slip_queue(self):
