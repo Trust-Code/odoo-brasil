@@ -463,7 +463,7 @@ class AccountMove(models.Model):
     def action_post(self):
         moves = self.filtered(lambda x: (
             x.l10n_br_edoc_policy == 'directly' 
-            or x.l10n_br_edoc_policy == 'after_payment') and x.type != 'entry')
+            or x.l10n_br_edoc_policy == 'after_payment') and x.move_type != 'entry')
 
         moves._validate_for_eletronic_document()
         res = super(AccountMove, self).action_post()
