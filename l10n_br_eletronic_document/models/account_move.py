@@ -46,6 +46,20 @@ class AccountMove(models.Model):
             else:
                 item.nfe_number = 0
 
+    @api.onchange("fiscal_position_id")
+    def _onchange_fiscal_position_id(self):
+        super(AccountMove, self)._onchange_fiscal_position_id()
+        if self.fiscal_position_id:
+            self.l10n_br_edoc_policy = self.fiscal_position_id.edoc_policy
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        super(AccountMove, self)._onchange_partner_id()
+        if self.fiscal_position_id.edoc_policy:  
+            self.l10n_br_edoc_policy = self.fiscal_position_id.edoc_policy
+        else:   
+            self.l10n_br_edoc_policy = None
+
     @api.model
     def _autopost_draft_entries(self):
         records = self.search([
@@ -463,7 +477,9 @@ class AccountMove(models.Model):
             return related_doc
 
     def action_post(self):
-        moves = self.filtered(lambda x: x.l10n_br_edoc_policy in ('directly','after_payment') and x.type != 'entry')
+        moves = self.filtered(
+          lambda x: x.l10n_br_edoc_policy in ('directly','after_payment') and x.move_type != 'entry'
+        )
         moves._validate_for_eletronic_document()
         res = super(AccountMove, self).action_post()
         moves.action_create_eletronic_document()
