@@ -64,6 +64,20 @@ class AccountMove(models.Model):
                 'modalidade_frete': '1'
             })
 
+    @api.onchange("fiscal_position_id")
+    def _onchange_fiscal_position_id(self):
+        super(AccountMove, self)._onchange_fiscal_position_id()
+        if self.fiscal_position_id:
+            self.l10n_br_edoc_policy = self.fiscal_position_id.edoc_policy
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        super(AccountMove, self)._onchange_partner_id()
+        if self.fiscal_position_id.edoc_policy:  
+            self.l10n_br_edoc_policy = self.fiscal_position_id.edoc_policy
+        else:   
+            self.l10n_br_edoc_policy = None
+
     def _validate_for_eletronic_document(self):
         errors = []
         for move in self:
