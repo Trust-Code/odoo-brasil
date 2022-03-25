@@ -1068,6 +1068,8 @@ class EletronicDocumentLine(models.Model):
         string="Código do serviço", size=10, readonly=True, states=STATE)
     codigo_servico_municipio = fields.Char(
         string='Código NFSe', size=20, readonly=True, states=STATE)
+    descricao_codigo_municipio = fields.Char(
+        string='Descrição Código Serviço', size=100, readonly=True, states=STATE)
     # Florianopolis
     codigo_cnae = fields.Char(string="CNAE", size=10,
                               readonly=True, states=STATE)
