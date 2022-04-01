@@ -803,6 +803,7 @@ class EletronicDocument(models.Model):
                     'codigo_servico': line.item_lista_servico,
                     'cnae_servico': line.codigo_cnae,
                     'codigo_servico_municipio': line.codigo_servico_municipio,
+                    'descricao_codigo_municipio': line.descricao_codigo_municipio,
                     'aliquota': aliquota,
                     'base_calculo': round(line.iss_base_calculo, 2),
                     'valor_unitario': unitario,
