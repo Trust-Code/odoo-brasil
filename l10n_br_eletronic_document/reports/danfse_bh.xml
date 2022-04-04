@@ -229,7 +229,12 @@
                     </div>
                     <div class="col-12">
                         <span t-field="doc.document_line_ids[0].codigo_servico_municipio" /> -
-                        <span t-field="doc.document_line_ids[0].product_id.service_type_id.name" />
+                        <t t-if="doc.document_line_ids[0].descricao_codigo_municipio">
+                            <span t-field="doc.document_line_ids[0].descricao_codigo_municipio"/>
+                        </t>
+                        <t t-else="">
+                            <span t-field="doc.document_line_ids[0].product_id.service_type_id.name"/>
+                        </t>
                     </div>
                 </div>
             </div>
@@ -239,8 +244,8 @@
                         <h4 style="margin:0px;font-weight:bold;">Subitem Lista de Serviços LC 116/03 / Descrição:</h4>
                     </div>
                     <div class="col-12">
-                        <span t-field="doc.document_line_ids[0].product_id.service_type_id.code" /> -
-                        <span t-field="doc.document_line_ids[0].product_id.service_type_id.name" />
+                        <span t-field="doc.document_line_ids[0].product_id.service_type_id.code"/> -
+                        <span t-field="doc.document_line_ids[0].product_id.service_type_id.name"/>
                     </div>
                 </div>
             </div>

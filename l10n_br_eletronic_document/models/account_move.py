@@ -564,6 +564,7 @@ class AccountMoveLine(models.Model):
             # - ISS -
             'item_lista_servico': self.product_id.service_type_id.code,
             'codigo_servico_municipio': self.product_id.service_code,
+            'descricao_codigo_municipio': self.product_id.service_code_description,
             'iss_aliquota': iss.tax_line_id.amount or 0,
             'iss_base_calculo': self.price_subtotal or 0,
             'iss_valor': round(self.price_subtotal * iss.tax_line_id.amount / 100, 2),

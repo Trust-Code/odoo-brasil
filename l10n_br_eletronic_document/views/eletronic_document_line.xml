@@ -92,8 +92,8 @@
                       </group>
                       <group>
                           <field name="item_lista_servico" />
-                          <field name="codigo_servico_municipio" />
-
+                          <field name="codigo_servico_municipio" /> 
+                          <field name="descricao_codigo_municipio" />
                           <field name="codigo_cnae" />
                           <field name="codigo_servico_paulistana_nome" />
                       </group>

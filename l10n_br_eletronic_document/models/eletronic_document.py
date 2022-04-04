@@ -811,6 +811,7 @@ class EletronicDocument(models.Model):
                     'codigo_servico': line.item_lista_servico,
                     'cnae_servico': line.codigo_cnae,
                     'codigo_servico_municipio': line.codigo_servico_municipio,
+                    'descricao_codigo_municipio': line.descricao_codigo_municipio,
                     'aliquota': aliquota,
                     'base_calculo': round(line.iss_base_calculo, 2),
                     'valor_unitario': unitario,
@@ -1068,6 +1069,8 @@ class EletronicDocumentLine(models.Model):
         string="Código do serviço", size=10, readonly=True, states=STATE)
     codigo_servico_municipio = fields.Char(
         string='Código NFSe', size=20, readonly=True, states=STATE)
+    descricao_codigo_municipio = fields.Char(
+        string='Descrição Código Serviço', size=100, readonly=True, states=STATE)
     # Florianopolis
     codigo_cnae = fields.Char(string="CNAE", size=10,
                               readonly=True, states=STATE)
