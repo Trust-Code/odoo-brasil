@@ -89,3 +89,9 @@ class PaymentTransaction(models.Model):
             "codigoBaixa": "SUBISTITUICAO"
         }
         self.execute_request_inter("POST", url, vals)
+
+    def _find_attachment_ids_email(self):
+        atts = super()._find_attachment_ids_email()
+        atts = self.action_get_pdf_inter()
+        return atts
+

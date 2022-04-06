@@ -83,8 +83,6 @@ class AccountMove(models.Model):
     @api.onchange("fiscal_position_id")
     def _onchange_fiscal_position_id(self):
         self._mapping_fiscal_position_account()
-        if self.fiscal_position_id:
-            self.l10n_br_edoc_policy = self.fiscal_position_id.edoc_policy
 
     def compute_lines_partition(self, line_type):
         if line_type not in ("delivery", "expense", "insurance"):

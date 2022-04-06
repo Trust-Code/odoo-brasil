@@ -44,9 +44,8 @@ class EletronicDocument(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
-    name = fields.Char(string='Name', size=30, readonly=True, states=STATE)
-    company_id = fields.Many2one(
-        'res.company', default=lambda self: self.env.company)
+    name = fields.Char(string='Name', readonly=True, states=STATE)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         'res.currency', related='company_id.currency_id',
         string="Company Currency", readonly=True, states=STATE)
@@ -64,6 +63,8 @@ class EletronicDocument(models.Model):
 
     move_id = fields.Many2one(
         'account.move', string='Fatura', readonly=True, states=STATE)
+    l10n_br_edoc_policy = fields.Selection(related="move_id.l10n_br_edoc_policy")
+    payment_state = fields.Selection(related="move_id.payment_state")
 
     document_line_ids = fields.One2many(
         'eletronic.document.line', 'eletronic_document_id', string="Linhas", copy=True)
@@ -222,7 +223,7 @@ class EletronicDocument(models.Model):
         'account.fiscal.position', string=u'Posição Fiscal',
         readonly=True, states=STATE)
     natureza_operacao = fields.Char(
-        string='Natureza da Operação', size=60, readonly=True, states=STATE)
+        string='Natureza da Operação', size=100, readonly=True, states=STATE)
     # eletronic_event_ids = fields.One2many(
     #     'invoice.eletronic.event', 'invoice_eletronic_id', string=u"Eventos",
     #     readonly=True, states=STATE)
@@ -637,13 +638,25 @@ class EletronicDocument(models.Model):
     def _get_state_to_send(self):
         return ('draft',)
 
-    def cron_send_nfe(self, limit=50):
+    def _get_nfes_to_send(self, limit):
         inv_obj = self.env['eletronic.document'].with_context({
             'lang': self.env.user.lang, 'tz': self.env.user.tz})
         states = self._get_state_to_send()
         nfes = inv_obj.search([('state', 'in', states),
                                ('data_agendada', '<=', fields.Date.today())],
                               limit=limit)
+
+        nfes_to_pop = nfes.filtered(
+            lambda n: n.l10n_br_edoc_policy == 'after_payment'
+            and n.payment_state != 'paid')
+
+        nfes = nfes - nfes_to_pop
+
+        return nfes
+
+    def cron_send_nfe(self, limit=50):
+        nfes = self._get_nfes_to_send(limit)
+
         for item in nfes:
             try:
                 _logger.info('Sending edoc id: %s (number: %s) by cron' % (
@@ -803,6 +816,7 @@ class EletronicDocument(models.Model):
                     'codigo_servico': line.item_lista_servico,
                     'cnae_servico': line.codigo_cnae,
                     'codigo_servico_municipio': line.codigo_servico_municipio,
+                    'descricao_codigo_municipio': line.descricao_codigo_municipio,
                     'aliquota': aliquota,
                     'base_calculo': round(line.iss_base_calculo, 2),
                     'valor_unitario': unitario,
@@ -1040,7 +1054,7 @@ class EletronicDocumentLine(models.Model):
     _name = 'eletronic.document.line'
     _description = 'Eletronic document line (NFE, NFSe)'
 
-    name = fields.Char(string='Name', size=30)
+    name = fields.Char(string='Name')
     eletronic_document_id = fields.Many2one(
         'eletronic.document', string='Documento')
     company_id = fields.Many2one(
@@ -1068,6 +1082,8 @@ class EletronicDocumentLine(models.Model):
         string="Código do serviço", size=10, readonly=True, states=STATE)
     codigo_servico_municipio = fields.Char(
         string='Código NFSe', size=20, readonly=True, states=STATE)
+    descricao_codigo_municipio = fields.Char(
+        string='Descrição Código Serviço', size=100, readonly=True, states=STATE)
     # Florianopolis
     codigo_cnae = fields.Char(string="CNAE", size=10,
                               readonly=True, states=STATE)
