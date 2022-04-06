@@ -79,7 +79,7 @@ class AccountNcm(models.Model):
         for user in users:
             partner = user.partner_id
 
-            odoobot_id = self.env['ir.model.data'].xmlid_to_res_id("base.partner_root")
+            _, odoobot_id = self.env['ir.model.data']._xmlid_to_res_model_res_id("base.partner_root")
 
             channel_info = self.env['mail.channel'].channel_get([partner.id, odoobot_id], pin=True)
             channel = self.env['mail.channel'].browse(channel_info['id'])

@@ -249,8 +249,8 @@ class AccountMoveLine(models.Model):
         return tax_ids | self.move_id.fiscal_position_id.apply_tax_ids
 
     def action_register_payment_move_line(self):
-        dummy, act_id = self.env["ir.model.data"].get_object_reference(
-            "l10n_br_account", "action_payment_account_move_line"
+        dummy, act_id = self.env["ir.model.data"]._xmlid_to_res_model_res_id(
+            "l10n_br_account.action_payment_account_move_line"
         )
         receivable = self.account_id.internal_type == "receivable"
         vals = self.env["ir.actions.act_window"].browse(act_id).read()[0]
