@@ -11,12 +11,16 @@
              <field name="total_edocs" /> <span> NFEs</span>
         </button>
       </div>
-      <button name="action_invoice_register_payment" position="before">
+      <button name="action_register_payment" position="before">
         <button name="action_create_eletronic_document" type="object" string="Criar nota fiscal" attrs="{'invisible':['|', '|', ('state', '!=', 'posted'), ('l10n_br_edoc_policy', '=', 'directly'), ('l10n_br_edoc_policy', '=', 'after_payment')]}" class="oe_highlight" groups="base.group_user"/>  
       </button>
       <field name="fiscal_position_id" position="after">
         <field name="l10n_br_edoc_policy" />
       </field>
+      <xpath expr="//field[@name='invoice_line_ids']//field[@name='account_id']" position="after">
+        <field name="pedido_compra" optional="hide" />
+        <field name="item_pedido_compra" optional="hide" />
+      </xpath>
     </field>
   </record>
 

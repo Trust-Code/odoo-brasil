@@ -43,9 +43,9 @@
     <record id="trustcode_sicoob_account_bank_journal_form_view" model="ir.ui.view">
         <field name="name">trustcode_sicoob_account_journal_creation</field>
         <field name="model">account.journal</field>
-        <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='bank_acc_number']" position="before">
+            <xpath expr="//field[@name='bank_id']" position="before">
                     <field name="l10n_br_bank_branch_number"
                            attrs="{'readonly': [('bank_account_id', '!=', False)], 'invisible':[('bank_account_id', '=', False)]}"
                            force_save="1"/>
@@ -56,9 +56,9 @@
     <record id="trustcode_sicoob_account_bank_journal_tree_view" model="ir.ui.view">
         <field name="name">trustcode_sicoob_account_journal_creation</field>
         <field name="model">account.journal</field>
-        <field name="inherit_id" ref="account.view_account_bank_journal_tree"/>
+        <field name="inherit_id" ref="account.view_account_journal_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='bank_acc_number']" position="before">
+            <xpath expr="//field[@name='journal_group_ids']" position="before">
                 <field name="l10n_br_bank_branch_number"/>
             </xpath>
         </field>

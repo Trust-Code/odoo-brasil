@@ -7,7 +7,7 @@ class CancelNFe(models.TransientModel):
     _description = "Cancelamento NF-e"
 
     edoc_id = fields.Many2one('eletronic.document', string="Documento")
-    justificativa = fields.Text('Justificativa', size=255, required=True)
+    justificativa = fields.Text('Justificativa', required=True)
     state = fields.Selection([('drat', 'Provisório'), ('error', u'Erro')],
                              string="Situação")
     message = fields.Char(string="Mensagem", size=300, readonly=True)

@@ -4,3 +4,4 @@
 .vim/
 *.swp
 .vscode/
+pyrightconfig.json

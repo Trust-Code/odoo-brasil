@@ -23,7 +23,7 @@ class IuguBoleto(models.Model):
         base_url = self.env["ir.config_parameter"].get_param("web.base.url")
         return "%s%s" % (base_url, "/payment/process")
 
-    provider = fields.Selection(selection_add=[("iugu", "Iugu")])
+    provider = fields.Selection(selection_add=[("iugu", "Iugu")], ondelete = { 'iugu' : 'set default' })
     iugu_api_key = fields.Char("Iugu Api Token")
     return_url = fields.Char(
         string="Url de Retorno", default=_default_return_url, size=300

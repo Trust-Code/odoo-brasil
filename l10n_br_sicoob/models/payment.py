@@ -1,14 +1,11 @@
-import requests
-import base64
-from datetime import datetime
 from odoo import fields, models
-from odoo.exceptions import UserError
+
 
 
 class BoletoSicoob(models.Model):
     _inherit = "payment.acquirer"
 
-    provider = fields.Selection(selection_add=[("sicoob-boleto", "Boleto Sicoob")])
+    provider = fields.Selection(selection_add=[("sicoob-boleto", "Boleto Sicoob")], ondelete = { 'sicoob-boleto' : 'set default' })
 
 
 class PaymentTransaction(models.Model):

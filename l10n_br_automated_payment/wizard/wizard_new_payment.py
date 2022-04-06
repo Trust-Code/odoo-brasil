@@ -18,7 +18,7 @@ class WizardNewPaymentInvoice(models.TransientModel):
             record = self.env[res_model].browse(res_id)
             res.update({
                 'move_id': record.id,
-                'description': record.invoice_payment_ref,
+                'description': record.payment_reference,
                 'amount': record.amount_residual,
                 'payment_journal_id': record.payment_journal_id.id,
                 'currency_id': record.currency_id.id,
@@ -38,7 +38,7 @@ class WizardNewPaymentInvoice(models.TransientModel):
     currency_id = fields.Many2one('res.currency')
 
     def action_generate_new_payment(self):
-        if self.move_id.invoice_payment_state == 'paid':
+        if self.move_id.payment_state == 'paid':
             raise UserError('A fatura já está paga!')
         if self.date_change:
             self.move_id.receivable_move_line_ids.filtered(
