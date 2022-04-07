@@ -82,7 +82,7 @@ class ExportNfe(models.TransientModel):
                 danfe_report = self.env['ir.actions.report'].search(
                     [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfe_danfe')])
                 report_service = danfe_report.xml_id
-                danfe, dummy = self.env.ref(report_service).render_qweb_pdf([invoice.id])
+                danfe, dummy = self.env.ref(report_service)._render_qweb_pdf([invoice.id])
                 report_name = safe_eval(danfe_report.print_report_name, {'object': invoice})
                 filename = "%s.%s" % (report_name, "pdf")
                 pdfs.append({
