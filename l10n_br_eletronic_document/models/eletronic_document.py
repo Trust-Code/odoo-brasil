@@ -798,7 +798,7 @@ class EletronicDocument(models.Model):
                     'logradouro': partner.street,
                     'numero': partner.l10n_br_number,
                     'bairro': partner.l10n_br_district,
-                    'complemento': partner.street2,
+                    'complemento': partner.street2 or '',
                     'cep': re.sub('[^0-9]', '', partner.zip or ''),
                     'codigo_municipio': '%s%s' % (
                         partner.state_id.l10n_br_ibge_code,
