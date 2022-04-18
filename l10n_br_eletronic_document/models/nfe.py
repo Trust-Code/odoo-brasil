@@ -397,6 +397,9 @@ class EletronicDocument(models.Model):
             'procEmi': 0,
             'verProc': 'Odoo 11 - Trustcode',
         }
+        if self.ind_pres in ['2', '3', '4', '9']:
+            ide['indIntermed'] = self.ind_intermediario or '0'
+
         # Documentos Relacionados
         documentos = []
         for doc in self.related_document_ids:

@@ -310,8 +310,8 @@ class EletronicDocument(models.Model):
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
     ind_intermediario = fields.Selection([
-        ('0', 'Operação sem intermediador'),
-        ('1', 'Operação em site ou plataforma de terceiros'),
+        ('0', '0 - Operação sem intermediador'),
+        ('1', '1 - Operação em site ou plataforma de terceiros'),
     ], 'Indicador Intermediario',
         help='Indicador de intermediador/marketplace', default='0')
     ind_dest = fields.Selection([
