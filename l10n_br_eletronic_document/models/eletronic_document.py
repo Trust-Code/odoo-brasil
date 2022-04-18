@@ -309,6 +309,11 @@ class EletronicDocument(models.Model):
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
+    ind_intermediario = fields.Selection([
+        ('0', 'Operação sem intermediador'),
+        ('1', 'Operação em site ou plataforma de terceiros'),
+    ], 'Indicador Intermediario',
+        help='Indicador de intermediador/marketplace', default='0')
     ind_dest = fields.Selection([
         ('1', u'1 - Operação Interna'),
         ('2', u'2 - Operação Interestadual'),

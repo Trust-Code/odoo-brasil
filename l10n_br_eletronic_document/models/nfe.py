@@ -393,6 +393,7 @@ class EletronicDocument(models.Model):
             'finNFe': self.finalidade_emissao,
             'indFinal': self.ind_final or '1',
             'indPres': self.ind_pres or '1',
+            'indIntermed': self.ind_intermediario or '0',
             'procEmi': 0,
             'verProc': 'Odoo 11 - Trustcode',
         }
