@@ -6,7 +6,7 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">l10n_br_eletronic_document.main_template_br_nfe_danfe</field>
             <field name="report_file">l10n_br_eletronic_document.main_template_br_nfe_danfe</field>
-            <field name="print_report_name">'%s - NFe - %s' % (object.numero, object.partner_id.name)</field>
+            <field name="print_report_name">'%s - NFe - %s' % (object.numero, object.partner_id.commercial_partner_id.name)</field>
             <field name="binding_model_id" ref="model_eletronic_document"/>
             <field name="binding_type">report</field>
         </record>
