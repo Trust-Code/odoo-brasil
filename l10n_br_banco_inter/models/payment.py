@@ -92,6 +92,6 @@ class PaymentTransaction(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super()._find_attachment_ids_email()
-        atts = self.action_get_pdf_inter()
+        atts += self.action_get_pdf_inter()
         return atts
 
