@@ -1,9 +1,7 @@
 import re
-import json
-import requests
+import pytz
 import base64
 import copy
-import time
 import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -827,6 +825,7 @@ class EletronicDocument(models.Model):
             outro_estado = doc.company_id.state_id.id != partner.state_id.id
             outro_pais = doc.company_id.country_id.id != partner.country_id.id
 
+            data_emissao = doc.data_emissao.astimezone(pytz.timezone(self.env.user.tz))
             data = {
                 'nfe_reference': doc.id,
                 'ambiente': doc.ambiente,
@@ -838,7 +837,7 @@ class EletronicDocument(models.Model):
                 'outro_pais': outro_pais,
                 'regime_tributario': doc.company_id.l10n_br_tax_regime,
                 'itens_servico': items,
-                'data_emissao': doc.data_emissao.strftime('%Y-%m-%d'),
+                'data_emissao': data_emissao.strftime('%Y-%m-%d'),
                 'serie': doc.serie_documento or '',
                 'numero_rps': doc.numero_rps,
                 'discriminacao': doc.discriminacao_servicos,
@@ -886,8 +885,8 @@ class EletronicDocument(models.Model):
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
             for doc in doc_values:
-                doc['data_emissao'] = self.data_emissao.strftime(
-                    '%Y-%m-%dT%H:%M:%S')
+                data_emissao = self.data_emissao.astimezone(pytz.timezone(self.env.user.tz))
+                doc['data_emissao'] = data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
                 doc['valor_pis'] = self.pis_valor_retencao
                 doc['valor_cofins'] = self.cofins_valor_retencao
                 doc['valor_inss'] = self.inss_valor_retencao
