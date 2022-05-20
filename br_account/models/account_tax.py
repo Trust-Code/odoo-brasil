@@ -271,14 +271,17 @@ class AccountTax(models.Model):
             taxes += [vals_fcp]
         return taxes
 
-    def _compute_pis_cofins(self, price_base, icms):
+    def _compute_pis_cofins(self, price_base, icms, difal):
         pis_cofins_tax = self.filtered(lambda x: x.domain in ('pis', 'cofins'))
         if not pis_cofins_tax:
             return []
         taxes = []
         base_pis_cofins = price_base
+
         if self.env.context.get('excluir_icms_pis_cofins') and icms:
             base_pis_cofins = price_base - icms[0]['amount']
+        if self.env.context.get('excluir_difal_pis_cofins') and difal:
+            base_pis_cofins = base_pis_cofins - sum([x['amount'] for x in difal])
 
         for tax in pis_cofins_tax:
             vals = self._tax_vals(tax)
@@ -369,7 +372,7 @@ class AccountTax(models.Model):
             price_base, ipi[0]['amount'] if ipi else 0.0)
 
         taxes = icms + icmsst + difal + ipi
-        taxes += self._compute_pis_cofins(price_base, icms)
+        taxes += self._compute_pis_cofins(price_base, icms, difal)
         taxes += self._compute_issqn(price_base)
         taxes += self._compute_ii(price_base)
         taxes += self._compute_retention(price_base)
