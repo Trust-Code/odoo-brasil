@@ -28,6 +28,9 @@ odoo.define('br_website_sale.address', function (require) {
             if (this.$el.find("#radioCompany").length > 0) {
                 let value = this.$el.find("#radioCompany")[0].checked;
                 this.cnpj_cpf_mask(value);
+                if(value) {
+                    this.$el.find("label[for='input_cnpj_cpf']").html('CNPJ');
+                }
             }
             this.zip_mask();
 

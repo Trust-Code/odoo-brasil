@@ -38,7 +38,7 @@
                                     <input type="email" name="email" t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}" t-att-value="email or partner.email"/>
                                 </div>
                                 <div t-attf-class="form-group #{error.get('l10n_br_cnpj_cpf') and 'o_has_error' or ''} col-xl-6">
-                                    <label class="col-form-label" for="contact_name">CPF</label>
+                                    <label class="col-form-label" for="input_cnpj_cpf">CPF</label>
                                     <input type="text" id="input_cnpj_cpf" name="l10n_br_cnpj_cpf" t-attf-class="form-control #{error.get('l10n_br_cnpj_cpf') and 'is-invalid' or ''}" t-att-value="l10n_br_cnpj_cpf or partner.l10n_br_cnpj_cpf"/>
                                 </div>
                                 <div t-attf-class="form-group #{error.get('phone') and 'o_has_error' or ''} col-xl-6" id="div_phone">
