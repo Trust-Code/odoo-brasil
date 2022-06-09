@@ -40,7 +40,7 @@
                         </t>
                         <t t-if="mode[1] == 'billing'">
                             <div t-attf-class="form-group #{error.get('l10n_br_cnpj_cpf') and 'o_has_error' or ''} col-lg-6">
-                                <label class="col-form-label">CPF</label>
+                                <label class="col-form-label" for="input_cnpj_cpf">CPF</label>
                                 <input type="text" id="input_cnpj_cpf" name="l10n_br_cnpj_cpf" t-attf-class="form-control #{error.get('l10n_br_cnpj_cpf') and 'is-invalid' or ''}" t-att-value="'l10n_br_cnpj_cpf' in checkout and checkout['l10n_br_cnpj_cpf']"/>
                             </div>
                         </t>
