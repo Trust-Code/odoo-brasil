@@ -269,7 +269,7 @@ class AccountMove(models.Model):
             'fatura_bruto': invoice.amount_total,
             'fatura_desconto': 0.0,
             'fatura_liquido': invoice.amount_total,
-            'pedido_compra': invoice.ref[:9],
+            'pedido_compra': invoice.ref,
             'serie_documento': invoice.fiscal_position_id.serie_nota_fiscal,
             'numero': numero_nfe,
             'numero_rps': numero_nfe,
@@ -517,7 +517,7 @@ class AccountMoveLine(models.Model):
             'cest': self.product_id.l10n_br_cest,
             'extipi': self.product_id.l10n_br_extipi,
             'codigo_beneficio': self.product_id.l10n_br_fiscal_benefit,
-            'pedido_compra': self.ref[:9],
+            'pedido_compra': self.ref,
             # 'item_pedido_compra': self.item_pedido_compra,
             # - ICMS -
             'icms_cst': fiscal_pos.csosn_icms,
