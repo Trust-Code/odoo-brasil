@@ -207,7 +207,7 @@ class EletronicDocument(models.Model):
         qty_frmt = '{:.%sf}' % qty_precis
         price_frmt = '{:.%sf}' % price_precis
         prod = {
-            'cProd': item.product_id.default_code,
+            'cProd': item.product_id.default_code[:9],
             'cEAN': item.product_id.barcode or 'SEM GTIN',
             'xProd': xProd,
             'NCM': re.sub('[^0-9]', '', item.ncm or '00')[:8],
