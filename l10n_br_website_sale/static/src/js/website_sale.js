@@ -51,18 +51,19 @@ odoo.define('br_website_sale.address', function (require) {
         },
 
         set_detault_state_city: function(){
-            $("#id_country").change();
-            let $state = $('#select_state_id');
-            let default_state = $("#input_state_id").val();
-            console.log(default_state);
-            if(default_state) {
-                console.log(default_state);
-                $state.val(default_state);
-                $state.change();
-                let $city = $('#select_city_id');
-                let default_city = $("#input_city_id").val();
-                console.log(default_city);
-                $city.val(default_city);
+            if(this.$el.find("#input_zip").val().length >= 8) {
+                this.$el.find("#input_zip").trigger('change');
+            } else {
+                $("#id_country").change();
+                let $state = $('#select_state_id');
+                let default_state = $("#input_state_id").val();
+                if(default_state) {
+                    $state.val(default_state);
+                    $state.change();
+                    let $city = $('#select_city_id');
+                    let default_city = $("#input_city_id").val();
+                    $city.val(default_city);
+                }
             }
         },
 
