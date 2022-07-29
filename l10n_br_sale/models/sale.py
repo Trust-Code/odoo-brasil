@@ -30,6 +30,19 @@ class SaleOrder(models.Model):
         states=STATES,
     )
 
+    modalidade_frete = fields.Selection(
+        [
+            ("0", "0 - Contratação do Frete por conta do Remetente (CIF)"),
+            ("1", "1 - Contratação do Frete por conta do Destinatário (FOB)"),
+            ("2", "2 - Contratação do Frete por conta de Terceiros"),
+            ("3", "3 - Transporte Próprio por conta do Remetente"),
+            ("4", "4 - Transporte Próprio por conta do Destinatário"),
+            ("9", "9 - Sem Ocorrência de Transporte"),
+        ],
+        string="Modalidade do frete",
+        default="9",
+    )
+
     def compute_lines_partition(self, line_type):
         if line_type not in ("delivery", "expense", "insurance"):
             return
@@ -150,6 +163,7 @@ class SaleOrder(models.Model):
         ])
         quantidade_volumes = sum(len(picking.package_ids) for picking in picking_ids)
         vals['quantidade_volumes'] = quantidade_volumes
+        vals['modalidade_frete'] = self.modalidade_frete
 
         if self.carrier_id and self.carrier_id.partner_id:
             vals["carrier_partner_id"] = self.carrier_id.partner_id
