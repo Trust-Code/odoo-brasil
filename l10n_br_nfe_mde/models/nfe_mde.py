@@ -297,4 +297,4 @@ class NfeMde(models.Model):
             item.is_imported = True
 
     def action_test_bot(self):
-        self.send_message_to_user(self.env.user, 'Olá usuário, chegou uma nova nova fiscal!')
+        self.send_message_to_user(self.env.user, 'Olá usuário, chegou uma nova nova nota fiscal!')
