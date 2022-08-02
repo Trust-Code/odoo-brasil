@@ -1,9 +1,9 @@
 import base64
 import json
 import tempfile
+from datetime import datetime, timedelta
 
-import requests
-from odoo import api, models
+from odoo import models
 from odoo.exceptions import UserError
 from requests import Session
 
@@ -12,6 +12,8 @@ SCOPE = {
     "cobranca_add": "boleto-cobranca.write",
     "cobranca_cancel": "boleto-cobranca.write",
     "cobranca_get": "boleto-cobranca.read",
+    "extrato.read": "extrato.read",
+    "extrato-read": "extrato-read",
 }
 
 
@@ -191,3 +193,42 @@ class BancoInter(models.AbstractModel):
             return ""
 
         return response.json().get("pdf")
+
+    def get_bank_statement_inter(self, journal_id, start_date, end_date):
+        """ Get the bank statement for Banco Inter
+
+        :param  journal_id (obj): Banco Inter Journal
+        :param start_date (str): Start date
+        :param end_date (str): End date
+
+        :return (list): transaction list
+        """
+        url = BASE_URL + "banking/v2/extrato"
+
+        # Get the token
+        token = self._get_token(journal_id, "extrato.read")
+        headers = self._generate_header(token)
+        session = self._prepare_session_request(journal_id)
+
+        # Get the transaction list
+        params = {"dataInicio": start_date.strftime("%Y-%m-%d"), "dataFim": end_date.strftime("%Y-%m-%d")}
+        response = session.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        transactions = response.json()["transacoes"]
+
+        url = BASE_URL + "banking/v2/saldo"
+
+        # Get the end balance of the day before
+        start = start_date - timedelta(days=1)
+
+        params = {"dataSaldo": start.strftime("%Y-%m-%d")}
+        response = session.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        start_balance = response.json()["disponivel"]
+
+        params = {"dataSaldo": end_date.strftime("%Y-%m-%d")}
+        response = session.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        end_balance = response.json()["disponivel"]
+
+        return {"start_balance": start_balance, "end_balance": end_balance, "transactions": transactions}
