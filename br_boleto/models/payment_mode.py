@@ -61,6 +61,7 @@ class PaymentMode(models.Model):
         ('8', u'Não Negativar')
     ], string=u'Códigos de Protesto', default='0')
     boleto_protesto_prazo = fields.Char(u'Prazo protesto', size=2)
+    boleto_nfe_number = fields.Boolean(string="Usar Numeração da Nota")
 
     @api.onchange("boleto_type")
     def br_boleto_onchange_boleto_type(self):

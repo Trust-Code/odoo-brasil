@@ -83,3 +83,24 @@ class PaymentOrderLine(models.Model):
                 raise UserError(_('Modo de pagamento não é boleto!'))
         return self.env.ref(
             'br_boleto.action_boleto_payment_order_line').report_action(self)
+
+    def _compute_identifier(self):
+        for item in self:
+            if item.payment_order_id.payment_mode_id.boleto_nfe_number:
+                invoice = item.move_line_id.invoice_id
+                nfe = self.env["invoice.eletronic"].search(
+                    [
+                        ("invoice_id", "=", invoice.id),
+                        ("state", "=", "done"),
+                    ],
+                    limit=1,
+                )
+                if nfe:
+                    item.identifier = "{}-{}".format(
+                        nfe.numero,
+                        invoice.receivable_move_line_ids.ids.index(
+                            item.move_line_id.id
+                        ) + 1,
+                    ).zfill(8)
+                    continue
+            item.identifier = "%08d" % item.id
