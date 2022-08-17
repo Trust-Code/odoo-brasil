@@ -340,14 +340,17 @@ class InvoiceEletronic(models.Model):
                         lote = {
                             'nLote': lot.name, 
                             'qLote': line.qty_done,
-                            'dVal': lot.life_date.strftime('%Y-%m-%d'),
-                            'dFab': lot.use_date.strftime('%Y-%m-%d'),
+                            'dVal': lot.life_date and lot.life_date.strftime('%Y-%m-%d') or None,
+                            'dFab': lot.use_date and lot.use_date.strftime('%Y-%m-%d') or None,
                         }
                         lotes.append(lote)
-                        fab = fields.Datetime.from_string(lot.use_date)
-                        vcto = fields.Datetime.from_string(lot.life_date)
-                        infAdProd += ' Lote: %s, Fab.: %s, Vencto.: %s' \
-                            %(lot.name, fab, vcto)
+                        if lot.life_date and lot.use_date:
+                            fab = fields.Datetime.from_string(lot.use_date)
+                            vcto = fields.Datetime.from_string(lot.life_date)
+                            infAdProd += ' Lote: %s, Fab.: %s, Vencto.: %s' \
+                                %(lot.name, fab, vcto)
+                        else:
+                            nfAdProd += ' Lote: %s' % lot.name
                 prod["rastro"] = lotes
         di_vals = []
         for di in item.import_declaration_ids:
