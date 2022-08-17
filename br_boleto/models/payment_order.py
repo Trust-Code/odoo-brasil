@@ -91,7 +91,7 @@ class PaymentOrderLine(models.Model):
                 nfe = self.env["invoice.eletronic"].search(
                     [
                         ("invoice_id", "=", invoice.id),
-                        ("state", "=", "done"),
+                        ("state", "in", ("draft", "done")),
                     ],
                     limit=1,
                 )
