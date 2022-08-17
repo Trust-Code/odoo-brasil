@@ -337,13 +337,14 @@ class InvoiceEletronic(models.Model):
                 lotes = []
                 if line.product_id.id == item.product_id.id:
                     for lot in line.lot_id:
-                        lote = {
-                            'nLote': lot.name, 
-                            'qLote': line.qty_done,
-                            'dVal': lot.life_date and lot.life_date.strftime('%Y-%m-%d') or '',
-                            'dFab': lot.use_date and lot.use_date.strftime('%Y-%m-%d') or '',
-                        }
-                        lotes.append(lote)
+                        if lot.name and lot.qty_done and lot.life_date and lot.use_date:
+                            lote = {
+                                'nLote': lot.name, 
+                                'qLote': line.qty_done,
+                                'dVal': lot.life_date.strftime('%Y-%m-%d'),
+                                'dFab': lot.use_date.strftime('%Y-%m-%d'),
+                            }
+                            lotes.append(lote)
                         if lot.life_date and lot.use_date:
                             fab = fields.Datetime.from_string(lot.use_date)
                             vcto = fields.Datetime.from_string(lot.life_date)
