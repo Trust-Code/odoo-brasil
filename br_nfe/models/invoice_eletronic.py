@@ -350,7 +350,7 @@ class InvoiceEletronic(models.Model):
                             infAdProd += ' Lote: %s, Fab.: %s, Vencto.: %s' \
                                 %(lot.name, fab, vcto)
                         else:
-                            nfAdProd += ' Lote: %s' % lot.name
+                            infAdProd += ' Lote: %s' % lot.name
                 prod["rastro"] = lotes
         di_vals = []
         for di in item.import_declaration_ids:
