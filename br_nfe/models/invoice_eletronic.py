@@ -340,8 +340,8 @@ class InvoiceEletronic(models.Model):
                         lote = {
                             'nLote': lot.name, 
                             'qLote': line.qty_done,
-                            'dVal': lot.life_date and lot.life_date.strftime('%Y-%m-%d') or None,
-                            'dFab': lot.use_date and lot.use_date.strftime('%Y-%m-%d') or None,
+                            'dVal': lot.life_date and lot.life_date.strftime('%Y-%m-%d') or '',
+                            'dFab': lot.use_date and lot.use_date.strftime('%Y-%m-%d') or '',
                         }
                         lotes.append(lote)
                         if lot.life_date and lot.use_date:
