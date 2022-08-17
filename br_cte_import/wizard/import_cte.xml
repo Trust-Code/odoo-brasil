@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_import_cte">
+        <field name="name">wizard.import.cte.form</field>
+        <field name="model">wizard.import.cte</field>
+        <field name="arch" type="xml">
+            <form string="Importa xml">
+                <group>
+                    <field name="cte_xml" />
+                  </group>
+                <footer>
+                    <button name="action_import_cte"
+                        string="Importar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_import_cte_wizard" model="ir.actions.act_window">
+        <field name="name">Importar CTe</field>
+        <field name="res_model">wizard.import.cte</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_cte_import"
+              name="Importar CT-e (XML)"
+              parent="account.menu_finance_payables"
+              action="action_import_cte_wizard"
+              sequence="56" />
+
+    <menuitem id="menu_cte_import2"
+              name="Importar CT-e (XML)"
+              parent="br_account_einvoice.menu_eletronic_doc_base"
+              action="action_import_cte_wizard"
+              sequence="56" />
+
+</odoo>
