@@ -337,7 +337,7 @@ class InvoiceEletronic(models.Model):
                 lotes = []
                 if line.product_id.id == item.product_id.id:
                     for lot in line.lot_id:
-                        if lot.name and lot.qty_done and lot.life_date and lot.use_date:
+                        if lot.name and lot.life_date and lot.use_date:
                             lote = {
                                 'nLote': lot.name, 
                                 'qLote': line.qty_done,
