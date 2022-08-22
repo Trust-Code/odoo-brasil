@@ -154,6 +154,8 @@ class Cnab240(Cnab):
                 line.date_maturity),
             'valor_titulo': Decimal(str(line.amount_total)).quantize(
                 Decimal('1.00')),
+            'desconto2_percentual': Decimal('0.00'),
+            'desconto3_percentual': Decimal('0.00'),
             # TODO: Código adotado para identificar o título de cobrança.
             # 8 é Nota de cŕedito comercial
             'especie_titulo': int(self.order.payment_mode_id.boleto_especie),
