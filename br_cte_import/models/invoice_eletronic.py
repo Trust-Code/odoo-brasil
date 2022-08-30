@@ -140,41 +140,15 @@ class InvoiceEletronic(models.Model):
 
     def _cte_get_company_invoice(self, nfe, partner_automation):
         emit = nfe.CTe.infCte.emit
-        dest = nfe.CTe.infCte.rem
-        tipo_operacao = ""
+        tipo_operacao = "entrada"
 
         if hasattr(emit, "CNPJ"):
-            emit_cnpj_cpf = cnpj_cpf_format(str(emit.CNPJ.text).zfill(14))
+            cnpj_cpf_partner = cnpj_cpf_format(str(emit.CNPJ.text).zfill(14))
         else:
-            emit_cnpj_cpf = cnpj_cpf_format(str(emit.CPF.text).zfill(11))
+            cnpj_cpf_partner = cnpj_cpf_format(str(emit.CPF.text).zfill(11))
 
-        if hasattr(dest, "CNPJ"):
-            dest_cnpj_cpf = cnpj_cpf_format(str(dest.CNPJ.text).zfill(14))
-        else:
-            dest_cnpj_cpf = cnpj_cpf_format(str(dest.CPF.text).zfill(11))
-
-        # !Importante
-        # 1º pesquisa a empresa através do CNPJ, tanto emitente quanto dest.
-        # 2º caso a empresa for destinatária usa o cnpj do emitente
-        # para cadastrar parceiro senão usa o do destinatário
-        # 3º o tipo de operação depende se a empresa emitiu ou não a nota
-        # Se ela emitiu usa do xml o tipo, senão inverte o valor
-        cnpj_cpf_partner = False
-        destinatary = False
-        company = (
-            self.env["res.company"]
-            .sudo()
-            .search([("partner_id.cnpj_cpf", "=", dest_cnpj_cpf)])
-        )
-
-        if not company:
-            raise UserError(
-                "XML não destinado a esta empresa."
-            )
-        else:
-            destinatary = True
-            cnpj_cpf_partner = emit_cnpj_cpf
-            tipo_operacao = "entrada"
+        destinatary = True
+        company = self.env.user.company_id
 
         emit_id = self.env["res.partner"].search(
             [("cnpj_cpf", "=", cnpj_cpf_partner)], limit=1
