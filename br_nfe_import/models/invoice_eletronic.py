@@ -692,7 +692,7 @@ class InvoiceEletronic(models.Model):
                 'A empresa não possui uma sequência de produto configurado!')
         ncm = get(nfe_item, 'NCM', str)
         ncm_id = self.env['product.fiscal.classification'].search([
-            ('code', '=', ncm)])
+            ('code', '=', ncm)], limit=1)
 
         category = self.env['product.category'].search(
             [('l10n_br_ncm_category_ids.name', '=', ncm[:4])], limit=1)
