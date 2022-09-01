@@ -867,7 +867,7 @@ class InvoiceEletronic(models.Model):
 
         cfop = self.env['br_account.cfop'].search([('code', '=', item.cfop)])
         ncm = self.env['product.fiscal.classification'].search([
-            ('code', '=', item.ncm)])
+            ('code', '=', item.ncm)], limit=1)
 
         tax_icms_id = None
         tax_icms_st_id = None
