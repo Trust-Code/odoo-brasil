@@ -30,7 +30,7 @@ class AccountTax(models.Model):
                 self.env.context['fiscal_type'] == 'import'):
             icms_tax = self.filtered(lambda x: x.domain == 'icms')
             ii = self._compute_ii(price_base)
-            pis_cofins = self._compute_pis_cofins(price_base, None)
+            pis_cofins = self._compute_pis_cofins(price_base, None, 0.0)
             base_icms = price_base
             reducao_icms = 0.0
             if "valor_frete" in self.env.context:
