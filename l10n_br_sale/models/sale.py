@@ -198,8 +198,8 @@ class SaleOrderLine(models.Model):
             or self.l10n_br_is_insurance
         )
 
-    def _prepare_invoice_line(self):
-        res = super(SaleOrderLine, self)._prepare_invoice_line()
+    def _prepare_invoice_line(self, **optional_values):
+        res = super(SaleOrderLine, self)._prepare_invoice_line(**optional_values)
         res.update(
             {
                 "l10n_br_is_delivery": self.is_delivery,

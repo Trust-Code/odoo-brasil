@@ -40,7 +40,7 @@
                         </t>
                         <t t-if="mode[1] == 'billing'">
                             <div t-attf-class="form-group #{error.get('l10n_br_cnpj_cpf') and 'o_has_error' or ''} col-lg-6">
-                                <label class="col-form-label">CPF</label>
+                                <label class="col-form-label" for="input_cnpj_cpf">CPF</label>
                                 <input type="text" id="input_cnpj_cpf" name="l10n_br_cnpj_cpf" t-attf-class="form-control #{error.get('l10n_br_cnpj_cpf') and 'is-invalid' or ''}" t-att-value="'l10n_br_cnpj_cpf' in checkout and checkout['l10n_br_cnpj_cpf']"/>
                             </div>
                         </t>
@@ -71,9 +71,9 @@
                         <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-lg-6 div_country">
                             <label class="col-form-label" for="country_id">País</label>
                             <select id="id_country" name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
-                                <option value="">Country...</option>
+                                <option value="">País...</option>
                                 <t t-foreach="countries" t-as="c">
-                                    <option t-att-value="c.id" t-att-selected="c.id == (country and country.id or -1)">
+                                    <option t-att-value="c.id">
                                         <t t-esc="c.name"/>
                                     </option>
                                 </t>
@@ -82,8 +82,7 @@
                         <div t-attf-class="form-group #{error.get('state_id') and 'o_has_error' or ''} col-lg-6">
                             <label class="col-form-label" for="state_id">Estado</label>
                             <input id="input_state_id" type="hidden" t-att-value="(state and state.id or -1)" />
-                            <select id="select_state_id" name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}"
-                                t-att-data-default="'state_id' in checkout and checkout['state_id'] and int(checkout['state_id'])">
+                            <select id="select_state_id" name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}">
                                 <option value="">Estado...</option>
                             </select>
                         </div>
@@ -91,7 +90,7 @@
                             <label class="col-form-label" for="city_id">Cidade</label>
                             <input id="input_city_id" type="hidden" t-att-value="(city and city.id or -1)" />
                             <select id="select_city_id" name="city_id" t-attf-class="form-control #{error.get('city_id') and 'is-invalid' or ''}" 
-                                t-att-data-default="'city_id' in checkout and checkout['city_id'] and int(checkout['city_id'])">
+                            >
                                 <option value="">Cidade...</option>
                             </select>
                         </div>

@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 class PaymentAcquirer(models.Model):
     _inherit = "payment.acquirer"
 
-    provider = fields.Selection(selection_add=[("boleto-inter", "Boleto Banco Inter")])
+    provider = fields.Selection(selection_add=[("boleto-inter", "Boleto Banco Inter")], ondelete = { 'boleto-inter' : 'set default' })
 
 
 class PaymentTransaction(models.Model):
@@ -59,6 +59,6 @@ class PaymentTransaction(models.Model):
 
     def _find_attachment_ids_email(self):
         atts = super()._find_attachment_ids_email()
-        atts = self.action_get_pdf_inter()
+        atts += self.action_get_pdf_inter()
         return atts
 

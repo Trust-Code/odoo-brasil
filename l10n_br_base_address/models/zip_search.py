@@ -28,7 +28,12 @@ class ZipSearchMixin(models.AbstractModel):
         city = self.env['res.city'].search([
             ('name', '=ilike', res['cidade']),
             ('state_id', '=', state.id)])
-
+        
+        if(res['end'] == None):
+            res['end'] = False
+        if(res['bairro'] == None):
+            res['bairro'] = False
+        
         return {
             'zip': zip_code,
             'street': res['end'],
