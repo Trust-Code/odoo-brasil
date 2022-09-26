@@ -24,8 +24,10 @@
     ],
     'data': [
         'data/acquirer.xml',
+        'wizard/sync_statement.xml',
         'views/payment_transaction.xml',
         'views/account_journal_views.xml',
+        'views/bank_statement.xml',
     ],
     'application': True,
 }

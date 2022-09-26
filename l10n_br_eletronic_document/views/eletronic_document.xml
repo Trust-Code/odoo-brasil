@@ -79,6 +79,7 @@
                                         <field name="finalidade_emissao"/>
                                         <field name="ind_final" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="ind_pres" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
+                                        <field name="ind_intermediario" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="ind_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="ind_ie_dest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />
                                         <field name="iest" attrs="{'invisible': [('model', 'not in', ('nfe', 'nfce'))]}" />

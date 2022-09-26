@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_sync_statement_form">
+        <field name="model">wizard.sync.statement</field>
+        <field name="arch" type="xml">
+            <form string="Importa xml">
+                <group string="Informações da nota fiscal">
+                    <field name="journal_id" readonly="1"/>
+                    <field name="start_date" />
+                    <field name="end_date" />
+                </group>
+                <footer>
+                    <button name="action_sync_statement"
+                        string="Importar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sync_statement_wizard" model="ir.actions.act_window">
+        <field name="name">Importar Extrato</field>
+        <field name="res_model">wizard.sync.statement</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

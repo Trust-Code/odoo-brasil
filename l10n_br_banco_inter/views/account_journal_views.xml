@@ -10,8 +10,12 @@
                         <field name="l10n_br_use_boleto_inter"/>
                         <field name="l10n_br_inter_cert"/>
                         <field name="l10n_br_inter_key"/>
+                        <field name="l10n_br_inter_client_id"></field>
+                        <field name="l10n_br_inter_client_secret"></field>
                         <field name="l10n_br_valor_multa"/>
                         <field name="l10n_br_valor_juros_mora"/>
+                        <button name="%(action_sync_statement_wizard)d"
+                            type="action" context="{'default_journal_id': id}">Sincronizar Extrato</button>
                     </group>
                 </group>
             </xpath>
