@@ -19,6 +19,7 @@ def _convert_values(vals):
 
         rps['prestador'] = rps['emissor']
         rps['tomador']['cpf_cnpj'] = rps['tomador']['cnpj_cpf']
+        rps['tomador']['cidade'] = rps['tomador']['endereco']['codigo_municipio']
         rps['tomador']['tipo_cpfcnpj'] = 2 if rps['tomador']['empresa'] else 1
         rps['aliquota_atividade'] = "%.3f" % rps['itens_servico'][0]['aliquota']
         rps['codigo_atividade'] = re.sub(
