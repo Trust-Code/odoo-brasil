@@ -480,9 +480,13 @@ class EletronicDocument(models.Model):
 
     def _compute_legal_information(self):
         fiscal_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
-            lambda x: x.tipo == 'fiscal')
+            lambda x: x.tipo == "fiscal"
+            and x.tipo_produto in [False] + self.document_line_ids.mapped("tipo_produto")
+        )
         obs_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
-            lambda x: x.tipo == 'observacao')
+            lambda x: x.tipo == "observacao"
+            and x.tipo_produto in [False] + self.document_line_ids.mapped("tipo_produto")
+        )
 
         # prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
         # for item in self.move_id.invoice_line_ids:

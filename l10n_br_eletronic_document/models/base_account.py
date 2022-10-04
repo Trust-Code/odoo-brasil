@@ -217,6 +217,7 @@ class NfeFiscalObservation(models.Model):
     message = fields.Text('Mensagem', required=True)
     tipo = fields.Selection([('fiscal', 'Observação Fiscal'),
                              ('observacao', 'Observação')], string="Tipo")
-
-
-
+    tipo_produto = fields.Selection(
+        [("product", "Produto"), ("service", "Serviço")],
+        string="Tipo Produto",
+    )
