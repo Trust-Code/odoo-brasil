@@ -18,7 +18,10 @@ odoo.define('br_point_of_sale', function (require) {
     models.PosModel = models.PosModel.extend({
         _save_to_server: function (order, opts) {
             var self = this
-            return _super_order._save_to_server.apply(this, arguments).then((result) => self.get_nfce(result));
+            return _super_order._save_to_server.apply(this, arguments).then((result) => {
+                self.get_nfce(result);
+                return result;
+            });
         },
         get_nfce: function (pos_order_ids) {
             if (!pos_order_ids.length) {
