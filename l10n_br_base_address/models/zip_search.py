@@ -21,6 +21,8 @@ class ZipSearchMixin(models.AbstractModel):
             res = client.service.consultaCEP(zip_code)
         except:
             return {}
+        if not res:
+            return {}
         state = self.env['res.country.state'].search(
             [('country_id.code', '=', 'BR'),
              ('code', '=', res['uf'])])

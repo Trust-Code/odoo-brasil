@@ -27,7 +27,7 @@ def _convert_values(vals):
         rps['tomador']['cidade'] = rps['tomador']['endereco']['codigo_municipio']
         rps['tomador']['uf'] = rps['tomador']['endereco']['uf']
         rps['tomador']['tipo_cpfcnpj'] = 2 if rps['tomador']['empresa'] else 1
-        rps['aliquota_atividade'] = "%.3f" % rps['itens_servico'][0]['aliquota']
+        rps['aliquota_atividade'] = "%.3f" % abs(rps['itens_servico'][0]['aliquota'])
         rps['codigo_atividade'] = re.sub(
             '[^0-9]', '', rps['itens_servico'][0]['codigo_servico_municipio'] or '')
         rps['valor_deducao'] = '0.00'
@@ -44,7 +44,6 @@ def _convert_values(vals):
         tipo_cpfcnpj = rps['tomador']['tipo_cpfcnpj']
         codigo_atividade = rps['codigo_atividade']
         tipo_recolhimento = 'T'  # T – Tributado em São Paulo
-
         assinatura = '%s%s%s%s%sN%s%015d%015d%s%s%s' % (
             str(inscr).zfill(8),
             rps['serie'].ljust(5),
