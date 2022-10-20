@@ -122,7 +122,7 @@ class PosOrder(models.Model):
 
         cfop_code = None
         icms_cst = None
-        if hasattr(fiscal_pos, "icms_tax_rule_ids"):
+        if hasattr(fiscal_pos, "icms_tax_rule_ids") and fiscal_pos.icms_tax_rule_ids:
             cfop_code = fiscal_pos.icms_tax_rule_ids[0].l10n_br_cfop_id.code
             icms_cst = fiscal_pos.icms_tax_rule_ids[0].cst_icms
 
