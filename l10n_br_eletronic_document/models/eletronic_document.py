@@ -890,6 +890,12 @@ class EletronicDocument(models.Model):
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3550308':
             from .nfse_paulistana import send_api
+            for doc in doc_values:
+                doc['valor_pis'] = "%.2f" % self.pis_valor_retencao
+                doc['valor_cofins'] = "%.2f" % self.cofins_valor_retencao
+                doc['valor_inss'] = "%.2f" % self.inss_valor_retencao
+                doc['valor_ir'] = "%.2f" % self.irrf_valor_retencao
+                doc['valor_csll'] = "%.2f" % self.csll_valor_retencao
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
