@@ -607,6 +607,17 @@ class InvoiceEletronicItem(models.Model):
         string=u'Preço Unitário', digits=dp.get_precision('Product Price'),
         readonly=True, states=STATE)
 
+    # ----------- Valores Tributáveis (Exportação) -------------------
+
+    uom_trib_id = fields.Many2one(
+        'uom.uom', string=u'Unidade Medida', readonly=True, states=STATE)
+    quantidade_trib = fields.Float(
+        string=u'Quantidade', readonly=True, states=STATE,
+        digits=dp.get_precision('Product Unit of Measure'))
+    preco_unitario_trib = fields.Monetary(
+        string=u'Preço Unitário', digits=dp.get_precision('Product Price'),
+        readonly=True, states=STATE)
+
     pedido_compra = fields.Char(
         string="Pedido Compra", size=60,
         help="Se setado aqui sobrescreve o pedido de compra da fatura")
