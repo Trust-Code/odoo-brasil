@@ -251,6 +251,7 @@ class AccountTax(models.Model):
         if icms_inter.difal_por_dentro or icms_intra.difal_por_dentro:
             base_icms = base_icms - interestadual
             base_icms = base_icms / (1 - (icms_intra.amount) / 100)
+            vals_inter['base'] = base_icms
 
         interno = icms_intra._compute_amount(base_icms, 1.0)
 
