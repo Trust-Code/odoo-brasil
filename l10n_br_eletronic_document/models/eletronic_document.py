@@ -781,6 +781,7 @@ class EletronicDocument(models.Model):
                 'codigo_municipio': '%s%s' % (
                     doc.company_id.state_id.l10n_br_ibge_code,
                     doc.company_id.city_id.l10n_br_ibge_code),
+                'cnae': re.sub('[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code)
             }
             tomador = {
                 'cnpj_cpf': re.sub(

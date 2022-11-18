@@ -3,16 +3,13 @@ import pytz
 import time
 import base64
 import logging
-from odoo import api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools.safe_eval import safe_eval
+
 
 _logger = logging.getLogger(__name__)
 
 try:
-    from pytrustnfe.nfse.ginfes import xml_recepcionar_lote_rps
     from pytrustnfe.nfse.ginfes import recepcionar_lote_rps
-    from pytrustnfe.nfse.ginfes import consultar_situacao_lote
     from pytrustnfe.nfse.ginfes import consultar_lote_rps
     from pytrustnfe.nfse.ginfes import cancelar_nfse
     from pytrustnfe.certificado import Certificado
@@ -20,113 +17,130 @@ except ImportError:
     _logger.error('Cannot import pytrustnfe', exc_info=True)
 
 
+def _convert_values(vals):
+    result = {'lista_rps': vals}
 
-def send_api(certificate, password, list_rps):
-    return {
-        'code': 201,
-        'entity': {
-            'protocolo_nfe': "protocolo",
-            # get last 9 digits :)
-            'numero_nfe': 123,
-        },
-        'xml': "",
-    }
-    cert = self.company_id.with_context(
-        {'bin_size': False}).nfe_a1_file
-    cert_pfx = base64.decodestring(cert)
+    result['numero_lote'] =  vals[0]['numero_rps']
+    result['cnpj_prestador'] = vals[0]['emissor']['cnpj']
+    result['inscricao_municipal'] = vals[0]["emissor"]['inscricao_municipal']
 
-    certificado = Certificado(
-        cert_pfx, self.company_id.nfe_a1_password)
+    for rps in vals:
 
-    consulta_lote = None
-    recebe_lote = None
+        rps['numero'] = rps['numero_rps']
+        rps['tipo_rps'] = '1'
+        rps['natureza_operacao'] = '1'
 
-    # Envia o lote apenas se não existir protocolo
-    if not self.recibo_nfe:
-        xml_to_send = base64.decodestring(self.xml_to_send)
-        recebe_lote = recepcionar_lote_rps(
-            certificado, xml=xml_to_send, ambiente=self.ambiente)
+        # Prestador
+        rps['prestador'] = {}
+        rps['prestador']['cnpj'] = re.sub('[^0-9]', '', rps['emissor']['cnpj'])
+        rps['prestador']['inscricao_municipal'] = re.sub('\W+','', rps['emissor']['inscricao_municipal'])
+        rps['codigo_municipio'] = rps['emissor']['codigo_municipio']
+        rps['cnae_servico'] = rps['emissor']['cnae']
 
-        retorno = recebe_lote['object']
-        if "NumeroLote" in dir(retorno):
-            self.recibo_nfe = retorno.Protocolo
-            # Espera alguns segundos antes de consultar
-            time.sleep(5)
+        rps['optante_simples'] = '1' if rps['regime_tributario'] == 'simples' else '2'
+        rps['incentivador_cultural'] = '2'
+        rps['status'] = '1'
+
+        # Tomador
+        rps['tomador'].update(
+            rps['tomador']['endereco']
+        )
+        rps['tomador']['cidade'] = rps['tomador']['codigo_municipio']
+
+        if rps['regime_tributario'] == 'simples':
+            rps['regime_tributacao'] = '6'
+            rps['base_calculo'] = 0
+            rps['aliquota_issqn'] = 0
         else:
-            mensagem_retorno = retorno.ListaMensagemRetorno\
-                .MensagemRetorno
-            self.codigo_retorno = mensagem_retorno.Codigo
-            self.mensagem_retorno = mensagem_retorno.Mensagem
-            self._create_attachment(
-                'nfse-ret', self,
-                recebe_lote['received_xml'])
-            return
-    # Monta a consulta de situação do lote
-    # 1 - Não Recebido
-    # 2 - Não processado
-    # 3 - Processado com erro
-    # 4 - Processado com sucesso
-    obj = {
-        'cnpj_prestador': re.sub(
-            '[^0-9]', '', self.company_id.cnpj_cpf),
-        'inscricao_municipal': re.sub(
-            '[^0-9]', '', self.company_id.inscr_mun),
-        'protocolo': self.recibo_nfe,
-    }
-    consulta_situacao = consultar_situacao_lote(
-        certificado, consulta=obj, ambiente=self.ambiente)
-    ret_rec = consulta_situacao['object']
+            rps['regime_tributacao'] = ''
+            rps['valor_issqn'] = abs(rps['valor_iss'])
 
-    if "Situacao" in dir(ret_rec):
-        if ret_rec.Situacao in (3, 4):
-
-            consulta_lote = consultar_lote_rps(
-                certificado, consulta=obj, ambiente=self.ambiente)
-            retLote = consulta_lote['object']
-
-            if "ListaNfse" in dir(retLote):
-                self.state = 'done'
-                self.codigo_retorno = '100'
-                self.mensagem_retorno = 'NFSe emitida com sucesso'
-                self.verify_code = retLote.ListaNfse.CompNfse \
-                    .Nfse.InfNfse.CodigoVerificacao
-                self.numero_nfse = \
-                    retLote.ListaNfse.CompNfse.Nfse.InfNfse.Numero
-            else:
-                mensagem_retorno = retLote.ListaMensagemRetorno \
-                    .MensagemRetorno
-                self.codigo_retorno = mensagem_retorno.Codigo
-                self.mensagem_retorno = mensagem_retorno.Mensagem
-
-        elif ret_rec.Situacao == 1:  # Reenviar caso não recebido
-            self.codigo_retorno = ''
-            self.mensagem_retorno = 'Aguardando envio'
-            self.state = 'draft'
+        # Valores
+        rps['valor_deducao'] = 0.00
+        if rps['valor_iss'] < 0:
+            rps['iss_retido'] = '1'
+            rps['valor_iss_retido'] = rps['iss_valor_retencao'] = abs(rps['valor_iss'])
+            rps['valor_iss'] = 0
         else:
-            self.state = 'waiting'
-            self.codigo_retorno = '2'
-            self.mensagem_retorno = 'Lote aguardando processamento'
+            rps['iss_retido'] = '2'
+        rps['aliquota_issqn'] = "%.4f" % abs(rps['itens_servico'][0]['aliquota'])
+        rps['descricao'] = rps['discriminacao']
+
+        # Código Serviço
+        cod_servico = rps['itens_servico'][0]['codigo_servico']
+        for item_servico in rps['itens_servico']:
+            if item_servico['codigo_servico'] != cod_servico:
+                raise UserError('Não é possível gerar notas de serviço com linhas que possuem código de serviço diferentes.'
+                                + '\nPor favor, verifique se todas as linhas de serviço possuem o mesmo código de serviço.'
+                                + '\nNome: %s: Código de serviço: %s\nNome: %s: Código de serviço: %s'
+                                % (rps['itens_servico'][0]['name'], cod_servico,
+                                item_servico['name'], item_servico['codigo_servico']))
+        rps['codigo_servico'] = cod_servico
+        rps['codigo_tributacao_municipio'] = rps['itens_servico'][0]['codigo_servico_municipio']
+
+        # ValorServicos - ValorPIS - ValorCOFINS - ValorINSS - ValorIR - ValorCSLL - OutrasRetençoes
+        # - ValorISSRetido - DescontoIncondicionado - DescontoCondicionado)
+        rps['valor_liquido_nfse'] = rps['valor_servico'] \
+                                    - (rps.get('valor_pis') or 0) \
+                                    - (rps.get('valor_cofins') or 0) \
+                                    - (rps.get('valor_inss') or 0) \
+                                    - (rps.get('valor_ir') or 0) \
+                                    - (rps.get('valor_csll') or 0) \
+                                    - (rps.get('outras_retencoes') or 0) \
+                                    - (rps.get('valor_iss_retido') or 0)
+
+    return result
+
+
+def send_api(certificate, password, edocs):
+    cert_pfx = base64.decodestring(certificate)
+    certificado = Certificado(cert_pfx, password.encode("utf-8"))
+
+    nfse_values = _convert_values(edocs)
+
+    recebe_lote = recepcionar_lote_rps(
+        certificado, nfse=nfse_values, ambiente=edocs[0]['ambiente'])
+
+    retorno = recebe_lote['object']
+    if "NumeroLote" in dir(retorno):
+        recibo_nfe = retorno.Protocolo
+        # Espera alguns segundos antes de consultar
+        time.sleep(2)
     else:
-        self.codigo_retorno = \
-            ret_rec.ListaMensagemRetorno.MensagemRetorno.Codigo
-        self.mensagem_retorno = \
-            ret_rec.ListaMensagemRetorno.MensagemRetorno.Mensagem
+        erro_retorno = retorno.ListaMensagemRetorno.MensagemRetorno
+        return {
+            'code': 400,
+            'api_code': erro_retorno.Codigo,
+            'message': erro_retorno.Mensagem,
+        }
 
-    self.env['invoice.eletronic.event'].create({
-        'code': self.codigo_retorno,
-        'name': self.mensagem_retorno,
-        'invoice_eletronic_id': self.id,
-    })
-    if recebe_lote:
-        self._create_attachment(
-            'nfse-ret', self,
-            recebe_lote['received_xml'])
-    if consulta_lote:
-        self._create_attachment(
-            'rec', self, consulta_lote['sent_xml'])
-        self._create_attachment(
-            'rec-ret', self,
-            consulta_lote['received_xml'])
+    obj = {
+        'cnpj_prestador': re.sub('[^0-9]', '', edocs[0]['ambiente']),
+        'inscricao_municipal': re.sub('[^0-9]', '', edocs[0]['ambiente']),
+        'protocolo': recibo_nfe,
+    }
+    while True:
+        consulta_lote = consultar_lote_rps(
+            certificado, consulta=obj, ambiente=edocs[0]['ambiente'])
+        retLote = consulta_lote['object']
+
+        if "ListaNfse" in dir(retLote):
+            return {
+                'code': 201,
+                'entity': {
+                    'protocolo_nfe': retLote.ListaNfse.CompNfse.Nfse.InfNfse.CodigoVerificacao,
+                    'numero_nfe': retLote.ListaNfse.CompNfse.Nfse.InfNfse.Numero,
+                },
+                'xml': recebe_lote['sent_xml'].encode('utf-8'),
+            }
+        else:
+            erro_retorno = retLote.ListaMensagemRetorno.MensagemRetorno
+            return {
+                'code': 400,
+                'api_code': erro_retorno.Codigo,
+                'message': erro_retorno.Mensagem,
+            }
+
 
 def cancel_api(certificate, password, vals):
     return {

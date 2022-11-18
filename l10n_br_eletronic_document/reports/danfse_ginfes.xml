@@ -47,18 +47,18 @@
                 .centro {text-align:center;}
             </style>
             <div class="row completa">
-                <div class="col-2">
+                <div class="col-3">
                     <img src="/l10n_br_eletronic_document/static/src/img/prefeitura-guarulhos.png" alt="Logo Prefeitura Guarulhos"
                         style="max-height:80px; margin-top:4px; margin-left:10px;" />
                 </div>
-                <div class="col-7 br" style="padding:0px;text-align:center;font-size:20px;">
+                <div class="col-7 br" style="padding:6px;text-align:center;font-size:20px;">
                     Prefeitura do Município de Guarulhos
                     <br />
                     Secretaria Municipal da Fazenda
                     <br />
                     NOTA FISCAL ELETRÔNICA DE SERVIÇO - NFSe
                 </div>
-                <div class="col-3" style="padding:0px;">
+                <div class="col-2" style="padding:0px;">
                     <div style="padding: 3px; text-align:center;">
                         <span>Número da NFS-e</span><br />
                         <strong t-field="doc.numero"></strong>
