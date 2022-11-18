@@ -176,7 +176,7 @@ class AccountMove(models.Model):
                         move.company_id.l10n_br_user_password
                     ]):
                         errors.append('Campos de validação para a API de Florianópolis não estão preenchidos')
-                elif cod_municipio in ['3550308', '3106200']:
+                elif cod_municipio in ['3550308', '3106200', '3518800']:
                     for line in move.invoice_line_ids:
                         if line.product_id.type == 'service':
                             if not line.product_id.service_type_id:

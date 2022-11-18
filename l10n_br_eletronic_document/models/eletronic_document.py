@@ -1,9 +1,6 @@
 import re
-import json
-import requests
 import base64
 import copy
-import time
 import logging
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -34,6 +31,7 @@ STATE = {'draft': [('readonly', False)]}
 REPORT_NAME = {
     '05407': 'danfse',  # Florianopolis
     '06200': 'bh',  # Belo Horizonte
+    '18800': 'ginfes', # Guarulhos
     '50308': 'danfe',  # Sao Paulo
 }
 
@@ -783,6 +781,7 @@ class EletronicDocument(models.Model):
                 'codigo_municipio': '%s%s' % (
                     doc.company_id.state_id.l10n_br_ibge_code,
                     doc.company_id.city_id.l10n_br_ibge_code),
+                'cnae': re.sub('[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code)
             }
             tomador = {
                 'cnpj_cpf': re.sub(
@@ -882,6 +881,9 @@ class EletronicDocument(models.Model):
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3550308':
             from .nfse_paulistana import send_api
+            response = send_api(certificate, password, doc_values)
+        elif cod_municipio == '3518800':
+            from .nfse_ginfes import send_api
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
@@ -989,6 +991,9 @@ class EletronicDocument(models.Model):
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3550308':
             from .nfse_paulistana import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+        elif cod_municipio == '3518800':
+            from .nfse_ginfes import cancel_api
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3106200':
             from .nfse_bh import cancel_api
