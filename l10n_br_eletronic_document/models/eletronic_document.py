@@ -838,6 +838,7 @@ class EletronicDocument(models.Model):
                 'regime_tributario': doc.company_id.l10n_br_tax_regime,
                 'itens_servico': items,
                 'data_emissao': doc.data_emissao.strftime('%Y-%m-%d'),
+                'data_emissao_hora': doc.data_emissao.strftime('%Y-%m-%dT%H:%M:%S'),
                 'serie': doc.serie_documento or '',
                 'numero_rps': doc.numero_rps,
                 'discriminacao': doc.discriminacao_servicos,

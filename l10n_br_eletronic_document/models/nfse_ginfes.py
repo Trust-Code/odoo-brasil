@@ -29,6 +29,7 @@ def _convert_values(vals):
         rps['numero'] = rps['numero_rps']
         rps['tipo_rps'] = '1'
         rps['natureza_operacao'] = '1'
+        rps['data_emissao'] = rps['data_emissao_hora']
 
         # Prestador
         rps['prestador'] = {}
@@ -49,8 +50,8 @@ def _convert_values(vals):
 
         if rps['regime_tributario'] == 'simples':
             rps['regime_tributacao'] = '6'
-            rps['base_calculo'] = 0
-            rps['aliquota_issqn'] = 0
+            rps['base_calculo'] = ''
+            rps['aliquota_issqn'] = ''
         else:
             rps['regime_tributacao'] = ''
             rps['valor_issqn'] = abs(rps['valor_iss'])
@@ -105,7 +106,7 @@ def send_api(certificate, password, edocs):
     if "NumeroLote" in dir(retorno):
         recibo_nfe = retorno.Protocolo
         # Espera alguns segundos antes de consultar
-        time.sleep(2)
+        time.sleep(4)
     else:
         erro_retorno = retorno.ListaMensagemRetorno.MensagemRetorno
         return {
@@ -115,8 +116,8 @@ def send_api(certificate, password, edocs):
         }
 
     obj = {
-        'cnpj_prestador': re.sub('[^0-9]', '', edocs[0]['ambiente']),
-        'inscricao_municipal': re.sub('[^0-9]', '', edocs[0]['ambiente']),
+        'cnpj_prestador': re.sub('[^0-9]', '', edocs[0]['emissor']['cnpj']),
+        'inscricao_municipal': re.sub('[^0-9]', '', edocs[0]['emissor']['inscricao_municipal']),
         'protocolo': recibo_nfe,
     }
     while True:
@@ -135,6 +136,9 @@ def send_api(certificate, password, edocs):
             }
         else:
             erro_retorno = retLote.ListaMensagemRetorno.MensagemRetorno
+            if erro_retorno.Codigo in ("E4", "A02"):
+                time.sleep(5)
+                continue
             return {
                 'code': 400,
                 'api_code': erro_retorno.Codigo,
