@@ -347,17 +347,22 @@ class EletronicDocument(models.Model):
                     'vIPI': "%.02f" % item.ipi_valor
                 },
             })
-        if item.tem_difal:
+        if item.icms_fcp_uf_dest:
             imposto['ICMSUFDest'] = {
-                'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
                 'vBCFCPUFDest': "%.02f" % item.icms_bc_uf_dest,
                 'pFCPUFDest': "%.02f" % item.icms_aliquota_fcp_uf_dest,
+                'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
+            }
+        if item.tem_difal:
+            imposto['ICMSUFDest'] = imposto['ICMSUFDest'] or {}
+            imposto['ICMSUFDest'].update({
+                'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
                 'pICMSUFDest': "%.02f" % item.icms_aliquota_uf_dest,
                 'pICMSInter': "%.02f" % item.icms_aliquota_interestadual,
                 'pICMSInterPart': "%.02f" % item.icms_aliquota_inter_part,
-                'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
-                'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
+                'vICMSUFRemet': "%.02f" % item.icms_uf_remet
+            })
         return {'prod': prod, 'imposto': imposto,
                 'infAdProd': item.informacao_adicional}
 
