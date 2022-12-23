@@ -354,7 +354,7 @@ class EletronicDocument(models.Model):
                 'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
             }
         if item.tem_difal:
-            imposto['ICMSUFDest'] = imposto['ICMSUFDest'] or {}
+            imposto['ICMSUFDest'] = imposto.get('ICMSUFDest', {})
             imposto['ICMSUFDest'].update({
                 'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
                 'pICMSUFDest': "%.02f" % item.icms_aliquota_uf_dest,
