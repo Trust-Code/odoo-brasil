@@ -246,6 +246,8 @@ class EletronicDocument(models.Model):
         readonly=True, states=STATE)
     valor_icmsst = fields.Monetary(
         string=u'Total ST', readonly=True, states=STATE)
+    valor_fcpst = fields.Monetary(
+        string=u'Total FCP ST', readonly=True, states=STATE)
     valor_ii = fields.Monetary(
         string=u'Total II', readonly=True, states=STATE)
     valor_ipi = fields.Monetary(
@@ -692,10 +694,10 @@ class EletronicDocument(models.Model):
 
         danfe_name = "l10n_br_eletronic_document.main_template_br_nfe_danfe"
         if self.model == "nfse":
-             danfe_name = "l10n_br_eletronic_document.main_template_br_nfse_danfpse"
-             danfe_city = REPORT_NAME.get(self.company_id.city_id.l10n_br_ibge_code)
-             if danfe_city:
-                  danfe_name = 'l10n_br_eletronic_document.main_template_br_nfse_%s' % danfe_city
+            danfe_name = "l10n_br_eletronic_document.main_template_br_nfse_danfpse"
+            danfe_city = REPORT_NAME.get(self.company_id.city_id.l10n_br_ibge_code)
+            if danfe_city:
+                danfe_name = 'l10n_br_eletronic_document.main_template_br_nfse_%s' % danfe_city
 
         danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=', danfe_name)])
@@ -993,7 +995,7 @@ class EletronicDocument(models.Model):
         elif doc_values['codigo_municipio'] == '3550308':
             from .nfse_paulistana import cancel_api
             response = cancel_api(certificate, password, doc_values)
-        elif cod_municipio == '3518800':
+        elif doc_values['codigo_municipio'] == '3518800':
             from .nfse_ginfes import cancel_api
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3106200':
@@ -1198,6 +1200,12 @@ class EletronicDocumentLine(models.Model):
         readonly=True, states=STATE)
     icms_st_valor = fields.Monetary(
         string='Valor ICMS ST', readonly=True, states=STATE)
+
+    fcp_st_aliquota = fields.Float(
+        string='FCP ST Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    fcp_st_valor = fields.Monetary(
+        string='Valor FCP ST', readonly=True, states=STATE)
 
     icms_valor_original_operacao = fields.Float(
         string='ICMS da Operação', digits='Account',

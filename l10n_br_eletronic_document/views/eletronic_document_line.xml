@@ -68,6 +68,8 @@
                               <field name="icms_st_aliquota_reducao_base"/>
                               <field name="icms_st_aliquota" />
                               <field name="icms_st_valor"/>
+                              <field name="fcp_st_aliquota" />
+                              <field name="fcp_st_valor"/>
                           </group>
                           <group name="icms_interestaual">
                                 <field name="tem_difal" />
