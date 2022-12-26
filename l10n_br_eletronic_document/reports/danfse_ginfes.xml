@@ -481,7 +481,7 @@
                 </div>
                 <div class="col-11 linha bl">
                     1- Uma via desta Nota Fiscal será enviada através do e-mail fornecido pelo Tomador dos Serviços.<br />
-                    2- A autenticidade desta Nota Fiscal poderá ser verificada no site, ribeiraopreto.ginfes.com.br com a utilização do Código de Verificação.<br />
+                    2- A autenticidade desta Nota Fiscal poderá ser verificada no site, guarulhos.ginfes.com.br com a utilização do Código de Verificação.<br />
                     <t t-if="doc.company_id.l10n_br_tax_regime == 'simples'">
                         3 - Documento emitido por ME ou EPP optante pelo Simples Nacional.Não gera direito a crédito fiscal de ISS e IPI.
                     </t>
