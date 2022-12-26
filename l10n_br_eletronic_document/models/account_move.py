@@ -378,6 +378,7 @@ class AccountMove(models.Model):
         return {
             'valor_icms': sum(line[2].get("icms_valor", 0) for line in lines),
             'valor_icmsst': sum(line[2].get("icms_st_valor", 0) for line in lines),
+            'valor_fcpst': sum(line[2].get("fcp_st_valor", 0) for line in lines),
             'valor_icms_uf_dest': sum(line[2].get("icms_uf_dest", 0) for line in lines),
             'valor_icms_uf_remet': sum(line[2].get("icms_uf_remet", 0) for line in lines),
             'valor_icms_fcp_uf_dest': sum(line[2].get("icms_fcp_uf_dest", 0) for line in lines),
