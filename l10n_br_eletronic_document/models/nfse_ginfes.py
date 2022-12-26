@@ -36,7 +36,7 @@ def _convert_values(vals):
         rps['prestador']['cnpj'] = re.sub('[^0-9]', '', rps['emissor']['cnpj'])
         rps['prestador']['inscricao_municipal'] = re.sub('\W+','', rps['emissor']['inscricao_municipal'])
         rps['codigo_municipio'] = rps['emissor']['codigo_municipio']
-        rps['cnae_servico'] = rps['emissor']['cnae']
+        rps['cnae_servico'] = ''
 
         rps['optante_simples'] = '1' if rps['regime_tributario'] == 'simples' else '2'
         rps['incentivador_cultural'] = '2'
