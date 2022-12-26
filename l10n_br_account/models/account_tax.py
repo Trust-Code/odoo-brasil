@@ -14,6 +14,7 @@ class AccountTax(models.Model):
                                ('icms_inter', 'Difal - Alíquota Inter'),
                                ('icms_intra', 'Difal - Alíquota Intra'),
                                ('fcp', 'FCP'),
+                               ('fcpst', 'FCP ST'),
                                ('irpj', 'IRPJ'),
                                ('csll', 'CSLL'),
                                ('irrf', 'IRRF'),
