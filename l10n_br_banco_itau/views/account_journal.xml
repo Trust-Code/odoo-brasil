@@ -1,0 +1,24 @@
+<odoo>
+
+    <record id="trustcode_itau_account_journal_form" model="ir.ui.view">
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='bank_account']" position="inside">
+                <group>
+                    <group string="Boleto Banco Itaú">
+                        <field name="l10n_br_use_boleto_itau"/>
+                        <field name="l10n_br_itau_client_id" attrs="{'invisible': [('l10n_br_use_boleto_itau', '=', False)]}"/>
+                        <field name="l10n_br_itau_client_secret" password="1" attrs="{'invisible': [('l10n_br_use_boleto_itau', '=', False)]}"/>
+                        <field name="l10n_br_itau_carteira" attrs="{'invisible': [('l10n_br_use_boleto_itau', '=', False)]}"/>
+                        <field name="l10n_br_valor_itau_multa" attrs="{'invisible': [('l10n_br_use_boleto_itau', '=', False)]}"/>
+                        <field name="l10n_br_valor_itau_juros_mora" attrs="{'invisible': [('l10n_br_use_boleto_itau', '=', False)]}"/>
+                        <field name="l10n_br_itau_token_expiry" invisible="1" />
+                        <field name="l10n_br_itau_access_token" invisible="1" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
