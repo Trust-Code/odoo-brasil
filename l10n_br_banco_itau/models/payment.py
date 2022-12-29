@@ -32,6 +32,9 @@ class PaymentTransaction(models.Model):
     l10n_br_itau_barcode = fields.Char(string="Código de Barras Boleto")
     l10n_br_itau_digitavel = fields.Char(string="Linha Digitável Boleto")
     l10n_br_itau_nosso_numero = fields.Char(string="Nosso Número Itaú")
+    payment_journal_id = fields.Many2one(
+        comodel_name="account.journal", string="Diário de Pagamento"
+    )
 
     def execute_request_itau(self, method, endpoint, data={}):
         access_token = self.get_itau_access_token()
@@ -65,13 +68,18 @@ class PaymentTransaction(models.Model):
                 "Esta transação não foi enviada a nenhum gateway de pagamento"
             )
 
-        journal = (
-            self.acquirer_id.journal_id or self.invoice_ids.payment_journal_id
-        )
+        journal = self.payment_journal_id
+
+        bank_acc = journal.bank_account_id
 
         url = "https://secure.api.cloud.itau.com.br/boletoscash/v2/boletos?id_beneficiario={}&codigo_carteira={}&nosso_numero={}".format(
-            journal.bank_account_id.acc_number,
-            journal.l10n_br_itau_carteira,
+            "%4s%7s%1s"
+            % (
+                bank_acc.branch_number,
+                bank_acc.acc_number,
+                bank_acc.acc_number_dig,
+            ),
+            journal.l10n_br_boleto_carteira,
             self.l10n_br_itau_nosso_numero,
         )
         access_token = self.get_itau_access_token()

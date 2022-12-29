@@ -19,6 +19,7 @@
         "data/acquirer.xml",
         "views/payment.xml",
         "views/account_journal.xml",
+        "views/res_partner_bank.xml",
         "report/boleto.xml",
     ],
     "application": True,

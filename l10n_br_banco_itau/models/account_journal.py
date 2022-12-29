@@ -13,8 +13,33 @@ class AccountJournal(models.Model):
     )
     l10n_br_itau_access_token = fields.Char(string="Access Token Itau")
 
-    l10n_br_itau_carteira = fields.Integer(string="Carteira")
-    l10n_br_valor_itau_multa = fields.Float(string="Valor da Multa (%): ")
-    l10n_br_valor_itau_juros_mora = fields.Float(
+    l10n_br_valor_boleto_multa = fields.Float(string="Valor da Multa (%): ")
+    l10n_br_valor_boleto_juros_mora = fields.Float(
         string="Valor Juros Mora (%): "
+    )
+    l10n_br_boleto_carteira = fields.Char(string="Carteira")
+    l10n_br_boleto_instr = fields.Char(string="Instruções")
+    l10n_br_cnab_code = fields.Char("Código Convênio", size=20)
+    l10n_br_boleto_aceite = fields.Selection(
+        [("S", "Sim"), ("N", "Não")], string="Aceite", default="N"
+    )
+    l10n_br_boleto_especie = fields.Selection(
+        [
+            ("01", "DUPLICATA MERCANTIL"),
+            ("02", "NOTA PROMISSÓRIA"),
+            ("03", "NOTA DE SEGURO"),
+            ("04", "MENSALIDADE ESCOLAR"),
+            ("05", "RECIBO"),
+            ("06", "CONTRATO"),
+            ("07", "COSSEGUROS"),
+            ("08", "DUPLICATA DE SERVIÇO"),
+            ("09", "LETRA DE CÂMBIO"),
+            ("13", "NOTA DE DÉBITOS"),
+            ("15", "DOCUMENTO DE DÍVIDA"),
+            ("16", "ENCARGOS CONDOMINIAIS"),
+            ("17", "CONTA DE PRESTAÇÃO DE SERVIÇOS"),
+            ("99", "DIVERSOS"),
+        ],
+        string="Espécie do Título",
+        default="01",
     )

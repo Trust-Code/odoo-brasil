@@ -65,6 +65,7 @@ class AccountMove(models.Model):
                     "partner_id": moveline.partner_id.id,
                     "date_maturity": moveline.date_maturity,
                     "invoice_ids": [(6, 0, self.ids)],
+                    "payment_journal_id": moveline.move_id.payment_journal_id.id,
                 }
             )
 
@@ -79,7 +80,7 @@ class AccountMove(models.Model):
                 "dado_boleto": {
                     "descricao_instrumento_cobranca": "boleto",
                     "tipo_boleto": "a vista",
-                    "codigo_carteira": self.payment_journal_id.l10n_br_itau_carteira,
+                    "codigo_carteira": self.payment_journal_id.l10n_br_boleto_carteira,
                     "valor_total_titulo": moveline.amount_residual,
                     "codigo_especie": "",
                     "valor_abatimento": 0,
@@ -126,7 +127,6 @@ class AccountMove(models.Model):
                     "numero_CEP": re.sub("[^0-9]", "", partner_id.zip),
                 },
                 "dados_individuais_boleto": {
-                    # "numero_nosso_numero": TODO Verificar se é obrigatorio,
                     "data_vencimento": (
                         moveline.date_maturity + timedelta(days=1)
                     ).isoformat(),
@@ -139,12 +139,12 @@ class AccountMove(models.Model):
                 "desconto_expresso": False,
                 "juros": {
                     "codigo_tipo_juros": "90",
-                    "percentual_juros": self.payment_journal_id.l10n_br_valor_itau_juros_mora
+                    "percentual_juros": self.payment_journal_id.l10n_br_valor_boleto_juros_mora
                     or 0,
                 },
                 "multa": {
                     "codigo_tipo_multa": "02",
-                    "percentual_multa": self.payment_journal_id.l10n_br_valor_itau_multa
+                    "percentual_multa": self.payment_journal_id.l10n_br_valor_boleto_multa
                     or 0,
                 },
                 "protesto": {"protesto": 4, "quantidade_dias_protesto": 1},
@@ -165,7 +165,9 @@ class AccountMove(models.Model):
                         "acquirer_reference": dados_boleto.get(
                             "id_boleto_individual"
                         ),
-                        "l10n_br_itau_barcode": dados_boleto.get("codigo_barras"),
+                        "l10n_br_itau_barcode": dados_boleto.get(
+                            "codigo_barras"
+                        ),
                         "l10n_br_itau_digitavel": dados_boleto.get(
                             "numero_linha_digitavel"
                         ),

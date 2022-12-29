@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_bank_bra_fields" model="ir.ui.view">
+        <field name="name">res.partner.bank.bra.fields</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="account.view_company_partner_bank_form"/>
+        <field name="arch" type="xml">
+            <field name="acc_number" position="after">
+                <field name="acc_number_dig" />
+                <field name="bra_number" />
+                <field name="bra_number_dig" />
+            </field>
+        </field>
+    </record>
+</odoo>

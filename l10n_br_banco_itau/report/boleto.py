@@ -30,7 +30,7 @@ class IrActionsReport(models.Model):
             )
             boleto_list = []
             for pay in payment_ids:
-                boleto_list.append(BoletoItau(pay, pay.l10n_br_itau_nosso_numero))
+                boleto_list.append(BoletoItau(pay, pay.l10n_br_itau_nosso_numero).boleto)
             pdf_string = Boleto.get_pdfs(boleto_list)
             return pdf_string, "pdf"
         return super(IrActionsReport, self)._render_qweb_pdf(

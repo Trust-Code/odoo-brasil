@@ -8,6 +8,6 @@
         <field name="report_file">l10n_br_banco_itau.boleto</field>
         <field name="binding_model_id" ref="payment.model_payment_transaction"/>
         <field name="binding_type">report</field>
-        <field name="print_report_name">"boleto-%s-%s.pdf" % (object.name, object.partner_id.commercial_partner_id.name)</field>
+        <field name="print_report_name">"boleto-%s-%s.pdf" % (object.reference, object.partner_id.commercial_partner_id.name)</field>
     </record>
 </odoo>
