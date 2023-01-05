@@ -150,56 +150,32 @@ def send_api(certificate, password, edocs):
 
 
 def cancel_api(certificate, password, vals):
-    return {
-        'code': 200,
-        'message': 'Nota Fiscal Cancelada',
-    }
-    if self.model not in ('002'):
-        return super(InvoiceEletronic, self).action_cancel_document(
-            justificativa=justificativa)
+    cert_pfx = base64.decodestring(certificate)
+    certificado = Certificado(cert_pfx, password)
 
-    cert = self.company_id.with_context(
-        {'bin_size': False}).nfe_a1_file
-    cert_pfx = base64.decodestring(cert)
-
-    certificado = Certificado(
-        cert_pfx, self.company_id.nfe_a1_password)
-
-    company = self.company_id
-    city_prestador = self.company_id.partner_id.city_id
     canc = {
-        'cnpj_prestador': re.sub('[^0-9]', '', company.cnpj_cpf),
-        'inscricao_municipal': re.sub('[^0-9]', '', company.inscr_mun),
-        'cidade': '%s%s' % (city_prestador.state_id.ibge_code,
-                            city_prestador.ibge_code),
-        'numero_nfse': self.numero_nfse,
-        'codigo_cancelamento': '1',
-        'senha': self.company_id.senha_ambiente_nfse
+        'cnpj_prestador': vals['cnpj_cpf'],
+        'inscricao_municipal': vals['inscricao_municipal'],
+        'cidade': vals['codigo_municipio'],
+        'numero_nfse': vals['numero'],
+        'codigo_cancelamento': '0001',
     }
-    cancel = cancelar_nfse(
-        certificado, cancelamento=canc, ambiente=self.ambiente)
-    retorno = cancel['object'].Body.CancelarNfseResponse.CancelarNfseResult
+    cancel = cancelar_nfse(certificado, cancelamento=canc, ambiente=vals['ambiente'])
+    retorno = cancel['object']
     if "Cancelamento" in dir(retorno):
-        self.state = 'cancel'
-        self.codigo_retorno = '100'
-        self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
+        return {
+            'code': 200,
+            'message': 'Nota Fiscal Cancelada',
+        }
     else:
         # E79 - Nota já está cancelada
         if retorno.ListaMensagemRetorno.MensagemRetorno.Codigo != 'E79':
-            mensagem = "%s - %s" % (
-                retorno.ListaMensagemRetorno.MensagemRetorno.Codigo,
-                retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem
-            )
-            raise UserError(mensagem)
-
-        self.state = 'cancel'
-        self.codigo_retorno = '100'
-        self.mensagem_retorno = u'Nota Fiscal de Serviço Cancelada'
-
-    self.env['invoice.eletronic.event'].create({
-        'code': self.codigo_retorno,
-        'name': self.mensagem_retorno,
-        'invoice_eletronic_id': self.id,
-    })
-    self._create_attachment('canc', self, cancel['sent_xml'])
-    self._create_attachment('canc-ret', self, cancel['received_xml'])
+            return {
+                'code': 400,
+                'api_code': retorno.ListaMensagemRetorno.MensagemRetorno.Codigo,
+                'message': retorno.ListaMensagemRetorno.MensagemRetorno.Mensagem,
+            }
+        return {
+            'code': 200,
+            'message': 'Nota Fiscal Cancelada',
+        }
