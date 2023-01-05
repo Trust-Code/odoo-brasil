@@ -1,5 +1,4 @@
 import re
-import pytz
 import time
 import base64
 import logging
@@ -52,18 +51,20 @@ def _convert_values(vals):
             rps['regime_tributacao'] = '6'
             rps['base_calculo'] = ''
             rps['aliquota_issqn'] = ''
+            rps['valor_iss'] = 0
         else:
             rps['regime_tributacao'] = ''
-            rps['valor_issqn'] = abs(rps['valor_iss'])
+            rps['valor_iss'] = abs(rps['valor_iss'])
 
         # Valores
-        rps['valor_deducao'] = 0.00
+        rps['valor_deducao'] = ''
         if rps['valor_iss'] < 0:
             rps['iss_retido'] = '1'
             rps['valor_iss_retido'] = rps['iss_valor_retencao'] = abs(rps['valor_iss'])
-            rps['valor_iss'] = 0
         else:
             rps['iss_retido'] = '2'
+
+        rps['valor_iss'] = "%.2f" % rps['valor_iss']
         rps['aliquota_issqn'] = "%.4f" % abs(rps['itens_servico'][0]['aliquota'])
         rps['descricao'] = rps['discriminacao']
 
@@ -81,14 +82,16 @@ def _convert_values(vals):
 
         # ValorServicos - ValorPIS - ValorCOFINS - ValorINSS - ValorIR - ValorCSLL - OutrasRetençoes
         # - ValorISSRetido - DescontoIncondicionado - DescontoCondicionado)
-        rps['valor_liquido_nfse'] = rps['valor_servico'] \
+        rps['valor_liquido_nfse'] = "%.2f" % (rps['valor_servico'] \
                                     - (rps.get('valor_pis') or 0) \
                                     - (rps.get('valor_cofins') or 0) \
                                     - (rps.get('valor_inss') or 0) \
                                     - (rps.get('valor_ir') or 0) \
                                     - (rps.get('valor_csll') or 0) \
                                     - (rps.get('outras_retencoes') or 0) \
-                                    - (rps.get('valor_iss_retido') or 0)
+                                    - (rps.get('valor_iss_retido') or 0))
+
+        rps['valor_servico'] = "%.2f" % rps['valor_servico']
 
     return result
 
@@ -106,7 +109,7 @@ def send_api(certificate, password, edocs):
     if "NumeroLote" in dir(retorno):
         recibo_nfe = retorno.Protocolo
         # Espera alguns segundos antes de consultar
-        time.sleep(4)
+        time.sleep(10)
     else:
         erro_retorno = retorno.ListaMensagemRetorno.MensagemRetorno
         return {
@@ -137,7 +140,7 @@ def send_api(certificate, password, edocs):
         else:
             erro_retorno = retLote.ListaMensagemRetorno.MensagemRetorno
             if erro_retorno.Codigo in ("E4", "A02"):
-                time.sleep(5)
+                time.sleep(10)
                 continue
             return {
                 'code': 400,
