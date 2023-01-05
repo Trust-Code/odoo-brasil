@@ -69,6 +69,23 @@ class BancoInter(models.AbstractModel):
         session.cert = self._generate_cert_files(journal_id)
         return session
 
+    def _check_existing_token(self):
+        IrParamSudo = self.env['ir.config_parameter'].sudo()
+        expiration = IrParamSudo.get_param('bancointer.token.expiration')
+        if not expiration:
+            return False
+        expiration = datetime.fromisoformat(expiration)
+        if expiration < datetime.now():
+            return False
+        token = IrParamSudo.get_param('bancointer.token')
+        return token
+
+    def _save_token(self, token):
+        IrParamSudo = self.env['ir.config_parameter'].sudo()
+        IrParamSudo.set_param('bancointer.token', token)
+        expiration = datetime.now() + timedelta(hours=1)
+        IrParamSudo.set_param('bancointer.token.expiration', expiration.isoformat())
+
     def _get_token(self, journal_id, scope):
         """ Get the Banco Inter access token
 
@@ -77,6 +94,10 @@ class BancoInter(models.AbstractModel):
 
         :return (str): access_token
         """
+        token = self._check_existing_token()
+        if token:
+            return token
+
         url = BASE_URL + 'oauth/v2/token'
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
@@ -93,7 +114,9 @@ class BancoInter(models.AbstractModel):
         session = self._prepare_session_request(journal_id)
         response = session.post(url, headers=headers, data=body)
         response.raise_for_status()
-        return response.json().get("access_token")
+        token = response.json().get("access_token")
+        self._save_token(token)
+        return token
 
     def add_boleto_inter(self, journal_id, vals):
         """Add new bank slip to Banco Inter
