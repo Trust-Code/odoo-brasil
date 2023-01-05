@@ -40,5 +40,6 @@
         'reports/danfse_florianopolis.xml',
         'reports/danfse_bh.xml',
         'reports/danfe_report.xml',
+        'reports/danfse_ginfes.xml',
     ],
 }

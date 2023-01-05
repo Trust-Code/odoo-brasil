@@ -153,6 +153,8 @@ class AccountMove(models.Model):
 
                 if not move.fiscal_position_id:
                     errors.append('Configure a posição fiscal')
+                if not move.fiscal_position_id.serie_nota_fiscal:
+                    errors.append('Configure a série na posição fiscal')
                 if move.company_id.l10n_br_accountant_id and not \
                         move.company_id.l10n_br_accountant_id.l10n_br_cnpj_cpf:
                     errors.append('Cadastro da Empresa / CNPJ do escritório contabilidade')
@@ -176,7 +178,7 @@ class AccountMove(models.Model):
                         move.company_id.l10n_br_user_password
                     ]):
                         errors.append('Campos de validação para a API de Florianópolis não estão preenchidos')
-                elif cod_municipio in ['3550308', '3106200']:
+                elif cod_municipio in ['3550308', '3106200', '3518800']:
                     for line in move.invoice_line_ids:
                         if line.product_id.type == 'service':
                             if not line.product_id.service_type_id:
@@ -378,6 +380,7 @@ class AccountMove(models.Model):
         return {
             'valor_icms': sum(line[2].get("icms_valor", 0) for line in lines),
             'valor_icmsst': sum(line[2].get("icms_st_valor", 0) for line in lines),
+            'valor_fcpst': sum(line[2].get("fcp_st_valor", 0) for line in lines),
             'valor_icms_uf_dest': sum(line[2].get("icms_uf_dest", 0) for line in lines),
             'valor_icms_uf_remet': sum(line[2].get("icms_uf_remet", 0) for line in lines),
             'valor_icms_fcp_uf_dest': sum(line[2].get("icms_fcp_uf_dest", 0) for line in lines),
@@ -472,11 +475,9 @@ class AccountMove(models.Model):
 
     def action_view_edocs(self):
         if self.total_edocs == 1:
-            dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'action_view_eletronic_document')
-            dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'view_eletronic_document_form')
-            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            _, view_id = self.env['ir.model.data']._xmlid_to_res_model_res_id(
+                'l10n_br_eletronic_document.view_eletronic_document_form')
+            vals = self.env['ir.actions.act_window']._for_xml_id('l10n_br_eletronic_document.action_view_eletronic_document')
             vals['view_id'] = (view_id, 'sped.eletronic.doc.form')
             vals['views'][1] = (view_id, 'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
@@ -485,9 +486,7 @@ class AccountMove(models.Model):
             vals['res_id'] = edoc.id
             return vals
         else:
-            dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'action_view_eletronic_document')
-            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals = self.env['ir.actions.act_window']._for_xml_id('l10n_br_eletronic_document.action_view_eletronic_document')
             vals['domain'] = [('move_id', '=', self.id)]
             return vals
 

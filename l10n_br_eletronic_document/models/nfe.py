@@ -323,6 +323,9 @@ class EletronicDocument(models.Model):
                     'vBCST': "%.02f" % item.icms_st_base_calculo,
                     'pICMSST': "%.02f" % item.icms_st_aliquota,
                     'vICMSST': "%.02f" % item.icms_st_valor,
+                    'vBCFCPST': "%.02f" % item.icms_st_base_calculo,
+                    'pFCPST': "%.02f" % item.fcp_st_aliquota,
+                    'vFCPST': "%.02f" % item.fcp_st_valor,
                     'pCredSN': "%.02f" % item.icms_aliquota_credito,
                     'vCredICMSSN': "%.02f" % item.icms_valor_credito,
                     'vICMSSubstituto': "%.02f" % item.icms_substituto,
@@ -347,6 +350,7 @@ class EletronicDocument(models.Model):
                     'vIPI': "%.02f" % item.ipi_valor
                 },
             })
+
         if item.tem_difal:
             imposto['ICMSUFDest'] = {
                 'vBCUFDest': "%.02f" % item.icms_bc_uf_dest,
@@ -468,7 +472,7 @@ class EletronicDocument(models.Model):
                 'xPais': self.company_id.country_id.name,
                 'fone': re.sub('[^0-9]', '', self.company_id.phone or '')
             },
-            'IE': re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est),
+            'IE': re.sub('[^0-9]', '', self.company_id.l10n_br_inscr_est or ''),
             'IEST': re.sub('[^0-9]', '', self.iest or ''),
             'CRT': self.cod_regime_tributario,
         }
@@ -542,7 +546,7 @@ class EletronicDocument(models.Model):
             'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
-            'vFCPST': '0.00',
+            'vFCPST': "%.02f" % self.valor_fcpst,
             'vFCPSTRet': '0.00',
             'vProd': "%.02f" % sum(self.document_line_ids.mapped(
                 "valor_bruto")),

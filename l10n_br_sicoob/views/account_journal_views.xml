@@ -58,7 +58,7 @@
         <field name="model">account.journal</field>
         <field name="inherit_id" ref="account.view_account_journal_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='journal_group_ids']" position="before">
+            <xpath expr="//field[@name='default_account_id']" position="before">
                 <field name="l10n_br_bank_branch_number"/>
             </xpath>
         </field>

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
     <data>
-        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop BR">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/l10n_br_website_sale/static/src/js/website_sale.js"></script>
-            </xpath>
-        </template>
 
         <template id="br_website_sale_address" inherit_id="website_sale.address"
             name="Website Sale Address">

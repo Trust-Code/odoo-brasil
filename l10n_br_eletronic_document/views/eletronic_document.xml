@@ -118,6 +118,7 @@
                                         <field name="valor_icms_deson" />
                                         <field name="valor_bc_icmsst" />
                                         <field name="valor_icmsst" />
+                                        <field name="valor_fcpst" />
                                         <field name="valor_ii" />
                                         <field name="valor_ipi" />
                                         <field name="pis_valor" />

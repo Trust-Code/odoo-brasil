@@ -14,6 +14,7 @@
         <field name="cash_account_code_prefix">1.1.1.</field>
         <field name="transfer_account_code_prefix">1.1.5.</field>
         <field name="currency_id" ref="base.BRL"/>
+        <field name="country_id" ref="base.br"/>
     </record>
 
     <record id="transfer_account_id" model="account.account.template">

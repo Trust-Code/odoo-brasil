@@ -118,11 +118,9 @@ class NfeMde(models.Model):
 
     def action_view_edocs(self):
         if self.total_edocs == 1:
-            dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'action_view_eletronic_document')
-            dummy, view_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'view_eletronic_document_form')
-            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            _, view_id = self.env['ir.model.data']._xmlid_to_res_model_res_id(
+                'l10n_br_eletronic_document.view_eletronic_document_form')
+            vals = self.env['ir.actions.act_window']._for_xml_id('l10n_br_eletronic_document.action_view_eletronic_document')
             vals['view_id'] = (view_id, 'sped.eletronic.doc.form')
             vals['views'][1] = (view_id, 'form')
             vals['views'] = [vals['views'][1], vals['views'][0]]
@@ -131,9 +129,7 @@ class NfeMde(models.Model):
             vals['res_id'] = edoc.id
             return vals
         else:
-            dummy, act_id = self.env['ir.model.data'].get_object_reference(
-                'l10n_br_eletronic_document', 'action_view_eletronic_document')
-            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals = self.env['ir.actions.act_window']._for_xml_id('l10n_br_eletronic_document.action_view_eletronic_document')
             return vals
 
     def _needaction_domain_get(self):

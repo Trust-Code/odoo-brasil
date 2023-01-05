@@ -1,8 +1,8 @@
 import re
-import pytz
 import base64
 import copy
 import logging
+from pytz import timezone
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -32,6 +32,7 @@ STATE = {'draft': [('readonly', False)]}
 REPORT_NAME = {
     '05407': 'danfse',  # Florianopolis
     '06200': 'bh',  # Belo Horizonte
+    '18800': 'ginfes', # Guarulhos
     '50308': 'danfe',  # Sao Paulo
 }
 
@@ -246,6 +247,8 @@ class EletronicDocument(models.Model):
         readonly=True, states=STATE)
     valor_icmsst = fields.Monetary(
         string=u'Total ST', readonly=True, states=STATE)
+    valor_fcpst = fields.Monetary(
+        string=u'Total FCP ST', readonly=True, states=STATE)
     valor_ii = fields.Monetary(
         string=u'Total II', readonly=True, states=STATE)
     valor_ipi = fields.Monetary(
@@ -701,10 +704,10 @@ class EletronicDocument(models.Model):
 
         danfe_name = "l10n_br_eletronic_document.main_template_br_nfe_danfe"
         if self.model == "nfse":
-             danfe_name = "l10n_br_eletronic_document.main_template_br_nfse_danfpse"
-             danfe_city = REPORT_NAME.get(self.company_id.city_id.l10n_br_ibge_code)
-             if danfe_city:
-                  danfe_name = 'l10n_br_eletronic_document.main_template_br_nfse_%s' % danfe_city
+            danfe_name = "l10n_br_eletronic_document.main_template_br_nfse_danfpse"
+            danfe_city = REPORT_NAME.get(self.company_id.city_id.l10n_br_ibge_code)
+            if danfe_city:
+                danfe_name = 'l10n_br_eletronic_document.main_template_br_nfse_%s' % danfe_city
 
         danfe_report = self.env['ir.actions.report'].search(
             [('report_name', '=', danfe_name)])
@@ -790,6 +793,7 @@ class EletronicDocument(models.Model):
                 'codigo_municipio': '%s%s' % (
                     doc.company_id.state_id.l10n_br_ibge_code,
                     doc.company_id.city_id.l10n_br_ibge_code),
+                'cnae': re.sub('[^0-9]', '', self.company_id.l10n_br_cnae_main_id.code)
             }
             tomador = {
                 'cnpj_cpf': re.sub(
@@ -834,7 +838,7 @@ class EletronicDocument(models.Model):
             outro_estado = doc.company_id.state_id.id != partner.state_id.id
             outro_pais = doc.company_id.country_id.id != partner.country_id.id
 
-            data_emissao = doc.data_emissao.astimezone(pytz.timezone(self.env.user.tz))
+            tz = timezone(self.env.user.tz or 'America/Sao_Paulo')
             data = {
                 'nfe_reference': doc.id,
                 'ambiente': doc.ambiente,
@@ -846,7 +850,8 @@ class EletronicDocument(models.Model):
                 'outro_pais': outro_pais,
                 'regime_tributario': doc.company_id.l10n_br_tax_regime,
                 'itens_servico': items,
-                'data_emissao': data_emissao.strftime('%Y-%m-%d'),
+                'data_emissao': doc.data_emissao.astimezone(tz).strftime('%Y-%m-%d'),
+                'data_emissao_hora': doc.data_emissao.astimezone(tz).strftime('%Y-%m-%dT%H:%M:%S'),
                 'serie': doc.serie_documento or '',
                 'numero_rps': doc.numero_rps,
                 'discriminacao': doc.discriminacao_servicos,
@@ -897,10 +902,13 @@ class EletronicDocument(models.Model):
                 doc['valor_ir'] = "%.2f" % self.irrf_valor_retencao
                 doc['valor_csll'] = "%.2f" % self.csll_valor_retencao
             response = send_api(certificate, password, doc_values)
+        elif cod_municipio == '3518800':
+            from .nfse_ginfes import send_api
+            response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
             for doc in doc_values:
-                data_emissao = self.data_emissao.astimezone(pytz.timezone(self.env.user.tz))
+                data_emissao = self.data_emissao.astimezone(timezone(self.env.user.tz))
                 doc['data_emissao'] = data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
                 doc['valor_pis'] = self.pis_valor_retencao
                 doc['valor_cofins'] = self.cofins_valor_retencao
@@ -1003,6 +1011,9 @@ class EletronicDocument(models.Model):
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3550308':
             from .nfse_paulistana import cancel_api
+            response = cancel_api(certificate, password, doc_values)
+        elif doc_values['codigo_municipio'] == '3518800':
+            from .nfse_ginfes import cancel_api
             response = cancel_api(certificate, password, doc_values)
         elif doc_values['codigo_municipio'] == '3106200':
             from .nfse_bh import cancel_api
@@ -1206,6 +1217,12 @@ class EletronicDocumentLine(models.Model):
         readonly=True, states=STATE)
     icms_st_valor = fields.Monetary(
         string='Valor ICMS ST', readonly=True, states=STATE)
+
+    fcp_st_aliquota = fields.Float(
+        string='FCP ST Alíquota', digits='Account',
+        readonly=True, states=STATE)
+    fcp_st_valor = fields.Monetary(
+        string='Valor FCP ST', readonly=True, states=STATE)
 
     icms_valor_original_operacao = fields.Float(
         string='ICMS da Operação', digits='Account',
