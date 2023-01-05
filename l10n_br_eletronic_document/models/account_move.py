@@ -348,13 +348,14 @@ class AccountMove(models.Model):
         total_produtos = total_servicos = 0.0
         bruto_produtos = bruto_servicos = 0.0
         total_desconto = 0
+
         for inv_line in invoice_lines:
             total_desconto += round(inv_line.price_unit * inv_line.quantity * inv_line.discount / 100, 2)
             if inv_line.product_id.type == 'service':
-                total_servicos += inv_line.price_subtotal
+                total_servicos += inv_line.price_total
                 bruto_servicos += round(inv_line.quantity * inv_line.price_unit, 2)
             else:
-                total_produtos += inv_line.price_subtotal
+                total_produtos += inv_line.price_total
                 bruto_produtos += round(inv_line.quantity * inv_line.price_unit, 2)
 
         vals.update({
@@ -362,8 +363,7 @@ class AccountMove(models.Model):
             'valor_servicos': total_servicos,
             'valor_produtos': total_produtos,
             'valor_desconto': total_desconto,
-            'valor_final': total_produtos + total_servicos + vals['valor_frete'] + vals['valor_seguro'] +
-                           vals['valor_despesas'],
+            'valor_final': invoice.amount_total,
         })
 
         # Transportadora
@@ -518,6 +518,7 @@ class AccountMoveLine(models.Model):
 
         fiscal_pos = self.move_id.fiscal_position_id
 
+
         vals = {
             'name': self.name,
             'product_id': self.product_id.id,
@@ -529,7 +530,7 @@ class AccountMoveLine(models.Model):
             'quantidade': self.quantity,
             'preco_unitario': self.price_unit,
             'valor_bruto': round(self.quantity * self.price_unit, 2),
-            'desconto': round(self.quantity * self.price_unit, 2) - self.price_subtotal,
+            'desconto': round(self.quantity * self.price_unit, 2) - self.price_total,
             'valor_liquido': self.price_total,
             'origem': self.product_id.l10n_br_origin,
             #  'tributos_estimados': self.tributos_estimados,

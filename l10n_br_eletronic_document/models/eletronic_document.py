@@ -312,6 +312,11 @@ class EletronicDocument(models.Model):
         help=u'Indicador de presença do comprador no\n'
              u'estabelecimento comercial no momento\n'
              u'da operação.', default='0')
+    ind_intermediario = fields.Selection([
+        ('0', '0 - Operação sem intermediador'),
+        ('1', '1 - Operação em site ou plataforma de terceiros'),
+    ], 'Indicador Intermediario',
+        help='Indicador de intermediador/marketplace', default='0')
     ind_dest = fields.Selection([
         ('1', u'1 - Operação Interna'),
         ('2', u'2 - Operação Interestadual'),
@@ -478,9 +483,13 @@ class EletronicDocument(models.Model):
 
     def _compute_legal_information(self):
         fiscal_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
-            lambda x: x.tipo == 'fiscal')
+            lambda x: x.tipo == "fiscal"
+            and x.tipo_produto in [False] + self.document_line_ids.mapped("tipo_produto")
+        )
         obs_ids = self.fiscal_position_id.fiscal_observation_ids.filtered(
-            lambda x: x.tipo == 'observacao')
+            lambda x: x.tipo == "observacao"
+            and x.tipo_produto in [False] + self.document_line_ids.mapped("tipo_produto")
+        )
 
         # prod_obs_ids = self.env['nfe.fiscal.observation'].browse()
         # for item in self.move_id.invoice_line_ids:
@@ -800,7 +809,7 @@ class EletronicDocument(models.Model):
                     'logradouro': partner.street,
                     'numero': partner.l10n_br_number,
                     'bairro': partner.l10n_br_district,
-                    'complemento': partner.street2,
+                    'complemento': partner.street2 or '',
                     'cep': re.sub('[^0-9]', '', partner.zip or ''),
                     'codigo_municipio': '%s%s' % (
                         partner.state_id.l10n_br_ibge_code,
@@ -886,6 +895,12 @@ class EletronicDocument(models.Model):
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3550308':
             from .nfse_paulistana import send_api
+            for doc in doc_values:
+                doc['valor_pis'] = "%.2f" % self.pis_valor_retencao
+                doc['valor_cofins'] = "%.2f" % self.cofins_valor_retencao
+                doc['valor_inss'] = "%.2f" % self.inss_valor_retencao
+                doc['valor_ir'] = "%.2f" % self.irrf_valor_retencao
+                doc['valor_csll'] = "%.2f" % self.csll_valor_retencao
             response = send_api(certificate, password, doc_values)
         elif cod_municipio == '3518800':
             from .nfse_ginfes import send_api
@@ -893,8 +908,8 @@ class EletronicDocument(models.Model):
         elif cod_municipio == '3106200':
             from .nfse_bh import send_api
             for doc in doc_values:
-                doc['data_emissao'] = self.data_emissao.strftime(
-                    '%Y-%m-%dT%H:%M:%S')
+                data_emissao = self.data_emissao.astimezone(timezone(self.env.user.tz))
+                doc['data_emissao'] = data_emissao.strftime('%Y-%m-%dT%H:%M:%S')
                 doc['valor_pis'] = self.pis_valor_retencao
                 doc['valor_cofins'] = self.cofins_valor_retencao
                 doc['valor_inss'] = self.inss_valor_retencao

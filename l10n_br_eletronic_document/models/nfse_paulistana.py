@@ -19,8 +19,15 @@ def _convert_values(vals):
 
         rps['prestador'] = rps['emissor']
         rps['tomador']['cpf_cnpj'] = rps['tomador']['cnpj_cpf']
+        rps['tomador']['logradouro'] = rps['tomador']['endereco']['logradouro']
+        rps['tomador']['numero'] = rps['tomador']['endereco']['numero']
+        rps['tomador']['bairro'] = rps['tomador']['endereco']['bairro']
+        rps['tomador']['complemento'] = rps['tomador']['endereco']['complemento']
+        rps['tomador']['cep'] = rps['tomador']['endereco']['cep']
+        rps['tomador']['cidade'] = rps['tomador']['endereco']['codigo_municipio']
+        rps['tomador']['uf'] = rps['tomador']['endereco']['uf']
         rps['tomador']['tipo_cpfcnpj'] = 2 if rps['tomador']['empresa'] else 1
-        rps['aliquota_atividade'] = "%.3f" % rps['itens_servico'][0]['aliquota']
+        rps['aliquota_atividade'] = "%.3f" % abs(rps['itens_servico'][0]['aliquota'])
         rps['codigo_atividade'] = re.sub(
             '[^0-9]', '', rps['itens_servico'][0]['codigo_servico_municipio'] or '')
         rps['valor_deducao'] = '0.00'

@@ -1,61 +1,32 @@
-import re
-import base64
-import requests
-import tempfile
-import base64
-from datetime import datetime
 from odoo import fields, models
 from odoo.exceptions import UserError
 
 
-class BoletoSicoob(models.Model):
+class PaymentAcquirer(models.Model):
     _inherit = "payment.acquirer"
 
     provider = fields.Selection(selection_add=[("boleto-inter", "Boleto Banco Inter")], ondelete = { 'boleto-inter' : 'set default' })
 
 
 class PaymentTransaction(models.Model):
-    _inherit = 'payment.transaction'
+    _name = 'payment.transaction'
+    _inherit = ['payment.transaction', 'banco.inter.mixin']
 
     boleto_pdf = fields.Binary(string="Boleto PDF")
-
-    def execute_request_inter(self, method, url, vals):
-        headers = {
-            "x-inter-conta-corrente": re.sub("[^0-9]", "", self.acquirer_id.journal_id.bank_account_id.acc_number)
-        }
-        cert = base64.b64decode(self.acquirer_id.journal_id.l10n_br_inter_cert)
-        key = base64.b64decode(self.acquirer_id.journal_id.l10n_br_inter_key)
-
-        cert_path = tempfile.mkstemp()[1]
-        key_path = tempfile.mkstemp()[1]
-
-        arq_temp = open(cert_path, "w")
-        arq_temp.write(cert.decode())
-        arq_temp.close()
-
-        arq_temp = open(key_path, "w")
-        arq_temp.write(key.decode())
-        arq_temp.close()
-        response = requests.request(method, url, json=vals, headers=headers, cert=(cert_path, key_path))
-        if response.status_code == 401:
-            raise UserError("Erro de autorização ao consultar a API do Banco Inter")
-        if response.status_code not in (200, 204):
-            raise UserError('Houve um erro com a API do Banco Inter:\n%s' % response.text)
-        return response
 
     def action_get_pdf_inter(self):
         attachment_ids = []
         for transaction in self:
             if transaction.acquirer_id.provider != 'boleto-inter':
                 continue
-            url = "https://apis.bancointer.com.br/openbanking/v1/certificado/boletos/%s/pdf" % transaction.acquirer_reference
-            response = transaction.execute_request_inter("GET", url, None)
-            if response.status_code != 200:  # Vamos ignorar
-                continue
+
+            journal_id = self.acquirer_id.journal_id
+            boleto_data = self.get_boleto_inter_pdf(journal_id, transaction.acquirer_reference)
+
             filename = "%s - Boleto - %s.%s" % (transaction.partner_id.name_get()[0][1], transaction.reference, "pdf")
             boleto_id = self.env['ir.attachment'].create(dict(
                 name=filename,
-                datas=response.text,
+                datas= boleto_data,
                 mimetype='application/pdf',
                 res_model='account.move',
                 res_id=transaction.invoice_ids and transaction.invoice_ids[0].id or False
@@ -69,14 +40,13 @@ class PaymentTransaction(models.Model):
         if not self.acquirer_reference:
             raise UserError('Esta transação não foi enviada a nenhum gateway de pagamento')
 
-        url = "https://apis.bancointer.com.br/openbanking/v1/certificado/boletos/%s" % self.acquirer_reference
-        response = self.execute_request_inter("GET", url, None)
-        json_p = response.json()
+        journal_id = self.acquirer_id.journal_id
+        situacao = self.get_boleto_inter_status(journal_id, self.acquirer_reference)
 
-        if json_p.get("situacao") == "PAGO":
+        if situacao == "PAGO":
             self._set_transaction_done()
             self._post_process_after_done()
-        elif json_p.get("situacao") == "BAIXADO":
+        elif situacao == "BAIXADO":
             self._set_transaction_cancel()
 
     def action_cancel_transaction(self):
@@ -84,14 +54,11 @@ class PaymentTransaction(models.Model):
             return super(PaymentTransaction, self).action_cancel_transaction()
 
         self._set_transaction_cancel()
-        url = "https://apis.bancointer.com.br/openbanking/v1/certificado/boletos/%s/baixas" % self.acquirer_reference
-        vals = {
-            "codigoBaixa": "SUBISTITUICAO"
-        }
-        self.execute_request_inter("POST", url, vals)
+        journal_id = self.acquirer_id.journal_id
+        self.cancel_boleto_inter(journal_id, self.acquirer_reference)
 
     def _find_attachment_ids_email(self):
         atts = super()._find_attachment_ids_email()
-        atts = self.action_get_pdf_inter()
+        atts += self.action_get_pdf_inter()
         return atts
 

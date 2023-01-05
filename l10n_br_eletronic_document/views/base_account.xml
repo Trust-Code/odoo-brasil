@@ -145,6 +145,7 @@
                 <group>
                     <field name="name" />
                     <field name="tipo"/>
+                    <field name="tipo_produto"/>
                 </group>
                 <group string="Mensagem a ser destacada no documento eletrônico">
                     <field name="message" nolabel="1" placeholder="Utilize ${invoice.origin} para campos dinâmicos"/>
