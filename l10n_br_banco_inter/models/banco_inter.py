@@ -10,10 +10,8 @@ from requests import Session
 BASE_URL = "https://cdpj.partners.bancointer.com.br/"
 SCOPE = {
     "cobranca_add": "boleto-cobranca.write",
-    "cobranca_cancel": "boleto-cobranca.write",
     "cobranca_get": "boleto-cobranca.read",
     "extrato.read": "extrato.read",
-    "extrato-read": "extrato-read",
 }
 
 
@@ -86,11 +84,10 @@ class BancoInter(models.AbstractModel):
         expiration = datetime.now() + timedelta(hours=1)
         IrParamSudo.set_param('bancointer.token.expiration', expiration.isoformat())
 
-    def _get_token(self, journal_id, scope):
+    def _get_token(self, journal_id):
         """ Get the Banco Inter access token
 
         :param journal_id (obj): Banco Inter Journal
-        :param scope (str): Token Scope [cobranca_add, cobranca_cancel, cobranca_get]
 
         :return (str): access_token
         """
@@ -104,12 +101,13 @@ class BancoInter(models.AbstractModel):
         client_id = journal_id.l10n_br_inter_client_id
         client_secret = journal_id.l10n_br_inter_client_secret
 
+        scope = " ".join([x[1] for x in SCOPE.items()])
         body = (
             "client_id={client_id}&" +
             "client_secret={client_secret}&" +
             "scope={scope}&" +
             "grant_type=client_credentials").format(
-            client_id=client_id, client_secret=client_secret, scope=SCOPE[scope])
+            client_id=client_id, client_secret=client_secret, scope=scope)
 
         session = self._prepare_session_request(journal_id)
         response = session.post(url, headers=headers, data=body)
@@ -126,7 +124,7 @@ class BancoInter(models.AbstractModel):
 
         :return nosso_numero (str): Bank slip ID in Banco Inter
         """
-        token = self._get_token(journal_id, "cobranca_add")
+        token = self._get_token(journal_id)
         url = BASE_URL + "cobranca/v2/boletos"
 
         headers = self._generate_header(token)
@@ -155,7 +153,7 @@ class BancoInter(models.AbstractModel):
             "cobranca/v2/boletos/{nosso_numero}/cancelar".format(
                 nosso_numero=acquirer_reference)
 
-        token = self._get_token(journal_id, "cobranca_cancel")
+        token = self._get_token(journal_id)
         headers = self._generate_header(token)
         vals = {
             "motivoCancelamento": "SUBSTITUICAO"
@@ -182,7 +180,7 @@ class BancoInter(models.AbstractModel):
             "cobranca/v2/boletos/{nosso_numero}".format(
                 nosso_numero=acquirer_reference)
 
-        token = self._get_token(journal_id, "cobranca_get")
+        token = self._get_token(journal_id)
         headers = self._generate_header(token)
         session = self._prepare_session_request(journal_id)
 
@@ -206,7 +204,7 @@ class BancoInter(models.AbstractModel):
                 nosso_numero=acquirer_reference)
 
         # Get the token
-        token = self._get_token(journal_id, "cobranca_get")
+        token = self._get_token(journal_id)
         headers = self._generate_header(token)
         session = self._prepare_session_request(journal_id)
 
@@ -229,7 +227,7 @@ class BancoInter(models.AbstractModel):
         url = BASE_URL + "banking/v2/extrato"
 
         # Get the token
-        token = self._get_token(journal_id, "extrato.read")
+        token = self._get_token(journal_id)
         headers = self._generate_header(token)
         session = self._prepare_session_request(journal_id)
 
