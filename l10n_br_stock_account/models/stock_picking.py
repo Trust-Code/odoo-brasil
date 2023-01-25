@@ -72,10 +72,11 @@ class StockPicking(models.Model):
             vals['fiscal_position_id'] = fpos.id
         return vals
 
-    def action_done(self):
-        res = super(StockPicking, self).action_done()
+    def button_validate(self):
+        res = super(StockPicking, self).button_validate()
         pickings_to_invoice = self.filtered(
-            lambda x: x.picking_type_id.enable_invoicing)
+            lambda x: x.enable_invoicing
+        )
         if pickings_to_invoice:
             pickings_to_invoice.action_invoice_picking()
         return res
