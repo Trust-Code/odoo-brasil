@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- move existing submenus to point to the new parent -->
+        <!-- <record id="l10n_br_account.menu_br_payments" model="ir.ui.menu">
+            <field name="parent_id" ref="account_accountant.menu_accounting"/>
+        </record> -->
+
+</odoo>
