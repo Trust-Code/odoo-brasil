@@ -1111,7 +1111,8 @@ class EletronicDocumentLine(models.Model):
         string='Quantidade', readonly=True, states=STATE,
         digits='Product Unit of Measure')
     preco_unitario = fields.Monetary(
-        string='Preço Unitário', readonly=True, states=STATE)
+        string='Preço Unitário', readonly=True, states=STATE,
+        digits='Product Price')
 
     pedido_compra = fields.Char(
         string="Pedido Compra", size=60,
