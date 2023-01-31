@@ -1110,7 +1110,7 @@ class EletronicDocumentLine(models.Model):
     quantidade = fields.Float(
         string='Quantidade', readonly=True, states=STATE,
         digits='Product Unit of Measure')
-    preco_unitario = fields.Monetary(
+    preco_unitario = fields.Float(
         string='Preço Unitário', readonly=True, states=STATE,
         digits='Product Price')
 
