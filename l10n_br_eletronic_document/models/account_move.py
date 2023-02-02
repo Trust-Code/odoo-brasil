@@ -439,11 +439,10 @@ class AccountMove(models.Model):
     def _compute_nfe_volumes(self, nfe, move):
         self.env['nfe.volume'].create({
             'eletronic_document_id': nfe.id,
-            'quantidade_volumes': move.quantidade_volumes,
-            'peso_liquido': move.peso_bruto,
-            'peso_bruto': move.peso_bruto,
+            'quantidade_volumes': move.get_quantidade_volumes(),
+            'peso_liquido': move.get_peso_liquido(),
+            'peso_bruto': move.get_peso_bruto(),
         })
-
 
     def _create_related_doc(self, vals):
         related_move_id = self.env['account.move'].search([
@@ -489,6 +488,49 @@ class AccountMove(models.Model):
             vals = self.env['ir.actions.act_window']._for_xml_id('l10n_br_eletronic_document.action_view_eletronic_document')
             vals['domain'] = [('move_id', '=', self.id)]
             return vals
+
+    def get_quantidade_volumes(self):
+        if self.company_id.l10n_br_automated_weight:
+            picking_ids = self.invoice_line_ids.sale_line_ids.mapped(
+                "order_id.picking_ids"
+            )
+            return len(
+                picking_ids.mapped(
+                    "move_line_ids_without_package.result_package_id"
+                )
+            ) or sum(
+                picking_ids.mapped("move_line_ids_without_package.qty_done")
+            )
+        else:
+            return self.quantidade_volumes
+
+    def get_peso_liquido(self):
+        if self.company_id.l10n_br_automated_weight:
+            picking_ids = self.invoice_line_ids.sale_line_ids.mapped(
+                "order_id.picking_ids"
+            )
+            return sum(
+                item.product_id.weight * item.qty_done
+                for item in picking_ids.mapped(
+                    "move_line_ids_without_package"
+                )
+            )
+        else:
+            return self.peso_liquido
+
+    def get_peso_bruto(self):
+        if self.company_id.l10n_br_automated_weight:
+            picking_ids = self.invoice_line_ids.sale_line_ids.mapped(
+                "order_id.picking_ids"
+            )
+            package_weight = sum(
+                picking_ids.mapped(
+                    "move_line_ids_without_package.result_package_id.package_type_id.package_weight"
+                )
+            )
+            return self.get_peso_liquido() + package_weight
+        else:
+            return self.peso_bruto
 
 
 class AccountMoveLine(models.Model):

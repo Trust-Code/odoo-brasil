@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_stock_package_weight" model="ir.ui.view">
+        <field name="name">view_stock_package_weight</field>
+        <field name="model">stock.package.type</field>
+        <field name="inherit_id" ref="stock.stock_package_type_form"/>
+        <field name="arch" type="xml">
+            <field name="shipper_package_code" position="after">
+                <label for="package_weight"/>
+                <div class="o_row" name="package_weight">
+                    <field name="package_weight"/>
+                    <span><field name="weight_uom_name"/></span>
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
+
