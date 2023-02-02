@@ -20,6 +20,7 @@
         'views/account_move_views.xml',
         'views/sale_order.xml',
         'views/product_pricelist.xml',
+        'views/stock_package_type.xml',
         'report/sale_report_templates.xml',
     ],
     "auto_install": True,

@@ -38,6 +38,9 @@ class ResCompany(models.Model):
         'ir.sequence', string="Sequência Numeracao NFe")
     l10n_br_nfe_service_sequence = fields.Many2one(
         'ir.sequence', string="Sequência Numeracao NFe de Servico")
+    l10n_br_automated_weight = fields.Boolean(
+        string="Calculo de peso automatizado"
+    )
 
     l10n_br_cabecalho_danfe = fields.Selection(
         [

@@ -16,3 +16,9 @@ class ResConfigSettings(models.TransientModel):
     l10n_br_nfe_service_sequence = fields.Many2one(
         'ir.sequence', string="Sequência Numeracao NFe de Serviço",
         related='company_id.l10n_br_nfe_service_sequence', readonly=False)
+
+    l10n_br_automated_weight = fields.Boolean(
+        string="Calculo de peso automatizado",
+        related="company_id.l10n_br_automated_weight",
+        readonly=False,
+    )
