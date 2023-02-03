@@ -11,7 +11,7 @@
                             <field name="carrier_partner_id"/>
                             <field name="modalidade_frete"/>
                             <field name="quantidade_volumes"/>
-                            <field name="peso_liquido"/>
+                            <!-- <field name="peso_liquido"/> -->
                             <field name="peso_bruto"/>
                         </group>
                     </group>
@@ -20,4 +20,3 @@
         </field>
     </record>
 </odoo>
-
