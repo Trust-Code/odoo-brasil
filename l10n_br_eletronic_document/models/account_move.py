@@ -439,6 +439,7 @@ class AccountMove(models.Model):
     def _compute_nfe_volumes(self, nfe, move):
         self.env['nfe.volume'].create({
             'eletronic_document_id': nfe.id,
+            'especie': move.especie,
             'quantidade_volumes': move.get_quantidade_volumes(),
             'peso_liquido': move.get_peso_liquido(),
             'peso_bruto': move.get_peso_bruto(),
