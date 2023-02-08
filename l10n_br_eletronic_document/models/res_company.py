@@ -60,6 +60,10 @@ class ResCompany(models.Model):
     l10n_br_iest_ids = fields.One2many(
         'res.company.iest', 'company_id', string="Inscrições Estaduais ST")
 
+    l10n_br_automated_weight = fields.Boolean(
+        string="Calculo de peso automatizado"
+    )
+
 
 class ResCompanyIest(models.Model):
     _name = 'res.company.iest'
