@@ -74,20 +74,17 @@ class StockPicking(models.Model):
 
     def action_done(self):
         res = super(StockPicking, self).action_done()
-        pickings_to_invoice = self.filtered(
-            lambda x: x.picking_type_id.enable_invoicing)
-        if pickings_to_invoice:
-            pickings_to_invoice.action_invoice_picking()
+        self.action_invoice_picking()
         return res
 
     def action_invoice_picking(self):
-        partner_ids = self.mapped('partner_id')
-        if not partner_ids:
-            raise UserError(_('No partner to invoice, please choose one!'))
+        pickings_to_invoice = self.filtered(lambda x: x.enable_invoicing)
+        partner_ids = pickings_to_invoice.mapped('partner_id')
         invoice_ids = self.env['account.move']
         for partner_id in partner_ids:
-            picking_ids = self.filtered(lambda x: x.partner_id == partner_id)
-
+            picking_ids = pickings_to_invoice.filtered(
+                lambda x: x.partner_id == partner_id
+            )
             inv_vals = picking_ids._prepare_invoice_values()
             invoice_ids |= self.env['account.move'].create(inv_vals)
         return invoice_ids
