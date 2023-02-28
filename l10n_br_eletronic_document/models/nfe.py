@@ -542,7 +542,7 @@ class EletronicDocument(models.Model):
             # ICMS
             'vBC': "%.02f" % self.valor_bc_icms,
             'vICMS': "%.02f" % self.valor_icms,
-            'vICMSDeson': '0.00',
+            'vICMSDeson': "%.02f" % self.valor_icms_deson,
             'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             'vST': "%.02f" % self.valor_icmsst,
