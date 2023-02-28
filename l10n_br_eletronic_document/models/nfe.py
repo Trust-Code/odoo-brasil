@@ -312,6 +312,7 @@ class EletronicDocument(models.Model):
                 'ICMS': {
                     'orig':  item.product_id.l10n_br_origin,
                     'CST': item.icms_cst,
+                    'vICMSDeson': "%.02f" % self.icms_valor_desonerado,
                     'modBC': item.icms_tipo_base,
                     'vBC': "%.02f" % item.icms_base_calculo,
                     'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
