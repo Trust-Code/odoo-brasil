@@ -67,6 +67,8 @@ class AccountFiscalPosition(models.Model):
              'estabelecimento comercial no momento\n'
              'da operação.', default='0')
 
+    nfse_consumidor = fields.Boolean(default=False)
+
     @api.model
     def _get_fpos_by_region(self, country_id=False, state_id=False,
                             zipcode=False, vat_required=False):
