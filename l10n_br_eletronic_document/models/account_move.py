@@ -192,52 +192,58 @@ class AccountMove(models.Model):
             partner = move.partner_id.commercial_partner_id
             company = move.company_id
             # Destinatário
-            if partner.is_company and not partner.l10n_br_legal_name:
-                errors.append('Cliente - Razão Social')
+            if self.fiscal_position_id.nfse_consumidor == False:
 
-            if partner.country_id.id == company.partner_id.country_id.id:
-                if not partner.l10n_br_cnpj_cpf:
-                    errors.append('Cliente - CNPJ/CPF')
+                if partner.is_company and not partner.l10n_br_legal_name:
+                    errors.append('Cliente - Razão Social')
 
-            if not partner.street:
-                errors.append('Cliente / Endereço - Logradouro')
+                if partner.country_id.id == company.partner_id.country_id.id:
+                    if not partner.l10n_br_cnpj_cpf:
+                        errors.append('Cliente - CNPJ/CPF')
 
-            if not partner.l10n_br_number:
-                errors.append('Cliente / Endereço - Número')
+                if not partner.street:
+                    errors.append('Cliente / Endereço - Logradouro')
 
-            if partner.country_id.id == company.partner_id.country_id.id:
-                if not partner.zip or len(
-                        re.sub(r"\D", "", partner.zip)) != 8:
-                    errors.append('Cliente / Endereço - CEP')
+                if not partner.l10n_br_number:
+                    errors.append('Cliente / Endereço - Número')
 
-            if partner.country_id.id == company.partner_id.country_id.id:
-                if not partner.state_id:
-                    errors.append('Cliente / Endereço - Estado')
+                if partner.country_id.id == company.partner_id.country_id.id:
+                    if not partner.zip or len(
+                            re.sub(r"\D", "", partner.zip)) != 8:
+                        errors.append('Cliente / Endereço - CEP')
+
+                if partner.country_id.id == company.partner_id.country_id.id:
+                    if not partner.state_id:
+                        errors.append('Cliente / Endereço - Estado')
+                    else:
+                        if not partner.state_id.l10n_br_ibge_code:
+                            errors.append('Cliente / Endereço - Código do IBGE \
+                                        do estado')
+                        if not partner.state_id.name:
+                            errors.append('Cliente / Endereço - Nome do estado')
+
+                if partner.country_id.id == company.partner_id.country_id.id:
+                    if not partner.city_id:
+                        errors.append('Cliente / Endereço - Município')
+                    else:
+                        if not partner.city_id.name:
+                            errors.append('Cliente / Endereço - Nome do \
+                                        município')
+                        if not partner.city_id.l10n_br_ibge_code:
+                            errors.append('Cliente / Endereço - Código do IBGE \
+                                        do município')
+
+                if not partner.country_id:
+                    errors.append('Cliente / Endereço - País')
                 else:
-                    if not partner.state_id.l10n_br_ibge_code:
-                        errors.append('Cliente / Endereço - Código do IBGE \
-                                    do estado')
-                    if not partner.state_id.name:
-                        errors.append('Cliente / Endereço - Nome do estado')
+                    if not partner.country_id.name:
+                        errors.append('Cliente / Endereço - Nome do país')
+                    if not partner.country_id.l10n_br_ibge_code:
+                        errors.append('Cliente / Endereço - Cód. do BC do país')
 
-            if partner.country_id.id == company.partner_id.country_id.id:
-                if not partner.city_id:
-                    errors.append('Cliente / Endereço - Município')
-                else:
-                    if not partner.city_id.name:
-                        errors.append('Cliente / Endereço - Nome do \
-                                    município')
-                    if not partner.city_id.l10n_br_ibge_code:
-                        errors.append('Cliente / Endereço - Código do IBGE \
-                                    do município')
-
-            if not partner.country_id:
-                errors.append('Cliente / Endereço - País')
             else:
-                if not partner.country_id.name:
-                    errors.append('Cliente / Endereço - Nome do país')
-                if not partner.country_id.l10n_br_ibge_code:
-                    errors.append('Cliente / Endereço - Cód. do BC do país')
+                if partner.l10n_br_cnpj_cpf != '000.000.000-00':
+                    errors.append('CNPJ/CPF Consumidor')
 
         if len(errors) > 0:
             msg = "\n".join(

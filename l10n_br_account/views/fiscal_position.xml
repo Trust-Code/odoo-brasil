@@ -18,6 +18,7 @@
                     <group>
                         <field name="ind_pres" />
                         <field name="edoc_policy" />
+                        <field name="nfse_consumidor" groups="base.group_no_one"/>
                     </group>
                 </group>
             </group>
