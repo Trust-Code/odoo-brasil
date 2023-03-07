@@ -308,50 +308,95 @@ class EletronicDocument(models.Model):
                 }
             })
         else:
-            imposto.update({
-                'ICMS': {
-                    'orig':  item.product_id.l10n_br_origin,
-                    'CST': item.icms_cst,
-                    'vICMSDeson': "%.02f" % item.icms_valor_desonerado,
-                    'motDesICMS': item.icms_motivo_desoneracao,
-                    'modBC': item.icms_tipo_base,
-                    'vBC': "%.02f" % item.icms_base_calculo,
-                    'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
-                    'pICMS': "%.02f" % item.icms_aliquota,
-                    'vICMS': "%.02f" % item.icms_valor,
-                    'modBCST': item.icms_st_tipo_base,
-                    'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
-                    'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
-                    'vBCST': "%.02f" % item.icms_st_base_calculo,
-                    'pICMSST': "%.02f" % item.icms_st_aliquota,
-                    'vICMSST': "%.02f" % item.icms_st_valor,
-                    'vBCFCPST': "%.02f" % item.icms_st_base_calculo,
-                    'pFCPST': "%.02f" % item.fcp_st_aliquota,
-                    'vFCPST': "%.02f" % item.fcp_st_valor,
-                    'pCredSN': "%.02f" % item.icms_aliquota_credito,
-                    'vCredICMSSN': "%.02f" % item.icms_valor_credito,
-                    'vICMSSubstituto': "%.02f" % item.icms_substituto,
-                    'vBCSTRet': "%.02f" % item.icms_bc_st_retido,
-                    'pST': "%.02f" % item.icms_aliquota_st_retido,
-                    'vICMSSTRet': "%.02f" % item.icms_st_retido,
-                    # TODO Implementar o FCP vBCFCP
-                    'vBCFCP': '',
-                    'pFCP': '',
-                    'vFCP': '',
-                    # TODO Implementar o calculo de ICMS diferido
-                    'vICMSOp': "%.02f" % item.icms_valor_original_operacao,
-                    'pDif': "%.02f" % item.icms_aliquota_diferimento,
-                    'vICMSDif': "%.02f" % item.icms_valor_diferido,
-                },
-                'IPI': {
-                    'clEnq': item.classe_enquadramento_ipi or '',
-                    'cEnq': item.codigo_enquadramento_ipi,
-                    'CST': item.ipi_cst,
-                    'vBC': "%.02f" % item.ipi_base_calculo,
-                    'pIPI': "%.02f" % item.ipi_aliquota,
-                    'vIPI': "%.02f" % item.ipi_valor
-                },
-            })
+            if item.icms_valor_desonerado == 0:
+                imposto.update({
+                    'ICMS': {
+                        'orig':  item.product_id.l10n_br_origin,
+                        'CST': item.icms_cst,
+                        'modBC': item.icms_tipo_base,
+                        'vBC': "%.02f" % item.icms_base_calculo,
+                        'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
+                        'pICMS': "%.02f" % item.icms_aliquota,
+                        'vICMS': "%.02f" % item.icms_valor,
+                        'modBCST': item.icms_st_tipo_base,
+                        'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
+                        'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
+                        'vBCST': "%.02f" % item.icms_st_base_calculo,
+                        'pICMSST': "%.02f" % item.icms_st_aliquota,
+                        'vICMSST': "%.02f" % item.icms_st_valor,
+                        'vBCFCPST': "%.02f" % item.icms_st_base_calculo,
+                        'pFCPST': "%.02f" % item.fcp_st_aliquota,
+                        'vFCPST': "%.02f" % item.fcp_st_valor,
+                        'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                        'vCredICMSSN': "%.02f" % item.icms_valor_credito,
+                        'vICMSSubstituto': "%.02f" % item.icms_substituto,
+                        'vBCSTRet': "%.02f" % item.icms_bc_st_retido,
+                        'pST': "%.02f" % item.icms_aliquota_st_retido,
+                        'vICMSSTRet': "%.02f" % item.icms_st_retido,
+                        # TODO Implementar o FCP vBCFCP
+                        'vBCFCP': '',
+                        'pFCP': '',
+                        'vFCP': '',
+                        # TODO Implementar o calculo de ICMS diferido
+                        'vICMSOp': "%.02f" % item.icms_valor_original_operacao,
+                        'pDif': "%.02f" % item.icms_aliquota_diferimento,
+                        'vICMSDif': "%.02f" % item.icms_valor_diferido,
+                    },
+                    'IPI': {
+                        'clEnq': item.classe_enquadramento_ipi or '',
+                        'cEnq': item.codigo_enquadramento_ipi,
+                        'CST': item.ipi_cst,
+                        'vBC': "%.02f" % item.ipi_base_calculo,
+                        'pIPI': "%.02f" % item.ipi_aliquota,
+                        'vIPI': "%.02f" % item.ipi_valor
+                    },
+                })
+
+            else:
+                imposto.update({
+                    'ICMS': {
+                        'orig': item.product_id.l10n_br_origin,
+                        'CST': item.icms_cst,
+                        'modBC': item.icms_tipo_base,
+                        'vBC': "%.02f" % item.icms_base_calculo,
+                        'vICMSDeson': "%.02f" % item.icms_valor_desonerado,
+                        'motDesICMS': item.icms_motivo_desoneracao,
+                        'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
+                        'pICMS': "%.02f" % item.icms_aliquota,
+                        'vICMS': "%.02f" % item.icms_valor,
+                        'modBCST': item.icms_st_tipo_base,
+                        'pMVAST': "%.02f" % item.icms_st_aliquota_mva,
+                        'pRedBCST': "%.02f" % item.icms_st_aliquota_reducao_base,
+                        'vBCST': "%.02f" % item.icms_st_base_calculo,
+                        'pICMSST': "%.02f" % item.icms_st_aliquota,
+                        'vICMSST': "%.02f" % item.icms_st_valor,
+                        'vBCFCPST': "%.02f" % item.icms_st_base_calculo,
+                        'pFCPST': "%.02f" % item.fcp_st_aliquota,
+                        'vFCPST': "%.02f" % item.fcp_st_valor,
+                        'pCredSN': "%.02f" % item.icms_aliquota_credito,
+                        'vCredICMSSN': "%.02f" % item.icms_valor_credito,
+                        'vICMSSubstituto': "%.02f" % item.icms_substituto,
+                        'vBCSTRet': "%.02f" % item.icms_bc_st_retido,
+                        'pST': "%.02f" % item.icms_aliquota_st_retido,
+                        'vICMSSTRet': "%.02f" % item.icms_st_retido,
+                        # TODO Implementar o FCP vBCFCP
+                        'vBCFCP': '',
+                        'pFCP': '',
+                        'vFCP': '',
+                        # TODO Implementar o calculo de ICMS diferido
+                        'vICMSOp': "%.02f" % item.icms_valor_original_operacao,
+                        'pDif': "%.02f" % item.icms_aliquota_diferimento,
+                        'vICMSDif': "%.02f" % item.icms_valor_diferido,
+                    },
+                    'IPI': {
+                        'clEnq': item.classe_enquadramento_ipi or '',
+                        'cEnq': item.codigo_enquadramento_ipi,
+                        'CST': item.ipi_cst,
+                        'vBC': "%.02f" % item.ipi_base_calculo,
+                        'pIPI': "%.02f" % item.ipi_aliquota,
+                        'vIPI': "%.02f" % item.ipi_valor
+                    },
+                })
 
         if item.tem_difal:
             imposto['ICMSUFDest'] = {
