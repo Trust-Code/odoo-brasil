@@ -312,8 +312,6 @@ class EletronicDocument(models.Model):
                 'ICMS': {
                     'orig':  item.product_id.l10n_br_origin,
                     'CST': item.icms_cst,
-                    'vICMSDeson': "%.02f" % item.icms_valor_desonerado,
-                    'motDesICMS': item.icms_motivo_desoneracao,
                     'modBC': item.icms_tipo_base,
                     'vBC': "%.02f" % item.icms_base_calculo,
                     'pRedBC': "%.02f" % item.icms_aliquota_reducao_base,
@@ -352,6 +350,12 @@ class EletronicDocument(models.Model):
                     'vIPI': "%.02f" % item.ipi_valor
                 },
             })
+
+            if item.icms_valor_desonerado > 0:
+                imposto["ICMS"].update({
+                        'vICMSDeson': "%.02f" % item.icms_valor_desonerado,
+                        'motDesICMS': item.icms_motivo_desoneracao
+                    })
 
         if item.tem_difal:
             imposto['ICMSUFDest'] = {
