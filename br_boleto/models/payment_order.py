@@ -96,11 +96,14 @@ class PaymentOrderLine(models.Model):
                     limit=1,
                 )
                 if nfe:
-                    item.identifier = "{}-{}".format(
-                        nfe.numero,
-                        invoice.receivable_move_line_ids.ids.index(
-                            item.move_line_id.id
-                        ) + 1,
-                    ).zfill(8)
-                    continue
+                    try:
+                        item.identifier = "{}-{}".format(
+                            nfe.numero,
+                            invoice.receivable_move_line_ids.ids.index(
+                                item.move_line_id.id
+                            ) + 1,
+                        ).zfill(8)
+                        continue
+                    except ValueError:
+                        pass
             item.identifier = "%08d" % item.id
