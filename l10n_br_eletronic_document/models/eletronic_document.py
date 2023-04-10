@@ -191,7 +191,7 @@ class EletronicDocument(models.Model):
     #     'br_account.document.serie', string=u'Série',
     #     readonly=True, states=STATE)
     serie_documento = fields.Char(string='Série Documento', size=6)
-    numero = fields.Integer(
+    numero = fields.Float(
         string='Número', readonly=True, states=STATE, copy=False)
     numero_rps = fields.Integer(
         string='Número RPS', readonly=True, states=STATE, copy=False)
