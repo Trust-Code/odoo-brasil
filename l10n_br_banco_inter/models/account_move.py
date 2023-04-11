@@ -67,7 +67,7 @@ class AccountMove(models.Model):
             partner_id = self.partner_id.commercial_partner_id
             vals = {
                 "seuNumero": transaction.reference,
-                "valorNominal": moveline.amount_residual,
+                "valorNominal": round(moveline.amount_residual, 2),
                 "dataVencimento": moveline.date_maturity.isoformat(),
                 "numDiasAgenda": 60,
                 "pagador": {
