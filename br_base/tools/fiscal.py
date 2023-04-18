@@ -168,7 +168,7 @@ def validate_ie_go(inscr_est):
         return False
 
     # verificando os dois primeiros dígitos
-    if not inscr_est[:2] in ['10', '11', '15']:
+    if not inscr_est[:2] in ['10', '11', '15', '20']:
         return False
 
     # Pega apenas os 8 primeiros dígitos da inscrição estadual e
