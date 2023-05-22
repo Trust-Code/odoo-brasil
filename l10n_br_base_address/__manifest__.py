@@ -12,7 +12,7 @@
     'depends': [
         'account',
         'l10n_br_base',
-        'base_address_city',
+        'base_address_extended',
     ],
     'data': [
         'data/configuration.xml',
