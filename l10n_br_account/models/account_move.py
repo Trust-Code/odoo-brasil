@@ -35,54 +35,69 @@ class AccountMove(models.Model):
         states=STATES,
     )
 
-    def _mapping_fiscal_position_account(self):
-        if not self.fiscal_position_id:
-            return
-
-        fiscal_position_id = self.fiscal_position_id
-        if fiscal_position_id.journal_id:
-            self.journal_id = fiscal_position_id.journal_id
-
-        if fiscal_position_id.account_id:
-            account_id = fiscal_position_id.account_id
-            move_lines = []
-
-            if self.is_sale_document(include_receipts=True):
-                move_lines = self.mapped("line_ids").filtered(
-                    lambda x: x.account_id.user_type_id.type == "receivable"
-                )
-            elif self.is_purchase_document(include_receipts=True):
-                move_lines = self.mapped("line_ids").filtered(
-                    lambda x: x.account_id.user_type_id.type == "payable"
-                )
-
-            for line in move_lines:
-                line.account_id = account_id
-
-    def _unmap_lines(self):
-        if not self.fiscal_position_id:
-            return
-
-        fiscal_position_id = self.fiscal_position_id
-
-        if fiscal_position_id.account_id:
-            if self.is_sale_document(include_receipts=True):
-                self.mapped("line_ids").filtered(
-                    lambda x: x.account_id == fiscal_position_id.account_id
-                ).account_id = self.partner_id.property_account_payable_id
-            elif self.is_purchase_document(include_receipts=True):
-                self.mapped("line_ids").filtered(
-                    lambda x: x.account_id == fiscal_position_id.account_id
-                ).account_id = self.partner_id.property_account_receivable_id
-
     def _recompute_payment_terms_lines(self):
-        self._unmap_lines()
-        super(AccountMove, self)._recompute_payment_terms_lines()
-        self._mapping_fiscal_position_account()
+        self.ensure_one()
+        if self.fiscal_position_id.account_id:
+            existing_terms_lines = self.line_ids.filtered(
+                lambda line: line.account_id.user_type_id.type
+                in ("receivable", "payable")
+                or line.payable_receivable_line
+            )
+            others_lines = self.line_ids.filtered(
+                lambda line: not (
+                    line.account_id.user_type_id.type
+                    in ("receivable", "payable")
+                    or line.payable_receivable_line
+                )
+            )
+            company_currency_id = (
+                self.company_id or self.env.company
+            ).currency_id
+            total_balance = sum(
+                others_lines.mapped(
+                    lambda l: company_currency_id.round(l.balance)
+                )
+            )
+            create_method = (
+                self != self._origin
+                and self.env["account.move.line"].new
+                or self.env["account.move.line"].create
+            )
+            new_line = create_method(
+                {
+                    "name": self.payment_reference or "",
+                    "debit": total_balance < 0.0 and -total_balance or 0.0,
+                    "credit": total_balance > 0.0 and total_balance or 0.0,
+                    "quantity": 1.0,
+                    "amount_currency": -total_balance,
+                    "date_maturity": self.invoice_date or fields.Date.today(),
+                    "move_id": self.id,
+                    "currency_id": self.currency_id.id
+                    if self.currency_id != self.company_id.currency_id
+                    else False,
+                    "account_id": self.fiscal_position_id.account_id.id,
+                    "partner_id": self.commercial_partner_id.id,
+                    "exclude_from_invoice_tab": True,
+                    "payable_receivable_line": True,
+                }
+            )
+            self.line_ids -= existing_terms_lines - new_line
+
+            if new_line:
+                self.payment_reference = new_line.name or ''
+        else:
+            previous_payable_line = self.line_ids.filtered(
+                lambda x: x.payable_receivable_line
+            )
+            if self != self._origin:
+                self.line_ids -= previous_payable_line
+            else:
+                previous_payable_line.unlink()
+            return super(AccountMove, self)._recompute_payment_terms_lines()
 
     @api.onchange("fiscal_position_id")
     def _onchange_fiscal_position_id(self):
-        self._mapping_fiscal_position_account()
+        self._recompute_payment_terms_lines()
 
     def compute_lines_partition(self, line_type):
         if line_type not in ("delivery", "expense", "insurance"):
@@ -222,6 +237,10 @@ class AccountMoveLine(models.Model):
     l10n_br_delivery_amount = fields.Monetary(string="Frete")
     l10n_br_expense_amount = fields.Monetary(string="Despesa")
     l10n_br_insurance_amount = fields.Monetary(string="Seguro")
+
+    payable_receivable_line = fields.Boolean(
+        string="Payable/Receivable Line", store=True
+    )
 
     def is_delivery_expense_or_insurance(self):
         return (
