@@ -10,6 +10,12 @@
                 <field name="l10n_br_expense_amount" />
                 <field name="l10n_br_insurance_amount" />
             </field>
+            <xpath expr="//field[@name='invoice_line_ids']//field[@name='exclude_from_invoice_tab']" position="after">
+                <field name="payable_receivable_line" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='line_ids']//field[@name='exclude_from_invoice_tab']" position="after">
+                <field name="payable_receivable_line" invisible="1" />
+            </xpath>
         </field>
     </record>
 </odoo>
