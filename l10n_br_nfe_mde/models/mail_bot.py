@@ -17,4 +17,4 @@ class MailBot(models.AbstractModel):
         partner = user.partner_id
         _, odoobot_id = self.env['ir.model.data']._xmlid_to_res_model_res_id("base.partner_root")
         channel = self._find_channel(odoobot_id, partner)
-        channel.sudo().message_post(body=message, author_id=odoobot_id, message_type="comment", subtype="mail.mt_comment")
+        channel.sudo().message_post(body=message, author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
