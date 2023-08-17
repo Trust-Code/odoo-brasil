@@ -83,7 +83,7 @@ class AccountNcm(models.Model):
 
             channel_info = self.env['mail.channel'].channel_get([partner.id, odoobot_id], pin=True)
             channel = self.env['mail.channel'].browse(channel_info['id'])
-            channel.sudo().message_post(body=message, author_id=odoobot_id, message_type="comment", subtype="mail.mt_comment")
+            channel.sudo().message_post(body=message, author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
 
     def cron_sync_average_tax_rate(self):
         if not self.env.company.l10n_br_ibpt_api_token:
