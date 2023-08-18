@@ -790,6 +790,7 @@ class EletronicDocument(models.Model):
             'name': item.name if item.name else item.product_xprod,
             'quantity': item.quantidade,
             'price_unit': item.preco_unitario,
+            'discount': round((item.desconto*100)/item.valor_bruto, 2) if item.desconto else 0.0,
             'account_id': account_id.id,
         }
         return vals
