@@ -48,7 +48,7 @@ class AccountJournal(models.Model):
                 'statement_id': statement.id,
                 'date': titulo["dataEntrada"],
                 'name': titulo['titulo'],
-                'ref': titulo['descricao'],
+                'ref': titulo.get('descricao'),
                 'amount': float(titulo['valor']) if titulo["tipoOperacao"] == "C" else (float(titulo['valor']) * -1.0),
             })
 
