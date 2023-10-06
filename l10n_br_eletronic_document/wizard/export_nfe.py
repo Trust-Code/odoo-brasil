@@ -102,7 +102,8 @@ class ExportNfe(models.TransientModel):
                 report_service = danfe_report.xml_id
                 danfe, dummy = self.env.ref(report_service)._render_qweb_pdf([invoice.id])
                 report_name = safe_eval(danfe_report.print_report_name, {'object': invoice})
-                filename = "%s.%s" % (report_name, "pdf")
+                report_name_clean = "".join([c for c in report_name if c.isalpha() or c.isdigit() or c == ' ']).rstrip()
+                filename = "%s.%s" % (report_name_clean, "pdf")
                 pdfs.append({
                     'content': danfe,
                     'name': filename
