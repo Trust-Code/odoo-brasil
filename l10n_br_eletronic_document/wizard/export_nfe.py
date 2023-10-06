@@ -6,6 +6,12 @@ from zipfile import ZipFile
 from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
 
+REPORT_NAME = {
+    '05407': 'danfse',  # Florianopolis
+    '06200': 'bh',  # Belo Horizonte
+    '18800': 'ginfes', # Guarulhos
+    '50308': 'danfe',  # Sao Paulo
+}
 
 class ExportNfe(models.TransientModel):
     _name = 'wizard.export.nfe'
@@ -73,11 +79,23 @@ class ExportNfe(models.TransientModel):
                     'content': base64.decodestring(invoice.nfe_processada).decode(),
                     'name': invoice.nfe_processada_name
                 })
-            if invoice.nfse_pdf:
-                pdfs.append({
-                    'content': base64.decodestring(invoice.nfse_pdf),
-                    'name': invoice.nfse_pdf_name
-                })
+            if invoice.model == 'nfse' and not invoice.nfse_pdf:
+                danfe_name = "l10n_br_eletronic_document.main_template_br_nfse_danfpse"
+                danfe_city = REPORT_NAME.get(invoice.company_id.city_id.l10n_br_ibge_code)
+                if danfe_city:
+                    danfe_name = 'l10n_br_eletronic_document.main_template_br_nfse_%s' % danfe_city
+
+                danfe_report = self.env['ir.actions.report'].search(
+                    [('report_name', '=', danfe_name)])
+                if danfe_report:
+                    report_service = danfe_report.xml_id
+                    danfe, dummy = self.env.ref(report_service)._render_qweb_pdf([invoice.id])
+                    report_name = safe_eval(danfe_report.print_report_name, {'object': invoice})
+                    filename = "%s.%s" % (report_name, "pdf")
+                    pdfs.append({
+                        'content': danfe,
+                        'name': filename
+                    })
             if invoice.model == 'nfe':
                 danfe_report = self.env['ir.actions.report'].search(
                     [('report_name', '=', 'l10n_br_eletronic_document.main_template_br_nfe_danfe')])
