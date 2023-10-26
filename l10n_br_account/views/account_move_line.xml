@@ -12,6 +12,8 @@
                 <field name="l10n_br_payment_value" sum="Total das parcelas" />
                 <field name="amount_residual" readonly="1" sum="Total"/>
                 <field name="date_maturity"/>
+                <field name="payment_date" optional="hide" />
+                <field name="days_overdue" optional="hide" />
                 <field name="move_id" readonly="1"/>
                 <field name="reconciled" string="Pago" />
                 <button name="action_register_payment_move_line"
@@ -47,6 +49,7 @@
                 <field name="account_id"/>
                 <field name="partner_id"/>
                 <field name="date_maturity"/>
+                <field name="days_overdue" />
                 <group expand="0" string="Agrupar por...">
                     <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter name="group_date" string="Data de Vencimento" domain="[]" context="{'group_by':'date_maturity:day'}"/>

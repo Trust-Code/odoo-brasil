@@ -1,3 +1,4 @@
+import datetime
 from odoo import api, fields, models
 
 
@@ -241,6 +242,53 @@ class AccountMoveLine(models.Model):
     payable_receivable_line = fields.Boolean(
         string="Payable/Receivable Line", store=True
     )
+
+    payment_date = fields.Date(
+        compute="_compute_payment_date", string="Dia de pagamento")
+
+    days_overdue = fields.Integer(
+        compute="_compute_days_overdue",
+        search="_search_days_overdue",
+        string="Dias em atraso",
+    )
+
+    @api.depends("full_reconcile_id")
+    def _compute_payment_date(self):
+        for line in self:
+            if line.full_reconcile_id:
+                # Get the corresponding move line payment date
+                matched_line = line.full_reconcile_id.reconciled_line_ids.filtered(lambda x: x.payment_id)
+                line.payment_date = matched_line.date
+            else:
+                line.payment_date = False
+
+    @api.depends("date_maturity")
+    def _compute_days_overdue(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        for line in self:
+            days = None
+            if line.date_maturity and line.amount_residual:
+                date_maturity = fields.Date.from_string(line.date_maturity)
+                days_overdue = (today_date - date_maturity).days
+                if days_overdue > 0:
+                    days = days_overdue
+            line.days_overdue = days
+
+    def _search_days_overdue(self, operator, value):
+        due_date = fields.Date.from_string(fields.Date.today()) - datetime.timedelta(
+            days=value
+        )
+        if operator in ("!=", "<>", "in", "not in"):
+            raise ValueError("Invalid operator: {}".format(operator))
+        if operator == ">":
+            operator = "<"
+        elif operator == "<":
+            operator = ">"
+        elif operator == ">=":
+            operator = "<="
+        elif operator == "<=":
+            operator = ">="
+        return [("date_maturity", operator, due_date)]
 
     def is_delivery_expense_or_insurance(self):
         return (
