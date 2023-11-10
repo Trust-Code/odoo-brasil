@@ -257,8 +257,11 @@ class AccountMoveLine(models.Model):
         for line in self:
             if line.full_reconcile_id:
                 # Get the corresponding move line payment date
-                matched_line = line.full_reconcile_id.reconciled_line_ids.filtered(lambda x: x.payment_id)
-                line.payment_date = matched_line.date
+                matched_line = line.full_reconcile_id.reconciled_line_ids.filtered(lambda x: x.payment_id).sorted(lambda x: x.date)
+                if matched_line:
+                    line.payment_date = matched_line[0].date
+                else:
+                    line.payment_date = False
             else:
                 line.payment_date = False
 
