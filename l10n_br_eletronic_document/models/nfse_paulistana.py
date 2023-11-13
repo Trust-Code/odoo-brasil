@@ -44,7 +44,6 @@ def _convert_values(vals):
         tipo_cpfcnpj = rps['tomador']['tipo_cpfcnpj']
         codigo_atividade = rps['codigo_atividade']
         tipo_recolhimento = 'T'  # T – Tributado em São Paulo
-
         assinatura = '%s%s%s%s%sN%s%015d%015d%s%s%s' % (
             str(inscr).zfill(8),
             rps['serie'].ljust(5),
