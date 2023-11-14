@@ -16,7 +16,7 @@
         'Jonatas Biazus <jonatasbiazusct@gmail.com>',
     ],
     'depends': [
-        'account',
+        'account', 'l10n_br_account',
     ],
     'data': [
         'data/br_chart_data.xml',
