@@ -18,7 +18,7 @@ def _convert_values(vals):
         vals['base_calculo'] = 0
         vals['valor_issqn'] = 0
         for item in vals['itens_servico']:
-            item['cst_servico'] = '0'
+            item['cst_servico'] = '1'
             item['base_calculo'] = 0
             item['aliquota'] = 0
     else:
