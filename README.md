@@ -17,7 +17,7 @@ Odoo Brasil - an easy way to use Odoo
 
 Este repositório adapta o Odoo 17 para ser usado no Brasil (em processo de migração)
 
-Módulos migrados e homologados:
+Módulos migrados:
 
 | Nome| Status |
 |-------------|-----------|
