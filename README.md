@@ -2,7 +2,7 @@ Odoo Brasil - an easy way to use Odoo
 ============================================
 
 <p align="center">
-<b><a href="#introducao">Introdução</a></b>
+<b><a href="#intro">Introdução</a></b>
 |
 <b><a href="#funcionalidades">Funcionalidades</a></b>
 |
@@ -13,7 +13,7 @@ Odoo Brasil - an easy way to use Odoo
 
 <br>
 
-## Introdução
+## Intro
 
 Este repositório adapta o Odoo 17 para ser usado no Brasil (em processo de migração)
 
