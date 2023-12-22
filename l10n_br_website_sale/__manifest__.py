@@ -1,7 +1,7 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Odoo Next - Website Address',
     'description': 'Adds fields to address checkout',
-    'version': '15.0.1.0.1',
+    'version': '17.0.1.0.1',
     'category': 'Website',
     'author': 'Trustcode',
     'license': 'OEEL-1',

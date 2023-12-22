@@ -3,7 +3,7 @@
     'name': 'OdooNext - Controle de Xml NFe',
     'summary': """Realiza o download e importação de xml
     Mantido por Trustcode""",
-    'version': '13.0.1.0.0',
+    'version': '17.0.1.0.0',
     'category': 'NFE',
     'author': 'Danimar Ribeiro',
     'license': 'AGPL-3',
