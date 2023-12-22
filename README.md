@@ -2,44 +2,42 @@ Odoo Brasil - an easy way to use Odoo
 ============================================
 
 <p align="center">
-<a name="top" href="http://www.odoo-next.com.br/"><img src="https://github.com/Trust-Code/odoo-brasil/raw/12.0/icon.png" width="250"></a>
-</p>
-
-<p align="center">
 <b><a href="#introducao">Introdução</a></b>
 |
 <b><a href="#funcionalidades">Funcionalidades</a></b>
 |
 <b><a href="#installation">Instalação</a></b>
 |
-<b><a href="#Documentacao">Documentação</a></b>
-|
-<b><a href="#licenca">Licença</a></b>
+<b><a href="#licence">Licença</a></b>
 </p>
 
 <br>
 
-Para dúvidas acesse: [Documentação](http://www.odoo-next.com.br/my/documents/)
-
-[![Build Status](https://travis-ci.org/Trust-Code/odoo-brasil.svg?branch=16.0)](https://travis-ci.org/Trust-Code/odoo-brasil)
-[![Coverage Status](https://coveralls.io/repos/github/Trust-Code/odoo-brasil/badge.svg?branch=16.0)](https://coveralls.io/github/Trust-Code/odoo-brasil?branch=16.0)
-[![Licence](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
-
-
-
 ## Introdução
 
-Este repositório adapta o Odoo 16 para ser usado no Brasil
+Este repositório adapta o Odoo 17 para ser usado no Brasil (em processo de migração)
 
-Procurando pelas outras versões?
-* [Versão 15.0](https://github.com/Trust-Code/odoo-brasil/tree/15.0)
-* [Versão 14.0](https://github.com/Trust-Code/odoo-brasil/tree/14.0)
-* [Versão 13.0](https://github.com/Trust-Code/odoo-brasil/tree/13.0)
-* [Versão 12.0](https://github.com/Trust-Code/odoo-brasil/tree/12.0)
-* [Versão 11.0](https://github.com/Trust-Code/odoo-brasil/tree/11.0)
-* [Versão 10.0](https://github.com/Trust-Code/odoo-brasil/tree/10.0)
+Módulos migrados e homologados:
 
-
+| Nome| Status |
+|-------------|-----------|
+| l10n_br_account | :x: |
+| l10n_br_account_enterprise | :x: |
+| l10n_br_account_reports | :x: |
+| l10n_br_automated_payment | :x: |
+| l10n_br_banco_inter | :x: |
+| l10n_br_base | :x: |
+| l10n_br_base_address | :x: |
+| l10n_br_coa_me_epp | :x: |
+| l10n_br_eletronic_document | :x: |
+| l10n_br_nfe_import | :x: |
+| l10n_br_nfe_mde | :x: |
+| l10n_br_point_of_sale | :x: |
+| l10n_br_purchase | :x: |
+| l10n_br_sale | :x: |
+| l10n_br_sicoob | :x: |
+| l10n_br_stock_account | :x: |
+| l10n_br_website_sale | :x: |
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -47,14 +45,10 @@ Procurando pelas outras versões?
 
 * Cálculo de impostos (ICMS, IPI, PIS, COFINS, ISSQN, DIFAL, FCP, Simples Nacional, CSLL, IRPJ)
 * Emissão de NFe
-* Emissao de SPED ICMS/IPI PIS/COFINS
 * Emissão de NFSe Paulistana, Florianopolis, FocusNFe
 * Emissão de Boletos Automatizada (IUGU, [PagHiper](https://github.com/Code-137/odoo-apps), Zoop)
-* Integração com gateway de pagamentos ([PicPay](https://github.com/Code-137/odoo-apps))
-* [Correios](https://github.com/Code-137/odoo-apps) - Cálculo de Frete, Impressão de etiquetas e Rastreamento
 * Importação de extratos bancários (OFX)
 * Contas a pagar e Receber
-* Retenções de Impostos (INSS, IRPJ, PIS, COFINS, CSLL, ISS)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -66,13 +60,6 @@ Procurando pelas outras versões?
 <a href="https://github.com/Trust-Code/Tutorial-Instalacao">Tutorial de instalação para desenvolvimento</a>
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
-
-
-### Documentacao
-
-* [Documentação](https://sistema.trustcode.com.br/my/documents/)
-* [Videos](https://sistema.trustcode.com.br/my/documents?categoria=4)
-* [Grupo Telegram](http://t.me/OdooBrasilOficial)
 
 
 ## Licence
