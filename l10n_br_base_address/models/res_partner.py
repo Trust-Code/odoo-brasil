@@ -76,7 +76,7 @@ class ResPartner(models.Model):
     @api.model
     def install_default_country(self):
         IrDefault = self.env['ir.default']
-        default_value = IrDefault.get('res.partner', 'country_id')
+        default_value = IrDefault._get('res.partner', 'country_id')
         if default_value is None:
             IrDefault.set('res.partner', 'country_id', self.env.ref('base.br').id)
         return True

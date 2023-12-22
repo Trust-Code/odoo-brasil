@@ -28,11 +28,11 @@
     <field name="arch" type="xml">
       <xpath expr="//div[@name='button_box']" position="inside">
         <button name="action_check_sefaz" type="object" class="oe_stat_button"
-          icon="fa-search" string="Consultar CNPJ" attrs="{'invisible': [('company_type', '=', 'person')]}">
+          icon="fa-search" string="Consultar CNPJ" invisible="company_type == 'person'">
         </button>
       </xpath>
       <xpath expr="//h1" position="after">
-        <h3 attrs="{'invisible': [('is_company', '=', False)]}">
+        <h3 invisible="is_company == False">
           <field name="l10n_br_legal_name" placeholder="Legal Name" nolabel="1" />
         </h3>
         <h3>
@@ -63,8 +63,8 @@
 
       <field name="property_account_position_id" position="after"> 
           <field name="l10n_br_inscr_est" />
-          <field name="l10n_br_inscr_mun" attrs="{'invisible': [('is_company','!=', True)]}" />
-          <field name="l10n_br_suframa" attrs="{'invisible': [('is_company','!=', True)]}" />
+          <field name="l10n_br_inscr_mun" invisible="is_company != True" />
+          <field name="l10n_br_suframa" invisible="is_company != True" />
       </field>
 
     </field>
